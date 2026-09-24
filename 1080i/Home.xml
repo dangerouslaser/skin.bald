@@ -1,5 +1,249 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald Home. Intentionally empty for milestone 1; built out in milestone 2 per docs/SPEC.md section 5.1. -->
+<!-- Bald Home, static layout (milestone 2). Coordinates from docs/SPEC.md section 5.1. -->
 <window>
-	<controls />
+	<defaultcontrol always="true">9101</defaultcontrol>
+	<backgroundcolor>bald_field</backgroundcolor>
+	<controls>
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="bald_field">bald/white.png</texture>
+		</control>
+
+		<!-- Art frame -->
+		<control type="group">
+			<left>96</left>
+			<top>120</top>
+			<width>1248</width>
+			<height>702</height>
+			<control type="image">
+				<texture colordiffuse="bald_placeholder">bald/white.png</texture>
+			</control>
+			<control type="image">
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$VAR[Bald_Fanart]</texture>
+			</control>
+			<control type="group">
+				<visible>!String.IsEmpty(ListItem.Art(clearlogo)) | !String.IsEmpty(ListItem.Art(tvshow.clearlogo))</visible>
+				<control type="image">
+					<texture>bald/scrim_logo.png</texture>
+				</control>
+				<control type="image">
+					<left>52</left>
+					<top>486</top>
+					<width>560</width>
+					<height>170</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<texture background="true">$VAR[Bald_Clearlogo]</texture>
+				</control>
+			</control>
+		</control>
+
+		<!-- Clock and date -->
+		<control type="group">
+			<left>1440</left>
+			<top>104</top>
+			<width>384</width>
+			<control type="label">
+				<height>132</height>
+				<font>Bald_Clock</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[System.Time(hh:mm)]</label>
+			</control>
+			<control type="label">
+				<top>144</top>
+				<height>30</height>
+				<font>Bald_Date</font>
+				<textcolor>bald_ink66</textcolor>
+				<label>$INFO[System.Date(DDDD)], $INFO[System.Date(MMMM D)]</label>
+			</control>
+		</control>
+
+		<!-- Callout -->
+		<control type="image">
+			<left>1339</left>
+			<top>505</top>
+			<width>10</width>
+			<height>10</height>
+			<texture colordiffuse="bald_ink">bald/dot.png</texture>
+		</control>
+		<control type="image">
+			<left>1349</left>
+			<top>510</top>
+			<width>91</width>
+			<height>1</height>
+			<texture colordiffuse="bald_ink50">bald/white.png</texture>
+		</control>
+
+		<!-- Caption -->
+		<control type="grouplist">
+			<left>1440</left>
+			<top>420</top>
+			<width>384</width>
+			<height>440</height>
+			<orientation>vertical</orientation>
+			<itemgap>0</itemgap>
+			<usecontrolcoords>true</usecontrolcoords>
+			<control type="label">
+				<height>44</height>
+				<font>Bald_CaptionTitle</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$VAR[Bald_Title]</label>
+			</control>
+			<control type="label">
+				<top>14</top>
+				<height>26</height>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>bald_ink80</textcolor>
+				<label>$VAR[Bald_Meta]</label>
+			</control>
+			<control type="grouplist">
+				<top>10</top>
+				<width>384</width>
+				<height>26</height>
+				<orientation>horizontal</orientation>
+				<itemgap>8</itemgap>
+				<visible>String.IsEqual(ListItem.DBType,movie) + [!String.IsEmpty(ListItem.VideoResolution) | !String.IsEmpty(ListItem.HdrType) | !String.IsEmpty(ListItem.AudioChannels)]</visible>
+				<include content="Bald_Flag">
+					<param name="label">$VAR[Bald_Resolution]</param>
+					<param name="visible">String.IsEqual(ListItem.VideoResolution,4K) | String.IsEqual(ListItem.VideoResolution,1080)</param>
+				</include>
+				<include content="Bald_Flag">
+					<param name="label">$VAR[Bald_Hdr]</param>
+					<param name="visible">!String.IsEmpty(ListItem.HdrType)</param>
+				</include>
+				<include content="Bald_Flag">
+					<param name="label">Dolby Atmos</param>
+					<param name="visible">String.Contains(ListItem.AudioCodec,atmos)</param>
+				</include>
+				<include content="Bald_Flag">
+					<param name="label">$VAR[Bald_Channels]</param>
+					<param name="visible">String.IsEqual(ListItem.AudioChannels,8) | String.IsEqual(ListItem.AudioChannels,6)</param>
+				</include>
+			</control>
+			<control type="label">
+				<top>8</top>
+				<height>24</height>
+				<font>Bald_Accent</font>
+				<textcolor>bald_accent</textcolor>
+				<label>$INFO[ListItem.Genre]</label>
+			</control>
+			<control type="label">
+				<top>18</top>
+				<!-- Kodi draws ceil(height / line height) lines: 116 / 30 gives 4. No ellipsis is possible, see docs/NOTES.md. -->
+				<height>116</height>
+				<wrapmultiline>true</wrapmultiline>
+				<aligny>top</aligny>
+				<font>Bald_CaptionPlot</font>
+				<textcolor>bald_ink76</textcolor>
+				<label>$INFO[ListItem.Plot]</label>
+			</control>
+		</control>
+
+		<!-- Section line -->
+		<control type="grouplist">
+			<left>1440</left>
+			<top>966</top>
+			<width>480</width>
+			<height>26</height>
+			<orientation>horizontal</orientation>
+			<itemgap>14</itemgap>
+			<control type="group">
+				<width>8</width>
+				<control type="image">
+					<top>9</top>
+					<width>8</width>
+					<height>8</height>
+					<texture colordiffuse="bald_accent">bald/dot.png</texture>
+				</control>
+			</control>
+			<control type="label">
+				<width>auto</width>
+				<height>26</height>
+				<aligny>center</aligny>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink</textcolor>
+				<label>Home</label>
+			</control>
+			<control type="label">
+				<width>auto</width>
+				<height>26</height>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink55</textcolor>
+				<label>Back for menu</label>
+			</control>
+		</control>
+
+		<!-- Row label line -->
+		<control type="grouplist">
+			<left>96</left>
+			<top>856</top>
+			<width>1248</width>
+			<height>26</height>
+			<orientation>horizontal</orientation>
+			<itemgap>14</itemgap>
+			<control type="label">
+				<width>auto</width>
+				<height>26</height>
+				<aligny>center</aligny>
+				<font>Bald_RowLabel</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$VAR[Bald_RowLabel]</label>
+			</control>
+			<control type="group">
+				<width>30</width>
+				<control type="image">
+					<top>10</top>
+					<width>6</width>
+					<height>6</height>
+					<texture>bald/dot.png</texture>
+					<colordiffuse>$VAR[Bald_Dot1]</colordiffuse>
+				</control>
+				<control type="image">
+					<left>12</left>
+					<top>10</top>
+					<width>6</width>
+					<height>6</height>
+					<texture>bald/dot.png</texture>
+					<colordiffuse>$VAR[Bald_Dot2]</colordiffuse>
+				</control>
+				<control type="image">
+					<left>24</left>
+					<top>10</top>
+					<width>6</width>
+					<height>6</height>
+					<texture>bald/dot.png</texture>
+					<colordiffuse>$VAR[Bald_Dot3]</colordiffuse>
+				</control>
+			</control>
+			<control type="label">
+				<width>auto</width>
+				<height>26</height>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink55</textcolor>
+				<label>$VAR[Bald_RowCount]</label>
+			</control>
+		</control>
+
+		<!-- Rows (default configuration, docs/SPEC.md section 6) -->
+		<include content="Bald_Row">
+			<param name="id">9101</param>
+			<param name="down">9102</param>
+			<content target="videos" limit="25">videodb://recentlyaddedmovies/</content>
+		</include>
+		<include content="Bald_Row">
+			<param name="id">9102</param>
+			<param name="up">9101</param>
+			<param name="down">9103</param>
+			<content target="videos" limit="15">special://skin/playlists/inprogress_movies.xsp</content>
+			<content target="videos" limit="15">special://skin/playlists/inprogress_episodes.xsp</content>
+		</include>
+		<include content="Bald_Row">
+			<param name="id">9103</param>
+			<param name="up">9102</param>
+			<content target="videos" limit="25">videodb://inprogresstvshows/</content>
+		</include>
+	</controls>
 </window>

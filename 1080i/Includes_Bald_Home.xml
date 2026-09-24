@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald Home: variables and repeated control groups (docs/SPEC.md section 5.1). -->
+<includes>
+	<!-- ListItem.* here is the focused row's item. Episodes fall back to their show's art. -->
+	<variable name="Bald_Fanart">
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+	<variable name="Bald_Clearlogo">
+		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value>$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+	</variable>
+	<variable name="Bald_Title">
+		<value condition="ListItem.IsEpisode">$INFO[ListItem.TVShowTitle]</value>
+		<value>$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="Bald_Meta">
+		<value condition="ListItem.IsEpisode">S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Title,$COMMA ,]</value>
+		<value condition="String.IsEqual(ListItem.DBType,tvshow) + String.IsEqual(ListItem.Property(TotalSeasons),1)">$INFO[ListItem.Year,,$COMMA ]1 season</value>
+		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , seasons]</value>
+		<value condition="Integer.IsGreaterOrEqual(ListItem.Duration(mins),60)">$INFO[ListItem.Year,,$COMMA ]$INFO[ListItem.Duration(h),,h ]$INFO[ListItem.Duration(mm),,m]</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins),$COMMA , min]</value>
+	</variable>
+	<variable name="Bald_Resolution">
+		<value condition="String.IsEqual(ListItem.VideoResolution,4K)">4K</value>
+		<value condition="String.IsEqual(ListItem.VideoResolution,1080)">1080p</value>
+	</variable>
+	<variable name="Bald_Hdr">
+		<value condition="String.IsEqual(ListItem.HdrType,dolbyvision)">Dolby Vision</value>
+		<value condition="String.IsEqual(ListItem.HdrType,hdr10)">HDR10</value>
+		<value condition="String.IsEqual(ListItem.HdrType,hlg)">HLG</value>
+		<value condition="String.StartsWith(ListItem.HdrType,hdr10)">HDR10+</value>
+	</variable>
+	<variable name="Bald_Channels">
+		<value condition="String.IsEqual(ListItem.AudioChannels,8)">7.1</value>
+		<value condition="String.IsEqual(ListItem.AudioChannels,6)">5.1</value>
+	</variable>
+	<variable name="Bald_RowLabel">
+		<value condition="Control.HasFocus(9102)">Continue watching</value>
+		<value condition="Control.HasFocus(9103)">Next up</value>
+		<value>Recently added movies</value>
+	</variable>
+
+	<variable name="Bald_RowCount">
+		<value condition="Control.HasFocus(9102)">$INFO[Container(9102).CurrentItem]$INFO[Container(9102).NumItems, of ,]</value>
+		<value condition="Control.HasFocus(9103)">$INFO[Container(9103).CurrentItem]$INFO[Container(9103).NumItems, of ,]</value>
+		<value>$INFO[Container(9101).CurrentItem]$INFO[Container(9101).NumItems, of ,]</value>
+	</variable>
+	<variable name="Bald_Dot1">
+		<value condition="Control.HasFocus(9101)">bald_ink95</value>
+		<value>bald_ink28</value>
+	</variable>
+	<variable name="Bald_Dot2">
+		<value condition="Control.HasFocus(9102)">bald_ink95</value>
+		<value>bald_ink28</value>
+	</variable>
+	<variable name="Bald_Dot3">
+		<value condition="Control.HasFocus(9103)">bald_ink95</value>
+		<value>bald_ink28</value>
+	</variable>
+
+	<!-- One outlined media flag chip. -->
+	<include name="Bald_Flag">
+		<param name="label" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="button">
+				<width>auto</width>
+				<height>26</height>
+				<label>$PARAM[label]</label>
+				<font>Bald_Flag</font>
+				<textoffsetx>10</textoffsetx>
+				<aligny>center</aligny>
+				<textcolor>bald_ink</textcolor>
+				<disabledcolor>bald_ink</disabledcolor>
+				<texturenofocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturenofocus>
+				<texturefocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturefocus>
+				<enable>false</enable>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+
+	<!-- A landscape tile: 176 x 99, 3 px corners, drawn 10 px inside its 192 px slot so the ring is not clipped. -->
+	<include name="Bald_LandscapeTile">
+		<param name="focused">false</param>
+		<definition>
+			<control type="image">
+				<left>10</left>
+				<top>10</top>
+				<width>176</width>
+				<height>99</height>
+				<texture colordiffuse="bald_tile_placeholder">bald/tile.png</texture>
+			</control>
+			<control type="image">
+				<left>10</left>
+				<top>10</top>
+				<width>176</width>
+				<height>99</height>
+				<aspectratio>scale</aspectratio>
+				<texture diffuse="bald/tile.png" colordiffuse="$PARAM[diffuse]" background="true">$VAR[Bald_TileArt]</texture>
+			</control>
+			<control type="image">
+				<left>7</left>
+				<top>7</top>
+				<width>182</width>
+				<height>105</height>
+				<texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture>
+				<visible>$PARAM[focused]</visible>
+			</control>
+		</definition>
+	</include>
+	<variable name="Bald_TileArt">
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+
+	<!-- A home row: fixedlist (pass <content> elements as children), focus travels to slot 2, then the row scrolls. Hidden rows stay focusable. -->
+	<include name="Bald_Row">
+		<param name="id" />
+		<param name="up">noop</param>
+		<param name="down">noop</param>
+		<definition>
+			<control type="fixedlist" id="$PARAM[id]">
+				<left>86</left>
+				<top>884</top>
+				<width>1258</width>
+				<height>119</height>
+				<orientation>horizontal</orientation>
+				<focusposition>2</focusposition>
+				<movement>2</movement>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<onup>$PARAM[up]</onup>
+				<ondown>$PARAM[down]</ondown>
+				<onleft>noop</onleft>
+				<onright>noop</onright>
+				<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus($PARAM[id])">Conditional</animation>
+				<itemlayout width="192" height="119">
+					<include content="Bald_LandscapeTile">
+						<param name="diffuse">bald_tile_dim</param>
+					</include>
+				</itemlayout>
+				<focusedlayout width="192" height="119">
+					<include content="Bald_LandscapeTile">
+						<param name="diffuse">FFFFFFFF</param>
+						<param name="focused">true</param>
+					</include>
+				</focusedlayout>
+				<nested />
+			</control>
+		</definition>
+	</include>
+</includes>

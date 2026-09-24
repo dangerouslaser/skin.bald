@@ -173,12 +173,12 @@
 			<filename>InstrumentSans-SemiBold.ttf</filename>
 			<size>18</size>
 		</font>
-		<!-- Caption plot, line height 30 -->
+		<!-- Caption plot, line height 30 (natural line is ~24 px) -->
 		<font>
 			<name>Bald_CaptionPlot</name>
 			<filename>InstrumentSans-Regular.ttf</filename>
 			<size>20</size>
-			<linespacing>1.5</linespacing>
+			<linespacing>1.25</linespacing>
 		</font>
 		<!-- Media flag -->
 		<font>
@@ -234,12 +234,12 @@
 			<filename>InstrumentSans-Medium.ttf</filename>
 			<size>30</size>
 		</font>
-		<!-- Info plot, line height 34 -->
+		<!-- Info plot, line height 34 (natural line is ~26.4 px) -->
 		<font>
 			<name>Bald_InfoPlot</name>
 			<filename>InstrumentSans-Regular.ttf</filename>
 			<size>22</size>
-			<linespacing>1.55</linespacing>
+			<linespacing>1.29</linespacing>
 		</font>
 	</fontset>
 	<fontset id="Arial" idloc="31053">
@@ -430,12 +430,12 @@
 			<size>18</size>
 			<style>bold</style>
 		</font>
-		<!-- Caption plot, line height 30 -->
+		<!-- Caption plot, line height 30 (natural line is ~24 px) -->
 		<font>
 			<name>Bald_CaptionPlot</name>
 			<filename>arial.ttf</filename>
 			<size>20</size>
-			<linespacing>1.5</linespacing>
+			<linespacing>1.25</linespacing>
 		</font>
 		<!-- Media flag -->
 		<font>
@@ -499,12 +499,12 @@
 			<size>30</size>
 			<style>bold</style>
 		</font>
-		<!-- Info plot, line height 34 -->
+		<!-- Info plot, line height 34 (natural line is ~26.4 px) -->
 		<font>
 			<name>Bald_InfoPlot</name>
 			<filename>arial.ttf</filename>
 			<size>22</size>
-			<linespacing>1.55</linespacing>
+			<linespacing>1.29</linespacing>
 		</font>
 	</fontset>
 </fonts>
