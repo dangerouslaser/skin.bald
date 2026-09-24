@@ -15,4 +15,42 @@
         <reset>Player.Seeking | Player.Forwarding | Player.Rewinding | Player.HasPerformedSeek(1)</reset>
         <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1109_topbaroverlay),5) | Player.Playing</stop>
     </timer>
+    <!-- Bald Home. Row start: a fixedlist first selects the item at its focus position (slot 2);
+         once a row's items have loaded, move it back to the first item. One shot per window load; Home clears the flags in onload. -->
+    <timer>
+        <name>bald_rowstart_9101</name>
+        <start>Window.IsActive(home) + !Container(9101).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9101)) + String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)</start>
+        <onstart>SetProperty(Bald.Start9101,1,home)</onstart>
+        <onstart>Control.Move(9101,-2)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9101))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9102</name>
+        <start>Window.IsActive(home) + !Container(9102).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)</start>
+        <onstart>SetProperty(Bald.Start9102,1,home)</onstart>
+        <onstart>Control.Move(9102,-2)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9102))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9103</name>
+        <start>Window.IsActive(home) + !Container(9103).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)</start>
+        <onstart>SetProperty(Bald.Start9103,1,home)</onstart>
+        <onstart>Control.Move(9103,-2)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9103))</stop>
+    </timer>
+    <!-- Bald Home idle (60 s): close the menu and park focus on the wake button so the first key only wakes. -->
+    <timer>
+        <name>bald_idle</name>
+        <start reset="true">Window.IsActive(home) + System.IdleTime(60) + !Control.HasFocus(9199)</start>
+        <onstart>ClearProperty(Bald.Menu,home)</onstart>
+        <onstart>SetFocus(9199)</onstart>
+        <stop>!System.IdleTime(60) | Control.HasFocus(9199)</stop>
+    </timer>
+    <!-- Bald Home ambient: while idle, advance the current row every 8 s (Skin setting Bald.AmbientOff turns it off). -->
+    <timer>
+        <name>bald_ambient</name>
+        <start reset="true">Window.IsActive(home) + System.IdleTime(60) + !Skin.HasSetting(Bald.AmbientOff)</start>
+        <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_ambient),8) | !System.IdleTime(60)</stop>
+        <onstop condition="System.IdleTime(60)">Control.Move($INFO[Window(home).Property(Bald.Row)],1)</onstop>
+    </timer>
 </timers>

@@ -192,11 +192,12 @@
 			<filename>InstrumentSans-SemiBold.ttf</filename>
 			<size>46</size>
 		</font>
-		<!-- Menu note -->
+		<!-- Menu note, line height 28 -->
 		<font>
 			<name>Bald_MenuNote</name>
 			<filename>InstrumentSans-Medium.ttf</filename>
 			<size>19</size>
+			<linespacing>1.23</linespacing>
 		</font>
 		<!-- Section line, action button, section heading -->
 		<font>
@@ -451,11 +452,12 @@
 			<size>46</size>
 			<style>bold</style>
 		</font>
-		<!-- Menu note -->
+		<!-- Menu note, line height 28 -->
 		<font>
 			<name>Bald_MenuNote</name>
 			<filename>arial.ttf</filename>
 			<size>19</size>
+			<linespacing>1.23</linespacing>
 			<style>bold</style>
 		</font>
 		<!-- Section line, action button, section heading -->
