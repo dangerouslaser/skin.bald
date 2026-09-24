@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.bald" version="0.1.0" name="Bald" provider-name="Bryan Hoban">
+	<requires>
+		<import addon="xbmc.gui" version="5.18.0"/>
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false">
+		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<summary lang="en_GB">Minimal, artwork-first skin for Kodi 22.</summary>
+		<description lang="en_GB">Bald is a minimal, artwork-first Kodi 22 skin with fluid motion. Utility windows are based on Kodi's Estuary by phil65 and Team Kodi.</description>
+		<license>GPL-2.0-or-later</license>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+		</assets>
+	</extension>
+</addon>
