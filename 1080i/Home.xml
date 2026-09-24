@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald Home, static layout (milestone 2). Coordinates from docs/SPEC.md section 5.1. -->
+<!-- Bald Home (milestones 2 and 3). Layout from docs/SPEC.md section 5.1, motion from section 4.
+     State and variables are documented in Includes_Bald_Home.xml; timers in Timers.xml. -->
 <window>
 	<defaultcontrol always="true">9101</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
+	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load.
+	     Focus always starts on row 1 (defaultcontrol always). -->
+	<onload>SetProperty(Bald.Row,9101,home)</onload>
+	<onload>ClearProperty(Bald.Menu,home)</onload>
+	<onload>ClearProperty(Bald.Start9101,home)</onload>
+	<onload>ClearProperty(Bald.Start9102,home)</onload>
+	<onload>ClearProperty(Bald.Start9103,home)</onload>
 	<controls>
 		<control type="image">
 			<width>1920</width>
@@ -10,240 +18,352 @@
 			<texture colordiffuse="bald_field">bald/white.png</texture>
 		</control>
 
-		<!-- Art frame -->
+		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). -->
 		<control type="group">
-			<left>96</left>
-			<top>120</top>
-			<width>1248</width>
-			<height>702</height>
-			<control type="image">
-				<texture colordiffuse="bald_placeholder">bald/white.png</texture>
-			</control>
-			<control type="image">
-				<aspectratio>scale</aspectratio>
-				<texture background="true">$VAR[Bald_Fanart]</texture>
-			</control>
+			<animation type="Conditional" condition="$EXP[Bald_Idle]" pulse="true">
+				<effect type="slide" start="0,0" end="2,0" time="23000" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Conditional" condition="$EXP[Bald_Idle]" pulse="true">
+				<effect type="slide" start="0,0" end="0,2" time="31000" tween="sine" easing="inout" />
+			</animation>
+
+			<!-- Art frame -->
 			<control type="group">
-				<visible>!String.IsEmpty(ListItem.Art(clearlogo)) | !String.IsEmpty(ListItem.Art(tvshow.clearlogo))</visible>
+				<left>96</left>
+				<top>120</top>
+				<width>1248</width>
+				<height>702</height>
+				<control type="image">
+					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
+				</control>
+				<control type="group">
+					<control type="image">
+						<width>1248</width>
+						<height>702</height>
+						<aspectratio>scale</aspectratio>
+						<fadetime>700</fadetime>
+						<texture background="true">$VAR[Bald_Fanart]</texture>
+						<animation type="Conditional" condition="$EXP[Bald_ItemChanged]" reversible="false">
+							<effect type="zoom" start="105" end="100" center="624,351" time="1500" tween="cubic" easing="out" />
+						</animation>
+					</control>
+				</control>
+			</control>
+			<!-- Scrim and clearlogo (not zoomed; inside the frame, so the masks never touch them). -->
+			<control type="group">
+				<left>96</left>
+				<top>120</top>
+				<width>1248</width>
+				<height>702</height>
 				<control type="image">
 					<texture>bald/scrim_logo.png</texture>
+					<visible>$EXP[Bald_HasLogo]</visible>
+					<animation type="Visible">
+						<effect type="fade" start="0" end="100" time="500" tween="sine" easing="inout" />
+					</animation>
+					<animation type="Hidden">
+						<effect type="fade" start="100" end="0" time="150" tween="sine" easing="inout" />
+					</animation>
+				</control>
+				<!-- Clearlogo, one per row so it also fades in when its row becomes current. -->
+				<include content="Bald_ArtLogo"><param name="c">9101</param></include>
+				<include content="Bald_ArtLogo"><param name="c">9102</param></include>
+				<include content="Bald_ArtLogo"><param name="c">9103</param></include>
+			</control>
+
+			<!-- Frame masks: Kodi does not clip a zoom-animated texture (a grouplist did not help), so field-colored
+			     bars cover the up-to-5% settle-zoom overflow around the art frame (96,120 1248x702). -->
+			<control type="group">
+				<control type="image">
+					<left>0</left><top>80</top><width>96</width><height>782</height>
+					<texture colordiffuse="bald_field">bald/white.png</texture>
 				</control>
 				<control type="image">
-					<left>52</left>
-					<top>486</top>
-					<width>560</width>
-					<height>170</height>
-					<aspectratio align="left" aligny="bottom">keep</aspectratio>
-					<texture background="true">$VAR[Bald_Clearlogo]</texture>
+					<left>1344</left><top>80</top><width>60</width><height>782</height>
+					<texture colordiffuse="bald_field">bald/white.png</texture>
+				</control>
+				<control type="image">
+					<left>96</left><top>80</top><width>1248</width><height>40</height>
+					<texture colordiffuse="bald_field">bald/white.png</texture>
+				</control>
+				<control type="image">
+					<left>96</left><top>822</top><width>1248</width><height>30</height>
+					<texture colordiffuse="bald_field">bald/white.png</texture>
 				</control>
 			</control>
-		</control>
 
-		<!-- Clock and date -->
-		<control type="group">
-			<left>1440</left>
-			<top>104</top>
-			<width>384</width>
-			<control type="label">
-				<height>132</height>
-				<font>Bald_Clock</font>
-				<textcolor>bald_ink</textcolor>
-				<label>$INFO[System.Time(hh:mm)]</label>
-			</control>
-			<control type="label">
-				<top>144</top>
-				<height>30</height>
-				<font>Bald_Date</font>
-				<textcolor>bald_ink66</textcolor>
-				<label>$INFO[System.Date(DDDD)], $INFO[System.Date(MMMM D)]</label>
-			</control>
-		</control>
-
-		<!-- Callout: line stops 24 px short of the caption (1416), a deliberate change from the prototype's 1440. -->
-		<control type="image">
-			<left>1339</left>
-			<top>505</top>
-			<width>10</width>
-			<height>10</height>
-			<texture colordiffuse="bald_ink">bald/dot.png</texture>
-		</control>
-		<control type="image">
-			<left>1349</left>
-			<top>510</top>
-			<width>67</width>
-			<height>1</height>
-			<texture colordiffuse="bald_ink50">bald/white.png</texture>
-		</control>
-
-		<!-- Caption -->
-		<control type="grouplist">
-			<left>1440</left>
-			<top>420</top>
-			<width>384</width>
-			<height>440</height>
-			<orientation>vertical</orientation>
-			<itemgap>0</itemgap>
-			<usecontrolcoords>true</usecontrolcoords>
-			<control type="label">
-				<height>44</height>
-				<font>Bald_CaptionTitle</font>
-				<textcolor>bald_ink</textcolor>
-				<label>$VAR[Bald_Title]</label>
-			</control>
-			<control type="label">
-				<top>14</top>
-				<height>26</height>
-				<font>Bald_CaptionMeta</font>
-				<textcolor>bald_ink80</textcolor>
-				<label>$VAR[Bald_Meta]</label>
-			</control>
-			<control type="grouplist">
-				<top>10</top>
+			<!-- Clock and date -->
+			<control type="group">
+				<left>1440</left>
+				<top>104</top>
 				<width>384</width>
+				<control type="label">
+					<height>132</height>
+					<font>Bald_Clock</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$INFO[System.Time(hh:mm)]</label>
+				</control>
+				<control type="label">
+					<top>144</top>
+					<height>30</height>
+					<font>Bald_Date</font>
+					<textcolor>bald_ink66</textcolor>
+					<label>$INFO[System.Date(DDDD)], $INFO[System.Date(MMMM D)]</label>
+				</control>
+			</control>
+
+			<!-- Callout: the dot pops and the line grows from the left on each item change.
+			     The line stops 24 px short of the caption (1416), a deliberate change from the prototype's 1440. -->
+			<control type="group">
+				<include>Bald_AnimMenuHides</include>
+				<control type="image">
+					<left>1339</left>
+					<top>505</top>
+					<width>10</width>
+					<height>10</height>
+					<texture colordiffuse="bald_ink">bald/dot.png</texture>
+					<animation type="Conditional" condition="$EXP[Bald_ItemChanged]" reversible="false">
+						<effect type="fade" start="0" end="100" time="240" delay="220" tween="sine" easing="inout" />
+						<effect type="zoom" start="20" end="100" center="1344,510" time="360" delay="220" tween="back" easing="out" />
+					</animation>
+				</control>
+				<control type="image">
+					<left>1349</left>
+					<top>510</top>
+					<width>67</width>
+					<height>1</height>
+					<texture colordiffuse="bald_ink50">bald/white.png</texture>
+					<animation type="Conditional" condition="$EXP[Bald_ItemChanged]" reversible="false">
+						<effect type="zoom" start="0,100" end="100,100" center="1349,510" time="560" delay="260" tween="cubic" easing="out" />
+					</animation>
+				</control>
+			</control>
+
+			<!-- Caption: out 180 and slide 40 px right as the menu opens; back 380 / 480 after 140 as it closes. -->
+			<control type="group">
+				<visible>!$EXP[Bald_MenuOpen]</visible>
+				<animation type="Hidden">
+					<effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" />
+					<effect type="slide" start="0,0" end="40,0" time="200" tween="cubic" easing="out" />
+				</animation>
+				<animation type="Visible">
+					<effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" />
+					<effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" />
+				</animation>
+				<include content="Bald_Caption"><param name="c">9101</param></include>
+				<include content="Bald_Caption"><param name="c">9102</param></include>
+				<include content="Bald_Caption"><param name="c">9103</param></include>
+			</control>
+
+			<!-- Menu: in fade 380 and slide 40 px over 480 after 120; out 160. -->
+			<control type="group">
+				<visible>$EXP[Bald_MenuOpen]</visible>
+				<include>Bald_AnimMenuShows</include>
+				<control type="label">
+					<left>1466</left>
+					<top>714</top>
+					<width>394</width>
+					<height>120</height>
+					<wrapmultiline>true</wrapmultiline>
+					<aligny>top</aligny>
+					<font>Bald_MenuNote</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[Container(9000).ListItem.Property(note)]</label>
+				</control>
+			</control>
+			<control type="list" id="9000">
+				<left>1440</left>
+				<top>392</top>
+				<width>420</width>
+				<height>310</height>
+				<orientation>vertical</orientation>
+				<scrolltime>0</scrolltime>
+				<visible allowhiddenfocus="true">$EXP[Bald_MenuOpen]</visible>
+				<include>Bald_AnimMenuShows</include>
+				<!-- Opening: set state and count opens (the hint hides after three). Checked high to low so one open adds one. -->
+				<onfocus>SetProperty(Bald.Menu,1,home)</onfocus>
+				<onfocus condition="String.IsEqual(Skin.String(Bald.MenuOpens),2)">Skin.SetString(Bald.MenuOpens,3)</onfocus>
+				<onfocus condition="String.IsEqual(Skin.String(Bald.MenuOpens),1)">Skin.SetString(Bald.MenuOpens,2)</onfocus>
+				<onfocus condition="String.IsEmpty(Skin.String(Bald.MenuOpens))">Skin.SetString(Bald.MenuOpens,1)</onfocus>
+				<!-- Left or Select enters a screen; screens without rows stay in the menu. Back closes without switching. -->
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">ClearProperty(Bald.Menu,home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">SetFocus($INFO[Window(home).Property(Bald.Row)])</onleft>
+				<onback>ClearProperty(Bald.Menu,home)</onback>
+				<onback>SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
+				<onright>noop</onright>
+				<!-- No wrapping at either end. -->
+				<onup>noop</onup>
+				<ondown>noop</ondown>
+				<itemlayout width="420" height="62">
+					<include>Bald_MenuItem</include>
+					<control type="label">
+						<left>20</left>
+						<width>400</width>
+						<height>56</height>
+						<aligny>center</aligny>
+						<font>Bald_MenuItem</font>
+						<textcolor>bald_ink34</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout width="420" height="62">
+					<include>Bald_MenuItem</include>
+					<control type="label">
+						<left>26</left>
+						<width>394</width>
+						<height>56</height>
+						<aligny>center</aligny>
+						<font>Bald_MenuItem</font>
+						<textcolor>bald_ink</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+						<animation type="Focus">
+							<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
+							<effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" />
+						</animation>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>Home</label>
+						<property name="id">home</property>
+						<property name="note">Recently added movies, Continue watching, Next up</property>
+						<onclick>ClearProperty(Bald.Menu,home)</onclick>
+						<onclick>SetFocus($INFO[Window(home).Property(Bald.Row)])</onclick>
+					</item>
+					<item>
+						<label>Movies</label>
+						<property name="id">movies</property>
+						<property name="note">Rows for this screen arrive in a later build.</property>
+						<onclick>noop</onclick>
+					</item>
+					<item>
+						<label>TV shows</label>
+						<property name="id">tvshows</property>
+						<property name="note">Rows for this screen arrive in a later build.</property>
+						<onclick>noop</onclick>
+					</item>
+					<item>
+						<label>Live TV</label>
+						<property name="id">livetv</property>
+						<property name="note">Select to open the guide.</property>
+						<onclick>noop</onclick>
+					</item>
+					<item>
+						<label>Search</label>
+						<property name="id">search</property>
+						<property name="note">Select to search your library.</property>
+						<onclick>noop</onclick>
+					</item>
+				</content>
+			</control>
+
+			<!-- Section line: accent dot, screen name, "Back for menu" hint (hidden after three menu opens). -->
+			<control type="grouplist">
+				<left>1440</left>
+				<top>966</top>
+				<width>480</width>
 				<height>26</height>
 				<orientation>horizontal</orientation>
-				<itemgap>8</itemgap>
-				<visible>String.IsEqual(ListItem.DBType,movie) + [!String.IsEmpty(ListItem.VideoResolution) | !String.IsEmpty(ListItem.HdrType) | !String.IsEmpty(ListItem.AudioChannels)]</visible>
-				<include content="Bald_Flag">
-					<param name="label">$VAR[Bald_Resolution]</param>
-					<param name="visible">String.IsEqual(ListItem.VideoResolution,4K) | String.IsEqual(ListItem.VideoResolution,1080)</param>
-				</include>
-				<include content="Bald_Flag">
-					<param name="label">$VAR[Bald_Hdr]</param>
-					<param name="visible">!String.IsEmpty(ListItem.HdrType)</param>
-				</include>
-				<include content="Bald_Flag">
-					<param name="label">Dolby Atmos</param>
-					<param name="visible">String.Contains(ListItem.AudioCodec,atmos)</param>
-				</include>
-				<include content="Bald_Flag">
-					<param name="label">$VAR[Bald_Channels]</param>
-					<param name="visible">String.IsEqual(ListItem.AudioChannels,8) | String.IsEqual(ListItem.AudioChannels,6)</param>
-				</include>
-			</control>
-			<control type="label">
-				<top>8</top>
-				<height>24</height>
-				<font>Bald_Accent</font>
-				<textcolor>bald_accent</textcolor>
-				<label>$INFO[ListItem.Genre]</label>
-			</control>
-			<control type="label">
-				<top>18</top>
-				<!-- Kodi draws ceil(height / line height) lines: 116 / 30 gives 4. No ellipsis is possible, see docs/NOTES.md. -->
-				<height>116</height>
-				<wrapmultiline>true</wrapmultiline>
-				<aligny>top</aligny>
-				<font>Bald_CaptionPlot</font>
-				<textcolor>bald_ink76</textcolor>
-				<label>$INFO[ListItem.Plot]</label>
-			</control>
-		</control>
-
-		<!-- Section line -->
-		<control type="grouplist">
-			<left>1440</left>
-			<top>966</top>
-			<width>480</width>
-			<height>26</height>
-			<orientation>horizontal</orientation>
-			<itemgap>14</itemgap>
-			<control type="group">
-				<width>8</width>
-				<control type="image">
-					<top>9</top>
+				<itemgap>14</itemgap>
+				<include>Bald_AnimMenuHides</include>
+				<animation type="Conditional" condition="$EXP[Bald_Idle]">
+					<effect type="fade" start="100" end="45" time="600" tween="sine" easing="inout" />
+				</animation>
+				<control type="group">
 					<width>8</width>
-					<height>8</height>
-					<texture colordiffuse="bald_accent">bald/dot.png</texture>
+					<control type="image">
+						<top>9</top>
+						<width>8</width>
+						<height>8</height>
+						<texture colordiffuse="bald_accent">bald/dot.png</texture>
+					</control>
+				</control>
+				<control type="label">
+					<width>auto</width>
+					<height>26</height>
+					<aligny>center</aligny>
+					<font>Bald_Section</font>
+					<textcolor>bald_ink</textcolor>
+					<label>Home</label>
+				</control>
+				<control type="label">
+					<width>auto</width>
+					<height>26</height>
+					<aligny>center</aligny>
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink55</textcolor>
+					<label>Back for menu</label>
+					<visible>!String.IsEqual(Skin.String(Bald.MenuOpens),3)</visible>
+					<animation type="Conditional" condition="$EXP[Bald_Idle]">
+						<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
+					</animation>
 				</control>
 			</control>
-			<control type="label">
-				<width>auto</width>
-				<height>26</height>
-				<aligny>center</aligny>
-				<font>Bald_Section</font>
-				<textcolor>bald_ink</textcolor>
-				<label>Home</label>
-			</control>
-			<control type="label">
-				<width>auto</width>
-				<height>26</height>
-				<aligny>center</aligny>
-				<font>Bald_Hint</font>
-				<textcolor>bald_ink55</textcolor>
-				<label>Back for menu</label>
-			</control>
-		</control>
 
-		<!-- Row label line -->
-		<control type="grouplist">
-			<left>96</left>
-			<top>856</top>
-			<width>1248</width>
-			<height>26</height>
-			<orientation>horizontal</orientation>
-			<itemgap>14</itemgap>
-			<control type="label">
-				<width>auto</width>
-				<height>26</height>
-				<aligny>center</aligny>
-				<font>Bald_RowLabel</font>
-				<textcolor>bald_ink</textcolor>
-				<label>$VAR[Bald_RowLabel]</label>
-			</control>
+			<!-- Rows (default configuration, docs/SPEC.md section 6) -->
+			<include content="Bald_Row">
+				<param name="id">9101</param>
+				<param name="label">Recently added movies</param>
+				<param name="index">1</param>
+				<param name="up">SetFocus(9000,0,absolute)</param>
+				<param name="down">9102</param>
+				<content target="videos" limit="25">videodb://recentlyaddedmovies/</content>
+			</include>
+			<include content="Bald_Row">
+				<param name="id">9102</param>
+				<param name="label">Continue watching</param>
+				<param name="index">2</param>
+				<param name="up">9101</param>
+				<param name="down">9103</param>
+				<content target="videos" limit="15">special://skin/playlists/inprogress_movies.xsp</content>
+				<content target="videos" limit="15">special://skin/playlists/inprogress_episodes.xsp</content>
+			</include>
+			<include content="Bald_Row">
+				<param name="id">9103</param>
+				<param name="label">Next up</param>
+				<param name="index">3</param>
+				<param name="up">9102</param>
+				<content target="videos" limit="25">videodb://inprogresstvshows/</content>
+			</include>
+
+			<!-- Menu preview for screens without rows yet -->
 			<control type="group">
-				<width>30</width>
-				<control type="image">
-					<top>10</top>
-					<width>6</width>
-					<height>6</height>
-					<texture>bald/dot.png</texture>
-					<colordiffuse>$VAR[Bald_Dot1]</colordiffuse>
+				<visible>$EXP[Bald_PreviewOther]</visible>
+				<include>Bald_AnimRowSwap</include>
+				<control type="label">
+					<left>96</left>
+					<top>856</top>
+					<width>1248</width>
+					<height>26</height>
+					<aligny>center</aligny>
+					<font>Bald_RowLabel</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$INFO[Container(9000).ListItem.Label]</label>
 				</control>
-				<control type="image">
-					<left>12</left>
-					<top>10</top>
-					<width>6</width>
-					<height>6</height>
-					<texture>bald/dot.png</texture>
-					<colordiffuse>$VAR[Bald_Dot2]</colordiffuse>
+				<control type="label">
+					<left>96</left>
+					<top>898</top>
+					<width>1248</width>
+					<height>30</height>
+					<font>Bald_Date</font>
+					<textcolor>bald_ink70</textcolor>
+					<label>$INFO[Container(9000).ListItem.Property(note)]</label>
 				</control>
-				<control type="image">
-					<left>24</left>
-					<top>10</top>
-					<width>6</width>
-					<height>6</height>
-					<texture>bald/dot.png</texture>
-					<colordiffuse>$VAR[Bald_Dot3]</colordiffuse>
-				</control>
-			</control>
-			<control type="label">
-				<width>auto</width>
-				<height>26</height>
-				<aligny>center</aligny>
-				<font>Bald_Hint</font>
-				<textcolor>bald_ink55</textcolor>
-				<label>$VAR[Bald_RowCount]</label>
 			</control>
 		</control>
 
-		<!-- Rows (default configuration, docs/SPEC.md section 6) -->
-		<include content="Bald_Row">
-			<param name="id">9101</param>
-			<param name="down">9102</param>
-			<content target="videos" limit="25">videodb://recentlyaddedmovies/</content>
-		</include>
-		<include content="Bald_Row">
-			<param name="id">9102</param>
-			<param name="up">9101</param>
-			<param name="down">9103</param>
-			<content target="videos" limit="15">special://skin/playlists/inprogress_movies.xsp</content>
-			<content target="videos" limit="15">special://skin/playlists/inprogress_episodes.xsp</content>
-		</include>
-		<include content="Bald_Row">
-			<param name="id">9103</param>
-			<param name="up">9102</param>
-			<content target="videos" limit="25">videodb://inprogresstvshows/</content>
-		</include>
+		<!-- Idle wake: the idle timer parks focus here so the first key press only wakes. -->
+		<control type="button" id="9199">
+			<width>1</width>
+			<height>1</height>
+			<texturefocus />
+			<texturenofocus />
+			<onup>SetFocus($INFO[Window(home).Property(Bald.Row)])</onup>
+			<ondown>SetFocus($INFO[Window(home).Property(Bald.Row)])</ondown>
+			<onleft>SetFocus($INFO[Window(home).Property(Bald.Row)])</onleft>
+			<onright>SetFocus($INFO[Window(home).Property(Bald.Row)])</onright>
+			<onclick>SetFocus($INFO[Window(home).Property(Bald.Row)])</onclick>
+			<onback>SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
+		</control>
 	</controls>
 </window>
