@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald Home. Intentionally empty for milestone 1; built out in milestone 2 per docs/SPEC.md section 5.1. -->
+<window>
+	<controls />
+</window>
