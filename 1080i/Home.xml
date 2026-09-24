@@ -59,7 +59,7 @@
 			</control>
 		</control>
 
-		<!-- Callout -->
+		<!-- Callout: line stops 24 px short of the caption (1416), a deliberate change from the prototype's 1440. -->
 		<control type="image">
 			<left>1339</left>
 			<top>505</top>
@@ -70,7 +70,7 @@
 		<control type="image">
 			<left>1349</left>
 			<top>510</top>
-			<width>91</width>
+			<width>67</width>
 			<height>1</height>
 			<texture colordiffuse="bald_ink50">bald/white.png</texture>
 		</control>

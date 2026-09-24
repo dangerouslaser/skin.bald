@@ -21,3 +21,4 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 - **Clearlogo drop shadow.** Not implemented; Kodi images have no blur or shadow. Options later: a pre-blurred shadow texture behind the logo, or leave it (logo scrim already provides contrast).
 - **Genres.** `ListItem.Genre` joins with " / " (Kodi's separator), not the prototype's ", ".
 - **Dev window.** The macOS Kodi window must be 16:9 or the GUI is stretched. Set to 1600 x 900 content (1600 x 928 with title bar) via System Events.
+- **Callout gap.** The hairline ends at x 1416, leaving 24 px before the caption at 1440 (prototype ran it to 1440; it read as touching the text). Changed at the user's request.
