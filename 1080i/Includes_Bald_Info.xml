@@ -13,11 +13,6 @@
 		<value condition="!String.IsEmpty(Container(5100).ListItem.Art(tvshow.fanart))">$INFO[Container(5100).ListItem.Art(tvshow.fanart)]</value>
 		<value>$INFO[Container(5100).ListItem.Art(thumb)]</value>
 	</variable>
-	<variable name="Bald_MoreMeta">
-		<value condition="String.IsEqual(Container(5100).ListItem.DBType,tvshow)">$INFO[Container(5100).ListItem.Year]</value>
-		<value condition="Integer.IsGreaterOrEqual(Container(5100).ListItem.Duration(mins),60)">$INFO[Container(5100).ListItem.Year,,$COMMA ]$INFO[Container(5100).ListItem.Duration(h),,h ]$INFO[Container(5100).ListItem.Duration(mm),,m]</value>
-		<value>$INFO[Container(5100).ListItem.Year]$INFO[Container(5100).ListItem.Duration(mins),$COMMA , min]</value>
-	</variable>
 	<variable name="Bald_MoreStatus">
 		<value condition="!String.IsEmpty(Window(movieinformation).Property(Bald.MorePath)) + Container(5100).IsUpdating">Loading recommendations…</value>
 		<value>No related titles in your library.</value>

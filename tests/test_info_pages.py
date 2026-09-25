@@ -30,8 +30,21 @@ class InfoPagesTests(unittest.TestCase):
         self.assertEqual(transition.find("animation/effect[@type='slide']").get("start"), "0,18")
 
     def test_preview_is_scoped_to_recommendation_container(self):
-        for control_id, label in (("5210", "Title"), ("5212", "Plot")):
-            self.assertEqual(self.pages.findtext(f".//control[@id='{control_id}']/label"), f"$INFO[Container(5100).ListItem.{label}]")
+        captions = self.pages.findall("include[@name='Bald_InfoRecommendationsPage']//include[@content='Bald_Caption']")
+        self.assertEqual(len(captions), 2)
+        self.assertEqual({node.findtext("param[@name='p']") for node in captions}, {"Odd", "Even"})
+        for node in captions:
+            self.assertEqual(node.findtext("param[@name='c']"), "5100")
+            self.assertEqual(node.findtext("param[@name='ignore_home_row']"), "true")
+        home = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
+        caption = home.find("include[@name='Bald_Caption']")
+        self.assertEqual(caption.findtext("param[@name='ignore_home_row']"), "false")
+        labels = [node.text for node in caption.iter("label")]
+        for field in ("Title", "Plot", "Genre"):
+            self.assertIn(f"$INFO[Container($PARAM[c]).ListItem.{field}]", labels)
+        self.assertEqual(len(caption.findall(".//include[@content='Bald_Flag']")), 9)
+        delays = {node.findtext("param[@name='delay']") for node in caption.findall(".//include[@content='Bald_AnimCaptionIn']")}
+        self.assertEqual(delays, {"180", "275", "300", "350"})
         art = self.shared.find("variable[@name='Bald_MorePreviewArt']")
         self.assertTrue(all("Container(5100).ListItem.Art" in node.text for node in art))
         self.assertEqual(self.pages.findtext(".//control[@id='5204']/texture"), "$VAR[Bald_InfoPoster]")

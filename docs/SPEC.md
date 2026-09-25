@@ -193,7 +193,7 @@ Approved paged revision (2026-09-25): three fixed pages replace the long scrolli
 | --- | --- | --- |
 | Overview | Content x96, y150 | Existing logo/title, meta, genres, flags, tagline, plot, actions and progress |
 | Cast & details | Poster 96,156,432,648; right column x624, width1200 | Title/meta above five 240 px cast slots at y378; 112 px portraits with name/role; Details heading y650, three 380 px columns at y696 and y796 |
-| More like this | Home-sized frame 96,120,1248,702; caption x1440, y380, width384; row y884 | Highlighted recommendation's fanart, title, year/runtime, genres and plot; shared Home landscape tiles, 440 MOVE scrolling |
+| More like this | Home-sized frame 96,120,1248,702; shared Home caption x1440, title ending at y464, width384; row y884 | Highlighted recommendation's fanart, title, year/runtime, movie media flags, genres and plot; Home's staggered caption transitions and landscape tiles, 440 MOVE scrolling |
 
 Scrims: horizontal field 92% at 0, 72% at 32%, 0 at 64%; plus bottom field 85% at 0, 0 at 42%.
 

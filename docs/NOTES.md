@@ -4,6 +4,8 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 
 ## Paged movie information (2026-09-25)
 
+- Recommendation caption follow-up: replaced its static, separately positioned labels with the shared `Bald_Caption` Odd/Even pair bound to container5100. This mirrors Home's title baseline, metadata/flags/genre/plot spacing and 180/250/275/300/350 ms stagger, using the same fade/slide effects. A boolean bypass of the Home-row visibility guard keeps this reusable without changing Home's selected row or the native info item.
+
 - Clearlogo follow-up: recommendations reuse `Bald_ArtLogo` with container5100 and an explicit bypass of the Home-row guard. Keep the guard in the definition: embedding `$PARAM[c]` inside another parameter's default did not resolve in Kodi and hid Home's logos. A plain boolean bypass preserves both contexts.
 
 - Replaced the original compounded section slides with independent Overview, Cast & details and More like this pages. Each has one visibility-driven fade/rise; there are no reversing additive offsets at the recommendations boundary. The earlier scrolling/empty-data notes below describe the superseded layout.
