@@ -5,7 +5,7 @@
      condition, Conditional animations expect their condition to hold. So every item-change transition is keyed to a
      state that flips on each move and then holds: whether the current row's item position is odd or even
      (Integer.IsOdd(Container(c).CurrentItem)). Each animated piece exists twice, an Odd and an Even instance:
-       - the incoming instance becomes visible and plays its Visible animation (fade, stagger, rise, pop, zoom);
+       - the incoming instance becomes visible and plays its Visible animation (fade, stagger, rise, zoom);
        - the outgoing one hides. Images keep their old texture while a Hidden animation plays
          (CGUIImage::UpdateInfo), so fanart and clearlogos fade out with the old picture. Labels cannot freeze,
          so text has no Hidden animation and disappears at once.
@@ -172,36 +172,6 @@
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)]</texture>
 				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
-			</control>
-		</definition>
-	</include>
-
-	<!-- Callout for one parity: dot pops (240 fade, 360 pop from 0.2 after 220), line grows from the left (560 after 260). -->
-	<include name="Bald_Callout">
-		<param name="visible" />
-		<definition>
-			<control type="image">
-				<left>1339</left>
-				<top>505</top>
-				<width>10</width>
-				<height>10</height>
-				<texture colordiffuse="bald_ink">bald/dot.png</texture>
-				<visible>$PARAM[visible]</visible>
-				<animation type="Visible">
-					<effect type="fade" start="0" end="100" time="240" delay="220" tween="sine" easing="inout" />
-					<effect type="zoom" start="20" end="100" center="1344,510" time="360" delay="220" tween="back" easing="out" />
-				</animation>
-			</control>
-			<control type="image">
-				<left>1349</left>
-				<top>510</top>
-				<width>67</width>
-				<height>1</height>
-				<texture colordiffuse="bald_ink50">bald/white.png</texture>
-				<visible>$PARAM[visible]</visible>
-				<animation type="Visible">
-					<effect type="zoom" start="0,100" end="100,100" center="1349,510" time="560" delay="260" tween="cubic" easing="out" />
-				</animation>
 			</control>
 		</definition>
 	</include>
