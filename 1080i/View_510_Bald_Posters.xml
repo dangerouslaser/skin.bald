@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald movie library: three large posters, selected artwork and the shared media caption. -->
+<includes>
+	<variable name="Bald_LibraryFanart">
+		<value condition="!String.IsEmpty(Container(510).ListItem.Art(fanart))">$INFO[Container(510).ListItem.Art(fanart)]</value>
+		<value>$INFO[Container(510).ListItem.Art(thumb)]</value>
+	</variable>
+	<variable name="Bald_LibraryPoster">
+		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+	<include name="Bald_LibraryPosterItem">
+		<param name="diffuse">bald_ink55</param><param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="192,282" time="280" tween="back" easing="out" /></animation>
+				<control type="image"><left>12</left><top>12</top><width>360</width><height>540</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+				<control type="image"><left>12</left><top>12</top><width>360</width><height>540</height><aspectratio>keep</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[Bald_LibraryPoster]</texture></control>
+				<control type="image"><left>9</left><top>9</top><width>366</width><height>546</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
+			</control>
+			<control type="label"><left>12</left><top>574</top><width>360</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><wrapmultiline>true</wrapmultiline><aligny>top</aligny><label>$INFO[ListItem.Label]</label></control>
+		</definition>
+	</include>
+	<include name="Bald_LibraryCaption">
+		<param name="p" />
+		<definition>
+			<include content="Bald_Caption">
+				<param name="c">510</param><param name="p">$PARAM[p]</param><param name="ignore_home_row">true</param>
+				<param name="x">1276</param><param name="title_y">548</param><param name="title_height">88</param><param name="body_y">636</param><param name="width">528</param><param name="clip_width">568</param>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_LibraryArt">
+		<param name="p" />
+		<definition>
+			<include content="Bald_ArtLayer"><param name="texture">$VAR[Bald_LibraryFanart]</param><param name="width">528</param><param name="height">297</param><param name="center">264,148.5</param><param name="visible">Integer.Is$PARAM[p](Container(510).CurrentItem)</param></include>
+		</definition>
+	</include>
+	<include name="View_510_Bald_Posters">
+		<control type="group">
+			<visible>Control.IsVisible(510)</visible>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+			<include>Bald_BackdropImage</include>
+			<control type="label"><left>96</left><top>108</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>Movies</label></control>
+			<control type="label"><left>1296</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<control type="list" id="510">
+				<left>84</left><top>210</top><width>1152</width><height>648</height>
+				<orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems>
+				<viewtype label="Bald posters">icon</viewtype><visible>Container.Content(movies)</visible>
+				<onfocus>SetProperty(TMDbHelper.WidgetContainer,510,videos)</onfocus>
+				<onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
+				<onup>9000</onup><ondown>6101</ondown><onleft>noop</onleft><onright>noop</onright>
+				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
+				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510)</param></include></focusedlayout>
+			</control>
+			<control type="group">
+				<visible>!Container(510).ListItem.IsParentFolder + !String.IsEmpty(Container(510).ListItem.Title)</visible>
+				<control type="group"><left>1296</left><top>222</top>
+					<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+					<include content="Bald_LibraryArt"><param name="p">Odd</param></include>
+					<include content="Bald_LibraryArt"><param name="p">Even</param></include>
+				</control>
+				<!-- Reuse Home's backdrop-window masking rather than relying on clipping transformed images. -->
+				<include content="Bald_BackdropWindow"><param name="x">1264</param><param name="y">198</param><param name="w">32</param><param name="h">345</param></include>
+				<include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">198</param><param name="w">32</param><param name="h">345</param></include>
+				<include content="Bald_BackdropWindow"><param name="x">1296</param><param name="y">198</param><param name="w">528</param><param name="h">24</param></include>
+				<include content="Bald_BackdropWindow"><param name="x">1296</param><param name="y">519</param><param name="w">528</param><param name="h">24</param></include>
+				<include content="Bald_LibraryCaption"><param name="p">Odd</param></include>
+				<include content="Bald_LibraryCaption"><param name="p">Even</param></include>
+			</control>
+			<control type="button" id="6101">
+				<left>1296</left><top>896</top><width>220</width><height>46</height><font>Bald_CaptionMeta</font><label>Open details</label><textoffsetx>24</textoffsetx>
+				<textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor><texturefocus border="23" colordiffuse="bald_ink">bald/pill.png</texturefocus><texturenofocus border="23" colordiffuse="bald_ink50">bald/pill_outline.png</texturenofocus>
+				<enable>String.IsEqual(Container(510).ListItem.DBType,movie)</enable>
+				<onup>510</onup><onleft>510</onleft><onright>noop</onright><ondown>noop</ondown><onclick>SetFocus(510)</onclick><onclick>Action(Info)</onclick>
+			</control>
+			<control type="label"><left>96</left><top>954</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>
+			<control type="label"><left>1000</left><top>954</top><width>824</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Left / Right to browse · Info for details · Up for options</label></control>
+		</control>
+	</include>
+</includes>
