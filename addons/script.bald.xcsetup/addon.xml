@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.bald.xcsetup" name="Bald XC Setup" version="0.1.0" provider-name="Bryan Hoban">
+	<requires>
+		<import addon="xbmc.python" version="3.0.1"/>
+		<import addon="pvr.iptvsimple" version="22.0.0"/>
+	</requires>
+	<extension point="xbmc.python.script" library="default.py"/>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en_GB">Configure IPTV Simple from Xtream Codes credentials.</summary>
+		<description lang="en_GB">Builds standard Xtream Codes playlist and XMLTV URLs, backs up the selected IPTV Simple instance, and applies the URLs.</description>
+		<platform>all</platform>
+		<license>GPL-2.0-or-later</license>
+	</extension>
+</addon>

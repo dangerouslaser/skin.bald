@@ -1,0 +1,40 @@
+from pathlib import Path
+import importlib.util
+import unittest
+
+
+MODULE = Path(__file__).resolve().parents[1] / "addons/script.bald.xcsetup/resources/lib/config.py"
+SPEC = importlib.util.spec_from_file_location("bald_xc_config", MODULE)
+config = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(config)
+
+
+class XCSetupTests(unittest.TestCase):
+    def test_builds_standard_playlist_and_epg_urls(self):
+        playlist, epg = config.build_urls("https://iptv.example:8443/panel/", "a+b", "p&x")
+        self.assertEqual(
+            playlist,
+            "https://iptv.example:8443/panel/get.php?username=a%2Bb&password=p%26x&type=m3u_plus&output=ts",
+        )
+        self.assertEqual(epg, "https://iptv.example:8443/panel/xmltv.php?username=a%2Bb&password=p%26x")
+
+    def test_adds_http_when_scheme_is_omitted(self):
+        playlist, _ = config.build_urls("iptv.example:8080", "user", "pass", "m3u8")
+        self.assertTrue(playlist.startswith("http://iptv.example:8080/get.php?"))
+        self.assertIn("output=m3u8", playlist)
+
+    def test_rejects_invalid_or_incomplete_input(self):
+        for args in (("", "u", "p"), ("ftp://example.test", "u", "p"), ("http://x/?bad=1", "u", "p"), ("http://x", "", "p")):
+            with self.subTest(args=args), self.assertRaises(config.ConfigError):
+                config.build_urls(*args)
+
+    def test_redacts_both_credentials(self):
+        redacted = config.redact_url("https://x/get.php?username=alice&password=secret&type=m3u_plus")
+        self.assertNotIn("alice", redacted)
+        self.assertNotIn("secret", redacted)
+        self.assertIn("username=%2A%2A%2A", redacted)
+        self.assertIn("password=%2A%2A%2A", redacted)
+
+
+if __name__ == "__main__":
+    unittest.main()

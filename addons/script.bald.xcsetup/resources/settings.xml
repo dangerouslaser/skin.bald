@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings version="1">
+	<section id="script.bald.xcsetup">
+		<category id="connection" label="Xtream Codes">
+			<group id="credentials" label="Connection">
+				<setting id="server" type="string" label="Server URL"><default></default></setting>
+				<setting id="username" type="string" label="Username"><default></default></setting>
+				<setting id="password" type="string" label="Password"><level>0</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><hidden>true</hidden></control></setting>
+				<setting id="output" type="string" label="Stream output"><default>ts</default><constraints><options><option label="MPEG-TS">ts</option><option label="HLS (M3U8)">m3u8</option></options></constraints><control type="spinner" format="string"/></setting>
+			</group>
+		</category>
+	</section>
+</settings>
