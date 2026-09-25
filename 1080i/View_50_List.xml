@@ -122,6 +122,7 @@
 		<param name="right">0</param>
 		<definition>
 			<control type="fixedlist" id="$PARAM[list_id]">
+				<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
 				<left>$PARAM[left]</left>
 				<right>$PARAM[right]</right>
 				<top>list_top_offset</top>

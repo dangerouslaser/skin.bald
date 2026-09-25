@@ -234,8 +234,9 @@
 					<item>
 						<label>TV shows</label>
 						<property name="id">tvshows</property>
-						<property name="note">Rows for this screen arrive in a later build.</property>
-						<onclick>noop</onclick>
+						<property name="note">Browse series, seasons and episodes in your TV library.</property>
+						<onclick>ClearProperty(Bald.Menu,home)</onclick>
+						<onclick>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
 					</item>
 					<item>
 						<label>Live TV</label>

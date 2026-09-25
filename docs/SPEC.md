@@ -299,6 +299,14 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - The poster rail sits beneath the artwork with its item count at y704; navigation hints use the skin-wide bottom baseline at y954 in the open space to the rail's right. Left/Right browses; Up or Menu opens options; Down enters the shared alphabet. Alphabet mode covers the poster rail with the aligned blurred backdrop before drawing its strip at y888, retaining the native selection underneath. Options hide the caption and dim artwork/posters to72%; the shared Home-width menu sits wholly to the right of the artwork and poster rail, so it needs no additional backdrop panel. The open-menu footer ends at the shared x1824 safe edge from (1404,954), matching the other library hints.
 - Select follows Kodi's native default action; Info opens details and Back restores the selected poster. Other library layouts remain available.
 
+### 5.11 TV library — primary Series, Seasons and Episodes path
+
+- Kodi retains independent native view modes for each content level: Series520, Seasons530 and Episodes540. The first implementation completes this full drill-down before adding alternative layouts.
+- Series520 reuses the three-poster movie geometry and shared artwork preview. Its caption shows series years, season count, watched progress, genres and plot; series-level media flags remain hidden. Alphabet browsing remains available. Select enters the show's seasons and Info opens TV details.
+- Seasons530 keeps three large season posters with `season.poster`, `tvshow.poster` and container TV-show poster fallbacks. The right preview retains show artwork/clearlogo where season art is absent and shows watched/total episode progress. Specials remain native list items. Seasons do not expose alphabet mode.
+- Episodes540 uses a seven-row artwork-focused list at x96 and a1008×567 16:9 preview at x816. Rows show S/E code, title, air date, runtime and Resume/Watched state. The preview shows episode thumb, then episode/show fanart fallback, followed by episode metadata, codec-inclusive media flags and plot. Episodes do not expose alphabet mode.
+- All three levels share the Home-width library options menu, x1824 footer alignment, blurred selected-art background, native sorting/filtering/context actions and 440 MOVE scrolling. Missing artwork falls back through Kodi's native TV artwork inheritance and then the field/placeholder—never unrelated art.
+
 ---
 
 ## 6. Default rows (alpha uses a fixed configuration)

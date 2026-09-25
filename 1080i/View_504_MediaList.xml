@@ -8,6 +8,7 @@
 				<visible>Control.IsVisible(504)</visible>
 				<include>Visible_Right</include>
 				<control type="fixedlist" id="504">
+					<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
 					<visible>$EXP[videoasset_true]</visible>
 					<left>594</left>
 					<top>list_top_offset</top>

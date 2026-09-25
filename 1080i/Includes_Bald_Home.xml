@@ -310,6 +310,12 @@
 				<visible>[$PARAM[ignore_home_row] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
+			<control type="image">
+				<left>$PARAM[x]</left><top>$PARAM[y]</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio align="left" aligny="bottom">keep</aspectratio>
+				<texture background="true">$INFO[Container.Art(tvshow.clearlogo)]</texture>
+				<visible>[$PARAM[ignore_home_row] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)) + !String.IsEmpty(Container.Art(tvshow.clearlogo))</visible>
+				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
+			</control>
 		</definition>
 	</include>
 
@@ -391,6 +397,16 @@
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow) + !String.IsEqual(Container($PARAM[c]).ListItem.Property(TotalSeasons),1)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Property(WatchedEpisodes)]$INFO[Container($PARAM[c]).ListItem.Property(TotalEpisodes), / , episodes watched]</param>
+						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,season)</param>
+					</include>
+					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Property(WatchedEpisodes)]$INFO[Container($PARAM[c]).ListItem.Property(TotalEpisodes), / , episodes watched]</param>
+						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow)</param>
+					</include>
+					<include content="Bald_CaptionMeta">
 						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
@@ -439,7 +455,13 @@
 						<font>Bald_CaptionPlot</font>
 						<textcolor>bald_ink76</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Plot]</label>
-						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [!String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | !String.IsEmpty(Container($PARAM[c]).ListItem.Plot)]</visible>
+						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
+					</control>
+					<control type="label">
+						<top>18</top><left>20</left><width>$PARAM[width]</width><height>116</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionPlot</font><textcolor>bald_ink76</textcolor>
+						<label>$INFO[Container.ShowPlot]</label>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) + String.IsEmpty(Container($PARAM[c]).ListItem.Plot)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
 					</control>
 				</control>
