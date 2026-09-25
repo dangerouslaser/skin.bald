@@ -166,6 +166,8 @@ Title handling: caption title is always text. The clearlogo only ever appears on
 
 Menu state lives in a window property (for example `Window(Home).Property(MenuOpen)`), set in `onup`, `onback` and `onleft` handlers. Caption, menu and section line animate on that property with conditional animations.
 
+Context menu update (2026-09-25): show at most five actions, scrolling as focus moves beyond the visible entries, with no wrapping at either end. Keep the main menu's instant scroll and 56 px buttons / 6 px gaps. The selected action's tooltip uses the same note position (1466,714), 394 px width, font and opacity as Home. Native and known add-on actions have descriptions; unknown actions use a generic label-based hint.
+
 #### Idle
 
 | Idle threshold | Behavior |

@@ -4,6 +4,7 @@
 	<include file="Includes_Home.xml" />
 	<include file="Includes_Bald_Home.xml" />
 	<include file="Includes_Bald_Info.xml" />
+	<include file="Includes_Bald_ContextMenu.xml" />
 	<include file="Includes_Animations.xml" />
 	<include file="Includes_Games.xml" />
 	<include file="Includes_MediaMenu.xml" />
