@@ -54,7 +54,7 @@ class PosterLowTests(unittest.TestCase):
         self.assertEqual(menu_masks, [])
         footer = self.root.find("include[@name='Bald_PosterLowFooter']/definition")
         hint = next(group for group in footer.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]')
-        self.assertEqual((hint.findtext('left'), hint.findtext("include/param[@name='width']")), ('1440', '420'))
+        self.assertEqual((hint.findtext('left'), hint.findtext("include/param[@name='width']")), ('1404', '420'))
 
     def test_focused_ring_fits_list_height(self):
         tile = self.root.find("include[@name='Bald_PosterLowTile']//include[@content='Bald_LibraryPosterItem']")
