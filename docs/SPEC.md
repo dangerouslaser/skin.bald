@@ -259,7 +259,16 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Selected title at (96,108), width1100, metadata at y168. Media flags right-aligned at (1296,168), width528, including audio codec. Shared staggered caption motion and blurred selected-fanart background apply.
 - Direction keys traverse the grid and scroll rows. Up at the top or Left at the left edge opens options; Menu also opens options. Right at the right edge enters letter mode; Down at the end of the library also enters it. Letter navigation and return behavior match section5.5.
 - Shared right-side options menu replaces the rightmost three poster columns; the remaining posters dim to35%. Frame masks stay opaque. Other view choices remain available.
-- The full alphabet strip, footer alignment, native Select/Info actions and 20px hint separators remain consistent with the first library view. A second wall with a right-side artwork preview is planned next, not implemented in this milestone.
+- The full alphabet strip, footer alignment, native Select/Info actions and 20px hint separators remain consistent with the first library view. The right-side artwork-preview variant is described in section5.7.
+
+---
+
+### 5.7 Movie poster wall — artwork-preview variant
+
+- Native movie panel512, labeled Bald wall with preview, follows the full-width wall in the view cycle. Five columns × two rows at (84,210), 1080 × 624; shared 216 × 312 slots and 192 × 288 cropped posters.
+- Reuses section5.5's right-hand 528 × 297 artwork, staggered title/metadata/media flags/genres/plot, menu transitions and opaque overflow masks. The selected title lives in the preview rather than repeating above the grid; the header reads Movies.
+- The blurred background follows container512. Grid navigation, full alphabet, footer and native information actions match section5.6. Options replace only the preview; posters dim to72% while the menu is open.
+- All three Bald movie layouts remain available. Shared preview controls are parameterized so fixes apply to both the three-poster view and this wall.
 
 ---
 

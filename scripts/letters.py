@@ -20,7 +20,10 @@ def available_letters(count, read):
 
 
 def publish(xbmc, xbmcgui):
-    container = 511 if xbmc.getCondVisibility('Control.IsVisible(511)') else 510
+    container = next((c for c in (512, 511, 510)
+                      if xbmc.getCondVisibility(f'Control.IsVisible({c})')), None)
+    if container is None:
+        return
     window = xbmcgui.Window(10025)
     token = uuid.uuid4().hex
     window.setProperty('Bald.LetterScan', token)

@@ -35,7 +35,7 @@ class LetterAvailabilityTests(unittest.TestCase):
         xbmc.getCondVisibility.return_value = False
         publish(xbmc, gui)
         self.assertNotIn('Bald.AvailableLetters', props)
-        xbmc.getCondVisibility.side_effect = lambda condition: condition != 'Control.IsVisible(511)'
+        xbmc.getCondVisibility.side_effect = lambda condition: condition not in ('Control.IsVisible(511)', 'Control.IsVisible(512)')
         publish(xbmc, gui)
         self.assertEqual(props['Bald.AvailableLetters'], ';A;')
 
@@ -45,10 +45,31 @@ class LetterAvailabilityTests(unittest.TestCase):
         props = {}
         window.setProperty.side_effect = props.__setitem__
         window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.return_value = True
+        xbmc.getCondVisibility.side_effect = lambda condition: condition != 'Control.IsVisible(512)'
         xbmc.getInfoLabel.side_effect = lambda key: {
             'Container(511).NumAllItems': '1', 'Container.FolderPath': 'movies',
             'Container(511).ListItemAbsolute(0).SortLetter': 'B',
         }.get(key, '')
         publish(xbmc, gui)
         self.assertEqual(props['Bald.AvailableLetters'], ';B;')
+
+    def test_preview_wall_container_is_scanned_when_active(self):
+        xbmc, gui, window = Mock(), Mock(), Mock()
+        gui.Window.return_value = window
+        props = {}
+        window.setProperty.side_effect = props.__setitem__
+        window.getProperty.side_effect = lambda key: props.get(key, '')
+        xbmc.getCondVisibility.return_value = True
+        xbmc.getInfoLabel.side_effect = lambda key: {
+            'Container(512).NumAllItems': '1', 'Container.FolderPath': 'movies',
+            'Container(512).ListItemAbsolute(0).SortLetter': 'C',
+        }.get(key, '')
+        publish(xbmc, gui)
+        self.assertEqual(props['Bald.AvailableLetters'], ';C;')
+
+    def test_no_scan_outside_bald_views(self):
+        xbmc, gui = Mock(), Mock()
+        xbmc.getCondVisibility.return_value = False
+        publish(xbmc, gui)
+        xbmc.getInfoLabel.assert_not_called()
+        gui.Window.assert_not_called()
