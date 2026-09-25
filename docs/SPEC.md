@@ -157,7 +157,7 @@ Title handling: caption title is always text. The clearlogo only ever appears on
 | Row | Down | Next row, if any |
 | Row | Back | Open the menu |
 | Row | Select | Open info (movie or TV) |
-| Row | Context (C) | Customize home, jumped to this row (0.2) |
+| Row | Context (C) | Kodi's context menu for the item (Play, Information, Mark as watched, add-on entries), drawn as the Home menu: caption slides out, items slide in at the menu position. Changed 2026-09-24 at the user's request; this replaces "Customize home, jumped to this row (0.2)", which stays reachable from the menu's last item. |
 | Menu | Up or Down | Move; the row and art preview that screen live |
 | Menu | Left or Select | Enter the screen (screens without rows stay in the menu) |
 | Menu | Back | Close without switching |

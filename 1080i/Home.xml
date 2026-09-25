@@ -122,10 +122,10 @@
 				</control>
 			</control>
 
-			<!-- Caption: out 180 and slide 40 px right as the menu opens; back 380 / 480 after 140 as it closes. -->
+			<!-- Caption: out 180 and slide 40 px right as the menu or context menu opens; back 380 / 480 after 140 as it closes. -->
 			<control type="group">
 				<include>Bald_AnimInfoChrome</include>
-				<visible>!$EXP[Bald_MenuOpen]</visible>
+				<visible>!$EXP[Bald_OverlayOpen]</visible>
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" />
 					<effect type="slide" start="0,0" end="40,0" time="200" tween="cubic" easing="out" />
