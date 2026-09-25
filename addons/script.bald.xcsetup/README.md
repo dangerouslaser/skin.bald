@@ -8,6 +8,6 @@ This is intentionally not a streaming proxy. IPTV Simple can consume standard XC
 
 ## Install
 
-Zip the `script.bald.xcsetup` folder so `addon.xml` is at the top level of the archive, then use Kodi's **Install from zip file**. Launch **Bald XC Setup** from Program add-ons, enter the credentials, close Settings, and approve the confirmation.
+Install **Bald XC Setup** from the Bald Add-on Repository and launch it from Program add-ons. The guided setup asks for the server, username, password and stream format, lets you choose an IPTV Simple instance when more than one exists, and shows a final confirmation before changing anything. The add-on's **Configure** page has a single **Launch guided setup** action that opens the same flow.
 
 Credentials are stored by Kodi in this add-on's settings and embedded in IPTV Simple's instance URL. They are redacted from this add-on's logs, but Kodi add-on settings are not an encrypted secret store.

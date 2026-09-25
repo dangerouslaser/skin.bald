@@ -2,6 +2,11 @@
 
 Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was tried and what was done instead.
 
+## Bald XC settings (2026-09-25)
+
+- Kodi 22's version-1 add-on settings schema requires explicit controls and numeric localization IDs for category, setting, option and heading labels; literal English labels parsed but rendered as blank rows. Bald XC keeps credential fields at internal level 4 and exposes one localized action from Configure. Both that action and Run open the same guided native-input flow.
+- IPTV Simple multi-instance settings cannot currently be written through Kodi's Python add-on API. After explicit confirmation, the helper backs up the chosen instance XML, replaces it atomically and restarts the PVR client. Cancelling any guided-input step leaves IPTV Simple unchanged.
+
 ## Episode detail and Search surfaces (2026-09-25)
 
 - Episode info must key its presentation from `String.IsEqual(ListItem.DBType,episode)`: Kodi22's native episode dialog exposed all episode labels while `ListItem.IsEpisode` remained false in the verified library route. Overview now shows the episode title and parent-series/S-E metadata even when inherited series clearlogo art exists. Cast posters use center-crop `scale` in the fixed2:3 frame.

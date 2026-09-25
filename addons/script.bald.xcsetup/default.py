@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import glob
+import json
 import os
 import shutil
+import tempfile
 import xml.etree.ElementTree as ET
 
 import xbmc
@@ -72,37 +74,85 @@ def _apply(path: str, playlist_url: str, epg_url: str) -> str:
     _set(root, "epgPathType", "1")
     _set(root, "epgUrl", epg_url)
     _set(root, "epgCache", "true")
-    tree.write(path, encoding="UTF-8", xml_declaration=True)
+    directory = os.path.dirname(path)
+    descriptor, temporary = tempfile.mkstemp(prefix=".bald-xc-", suffix=".xml", dir=directory)
+    os.close(descriptor)
+    try:
+        tree.write(temporary, encoding="UTF-8", xml_declaration=True)
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
     return backup
 
 
 def _restart_iptv_simple() -> None:
-    request = (
-        '{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled",'
-        f'"params":{{"addonid":"{IPTV_ID}","enabled":false}},"id":1}}'
+    for enabled in (False, True):
+        request = json.dumps({
+            "jsonrpc": "2.0",
+            "method": "Addons.SetAddonEnabled",
+            "params": {"addonid": IPTV_ID, "enabled": enabled},
+            "id": 1,
+        })
+        response = json.loads(xbmc.executeJSONRPC(request))
+        if "error" in response:
+            raise ConfigError(f"Kodi could not {'enable' if enabled else 'disable'} IPTV Simple.")
+        xbmc.sleep(1000)
+
+
+def _prompt(label: str, current: str = "", hidden: bool = False) -> str | None:
+    option = xbmcgui.ALPHANUM_HIDE_INPUT if hidden else 0
+    value = xbmcgui.Dialog().input(
+        label,
+        defaultt=current,
+        type=xbmcgui.INPUT_ALPHANUM,
+        option=option,
     )
-    xbmc.executeJSONRPC(request)
-    xbmc.sleep(500)
-    request = (
-        '{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled",'
-        f'"params":{{"addonid":"{IPTV_ID}","enabled":true}},"id":1}}'
+    return value if value else None
+
+
+def _credentials() -> tuple[str, str, str, str] | None:
+    server = _prompt("Xtream Codes server URL", ADDON.getSettingString("server"))
+    if server is None:
+        return None
+    username = _prompt("Xtream Codes username", ADDON.getSettingString("username"))
+    if username is None:
+        return None
+    password = _prompt("Xtream Codes password", ADDON.getSettingString("password"), hidden=True)
+    if password is None:
+        return None
+
+    current_output = ADDON.getSettingString("output") or "ts"
+    outputs = (("MPEG-TS (recommended)", "ts"), ("HLS (M3U8)", "m3u8"))
+    selected = xbmcgui.Dialog().select(
+        "Stream output",
+        [label for label, _value in outputs],
+        preselect=1 if current_output == "m3u8" else 0,
     )
-    xbmc.executeJSONRPC(request)
+    if selected < 0:
+        return None
+    output = outputs[selected][1]
+
+    # Validate the complete entry before saving any part of it.
+    build_urls(server, username, password, output)
+    ADDON.setSettingString("server", server.strip().rstrip("/"))
+    ADDON.setSettingString("username", username.strip())
+    ADDON.setSettingString("password", password.strip())
+    ADDON.setSettingString("output", output)
+    return server, username, password, output
 
 
 def main() -> None:
-    ADDON.openSettings()
-    server = ADDON.getSettingString("server")
-    username = ADDON.getSettingString("username")
-    password = ADDON.getSettingString("password")
-    output = ADDON.getSettingString("output") or "ts"
-
     try:
+        entered = _credentials()
+        if entered is None:
+            return
+        server, username, password, output = entered
         playlist_url, epg_url = build_urls(server, username, password, output)
         target = _choose_instance(_instance_files())
         if not xbmcgui.Dialog().yesno(
             "Bald XC Setup",
-            "Apply these Xtream Codes details to IPTV Simple?\n\n"
+            f"Apply {server.strip().rstrip('/')} to IPTV Simple?\n\n"
             "The current instance settings will be backed up first.",
         ):
             return

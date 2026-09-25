@@ -1,0 +1,42 @@
+# Kodi Media Center language file
+# Addon Name: Bald XC Setup
+# Addon id: script.bald.xcsetup
+msgid ""
+msgstr ""
+"Project-Id-Version: Bald XC Setup\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "#32000"
+msgid "Bald XC Setup"
+msgstr ""
+
+msgctxt "#32001"
+msgid "Launch guided setup"
+msgstr ""
+
+msgctxt "#32002"
+msgid "Server URL"
+msgstr ""
+
+msgctxt "#32003"
+msgid "Username"
+msgstr ""
+
+msgctxt "#32004"
+msgid "Password"
+msgstr ""
+
+msgctxt "#32005"
+msgid "Stream output"
+msgstr ""
+
+msgctxt "#32006"
+msgid "MPEG-TS"
+msgstr ""
+
+msgctxt "#32007"
+msgid "HLS (M3U8)"
+msgstr ""
