@@ -111,6 +111,12 @@
 				<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
 				<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
 				<onclick>$PARAM[onclick]</onclick>
+				<!-- Navigation belongs to the focused button, not its grouplist. Down goes to Cast, or to More like this
+				     when there is no cast. -->
+				<ondown condition="Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</ondown>
+				<ondown condition="!Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5100)</ondown>
+				<onup>noop</onup>
+				<onfocus>SetProperty(Bald.InfoSec,0,home)</onfocus>
 				<visible>$PARAM[visible]</visible>
 				<animation type="Focus">
 					<effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" />
@@ -240,7 +246,7 @@
 			</control>
 		</definition>
 	</include>
-	<!-- Detail cell: label 17 px at 58% at y, value 21 px medium at vy (4 px below the label). -->
+	<!-- Detail cell: label 17 px at 58% at y, value 21 px medium at vy (rows 60 apart, value 22 below the label). -->
 	<include name="Bald_Detail">
 		<param name="x" />
 		<param name="y" />

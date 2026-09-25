@@ -5,6 +5,9 @@
 <window>
 	<defaultcontrol always="true">5000</defaultcontrol>
 	<onload>SetProperty(Bald.InfoSec,0,home)</onload>
+	<!-- Start on the first action (the actions grouplist would otherwise remember its last focused button). -->
+	<onload condition="ListItem.IsResumable">SetFocus(5001)</onload>
+	<onload condition="!ListItem.IsResumable">SetFocus(5003)</onload>
 	<onunload>ClearProperty(Bald.InfoSec,home)</onunload>
 	<controls>
 		<!-- Kodi's contract controls (CGUIDialogVideoInfo): 8 plays (from the beginning, because 9 exists), 9 resumes,
@@ -148,8 +151,6 @@
 							<height>70</height>
 							<orientation>horizontal</orientation>
 							<itemgap>14</itemgap>
-							<onfocus>SetProperty(Bald.InfoSec,0,home)</onfocus>
-							<ondown>SetFocus(50)</ondown>
 							<include content="Bald_AnimInfoIn"><param name="delay">650</param></include>
 							<include content="Bald_InfoAction">
 								<param name="id">5001</param>
@@ -231,6 +232,8 @@
 						<onfocus>SetProperty(Bald.InfoSec,1,home)</onfocus>
 						<onup>SetFocus(5000)</onup>
 						<ondown>SetFocus(5100)</ondown>
+						<onleft>noop</onleft>
+						<onright>noop</onright>
 						<itemlayout width="182" height="220">
 							<include content="Bald_CastItem" />
 						</itemlayout>
@@ -250,12 +253,12 @@
 						<textcolor>bald_ink</textcolor>
 						<label>Details</label>
 					</control>
-					<include content="Bald_Detail"><param name="x">0</param><param name="y">46</param><param name="vy">72</param><param name="label">Directed by</param><param name="value">$INFO[ListItem.Director]</param></include>
-					<include content="Bald_Detail"><param name="x">582</param><param name="y">46</param><param name="vy">72</param><param name="label">Written by</param><param name="value">$INFO[ListItem.Writer]</param></include>
-					<include content="Bald_Detail"><param name="x">0</param><param name="y">114</param><param name="vy">140</param><param name="label">Video</param><param name="value">$VAR[Bald_InfoVideo]</param></include>
-					<include content="Bald_Detail"><param name="x">582</param><param name="y">114</param><param name="vy">140</param><param name="label">Audio</param><param name="value">$VAR[Bald_InfoAudio]</param></include>
-					<include content="Bald_Detail"><param name="x">0</param><param name="y">182</param><param name="vy">208</param><param name="label">Subtitles</param><param name="value">$INFO[ListItem.SubtitleLanguage]</param></include>
-					<include content="Bald_Detail"><param name="x">582</param><param name="y">182</param><param name="vy">208</param><param name="label">Added</param><param name="value">$INFO[ListItem.DateAdded]</param></include>
+					<include content="Bald_Detail"><param name="x">0</param><param name="y">40</param><param name="vy">62</param><param name="label">Directed by</param><param name="value">$INFO[ListItem.Director]</param></include>
+					<include content="Bald_Detail"><param name="x">582</param><param name="y">40</param><param name="vy">62</param><param name="label">Written by</param><param name="value">$INFO[ListItem.Writer]</param></include>
+					<include content="Bald_Detail"><param name="x">0</param><param name="y">100</param><param name="vy">122</param><param name="label">Video</param><param name="value">$VAR[Bald_InfoVideo]</param></include>
+					<include content="Bald_Detail"><param name="x">582</param><param name="y">100</param><param name="vy">122</param><param name="label">Audio</param><param name="value">$VAR[Bald_InfoAudio]</param></include>
+					<include content="Bald_Detail"><param name="x">0</param><param name="y">160</param><param name="vy">182</param><param name="label">Subtitles</param><param name="value">$INFO[ListItem.SubtitleLanguage]</param></include>
+					<include content="Bald_Detail"><param name="x">582</param><param name="y">160</param><param name="vy">182</param><param name="label">Added</param><param name="value">$INFO[ListItem.DateAdded]</param></include>
 				</control>
 
 				<!-- ===== D: more like this (top 1360; opacity 0, 0.5, 1). Library movies sharing the first genre. ===== -->
@@ -276,7 +279,11 @@
 						<orientation>horizontal</orientation>
 						<scrolltime tween="cubic" easing="out">440</scrolltime>
 						<onfocus>SetProperty(Bald.InfoSec,2,home)</onfocus>
-						<onup>SetFocus(50)</onup>
+						<onup condition="Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</onup>
+						<onup condition="!Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5000)</onup>
+						<ondown>noop</ondown>
+						<onleft>noop</onleft>
+						<onright>noop</onright>
 						<onclick>Action(Info)</onclick>
 						<itemlayout width="280" height="164">
 							<include content="Bald_MoreItem" />
