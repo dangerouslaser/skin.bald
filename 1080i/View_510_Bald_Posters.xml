@@ -80,22 +80,15 @@
 	<include name="Bald_LibraryOptions">
 		<control type="group">
 			<visible>$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
-			<control type="label"><left>1322</left><top>292</top><width>502</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>Library options</label></control>
-			<include content="Bald_MenuNote"><param name="x">1322</param><param name="width">502</param><param name="text">$VAR[Bald_LibraryMenuNote]</param></include>
+			<control type="label"><left>1466</left><top>292</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>Library options</label></control>
+			<include content="Bald_MenuNote"><param name="text">$VAR[Bald_LibraryMenuNote]</param></include>
 		</control>
 		<control type="list" id="9150">
-			<left>1296</left><top>392</top><width>528</width><height>310</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
+			<left>1440</left><top>392</top><width>420</width><height>310</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
 			<visible allowhiddenfocus="true">$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
 			<onleft>50</onleft><onback>50</onback><onright>noop</onright><onup>noop</onup><ondown>noop</ondown>
-			<itemlayout width="528" height="62">
-				<control type="label"><left>20</left><width>508</width><height>56</height><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label></control>
-			</itemlayout>
-			<focusedlayout width="528" height="62">
-				<control type="image"><top>23</top><width>10</width><height>10</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control>
-				<control type="label"><left>26</left><width>502</width><height>56</height><font>Bald_MenuItem</font><textcolor>bald_ink</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label>
-					<animation type="Focus"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
-				</control>
-			</focusedlayout>
+			<itemlayout width="420" height="62"><include>Bald_MenuRowUnfocused</include></itemlayout>
+			<focusedlayout width="420" height="62"><include content="Bald_MenuRowFocused"><param name="always_dot">true</param></include></focusedlayout>
 			<content>
 				<!-- Keep the options list open and constrain movie browsing to Bald's native layouts. -->
 				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(511)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(510)</visible></item>
@@ -206,8 +199,8 @@
 			<control type="group"><left>800</left><top>954</top><visible>$EXP[Bald_LibraryLettersOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include>
 			</control>
-			<control type="group"><left>1296</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
-				<include content="Bald_InfoHintPair"><param name="width">528</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include>
+			<control type="group"><left>1404</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
+				<include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include>
 			</control>
 		</control>
 	</include>

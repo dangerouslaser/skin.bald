@@ -211,32 +211,10 @@
 				<onup>noop</onup>
 				<ondown>noop</ondown>
 				<itemlayout width="420" height="62">
-					<include>Bald_MenuItem</include>
-					<control type="label">
-						<left>20</left>
-						<width>400</width>
-						<height>56</height>
-						<aligny>center</aligny>
-						<font>Bald_MenuItem</font>
-						<textcolor>bald_ink34</textcolor>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
+					<include>Bald_MenuRowUnfocused</include>
 				</itemlayout>
 				<focusedlayout width="420" height="62">
-					<include>Bald_MenuItem</include>
-					<control type="label">
-						<left>26</left>
-						<width>394</width>
-						<height>56</height>
-						<aligny>center</aligny>
-						<font>Bald_MenuItem</font>
-						<textcolor>bald_ink</textcolor>
-						<label>$INFO[ListItem.Label]</label>
-						<animation type="Focus">
-							<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
-							<effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" />
-						</animation>
-					</control>
+					<include>Bald_MenuRowFocused</include>
 				</focusedlayout>
 				<content>
 					<item>

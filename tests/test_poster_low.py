@@ -45,18 +45,13 @@ class PosterLowTests(unittest.TestCase):
         self.assertGreaterEqual(int(group.findtext('left')), 84 + 1280)
         self.assertGreaterEqual(int(group.findtext('top')), 936)
 
-    def test_options_have_an_opaque_field_backed_menu_zone(self):
+    def test_home_width_options_do_not_need_a_backdrop_panel(self):
         view = self.root.find("include[@name='View_515_Bald_PosterLow']/control")
-        menu_mask = next(group for group in view.findall('control') if group.find("animation[@condition='$EXP[Bald_LibraryMenuOpen]']") is not None and group.find("include[@content='Bald_BackdropWindow']") is not None)
-        window = menu_mask.find("include[@content='Bald_BackdropWindow']")
-        self.assertIsNotNone(window)
-        bounds = tuple(int(window.findtext(f"param[@name='{key}']")) for key in ('x', 'y', 'w', 'h'))
-        self.assertEqual(bounds, (1264, 0, 592, 1080))
-        fade = menu_mask.find("animation[@condition='$EXP[Bald_LibraryMenuOpen]']")
-        self.assertEqual((fade.get('effect'), fade.get('start'), fade.get('end'), fade.get('time'), fade.get('tween'), fade.get('easing'), fade.text), ('fade', '0', '100', '380', 'sine', 'inout', 'Conditional'))
-        self.assertIsNone(menu_mask.find('visible'))
-        children = list(view)
-        self.assertGreater(children.index(menu_mask), children.index(view.find("control[@id='515']")))
+        menu_masks = [group for group in view.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]' and group.find("include[@content='Bald_BackdropWindow']") is not None]
+        self.assertEqual(menu_masks, [])
+        footer = self.root.find("include[@name='Bald_PosterLowFooter']/definition")
+        hint = next(group for group in footer.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]')
+        self.assertEqual((hint.findtext('left'), hint.findtext("include/param[@name='width']")), ('1404', '420'))
 
     def test_focused_ring_fits_list_height(self):
         tile = self.root.find("include[@name='Bald_PosterLowTile']//include[@content='Bald_LibraryPosterItem']")
