@@ -243,8 +243,9 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Horizontal native list 510 at (84,210), 1152 × 648, with three 384 px slots. Posters are 360 × 540 at slot offset (12,12), with title labels beneath. Focus pop: 100 → 102.5%, 280 ms POP; scrolling: 440 ms MOVE.
 - Artwork at (1296,222), 528 × 297. Reuse Home's 700 ms crossfade and 1500 ms settle zoom, with backdrop masks preventing frame overflow.
 - Caption width 528; title area y548–636, metadata starts y636. Reuse Home's staggered title, metadata, **media flags**, genres and plot. The background uses the same optional blurred-fanart treatment as Home.
-- Open details button at (1296,896), 220 × 46. Footer at y954; item count left, navigation hints right.
-- Left/Right browses; Up opens native view/sort/filter options; Down focuses Open details; Info opens the existing paged detail dialog. Select follows Kodi's global default-select action (approved as Show information on the development installation). Back from details restores the selected movie.
+- No separate Open details button. Footer at y954; item count left, navigation hints right.
+- Left/Right browses; Up opens native view/sort/filter options; Down stays on the posters; Info opens the existing paged detail dialog. Select follows Kodi's global default-select action (approved as Show information on the development installation). Back from details restores the selected movie.
+- Audio flags show the reported codec through Kodi's shared codec-name map (including Atmos/DTS:X profiles when reported), followed by the channel flag. Missing codec data produces no chip. This applies consistently to Home, recommendations and the info overview as well.
 - Home's Movies menu opens the native movie library. Existing alternative view choices remain available.
 
 ---

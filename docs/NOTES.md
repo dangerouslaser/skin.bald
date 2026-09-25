@@ -101,6 +101,8 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 
 ## First native movie library (2026-09-25)
 
+- Follow-up polish: removed the redundant Open details button and its Down focus route. Footer now reuses the info-view hint group, extended with an optional third directive: right-aligned, zero item gap, 20 px dot separators. Audio flags now use the bundled Kodi codec-name map instead of showing only Atmos; shared Home/library/recommendation captions and the info overview display the reported codec, including profile names, and hide the chip for missing data. Reference: [Kodi 22 skin maps](https://xbmc.github.io/docs.kodi.tv/master/kodi-base/d8/d98/_skin__maps.html). Earlier button verification below describes the initial version.
+
 - View 510 uses the native MyVideoNav movie container, not a second content provider, so sorting, filtering and context actions continue to target Kodi's library items. Other media types retain Estuary views. Home's Movies menu now opens the library.
 - Parameterized Home's caption geometry and art dimensions with unchanged defaults. The library reuses its media flags, staggered caption, parity crossfade and settle zoom; four backdrop-window strips mask transformed artwork overflow.
 - A native library container does not dispatch custom XML onclick actions like a static/dynamic provider list. Select uses Kodi's `myvideos.selectaction`; with explicit user approval, the development installation now uses Show information (3), previously Play (8). The skin does not change that preference on load. Info and the Open details button also work without changing this global setting.

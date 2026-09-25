@@ -65,7 +65,7 @@
 					<include content="Bald_InfoFlag"><param name="label">HDR10</param><param name="visible">String.IsEqual(ListItem.HdrType,hdr10)</param></include>
 					<include content="Bald_InfoFlag"><param name="label">HDR10+</param><param name="visible">String.StartsWith(ListItem.HdrType,hdr10) + !String.IsEqual(ListItem.HdrType,hdr10)</param></include>
 					<include content="Bald_InfoFlag"><param name="label">HLG</param><param name="visible">String.IsEqual(ListItem.HdrType,hlg)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">Dolby Atmos</param><param name="visible">String.Contains(ListItem.AudioCodec,atmos)</param></include>
+					<include content="Bald_InfoFlag"><param name="label">$MAP[DefaultCodecMap, ListItem.AudioCodec]</param><param name="visible">!String.IsEmpty(ListItem.AudioCodec)</param></include>
 					<include content="Bald_InfoFlag"><param name="label">7.1</param><param name="visible">String.IsEqual(ListItem.AudioChannels,8)</param></include>
 					<include content="Bald_InfoFlag"><param name="label">5.1</param><param name="visible">String.IsEqual(ListItem.AudioChannels,6)</param></include>
 				</control>

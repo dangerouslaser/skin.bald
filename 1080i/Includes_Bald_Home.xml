@@ -410,7 +410,7 @@
 						<height>26</height>
 						<orientation>horizontal</orientation>
 						<itemgap>8</itemgap>
-						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + [String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,4K) | String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,1080) | !String.IsEmpty(Container($PARAM[c]).ListItem.HdrType) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,6) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,8)]</visible>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + [String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,4K) | String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,1080) | !String.IsEmpty(Container($PARAM[c]).ListItem.HdrType) | !String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,6) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,8)]</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">275</param></include>
 						<include content="Bald_Flag"><param name="label">4K</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,4K)</param></include>
 						<include content="Bald_Flag"><param name="label">1080p</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,1080)</param></include>
@@ -418,7 +418,7 @@
 						<include content="Bald_Flag"><param name="label">HDR10</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.HdrType,hdr10)</param></include>
 						<include content="Bald_Flag"><param name="label">HDR10+</param><param name="visible">String.StartsWith(Container($PARAM[c]).ListItem.HdrType,hdr10) + !String.IsEqual(Container($PARAM[c]).ListItem.HdrType,hdr10)</param></include>
 						<include content="Bald_Flag"><param name="label">HLG</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.HdrType,hlg)</param></include>
-						<include content="Bald_Flag"><param name="label">Dolby Atmos</param><param name="visible">String.Contains(Container($PARAM[c]).ListItem.AudioCodec,atmos)</param></include>
+						<include content="Bald_Flag"><param name="label">$MAP[DefaultCodecMap, Container($PARAM[c]).ListItem.AudioCodec]</param><param name="visible">!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)</param></include>
 						<include content="Bald_Flag"><param name="label">7.1</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,8)</param></include>
 						<include content="Bald_Flag"><param name="label">5.1</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,6)</param></include>
 					</control>
