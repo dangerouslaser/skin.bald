@@ -4,10 +4,13 @@
      Over Home the caption slides out as for the main menu (Bald_OverlayOpen); elsewhere a dark scrim sits behind it.
      Kodi (CGUIDialogContextMenu) fills grouplist 996 with copies of button 1000, and centres the dialog on the focused
      control using background image 999's size, clamped to the screen. 999 is invisible and taller than the screen by
-     the list's maximum height (1080 + 592): Kodi shrinks it by the list's unused height, and it must stay at least
+     the list's maximum height (1080 + 304): Kodi shrinks it by the list's unused height, and it must stay at least
      screen-sized so the clamp always lands the dialog at 0,0 and these coordinates are absolute. -->
 <window>
 	<defaultcontrol>996</defaultcontrol>
+	<!-- $ADDON is expanded in labels/actions, not in String.IsEqual's literal operand. -->
+	<onload condition="System.HasAddon(plugin.video.jellyfin)">SetProperty(Bald.JellyfinOptions,$ADDON[plugin.video.jellyfin 30401],contextmenu)</onload>
+	<onload condition="System.HasAddon(plugin.video.jellyfin)">SetProperty(Bald.JellyfinTranscode,$ADDON[plugin.video.jellyfin 30402],contextmenu)</onload>
 	<coordinates>
 		<left>0</left>
 		<top>0</top>
@@ -15,7 +18,7 @@
 	<controls>
 		<control type="image" id="999">
 			<width>1920</width>
-			<height>1672</height>
+			<height>1384</height>
 			<texture colordiffuse="00FFFFFF">bald/white.png</texture>
 		</control>
 		<!-- Scrim when not over Home (library windows still use Estuary's layouts). -->
@@ -49,12 +52,17 @@
 				<left>1430</left>
 				<top>392</top>
 				<width>450</width>
-				<!-- Up to 592 px (to the bottom safe margin); longer menus scroll. Auto height keeps 999 full-screen. -->
-				<height max="592">auto</height>
+				<!-- Five 56 px buttons plus four 6 px gaps. No partial sixth item; notes stay below the viewport. -->
+				<height max="304">auto</height>
 				<orientation>vertical</orientation>
 				<itemgap>6</itemgap>
+				<scrolltime>0</scrolltime>
 				<usecontrolcoords>true</usecontrolcoords>
+				<!-- Kodi wires the intermediate buttons; these stop wrapping at the ends, like Home. -->
+				<onup>noop</onup>
+				<ondown>noop</ondown>
 			</control>
+			<include content="Bald_MenuNote"><param name="id">995</param><param name="text">$VAR[Bald_ContextNote]</param></include>
 		</control>
 		<!-- Button template: 46 px menu item. Unfocused 34%; focused full ink, sliding 6 px right (320), with the accent dot. -->
 		<control type="button" id="1000">

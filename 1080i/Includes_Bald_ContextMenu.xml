@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<!-- Native context buttons expose labels, not action IDs or descriptions. Match localized labels, never
+	     dynamic button positions. Unknown/add-on actions retain an honest generic hint. Notes are English,
+	     like the alpha Home menu; the labels used to select them follow Kodi's/add-ons' current language. -->
+	<variable name="Bald_ContextNote">
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[208])">Play the selected item.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[12021])">Start playback from the beginning.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[13362])">Continue watching this series from your current progress.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[13412])">Play from this item onward in the current list.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[13434])">Play this item without continuing through the list.</value>
+		<value condition="String.StartsWith(System.CurrentControl,$LOCALIZE[12023]) | String.IsEqual(System.CurrentControl,$LOCALIZE[13404])">Continue from where you stopped watching.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[10008])">Play this next, after the current item.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[13347])">Add this item to the end of the playback queue.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[15213])">Choose which player to use for this item.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[14116]) | String.IsEqual(System.CurrentControl,$LOCALIZE[13346]) | String.IsEqual(System.CurrentControl,$LOCALIZE[20351]) | String.IsEqual(System.CurrentControl,$LOCALIZE[20352])">View the synopsis, cast and media details.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[16103])">Mark this item as watched in your library.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[16104])">Mark this item as unwatched in your library.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[14076])">Save a shortcut to this item in Favourites.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[14077])">Remove this item's shortcut from Favourites.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[16106])">Open the available library management actions.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[13511])">Choose artwork for this item.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[16105])">Change this item's title in the library.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[16107])">Change the title used to sort this item.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[20384])">Associate this movie with a TV show.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[20465])">Choose the movie set this title belongs to.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[40001])">Manage the available versions of this movie.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[646])">Remove this item from Kodi's library.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[184])">Refresh this item's information.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[13349])">Look for new media in this source.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[13352])">Add this item's information to the library.</value>
+		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[37015])">Open this item to browse its contents.</value>
+		<value condition="System.HasAddon(plugin.video.jellyfin) + String.IsEqual(System.CurrentControl,Window(contextmenu).Property(Bald.JellyfinOptions))">Open Jellyfin's actions for this item.</value>
+		<value condition="System.HasAddon(plugin.video.jellyfin) + String.IsEqual(System.CurrentControl,Window(contextmenu).Property(Bald.JellyfinTranscode))">Play this item with server-side transcoding.</value>
+		<value condition="!String.IsEmpty(System.CurrentControl)">$INFO[System.CurrentControl,Select to use “,” for this item.]</value>
+		<value>Select an action for this item.</value>
+	</variable>
+</includes>

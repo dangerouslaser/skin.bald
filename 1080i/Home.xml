@@ -186,17 +186,7 @@
 			<control type="group">
 				<visible>$EXP[Bald_MenuOpen]</visible>
 				<include>Bald_AnimMenuShows</include>
-				<control type="label">
-					<left>1466</left>
-					<top>714</top>
-					<width>394</width>
-					<height>120</height>
-					<wrapmultiline>true</wrapmultiline>
-					<aligny>top</aligny>
-					<font>Bald_MenuNote</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$INFO[Container(9000).ListItem.Property(note)]</label>
-				</control>
+				<include content="Bald_MenuNote"><param name="text">$INFO[Container(9000).ListItem.Property(note)]</param></include>
 			</control>
 			<control type="list" id="9000">
 				<left>1440</left>

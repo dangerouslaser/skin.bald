@@ -86,6 +86,24 @@
 	<include name="Bald_Backdrop">
 		<include>Bald_BackdropImage</include>
 	</include>
+	<!-- Shared note position and typography for the five-row Home and context menus. -->
+	<include name="Bald_MenuNote">
+		<param name="id">0</param>
+		<param name="text" />
+		<definition>
+			<control type="label" id="$PARAM[id]">
+				<left>1466</left>
+				<top>714</top>
+				<width>394</width>
+				<height>120</height>
+				<wrapmultiline>true</wrapmultiline>
+				<aligny>top</aligny>
+				<font>Bald_MenuNote</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$PARAM[text]</label>
+			</control>
+		</definition>
+	</include>
 	<!-- A window onto the background at x,y w x h: a grouplist clips to its bounds, and the full-screen image inside is
 	     offset back to 0,0, so it lines up exactly with the background. Used to mask the art frame's zoom overflow. -->
 	<include name="Bald_BackdropWindow">
