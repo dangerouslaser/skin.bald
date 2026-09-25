@@ -32,11 +32,11 @@
 		<value>$INFO[ListItem.Art(tvshow.clearlogo)]</value>
 	</variable>
 	<variable name="Bald_InfoTitle">
-		<value condition="ListItem.IsEpisode">$INFO[ListItem.TVShowTitle]</value>
+		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.Title]</value>
 		<value>$INFO[ListItem.Title]</value>
 	</variable>
 	<variable name="Bald_InfoMeta">
-		<value condition="ListItem.IsEpisode">S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Title,$COMMA ,]$INFO[ListItem.Duration(mins),$COMMA , min]</value>
+		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.TVShowTitle] · S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Duration(mins), · , min]</value>
 		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , seasons]</value>
 		<value condition="Integer.IsGreaterOrEqual(ListItem.Duration(mins),60)">$INFO[ListItem.Year,,$COMMA ]$INFO[ListItem.Duration(h),,h ]$INFO[ListItem.Duration(mm),,m]</value>
 		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins),$COMMA , min]</value>

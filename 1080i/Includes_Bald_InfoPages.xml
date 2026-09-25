@@ -22,6 +22,7 @@
 						<height>170</height>
 						<aspectratio align="left" aligny="bottom">keep</aspectratio>
 						<texture background="true">$VAR[Bald_InfoLogo]</texture>
+						<visible>!String.IsEqual(ListItem.DBType,episode)</visible>
 					</control>
 					<control type="label">
 						<top>80</top>
@@ -30,7 +31,7 @@
 						<font>Bald_InfoTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$VAR[Bald_InfoTitle]</label>
-						<visible>String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))</visible>
+						<visible>String.IsEqual(ListItem.DBType,episode) | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
 					</control>
 				</control>
 				<control type="label">
@@ -169,7 +170,7 @@
 			</control>
 			<control type="image" id="5204">
 				<left>96</left><top>156</top><width>432</width><height>648</height>
-				<aspectratio>keep</aspectratio><texture background="true">$VAR[Bald_InfoPoster]</texture>
+				<aspectratio>scale</aspectratio><texture background="true">$VAR[Bald_InfoPoster]</texture>
 			</control>
 			<control type="grouplist">
 				<left>624</left><top>156</top><width>1200</width><height>174</height>
@@ -243,7 +244,7 @@
 				<include content="Bald_ArtLogo"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param></include>
 			</control>
 			<control type="label"><left>1440</left><top>120</top><width>384</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
-			<control type="label"><left>1440</left><top>166</top><width>384</width><height>84</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Title,For ,]</label></control>
+			<control type="label"><left>1440</left><top>166</top><width>384</width><height>84</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Window(movieinformation).Property(Bald.MoreFor),For ,]</label></control>
 			<!-- Home's exact caption layout, flags and staggered transitions, scoped to recommendations. -->
 			<control type="group">
 				<visible>$EXP[Bald_HasRecommendations]</visible>
