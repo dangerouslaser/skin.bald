@@ -248,7 +248,8 @@
 						<label>Search</label>
 						<property name="id">search</property>
 						<property name="note">Select to search your library.</property>
-						<onclick>noop</onclick>
+						<onclick>ClearProperty(Bald.Menu,home)</onclick>
+						<onclick>ActivateWindow(1107)</onclick>
 					</item>
 					<item>
 						<label>$LOCALIZE[5]</label>

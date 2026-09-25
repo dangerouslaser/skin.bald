@@ -1,43 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald search destination chooser. Destination windows keep their native Kodi contracts. -->
 <window type="dialog" id="1107">
 	<defaultcontrol always="true">9000</defaultcontrol>
-	<include>Animation_DialogPopupOpenClose</include>
+	<onload>SetProperty(Bald.SearchOpen,true,home)</onload>
+	<onunload>ClearProperty(Bald.SearchOpen,home)</onunload>
 	<controls>
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+		<include>Bald_BackdropImage</include>
 		<control type="group">
-			<centerleft>50%</centerleft>
-			<width>600</width>
-			<centertop>60%</centertop>
-			<height>700</height>
-			<include content="DialogBackgroundCommons">
-				<param name="width" value="600" />
-				<param name="height" value="80" />
-				<param name="header_label" value="$LOCALIZE[137]" />
-				<param name="header_id" value="" />
-			</include>
-			<control type="panel" id="9000">
-				<include>ButtonMenuList</include>
+			<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /><effect type="slide" start="40,0" end="0,0" time="480" tween="cubic" easing="out" /></animation>
+			<animation type="WindowClose"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
+			<control type="label"><left>96</left><top>108</top><width>1100</width><height>76</height><font>Bald_InfoTitle</font><textcolor>bald_ink</textcolor><label>Search</label></control>
+			<control type="label"><left>96</left><top>210</top><width>900</width><height>66</height><font>Bald_InfoPlot</font><textcolor>bald_ink70</textcolor><wrapmultiline>true</wrapmultiline><label>Choose where you want to search. Library search covers your local movies, TV shows, episodes and music.</label></control>
+			<control type="label"><left>1466</left><top>292</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>Search options</label></control>
+			<include content="Bald_MenuNote"><param name="text">$INFO[Container(9000).ListItem.Property(note)]</param></include>
+			<control type="list" id="9000">
+				<left>1440</left><top>392</top><width>420</width><height>186</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
+				<onleft>noop</onleft><onright>noop</onright><onup>noop</onup><ondown>noop</ondown><onback>Dialog.Close(1107)</onback>
+				<itemlayout width="420" height="62"><include>Bald_MenuRowUnfocused</include></itemlayout>
+				<focusedlayout width="420" height="62"><include content="Bald_MenuRowFocused"><param name="always_dot">true</param></include></focusedlayout>
 				<content>
-					<item>
-						<label>$LOCALIZE[31113]</label>
-						<onclick>Dialog.Close(all)</onclick>
-						<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
-						<onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick>
-						<onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
-					</item>
-					<item>
-						<label>$LOCALIZE[31145]</label>
-						<onclick>Dialog.Close(all)</onclick>
-						<onclick>ActivateWindow(addonbrowser,addons://search/,return)</onclick>
-					</item>
-					<item>
-						<label>$LOCALIZE[31114]</label>
-						<onclick>Dialog.Close(all)</onclick>
-						<onclick condition="System.AddonIsEnabled(plugin.video.youtube)">ActivateWindow(videos,"plugin://plugin.video.youtube/kodion/search/list/",return)</onclick>
-						<onclick condition="System.HasAddon(plugin.video.youtube) + !System.AddonIsEnabled(plugin.video.youtube)">EnableAddon(plugin.video.youtube)</onclick>
-						<onclick condition="!System.HasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
-					</item>
+					<item><label>Library</label><property name="note">Search the titles and people in your local Kodi library.</property><onclick>Dialog.Close(1107)</onclick><onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick><onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick><onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick></item>
+					<item><label>Add-ons</label><property name="note">Find an installed add-on or browse Kodi's add-on catalogue.</property><onclick>Dialog.Close(1107)</onclick><onclick>ActivateWindow(addonbrowser,addons://search/,return)</onclick></item>
+					<item><label>YouTube</label><property name="note">Search YouTube through the Kodi YouTube add-on.</property><onclick>Dialog.Close(1107)</onclick><onclick condition="System.AddonIsEnabled(plugin.video.youtube)">ActivateWindow(videos,"plugin://plugin.video.youtube/kodion/search/list/",return)</onclick><onclick condition="System.HasAddon(plugin.video.youtube) + !System.AddonIsEnabled(plugin.video.youtube)">EnableAddon(plugin.video.youtube)</onclick><onclick condition="!System.HasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick></item>
 				</content>
 			</control>
+			<control type="label"><left>1440</left><top>954</top><width>384</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Back to close · Select to search</label></control>
 		</control>
 	</controls>
 </window>
