@@ -2,6 +2,13 @@
 
 Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was tried and what was done instead.
 
+## Episode detail and Search surfaces (2026-09-25)
+
+- Episode info must key its presentation from `String.IsEqual(ListItem.DBType,episode)`: Kodi22's native episode dialog exposed all episode labels while `ListItem.IsEpisode` remained false in the verified library route. Overview now shows the episode title and parent-series/S-E metadata even when inherited series clearlogo art exists. Cast posters use center-crop `scale` in the fixed2:3 frame.
+- Episode recommendations resolve `VideoLibrary.GetEpisodeDetails.tvshowid`, then use the parent show's title and first genre to build the existing safe TV-show smart-playlist. Invalid parents fail closed, and the identity guard rejects results from a replaced dialog after either lookup. Live verification returned TV-series recommendations, opened series details, and safely returned to the originating episode library selection.
+- Home Search now opens chooser1107, using the shared right-menu geometry and native Global Search/Add-ons/YouTube destinations. Global Search was not installed during QA, so Kodi's install prompt was declined; no add-ons were installed.
+- The alphabet keyboard keeps Kodi's native controls/navigation but uses Bald surfaces and focus colors. Character keys use bundled Kodi22 Estuary `NotoSans-Regular.ttf` (with its license) because Instrument Sans lacks several Kodi-generated symbol-layer glyphs (`±`, `μ`, `¤`). Styling is scoped to `DialogKeyboard`; `DialogNumeric` retains its existing shared style. Live QA covered letters, accents/symbols, shift/caps, cursor/backspace/space, autocomplete, confirm/cancel and Home return. Numeric/password variants remain outstanding because no non-mutating route was available.
+
 ## Paged movie information (2026-09-25)
 
 - Recommendation fanart now also reuses `Bald_ArtLayer`, with its texture parameter defaulting to Home's original variable. Odd/Even instances bound to container5100 preserve the outgoing art while fading for 700 ms and replay the 105→100% / 1500 ms settling zoom. A frame-sized grouplist did **not** contain animated overflow in Kodi. Both Home and recommendations now use the extracted `Bald_ArtFrameMasks`: four fixed backdrop strips outside the artwork frame. The clearlogo overlay and instant-switch footer remain independent of the zoom.

@@ -314,6 +314,13 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Episodes adds a thirteen-row compact list with a 528×297 selected thumbnail and caption (541), plus a five-column/two-row 16:9 thumbnail wall using 192×108 cards (542). Both retain episode code, title, air date/runtime, watch state, media flags and plot; Episodes never enters alphabet mode.
 - The View option cycles only within layouts valid for the current content level and keeps the options menu open after every switch: Series 520→521→522→523, Seasons 530→531 and Episodes 540→541→542. Legacy Estuary video views remain unavailable for all three redesigned TV levels.
 
+### 5.13 Search surfaces
+
+- Home Search opens the native custom search chooser1107. It uses the full-screen field/blur backdrop and the same x1440,width420 three-row menu, typography, accent dot, note position, footer baseline and fade/slide curves as Home and library options.
+- Search destinations retain Kodi/Estuary's native actions: local library through Global Search, add-ons through Add-on browser search, and YouTube through its plug-in when available. Missing optional add-ons continue through Kodi's normal install flow.
+- Kodi's native keyboard retains every required control ID and navigation route while replacing Estuary's dialog tint, input outline, type and character-key focus treatment with Bald field, ink, outline and pill tokens. Keyboard input, autocomplete, password/numeric variants, confirmation and cancellation remain native contracts.
+- Result windows owned by external add-ons are outside the skin's XML contract; native video results continue into Bald library/detail views where their content type supports them.
+
 ---
 
 ## 6. Default rows (alpha uses a fixed configuration)

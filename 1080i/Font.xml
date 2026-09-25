@@ -206,6 +206,12 @@
 			<filename>InstrumentSans-SemiBold.ttf</filename>
 			<size>22</size>
 		</font>
+		<!-- Kodi's generated keyboard symbol layers require broader Unicode coverage than Instrument Sans. -->
+		<font>
+			<name>Bald_KeyboardKey</name>
+			<filename>NotoSans-Regular.ttf</filename>
+			<size>45</size>
+		</font>
 		<!-- Section hint, row count -->
 		<font>
 			<name>Bald_Hint</name>
@@ -510,6 +516,11 @@
 			<filename>arial.ttf</filename>
 			<size>22</size>
 			<style>bold</style>
+		</font>
+		<font>
+			<name>Bald_KeyboardKey</name>
+			<filename>NotoSans-Regular.ttf</filename>
+			<size>45</size>
 		</font>
 		<!-- Section hint, row count -->
 		<font>

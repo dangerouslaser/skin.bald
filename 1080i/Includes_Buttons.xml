@@ -165,6 +165,15 @@
 		<aligny>top</aligny>
 		<font>font45</font>
 	</include>
+	<include name="Bald_KeyboardButton">
+		<width>120</width><height>120</height><textoffsety>27</textoffsety>
+		<texturefocus colordiffuse="bald_ink">buttons/roundbutton-fo.png</texturefocus><texturenofocus />
+		<align>center</align><aligny>top</aligny><font>Bald_KeyboardKey</font><textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor>
+	</include>
+	<include name="Bald_KeyboardAction">
+		<param name="width">350</param><param name="height">72</param><param name="label"></param>
+		<definition><control type="button" id="$PARAM[id]"><width>$PARAM[width]</width><height>$PARAM[height]</height><label>$PARAM[label]</label><font>Bald_Section</font><align>center</align><aligny>center</aligny><textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor><texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus><texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus></control></definition>
+	</include>
 	<include name="PlaylistWindowButton">
 		<param name="width">100%</param>
 		<definition>
