@@ -92,7 +92,10 @@ class LibraryViewTests(unittest.TestCase):
         for direction in ('onleft', 'onback'):
             self.assertEqual(menu.findtext(direction), '50')
         actions = [n.text for n in menu.iter('onclick')]
-        for action in ('SendClick(3)', 'SendClick(4)', 'SendClick(8)', 'SendClick(10)', 'Filter'):
+        for action in ('SendClick(3)', 'SendClick(4)', 'SendClick(10)', 'Filter',
+                       'RunScript(script.globalsearch,movies=true)',
+                       'RunScript(script.globalsearch,tvshows=true)',
+                       'RunScript(script.globalsearch,episodes=true)'):
             self.assertIn(action, actions)
         self.assertNotIn('Container.NextViewMode', actions)
         movie_view_actions = [

@@ -249,7 +249,7 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Audio flags show the reported codec through Kodi's shared codec-name map (including Atmos/DTS:X profiles when reported), followed by the channel flag. Missing codec data produces no chip. This applies consistently to Home, recommendations and the info overview as well.
 - Home's Movies menu opens the native movie library. Existing alternative view choices remain available.
 - Library options replace the right-hand artwork and caption, retaining the posters at 72% of their normal opacity. The menu exactly reuses Home's geometry and row components: (1440,392), width420, five 62 px rows (56 px text height plus 6 px gap), instant scrolling with no wrapping. Home's menu type, accent dot and fade/slide timings apply. Heading and tooltip align to x1466 at width394. Left/Back returns to the posters; Up or Kodi's Menu action opens options. The footer switches immediately to the return/select hints with the same 20 px dot separator.
-- Options retain native View, Sort by, Order, Search, Filter, Watched status and Update library behavior. Current view/sort/order/watched values appear in the tooltip. Untouched views retain the Estuary sidebar; secondary sort/search/filter dialogs remain native.
+- Options retain native View, Sort by, Order, Filter, Watched status and Update library behavior. Search launches the themed Global Search window, scoped initially to the current library type: Movies for movie views, TV Shows for series and season views, and Episodes for episode views. Current view/sort/order/watched values appear in the tooltip. Untouched views retain the Estuary sidebar; secondary sort/filter dialogs remain native.
 
 ---
 
@@ -316,8 +316,9 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 
 ### 5.13 Search surfaces
 
-- Home Search opens the native custom search chooser1107. It uses the full-screen field/blur backdrop and the same x1440,width420 three-row menu, typography, accent dot, note position, footer baseline and fade/slide curves as Home and library options.
-- Search destinations retain Kodi/Estuary's native actions: local library through Global Search, add-ons through Add-on browser search, and YouTube through its plug-in when available. Missing optional add-ons continue through Kodi's normal install flow.
+- Home Search launches Global Search directly. If the optional add-on is missing or disabled, Kodi's normal install/enable path remains available; there is no intermediate destination chooser.
+- `script-globalsearch.xml` is supplied as an active-skin override while the add-on retains ownership of queries, result population, selection, playback and information actions. Its Bald contract uses the add-on's default result view50, categories9000, new-search990, category991 and empty-state999.
+- The results window mirrors the library compact list: Bald field and shared cached blurred-fanart backdrop, title and query at the safe left margin, compact rows, a sharp selected-art preview and a Home-width options menu at x1440. Up/Left replaces the preview with New search followed by the available result categories and counts. Focus, nested category navigation, new search, context actions and Back remain Global Search contracts. Home keeps its Search menu focused underneath the modal so closing results returns to Search rather than the content row.
 - Kodi's native keyboard retains every required control ID and navigation route while replacing Estuary's dialog tint, input outline, type and character-key focus treatment with Bald field, ink, outline and pill tokens. Keyboard input, autocomplete, password/numeric variants, confirmation and cancellation remain native contracts.
 - Result windows owned by external add-ons are outside the skin's XML contract; native video results continue into Bald library/detail views where their content type supports them.
 
