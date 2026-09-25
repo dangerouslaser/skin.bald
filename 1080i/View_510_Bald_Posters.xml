@@ -49,7 +49,7 @@
 				<viewtype label="Bald posters">icon</viewtype><visible>Container.Content(movies)</visible>
 				<onfocus>SetProperty(TMDbHelper.WidgetContainer,510,videos)</onfocus>
 				<onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
-				<onup>9000</onup><ondown>6101</ondown><onleft>noop</onleft><onright>noop</onright>
+				<onup>9000</onup><ondown>noop</ondown><onleft>noop</onleft><onright>noop</onright>
 				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
 				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510)</param></include></focusedlayout>
 			</control>
@@ -68,14 +68,10 @@
 				<include content="Bald_LibraryCaption"><param name="p">Odd</param></include>
 				<include content="Bald_LibraryCaption"><param name="p">Even</param></include>
 			</control>
-			<control type="button" id="6101">
-				<left>1296</left><top>896</top><width>220</width><height>46</height><font>Bald_CaptionMeta</font><label>Open details</label><textoffsetx>24</textoffsetx>
-				<textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor><texturefocus border="23" colordiffuse="bald_ink">bald/pill.png</texturefocus><texturenofocus border="23" colordiffuse="bald_ink50">bald/pill_outline.png</texturenofocus>
-				<enable>String.IsEqual(Container(510).ListItem.DBType,movie)</enable>
-				<onup>510</onup><onleft>510</onleft><onright>noop</onright><ondown>noop</ondown><onclick>SetFocus(510)</onclick><onclick>Action(Info)</onclick>
-			</control>
 			<control type="label"><left>96</left><top>954</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>
-			<control type="label"><left>1000</left><top>954</top><width>824</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Left / Right to browse · Info for details · Up for options</label></control>
+			<control type="group"><left>1000</left><top>954</top>
+				<include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">Left / Right to browse</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include>
+			</control>
 		</control>
 	</include>
 </includes>

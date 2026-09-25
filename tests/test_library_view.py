@@ -21,7 +21,7 @@ class LibraryViewTests(unittest.TestCase):
         self.assertIsNone(control.find("content"))
         self.assertEqual(int(control.findtext("width")), 3 * int(control.find("itemlayout").get("width")))
         self.assertEqual(control.findtext("onup"), "9000")
-        self.assertEqual(control.findtext("ondown"), "6101")
+        self.assertEqual(control.findtext("ondown"), "noop")
 
     def test_caption_reuses_home_media_flags_and_motion(self):
         caption = self.view.find("include[@name='Bald_LibraryCaption']//include")
@@ -43,9 +43,21 @@ class LibraryViewTests(unittest.TestCase):
         bounds = [tuple(int(n.findtext(f"param[@name='{key}']")) for key in ("x", "y", "w", "h")) for n in masks]
         self.assertEqual(bounds, [(1264, 198, 32, 345), (1824, 198, 32, 345), (1296, 198, 528, 24), (1296, 519, 528, 24)])
 
-    def test_explicit_details_button_focuses_native_item_before_info(self):
-        button = self.view.find(".//control[@id='6101']")
-        self.assertEqual([n.text for n in button.findall("onclick")], ["SetFocus(510)", "Action(Info)"])
-        self.assertEqual(button.findtext("onup"), "510")
+    def test_no_redundant_details_button(self):
+        self.assertIsNone(self.view.find(".//control[@id='6101']"))
         home = ET.parse(ROOT / "Home.xml").getroot()
         self.assertIn("ActivateWindow(Videos,videodb://movies/titles/,return)", [n.text for n in home.iter("onclick")])
+
+    def test_footer_reuses_detail_view_hint_spacing(self):
+        hint = self.view.find(".//include[@content='Bald_InfoHintPair']")
+        self.assertEqual(hint.findtext("param[@name='width']"), "824")
+        self.assertEqual(hint.findtext("param[@name='third_visible']"), "true")
+
+    def test_audio_codec_flag_maps_names_and_hides_missing_data(self):
+        shared = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
+        caption = shared.find("include[@name='Bald_Caption']")
+        codec = next(n for n in caption.findall(".//include[@content='Bald_Flag']") if "$MAP[" in n.findtext("param[@name='label']"))
+        self.assertEqual(codec.findtext("param[@name='label']"), "$MAP[DefaultCodecMap, Container($PARAM[c]).ListItem.AudioCodec]")
+        self.assertEqual(codec.findtext("param[@name='visible']"), "!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)")
+        group = next(n for n in caption.iter("control") if codec in list(n))
+        self.assertIn("!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)", group.findtext("visible"))

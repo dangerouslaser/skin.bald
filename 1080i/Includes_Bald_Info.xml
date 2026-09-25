@@ -100,12 +100,15 @@
 	<!-- A centered dot occupies the entire 20 px separator between the two directives. -->
 	<include name="Bald_InfoHintPair">
 		<param name="first" /><param name="second" />
+		<param name="width">384</param><param name="third" /><param name="third_visible">false</param>
 		<definition>
 			<control type="grouplist">
-				<width>384</width><height>24</height><orientation>horizontal</orientation><align>right</align><itemgap>0</itemgap>
+				<width>$PARAM[width]</width><height>24</height><orientation>horizontal</orientation><align>right</align><itemgap>0</itemgap>
 				<control type="label"><width>auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[first]</label></control>
 				<control type="label"><width>20</width><height>24</height><align>center</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label></control>
 				<control type="label"><width>auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[second]</label></control>
+				<control type="label"><width>20</width><height>24</height><align>center</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label><visible>$PARAM[third_visible]</visible></control>
+				<control type="label"><width>auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[third]</label><visible>$PARAM[third_visible]</visible></control>
 			</control>
 		</definition>
 	</include>
