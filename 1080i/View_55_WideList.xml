@@ -8,6 +8,7 @@
 				<visible>Control.IsVisible(55)</visible>
 				<include>Visible_Right</include>
 				<control type="fixedlist" id="55">
+					<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
 					<left>594</left>
 					<top>list_top_offset</top>
 					<bottom>$PARAM[bottom_offset]</bottom>

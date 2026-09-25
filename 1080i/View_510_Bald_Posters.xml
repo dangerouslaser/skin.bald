@@ -72,7 +72,7 @@
 	<expression name="Bald_LibraryMenuOpen">Control.HasFocus(9150)</expression>
 	<variable name="Bald_LibraryMenuNote">
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),view)">$INFO[Container.Viewmode,Current view: ,. Select to switch to the next library layout.]</value>
-		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),sort)">$INFO[Container.SortMethod,Currently sorted by ,. Choose how movies are arranged.]</value>
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),sort)">$INFO[Container.SortMethod,Currently sorted by ,. Choose how items are arranged.]</value>
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),order)">$INFO[Container.SortOrder,Current order: ,. Select to reverse it.]</value>
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),watched)">$INFO[Control.GetLabel(10),Showing: ,. Cycle all movies, unwatched and watched.]</value>
 		<value>$INFO[Container(9150).ListItem.Property(note)]</value>
@@ -100,8 +100,8 @@
 				<item><label>Sort by</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
 				<item><label>Order</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
 				<item><label>Search</label><property name="note">Find a title in your video library.</property><onclick>SendClick(8)</onclick></item>
-				<item><label>Filter</label><property name="note">Narrow the movies shown by genre, year, rating and other library details.</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
-				<item><label>Filter</label><property name="note">Narrow the movies shown by matching their titles.</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
+				<item><label>Filter</label><property name="note">Narrow the items shown by genre, year, rating and other library details.</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
+				<item><label>Filter</label><property name="note">Narrow the items shown by matching their titles.</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
 				<item><label>Watched status</label><property name="option">watched</property><onclick>SendClick(10)</onclick></item>
 				<item><label>Update library</label><property name="note">Scan your configured video sources for new or changed items.</property><onclick>UpdateLibrary(video)</onclick><visible>!Library.IsScanningVideo</visible></item>
 				<item><label>Stop update</label><property name="note">Stop the current video-library scan.</property><onclick>UpdateLibrary(video)</onclick><visible>Library.IsScanningVideo</visible></item>
@@ -110,10 +110,15 @@
 	</include>
 	<variable name="Bald_LibraryFanart">
 		<value condition="!String.IsEmpty(Container(0).ListItem.Art(fanart))">$INFO[Container(0).ListItem.Art(fanart)]</value>
+		<value condition="!String.IsEmpty(Container(0).ListItem.Art(tvshow.fanart))">$INFO[Container(0).ListItem.Art(tvshow.fanart)]</value>
+		<value condition="!String.IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
 		<value>$INFO[Container(0).ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="Bald_LibraryPoster">
 		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(season.poster))">$INFO[ListItem.Art(season.poster)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
+		<value condition="!String.IsEmpty(Container.Art(tvshow.poster))">$INFO[Container.Art(tvshow.poster)]</value>
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<include name="Bald_LibraryPosterItem">
@@ -145,7 +150,7 @@
 		</definition>
 	</include>
 	<include name="Bald_LibraryPreview">
-		<param name="c">510</param>
+		<param name="c">510</param><param name="show_logo">false</param>
 		<definition>
 			<control type="group">
 				<visible>!$EXP[Bald_LibraryMenuOpen] + !Container($PARAM[c]).ListItem.IsParentFolder + !String.IsEmpty(Container($PARAM[c]).ListItem.Title)</visible>
@@ -155,6 +160,11 @@
 					<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 					<include content="Bald_LibraryArt"><param name="c">$PARAM[c]</param><param name="p">Odd</param></include>
 					<include content="Bald_LibraryArt"><param name="c">$PARAM[c]</param><param name="p">Even</param></include>
+					<control type="group"><visible>$PARAM[show_logo]</visible>
+						<control type="image"><width>528</width><height>297</height><texture>bald/scrim_logo.png</texture><visible>!String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) | !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)) | !String.IsEmpty(Container.Art(tvshow.clearlogo))</visible></control>
+						<include content="Bald_ArtLogo"><param name="c">$PARAM[c]</param><param name="p">Odd</param><param name="ignore_home_row">true</param><param name="x">28</param><param name="y">174</param><param name="width">300</param><param name="height">86</param></include>
+						<include content="Bald_ArtLogo"><param name="c">$PARAM[c]</param><param name="p">Even</param><param name="ignore_home_row">true</param><param name="x">28</param><param name="y">174</param><param name="width">300</param><param name="height">86</param></include>
+					</control>
 				</control>
 				<control type="group">
 					<visible>!$EXP[Bald_LibraryMenuOpen]</visible>

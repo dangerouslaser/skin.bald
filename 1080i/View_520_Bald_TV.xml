@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald TV library: Series, Seasons and Episodes each keep an independent native view mode. -->
+<includes>
+	<variable name="Bald_TVEpisodeThumb">
+		<value condition="!String.IsEmpty(Container(540).ListItem.Art(thumb))">$INFO[Container(540).ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(Container(540).ListItem.Art(fanart))">$INFO[Container(540).ListItem.Art(fanart)]</value>
+		<value>$INFO[Container.Art(tvshow.fanart)]</value>
+	</variable>
+	<include name="Bald_TVFooter">
+		<param name="c" /><param name="letters">false</param><param name="select_hint">Select to open</param>
+		<definition>
+			<control type="label"><left>96</left><top>954</top><width>600</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[c]).CurrentItem] / $INFO[Container($PARAM[c]).NumItems]</label></control>
+			<control type="group"><left>800</left><top>954</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible>
+				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$PARAM[select_hint]</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include>
+			</control>
+			<control type="group"><left>800</left><top>954</top><visible>$PARAM[letters] + $EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
+			<control type="group"><left>1404</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
+		</definition>
+	</include>
+	<include name="Bald_TVEpisodeRow">
+		<param name="ink">bald_ink70</param><param name="scroll">false</param>
+		<definition>
+			<control type="label"><left>26</left><top>4</top><width>598</width><height>40</height><font>Bald_InfoTagline</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>S$INFO[ListItem.Season] E$INFO[ListItem.Episode] · $INFO[ListItem.Title]</label></control>
+			<control type="label"><left>26</left><top>46</top><width>408</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Premiered]$INFO[ListItem.Duration(mins), · , min]</label></control>
+			<control type="label"><left>448</left><top>46</top><width>176</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_accent</textcolor><label>$VAR[Bald_ListWatchState]</label></control>
+		</definition>
+	</include>
+	<include name="Bald_TVEpisodeArt">
+		<param name="p" />
+		<definition><include content="Bald_ArtLayer"><param name="texture">$VAR[Bald_TVEpisodeThumb]</param><param name="width">1008</param><param name="height">567</param><param name="center">504,283.5</param><param name="visible">Integer.Is$PARAM[p](Container(540).CurrentItem)</param></include></definition>
+	</include>
+	<include name="Bald_TVEpisodeCaption">
+		<param name="p" />
+		<definition>
+			<control type="group"><visible>Integer.Is$PARAM[p](Container(540).CurrentItem)</visible>
+				<control type="label"><left>816</left><top>774</top><width>1008</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>S$INFO[Container(540).ListItem.Season] E$INFO[Container(540).ListItem.Episode] · $INFO[Container(540).ListItem.Premiered]$INFO[Container(540).ListItem.Duration(mins), · , min]</label><include content="Bald_AnimCaptionIn"><param name="c">540</param><param name="delay">250</param></include></control>
+				<control type="group"><left>816</left><top>806</top><include content="Bald_AnimCaptionIn"><param name="c">540</param><param name="delay">275</param></include><control type="grouplist"><width>1008</width><height>26</height><orientation>horizontal</orientation><itemgap>8</itemgap><include content="Bald_MediaFlagItems"><param name="c">540</param></include></control></control>
+				<control type="textbox"><left>816</left><top>848</top><width>1008</width><height>60</height><font>Bald_CaptionPlot</font><textcolor>bald_ink76</textcolor><label>$INFO[Container(540).ListItem.Plot]</label><include content="Bald_AnimCaptionIn"><param name="c">540</param><param name="delay">350</param></include></control>
+			</control>
+		</definition>
+	</include>
+	<include name="View_520_Bald_Series">
+		<control type="group"><visible>Control.IsVisible(520)</visible>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control><include>Bald_BackdropImage</include>
+			<control type="label"><left>96</left><top>108</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>TV shows</label></control>
+			<control type="label"><left>1296</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<control type="list" id="520"><left>84</left><top>210</top><width>1152</width><height>648</height><orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems><viewtype label="Bald series posters">icon</viewtype><visible>Container.Content(tvshows)</visible>
+				<onfocus>SetProperty(Bald.LibraryContainer,520,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,520,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus><onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters)</ondown><onleft>noop</onleft><onright>noop</onright>
+				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation><itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout><focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(520) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
+			</control>
+			<include content="Bald_LibraryPreview"><param name="c">520</param></include><include content="Bald_TVFooter"><param name="c">520</param><param name="letters">true</param><param name="select_hint">Select for seasons</param></include>
+		</control>
+	</include>
+	<include name="View_530_Bald_Seasons">
+		<control type="group"><visible>Control.IsVisible(530)</visible>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control><include>Bald_BackdropImage</include>
+			<control type="label"><left>96</left><top>108</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container.ShowTitle]</label></control>
+			<control type="label"><left>1296</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>Seasons · $INFO[Container.SortOrder]</label></control>
+			<control type="list" id="530"><left>84</left><top>210</top><width>1152</width><height>648</height><orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems><viewtype label="Bald seasons">icon</viewtype><visible>Container.Content(seasons)</visible>
+				<onfocus>SetProperty(Bald.LibraryContainer,530,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,530,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus><onup>9150</onup><onleft>noop</onleft><onright>noop</onright><ondown>noop</ondown>
+				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation><itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout><focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(530)</param></include></focusedlayout>
+			</control>
+			<include content="Bald_LibraryPreview"><param name="c">530</param><param name="show_logo">true</param></include><include content="Bald_TVFooter"><param name="c">530</param><param name="select_hint">Select for episodes</param></include>
+		</control>
+	</include>
+	<include name="View_540_Bald_Episodes">
+		<control type="group"><visible>Control.IsVisible(540)</visible>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control><include>Bald_BackdropImage</include>
+			<control type="label"><left>96</left><top>108</top><width>624</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container.ShowTitle]</label></control>
+			<control type="label"><left>1296</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>Episodes · $INFO[Container.SortOrder]</label></control>
+			<control type="list" id="540"><left>96</left><top>222</top><width>624</width><height>616</height><orientation>vertical</orientation><viewtype label="Bald episodes">list</viewtype><visible>Container.Content(episodes)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<onfocus>SetProperty(Bald.LibraryContainer,540,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,540,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus><onup>9150</onup><onleft>9150</onleft><onright>noop</onright>
+				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation><itemlayout width="624" height="88"><include>Bald_TVEpisodeRow</include></itemlayout><focusedlayout width="624" height="88"><control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(540)</visible></control><include content="Bald_TVEpisodeRow"><param name="ink">bald_ink</param><param name="scroll">true</param></include></focusedlayout>
+			</control>
+			<control type="group"><visible>!$EXP[Bald_LibraryMenuOpen] + !Container(540).ListItem.IsParentFolder + !String.IsEmpty(Container(540).ListItem.Title)</visible><animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation><animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
+				<control type="group"><left>816</left><top>180</top><control type="image"><width>1008</width><height>567</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control><include content="Bald_TVEpisodeArt"><param name="p">Odd</param></include><include content="Bald_TVEpisodeArt"><param name="p">Even</param></include></control><include content="Bald_TVEpisodeCaption"><param name="p">Odd</param></include><include content="Bald_TVEpisodeCaption"><param name="p">Even</param></include>
+			</control>
+			<include content="Bald_BackdropWindow"><param name="x">790</param><param name="y">164</param><param name="w">26</param><param name="h">599</param></include><include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">164</param><param name="w">26</param><param name="h">599</param></include><include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">164</param><param name="w">1008</param><param name="h">16</param></include><include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">747</param><param name="w">1008</param><param name="h">16</param></include>
+			<include content="Bald_TVFooter"><param name="c">540</param><param name="select_hint">Select to open</param></include>
+		</control>
+	</include>
+</includes>

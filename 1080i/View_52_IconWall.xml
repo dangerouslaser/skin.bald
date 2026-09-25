@@ -5,7 +5,8 @@
 			<visible>Control.IsVisible(52)</visible>
 			<include>OpenClose_Right</include>
 			<include>Visible_Right</include>
-			<control type="panel" id="52">
+		<control type="panel" id="52">
+			<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
 				<centerleft>51%</centerleft>
 				<top>0</top>
 				<width>92%</width>
