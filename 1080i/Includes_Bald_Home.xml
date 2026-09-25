@@ -627,8 +627,11 @@
 				<onleft>SetProperty(Bald.NudgeL,$VAR[Bald_NudgeLNext],home)</onleft>
 				<onright>SetProperty(Bald.NudgeR,$VAR[Bald_NudgeRNext],home)</onright>
 				<onback>SetFocus(9000,0,absolute)</onback>
+				<!-- Snapshot the item's fanart for the info handoff (see Home.xml): on Select, and whenever focus leaves the
+				     row, which covers info opened from the context menu's Information. -->
 				<onclick>SetProperty(Bald.InfoArt,$VAR[Bald_Fanart],home)</onclick>
 				<onclick>Action(Info)</onclick>
+				<onunfocus>SetProperty(Bald.InfoArt,$VAR[Bald_Fanart],home)</onunfocus>
 				<itemlayout width="192" height="119">
 					<include content="Bald_LandscapeTile" />
 				</itemlayout>
