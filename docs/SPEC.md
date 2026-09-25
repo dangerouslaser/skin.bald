@@ -278,7 +278,16 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Selected row uses full ink and an 8px accent dot; other rows use70% ink. Instrument Sans section text for titles, caption metadata for year/runtime. No posters or extra Open details button.
 - Reuses the existing 528px right-hand preview, media flags including audio codec, blurred backdrop and options transitions. Shared alphabet and 20px footer separators remain unchanged.
 - Up/Down browse and scroll; Left or Menu opens options. Right enters letter mode; Down at the end also enters it. Up at the start opens options. Select follows the native default action, Info opens details, and Back from details restores the selected row.
-- The artwork-focused list is the next separate milestone, using fewer larger rows and a larger fanart preview.
+- The artwork-focused alternative is described in section5.9.
+
+---
+
+### 5.9 Movie artwork-focused list
+
+- Native vertical list514 at (96,222), 624 × 616; seven 88px rows. Larger title text with year/runtime and quiet Resume/Watched status beneath. The selected title can scroll when too long; no poster thumbnails.
+- Fanart at (816,180), 1008 × 567. Shared Home700ms crossfade and1500ms settle zoom, bounded by fixed opaque backdrop masks. Clearlogo at frame offset(40,378), maximum504 × 153, with Home fade/rise and logo scrim. Missing logo leaves the artwork unobstructed.
+- Metadata at y774, codec-inclusive media flags at y806, and a two-line synopsis at y848. Caption motion reuses Home's staggered fades/slides. Synopsis hides in letter mode so the shared full alphabet at y888 remains legible.
+- Native navigation, alphabet, footer and information actions match the compact list. Options replace the artwork/details region at the existing right-hand menu position; list dims to72%. Blurred background follows container514. Other layouts remain available.
 
 ---
 

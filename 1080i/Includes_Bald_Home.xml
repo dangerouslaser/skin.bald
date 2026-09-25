@@ -288,22 +288,23 @@
 		<param name="c" />
 		<param name="p" />
 		<param name="ignore_home_row">false</param>
+		<param name="x">52</param><param name="y">486</param><param name="width">560</param><param name="height">170</param>
 		<definition>
 			<control type="image">
-				<left>52</left>
-				<top>486</top>
-				<width>560</width>
-				<height>170</height>
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(clearlogo)]</texture>
 				<visible>[$PARAM[ignore_home_row] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
 			<control type="image">
-				<left>52</left>
-				<top>486</top>
-				<width>560</width>
-				<height>170</height>
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)]</texture>
 				<visible>[$PARAM[ignore_home_row] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
