@@ -128,7 +128,7 @@ Layout, all absolute at 1080:
 | Logo scrim | inside frame | Linear gradient at 32 degrees: black 60% at 0, 26% at 30%, 0 at 54%. Only when a logo is shown. |
 | Clearlogo | inside frame, left 52, bottom 46 | Max 560 by 170, keep aspect, bottom-left aligned, soft drop shadow. Original colors. |
 | Clock and date | 1440, 104, width 384 | |
-| Callout | dot 10 px at 1339, 505; hairline 1339 to 1440 at y 510, ink 50% | Dot pops, line grows from the left |
+| ~~Callout~~ | Removed 2026-09-24 after a trial in Kodi: the Home screen reads better without the dot and hairline. | Was: dot 10 px at 1339, 505; hairline to 1440 at y 510, ink 50%; dot pops, line grows from the left |
 | Caption | 1440, 420, width 384 | Title, meta, flags (movies only), accent line, plot |
 | Menu (open) | 1440, 392, width 420 | Vertical list, 6 px gap; note paragraph below |
 | Section line | left 1440, bottom 88 | Accent dot 8 px, current screen name, "Back for menu" hint |

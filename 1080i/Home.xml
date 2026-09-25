@@ -106,16 +106,6 @@
 				</control>
 			</control>
 
-			<!-- Callout: the dot pops and the line grows from the left each time the item changes (parity pair).
-			     The line stops 24 px short of the caption (1416), a deliberate change from the prototype's 1440. -->
-			<control type="group">
-				<!-- Trial: hide with Skin.SetBool(Bald.CalloutOff) to compare the layout without it. -->
-				<visible>!Skin.HasSetting(Bald.CalloutOff)</visible>
-				<include>Bald_AnimMenuHides</include>
-				<include content="Bald_Callout"><param name="visible">$EXP[Bald_ItemOdd]</param></include>
-				<include content="Bald_Callout"><param name="visible">!$EXP[Bald_ItemOdd]</param></include>
-			</control>
-
 			<!-- Caption: out 180 and slide 40 px right as the menu opens; back 380 / 480 after 140 as it closes. -->
 			<control type="group">
 				<visible>!$EXP[Bald_MenuOpen]</visible>

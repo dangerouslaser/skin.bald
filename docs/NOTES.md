@@ -21,7 +21,6 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 - **Clearlogo drop shadow.** Not implemented; Kodi images have no blur or shadow. Options later: a pre-blurred shadow texture behind the logo, or leave it (logo scrim already provides contrast).
 - **Genres.** `ListItem.Genre` joins with " / " (Kodi's separator), not the prototype's ", ".
 - **Dev window.** The macOS Kodi window must be 16:9 or the GUI is stretched. Set to 1600 x 900 content (1600 x 928 with title bar) via System Events.
-- **Callout gap.** The hairline ends at x 1416, leaving 24 px before the caption at 1440 (prototype ran it to 1440; it read as touching the text). Changed at the user's request.
 
 ## Milestone 3
 
@@ -45,4 +44,4 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 - **Movies, TV shows, Live TV, Search** are menu placeholders with no rows yet; highlighting one previews a note in the row area, and Select or Left keeps you in the menu.
 - **Caption title wraps upward.** The title is a `textbox` with `<height max="132">auto</height>` (up to 3 lines of 44 px) inside its own vertical grouplist with `<align>right</align>`, which bottom-aligns it (`CGUIControlGroupList::GetAlignOffset`). Its last line always ends at y 464 and the rest of the caption does not move. Past three lines it is cut off without an ellipsis.
 - **Baselines.** Kodi labels align only top or center, so mixed-size labels on one line (section name and hint, row label and count) are top-aligned with the smaller one offset down by the size difference; Instrument Sans' ascender equals the font size.
-- **Callout trial.** The dot and line can be hidden with the skin setting `Bald.CalloutOff`; the dev keymap binds F6 to toggle it (JSON-RPC cannot create a skin setting that has never been set).
+- **Callout removed.** The dot and hairline between the art and the caption were trialled on and off in Kodi and removed (docs/SPEC.md section 5.1 updated).
