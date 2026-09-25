@@ -26,6 +26,9 @@
 	     it closes; Home chrome goes out 200 and returns 380 / 480 after 440. Paired non-reversible Conditionals keep
 	     open and close timings separate; Kodi applies a Conditional's end state silently at window load. -->
 	<expression name="Bald_InfoOpen">Window.IsVisible(movieinformation)</expression>
+	<!-- A modal dialog is over Home. <visible> and animation conditions are evaluated without a window context, so
+	     under a modal dialog any Container(...) in them resolves against the dialog; Home guards on this. -->
+	<expression name="Bald_DialogOver">System.HasActiveModalDialog | Window.IsVisible(movieinformation) | Window.IsVisible(contextmenu)</expression>
 	<include name="Bald_AnimInfoFrame">
 		<animation type="Conditional" condition="$EXP[Bald_InfoOpen]" reversible="false">
 			<effect type="zoom" start="100" end="153.846" center="274,343" time="640" delay="40" tween="cubic" easing="out" />
@@ -215,6 +218,14 @@
 			</animation>
 		</definition>
 	</include>
+	<!-- The current row item's clearlogo (clearlogo, else the show's). -->
+	<variable name="Bald_Logo">
+		<value condition="String.IsEqual(Window(home).Property(Bald.Row),9102) + !String.IsEmpty(Container(9102).ListItem.Art(clearlogo))">$INFO[Container(9102).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Row),9102)">$INFO[Container(9102).ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Row),9103) + !String.IsEmpty(Container(9103).ListItem.Art(clearlogo))">$INFO[Container(9103).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Row),9103)">$INFO[Container(9103).ListItem.Art(tvshow.clearlogo)]</value>
+		<value>$INFO[Container(9101).ListItem.Art(clearlogo)]</value>
+	</variable>
 	<!-- Fanart layer for one parity. The incoming layer fades in (700) while settling from 1.05 (1500); the outgoing
 	     layer fades out (700) still showing the old art. A row swap that keeps the parity changes the visible
 	     layer's texture instead, which <fadetime> crossfades (it waits until the new image has loaded). -->
@@ -604,8 +615,9 @@
 				<width>1258</width>
 				<height>119</height>
 				<!-- Kodi does not process hidden lists, so a row also counts as visible until its items load;
-				     that lets it load (and the row-start timer fix its selection) before it is first shown. -->
-				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_PreviewOther]] | !Integer.IsGreater(Container($PARAM[id]).NumItems,0)</visible>
+				     that lets it load (and the row-start timer fix its selection) before it is first shown. Not while a
+				     dialog is up: <visible> has no window context then, and NumItems would read empty for every row. -->
+				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_PreviewOther]] | [!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !$EXP[Bald_DialogOver]]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
 				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
@@ -627,11 +639,7 @@
 				<onleft>SetProperty(Bald.NudgeL,$VAR[Bald_NudgeLNext],home)</onleft>
 				<onright>SetProperty(Bald.NudgeR,$VAR[Bald_NudgeRNext],home)</onright>
 				<onback>SetFocus(9000,0,absolute)</onback>
-				<!-- Snapshot the item's fanart for the info handoff (see Home.xml): on Select, and whenever focus leaves the
-				     row, which covers info opened from the context menu's Information. -->
-				<onclick>SetProperty(Bald.InfoArt,$VAR[Bald_Fanart],home)</onclick>
 				<onclick>Action(Info)</onclick>
-				<onunfocus>SetProperty(Bald.InfoArt,$VAR[Bald_Fanart],home)</onunfocus>
 				<itemlayout width="192" height="119">
 					<include content="Bald_LandscapeTile" />
 				</itemlayout>
