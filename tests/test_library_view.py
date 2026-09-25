@@ -84,7 +84,7 @@ class LibraryViewTests(unittest.TestCase):
 
     def test_options_have_five_rows_native_actions_and_return_routes(self):
         menu = self.view.find(".//control[@id='9150']")
-        self.assertEqual((menu.findtext('left'), menu.findtext('top')), ('1296', '392'))
+        self.assertEqual((menu.findtext('left'), menu.findtext('top'), menu.findtext('width')), ('1440', '392', '420'))
         self.assertEqual(int(menu.findtext('height')), 5 * int(menu.find('itemlayout').get('height')))
         self.assertEqual(menu.findtext('scrolltime'), '0')
         for direction in ('onup', 'ondown', 'onright'):
@@ -103,6 +103,19 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(len(view_items), 6)
         self.assertTrue(all(item.findall('onclick')[1].text == 'SetFocus(9150)' for item in view_items))
         self.assertIsNotNone(self.view.find("include[@name='Bald_LibraryOptions']//include[@content='Bald_MenuNote']"))
+        self.assertEqual(menu.findtext('itemlayout/include'), 'Bald_MenuRowUnfocused')
+        self.assertEqual(menu.findtext('focusedlayout/include'), '')
+        focused = menu.find("focusedlayout/include[@content='Bald_MenuRowFocused']")
+        self.assertEqual(focused.findtext("param[@name='always_dot']"), 'true')
+
+    def test_home_and_library_share_menu_row_components(self):
+        home = ET.parse(ROOT / 'Home.xml').getroot().find(".//control[@id='9000']")
+        library = self.view.find(".//control[@id='9150']")
+        self.assertEqual(home.findtext('itemlayout/include'), library.findtext('itemlayout/include'))
+        self.assertEqual(home.find('focusedlayout/include').text, 'Bald_MenuRowFocused')
+        self.assertEqual(library.find('focusedlayout/include').get('content'), 'Bald_MenuRowFocused')
+        shared = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot().find("include[@name='Bald_MenuRowFocused']")
+        self.assertEqual(shared.findtext(".//control[@type='image']/visible"), '$PARAM[always_dot]')
 
     def test_movie_entry_rejects_legacy_estuary_view_modes(self):
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()

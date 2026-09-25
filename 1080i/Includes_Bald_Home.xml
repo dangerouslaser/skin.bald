@@ -726,4 +726,20 @@
 			<visible>String.IsEqual(ListItem.Property(id),home)</visible>
 		</control>
 	</include>
+	<include name="Bald_MenuRowUnfocused">
+		<definition>
+			<include>Bald_MenuItem</include>
+			<control type="label"><left>20</left><width>400</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><label>$INFO[ListItem.Label]</label></control>
+		</definition>
+	</include>
+	<include name="Bald_MenuRowFocused">
+		<param name="always_dot">false</param>
+		<definition>
+			<include>Bald_MenuItem</include>
+			<control type="image"><top>23</top><width>10</width><height>10</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>$PARAM[always_dot]</visible></control>
+			<control type="label"><left>26</left><width>394</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
+				<animation type="Focus"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
+			</control>
+		</definition>
+	</include>
 </includes>

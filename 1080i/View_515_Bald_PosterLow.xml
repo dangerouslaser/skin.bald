@@ -42,7 +42,7 @@
 			<control type="label"><left>96</left><top>704</top><width>420</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(515).CurrentItem] / $INFO[Container(515).NumItems]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible></control>
 			<control type="group"><left>700</left><top>704</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">Down for letters</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include></control>
 			<control type="group"><left>800</left><top>954</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
-			<control type="group"><left>1364</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">460</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
+			<control type="group"><left>1404</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
 		</definition>
 	</include>
 	<include name="View_515_Bald_PosterLow">
@@ -81,11 +81,6 @@
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
 				<itemlayout width="160" height="234"><include content="Bald_PosterLowTile" /></itemlayout>
 				<focusedlayout width="160" height="234"><include content="Bald_PosterLowTile"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(515) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
-			</control>
-			<!-- Keep the duplicated backdrop preloaded at zero opacity so its texture cannot pop in on focus. -->
-			<control type="group">
-				<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
-				<include content="Bald_BackdropWindow"><param name="x">1264</param><param name="y">0</param><param name="w">592</param><param name="h">1080</param></include>
 			</control>
 			<!-- Letter mode deliberately covers the low row; otherwise the full alphabet collides with poster art. -->
 			<control type="group"><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_BackdropWindow"><param name="x">84</param><param name="y">730</param><param name="w">1280</param><param name="h">242</param></include></control>
