@@ -51,6 +51,20 @@ class XCSetupTests(unittest.TestCase):
         self.assertIn("username=%2A%2A%2A", redacted)
         self.assertIn("password=%2A%2A%2A", redacted)
 
+    def test_builds_local_m3u_from_xc_api_records(self):
+        playlist = config.build_m3u(
+            "https://iptv.example:8443/panel",
+            "a+b",
+            "p/x",
+            "ts",
+            [{"category_id": "7", "category_name": "News"}],
+            [{"stream_id": 42, "name": "World News", "category_id": "7", "epg_channel_id": "news.example", "stream_icon": "https://img/icon.png", "direct_source": ""}],
+        )
+        self.assertTrue(playlist.startswith("#EXTM3U\n"))
+        self.assertIn('tvg-id="news.example"', playlist)
+        self.assertIn('group-title="News"', playlist)
+        self.assertIn("https://iptv.example:8443/panel/live/a%2Bb/p%2Fx/42.ts", playlist)
+
 
 if __name__ == "__main__":
     unittest.main()
