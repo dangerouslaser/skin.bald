@@ -1,6 +1,7 @@
 from pathlib import Path
 import importlib.util
 import unittest
+import xml.etree.ElementTree as ET
 
 
 MODULE = Path(__file__).resolve().parents[1] / "addons/script.bald.xcsetup/resources/lib/config.py"
@@ -10,6 +11,21 @@ SPEC.loader.exec_module(config)
 
 
 class XCSetupTests(unittest.TestCase):
+    def test_kodi_settings_expose_only_the_guided_setup_action(self):
+        root = ET.parse(MODULE.parents[1] / "settings.xml").getroot()
+        for setting_id in ("launch", "server", "username", "password", "output"):
+            setting = root.find(f".//setting[@id='{setting_id}']")
+            self.assertIsNotNone(setting, setting_id)
+            self.assertIsNotNone(setting.find("control"), setting_id)
+        launch = root.find(".//setting[@id='launch']")
+        self.assertEqual(launch.get("type"), "action")
+        self.assertEqual(launch.get("label"), "32001")
+        self.assertEqual(launch.findtext("data"), "RunScript(script.bald.xcsetup,wizard)")
+        self.assertEqual(launch.findtext("control/close"), "true")
+        for setting_id in ("server", "username", "password", "output"):
+            setting = root.find(f".//setting[@id='{setting_id}']")
+            self.assertEqual(setting.findtext("level"), "4")
+
     def test_builds_standard_playlist_and_epg_urls(self):
         playlist, epg = config.build_urls("https://iptv.example:8443/panel/", "a+b", "p&x")
         self.assertEqual(
