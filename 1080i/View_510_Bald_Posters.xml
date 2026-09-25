@@ -199,7 +199,7 @@
 			<control type="group"><left>800</left><top>954</top><visible>$EXP[Bald_LibraryLettersOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include>
 			</control>
-			<control type="group"><left>1404</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
+			<control type="group"><left>1440</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include>
 			</control>
 		</control>

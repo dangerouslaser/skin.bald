@@ -293,10 +293,10 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 
 ### 5.10 Movie poster-low view
 
-- Native horizontal list515 at (84,738), 1280 × 234; eight 160px slots. Posters are144 × 216 at slot offset(12,12), center-cropped, with the shared2.5% focus pop and outline. The focused ring remains inside the list clip.
+- Native horizontal list515 at (96,738), 1248 × 234, exactly matching the fanart width; eight 156px slots. Posters are140 × 210 at slot offset(12,12), center-cropped, with the shared2.5% focus pop and outline. The focused artwork and ring remain inside the list clip.
 - Cinematic fanart at (96,120), 1248 × 576 with the shared700ms crossfade and1500ms settle zoom. A clearlogo sits at frame offset(52,392), maximum560 × 138, over the Home logo scrim. Fixed backdrop masks contain the zoom without the black-box transition seen in earlier preview work.
 - Shared Home caption at x1440, title y270 and body y402 provides title, year/runtime, codec-inclusive flags, genres and plot. Sort summary remains at the upper right. The blurred background follows container515.
-- The poster rail sits beneath the artwork with item count and navigation hints at y704. Left/Right browses; Up or Menu opens options; Down enters the shared alphabet. Alphabet mode covers the poster rail with the aligned blurred backdrop before drawing its strip at y888, retaining the native selection underneath. Options hide the caption and dim artwork/posters to72%; the shared Home-width menu sits wholly to the right of the artwork and poster rail, so it needs no additional backdrop panel. The footer uses the open space to the rail's right at (1404,954), avoiding both the posters and menu tooltip.
+- The poster rail sits beneath the artwork with its item count at y704; navigation hints use the skin-wide bottom baseline at y954 in the open space to the rail's right. Left/Right browses; Up or Menu opens options; Down enters the shared alphabet. Alphabet mode covers the poster rail with the aligned blurred backdrop before drawing its strip at y888, retaining the native selection underneath. Options hide the caption and dim artwork/posters to72%; the shared Home-width menu sits wholly to the right of the artwork and poster rail, so it needs no additional backdrop panel. The open-menu footer aligns with that same column at (1440,954), avoiding both the posters and menu tooltip.
 - Select follows Kodi's native default action; Info opens details and Back restores the selected poster. Other library layouts remain available.
 
 ---

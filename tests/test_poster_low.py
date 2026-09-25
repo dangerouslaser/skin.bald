@@ -16,6 +16,7 @@ class PosterLowTests(unittest.TestCase):
         self.assertEqual(control.findtext('visible'), 'Container.Content(movies)')
         self.assertIsNone(control.find('content'))
         self.assertEqual(int(control.findtext('width')), 8 * int(control.find('itemlayout').get('width')))
+        self.assertEqual((control.findtext('left'), control.findtext('width')), ('96', '1248'))
         self.assertGreaterEqual(int(control.findtext('height')), int(control.find('focusedlayout').get('height')))
         self.assertEqual([n.text for n in control.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters)'])
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
@@ -41,8 +42,10 @@ class PosterLowTests(unittest.TestCase):
 
     def test_options_footer_avoids_menu_note_and_poster_rail(self):
         footer = self.root.find("include[@name='Bald_PosterLowFooter']/definition")
+        browse = next(node for node in footer.findall('control') if '!$EXP[Bald_LibraryMenuOpen]' in (node.findtext('visible') or ''))
+        self.assertEqual(browse.findtext('top'), '954')
         group = next(node for node in footer.findall('control') if node.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]')
-        self.assertGreaterEqual(int(group.findtext('left')), 84 + 1280)
+        self.assertGreaterEqual(int(group.findtext('left')), 96 + 1248)
         self.assertGreaterEqual(int(group.findtext('top')), 936)
 
     def test_home_width_options_do_not_need_a_backdrop_panel(self):
@@ -51,7 +54,7 @@ class PosterLowTests(unittest.TestCase):
         self.assertEqual(menu_masks, [])
         footer = self.root.find("include[@name='Bald_PosterLowFooter']/definition")
         hint = next(group for group in footer.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]')
-        self.assertEqual((hint.findtext('left'), hint.findtext("include/param[@name='width']")), ('1404', '420'))
+        self.assertEqual((hint.findtext('left'), hint.findtext("include/param[@name='width']")), ('1440', '420'))
 
     def test_focused_ring_fits_list_height(self):
         tile = self.root.find("include[@name='Bald_PosterLowTile']//include[@content='Bald_LibraryPosterItem']")
@@ -61,7 +64,10 @@ class PosterLowTests(unittest.TestCase):
         ring_right = 9 + int(tile.findtext("param[@name='ring_width']"))
         center = int(tile.findtext("param[@name='center']").split(',')[0])
         focused_right = center + (ring_right - center) * 1.025
-        self.assertLessEqual(focused_right, 160)
+        self.assertLessEqual(focused_right, 156)
+        poster_right = 12 + int(tile.findtext("param[@name='width']"))
+        focused_poster_right = center + (poster_right - center) * 1.025
+        self.assertLessEqual(focused_poster_right, 156)
 
     def test_side_masks_cover_full_settle_zoom(self):
         view = self.root.find("include[@name='View_515_Bald_PosterLow']/control")
