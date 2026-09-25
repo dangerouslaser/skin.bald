@@ -237,7 +237,7 @@ Appearance settings: Clearlogo on artwork (default on), Media flags (default on)
 
 ### 5.5 Movie library — approved first native view
 
-The first redesigned library view replaces Estuary for movie browsing only; other content types and the utility options menu retain their existing views. Use three large posters on the left and the selected movie's artwork preview and details on the right.
+The first redesigned library view replaces Estuary for movie browsing only; other content types retain their existing views. Use three large posters on the left and the selected movie's artwork preview and details on the right.
 
 - Heading at (96,108); sort summary right-aligned at (1296,120), width 528.
 - Horizontal native list 510 at (84,210), 1152 × 648, with three 384 px slots. Posters are 360 × 540 at slot offset (12,12), with title labels beneath. Focus pop: 100 → 102.5%, 280 ms POP; scrolling: 440 ms MOVE.
@@ -247,6 +247,8 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Left/Right browses; Up opens native view/sort/filter options; Down stays on the posters; Info opens the existing paged detail dialog. Select follows Kodi's global default-select action (approved as Show information on the development installation). Back from details restores the selected movie.
 - Audio flags show the reported codec through Kodi's shared codec-name map (including Atmos/DTS:X profiles when reported), followed by the channel flag. Missing codec data produces no chip. This applies consistently to Home, recommendations and the info overview as well.
 - Home's Movies menu opens the native movie library. Existing alternative view choices remain available.
+- Library options replace the right-hand artwork and caption, retaining the posters at 72% of their normal opacity. Menu at (1296,392), width528, five 62 px rows (56 px text height plus 6 px gap), instant scrolling with no wrapping. Home's menu type, accent dot and fade/slide timings apply. Heading at (1322,292), tooltip at (1322,714), width502. Left/Back returns to the posters; Up or Kodi's Menu action opens options. The footer switches immediately to the return/select hints with the same 20 px dot separator.
+- Options retain native View, Sort by, Order, Search, Filter, Watched status and Update library behavior. Current view/sort/order/watched values appear in the tooltip. Untouched views retain the Estuary sidebar; secondary sort/search/filter dialogs remain native.
 
 ---
 

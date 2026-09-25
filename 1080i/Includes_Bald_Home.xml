@@ -90,11 +90,12 @@
 	<include name="Bald_MenuNote">
 		<param name="id">0</param>
 		<param name="text" />
+		<param name="x">1466</param><param name="y">714</param><param name="width">394</param>
 		<definition>
 			<control type="label" id="$PARAM[id]">
-				<left>1466</left>
-				<top>714</top>
-				<width>394</width>
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
+				<width>$PARAM[width]</width>
 				<height>120</height>
 				<wrapmultiline>true</wrapmultiline>
 				<aligny>top</aligny>

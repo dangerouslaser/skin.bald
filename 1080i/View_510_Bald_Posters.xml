@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald movie library: three large posters, selected artwork and the shared media caption. -->
 <includes>
+	<expression name="Bald_LibraryMenuOpen">Control.HasFocus(9150)</expression>
+	<variable name="Bald_LibraryMenuNote">
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),view)">$INFO[Container.Viewmode,Current view: ,. Select to switch to the next library layout.]</value>
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),sort)">$INFO[Container.SortMethod,Currently sorted by ,. Choose how movies are arranged.]</value>
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),order)">$INFO[Container.SortOrder,Current order: ,. Select to reverse it.]</value>
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),watched)">$INFO[Control.GetLabel(10),Showing: ,. Cycle all movies, unwatched and watched.]</value>
+		<value>$INFO[Container(9150).ListItem.Property(note)]</value>
+	</variable>
+	<include name="Bald_LibraryOptions">
+		<control type="group">
+			<visible>$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
+			<control type="label"><left>1322</left><top>292</top><width>502</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>Library options</label></control>
+			<include content="Bald_MenuNote"><param name="x">1322</param><param name="width">502</param><param name="text">$VAR[Bald_LibraryMenuNote]</param></include>
+		</control>
+		<control type="list" id="9150">
+			<left>1296</left><top>392</top><width>528</width><height>310</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
+			<visible allowhiddenfocus="true">$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
+			<onleft>510</onleft><onback>510</onback><onright>noop</onright><onup>noop</onup><ondown>noop</ondown>
+			<itemlayout width="528" height="62">
+				<control type="label"><left>20</left><width>508</width><height>56</height><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label></control>
+			</itemlayout>
+			<focusedlayout width="528" height="62">
+				<control type="image"><top>23</top><width>10</width><height>10</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control>
+				<control type="label"><left>26</left><width>502</width><height>56</height><font>Bald_MenuItem</font><textcolor>bald_ink</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label>
+					<animation type="Focus"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
+				</control>
+			</focusedlayout>
+			<content>
+				<item><label>View</label><property name="option">view</property><onclick>Container.NextViewMode</onclick><onclick>SetFocus(50)</onclick><visible>Integer.IsGreater(Container.ViewCount,1)</visible></item>
+				<item><label>Sort by</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
+				<item><label>Order</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
+				<item><label>Search</label><property name="note">Find a title in your video library.</property><onclick>SendClick(8)</onclick></item>
+				<item><label>Filter</label><property name="note">Narrow the movies shown by genre, year, rating and other library details.</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
+				<item><label>Filter</label><property name="note">Narrow the movies shown by matching their titles.</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
+				<item><label>Watched status</label><property name="option">watched</property><onclick>SendClick(10)</onclick></item>
+				<item><label>Update library</label><property name="note">Scan your configured video sources for new or changed items.</property><onclick>UpdateLibrary(video)</onclick><visible>!Library.IsScanningVideo</visible></item>
+				<item><label>Stop update</label><property name="note">Stop the current video-library scan.</property><onclick>UpdateLibrary(video)</onclick><visible>Library.IsScanningVideo</visible></item>
+			</content>
+		</control>
+	</include>
 	<variable name="Bald_LibraryFanart">
 		<value condition="!String.IsEmpty(Container(510).ListItem.Art(fanart))">$INFO[Container(510).ListItem.Art(fanart)]</value>
 		<value>$INFO[Container(510).ListItem.Art(thumb)]</value>
@@ -49,12 +89,15 @@
 				<viewtype label="Bald posters">icon</viewtype><visible>Container.Content(movies)</visible>
 				<onfocus>SetProperty(TMDbHelper.WidgetContainer,510,videos)</onfocus>
 				<onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
-				<onup>9000</onup><ondown>noop</ondown><onleft>noop</onleft><onright>noop</onright>
+				<onup>9150</onup><ondown>noop</ondown><onleft>noop</onleft><onright>noop</onright>
+				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
 				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
 				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510)</param></include></focusedlayout>
 			</control>
 			<control type="group">
-				<visible>!Container(510).ListItem.IsParentFolder + !String.IsEmpty(Container(510).ListItem.Title)</visible>
+				<visible>!$EXP[Bald_LibraryMenuOpen] + !Container(510).ListItem.IsParentFolder + !String.IsEmpty(Container(510).ListItem.Title)</visible>
+				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
 				<control type="group"><left>1296</left><top>222</top>
 					<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 					<include content="Bald_LibraryArt"><param name="p">Odd</param></include>
@@ -70,8 +113,13 @@
 			</control>
 			<control type="label"><left>96</left><top>954</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>
 			<control type="group"><left>1000</left><top>954</top>
+				<visible>!$EXP[Bald_LibraryMenuOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">Left / Right to browse</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include>
 			</control>
+			<control type="group"><left>1296</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
+				<include content="Bald_InfoHintPair"><param name="width">528</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include>
+			</control>
+			<include>Bald_LibraryOptions</include>
 		</control>
 	</include>
 </includes>
