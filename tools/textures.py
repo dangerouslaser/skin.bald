@@ -57,6 +57,41 @@ def main():
             px[x, y] = (0, 0, 0, round(v * 255))
     save(im, "scrim_logo.png")
 
+    # ---- Info dialog (docs/SPEC.md 5.2) ----
+    # Horizontal scrim: field 92% at 0, 72% at 32%, 0 at 64% (white; colorized with colordiffuse).
+    def ramp(n, stops):
+        out = []
+        for i in range(n):
+            t = (i + 0.5) / n
+            for (t0, a0), (t1, a1) in zip(stops, stops[1:]):
+                if t <= t1:
+                    out.append(a0 + (a1 - a0) * max(0.0, (t - t0) / (t1 - t0)))
+                    break
+        return out
+    h = ramp(1920, [(0.0, 0.92), (0.32, 0.72), (0.64, 0.0), (1.0, 0.0)])
+    im = Image.new("RGBA", (1920, 4))
+    for x, a in enumerate(h):
+        for y in range(4):
+            im.putpixel((x, y), (255, 255, 255, round(a * 255)))
+    save(im, "scrim_info_h.png")
+    # Bottom scrim: field 85% at the bottom edge, 0 at 42% up.
+    v = ramp(1080, [(0.0, 0.85), (0.42, 0.0), (1.0, 0.0)])
+    im = Image.new("RGBA", (4, 1080))
+    for y, a in enumerate(v):
+        for x in range(4):
+            im.putpixel((x, 1079 - y), (255, 255, 255, round(a * 255)))
+    save(im, "scrim_info_b.png")
+    # Action pills: 54 px tall, fully rounded. 9-slice border 27.
+    save(rounded(54, 54, 27), "pill.png")
+    save(rounded(54, 54, 27, stroke=1.5), "pill_outline.png")
+    # Cast: 112 px circle (mask and placeholder) and a 3 px ring outside it (118 px).
+    save(rounded(112, 112, 56), "circle_112.png")
+    save(rounded(118, 118, 59, stroke=3), "ring_118.png")
+    # More like this: 256 x 144 tile, 4 px corners.
+    save(rounded(256, 144, 4), "tile_256.png")
+    # Progress track and bar: 4 px, rounded. 9-slice border 2.
+    save(rounded(8, 4, 2), "bar.png")
+
 
 if __name__ == "__main__":
     main()

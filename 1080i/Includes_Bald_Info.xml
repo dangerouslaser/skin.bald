@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald movie info dialog: variables, animations and repeated controls (docs/SPEC.md 5.2). -->
+<includes>
+	<!-- ============ Variables (ListItem.* is the dialog's item) ============ -->
+	<variable name="Bald_InfoLogo">
+		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value>$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+	</variable>
+	<variable name="Bald_InfoTitle">
+		<value condition="ListItem.IsEpisode">$INFO[ListItem.TVShowTitle]</value>
+		<value>$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="Bald_InfoMeta">
+		<value condition="ListItem.IsEpisode">S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Title,$COMMA ,]$INFO[ListItem.Duration(mins),$COMMA , min]</value>
+		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , seasons]</value>
+		<value condition="Integer.IsGreaterOrEqual(ListItem.Duration(mins),60)">$INFO[ListItem.Year,,$COMMA ]$INFO[ListItem.Duration(h),,h ]$INFO[ListItem.Duration(mm),,m]</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins),$COMMA , min]</value>
+	</variable>
+	<variable name="Bald_InfoResolution">
+		<value condition="String.IsEqual(ListItem.VideoResolution,4K)">4K</value>
+		<value>$INFO[ListItem.VideoResolution,,p]</value>
+	</variable>
+	<variable name="Bald_InfoVideo">
+		<value>$VAR[Bald_InfoResolution]$INFO[ListItem.VideoCodec,$COMMA ,]$INFO[ListItem.HdrType,$COMMA ,]</value>
+	</variable>
+	<variable name="Bald_InfoAudio">
+		<value>$INFO[ListItem.AudioCodec]$INFO[ListItem.AudioChannels,$COMMA , channels]$INFO[ListItem.AudioLanguage,$COMMA ,]</value>
+	</variable>
+	<!-- First genre: ListItem.Genre joins genres with " / " and Kodi cannot split it, so match the start against
+	     the TMDB genre names. Falls back to the whole string. -->
+	<variable name="Bald_FirstGenre">
+		<value condition="String.StartsWith(ListItem.Genre,Science Fiction)">Science Fiction</value>
+		<value condition="String.StartsWith(ListItem.Genre,TV Movie)">TV Movie</value>
+		<value condition="String.StartsWith(ListItem.Genre,Action)">Action</value>
+		<value condition="String.StartsWith(ListItem.Genre,Adventure)">Adventure</value>
+		<value condition="String.StartsWith(ListItem.Genre,Animation)">Animation</value>
+		<value condition="String.StartsWith(ListItem.Genre,Comedy)">Comedy</value>
+		<value condition="String.StartsWith(ListItem.Genre,Crime)">Crime</value>
+		<value condition="String.StartsWith(ListItem.Genre,Documentary)">Documentary</value>
+		<value condition="String.StartsWith(ListItem.Genre,Drama)">Drama</value>
+		<value condition="String.StartsWith(ListItem.Genre,Family)">Family</value>
+		<value condition="String.StartsWith(ListItem.Genre,Fantasy)">Fantasy</value>
+		<value condition="String.StartsWith(ListItem.Genre,History)">History</value>
+		<value condition="String.StartsWith(ListItem.Genre,Horror)">Horror</value>
+		<value condition="String.StartsWith(ListItem.Genre,Music)">Music</value>
+		<value condition="String.StartsWith(ListItem.Genre,Mystery)">Mystery</value>
+		<value condition="String.StartsWith(ListItem.Genre,Romance)">Romance</value>
+		<value condition="String.StartsWith(ListItem.Genre,Thriller)">Thriller</value>
+		<value condition="String.StartsWith(ListItem.Genre,War)">War</value>
+		<value condition="String.StartsWith(ListItem.Genre,Western)">Western</value>
+		<value>$INFO[ListItem.Genre]</value>
+	</variable>
+	<!-- More like this: library titles sharing the first genre, best rated first, excluding this one.
+	     A URL smart playlist (JSON rules; $ESCINFO quotes and escapes the title). -->
+	<variable name="Bald_MoreLikeThisPath">
+		<value condition="String.IsEqual(ListItem.DBType,movie)">videodb://movies/titles/?xsp={"rules":{"and":[{"field":"genre","operator":"is","value":["$VAR[Bald_FirstGenre]"]},{"field":"title","operator":"isnot","value":[$ESCINFO[ListItem.Title]]}]},"type":"movies","order":{"direction":"descending","method":"rating"}}</value>
+		<value condition="String.IsEqual(ListItem.DBType,tvshow)">videodb://tvshows/titles/?xsp={"rules":{"and":[{"field":"genre","operator":"is","value":["$VAR[Bald_FirstGenre]"]},{"field":"title","operator":"isnot","value":[$ESCINFO[ListItem.Title]]}]},"type":"tvshows","order":{"direction":"descending","method":"rating"}}</value>
+	</variable>
+	<variable name="Bald_MoreArt">
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+
+	<!-- ============ Animations ============ -->
+	<!-- Info content in: fade 400 and rise 18 px over 560, base delay 380 plus the stagger (0, 60, 100, 140, 180, 220,
+	     270, 310 in the prototype). -->
+	<include name="Bald_AnimInfoIn">
+		<param name="delay" />
+		<definition>
+			<animation type="WindowOpen">
+				<effect type="fade" start="0" end="100" time="400" delay="$PARAM[delay]" tween="sine" easing="inout" />
+				<effect type="slide" start="0,18" end="0,0" time="560" delay="$PARAM[delay]" tween="cubic" easing="out" />
+			</animation>
+		</definition>
+	</include>
+	<!-- Group opacity per section (Bald.InfoSec 0, 1, 2), 360 fade. -->
+	<include name="Bald_AnimInfoGroup">
+		<param name="s0">100</param>
+		<param name="s1">100</param>
+		<param name="s2">100</param>
+		<definition>
+			<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.InfoSec),0) | String.IsEmpty(Window(home).Property(Bald.InfoSec))">
+				<effect type="fade" start="100" end="$PARAM[s0]" time="360" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.InfoSec),1)">
+				<effect type="fade" start="100" end="$PARAM[s1]" time="360" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.InfoSec),2)">
+				<effect type="fade" start="100" end="$PARAM[s2]" time="360" tween="sine" easing="inout" />
+			</animation>
+		</definition>
+	</include>
+
+	<!-- ============ Controls ============ -->
+	<!-- Action pill: 54 px tall, 28 px side padding. Focused: filled ink, label in field, pop to 1.04 (260). -->
+	<include name="Bald_InfoAction">
+		<param name="id" />
+		<param name="label" />
+		<param name="onclick" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>auto</width>
+				<height>54</height>
+				<label>$PARAM[label]</label>
+				<font>Bald_Section</font>
+				<textoffsetx>28</textoffsetx>
+				<aligny>center</aligny>
+				<textcolor>bald_ink</textcolor>
+				<focusedcolor>bald_field</focusedcolor>
+				<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
+				<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
+				<onclick>$PARAM[onclick]</onclick>
+				<visible>$PARAM[visible]</visible>
+				<animation type="Focus">
+					<effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" />
+				</animation>
+				<animation type="Unfocus">
+					<effect type="zoom" start="104" end="100" center="auto" time="220" tween="sine" easing="inout" />
+				</animation>
+			</control>
+		</definition>
+	</include>
+	<!-- Info media flag: 16 px, outlined. -->
+	<include name="Bald_InfoFlag">
+		<param name="label" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="button">
+				<width>auto</width>
+				<height>30</height>
+				<label>$PARAM[label]</label>
+				<font>Bald_FlagL</font>
+				<textoffsetx>10</textoffsetx>
+				<aligny>center</aligny>
+				<textcolor>bald_ink</textcolor>
+				<disabledcolor>bald_ink</disabledcolor>
+				<texturenofocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturenofocus>
+				<texturefocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturefocus>
+				<enable>false</enable>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- Cast member: 112 px circle (photo or placeholder), name, role. Focused: 3 px ink ring, pop to 1.06. -->
+	<include name="Bald_CastItem">
+		<param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<animation type="Focus">
+					<effect type="zoom" start="100" end="106" center="91,68" time="280" tween="back" easing="out" />
+				</animation>
+				<control type="image">
+					<left>35</left>
+					<top>12</top>
+					<width>112</width>
+					<height>112</height>
+					<texture colordiffuse="bald_ink10">bald/circle_112.png</texture>
+				</control>
+				<control type="image">
+					<left>35</left>
+					<top>12</top>
+					<width>112</width>
+					<height>112</height>
+					<aspectratio scalediffuse="false">scale</aspectratio>
+					<texture diffuse="bald/circle_112.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				</control>
+				<control type="image">
+					<left>32</left>
+					<top>9</top>
+					<width>118</width>
+					<height>118</height>
+					<texture colordiffuse="bald_ink">bald/ring_118.png</texture>
+					<visible>$PARAM[focused]</visible>
+				</control>
+			</control>
+			<control type="label">
+				<left>6</left>
+				<top>138</top>
+				<width>170</width>
+				<height>24</height>
+				<align>center</align>
+				<font>Bald_CastName</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>6</left>
+				<top>164</top>
+				<width>170</width>
+				<height>22</height>
+				<align>center</align>
+				<font>Bald_CastRole</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- More like this tile: 256 x 144, 4 px corners, 62% until focused; focused: ring and pop to 1.05. -->
+	<include name="Bald_MoreItem">
+		<param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<animation type="Focus">
+					<effect type="zoom" start="100" end="105" center="138,82" time="280" tween="back" easing="out" />
+				</animation>
+				<control type="image">
+					<left>10</left>
+					<top>10</top>
+					<width>256</width>
+					<height>144</height>
+					<texture colordiffuse="bald_tile_placeholder">bald/tile_256.png</texture>
+				</control>
+				<control type="image">
+					<left>10</left>
+					<top>10</top>
+					<width>256</width>
+					<height>144</height>
+					<aspectratio scalediffuse="false">scale</aspectratio>
+					<texture diffuse="bald/tile_256.png" colordiffuse="bald_tile_62" background="true">$VAR[Bald_MoreArt]</texture>
+					<visible>!$PARAM[focused]</visible>
+				</control>
+				<control type="image">
+					<left>10</left>
+					<top>10</top>
+					<width>256</width>
+					<height>144</height>
+					<aspectratio scalediffuse="false">scale</aspectratio>
+					<texture diffuse="bald/tile_256.png" background="true">$VAR[Bald_MoreArt]</texture>
+					<visible>$PARAM[focused]</visible>
+				</control>
+				<control type="image">
+					<left>7</left>
+					<top>7</top>
+					<width>262</width>
+					<height>150</height>
+					<texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture>
+					<visible>$PARAM[focused]</visible>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- Detail cell: label 17 px at 58% at y, value 21 px medium at vy (4 px below the label). -->
+	<include name="Bald_Detail">
+		<param name="x" />
+		<param name="y" />
+		<param name="vy" />
+		<param name="label" />
+		<param name="value" />
+		<definition>
+			<control type="label">
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
+				<width>518</width>
+				<height>22</height>
+				<font>Bald_DetailLabel</font>
+				<textcolor>bald_ink58</textcolor>
+				<label>$PARAM[label]</label>
+			</control>
+			<control type="label">
+				<left>$PARAM[x]</left>
+				<top>$PARAM[vy]</top>
+				<width>518</width>
+				<height>28</height>
+				<font>Bald_DetailValue</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$PARAM[value]</label>
+			</control>
+		</definition>
+	</include>
+</includes>
