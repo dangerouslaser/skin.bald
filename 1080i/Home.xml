@@ -11,6 +11,7 @@
 	     watching the current row (TMDbHelper.WidgetContainer). The earlier color tint is switched off. -->
 	<onload condition="Skin.HasSetting(TMDbHelper.EnableColors)">Skin.Reset(TMDbHelper.EnableColors)</onload>
 	<onload condition="System.HasAddon(plugin.video.themoviedb.helper) + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<onload>SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
 	<onload>SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
 	<onload>ClearProperty(Bald.Menu,home)</onload>

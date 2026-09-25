@@ -2,6 +2,14 @@
 
 Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was tried and what was done instead.
 
+## Paged movie information (2026-09-25)
+
+- Replaced the original compounded section slides with independent Overview, Cast & details and More like this pages. Each has one visibility-driven fade/rise; there are no reversing additive offsets at the recommendations boundary. The earlier scrolling/empty-data notes below describe the superseded layout.
+- Reuse `Bald_BackdropImage` for exactly Home's cached blur and brightness. TMDb Helper's local widget-container mode lets the dialog override its source to container5100 on recommendations, then clear that override to return to the native info movie. Home's own container property stays untouched. The original sharp Home handoff remains underneath the opaque blur layer.
+- Recommendation labels/art explicitly read container5100, while cast/poster/actions continue to read the original dialog item. Select retains the existing guarded Python native-info replacement.
+- Hidden recommendation content loads when its page is shown. A real loading/empty button keeps focus escapable; a one-shot readiness timer transfers focus when results arrive. `$EXP` in the timer start condition did not trigger the handoff in Kodi 22; using the raw condition did. Page movement and item previews do not depend on that slow timer.
+- Verified in local Kodi 22 beta1: first-load focus transfer, highlighted-title metadata and blur, cast selection retained across pages, related-title replacement and Back to Home, zero-cast fallback and empty-path escape. XML validation and regression tests cover the structural contracts. CoreELEC hardware verification remains outstanding.
+
 ## Milestone 1
 
 - **Clock weight 300.** Instrument Sans ships static TTFs from 400 (Regular) to 700 (Bold); there is no Light. `Bald_Clock` uses Regular for now. Options later: generate a 300 instance from the variable font with fontTools (`varLib.instancer`; the wght axis starts at 400, so this needs a different face or accepting 400).

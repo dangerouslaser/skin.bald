@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <timers>
+    <!-- Only an initial load handoff: page motion and per-item previews never depend on this slow timer. -->
+    <timer>
+        <name>bald_info_recommendations_ready</name>
+        <start>Window.IsActive(movieinformation) + String.IsEqual(Window(home).Property(Bald.InfoSec),2) + Control.HasFocus(5150) + !String.IsEmpty(Window(movieinformation).Property(Bald.MorePath)) + Integer.IsGreater(Container(5100).NumItems,0)</start>
+        <onstart>SetFocus(5100)</onstart>
+        <stop>!Control.HasFocus(5150) | !Window.IsActive(movieinformation)</stop>
+    </timer>
     <timer>
         <name>autoclosevideoosd</name>
         <description>Timer to auto close the video OSD (if enabled in the skin settings)</description>

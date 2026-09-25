@@ -1,340 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald movie info (milestone 4). docs/SPEC.md section 5.2 and the reference prototype's infoVals().
-     Opens as a dialog over Home, which zooms its art frame to full screen underneath (Bald_AnimInfoFrame);
-     outside Home, this dialog supplies its own backdrop. Sections: 0 actions, 1 cast/details,
-     2 more like this (Bald.InfoSec). -->
+<!-- Bald paged info: Overview, Cast & details, More like this. Home still owns the opening frame zoom. -->
 <window>
 	<defaultcontrol always="true">5000</defaultcontrol>
 	<onload>SetProperty(Bald.InfoSec,0,home)</onload>
 	<onload>SetProperty(Bald.Identity,$INFO[ListItem.DBType]:$INFO[ListItem.DBID],movieinformation)</onload>
 	<onload>ClearProperty(Bald.MorePath,movieinformation)</onload>
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
+	<onload>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onload>
+	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<onload>RunScript(skin.bald,recommendations,$INFO[ListItem.DBType],$INFO[ListItem.DBID])</onload>
-	<!-- Start on the first action (the actions grouplist would otherwise remember its last focused button). -->
 	<onload condition="ListItem.IsResumable">SetFocus(5001)</onload>
 	<onload condition="!ListItem.IsResumable">SetFocus(5003)</onload>
 	<onunload>ClearProperty(Bald.InfoSec,home)</onunload>
 	<onunload>ClearProperty(Bald.Identity,movieinformation)</onunload>
 	<onunload>ClearProperty(Bald.MorePath,movieinformation)</onunload>
+	<onunload>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onunload>
 	<controls>
-		<!-- Home owns the zoom and follows Bald.Fanart. Other entry points need an opaque backdrop. -->
+		<!-- Opaque sharp fallback for library/add-on entry points. -->
 		<control type="group">
 			<visible>$EXP[Bald_InfoOwnBackdrop]</visible>
 			<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="130" tween="sine" easing="inout">WindowClose</animation>
-			<control type="image">
-				<width>1920</width>
-				<height>1080</height>
-				<texture colordiffuse="bald_field">bald/white.png</texture>
-			</control>
-			<control type="image">
-				<width>1920</width>
-				<height>1080</height>
-				<aspectratio>scale</aspectratio>
-				<texture background="true">$VAR[Bald_InfoFanart]</texture>
-			</control>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+			<control type="image"><width>1920</width><height>1080</height><aspectratio>scale</aspectratio><texture background="true">$VAR[Bald_InfoFanart]</texture></control>
 		</control>
-		<!-- Kodi's contract controls (CGUIDialogVideoInfo): 8 plays (from the beginning, because 9 exists), 9 resumes,
-		     11 plays the trailer. Hidden; the visible actions SendClick them. -->
+		<!-- Native playback contracts, unchanged. -->
 		<control type="button" id="8"><include>HiddenObject</include></control>
 		<control type="button" id="9"><include>HiddenObject</include></control>
 		<control type="button" id="11"><include>HiddenObject</include></control>
-
-		<!-- Content fades in 360 after 260 (the art frame zooms first); out 220 on close. -->
 		<control type="group">
-			<animation type="WindowOpen">
-				<effect type="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout" />
-			</animation>
-			<animation type="WindowClose">
-				<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
-			</animation>
-
-			<!-- Scrims: horizontal field 92% / 72% at 32% / 0 at 64%, bottom field 85% / 0 at 42%. -->
-			<control type="image">
-				<width>1920</width>
-				<height>1080</height>
-				<texture colordiffuse="bald_field">bald/scrim_info_h.png</texture>
-			</control>
-			<control type="image">
-				<width>1920</width>
-				<height>1080</height>
-				<texture colordiffuse="bald_field">bald/scrim_info_b.png</texture>
-			</control>
-			<!-- Art dims to 60% field when scrolled past the actions (460). -->
-			<control type="image">
-				<width>1920</width>
-				<height>1080</height>
-				<texture colordiffuse="bald_field60">bald/white.png</texture>
-				<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.InfoSec),0) | String.IsEmpty(Window(home).Property(Bald.InfoSec))">
-					<effect type="fade" start="100" end="0" time="460" tween="sine" easing="inout" />
-				</animation>
-			</control>
-
-			<!-- Scrolling content column (x 96). Section offsets 0, 560, 1000 over 560 (move). -->
+			<animation effect="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="130" tween="sine" easing="inout">WindowClose</animation>
+			<!-- Only Overview needs the hero's directional scrims. -->
 			<control type="group">
-				<left>96</left>
-				<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.InfoSec),1)">
-					<effect type="slide" start="0,0" end="0,-560" time="560" tween="cubic" easing="out" />
-				</animation>
-				<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.InfoSec),2)">
-					<effect type="slide" start="0,0" end="0,-1000" time="560" tween="cubic" easing="out" />
-				</animation>
-
-				<!-- ===== A: identity, actions (top 150; opacity 1, 0, 0) ===== -->
-				<control type="group">
-					<top>150</top>
-					<include content="Bald_AnimInfoGroup"><param name="s1">0</param><param name="s2">0</param></include>
-					<control type="grouplist">
-						<width>1728</width>
-						<height>720</height>
-						<orientation>vertical</orientation>
-						<itemgap>0</itemgap>
-						<usecontrolcoords>true</usecontrolcoords>
-						<!-- Logo box 170 tall: clearlogo bottom-left, or a 76 px title. -->
-						<control type="group">
-							<height>170</height>
-							<include content="Bald_AnimInfoIn"><param name="delay">380</param></include>
-							<control type="image">
-								<width>700</width>
-								<height>170</height>
-								<aspectratio align="left" aligny="bottom">keep</aspectratio>
-								<texture background="true">$VAR[Bald_InfoLogo]</texture>
-							</control>
-							<control type="label">
-								<top>80</top>
-								<width>1400</width>
-								<height>90</height>
-								<font>Bald_InfoTitle</font>
-								<textcolor>bald_ink</textcolor>
-								<label>$VAR[Bald_InfoTitle]</label>
-								<visible>String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))</visible>
-							</control>
-						</control>
-						<control type="label">
-							<top>26</top>
-							<width>1400</width>
-							<height>30</height>
-							<font>Bald_InfoMeta</font>
-							<textcolor>bald_ink</textcolor>
-							<label>$VAR[Bald_InfoMeta]</label>
-							<include content="Bald_AnimInfoIn"><param name="delay">440</param></include>
-						</control>
-						<control type="label">
-							<top>8</top>
-							<width>1400</width>
-							<height>26</height>
-							<font>Bald_InfoGenre</font>
-							<textcolor>bald_accent</textcolor>
-							<label>$INFO[ListItem.Genre]</label>
-							<include content="Bald_AnimInfoIn"><param name="delay">480</param></include>
-						</control>
-						<control type="grouplist">
-							<top>16</top>
-							<width>1400</width>
-							<height>30</height>
-							<orientation>horizontal</orientation>
-							<itemgap>8</itemgap>
-							<visible>String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,episode)</visible>
-							<include content="Bald_AnimInfoIn"><param name="delay">520</param></include>
-							<include content="Bald_InfoFlag"><param name="label">4K</param><param name="visible">String.IsEqual(ListItem.VideoResolution,4K)</param></include>
-							<include content="Bald_InfoFlag"><param name="label">1080p</param><param name="visible">String.IsEqual(ListItem.VideoResolution,1080)</param></include>
-							<include content="Bald_InfoFlag"><param name="label">Dolby Vision</param><param name="visible">String.IsEqual(ListItem.HdrType,dolbyvision)</param></include>
-							<include content="Bald_InfoFlag"><param name="label">HDR10</param><param name="visible">String.IsEqual(ListItem.HdrType,hdr10)</param></include>
-							<include content="Bald_InfoFlag"><param name="label">HDR10+</param><param name="visible">String.StartsWith(ListItem.HdrType,hdr10) + !String.IsEqual(ListItem.HdrType,hdr10)</param></include>
-							<include content="Bald_InfoFlag"><param name="label">HLG</param><param name="visible">String.IsEqual(ListItem.HdrType,hlg)</param></include>
-							<include content="Bald_InfoFlag"><param name="label">Dolby Atmos</param><param name="visible">String.Contains(ListItem.AudioCodec,atmos)</param></include>
-							<include content="Bald_InfoFlag"><param name="label">7.1</param><param name="visible">String.IsEqual(ListItem.AudioChannels,8)</param></include>
-							<include content="Bald_InfoFlag"><param name="label">5.1</param><param name="visible">String.IsEqual(ListItem.AudioChannels,6)</param></include>
-						</control>
-						<control type="label">
-							<top>28</top>
-							<width>1400</width>
-							<height>38</height>
-							<font>Bald_InfoTagline</font>
-							<textcolor>bald_ink</textcolor>
-							<label>$INFO[ListItem.Tagline]</label>
-							<visible>!String.IsEmpty(ListItem.Tagline)</visible>
-							<include content="Bald_AnimInfoIn"><param name="delay">560</param></include>
-						</control>
-						<!-- Plot: 4 lines of 34 px (Kodi draws ceil(height / line height) lines). -->
-						<control type="label">
-							<top>14</top>
-							<width>780</width>
-							<height>134</height>
-							<wrapmultiline>true</wrapmultiline>
-							<aligny>top</aligny>
-							<font>Bald_InfoPlot</font>
-							<textcolor>bald_ink84</textcolor>
-							<label>$INFO[ListItem.Plot]</label>
-							<include content="Bald_AnimInfoIn"><param name="delay">600</param></include>
-						</control>
-						<!-- Actions -->
-						<control type="grouplist" id="5000">
-							<top>34</top>
-							<width>1400</width>
-							<height>70</height>
-							<orientation>horizontal</orientation>
-							<itemgap>14</itemgap>
-							<include content="Bald_AnimInfoIn"><param name="delay">650</param></include>
-							<include content="Bald_InfoAction">
-								<param name="id">5001</param>
-								<param name="label">Resume</param>
-								<param name="onclick">SendClick(9)</param>
-								<param name="visible">ListItem.IsResumable</param>
-							</include>
-							<include content="Bald_InfoAction">
-								<param name="id">5002</param>
-								<param name="label">Start over</param>
-								<param name="onclick">SendClick(8)</param>
-								<param name="visible">ListItem.IsResumable</param>
-							</include>
-							<include content="Bald_InfoAction">
-								<param name="id">5003</param>
-								<param name="label">Play</param>
-								<param name="onclick">SendClick(8)</param>
-								<param name="visible">!ListItem.IsResumable</param>
-							</include>
-							<include content="Bald_InfoAction">
-								<param name="id">5004</param>
-								<param name="label">Trailer</param>
-								<param name="onclick">SendClick(11)</param>
-								<param name="visible">!String.IsEmpty(ListItem.Trailer)</param>
-							</include>
-						</control>
-						<!-- Progress (in progress only) -->
-						<control type="group">
-							<top>18</top>
-							<height>24</height>
-							<visible>ListItem.IsResumable</visible>
-							<include content="Bald_AnimInfoIn"><param name="delay">690</param></include>
-							<control type="image">
-								<top>10</top>
-								<width>240</width>
-								<height>4</height>
-								<texture border="2" colordiffuse="bald_ink28">bald/bar.png</texture>
-							</control>
-							<control type="progress">
-								<top>10</top>
-								<width>240</width>
-								<height>4</height>
-								<texturebg />
-								<lefttexture />
-								<midtexture border="2" colordiffuse="bald_ink">bald/bar.png</midtexture>
-								<righttexture />
-								<info>ListItem.PercentPlayed</info>
-							</control>
-							<control type="label">
-								<left>254</left>
-								<width>400</width>
-								<height>24</height>
-								<aligny>center</aligny>
-								<font>Bald_Progress</font>
-								<textcolor>bald_ink70</textcolor>
-								<label>$INFO[ListItem.PercentPlayed,,% watched]</label>
-							</control>
-						</control>
-					</control>
+				<visible>String.IsEqual(Window(home).Property(Bald.InfoSec),0)</visible>
+				<animation effect="fade" start="0" end="100" time="460" tween="sine" easing="inout">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="460" tween="sine" easing="inout">Hidden</animation>
+				<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_h.png</texture></control>
+				<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_b.png</texture></control>
+			</control>
+			<!-- Crossfade to the SAME cached blur, field and multiplier used by Home.
+			     TMDb Helper follows the native item until the recommendation page sets its local container. -->
+			<control type="group" id="5200">
+				<visible>!String.IsEqual(Window(home).Property(Bald.InfoSec),0)</visible>
+				<animation effect="fade" start="0" end="100" time="460" tween="sine" easing="inout">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="460" tween="sine" easing="inout">Hidden</animation>
+				<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+				<include>Bald_BackdropImage</include>
+			</control>
+			<include>Bald_InfoOverview</include>
+			<include>Bald_InfoCastPage</include>
+			<include>Bald_InfoRecommendationsPage</include>
+			<control type="group">
+				<visible>!String.IsEqual(Window(home).Property(Bald.InfoSec),2)</visible>
+				<control type="label">
+					<left>96</left><top>954</top><width>1100</width><height>28</height>
+					<font>Bald_Hint</font><textcolor>bald_ink58</textcolor><label>$VAR[Bald_InfoPageTrail]</label>
 				</control>
-
-				<!-- ===== B: cast (top 880; opacity 0.85, 1, 0.3). Kodi fills list 50. ===== -->
-				<control type="group">
-					<top>880</top>
-					<include content="Bald_AnimInfoGroup"><param name="s0">85</param><param name="s2">30</param></include>
-					<control type="label">
-						<height>28</height>
-						<font>Bald_Section</font>
-						<textcolor>bald_ink</textcolor>
-						<label>Cast</label>
-					</control>
-					<control type="list" id="50">
-						<left>-10</left>
-						<top>36</top>
-						<width>1748</width>
-						<height>220</height>
-						<orientation>horizontal</orientation>
-						<scrolltime tween="cubic" easing="out">440</scrolltime>
-						<onfocus>SetProperty(Bald.InfoSec,1,home)</onfocus>
-						<onup>SetFocus(5000)</onup>
-						<ondown condition="$EXP[Bald_HasRecommendations]">SetFocus(5100)</ondown>
-						<ondown condition="!$EXP[Bald_HasRecommendations]">SetFocus(5050)</ondown>
-						<onleft>noop</onleft>
-						<onright>noop</onright>
-						<itemlayout width="182" height="220">
-							<include content="Bald_CastItem" />
-						</itemlayout>
-						<focusedlayout width="182" height="220">
-							<include content="Bald_CastItem"><param name="focused">Control.HasFocus(50)</param></include>
-						</focusedlayout>
-					</control>
+				<control type="label">
+					<left>1440</left><top>954</top><width>384</width><height>28</height><align>right</align>
+					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
+					<label>Down for cast &amp; details</label><visible>String.IsEqual(Window(home).Property(Bald.InfoSec),0)</visible>
 				</control>
-
-				<!-- ===== C: details (top 1130; opacity 0, 0.85, 0.5) ===== -->
-				<control type="group">
-					<top>1130</top>
-					<include content="Bald_AnimInfoGroup"><param name="s0">0</param><param name="s1">85</param><param name="s2">50</param></include>
-					<!-- A focusable heading keeps Details reachable even if both lists are empty. -->
-					<control type="button" id="5050">
-						<width>180</width>
-						<height>28</height>
-						<font>Bald_Section</font>
-						<textcolor>bald_ink</textcolor>
-						<disabledcolor>bald_ink</disabledcolor>
-						<focusedcolor>bald_accent</focusedcolor>
-						<textoffsetx>0</textoffsetx>
-						<texturefocus />
-						<texturenofocus />
-						<label>Details</label>
-						<onfocus>SetProperty(Bald.InfoSec,1,home)</onfocus>
-						<onup condition="Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</onup>
-						<onup condition="!Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5000)</onup>
-						<ondown condition="$EXP[Bald_HasRecommendations]">SetFocus(5100)</ondown>
-						<ondown condition="!$EXP[Bald_HasRecommendations]">noop</ondown>
-						<onleft>noop</onleft>
-						<onright>noop</onright>
-						<onclick>noop</onclick>
-					</control>
-					<include content="Bald_Detail"><param name="x">0</param><param name="y">40</param><param name="vy">62</param><param name="label">Directed by</param><param name="value">$INFO[ListItem.Director]</param></include>
-					<include content="Bald_Detail"><param name="x">582</param><param name="y">40</param><param name="vy">62</param><param name="label">Written by</param><param name="value">$INFO[ListItem.Writer]</param></include>
-					<include content="Bald_Detail"><param name="x">0</param><param name="y">100</param><param name="vy">122</param><param name="label">Video</param><param name="value">$VAR[Bald_InfoVideo]</param></include>
-					<include content="Bald_Detail"><param name="x">582</param><param name="y">100</param><param name="vy">122</param><param name="label">Audio</param><param name="value">$VAR[Bald_InfoAudio]</param></include>
-					<include content="Bald_Detail"><param name="x">0</param><param name="y">160</param><param name="vy">182</param><param name="label">Subtitles</param><param name="value">$INFO[ListItem.SubtitleLanguage]</param></include>
-					<include content="Bald_Detail"><param name="x">582</param><param name="y">160</param><param name="vy">182</param><param name="label">Added</param><param name="value">$INFO[ListItem.DateAdded]</param></include>
-				</control>
-
-				<!-- ===== D: more like this (top 1360; opacity 0, 0.5, 1). Library movies sharing the first genre. ===== -->
-				<control type="group">
-					<top>1360</top>
-					<include content="Bald_AnimInfoGroup"><param name="s0">0</param><param name="s1">50</param></include>
-					<control type="label">
-						<height>28</height>
-						<font>Bald_Section</font>
-						<textcolor>bald_ink</textcolor>
-						<label>More like this</label>
-					</control>
-					<control type="list" id="5100">
-						<!-- An empty dynamic URL does not reliably clear Kodi's previous provider items. -->
-						<visible>!String.IsEmpty(Window(movieinformation).Property(Bald.MorePath))</visible>
-						<left>-10</left>
-						<top>36</top>
-						<width>1748</width>
-						<height>164</height>
-						<orientation>horizontal</orientation>
-						<scrolltime tween="cubic" easing="out">440</scrolltime>
-						<onfocus>SetProperty(Bald.InfoSec,2,home)</onfocus>
-						<onup condition="Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</onup>
-						<onup condition="!Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</onup>
-						<ondown>noop</ondown>
-						<onleft>noop</onleft>
-						<onright>noop</onright>
-						<onclick>RunScript(skin.bald,open,$INFO[Container(5100).ListItem.DBType],$INFO[Container(5100).ListItem.DBID])</onclick>
-						<itemlayout width="280" height="164">
-							<include content="Bald_MoreItem" />
-						</itemlayout>
-						<focusedlayout width="280" height="164">
-							<include content="Bald_MoreItem"><param name="focused">Control.HasFocus(5100)</param></include>
-						</focusedlayout>
-						<content target="videos" sortby="rating" sortorder="descending" limit="12" browse="never">$INFO[Window(movieinformation).Property(Bald.MorePath)]</content>
-					</control>
+				<control type="label">
+					<left>1300</left><top>954</top><width>524</width><height>28</height><align>right</align>
+					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
+					<label>Up for overview · Down for more like this</label><visible>String.IsEqual(Window(home).Property(Bald.InfoSec),1)</visible>
 				</control>
 			</control>
 		</control>

@@ -118,7 +118,7 @@ Static values: scrims are black at the alphas given per component below. Focus r
 | Background change | 800 FADE crossfade of the blurred fanart (was: palette change, 800 FADE on every tinted element) |
 | Info open | home chrome out 200; art frame zoom to full screen 640 MOVE, delay 40; info content base delay 380 then stagger 0, 60, 100, 140, 180, 220, 270, 310 |
 | Info close | content out 130; art frame back 540 MOVE, delay 160; home chrome back 380, delay 440 |
-| Info section scroll | 560 MOVE; art dims to 60% field over 460 |
+| Info page change | Incoming 360 FADE + 18 px rise over 560 MOVE; outgoing 130 FADE; sharp/blur crossfade 460 FADE |
 | Season change | episode row out 140, swap, in 340 |
 
 ---
@@ -187,29 +187,29 @@ Open info as a dialog over Home. Home stays rendered underneath, so the art fram
 
 Alpha robustness update (2026-09-25): Home keeps this handoff and follows the current info item's artwork when a related title replaces it. When opened outside Home (library/search/add-ons), info draws its own full-screen artwork over `field`, fading in over 380 FADE and out over 130 FADE. Missing artwork leaves the field, never an unrelated title's art.
 
-Layout (content column starts at x 96):
+Approved paged revision (2026-09-25): three fixed pages replace the long scrolling column. No cast peek on Overview and no additive section offsets.
 
-| Group | Top | Contents |
+| Page | Layout | Contents |
 | --- | --- | --- |
-| A | 150 | Logo box 170 tall (or 76 px title), meta, genres (accent), flags, tagline, plot (4 lines), actions, progress (in-progress only) |
-| B | 880 | Cast: 112 px circles, name, role |
-| C | 1130 | Details: Directed by, Written by, Video, Audio, Subtitles, Added |
-| D | 1360 | More like this: 256 by 144 tiles |
+| Overview | Content x96, y150 | Existing logo/title, meta, genres, flags, tagline, plot, actions and progress |
+| Cast & details | Poster 96,156,432,648; right column x624, width1200 | Title/meta above five 240 px cast slots at y378; 112 px portraits with name/role; Details heading y650, three 380 px columns at y696 and y796 |
+| More like this | Home-sized frame 96,120,1248,702; caption x1440, y380, width384; row y884 | Highlighted recommendation's fanart, title, year/runtime, genres and plot; shared Home landscape tiles, 440 MOVE scrolling |
 
 Scrims: horizontal field 92% at 0, 72% at 32%, 0 at 64%; plus bottom field 85% at 0, 0 at 42%.
 
-Scroll sections: offset 0, 560, 1000. Group opacity per section: A 1, 0, 0. B 0.85, 1, 0.3. C 0, 0.85, 0.5. D 0, 0.5, 1.
+Overview retains sharp fullscreen fanart. Moving down crossfades over 460 FADE to Home's shared blurred backdrop (TMDb Helper cached blur: 480 px, radius40, brightness30%). Cast uses the original movie's art; recommendations follow the highlighted item. Up restores sharp fanart. Without blur support/art, use the opaque field. Each page fades in over 360 FADE and rises 18 px over 560 MOVE; the outgoing page fades out over 130 FADE. Preserve each list's selection when changing pages.
+
+Recommendation previews explicitly read container5100; they must not replace the native dialog item until Select. Loading/empty recommendations have an escapable focus target. The page trail sits at y954 on the first two pages; the recommendation page uses Home-style right-hand hints.
 
 Actions: in progress gives Resume, Start over, Trailer, Mark watched. Otherwise Play, Trailer, Mark watched. Focused action is filled with `ink` and the label in `field`.
 
 | From | Key | Result |
 | --- | --- | --- |
 | Actions | Left or Right | Move between actions |
-| Actions | Down | Cast; if empty, focus Details at section offset 560 |
-| Cast | Down | More like this; if empty, focus Details |
-| Details | Down | More like this if available; otherwise stay |
-| Details | Up | Cast if available; otherwise actions |
-| Any | Up | Previous section |
+| Actions | Down | Cast & details; focus cast, or Details if cast is empty |
+| Cast / Details | Down | More like this; focus its list, or the loading/empty state |
+| Cast / Details | Up | Overview; restore previous action |
+| More like this | Up | Cast & details; restore cast selection, or Details if empty |
 | More like this | Select | Replace this info with that title |
 | Any | Back | Close; return to the originating tile |
 
