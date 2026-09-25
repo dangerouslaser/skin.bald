@@ -222,7 +222,7 @@
 				</content>
 			</control>
 
-			<!-- Section line: accent dot, screen name, "Back for menu" hint (hidden after three menu opens). -->
+			<!-- Section line: accent dot, screen name, "Back for menu" hint. -->
 			<control type="grouplist">
 				<left>1440</left>
 				<top>966</top>
@@ -261,7 +261,8 @@
 					<font>Bald_Hint</font>
 					<textcolor>bald_ink55</textcolor>
 					<label>Back for menu</label>
-					<visible>!String.IsEqual(Skin.String(Bald.MenuOpens),3)</visible>
+					<!-- Spec: hide after three menu opens (Skin.String(Bald.MenuOpens), still counted in the menu's onfocus).
+					     Always shown for now; the auto-hide returns in 0.2 as an Appearance setting. -->
 					<animation type="Conditional" condition="$EXP[Bald_Idle]">
 						<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
 					</animation>
