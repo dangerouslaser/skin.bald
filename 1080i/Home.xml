@@ -249,8 +249,9 @@
 					<item>
 						<label>Movies</label>
 						<property name="id">movies</property>
-						<property name="note">Rows for this screen arrive in a later build.</property>
-						<onclick>noop</onclick>
+						<property name="note">Browse your movie library with large posters and an artwork preview.</property>
+						<onclick>ClearProperty(Bald.Menu,home)</onclick>
+						<onclick>ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
 					</item>
 					<item>
 						<label>TV shows</label>

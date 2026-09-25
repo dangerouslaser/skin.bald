@@ -235,6 +235,20 @@ Appearance settings: Clearlogo on artwork (default on), Media flags (default on)
 
 ---
 
+### 5.5 Movie library — approved first native view
+
+The first redesigned library view replaces Estuary for movie browsing only; other content types and the utility options menu retain their existing views. Use three large posters on the left and the selected movie's artwork preview and details on the right.
+
+- Heading at (96,108); sort summary right-aligned at (1296,120), width 528.
+- Horizontal native list 510 at (84,210), 1152 × 648, with three 384 px slots. Posters are 360 × 540 at slot offset (12,12), with title labels beneath. Focus pop: 100 → 102.5%, 280 ms POP; scrolling: 440 ms MOVE.
+- Artwork at (1296,222), 528 × 297. Reuse Home's 700 ms crossfade and 1500 ms settle zoom, with backdrop masks preventing frame overflow.
+- Caption width 528; title area y548–636, metadata starts y636. Reuse Home's staggered title, metadata, **media flags**, genres and plot. The background uses the same optional blurred-fanart treatment as Home.
+- Open details button at (1296,896), 220 × 46. Footer at y954; item count left, navigation hints right.
+- Left/Right browses; Up opens native view/sort/filter options; Down focuses Open details; Info opens the existing paged detail dialog. Select follows Kodi's global default-select action (approved as Show information on the development installation). Back from details restores the selected movie.
+- Home's Movies menu opens the native movie library. Existing alternative view choices remain available.
+
+---
+
 ## 6. Default rows (alpha uses a fixed configuration)
 
 | Screen | Rows |

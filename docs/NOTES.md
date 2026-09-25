@@ -99,6 +99,13 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 - `tools/kodi_rpc.py` is a localhost-only development client (not part of the skin runtime): TCP JSON-RPC on 9090 and EventServer builtins on 9777. Enable Kodi's remote-control services to use it. Example: `python3 tools/kodi_rpc.py builtin 'ReloadSkin()'`; always check `~/Library/Logs/kodi.log` after a reload. The UDP send has no acknowledgement; query state or inspect the log to verify it took effect.
 - Still to verify on hardware: CoreELEC performance and a fresh install without TMDb Helper. The no-helper branch is guarded in XML; the installed helper was not disabled during the macOS checks.
 
+## First native movie library (2026-09-25)
+
+- View 510 uses the native MyVideoNav movie container, not a second content provider, so sorting, filtering and context actions continue to target Kodi's library items. Other media types retain Estuary views. Home's Movies menu now opens the library.
+- Parameterized Home's caption geometry and art dimensions with unchanged defaults. The library reuses its media flags, staggered caption, parity crossfade and settle zoom; four backdrop-window strips mask transformed artwork overflow.
+- A native library container does not dispatch custom XML onclick actions like a static/dynamic provider list. Select uses Kodi's `myvideos.selectaction`; with explicit user approval, the development installation now uses Show information (3), previously Play (8). The skin does not change that preference on load. Info and the Open details button also work without changing this global setting.
+- Verified on macOS Kodi 22: scrolling beyond the three visible posters, matching title/artwork and visible media flags, Select and the explicit button opening Video info, Back restoring the selected item, Up opening native options and Right restoring poster focus. Home's shared caption still renders correctly. No skin/XML errors after reload; the existing external HTTP 403 remains unrelated. CoreELEC performance remains to be tested.
+
 ## Five-item context menu (2026-09-25)
 
 - Grouplist 996 now caps at 304 px: five 56 px buttons and four 6 px gaps. Scrolling is instant, matching Home, with `noop` at the top and bottom to prevent wrapping. Kodi still creates and dispatches the native buttons; no action ordering is hard-coded.

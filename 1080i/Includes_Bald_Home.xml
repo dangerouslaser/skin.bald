@@ -261,17 +261,18 @@
 	<include name="Bald_ArtLayer">
 		<param name="visible" />
 		<param name="texture">$VAR[Bald_Fanart]</param>
+		<param name="width">1248</param><param name="height">702</param><param name="center">624,351</param>
 		<definition>
 			<control type="image">
-				<width>1248</width>
-				<height>702</height>
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
 				<aspectratio>scale</aspectratio>
 				<fadetime>700</fadetime>
 				<texture background="true">$PARAM[texture]</texture>
 				<visible>$PARAM[visible]</visible>
 				<animation type="Visible">
 					<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
-					<effect type="zoom" start="105" end="100" center="624,351" time="1500" tween="cubic" easing="out" />
+					<effect type="zoom" start="105" end="100" center="$PARAM[center]" time="1500" tween="cubic" easing="out" />
 				</animation>
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="700" tween="sine" easing="inout" />
@@ -315,6 +316,8 @@
 		<param name="c" />
 		<param name="p" />
 		<param name="ignore_home_row">false</param>
+		<param name="x">1420</param><param name="title_y">332</param><param name="body_y">464</param>
+		<param name="width">384</param><param name="clip_width">440</param><param name="title_height">132</param>
 		<definition>
 			<control type="group">
 				<visible>$PARAM[ignore_home_row] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
@@ -326,17 +329,17 @@
 				     grouplist bottom-aligns it (align right = end of a vertical grouplist), so the last line always
 				     ends at 464, where a one-line title ends, and the rest of the caption never moves. -->
 				<control type="grouplist">
-					<left>1420</left>
-					<top>332</top>
-					<width>440</width>
-					<height>132</height>
+					<left>$PARAM[x]</left>
+					<top>$PARAM[title_y]</top>
+					<width>$PARAM[clip_width]</width>
+					<height>$PARAM[title_height]</height>
 					<orientation>vertical</orientation>
 					<align>right</align>
 					<usecontrolcoords>true</usecontrolcoords>
 					<control type="textbox">
 						<left>20</left>
-						<width>384</width>
-						<height max="132">auto</height>
+						<width>$PARAM[width]</width>
+						<height max="$PARAM[title_height]">auto</height>
 						<font>Bald_CaptionTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.TVShowTitle]</label>
@@ -345,8 +348,8 @@
 					</control>
 					<control type="textbox">
 						<left>20</left>
-						<width>384</width>
-						<height max="132">auto</height>
+						<width>$PARAM[width]</width>
+						<height max="$PARAM[title_height]">auto</height>
 						<font>Bald_CaptionTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Title]</label>
@@ -356,39 +359,44 @@
 				</control>
 				<control type="grouplist">
 					<!-- Starts 20 px left of the caption so the 14 px slide-in is not clipped (grouplists clip). -->
-					<left>1420</left>
-					<top>464</top>
-					<width>440</width>
+					<left>$PARAM[x]</left>
+					<top>$PARAM[body_y]</top>
+					<width>$PARAM[clip_width]</width>
 					<height>396</height>
 					<orientation>vertical</orientation>
 					<itemgap>0</itemgap>
 					<usecontrolcoords>true</usecontrolcoords>
 					<!-- Meta: one label per item type -->
 					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
 						<param name="label">S$INFO[Container($PARAM[c]).ListItem.Season] E$INFO[Container($PARAM[c]).ListItem.Episode]$INFO[Container($PARAM[c]).ListItem.Title,$COMMA ,]</param>
 						<param name="visible">Container($PARAM[c]).ListItem.IsEpisode</param>
 					</include>
 					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year,,$COMMA ]1 season</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow) + String.IsEqual(Container($PARAM[c]).ListItem.Property(TotalSeasons),1)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Property(TotalSeasons),$COMMA , seasons]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow) + !String.IsEqual(Container($PARAM[c]).ListItem.Property(TotalSeasons),1)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year,,$COMMA ]$INFO[Container($PARAM[c]).ListItem.Duration(h),,h ]$INFO[Container($PARAM[c]).ListItem.Duration(mm),,m]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + Integer.IsGreaterOrEqual(Container($PARAM[c]).ListItem.Duration(mins),60)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Duration(mins),$COMMA , min]</param>
@@ -398,7 +406,7 @@
 					<control type="grouplist">
 						<top>10</top>
 						<left>20</left>
-						<width>384</width>
+						<width>$PARAM[width]</width>
 						<height>26</height>
 						<orientation>horizontal</orientation>
 						<itemgap>8</itemgap>
@@ -418,7 +426,7 @@
 					<control type="label">
 						<top>8</top>
 						<left>20</left>
-						<width>384</width>
+						<width>$PARAM[width]</width>
 						<height>24</height>
 						<font>Bald_Accent</font>
 						<textcolor>bald_accent</textcolor>
@@ -430,7 +438,7 @@
 					<control type="label">
 						<top>18</top>
 						<left>20</left>
-						<width>384</width>
+						<width>$PARAM[width]</width>
 						<height>116</height>
 						<wrapmultiline>true</wrapmultiline>
 						<aligny>top</aligny>
@@ -445,6 +453,7 @@
 		</definition>
 	</include>
 	<include name="Bald_CaptionMeta">
+		<param name="width">384</param>
 		<param name="c" />
 		<param name="p" />
 		<param name="label" />
@@ -453,7 +462,7 @@
 			<control type="label">
 				<left>20</left>
 				<top>14</top>
-				<width>384</width>
+				<width>$PARAM[width]</width>
 				<height>26</height>
 				<font>Bald_CaptionMeta</font>
 				<textcolor>bald_ink80</textcolor>
