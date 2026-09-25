@@ -20,7 +20,7 @@ def available_letters(count, read):
 
 
 def publish(xbmc, xbmcgui):
-    container = next((c for c in (514, 513, 512, 511, 510)
+    container = next((c for c in (515, 514, 513, 512, 511, 510)
                       if xbmc.getCondVisibility(f'Control.IsVisible({c})')), None)
     if container is None:
         return

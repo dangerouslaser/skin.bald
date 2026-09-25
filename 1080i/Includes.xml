@@ -23,6 +23,7 @@
 	<include file="Includes_Bald_LibraryList.xml" />
 	<include file="View_513_Bald_CompactList.xml" />
 	<include file="View_514_Bald_ArtworkList.xml" />
+	<include file="View_515_Bald_PosterLow.xml" />
 	<include file="View_51_Poster.xml" />
 	<include file="View_52_IconWall.xml" />
 	<include file="View_53_Shift.xml" />
