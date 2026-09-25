@@ -40,6 +40,17 @@
         <onstart>Control.Move(9103,-2)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9103))</stop>
     </timer>
+    <!-- Bald Home palette: when TMDb Helper publishes a new field color, put it in the idle background layer and flip
+         Bald.FieldSlot so it crossfades (800). -->
+    <timer>
+        <name>bald_field</name>
+        <start>Window.IsActive(home) + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.Colors.Main)) + !String.IsEqual(Window(home).Property(Bald.FieldNow),Window(home).Property(TMDbHelper.ListItem.Colors.Main))</start>
+        <onstart condition="String.IsEqual(Window(home).Property(Bald.FieldSlot),a)">SetProperty(Bald.Fieldb,$INFO[Window(home).Property(TMDbHelper.ListItem.Colors.Main)],home)</onstart>
+        <onstart condition="!String.IsEqual(Window(home).Property(Bald.FieldSlot),a)">SetProperty(Bald.Fielda,$INFO[Window(home).Property(TMDbHelper.ListItem.Colors.Main)],home)</onstart>
+        <onstart>SetProperty(Bald.FieldNow,$INFO[Window(home).Property(TMDbHelper.ListItem.Colors.Main)],home)</onstart>
+        <onstart>SetProperty(Bald.FieldSlot,$VAR[Bald_FieldSlotNext],home)</onstart>
+        <stop>true</stop>
+    </timer>
     <!-- Bald Home idle (60 s): close the menu and park focus on the wake button so the first key only wakes. -->
     <timer>
         <name>bald_idle</name>
