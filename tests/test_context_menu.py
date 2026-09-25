@@ -32,7 +32,8 @@ class ContextMenuTests(unittest.TestCase):
         includes = ET.parse(XML / 'Includes_Bald_Home.xml').getroot()
         note = includes.find("include[@name='Bald_MenuNote']/definition/control")
         bottom = int(self.group.findtext('top')) + int(self.group.find('height').get('max'))
-        self.assertGreater(int(note.findtext('top')), bottom)
+        self.assertEqual(note.findtext('top'), '$PARAM[y]')
+        self.assertGreater(int(includes.findtext("include[@name='Bald_MenuNote']/param[@name='y']")), bottom)
         for name in ['Home.xml', 'DialogContextMenu.xml']:
             root = ET.parse(XML / name).getroot()
             self.assertIsNotNone(root.find(".//include[@content='Bald_MenuNote']"))

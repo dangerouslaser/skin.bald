@@ -20,7 +20,7 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(control.findtext("visible"), "Container.Content(movies)")
         self.assertIsNone(control.find("content"))
         self.assertEqual(int(control.findtext("width")), 3 * int(control.find("itemlayout").get("width")))
-        self.assertEqual(control.findtext("onup"), "9000")
+        self.assertEqual(control.findtext("onup"), "9150")
         self.assertEqual(control.findtext("ondown"), "noop")
 
     def test_caption_reuses_home_media_flags_and_motion(self):
@@ -61,3 +61,17 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(codec.findtext("param[@name='visible']"), "!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)")
         group = next(n for n in caption.iter("control") if codec in list(n))
         self.assertIn("!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)", group.findtext("visible"))
+
+    def test_options_have_five_rows_native_actions_and_return_routes(self):
+        menu = self.view.find(".//control[@id='9150']")
+        self.assertEqual((menu.findtext('left'), menu.findtext('top')), ('1296', '392'))
+        self.assertEqual(int(menu.findtext('height')), 5 * int(menu.find('itemlayout').get('height')))
+        self.assertEqual(menu.findtext('scrolltime'), '0')
+        for direction in ('onup', 'ondown', 'onright'):
+            self.assertEqual(menu.findtext(direction), 'noop')
+        for direction in ('onleft', 'onback'):
+            self.assertEqual(menu.findtext(direction), '510')
+        actions = [n.text for n in menu.iter('onclick')]
+        for action in ('SendClick(3)', 'SendClick(4)', 'SendClick(8)', 'SendClick(10)', 'Filter', 'Container.NextViewMode'):
+            self.assertIn(action, actions)
+        self.assertIsNotNone(self.view.find("include[@name='Bald_LibraryOptions']//include[@content='Bald_MenuNote']"))
