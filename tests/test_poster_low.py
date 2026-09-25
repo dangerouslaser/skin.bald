@@ -47,11 +47,14 @@ class PosterLowTests(unittest.TestCase):
 
     def test_options_have_an_opaque_field_backed_menu_zone(self):
         view = self.root.find("include[@name='View_515_Bald_PosterLow']/control")
-        menu_mask = next(group for group in view.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]')
+        menu_mask = next(group for group in view.findall('control') if group.find("animation[@condition='$EXP[Bald_LibraryMenuOpen]']") is not None and group.find("include[@content='Bald_BackdropWindow']") is not None)
         window = menu_mask.find("include[@content='Bald_BackdropWindow']")
         self.assertIsNotNone(window)
         bounds = tuple(int(window.findtext(f"param[@name='{key}']")) for key in ('x', 'y', 'w', 'h'))
         self.assertEqual(bounds, (1264, 0, 592, 1080))
+        fade = menu_mask.find("animation[@condition='$EXP[Bald_LibraryMenuOpen]']")
+        self.assertEqual((fade.get('effect'), fade.get('start'), fade.get('end'), fade.get('time'), fade.get('tween'), fade.get('easing'), fade.text), ('fade', '0', '100', '380', 'sine', 'inout', 'Conditional'))
+        self.assertIsNone(menu_mask.find('visible'))
         children = list(view)
         self.assertGreater(children.index(menu_mask), children.index(view.find("control[@id='515']")))
 
