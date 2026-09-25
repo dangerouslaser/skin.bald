@@ -253,6 +253,16 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 
 ---
 
+### 5.6 Movie poster wall — full-width variant
+
+- Native movie panel511, selectable alongside Bald posters. Eight columns × two rows: panel at (84,210), 1728 × 624, slots216 × 312. Posters are192 × 288, center-cropped, with the existing 2.5% focus pop and outline. No per-poster text; the selected title appears in the header.
+- Selected title at (96,108), width1100, metadata at y168. Media flags right-aligned at (1296,168), width528, including audio codec. Shared staggered caption motion and blurred selected-fanart background apply.
+- Direction keys traverse the grid and scroll rows. Up at the top or Left at the left edge opens options; Menu also opens options. Right at the right edge enters letter mode; Down at the end of the library also enters it. Letter navigation and return behavior match section5.5.
+- Shared right-side options menu replaces the rightmost three poster columns; the remaining posters dim to35%. Frame masks stay opaque. Other view choices remain available.
+- The full alphabet strip, footer alignment, native Select/Info actions and 20px hint separators remain consistent with the first library view. A second wall with a right-side artwork preview is planned next, not implemented in this milestone.
+
+---
+
 ## 6. Default rows (alpha uses a fixed configuration)
 
 | Screen | Rows |

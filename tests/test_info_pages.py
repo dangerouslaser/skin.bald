@@ -86,7 +86,8 @@ class InfoPagesTests(unittest.TestCase):
         labels = [node.text for node in caption.iter("label")]
         for field in ("Title", "Plot", "Genre"):
             self.assertIn(f"$INFO[Container($PARAM[c]).ListItem.{field}]", labels)
-        self.assertEqual(len(caption.findall(".//include[@content='Bald_Flag']")), 9)
+        self.assertIsNotNone(caption.find(".//include[@content='Bald_MediaFlagItems']"))
+        self.assertEqual(len(home.findall("include[@name='Bald_MediaFlagItems']//include[@content='Bald_Flag']")), 9)
         delays = {node.findtext("param[@name='delay']") for node in caption.findall(".//include[@content='Bald_AnimCaptionIn']")}
         self.assertEqual(delays, {"180", "275", "300", "350"})
         art = self.shared.find("variable[@name='Bald_MorePreviewArt']")

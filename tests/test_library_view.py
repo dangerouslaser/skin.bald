@@ -30,7 +30,8 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(caption.findtext("param[@name='width']"), "528")
         shared = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         home_caption = shared.find("include[@name='Bald_Caption']")
-        self.assertEqual(len(home_caption.findall(".//include[@content='Bald_Flag']")), 9)
+        self.assertIsNotNone(home_caption.find(".//include[@content='Bald_MediaFlagItems']"))
+        self.assertEqual(len(shared.findall("include[@name='Bald_MediaFlagItems']//include[@content='Bald_Flag']")), 9)
         self.assertEqual(home_caption.findtext("param[@name='width']"), "384")
         self.assertEqual(home_caption.findtext("param[@name='x']"), "1420")
 
@@ -60,7 +61,8 @@ class LibraryViewTests(unittest.TestCase):
         item = self.view.find("include[@name='Bald_LibraryPosterItem']")
         poster = next(n for n in item.iter('control') if n.findtext('texture') == '$VAR[Bald_LibraryPoster]')
         self.assertEqual(poster.findtext('aspectratio'), 'scale')
-        self.assertEqual((poster.findtext('width'), poster.findtext('height')), ('360', '540'))
+        self.assertEqual((poster.findtext('width'), poster.findtext('height')), ('$PARAM[width]', '$PARAM[height]'))
+        self.assertEqual((item.findtext("param[@name='width']"), item.findtext("param[@name='height']")), ('360', '540'))
         container = self.view.find(".//control[@id='510']")
         self.assertEqual(container.findtext('itemlayout/include'), 'Bald_LibraryPosterItem')
         self.assertEqual(container.find('focusedlayout/include').get('content'), 'Bald_LibraryPosterItem')
@@ -73,10 +75,10 @@ class LibraryViewTests(unittest.TestCase):
     def test_audio_codec_flag_maps_names_and_hides_missing_data(self):
         shared = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         caption = shared.find("include[@name='Bald_Caption']")
-        codec = next(n for n in caption.findall(".//include[@content='Bald_Flag']") if "$MAP[" in n.findtext("param[@name='label']"))
+        codec = next(n for n in shared.findall("include[@name='Bald_MediaFlagItems']//include[@content='Bald_Flag']") if "$MAP[" in n.findtext("param[@name='label']"))
         self.assertEqual(codec.findtext("param[@name='label']"), "$MAP[DefaultCodecMap, Container($PARAM[c]).ListItem.AudioCodec]")
         self.assertEqual(codec.findtext("param[@name='visible']"), "!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)")
-        group = next(n for n in caption.iter("control") if codec in list(n))
+        group = next(n for n in caption.iter("control") if n.find("include[@content='Bald_MediaFlagItems']") is not None)
         self.assertIn("!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)", group.findtext("visible"))
 
     def test_options_have_five_rows_native_actions_and_return_routes(self):
@@ -87,7 +89,7 @@ class LibraryViewTests(unittest.TestCase):
         for direction in ('onup', 'ondown', 'onright'):
             self.assertEqual(menu.findtext(direction), 'noop')
         for direction in ('onleft', 'onback'):
-            self.assertEqual(menu.findtext(direction), '510')
+            self.assertEqual(menu.findtext(direction), '50')
         actions = [n.text for n in menu.iter('onclick')]
         for action in ('SendClick(3)', 'SendClick(4)', 'SendClick(8)', 'SendClick(10)', 'Filter', 'Container.NextViewMode'):
             self.assertIn(action, actions)
@@ -97,13 +99,13 @@ class LibraryViewTests(unittest.TestCase):
         mode = self.view.find(".//control[@id='9160']")
         for direction, action in [('onleft', 'PrevLetter'), ('onright', 'NextLetter')]:
             actions = mode.findall(direction)
-            self.assertEqual([n.text for n in actions], ['SetFocus(510)', f'Action({action})', 'SetFocus(9160)'])
+            self.assertEqual([n.text for n in actions], ['SetFocus(50)', f'Action({action})', 'SetFocus(9160)'])
             self.assertTrue(all(n.get('condition') == '$EXP[Bald_LibraryTitleSorted]' for n in actions[:2]))
         for direction in ('onup', 'onback'):
-            self.assertEqual(mode.findtext(direction), '510')
-        self.assertEqual(mode.findtext('onclick'), 'SetFocus(510)')
+            self.assertEqual(mode.findtext(direction), '50')
+        self.assertEqual(mode.findtext('onclick'), 'SetFocus(50)')
         self.assertEqual(mode.findtext('ondown'), 'noop')
-        self.assertEqual(mode.findtext('onfocus'), 'SetProperty(TMDbHelper.WidgetContainer,510,videos)')
+        self.assertEqual(mode.findtext('onfocus'), 'SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(videos).Property(Bald.LibraryContainer)],videos)')
         self.assertEqual(self.view.findtext("expression[@name='Bald_LibraryTitleSorted']"), 'String.IsEqual(Container.SortMethod,$LOCALIZE[556])')
 
     def test_full_alphabet_fits_beneath_posters(self):
