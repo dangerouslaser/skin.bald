@@ -51,7 +51,7 @@ class PosterLowTests(unittest.TestCase):
         window = menu_mask.find("include[@content='Bald_BackdropWindow']")
         self.assertIsNotNone(window)
         bounds = tuple(int(window.findtext(f"param[@name='{key}']")) for key in ('x', 'y', 'w', 'h'))
-        self.assertEqual(bounds, (1264, 198, 592, 652))
+        self.assertEqual(bounds, (1264, 0, 592, 1080))
         children = list(view)
         self.assertGreater(children.index(menu_mask), children.index(view.find("control[@id='515']")))
 
