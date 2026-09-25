@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<variable name="Bald_ListWatchState">
+		<value condition="ListItem.IsResumable">Resume</value>
+		<value condition="Integer.IsGreater(ListItem.Playcount,0)">Watched</value>
+		<value></value>
+	</variable>
+	<include name="Bald_CompactMovieRow">
+		<param name="ink">bald_ink70</param>
+		<definition>
+			<control type="label"><left>26</left><width>702</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><label>$INFO[ListItem.Label]</label></control>
+			<control type="label"><left>752</left><width>80</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><label>$INFO[ListItem.Year]</label></control>
+			<control type="label"><left>856</left><width>120</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><label>$INFO[ListItem.Duration(mins),, min]</label></control>
+			<control type="label"><left>1000</left><width>140</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_accent</textcolor><label>$VAR[Bald_ListWatchState]</label></control>
+		</definition>
+	</include>
+</includes>
