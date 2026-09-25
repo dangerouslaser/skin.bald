@@ -39,11 +39,13 @@ def main() -> None:
             assert parsed.attrib["id"] == addon_id
             assert parsed.attrib["version"] == version
 
-    xc_zip = root / "script.bald.xcsetup" / "script.bald.xcsetup-0.1.0.zip"
+    xc_version = addons["script.bald.xcsetup"].attrib["version"]
+    xc_zip = root / "script.bald.xcsetup" / f"script.bald.xcsetup-{xc_version}.zip"
     with zipfile.ZipFile(xc_zip) as zipped:
         names = set(zipped.namelist())
         assert "script.bald.xcsetup/default.py" in names
         assert "script.bald.xcsetup/resources/settings.xml" in names
+        assert "script.bald.xcsetup/resources/language/resource.language.en_gb/strings.po" in names
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
 
     assert (root / "skin.bald" / "resources" / "icon.png").is_file()
