@@ -155,11 +155,12 @@
 			<filename>InstrumentSans-Regular.ttf</filename>
 			<size>22</size>
 		</font>
-		<!-- Caption title -->
+		<!-- Caption title, line height 44 (prototype 1.1) -->
 		<font>
 			<name>Bald_CaptionTitle</name>
 			<filename>InstrumentSans-SemiBold.ttf</filename>
 			<size>40</size>
+			<linespacing>0.92</linespacing>
 		</font>
 		<!-- Caption meta -->
 		<font>
@@ -411,11 +412,12 @@
 			<filename>arial.ttf</filename>
 			<size>22</size>
 		</font>
-		<!-- Caption title -->
+		<!-- Caption title, line height 44 (prototype 1.1) -->
 		<font>
 			<name>Bald_CaptionTitle</name>
 			<filename>arial.ttf</filename>
 			<size>40</size>
+			<linespacing>0.92</linespacing>
 			<style>bold</style>
 		</font>
 		<!-- Caption meta -->

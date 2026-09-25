@@ -11,6 +11,11 @@
 	<onload>ClearProperty(Bald.Start9101,home)</onload>
 	<onload>ClearProperty(Bald.Start9102,home)</onload>
 	<onload>ClearProperty(Bald.Start9103,home)</onload>
+	<onload>ClearProperty(Bald.Shown9101,home)</onload>
+	<onload>ClearProperty(Bald.Shown9102,home)</onload>
+	<onload>ClearProperty(Bald.Shown9103,home)</onload>
+	<onload>ClearProperty(Bald.ArtRow,home)</onload>
+	<onload>ClearProperty(Bald.ArtItem,home)</onload>
 	<controls>
 		<control type="image">
 			<width>1920</width>
@@ -36,18 +41,11 @@
 				<control type="image">
 					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
 				</control>
-				<control type="group">
-					<control type="image">
-						<width>1248</width>
-						<height>702</height>
-						<aspectratio>scale</aspectratio>
-						<fadetime>700</fadetime>
-						<texture background="true">$VAR[Bald_Fanart]</texture>
-						<animation type="Conditional" condition="$EXP[Bald_ItemChanged]" reversible="false">
-							<effect type="zoom" start="105" end="100" center="624,351" time="1500" tween="cubic" easing="out" />
-						</animation>
-					</control>
-				</control>
+				<!-- Two fanart layers, as in the prototype: the bald_art_* timers put each new fanart in the idle layer
+				     and flip Bald.ArtSlot, so the new art fades in (700) while settling from 1.05 (1500) and the old
+				     art fades out untouched. -->
+				<include content="Bald_ArtLayer"><param name="slot">a</param></include>
+				<include content="Bald_ArtLayer"><param name="slot">b</param></include>
 			</control>
 			<!-- Scrim and clearlogo (not zoomed; inside the frame, so the masks never touch them). -->
 			<control type="group">
@@ -112,7 +110,7 @@
 				</control>
 			</control>
 
-			<!-- Callout: the dot pops and the line grows from the left on each item change.
+			<!-- Callout: the dot pops and the line grows from the left each time an item is shown.
 			     The line stops 24 px short of the caption (1416), a deliberate change from the prototype's 1440. -->
 			<control type="group">
 				<include>Bald_AnimMenuHides</include>
@@ -122,7 +120,8 @@
 					<width>10</width>
 					<height>10</height>
 					<texture colordiffuse="bald_ink">bald/dot.png</texture>
-					<animation type="Conditional" condition="$EXP[Bald_ItemChanged]" reversible="false">
+					<visible>$EXP[Bald_Settled]</visible>
+					<animation type="Visible">
 						<effect type="fade" start="0" end="100" time="240" delay="220" tween="sine" easing="inout" />
 						<effect type="zoom" start="20" end="100" center="1344,510" time="360" delay="220" tween="back" easing="out" />
 					</animation>
@@ -133,7 +132,8 @@
 					<width>67</width>
 					<height>1</height>
 					<texture colordiffuse="bald_ink50">bald/white.png</texture>
-					<animation type="Conditional" condition="$EXP[Bald_ItemChanged]" reversible="false">
+					<visible>$EXP[Bald_Settled]</visible>
+					<animation type="Visible">
 						<effect type="zoom" start="0,100" end="100,100" center="1349,510" time="560" delay="260" tween="cubic" easing="out" />
 					</animation>
 				</control>
@@ -265,6 +265,8 @@
 				<height>26</height>
 				<orientation>horizontal</orientation>
 				<itemgap>14</itemgap>
+				<!-- Labels are top-aligned and offset so their baselines match (Instrument Sans ascender = font size). -->
+				<usecontrolcoords>true</usecontrolcoords>
 				<include>Bald_AnimMenuHides</include>
 				<animation type="Conditional" condition="$EXP[Bald_Idle]">
 					<effect type="fade" start="100" end="45" time="600" tween="sine" easing="inout" />
@@ -272,7 +274,7 @@
 				<control type="group">
 					<width>8</width>
 					<control type="image">
-						<top>9</top>
+						<top>10</top>
 						<width>8</width>
 						<height>8</height>
 						<texture colordiffuse="bald_accent">bald/dot.png</texture>
@@ -281,15 +283,16 @@
 				<control type="label">
 					<width>auto</width>
 					<height>26</height>
-					<aligny>center</aligny>
+					<aligny>top</aligny>
 					<font>Bald_Section</font>
 					<textcolor>bald_ink</textcolor>
 					<label>Home</label>
 				</control>
 				<control type="label">
+					<top>5</top>
 					<width>auto</width>
 					<height>26</height>
-					<aligny>center</aligny>
+					<aligny>top</aligny>
 					<font>Bald_Hint</font>
 					<textcolor>bald_ink55</textcolor>
 					<label>Back for menu</label>
