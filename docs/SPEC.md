@@ -240,7 +240,7 @@ Appearance settings: Clearlogo on artwork (default on), Media flags (default on)
 The first redesigned library view replaces Estuary for movie browsing only; other content types retain their existing views. Use three large posters on the left and the selected movie's artwork preview and details on the right.
 
 - Heading at (96,108); sort summary right-aligned at (1296,120), width 528.
-- Horizontal native list 510 at (84,210), 1152 × 648, with three 384 px slots. Posters are 360 × 540 at slot offset (12,12), with title labels beneath. Focus pop: 100 → 102.5%, 280 ms POP; scrolling: 440 ms MOVE.
+- Horizontal native list 510 at (84,210), 1152 × 648, with three 384 px slots. Posters are 360 × 540 at slot offset (12,12), with title labels beneath. Preserve artwork proportions and center-crop to fill the 2:3 frame, rather than letterboxing nonstandard posters. Focus pop: 100 → 102.5%, 280 ms POP; scrolling: 440 ms MOVE.
 - Artwork at (1296,222), 528 × 297. Reuse Home's 700 ms crossfade and 1500 ms settle zoom, with backdrop masks preventing frame overflow.
 - Caption width 528; title area y548–636, metadata starts y636. Reuse Home's staggered title, metadata, **media flags**, genres and plot. The background uses the same optional blurred-fanart treatment as Home.
 - No separate Open details button. Footer at y954; item count left, navigation hints right.
