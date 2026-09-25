@@ -36,19 +36,9 @@
 				<control type="image">
 					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
 				</control>
-				<!-- Fanart: a base image crossfades slowly (2000) to the current art at 1.0, so it still mostly shows the old
-				     art while the row's overlay fades the new art in over it (700) with the settle zoom. Reads as the
-				     prototype's crossfade; faint ghosting mid-fade is gone once the zoom settles. -->
-				<control type="image">
-					<width>1248</width>
-					<height>702</height>
-					<aspectratio>scale</aspectratio>
-					<fadetime>2000</fadetime>
-					<texture background="true">$VAR[Bald_Fanart]</texture>
-				</control>
-				<include content="Bald_ArtOverlay"><param name="c">9101</param></include>
-				<include content="Bald_ArtOverlay"><param name="c">9102</param></include>
-				<include content="Bald_ArtOverlay"><param name="c">9103</param></include>
+				<!-- Fanart: two parity layers (see Bald_ArtLayer). -->
+				<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_ItemOdd]</param></include>
+				<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_ItemOdd]</param></include>
 			</control>
 			<!-- Scrim and clearlogo (not zoomed; inside the frame, so the masks never touch them). -->
 			<control type="group">
@@ -66,10 +56,13 @@
 						<effect type="fade" start="100" end="0" time="150" tween="sine" easing="inout" />
 					</animation>
 				</control>
-				<!-- Clearlogo, one per row so it also fades in when its row becomes current. -->
-				<include content="Bald_ArtLogo"><param name="c">9101</param></include>
-				<include content="Bald_ArtLogo"><param name="c">9102</param></include>
-				<include content="Bald_ArtLogo"><param name="c">9103</param></include>
+				<!-- Clearlogo, per row and parity (see Bald_ArtLogo). -->
+				<include content="Bald_ArtLogo"><param name="c">9101</param><param name="p">Odd</param></include>
+				<include content="Bald_ArtLogo"><param name="c">9101</param><param name="p">Even</param></include>
+				<include content="Bald_ArtLogo"><param name="c">9102</param><param name="p">Odd</param></include>
+				<include content="Bald_ArtLogo"><param name="c">9102</param><param name="p">Even</param></include>
+				<include content="Bald_ArtLogo"><param name="c">9103</param><param name="p">Odd</param></include>
+				<include content="Bald_ArtLogo"><param name="c">9103</param><param name="p">Even</param></include>
 			</control>
 
 			<!-- Frame masks: Kodi does not clip a zoom-animated texture (a grouplist did not help), so field-colored
@@ -113,33 +106,14 @@
 				</control>
 			</control>
 
-			<!-- Callout: the dot pops and the line grows from the left each time the current item changes.
+			<!-- Callout: the dot pops and the line grows from the left each time the item changes (parity pair).
 			     The line stops 24 px short of the caption (1416), a deliberate change from the prototype's 1440. -->
 			<control type="group">
+				<!-- Trial: hide with Skin.SetBool(Bald.CalloutOff) to compare the layout without it. -->
+				<visible>!Skin.HasSetting(Bald.CalloutOff)</visible>
 				<include>Bald_AnimMenuHides</include>
-				<control type="image">
-					<left>1339</left>
-					<top>505</top>
-					<width>10</width>
-					<height>10</height>
-					<texture colordiffuse="bald_ink">bald/dot.png</texture>
-					<visible>$EXP[Bald_Settled]</visible>
-					<animation type="Visible">
-						<effect type="fade" start="0" end="100" time="240" delay="220" tween="sine" easing="inout" />
-						<effect type="zoom" start="20" end="100" center="1344,510" time="360" delay="220" tween="back" easing="out" />
-					</animation>
-				</control>
-				<control type="image">
-					<left>1349</left>
-					<top>510</top>
-					<width>67</width>
-					<height>1</height>
-					<texture colordiffuse="bald_ink50">bald/white.png</texture>
-					<visible>$EXP[Bald_Settled]</visible>
-					<animation type="Visible">
-						<effect type="zoom" start="0,100" end="100,100" center="1349,510" time="560" delay="260" tween="cubic" easing="out" />
-					</animation>
-				</control>
+				<include content="Bald_Callout"><param name="visible">$EXP[Bald_ItemOdd]</param></include>
+				<include content="Bald_Callout"><param name="visible">!$EXP[Bald_ItemOdd]</param></include>
 			</control>
 
 			<!-- Caption: out 180 and slide 40 px right as the menu opens; back 380 / 480 after 140 as it closes. -->
@@ -153,9 +127,12 @@
 					<effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" />
 					<effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" />
 				</animation>
-				<include content="Bald_Caption"><param name="c">9101</param></include>
-				<include content="Bald_Caption"><param name="c">9102</param></include>
-				<include content="Bald_Caption"><param name="c">9103</param></include>
+				<include content="Bald_Caption"><param name="c">9101</param><param name="p">Odd</param></include>
+				<include content="Bald_Caption"><param name="c">9101</param><param name="p">Even</param></include>
+				<include content="Bald_Caption"><param name="c">9102</param><param name="p">Odd</param></include>
+				<include content="Bald_Caption"><param name="c">9102</param><param name="p">Even</param></include>
+				<include content="Bald_Caption"><param name="c">9103</param><param name="p">Odd</param></include>
+				<include content="Bald_Caption"><param name="c">9103</param><param name="p">Even</param></include>
 			</control>
 
 			<!-- Menu: in fade 380 and slide 40 px over 480 after 120; out 160. -->
