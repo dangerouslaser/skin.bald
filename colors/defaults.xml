@@ -33,6 +33,8 @@
 	<color name="bald_ink50">80ECEEF2</color>
 	<color name="bald_ink34">57ECEEF2</color>
 	<color name="bald_ink28">47ECEEF2</color>
+	<!-- Blurred fanart background brightness (multiplies the image): 30%. -->
+	<color name="bald_backdrop">FF4D4D4D</color>
 	<color name="bald_tile_dim">8CFFFFFF</color>
 	<color name="bald_placeholder">14808080</color>
 	<color name="bald_tile_placeholder">26808080</color>

@@ -20,71 +20,47 @@
 <includes>
 	<!-- Curves (docs/SPEC.md section 4): move = cubic out, fade = sine inout, pop = back out. -->
 
-	<!-- ============ Palette ============ -->
-	<!-- Field: TMDb Helper's fanart color at 7% lightness. Kodi cannot animate a color, so two layers crossfade
-	     (800, as the spec's palette change): the bald_field timer copies each new color into the idle layer's
-	     property (Bald.Fielda / Bald.Fieldb) and flips Bald.FieldSlot. A timer is fine here: the color already
-	     arrives asynchronously, after TMDb Helper has processed the image. -->
-	<variable name="Bald_Fielda">
-		<value condition="!String.IsEmpty(Window(home).Property(Bald.Fielda))">$INFO[Window(home).Property(Bald.Fielda)]</value>
-		<value>bald_field</value>
-	</variable>
-	<variable name="Bald_Fieldb">
-		<value condition="!String.IsEmpty(Window(home).Property(Bald.Fieldb))">$INFO[Window(home).Property(Bald.Fieldb)]</value>
-		<value>bald_field</value>
-	</variable>
-	<variable name="Bald_FieldSlotNext">
-		<value condition="String.IsEqual(Window(home).Property(Bald.FieldSlot),a)">b</value>
-		<value>a</value>
-	</variable>
-	<include name="Bald_AnimPalette">
-		<animation type="Visible">
-			<effect type="fade" start="0" end="100" time="800" tween="sine" easing="inout" />
-		</animation>
-		<animation type="Hidden">
-			<effect type="fade" start="100" end="0" time="800" tween="sine" easing="inout" />
-		</animation>
+	<!-- ============ Background ============ -->
+	<!-- The current row item's fanart, blurred by TMDb Helper (Gaussian radius 40 on a 480 px copy, cached), darkened
+	     for the OLED with colordiffuse. <fadetime> crossfades between titles and waits until the new image has loaded. -->
+	<include name="Bald_BackdropImage">
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<aspectratio>scale</aspectratio>
+			<fadetime>800</fadetime>
+			<texture background="true">$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</texture>
+			<colordiffuse>bald_backdrop</colordiffuse>
+		</control>
 	</include>
-	<include name="Bald_FieldLayer">
-		<param name="slot" />
-		<definition>
-			<control type="image">
-				<width>1920</width>
-				<height>1080</height>
-				<texture>bald/white.png</texture>
-				<colordiffuse>$VAR[Bald_Field$PARAM[slot]]</colordiffuse>
-				<visible>String.IsEqual(Window(home).Property(Bald.FieldSlot),$PARAM[slot])</visible>
-				<include>Bald_AnimPalette</include>
-			</control>
-		</definition>
+	<include name="Bald_Backdrop">
+		<include>Bald_BackdropImage</include>
 	</include>
-	<!-- The four bars around the art frame, in one field color. -->
-	<include name="Bald_FieldMasks">
-		<param name="color" />
-		<param name="visible">true</param>
+	<!-- A window onto the background at x,y w x h: a grouplist clips to its bounds, and the full-screen image inside is
+	     offset back to 0,0, so it lines up exactly with the background. Used to mask the art frame's zoom overflow. -->
+	<include name="Bald_BackdropWindow">
+		<param name="x" />
+		<param name="y" />
+		<param name="w" />
+		<param name="h" />
 		<definition>
-			<control type="group">
-				<visible>$PARAM[visible]</visible>
-				<include>Bald_AnimPalette</include>
-				<control type="image">
-					<left>0</left><top>80</top><width>96</width><height>782</height>
-					<texture>bald/white.png</texture>
-					<colordiffuse>$PARAM[color]</colordiffuse>
-				</control>
-				<control type="image">
-					<left>1344</left><top>80</top><width>60</width><height>782</height>
-					<texture>bald/white.png</texture>
-					<colordiffuse>$PARAM[color]</colordiffuse>
-				</control>
-				<control type="image">
-					<left>96</left><top>80</top><width>1248</width><height>40</height>
-					<texture>bald/white.png</texture>
-					<colordiffuse>$PARAM[color]</colordiffuse>
-				</control>
-				<control type="image">
-					<left>96</left><top>822</top><width>1248</width><height>30</height>
-					<texture>bald/white.png</texture>
-					<colordiffuse>$PARAM[color]</colordiffuse>
+			<control type="grouplist">
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
+				<width>$PARAM[w]</width>
+				<height>$PARAM[h]</height>
+				<usecontrolcoords>true</usecontrolcoords>
+				<control type="group">
+					<left>-$PARAM[x]</left>
+					<top>-$PARAM[y]</top>
+					<width>1920</width>
+					<height>1080</height>
+					<control type="image">
+						<width>1920</width>
+						<height>1080</height>
+						<texture colordiffuse="bald_field">bald/white.png</texture>
+					</control>
+					<include>Bald_BackdropImage</include>
 				</control>
 			</control>
 		</definition>

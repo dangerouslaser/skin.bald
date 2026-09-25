@@ -7,26 +7,24 @@
 	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load.
 	     Focus always starts on row 1 (defaultcontrol always). -->
 	<onload>SetProperty(Bald.Row,9101,home)</onload>
-	<!-- Fanart tint (docs/SPEC.md section 3) from TMDb Helper's image service: colors only (no TMDB lookups),
-	     lightness forced to 7% and saturation to 35% for the field, watching the current row (TMDbHelper.WidgetContainer). -->
-	<onload condition="!Skin.HasSetting(TMDbHelper.EnableColors)">Skin.SetBool(TMDbHelper.EnableColors)</onload>
-	<onload condition="!String.IsEqual(Skin.String(TMDbHelper.Colors.Luminance),0.07)">Skin.SetString(TMDbHelper.Colors.Luminance,0.07)</onload>
-	<onload condition="!String.IsEqual(Skin.String(TMDbHelper.Colors.Saturation),0.35)">Skin.SetString(TMDbHelper.Colors.Saturation,0.35)</onload>
-	<onload>SetProperty(TMDbHelper.Colors.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
+	<!-- Background: TMDb Helper's blurred fanart of the current row item (its image service only; no TMDB lookups),
+	     watching the current row (TMDbHelper.WidgetContainer). The earlier color tint is switched off. -->
+	<onload condition="Skin.HasSetting(TMDbHelper.EnableColors)">Skin.Reset(TMDbHelper.EnableColors)</onload>
+	<onload condition="!Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload>SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
 	<onload>SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
 	<onload>ClearProperty(Bald.Menu,home)</onload>
 	<onload>ClearProperty(Bald.Start9101,home)</onload>
 	<onload>ClearProperty(Bald.Start9102,home)</onload>
 	<onload>ClearProperty(Bald.Start9103,home)</onload>
 	<controls>
-		<!-- Background: neutral field, with the fanart-tinted field crossfading over it (two layers, see Bald_FieldLayer). -->
+		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_Backdrop). -->
 		<control type="image">
 			<width>1920</width>
 			<height>1080</height>
 			<texture colordiffuse="bald_field">bald/white.png</texture>
 		</control>
-		<include content="Bald_FieldLayer"><param name="slot">a</param></include>
-		<include content="Bald_FieldLayer"><param name="slot">b</param></include>
+		<include content="Bald_Backdrop" />
 
 		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). -->
 		<control type="group">
@@ -75,12 +73,13 @@
 				<include content="Bald_ArtLogo"><param name="c">9103</param><param name="p">Even</param></include>
 			</control>
 
-			<!-- Frame masks: Kodi does not clip a zoom-animated texture (a grouplist did not help), so field-colored
-			     bars cover the up-to-5% settle-zoom overflow around the art frame (96,120 1248x702). They crossfade
-			     with the background so they always match it. -->
-			<include content="Bald_FieldMasks"><param name="color">bald_field</param></include>
-			<include content="Bald_FieldMasks"><param name="color">$VAR[Bald_Fielda]</param><param name="visible">String.IsEqual(Window(home).Property(Bald.FieldSlot),a)</param></include>
-			<include content="Bald_FieldMasks"><param name="color">$VAR[Bald_Fieldb]</param><param name="visible">String.IsEqual(Window(home).Property(Bald.FieldSlot),b)</param></include>
+			<!-- Frame masks: Kodi does not clip a zoom-animated texture, so four bars cover the up-to-5% settle-zoom
+			     overflow around the art frame (96,120 1248x702). Each bar is a clipped window onto the same background
+			     (grouplists clip ordinary textures), so the bars are invisible against it. -->
+			<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">80</param><param name="w">96</param><param name="h">782</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">1344</param><param name="y">80</param><param name="w">60</param><param name="h">782</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">80</param><param name="w">1248</param><param name="h">40</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">822</param><param name="w">1248</param><param name="h">30</param></include>
 
 			<!-- Clock and date -->
 			<control type="group">
