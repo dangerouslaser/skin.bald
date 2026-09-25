@@ -21,7 +21,7 @@ class LibraryViewTests(unittest.TestCase):
         self.assertIsNone(control.find("content"))
         self.assertEqual(int(control.findtext("width")), 3 * int(control.find("itemlayout").get("width")))
         self.assertEqual(control.findtext("onup"), "9150")
-        self.assertEqual(control.findtext("ondown"), "9160")
+        self.assertEqual([n.text for n in control.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters)'])
 
     def test_caption_reuses_home_media_flags_and_motion(self):
         caption = self.view.find("include[@name='Bald_LibraryCaption']//include")
@@ -105,3 +105,13 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(mode.findtext('ondown'), 'noop')
         self.assertEqual(mode.findtext('onfocus'), 'SetProperty(TMDbHelper.WidgetContainer,510,videos)')
         self.assertEqual(self.view.findtext("expression[@name='Bald_LibraryTitleSorted']"), 'String.IsEqual(Container.SortMethod,$LOCALIZE[556])')
+
+    def test_full_alphabet_fits_beneath_posters(self):
+        cells = self.view.findall("include[@name='Bald_LibraryLetters']//include[@content='Bald_LibraryLetterCell']")
+        self.assertEqual([n.findtext("param[@name='letter']") for n in cells], list('0ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
+        self.assertEqual(cells[0].findtext("param[@name='label']"), '0–9')
+        end = max(int(n.findtext("param[@name='x']")) + int(n.findtext("param[@name='width']")) for n in cells)
+        self.assertLessEqual(end, 1140)
+        cell = self.view.find("include[@name='Bald_LibraryLetterCell']")
+        self.assertTrue(any('Bald.AvailableLetters' in (n.text or '') for n in cell.iter('visible')))
+        self.assertIn('bald/dot.png', [n.text for n in cell.iter('texture')])
