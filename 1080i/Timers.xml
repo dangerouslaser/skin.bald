@@ -15,6 +15,8 @@
         <reset>Player.Seeking | Player.Forwarding | Player.Rewinding | Player.HasPerformedSeek(1)</reset>
         <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1109_topbaroverlay),5) | Player.Playing</stop>
     </timer>
+    <!-- Bald skin timers run in CApplication::ProcessSlow, every 500 ms: fine for row start and idle, too coarse
+         for anything that must follow item changes. -->
     <!-- Bald Home. Row start: a fixedlist first selects the item at its focus position (slot 2);
          once a row's items have loaded, move it back to the first item. One shot per window load; Home clears the flags in onload. -->
     <timer>
@@ -37,61 +39,6 @@
         <onstart>SetProperty(Bald.Start9103,1,home)</onstart>
         <onstart>Control.Move(9103,-2)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9103))</stop>
-    </timer>
-    <!-- Bald Home "Shown": remember each row's shown item. Right after a move the row's CurrentItem differs from
-         Bald.ShownNNNN for a frame, which hides the caption, logo and callout; when this timer catches up they become
-         visible again and their Visible animations (the staggered caption, logo rise, callout pop) replay from the start. -->
-    <timer>
-        <name>bald_shown_9101</name>
-        <start>Window.IsActive(home) + !String.IsEqual(Container(9101).CurrentItem,Window(home).Property(Bald.Shown9101))</start>
-        <onstart>SetProperty(Bald.Shown9101,$INFO[Container(9101).CurrentItem],home)</onstart>
-        <stop>true</stop>
-    </timer>
-    <timer>
-        <name>bald_shown_9102</name>
-        <start>Window.IsActive(home) + !String.IsEqual(Container(9102).CurrentItem,Window(home).Property(Bald.Shown9102))</start>
-        <onstart>SetProperty(Bald.Shown9102,$INFO[Container(9102).CurrentItem],home)</onstart>
-        <stop>true</stop>
-    </timer>
-    <timer>
-        <name>bald_shown_9103</name>
-        <start>Window.IsActive(home) + !String.IsEqual(Container(9103).CurrentItem,Window(home).Property(Bald.Shown9103))</start>
-        <onstart>SetProperty(Bald.Shown9103,$INFO[Container(9103).CurrentItem],home)</onstart>
-        <stop>true</stop>
-    </timer>
-    <!-- The "shown" and "art" timers stop on the frame after they start (stop = true) so they re-check every frame;
-         a stop condition tied to the item could never become true if the item moved before it was checked. -->
-    <!-- Bald Home art: when the current row or its item changes, load that fanart into the idle layer and flip
-         Bald.ArtSlot (a/b) so it crossfades in with the settle zoom. -->
-    <timer>
-        <name>bald_art_9101</name>
-        <start>Window.IsActive(home) + String.IsEqual(Window(home).Property(Bald.Row),9101) + [!String.IsEqual(Window(home).Property(Bald.ArtRow),9101) | !String.IsEqual(Window(home).Property(Bald.ArtItem),Container(9101).CurrentItem)]</start>
-        <onstart>SetProperty(Bald.ArtRow,9101,home)</onstart>
-        <onstart>SetProperty(Bald.ArtItem,$INFO[Container(9101).CurrentItem],home)</onstart>
-        <onstart condition="String.IsEqual(Window(home).Property(Bald.ArtSlot),a)">SetProperty(Bald.Artb,$VAR[Bald_Fanart],home)</onstart>
-        <onstart condition="!String.IsEqual(Window(home).Property(Bald.ArtSlot),a)">SetProperty(Bald.Arta,$VAR[Bald_Fanart],home)</onstart>
-        <onstart>SetProperty(Bald.ArtSlot,$VAR[Bald_ArtSlotNext],home)</onstart>
-        <stop>true</stop>
-    </timer>
-    <timer>
-        <name>bald_art_9102</name>
-        <start>Window.IsActive(home) + String.IsEqual(Window(home).Property(Bald.Row),9102) + [!String.IsEqual(Window(home).Property(Bald.ArtRow),9102) | !String.IsEqual(Window(home).Property(Bald.ArtItem),Container(9102).CurrentItem)]</start>
-        <onstart>SetProperty(Bald.ArtRow,9102,home)</onstart>
-        <onstart>SetProperty(Bald.ArtItem,$INFO[Container(9102).CurrentItem],home)</onstart>
-        <onstart condition="String.IsEqual(Window(home).Property(Bald.ArtSlot),a)">SetProperty(Bald.Artb,$VAR[Bald_Fanart],home)</onstart>
-        <onstart condition="!String.IsEqual(Window(home).Property(Bald.ArtSlot),a)">SetProperty(Bald.Arta,$VAR[Bald_Fanart],home)</onstart>
-        <onstart>SetProperty(Bald.ArtSlot,$VAR[Bald_ArtSlotNext],home)</onstart>
-        <stop>true</stop>
-    </timer>
-    <timer>
-        <name>bald_art_9103</name>
-        <start>Window.IsActive(home) + String.IsEqual(Window(home).Property(Bald.Row),9103) + [!String.IsEqual(Window(home).Property(Bald.ArtRow),9103) | !String.IsEqual(Window(home).Property(Bald.ArtItem),Container(9103).CurrentItem)]</start>
-        <onstart>SetProperty(Bald.ArtRow,9103,home)</onstart>
-        <onstart>SetProperty(Bald.ArtItem,$INFO[Container(9103).CurrentItem],home)</onstart>
-        <onstart condition="String.IsEqual(Window(home).Property(Bald.ArtSlot),a)">SetProperty(Bald.Artb,$VAR[Bald_Fanart],home)</onstart>
-        <onstart condition="!String.IsEqual(Window(home).Property(Bald.ArtSlot),a)">SetProperty(Bald.Arta,$VAR[Bald_Fanart],home)</onstart>
-        <onstart>SetProperty(Bald.ArtSlot,$VAR[Bald_ArtSlotNext],home)</onstart>
-        <stop>true</stop>
     </timer>
     <!-- Bald Home idle (60 s): close the menu and park focus on the wake button so the first key only wakes. -->
     <timer>
