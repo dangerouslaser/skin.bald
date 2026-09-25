@@ -8,6 +8,8 @@
 	<onunload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunload>
 	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<!-- Estuary remains a fallback for content we have not redesigned; movie libraries always enter a Bald view. -->
+	<onload condition="Container.Content(movies) + !Control.IsVisible(510) + !Control.IsVisible(511) + !Control.IsVisible(512) + !Control.IsVisible(513) + !Control.IsVisible(514) + !Control.IsVisible(515)">Container.SetViewMode(510)</onload>
 	<controls>
 		<!-- Route Kodi's Menu action without duplicating native menu/control IDs. -->
 		<control type="button" id="9151">

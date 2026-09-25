@@ -45,6 +45,16 @@ class PosterLowTests(unittest.TestCase):
         self.assertGreaterEqual(int(group.findtext('left')), 84 + 1280)
         self.assertGreaterEqual(int(group.findtext('top')), 936)
 
+    def test_options_have_an_opaque_field_backed_menu_zone(self):
+        view = self.root.find("include[@name='View_515_Bald_PosterLow']/control")
+        menu_mask = next(group for group in view.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]')
+        window = menu_mask.find("include[@content='Bald_BackdropWindow']")
+        self.assertIsNotNone(window)
+        bounds = tuple(int(window.findtext(f"param[@name='{key}']")) for key in ('x', 'y', 'w', 'h'))
+        self.assertEqual(bounds, (1264, 198, 592, 652))
+        children = list(view)
+        self.assertGreater(children.index(menu_mask), children.index(view.find("control[@id='515']")))
+
     def test_focused_ring_fits_list_height(self):
         tile = self.root.find("include[@name='Bald_PosterLowTile']//include[@content='Bald_LibraryPosterItem']")
         ring_bottom = 9 + int(tile.findtext("param[@name='ring_height']"))
