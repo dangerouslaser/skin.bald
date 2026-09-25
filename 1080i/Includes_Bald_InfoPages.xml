@@ -237,14 +237,11 @@
 			</control>
 			<control type="label"><left>1440</left><top>120</top><width>384</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
 			<control type="label"><left>1440</left><top>166</top><width>384</width><height>84</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Title,For ,]</label></control>
-			<!-- All preview labels explicitly belong to the recommendation container, never the dialog item. -->
-			<control type="grouplist">
-				<left>1440</left><top>380</top><width>384</width><height>448</height><orientation>vertical</orientation>
-				<itemgap>0</itemgap><usecontrolcoords>true</usecontrolcoords><visible>$EXP[Bald_HasRecommendations]</visible>
-				<control type="textbox" id="5210"><height max="132">auto</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container(5100).ListItem.Title]</label></control>
-				<control type="label" id="5211"><top>16</top><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_MoreMeta]</label></control>
-				<control type="label"><top>10</top><height>50</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_Accent</font><textcolor>bald_accent</textcolor><label>$INFO[Container(5100).ListItem.Genre]</label></control>
-				<control type="label" id="5212"><top>12</top><height>146</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionPlot</font><textcolor>bald_ink76</textcolor><label>$INFO[Container(5100).ListItem.Plot]</label></control>
+			<!-- Home's exact caption layout, flags and staggered transitions, scoped to recommendations. -->
+			<control type="group">
+				<visible>$EXP[Bald_HasRecommendations]</visible>
+				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param></include>
+				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param></include>
 			</control>
 			<control type="label"><left>96</left><top>856</top><width>850</width><height>26</height><font>Bald_RowLabel</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
 			<control type="label"><left>1144</left><top>856</top><width>200</width><height>26</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(5100).CurrentItem] / $INFO[Container(5100).NumItems]</label><visible>$EXP[Bald_HasRecommendations]</visible></control>

@@ -306,9 +306,10 @@
 	<include name="Bald_Caption">
 		<param name="c" />
 		<param name="p" />
+		<param name="ignore_home_row">false</param>
 		<definition>
 			<control type="group">
-				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
+				<visible>$PARAM[ignore_home_row] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 					<effect type="slide" start="0,0" end="-14,0" time="130" tween="sine" easing="inout" />
