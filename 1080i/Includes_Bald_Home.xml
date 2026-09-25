@@ -20,6 +20,14 @@
 <includes>
 	<!-- Curves (docs/SPEC.md section 4): move = cubic out, fade = sine inout, pop = back out. -->
 
+	<!-- ============ Palette ============ -->
+	<!-- Field: TMDb Helper's fanart color at 7% lightness (it steps between colors over about 1 s itself);
+	     neutral fallback until one is available. -->
+	<variable name="Bald_FieldColor">
+		<value condition="!String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.Colors.Main))">$INFO[Window(home).Property(TMDbHelper.ListItem.Colors.Main)]</value>
+		<value>bald_field</value>
+	</variable>
+
 	<!-- ============ Current-row variables (art frame) ============ -->
 	<variable name="Bald_Fanart">
 		<value condition="String.IsEqual(Window(home).Property(Bald.Row),9102) + !String.IsEmpty(Container(9102).ListItem.Art(fanart))">$INFO[Container(9102).ListItem.Art(fanart)]</value>
@@ -527,6 +535,7 @@
 				<movement>2</movement>
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
+				<onfocus>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onfocus>
 				<onup>$PARAM[up]</onup>
 				<ondown>$PARAM[down]</ondown>
 				<onleft>SetProperty(Bald.NudgeL,$VAR[Bald_NudgeLNext],home)</onleft>

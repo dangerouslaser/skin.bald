@@ -7,6 +7,12 @@
 	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load.
 	     Focus always starts on row 1 (defaultcontrol always). -->
 	<onload>SetProperty(Bald.Row,9101,home)</onload>
+	<!-- Fanart tint (docs/SPEC.md section 3) from TMDb Helper's image service: colors only (no TMDB lookups),
+	     lightness forced to 7% for the field, watching the current row (TMDbHelper.WidgetContainer). -->
+	<onload condition="!Skin.HasSetting(TMDbHelper.EnableColors)">Skin.SetBool(TMDbHelper.EnableColors)</onload>
+	<onload condition="!String.IsEqual(Skin.String(TMDbHelper.Colors.Luminance),0.07)">Skin.SetString(TMDbHelper.Colors.Luminance,0.07)</onload>
+	<onload>SetProperty(TMDbHelper.Colors.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
+	<onload>SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
 	<onload>ClearProperty(Bald.Menu,home)</onload>
 	<onload>ClearProperty(Bald.Start9101,home)</onload>
 	<onload>ClearProperty(Bald.Start9102,home)</onload>
@@ -15,7 +21,8 @@
 		<control type="image">
 			<width>1920</width>
 			<height>1080</height>
-			<texture colordiffuse="bald_field">bald/white.png</texture>
+			<texture>bald/white.png</texture>
+					<colordiffuse>$VAR[Bald_FieldColor]</colordiffuse>
 		</control>
 
 		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). -->
@@ -70,19 +77,23 @@
 			<control type="group">
 				<control type="image">
 					<left>0</left><top>80</top><width>96</width><height>782</height>
-					<texture colordiffuse="bald_field">bald/white.png</texture>
+					<texture>bald/white.png</texture>
+					<colordiffuse>$VAR[Bald_FieldColor]</colordiffuse>
 				</control>
 				<control type="image">
 					<left>1344</left><top>80</top><width>60</width><height>782</height>
-					<texture colordiffuse="bald_field">bald/white.png</texture>
+					<texture>bald/white.png</texture>
+					<colordiffuse>$VAR[Bald_FieldColor]</colordiffuse>
 				</control>
 				<control type="image">
 					<left>96</left><top>80</top><width>1248</width><height>40</height>
-					<texture colordiffuse="bald_field">bald/white.png</texture>
+					<texture>bald/white.png</texture>
+					<colordiffuse>$VAR[Bald_FieldColor]</colordiffuse>
 				</control>
 				<control type="image">
 					<left>96</left><top>822</top><width>1248</width><height>30</height>
-					<texture colordiffuse="bald_field">bald/white.png</texture>
+					<texture>bald/white.png</texture>
+					<colordiffuse>$VAR[Bald_FieldColor]</colordiffuse>
 				</control>
 			</control>
 
