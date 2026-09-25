@@ -243,6 +243,48 @@
 			<size>22</size>
 			<linespacing>1.29</linespacing>
 		</font>
+		<!-- Info genres -->
+		<font>
+			<name>Bald_InfoGenre</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>20</size>
+		</font>
+		<!-- Info media flag -->
+		<font>
+			<name>Bald_FlagL</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>16</size>
+		</font>
+		<!-- Cast name -->
+		<font>
+			<name>Bald_CastName</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>18</size>
+		</font>
+		<!-- Cast role -->
+		<font>
+			<name>Bald_CastRole</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>16</size>
+		</font>
+		<!-- Details label -->
+		<font>
+			<name>Bald_DetailLabel</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>17</size>
+		</font>
+		<!-- Details value -->
+		<font>
+			<name>Bald_DetailValue</name>
+			<filename>InstrumentSans-Medium.ttf</filename>
+			<size>21</size>
+		</font>
+		<!-- Info progress -->
+		<font>
+			<name>Bald_Progress</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>18</size>
+		</font>
 	</fontset>
 	<fontset id="Arial" idloc="31053">
         <font>
@@ -509,6 +551,52 @@
 			<filename>arial.ttf</filename>
 			<size>22</size>
 			<linespacing>1.29</linespacing>
+		</font>
+		<!-- Info genres -->
+		<font>
+			<name>Bald_InfoGenre</name>
+			<filename>arial.ttf</filename>
+			<size>20</size>
+			<style>bold</style>
+		</font>
+		<!-- Info media flag -->
+		<font>
+			<name>Bald_FlagL</name>
+			<filename>arial.ttf</filename>
+			<size>16</size>
+			<style>bold</style>
+		</font>
+		<!-- Cast name -->
+		<font>
+			<name>Bald_CastName</name>
+			<filename>arial.ttf</filename>
+			<size>18</size>
+			<style>bold</style>
+		</font>
+		<!-- Cast role -->
+		<font>
+			<name>Bald_CastRole</name>
+			<filename>arial.ttf</filename>
+			<size>16</size>
+		</font>
+		<!-- Details label -->
+		<font>
+			<name>Bald_DetailLabel</name>
+			<filename>arial.ttf</filename>
+			<size>17</size>
+		</font>
+		<!-- Details value -->
+		<font>
+			<name>Bald_DetailValue</name>
+			<filename>arial.ttf</filename>
+			<size>21</size>
+			<style>bold</style>
+		</font>
+		<!-- Info progress -->
+		<font>
+			<name>Bald_Progress</name>
+			<filename>arial.ttf</filename>
+			<size>18</size>
 		</font>
 	</fontset>
 </fonts>

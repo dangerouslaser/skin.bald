@@ -53,3 +53,13 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 - **Frame masks as windows.** The bars that hide the art frame's settle-zoom overflow are grouplists (which clip ordinary textures) containing the same full-screen background offset back to 0,0, so they line up with it exactly (`Bald_BackdropWindow`).
 - **Accent and ink** stay neutral.
 - **Letterboxing.** The skin defines only a 16:9 layout; fullscreen on a non-16:9 display (the MacBook's built-in screen is about 1.55:1) shows a black band.
+
+## Milestone 4 (movie info)
+
+- **Reference.** `~/Downloads/bald-reference-prototype.html` (home, movie info, TV info, customize) gives the info spacing, stagger, section opacities, pill buttons, cast and tile styles, and the handoff timings. Its header calls it the behavioral source of truth alongside the spec.
+- **Contract controls.** `CGUIDialogVideoInfo` plays with id 8 and resumes with id 9; when a resume control exists, 8 always plays from the beginning. 11 plays the trailer, 50 is the cast list Kodi fills. They are hidden buttons; the visible pills `SendClick` them.
+- **Mark watched: not implemented.** Kodi has no builtin a skin can call to toggle watched state, the video info dialog ignores ToggleWatched, and neither TMDb Helper nor script.skinvariables offers one. Open item.
+- **Handoff lives in Home.** Info is a dialog over Home. Paired non-reversible Conditionals on `Window.IsVisible(movieinformation)` zoom the art frame to full screen (1.53846 about 274,343; 640 after 40, back 540) and move Home's chrome out and back; Kodi applies a Conditional's end state silently at window load.
+- **Container lookups break under a dialog.** With the info dialog active, `Container(9101)` etc. resolve against the dialog and come back empty, so Home's art layers lost their image during the handoff. Selecting a tile stores its fanart in `Bald.InfoArt`; a handoff image in the art frame shows it while info is open and hides only after the layers have faded back in on close.
+- **More like this.** Library titles sharing the first genre, best rated first, excluding the current title, as a URL smart playlist. `ListItem.Genre` joins genres with " / " and neither JSON xsp rules nor the genres node split it, so `Bald_FirstGenre` matches the start of the string against the TMDB genre names.
+- **Masked images.** A `diffuse` mask stretches over the whole image, including what `aspectratio scale` crops away, so circles became clipped ovals on portrait photos. `<aspectratio scalediffuse="false">` keeps the mask fixed to the control.

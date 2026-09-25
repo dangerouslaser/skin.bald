@@ -20,6 +20,49 @@
 <includes>
 	<!-- Curves (docs/SPEC.md section 4): move = cubic out, fade = sine inout, pop = back out. -->
 
+	<!-- ============ Info handoff (docs/SPEC.md 4 and 5.2) ============ -->
+	<!-- Info opens as a dialog over Home. Home does the handoff: the art frame zooms to full screen (translate -96,-120
+	     and scale 1.53846 in the prototype, i.e. zoom about 274,343), 640 move after 40, and back 540 after 160 when
+	     it closes; Home chrome goes out 200 and returns 380 / 480 after 440. Paired non-reversible Conditionals keep
+	     open and close timings separate; Kodi applies a Conditional's end state silently at window load. -->
+	<expression name="Bald_InfoOpen">Window.IsVisible(movieinformation)</expression>
+	<include name="Bald_AnimInfoFrame">
+		<animation type="Conditional" condition="$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="zoom" start="100" end="153.846" center="274,343" time="640" delay="40" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="!$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="zoom" start="153.846" end="100" center="274,343" time="540" delay="30" tween="cubic" easing="out" />
+		</animation>
+	</include>
+	<include name="Bald_AnimInfoChrome">
+		<animation type="Conditional" condition="$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="fade" start="100" end="0" time="200" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="24,0" time="220" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="!$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" delay="440" tween="sine" easing="inout" />
+			<effect type="slide" start="24,0" end="0,0" time="480" delay="440" tween="cubic" easing="out" />
+		</animation>
+	</include>
+	<!-- The logo scrim and clearlogo on the art leave with the chrome and come back once the frame has settled. -->
+	<include name="Bald_AnimInfoArtOverlay">
+		<animation type="Conditional" condition="$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="fade" start="100" end="0" time="200" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Conditional" condition="!$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="fade" start="0" end="100" time="500" delay="600" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<!-- The frame masks would cover the zoomed art: gone at once, back after the frame is home again. -->
+	<include name="Bald_AnimInfoMasks">
+		<animation type="Conditional" condition="$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="fade" start="100" end="0" time="60" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Conditional" condition="!$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="fade" start="0" end="100" time="80" delay="620" tween="sine" easing="inout" />
+		</animation>
+	</include>
+
 	<!-- ============ Background ============ -->
 	<!-- The current row item's fanart, blurred by TMDb Helper (Gaussian radius 40 on a 480 px copy, cached), darkened
 	     for the OLED with colordiffuse. <fadetime> crossfades between titles and waits until the new image has loaded. -->
@@ -424,7 +467,7 @@
 				<top>10</top>
 				<width>176</width>
 				<height>99</height>
-				<aspectratio>scale</aspectratio>
+				<aspectratio scalediffuse="false">scale</aspectratio>
 				<texture diffuse="bald/tile.png" colordiffuse="$PARAM[diffuse]" background="true">$VAR[Bald_TileArt]</texture>
 			</control>
 			<control type="image">
@@ -461,6 +504,7 @@
 			<control type="group">
 				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_PreviewOther]</visible>
 				<include>Bald_AnimRowSwap</include>
+				<include>Bald_AnimInfoChrome</include>
 				<animation type="Conditional" condition="$EXP[Bald_MenuOpen]">
 					<effect type="fade" start="100" end="60" time="360" tween="sine" easing="inout" />
 				</animation>
@@ -560,6 +604,7 @@
 				     that lets it load (and the row-start timer fix its selection) before it is first shown. -->
 				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_PreviewOther]] | !Integer.IsGreater(Container($PARAM[id]).NumItems,0)</visible>
 				<include>Bald_AnimRowSwap</include>
+				<include>Bald_AnimInfoChrome</include>
 				<animation type="Conditional" condition="$EXP[Bald_MenuOpen]">
 					<effect type="fade" start="100" end="60" time="360" tween="sine" easing="inout" />
 				</animation>
@@ -579,6 +624,8 @@
 				<onleft>SetProperty(Bald.NudgeL,$VAR[Bald_NudgeLNext],home)</onleft>
 				<onright>SetProperty(Bald.NudgeR,$VAR[Bald_NudgeRNext],home)</onright>
 				<onback>SetFocus(9000,0,absolute)</onback>
+				<onclick>SetProperty(Bald.InfoArt,$VAR[Bald_Fanart],home)</onclick>
+				<onclick>Action(Info)</onclick>
 				<itemlayout width="192" height="119">
 					<include content="Bald_LandscapeTile" />
 				</itemlayout>

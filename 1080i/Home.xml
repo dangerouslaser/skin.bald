@@ -37,6 +37,7 @@
 
 			<!-- Art frame -->
 			<control type="group">
+				<include>Bald_AnimInfoFrame</include>
 				<left>96</left>
 				<top>120</top>
 				<width>1248</width>
@@ -47,9 +48,25 @@
 				<!-- Fanart: two parity layers (see Bald_ArtLayer). -->
 				<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_ItemOdd]</param></include>
 				<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_ItemOdd]</param></include>
+				<!-- Info handoff art: with the info dialog active, Container(9101..9103) resolves against the dialog and
+				     comes back empty, so the layers above lose their art. The row stores the item's fanart in
+				     Bald.InfoArt as Select opens info, and this image shows it while info is open. It hides only after
+				     the layers have faded back in underneath (close: frame back by ~700, layers fade 700). -->
+				<control type="image">
+					<width>1248</width>
+					<height>702</height>
+					<aspectratio>scale</aspectratio>
+					<texture background="true">$INFO[Window(home).Property(Bald.InfoArt)]</texture>
+					<visible>$EXP[Bald_InfoOpen] + !String.IsEmpty(Window(home).Property(Bald.InfoArt))</visible>
+					<animation type="Hidden">
+						<effect type="fade" start="100" end="0" time="250" delay="900" tween="sine" easing="inout" />
+					</animation>
+				</control>
 			</control>
 			<!-- Scrim and clearlogo (not zoomed; inside the frame, so the masks never touch them). -->
 			<control type="group">
+				<include>Bald_AnimInfoFrame</include>
+				<include>Bald_AnimInfoArtOverlay</include>
 				<left>96</left>
 				<top>120</top>
 				<width>1248</width>
@@ -76,13 +93,17 @@
 			<!-- Frame masks: Kodi does not clip a zoom-animated texture, so four bars cover the up-to-5% settle-zoom
 			     overflow around the art frame (96,120 1248x702). Each bar is a clipped window onto the same background
 			     (grouplists clip ordinary textures), so the bars are invisible against it. -->
-			<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">80</param><param name="w">96</param><param name="h">782</param></include>
-			<include content="Bald_BackdropWindow"><param name="x">1344</param><param name="y">80</param><param name="w">60</param><param name="h">782</param></include>
-			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">80</param><param name="w">1248</param><param name="h">40</param></include>
-			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">822</param><param name="w">1248</param><param name="h">30</param></include>
+<control type="group">
+				<include>Bald_AnimInfoMasks</include>
+				<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">80</param><param name="w">96</param><param name="h">782</param></include>
+				<include content="Bald_BackdropWindow"><param name="x">1344</param><param name="y">80</param><param name="w">60</param><param name="h">782</param></include>
+				<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">80</param><param name="w">1248</param><param name="h">40</param></include>
+				<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">822</param><param name="w">1248</param><param name="h">30</param></include>
+			</control>
 
 			<!-- Clock and date -->
 			<control type="group">
+				<include>Bald_AnimInfoChrome</include>
 				<left>1440</left>
 				<top>104</top>
 				<width>384</width>
@@ -103,6 +124,7 @@
 
 			<!-- Caption: out 180 and slide 40 px right as the menu opens; back 380 / 480 after 140 as it closes. -->
 			<control type="group">
+				<include>Bald_AnimInfoChrome</include>
 				<visible>!$EXP[Bald_MenuOpen]</visible>
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" />
@@ -224,6 +246,7 @@
 
 			<!-- Section line: accent dot, screen name, "Back for menu" hint. -->
 			<control type="grouplist">
+				<include>Bald_AnimInfoChrome</include>
 				<left>1440</left>
 				<top>966</top>
 				<width>480</width>
@@ -297,6 +320,7 @@
 
 			<!-- Menu preview for screens without rows yet -->
 			<control type="group">
+				<include>Bald_AnimInfoChrome</include>
 				<visible>$EXP[Bald_PreviewOther]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<control type="label">
