@@ -30,6 +30,23 @@ class InfoPagesTests(unittest.TestCase):
         self.assertFalse(self.pages.findall(".//include[@content='Bald_InfoHintPair']"))
         self.assertEqual(len(self.dialog.findall(".//include[@content='Bald_InfoHintPair']")), 2)
 
+    def test_recommendation_fanart_reuses_home_transition_inside_clip(self):
+        frame = self.pages.find(".//control[@id='5205']")
+        self.assertEqual(frame.get("type"), "grouplist")
+        self.assertEqual((frame.findtext("width"), frame.findtext("height")), ("1248", "702"))
+        layers = frame.findall(".//include[@content='Bald_ArtLayer']")
+        self.assertEqual(len(layers), 2)
+        self.assertEqual({node.findtext("param[@name='visible']") for node in layers}, {
+            "Integer.IsOdd(Container(5100).CurrentItem)", "Integer.IsEven(Container(5100).CurrentItem)"})
+        for node in layers:
+            self.assertEqual(node.findtext("param[@name='texture']"), "$VAR[Bald_MorePreviewArt]")
+        home = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
+        layer = home.find("include[@name='Bald_ArtLayer']")
+        self.assertEqual(layer.findtext("param[@name='texture']"), "$VAR[Bald_Fanart]")
+        zoom = layer.find(".//effect[@type='zoom']")
+        self.assertEqual((zoom.get("start"), zoom.get("end"), zoom.get("time")), ("105", "100", "1500"))
+        self.assertEqual(layer.find(".//animation[@type='Hidden']/effect").get("time"), "700")
+
     def test_native_playback_and_cast_contracts(self):
         for control_id in ("8", "9", "11"):
             self.assertIsNotNone(self.dialog.find(f".//control[@id='{control_id}']"))
