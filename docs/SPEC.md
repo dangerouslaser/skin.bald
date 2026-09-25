@@ -272,6 +272,16 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 
 ---
 
+### 5.8 Movie compact list
+
+- Native vertical list513 at (96,222), 1140 × 624; thirteen 48px rows. Title, year and runtime columns, with quiet Resume/Watched text at the right. Resume takes precedence when a watched movie is partly replayed. Unwatched items have no status label.
+- Selected row uses full ink and an 8px accent dot; other rows use70% ink. Instrument Sans section text for titles, caption metadata for year/runtime. No posters or extra Open details button.
+- Reuses the existing 528px right-hand preview, media flags including audio codec, blurred backdrop and options transitions. Shared alphabet and 20px footer separators remain unchanged.
+- Up/Down browse and scroll; Left or Menu opens options. Right enters letter mode; Down at the end also enters it. Up at the start opens options. Select follows the native default action, Info opens details, and Back from details restores the selected row.
+- The artwork-focused list is the next separate milestone, using fewer larger rows and a larger fanart preview.
+
+---
+
 ## 6. Default rows (alpha uses a fixed configuration)
 
 | Screen | Rows |

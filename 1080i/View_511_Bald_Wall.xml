@@ -21,10 +21,10 @@
 		</definition>
 	</include>
 	<include name="Bald_WallFooter">
-		<param name="c" />
+		<param name="c" /><param name="letters_hint">Right edge for letters</param>
 		<definition>
 			<control type="label"><left>96</left><top>954</top><width>600</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[c]).CurrentItem] / $INFO[Container($PARAM[c]).NumItems]</label></control>
-			<control type="group"><left>700</left><top>954</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">Right edge for letters</param><param name="second">Info for details</param><param name="third">Menu for options</param><param name="third_visible">true</param></include></control>
+			<control type="group"><left>700</left><top>954</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">$PARAM[letters_hint]</param><param name="second">Info for details</param><param name="third">Menu for options</param><param name="third_visible">true</param></include></control>
 			<control type="group"><left>800</left><top>954</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
 			<control type="group"><left>1296</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">528</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
 		</definition>
