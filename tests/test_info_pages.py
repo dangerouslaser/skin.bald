@@ -64,6 +64,22 @@ class InfoPagesTests(unittest.TestCase):
         self.assertEqual(cast.get("type"), "list")
         self.assertEqual(int(cast.findtext("width")), 5 * int(cast.find("itemlayout").get("width")))
 
+    def test_episode_overview_uses_episode_identity_and_cast_poster_crops(self):
+        title = self.shared.find("variable[@name='Bald_InfoTitle']")
+        episode_title = title.find("value[@condition='String.IsEqual(ListItem.DBType,episode)']")
+        self.assertEqual(episode_title.text, '$INFO[ListItem.Title]')
+        meta = self.shared.find("variable[@name='Bald_InfoMeta']/value[@condition='String.IsEqual(ListItem.DBType,episode)']")
+        for field in ('ListItem.TVShowTitle', 'ListItem.Season', 'ListItem.Episode'):
+            self.assertIn(field, meta.text)
+        overview_title = next(node for node in self.pages.findall("include[@name='Bald_InfoOverview']//control[@type='label']") if node.findtext('label') == '$VAR[Bald_InfoTitle]')
+        self.assertIn('String.IsEqual(ListItem.DBType,episode)', overview_title.findtext('visible'))
+        poster = self.pages.find(".//control[@id='5204']")
+        self.assertEqual(poster.findtext('aspectratio'), 'scale')
+
+    def test_more_like_heading_uses_resolved_recommendation_subject(self):
+        label = next(node for node in self.pages.findall("include[@name='Bald_InfoRecommendationsPage']//control[@type='label']") if 'Bald.MoreFor' in (node.findtext('label') or ''))
+        self.assertEqual(label.findtext('label'), '$INFO[Window(movieinformation).Property(Bald.MoreFor),For ,]')
+
     def test_three_independent_pages_without_section_slides(self):
         for name in ("Bald_InfoOverview", "Bald_InfoCastPage", "Bald_InfoRecommendationsPage"):
             self.assertIsNotNone(self.pages.find(f"include[@name='{name}']"))

@@ -46,6 +46,24 @@ def get_details(xbmc, media_type, dbid, properties):
     return response["result"][result_key]
 
 
+def recommendation_subject(xbmc, media_type, dbid):
+    """Return the movie/show whose genre should drive related library titles."""
+    if media_type in MEDIA:
+        return media_type, get_details(xbmc, media_type, dbid, ["title", "genre"])
+    if media_type != "episode":
+        return "", {}
+    response = json.loads(xbmc.executeJSONRPC(json.dumps({
+        "jsonrpc": "2.0", "id": 1, "method": "VideoLibrary.GetEpisodeDetails",
+        "params": {"episodeid": dbid, "properties": ["tvshowid"]},
+    })))
+    if "error" in response:
+        raise RuntimeError("Episode parent lookup failed: {}".format(response["error"]))
+    tvshowid = response["result"]["episodedetails"].get("tvshowid", 0)
+    if not isinstance(tvshowid, int) or tvshowid <= 0:
+        return "", {}
+    return "tvshow", get_details(xbmc, "tvshow", tvshowid, ["title", "genre"])
+
+
 def make_item(xbmc, xbmcgui, media_type, dbid, details):
     item = xbmcgui.ListItem(label=details["title"], path=details["file"], offscreen=True)
     item.setIsFolder(media_type == "tvshow")
@@ -114,14 +132,15 @@ def run(action="", media_type="", dbid=""):
         ) if value), "")
         window.setProperty("Bald.Fanart", fanart)
         window.setProperty("Bald.ArtIdentity", identity)
-        if media_type not in MEDIA or not dbid.isdecimal() or int(dbid) <= 0:
+        if media_type not in (*MEDIA, "episode") or not dbid.isdecimal() or int(dbid) <= 0:
             return
-        details = get_details(xbmc, media_type, int(dbid), ["title", "genre"])
+        subject_type, details = recommendation_subject(xbmc, media_type, int(dbid))
         # A slow lookup from the previous item must not replace the new item's list.
         if (xbmc.getCondVisibility("Window.IsVisible(movieinformation)")
                 and window.getProperty("Bald.Identity") == identity):
+            window.setProperty("Bald.MoreFor", details.get("title", ""))
             window.setProperty("Bald.MorePath", recommendation_path(
-                media_type, details["title"], details.get("genre", [])))
+                subject_type, details.get("title", ""), details.get("genre", [])))
         return
     if action != "open" or not xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
         return

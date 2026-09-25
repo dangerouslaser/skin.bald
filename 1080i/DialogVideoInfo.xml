@@ -5,6 +5,7 @@
 	<onload>SetProperty(Bald.InfoSec,0,home)</onload>
 	<onload>SetProperty(Bald.Identity,$INFO[ListItem.DBType]:$INFO[ListItem.DBID],movieinformation)</onload>
 	<onload>ClearProperty(Bald.MorePath,movieinformation)</onload>
+	<onload>ClearProperty(Bald.MoreFor,movieinformation)</onload>
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<onload>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onload>
 	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
@@ -14,6 +15,7 @@
 	<onunload>ClearProperty(Bald.InfoSec,home)</onunload>
 	<onunload>ClearProperty(Bald.Identity,movieinformation)</onunload>
 	<onunload>ClearProperty(Bald.MorePath,movieinformation)</onunload>
+	<onunload>ClearProperty(Bald.MoreFor,movieinformation)</onunload>
 	<onunload>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onunload>
 	<controls>
 		<!-- Opaque sharp fallback for library/add-on entry points. -->
