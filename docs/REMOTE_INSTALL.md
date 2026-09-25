@@ -6,7 +6,7 @@ work in an uncommitted checkout is never included.
 ## User installation
 
 1. Visit `https://dangerouslaser.github.io/skin.bald/` and download
-   `repository.bald-1.0.0.zip`.
+   `repository.bald-1.0.1.zip`.
 2. In Kodi 22, choose **Add-ons → Install from zip file** and select that ZIP.
 3. Choose **Install from repository → Bald Add-on Repository → Look and feel →
    Skin → Bald**.

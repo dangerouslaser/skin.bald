@@ -13,7 +13,6 @@ from pathlib import Path
 def main() -> None:
     root = Path(sys.argv[1])
     assert (root.parent / "index.html").is_file()
-    assert (root.parent / "repository.bald-1.0.0.zip").is_file()
     index = root / "addons.xml"
     payload = index.read_bytes()
     assert hashlib.md5(payload).hexdigest() == (root / "addons.xml.md5").read_text().strip()
@@ -23,6 +22,11 @@ def main() -> None:
     assert addons["script.bald.xcsetup"].find(
         "./requires/import[@addon='pvr.iptvsimple']"
     ).attrib["version"].startswith("22.")
+    repository_version = addons["repository.bald"].attrib["version"]
+    assert "minversion" not in addons["repository.bald"].find(
+        "./extension[@point='xbmc.addon.repository']/dir"
+    ).attrib
+    assert (root.parent / f"repository.bald-{repository_version}.zip").is_file()
 
     for addon_id, node in addons.items():
         version = node.attrib["version"]
