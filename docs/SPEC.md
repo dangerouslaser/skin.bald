@@ -199,7 +199,7 @@ Scrims: horizontal field 92% at 0, 72% at 32%, 0 at 64%; plus bottom field 85% a
 
 Overview retains sharp fullscreen fanart. Moving down crossfades over 460 FADE to Home's shared blurred backdrop (TMDb Helper cached blur: 480 px, radius40, brightness30%). Cast uses the original movie's art; recommendations follow the highlighted item. Up restores sharp fanart. Without blur support/art, use the opaque field. Each page fades in over 360 FADE and rises 18 px over 560 MOVE; the outgoing page fades out over 130 FADE. Preserve each list's selection when changing pages.
 
-Recommendation previews explicitly read container5100; they must not replace the native dialog item until Select. Loading/empty recommendations have an escapable focus target. The page trail sits at y954 on the first two pages; the recommendation page uses Home-style right-hand hints.
+Recommendation previews explicitly read container5100; they must not replace the native dialog item until Select. The highlighted title's clearlogo uses Home's artwork overlay (52 px from the frame's left, 46 px from its bottom, max560×170), logo scrim and fade/rise transition. Fall back to `tvshow.clearlogo`; if neither exists, show no logo or scrim. Loading/empty recommendations have an escapable focus target. The page trail sits at y954 on the first two pages; the recommendation page uses Home-style right-hand hints.
 
 Actions: in progress gives Resume, Start over, Trailer, Mark watched. Otherwise Play, Trailer, Mark watched. Focused action is filled with `ink` and the label in `field`.
 

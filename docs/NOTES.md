@@ -4,6 +4,8 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 
 ## Paged movie information (2026-09-25)
 
+- Clearlogo follow-up: recommendations reuse `Bald_ArtLogo` with container5100 and an explicit bypass of the Home-row guard. Keep the guard in the definition: embedding `$PARAM[c]` inside another parameter's default did not resolve in Kodi and hid Home's logos. A plain boolean bypass preserves both contexts.
+
 - Replaced the original compounded section slides with independent Overview, Cast & details and More like this pages. Each has one visibility-driven fade/rise; there are no reversing additive offsets at the recommendations boundary. The earlier scrolling/empty-data notes below describe the superseded layout.
 - Reuse `Bald_BackdropImage` for exactly Home's cached blur and brightness. TMDb Helper's local widget-container mode lets the dialog override its source to container5100 on recommendations, then clear that override to return to the native info movie. Home's own container property stays untouched. The original sharp Home handoff remains underneath the opaque blur layer.
 - Recommendation labels/art explicitly read container5100, while cast/poster/actions continue to read the original dialog item. Select retains the existing guarded Python native-info replacement.

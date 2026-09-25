@@ -222,6 +222,19 @@
 				<left>96</left><top>120</top><width>1248</width><height>702</height><aspectratio>scale</aspectratio>
 				<fadetime>700</fadetime><texture background="true">$VAR[Bald_MorePreviewArt]</texture><visible>$EXP[Bald_HasRecommendations]</visible>
 			</control>
+			<!-- Reuse Home's logo placement, fallback and parity-driven transitions for the highlighted recommendation. -->
+			<control type="group">
+				<left>96</left><top>120</top><width>1248</width><height>702</height>
+				<visible>$EXP[Bald_HasRecommendations]</visible>
+				<control type="image">
+					<width>1248</width><height>702</height><texture>bald/scrim_logo.png</texture>
+					<visible>!String.IsEmpty(Container(5100).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(5100).ListItem.Art(tvshow.clearlogo))</visible>
+					<animation effect="fade" start="0" end="100" time="500" tween="sine" easing="inout">Visible</animation>
+					<animation effect="fade" start="100" end="0" time="150" tween="sine" easing="inout">Hidden</animation>
+				</control>
+				<include content="Bald_ArtLogo"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param></include>
+				<include content="Bald_ArtLogo"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param></include>
+			</control>
 			<control type="label"><left>1440</left><top>120</top><width>384</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
 			<control type="label"><left>1440</left><top>166</top><width>384</width><height>84</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Title,For ,]</label></control>
 			<!-- All preview labels explicitly belong to the recommendation container, never the dialog item. -->
