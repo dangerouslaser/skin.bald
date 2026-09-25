@@ -107,6 +107,8 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(menu.findtext('focusedlayout/include'), '')
         focused = menu.find("focusedlayout/include[@content='Bald_MenuRowFocused']")
         self.assertEqual(focused.findtext("param[@name='always_dot']"), 'true')
+        footer = self.view.find("include[@name='View_510_Bald_Posters']//control[visible='$EXP[Bald_LibraryMenuOpen]']")
+        self.assertEqual((footer.findtext('left'), footer.findtext("include/param[@name='width']")), ('1440', '420'))
 
     def test_home_and_library_share_menu_row_components(self):
         home = ET.parse(ROOT / 'Home.xml').getroot().find(".//control[@id='9000']")
