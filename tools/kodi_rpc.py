@@ -10,7 +10,7 @@ import sys
 import secrets
 
 
-def builtin(action):
+def builtin(action, *, announce=True):
     """Send a builtin via the localhost EventServer; verify effects through JSON-RPC.
 
     Protocol: Kodi tools/EventClients/lib/python/xbmcclient.py (v2, HELO / ACTION).
@@ -20,7 +20,10 @@ def builtin(action):
     if len(payload) > 992:
         raise ValueError("Builtin exceeds the single-packet event limit")
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as connection:
-        for kind, data in ((1, b"Bald development\0" + bytes(11)), (10, payload)):
+        packets = [(10, payload)]
+        if announce:
+            packets.insert(0, (1, b"Bald development\0" + bytes(11)))
+        for kind, data in packets:
             header = struct.pack("!4sBBHIIHI10x", b"XBMC", 2, 0, kind, 1, 1, len(data), token)
             connection.sendto(header + data, ("127.0.0.1", 9777))
 

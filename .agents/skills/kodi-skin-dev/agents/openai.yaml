@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kodi Skin Development"
+  short_description: "Build and verify Bald's Kodi 22 skin on macOS"
+  default_prompt: "Use $kodi-skin-dev to implement and verify the requested Bald skin change."
