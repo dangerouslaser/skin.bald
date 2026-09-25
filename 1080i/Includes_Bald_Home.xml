@@ -133,6 +133,13 @@
 			</control>
 		</definition>
 	</include>
+	<!-- Fixed screen-space masks cover the settling fanart zoom outside the 96,120,1248,702 frame. -->
+	<include name="Bald_ArtFrameMasks">
+		<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">80</param><param name="w">96</param><param name="h">782</param></include>
+		<include content="Bald_BackdropWindow"><param name="x">1344</param><param name="y">80</param><param name="w">60</param><param name="h">782</param></include>
+		<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">80</param><param name="w">1248</param><param name="h">40</param></include>
+		<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">822</param><param name="w">1248</param><param name="h">30</param></include>
+	</include>
 
 	<!-- ============ Current-row variables (art frame) ============ -->
 	<variable name="Bald_Fanart">

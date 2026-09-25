@@ -30,9 +30,11 @@ class InfoPagesTests(unittest.TestCase):
         self.assertFalse(self.pages.findall(".//include[@content='Bald_InfoHintPair']"))
         self.assertEqual(len(self.dialog.findall(".//include[@content='Bald_InfoHintPair']")), 2)
 
-    def test_recommendation_fanart_reuses_home_transition_inside_clip(self):
+    def test_recommendation_fanart_reuses_home_transition_and_masks(self):
         frame = self.pages.find(".//control[@id='5205']")
-        self.assertEqual(frame.get("type"), "grouplist")
+        self.assertEqual(frame.get("type"), "group")
+        page = self.pages.find("include[@name='Bald_InfoRecommendationsPage']/control")
+        self.assertIn("Bald_ArtFrameMasks", [node.text for node in page.findall("include")])
         self.assertEqual((frame.findtext("width"), frame.findtext("height")), ("1248", "702"))
         layers = frame.findall(".//include[@content='Bald_ArtLayer']")
         self.assertEqual(len(layers), 2)
@@ -42,6 +44,11 @@ class InfoPagesTests(unittest.TestCase):
             self.assertEqual(node.findtext("param[@name='texture']"), "$VAR[Bald_MorePreviewArt]")
         home = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         layer = home.find("include[@name='Bald_ArtLayer']")
+        masks = home.findall("include[@name='Bald_ArtFrameMasks']/include")
+        bounds = [tuple(int(node.findtext(f"param[@name='{key}']")) for key in ("x", "y", "w", "h")) for node in masks]
+        self.assertEqual(bounds, [(0, 80, 96, 782), (1344, 80, 60, 782), (96, 80, 1248, 40), (96, 822, 1248, 30)])
+        home_window = ET.parse(ROOT / "Home.xml").getroot()
+        self.assertIn("Bald_ArtFrameMasks", [node.text for node in home_window.iter("include")])
         self.assertEqual(layer.findtext("param[@name='texture']"), "$VAR[Bald_Fanart]")
         zoom = layer.find(".//effect[@type='zoom']")
         self.assertEqual((zoom.get("start"), zoom.get("end"), zoom.get("time")), ("105", "100", "1500"))

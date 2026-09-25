@@ -218,8 +218,8 @@
 		<control type="group" id="5202">
 			<include content="Bald_InfoPage"><param name="page">2</param></include>
 			<control type="image"><left>96</left><top>120</top><width>1248</width><height>702</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
-			<!-- Clip the shared Home settling zoom to the frame; logos stay outside this clip/zoom. -->
-			<control type="grouplist" id="5205">
+			<!-- Home's fixed masks below contain the zoom; a grouplist alone does not clip animated overflow. -->
+			<control type="group" id="5205">
 				<left>96</left><top>120</top><width>1248</width><height>702</height>
 				<visible>$EXP[Bald_HasRecommendations]</visible>
 				<control type="group">
@@ -229,6 +229,7 @@
 				</control>
 			</control>
 			<!-- Reuse Home's logo placement, fallback and parity-driven transitions for the highlighted recommendation. -->
+			<include>Bald_ArtFrameMasks</include>
 			<control type="group">
 				<left>96</left><top>120</top><width>1248</width><height>702</height>
 				<visible>$EXP[Bald_HasRecommendations]</visible>

@@ -136,10 +136,7 @@
 			     (grouplists clip ordinary textures), so the bars are invisible against it. -->
 <control type="group">
 				<include>Bald_AnimInfoMasks</include>
-				<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">80</param><param name="w">96</param><param name="h">782</param></include>
-				<include content="Bald_BackdropWindow"><param name="x">1344</param><param name="y">80</param><param name="w">60</param><param name="h">782</param></include>
-				<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">80</param><param name="w">1248</param><param name="h">40</param></include>
-				<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">822</param><param name="w">1248</param><param name="h">30</param></include>
+				<include>Bald_ArtFrameMasks</include>
 			</control>
 
 			<!-- Clock and date -->
