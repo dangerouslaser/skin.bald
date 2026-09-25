@@ -102,6 +102,14 @@
 	</include>
 
 	<!-- ============ Controls ============ -->
+	<!-- Separate labels give paired directives a real 32 px gap, independent of font whitespace glyphs. -->
+	<include name="Bald_InfoHintPair">
+		<param name="first" /><param name="second" />
+		<definition>
+			<control type="label"><width>170</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[first]</label></control>
+			<control type="label"><left>202</left><width>182</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[second]</label></control>
+		</definition>
+	</include>
 	<!-- Action pill: 54 px tall, 28 px side padding. Focused: filled ink, label in field, pop to 1.04 (260). -->
 	<include name="Bald_InfoAction">
 		<param name="id" />
