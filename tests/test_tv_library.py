@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1] / '1080i'
 class TVLibraryTests(unittest.TestCase):
     def setUp(self):
         self.root = ET.parse(ROOT / 'View_520_Bald_TV.xml').getroot()
+        self.alternates = ET.parse(ROOT / 'View_521_Bald_TV_Alternates.xml').getroot()
         self.nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
 
     def test_three_native_levels_are_registered_independently(self):
@@ -71,6 +72,51 @@ class TVLibraryTests(unittest.TestCase):
         logo = shared.find("include[@name='Bald_ArtLogo']")
         textures = [node.text for node in logo.findall('definition/control/texture')]
         self.assertIn('$INFO[Container.Art(tvshow.clearlogo)]', textures)
+
+    def test_alternate_views_are_registered_for_their_content_levels(self):
+        expected = {521: 'tvshows', 522: 'tvshows', 523: 'tvshows', 531: 'seasons', 541: 'episodes', 542: 'episodes'}
+        registered = self.nav.findtext('views').split(',')
+        for control_id, content in expected.items():
+            control = self.alternates.find(f".//control[@id='{control_id}']")
+            self.assertIsNotNone(control, control_id)
+            self.assertEqual(control.findtext('visible'), f'Container.Content({content})')
+            self.assertIn(str(control_id), registered)
+
+    def test_alternate_view_cycles_stay_within_each_tv_level(self):
+        options = ET.parse(ROOT / 'View_510_Bald_Posters.xml').getroot().find("include[@name='Bald_LibraryOptions']")
+        transitions = {}
+        for item in options.findall('.//content/item'):
+            visible = item.findtext('visible')
+            actions = [node.text for node in item.findall('onclick')]
+            if visible and visible.startswith('Control.IsVisible(') and actions and actions[0].startswith('Container.SetViewMode('):
+                transitions[int(visible.removeprefix('Control.IsVisible(').removesuffix(')'))] = int(actions[0].removeprefix('Container.SetViewMode(').removesuffix(')'))
+                self.assertEqual(actions[-1], 'SetFocus(9150)')
+        self.assertEqual([transitions[n] for n in (520, 521, 522, 523)], [521, 522, 523, 520])
+        self.assertEqual([transitions[n] for n in (530, 531)], [531, 530])
+        self.assertEqual([transitions[n] for n in (540, 541, 542)], [541, 542, 540])
+
+    def test_episode_wall_uses_cropped_sixteen_by_nine_thumbnails(self):
+        tile = self.alternates.find("include[@name='Bald_TVEpisodeWallTile']")
+        art = next(image for image in tile.findall('.//control[@type="image"]') if image.findtext('texture') == '$INFO[ListItem.Art(thumb)]')
+        self.assertEqual((art.findtext('width'), art.findtext('height'), art.findtext('aspectratio')), ('192', '108', 'scale'))
+
+    def test_alternate_episode_preview_keeps_metadata_flags_and_art_fallbacks(self):
+        caption = self.alternates.find("include[@name='Bald_TVEpisodeSmallCaption']")
+        self.assertIsNotNone(caption.find(".//include[@content='Bald_MediaFlagItems']"))
+        labels = [node.text or '' for node in caption.findall('.//label')]
+        self.assertTrue(any('ListItem.Premiered' in label and 'ListItem.Duration' in label for label in labels))
+        for container in (541, 542):
+            variable = self.alternates.find(f"variable[@name='Bald_TVEpisodeSmallThumb{container}']")
+            values = [node.text or '' for node in variable.findall('value')]
+            self.assertTrue(any('Art(thumb)' in value for value in values))
+            self.assertTrue(any('Art(fanart)' in value for value in values))
+            self.assertTrue(any('Container.Art(tvshow.fanart)' in value for value in values))
+
+    def test_series_poster_low_rail_matches_artwork_width(self):
+        view = self.alternates.find("include[@name='View_523_Bald_SeriesPosterLow']")
+        rail = view.find(".//control[@id='523']")
+        self.assertEqual(rail.findtext('width'), '1248')
+        self.assertTrue(any(node.find("param[@name='w']").text == '1248' for node in view.findall(".//include[@content='Bald_BackdropWindow']") if node.find("param[@name='w']") is not None))
 
 
 if __name__ == '__main__':

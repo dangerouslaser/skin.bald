@@ -7,9 +7,9 @@
 		<value>$INFO[Container.Art(tvshow.fanart)]</value>
 	</variable>
 	<include name="Bald_TVFooter">
-		<param name="c" /><param name="letters">false</param><param name="select_hint">Select to open</param>
+		<param name="c" /><param name="letters">false</param><param name="select_hint">Select to open</param><param name="count_y">954</param>
 		<definition>
-			<control type="label"><left>96</left><top>954</top><width>600</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[c]).CurrentItem] / $INFO[Container($PARAM[c]).NumItems]</label></control>
+			<control type="label"><left>96</left><top>$PARAM[count_y]</top><width>600</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[c]).CurrentItem] / $INFO[Container($PARAM[c]).NumItems]</label></control>
 			<control type="group"><left>800</left><top>954</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$PARAM[select_hint]</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include>
 			</control>

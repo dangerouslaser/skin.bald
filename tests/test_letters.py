@@ -35,7 +35,7 @@ class LetterAvailabilityTests(unittest.TestCase):
         xbmc.getCondVisibility.return_value = False
         publish(xbmc, gui)
         self.assertNotIn('Bald.AvailableLetters', props)
-        xbmc.getCondVisibility.side_effect = lambda condition: condition not in ('Control.IsVisible(511)', 'Control.IsVisible(512)', 'Control.IsVisible(513)', 'Control.IsVisible(514)', 'Control.IsVisible(515)')
+        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(510)' or condition.startswith('Window.IsActive')
         publish(xbmc, gui)
         self.assertEqual(props['Bald.AvailableLetters'], ';A;')
 
@@ -45,7 +45,7 @@ class LetterAvailabilityTests(unittest.TestCase):
         props = {}
         window.setProperty.side_effect = props.__setitem__
         window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition not in ('Control.IsVisible(512)', 'Control.IsVisible(513)', 'Control.IsVisible(514)', 'Control.IsVisible(515)')
+        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(511)' or condition.startswith('Window.IsActive')
         xbmc.getInfoLabel.side_effect = lambda key: {
             'Container(511).NumAllItems': '1', 'Container.FolderPath': 'movies',
             'Container(511).ListItemAbsolute(0).SortLetter': 'B',
@@ -59,7 +59,7 @@ class LetterAvailabilityTests(unittest.TestCase):
         props = {}
         window.setProperty.side_effect = props.__setitem__
         window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition not in ('Control.IsVisible(513)', 'Control.IsVisible(514)', 'Control.IsVisible(515)')
+        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(512)' or condition.startswith('Window.IsActive')
         xbmc.getInfoLabel.side_effect = lambda key: {
             'Container(512).NumAllItems': '1', 'Container.FolderPath': 'movies',
             'Container(512).ListItemAbsolute(0).SortLetter': 'C',
@@ -80,7 +80,7 @@ class LetterAvailabilityTests(unittest.TestCase):
         props = {}
         window.setProperty.side_effect = props.__setitem__
         window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition not in ('Control.IsVisible(514)', 'Control.IsVisible(515)')
+        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(513)' or condition.startswith('Window.IsActive')
         xbmc.getInfoLabel.side_effect = lambda key: {
             'Container(513).NumAllItems': '1', 'Container.FolderPath': 'movies',
             'Container(513).ListItemAbsolute(0).SortLetter': 'D',
@@ -94,7 +94,7 @@ class LetterAvailabilityTests(unittest.TestCase):
         props = {}
         window.setProperty.side_effect = props.__setitem__
         window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition != 'Control.IsVisible(515)'
+        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(514)' or condition.startswith('Window.IsActive')
         xbmc.getInfoLabel.side_effect = lambda key: {
             'Container(514).NumAllItems': '1', 'Container.FolderPath': 'movies',
             'Container(514).ListItemAbsolute(0).SortLetter': 'E',
@@ -108,10 +108,26 @@ class LetterAvailabilityTests(unittest.TestCase):
         props = {}
         window.setProperty.side_effect = props.__setitem__
         window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.return_value = True
+        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(515)' or condition.startswith('Window.IsActive')
         xbmc.getInfoLabel.side_effect = lambda key: {
             'Container(515).NumAllItems': '1', 'Container.FolderPath': 'movies',
             'Container(515).ListItemAbsolute(0).SortLetter': 'F',
         }.get(key, '')
         publish(xbmc, gui)
         self.assertEqual(props['Bald.AvailableLetters'], ';F;')
+
+    def test_series_views_are_scanned_when_active(self):
+        for container in (520, 521, 522, 523):
+            with self.subTest(container=container):
+                xbmc, gui, window = Mock(), Mock(), Mock()
+                gui.Window.return_value = window
+                props = {}
+                window.setProperty.side_effect = props.__setitem__
+                window.getProperty.side_effect = lambda key: props.get(key, '')
+                xbmc.getCondVisibility.side_effect = lambda condition, c=container: condition == f'Control.IsVisible({c})' or condition.startswith('Window.IsActive')
+                xbmc.getInfoLabel.side_effect = lambda key, c=container: {
+                    f'Container({c}).NumAllItems': '1', 'Container.FolderPath': 'tvshows',
+                    f'Container({c}).ListItemAbsolute(0).SortLetter': 'G',
+                }.get(key, '')
+                publish(xbmc, gui)
+                self.assertEqual(props['Bald.AvailableLetters'], ';G;')
