@@ -212,8 +212,8 @@
 	<include name="DefaultSimpleListLayout">
 		<param name="align">left</param>
 		<param name="height">70</param>
-		<param name="font">font13</param>
-		<param name="fontcolor">grey</param>
+		<param name="font">Bald_Section</param>
+		<param name="fontcolor">bald_ink70</param>
 		<definition>
 			<itemlayout width="$PARAM[width]" height="$PARAM[height]">
 				<control type="group">
@@ -267,7 +267,7 @@
 					<top>0</top>
 					<right>0</right>
 					<bottom>0</bottom>
-					<texture colordiffuse="button_focus">lists/focus.png</texture>
+					<texture colordiffuse="bald_ink10">bald/white.png</texture>
 					<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
 				</control>
 				<control type="group">
@@ -296,6 +296,7 @@
 						<align>$PARAM[align]</align>
 						<font>$PARAM[font]</font>
 						<aligny>center</aligny>
+						<textcolor>bald_ink</textcolor>
 						<label>$INFO[ListItem.Label]</label>
 						<scroll>true</scroll>
 					</control>
@@ -310,6 +311,7 @@
 						<align>$PARAM[align]</align>
 						<font>$PARAM[font]</font>
 						<aligny>center</aligny>
+						<textcolor>bald_ink</textcolor>
 						<label>$INFO[ListItem.Label]</label>
 						<scroll>true</scroll>
 					</control>
@@ -913,25 +915,25 @@
 				<left>0</left>
 				<top>0</top>
 				<right>0</right>
-				<height>70</height>
-				<texture colordiffuse="dialog_header_tint">colors/white.png</texture>
+				<bottom>0</bottom>
+				<texture colordiffuse="bald_field">bald/white.png</texture>
 			</control>
 			<control type="image">
 				<left>0</left>
-				<top>70</top>
+				<top>0</top>
 				<right>0</right>
-				<bottom>0</bottom>
-				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+				<height>70</height>
+				<texture colordiffuse="bald_ink10">bald/white.png</texture>
 			</control>
 			<control type="label" id="$PARAM[header_id]">
 				<left>40</left>
 				<top>0</top>
 				<right>100</right>
 				<height>70</height>
-				<font>font32_title</font>
+				<font>Bald_CaptionTitle</font>
+				<textcolor>bald_ink</textcolor>
 				<label>$PARAM[header_label]</label>
 				<aligny>center</aligny>
-				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="button" id="22002">
 				<description>button overlay to avoid closing in dialog area</description>
@@ -953,12 +955,12 @@
 				<texturefocus />
 				<texturenofocus />
 				<label></label>
-				<textureradioofffocus colordiffuse="EEFFFFFF">dialogs/close.png</textureradioofffocus>
-				<textureradiooffnofocus colordiffuse="EEFFFFFF">special://xbmc/media/vendor_icon.png</textureradiooffnofocus>
-				<textureradioonfocus colordiffuse="EEFFFFFF">dialogs/close.png</textureradioonfocus>
-				<textureradioonnofocus colordiffuse="EEFFFFFF">special://xbmc/media/vendor_icon.png</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="bald_ink">dialogs/close.png</textureradioofffocus>
+				<textureradiooffnofocus colordiffuse="bald_ink70">dialogs/close.png</textureradiooffnofocus>
+				<textureradioonfocus colordiffuse="bald_ink">dialogs/close.png</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="bald_ink70">dialogs/close.png</textureradioonnofocus>
 				<onclick>Action(close)</onclick>
-				<visible>!Skin.HasSetting(touchmode)</visible>
+				<visible>!Skin.HasSetting(touchmode) + !String.IsEmpty(Control.GetLabel($PARAM[header_id]))</visible>
 			</control>
 			<control type="button">
 				<right>10</right>
@@ -968,7 +970,7 @@
 				<texturefocus>dialogs/close.png</texturefocus>
 				<texturenofocus>dialogs/close.png</texturenofocus>
 				<onclick>Action(close)</onclick>
-				<visible>Skin.HasSetting(touchmode)</visible>
+				<visible>Skin.HasSetting(touchmode) + !String.IsEmpty(Control.GetLabel($PARAM[header_id]))</visible>
 			</control>
 		</control>
 	</include>

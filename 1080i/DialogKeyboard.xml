@@ -551,7 +551,7 @@
 				<bottom>0</bottom>
 				<height>460</height>
 				<centerleft>88%</centerleft>
-				<itemgap>dialogbuttons_itemgap</itemgap>
+				<itemgap>8</itemgap>
 				<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">95200</onup>
 				<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
 				<ondown>95200</ondown>

@@ -321,6 +321,12 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Kodi's native keyboard retains every required control ID and navigation route while replacing Estuary's dialog tint, input outline, type and character-key focus treatment with Bald field, ink, outline and pill tokens. Keyboard input, autocomplete, password/numeric variants, confirmation and cancellation remain native contracts.
 - Result windows owned by external add-ons are outside the skin's XML contract; native video results continue into Bald library/detail views where their content type supports them.
 
+### 5.14 Native popups
+
+- Shared confirmation, selection, settings and file/add-on popup surfaces use the fixed `field` panel, a quiet 10% `ink` header, Instrument Sans typography and Bald pill actions. Preserve every native control ID and dispatch action.
+- Dialog action buttons are 72 px high with an 8 px gap, retaining Estuary's 80 px stacking rhythm without intersecting outlines. Focus fills the pill with `ink`; unfocused actions use the 45% `ink` outline.
+- Standard popup lists use 70% `ink` labels and a 10% `ink` focus row. The native backdrop dims behind the panel and uses the standard dialog fade rather than introducing a separate motion language.
+
 ---
 
 ## 6. Default rows (alpha uses a fixed configuration)
