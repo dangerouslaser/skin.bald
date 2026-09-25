@@ -14,4 +14,12 @@
 			<control type="label"><left>1000</left><width>140</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_accent</textcolor><label>$VAR[Bald_ListWatchState]</label></control>
 		</definition>
 	</include>
+	<include name="Bald_ArtworkMovieRow">
+		<param name="ink">bald_ink70</param><param name="scroll">false</param>
+		<definition>
+			<control type="label"><left>26</left><top>4</top><width>598</width><height>40</height><font>Bald_InfoTagline</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$INFO[ListItem.Label]</label></control>
+			<control type="label"><left>26</left><top>46</top><width>408</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins), · , min]</label></control>
+			<control type="label"><left>448</left><top>46</top><width>176</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_accent</textcolor><label>$VAR[Bald_ListWatchState]</label></control>
+		</definition>
+	</include>
 </includes>

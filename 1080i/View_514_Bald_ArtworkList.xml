@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="Bald_ArtworkListCaption">
+		<param name="p" />
+		<definition>
+			<control type="group">
+				<visible>Integer.Is$PARAM[p](Container(514).CurrentItem)</visible>
+				<control type="label"><left>816</left><top>774</top><width>1008</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[Container(514).ListItem.Year]$INFO[Container(514).ListItem.Duration(mins), · , min]$INFO[Container(514).ListItem.Genre, · ,]</label><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">250</param></include></control>
+				<control type="group"><left>816</left><top>806</top><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">275</param></include>
+					<control type="grouplist"><width>1008</width><height>26</height><orientation>horizontal</orientation><itemgap>8</itemgap><include content="Bald_MediaFlagItems"><param name="c">514</param></include></control>
+				</control>
+				<control type="textbox"><left>816</left><top>848</top><width>1008</width><height>60</height><font>Bald_CaptionPlot</font><textcolor>bald_ink76</textcolor><label>$INFO[Container(514).ListItem.Plot]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">350</param></include></control>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_ArtworkListArt">
+		<param name="p" />
+		<definition>
+			<include content="Bald_ArtLayer"><param name="texture">$VAR[Bald_LibraryFanart]</param><param name="width">1008</param><param name="height">567</param><param name="center">504,283.5</param><param name="visible">Integer.Is$PARAM[p](Container(514).CurrentItem)</param></include>
+		</definition>
+	</include>
+	<include name="Bald_ArtworkListLogo">
+		<param name="p" />
+		<definition>
+			<include content="Bald_ArtLogo"><param name="c">514</param><param name="p">$PARAM[p]</param><param name="ignore_home_row">true</param><param name="x">40</param><param name="y">378</param><param name="width">504</param><param name="height">153</param></include>
+		</definition>
+	</include>
+	<include name="View_514_Bald_ArtworkList">
+		<control type="group">
+			<visible>Control.IsVisible(514)</visible>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+			<include>Bald_BackdropImage</include>
+			<control type="label"><left>96</left><top>108</top><width>624</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>Movies</label></control>
+			<control type="label"><left>1296</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<control type="list" id="514">
+				<left>96</left><top>222</top><width>624</width><height>616</height><orientation>vertical</orientation>
+				<viewtype label="Bald artwork list">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<onfocus>SetProperty(Bald.LibraryContainer,514,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,514,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
+				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright>RunScript(skin.bald,letters)</onright><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters)</ondown>
+				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
+				<itemlayout width="624" height="88"><include>Bald_ArtworkMovieRow</include></itemlayout>
+				<focusedlayout width="624" height="88">
+					<control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(514) | $EXP[Bald_LibraryLettersOpen]</visible></control>
+					<include content="Bald_ArtworkMovieRow"><param name="ink">bald_ink</param><param name="scroll">true</param></include>
+				</focusedlayout>
+			</control>
+			<control type="textbox"><left>122</left><top>240</top><width>598</width><height>88</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>No movies to display. Open options to adjust your filters.</label><visible>Integer.IsEqual(Container(514).NumItems,0)</visible></control>
+			<control type="group">
+				<visible>!$EXP[Bald_LibraryMenuOpen] + !Container(514).ListItem.IsParentFolder + !String.IsEmpty(Container(514).ListItem.Title)</visible>
+				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
+				<control type="group"><left>816</left><top>180</top>
+					<control type="image"><width>1008</width><height>567</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+					<include content="Bald_ArtworkListArt"><param name="p">Odd</param></include>
+					<include content="Bald_ArtworkListArt"><param name="p">Even</param></include>
+					<control type="image"><width>1008</width><height>567</height><texture>bald/scrim_logo.png</texture><visible>!String.IsEmpty(Container(514).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(514).ListItem.Art(tvshow.clearlogo))</visible><animation effect="fade" start="0" end="100" time="500" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="150" tween="sine" easing="inout">Hidden</animation></control>
+					<include content="Bald_ArtworkListLogo"><param name="p">Odd</param></include>
+					<include content="Bald_ArtworkListLogo"><param name="p">Even</param></include>
+				</control>
+				<include content="Bald_ArtworkListCaption"><param name="p">Odd</param></include>
+				<include content="Bald_ArtworkListCaption"><param name="p">Even</param></include>
+			</control>
+			<!-- Opaque screen-space masks contain settle zoom; never fade with the preview. -->
+			<include content="Bald_BackdropWindow"><param name="x">790</param><param name="y">164</param><param name="w">26</param><param name="h">599</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">164</param><param name="w">26</param><param name="h">599</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">164</param><param name="w">1008</param><param name="h">16</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">747</param><param name="w">1008</param><param name="h">16</param></include>
+			<include content="Bald_WallFooter"><param name="c">514</param><param name="letters_hint">Right for letters</param></include>
+		</control>
+	</include>
+</includes>
