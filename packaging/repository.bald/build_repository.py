@@ -83,8 +83,8 @@ def zip_bundled_addon(output: Path, revision: str, source: str) -> ET.Element:
     return root
 
 
-def copy_metadata(output: Path, addon_id: str, source_dir: Path) -> None:
-    target = output / addon_id
+def copy_metadata(output: Path, addon_id: str, source_dir: Path, asset_dir: str = "") -> None:
+    target = output / addon_id / asset_dir
     target.mkdir(parents=True, exist_ok=True)
     for name in ("icon.png", "fanart.jpg"):
         shutil.copy2(source_dir / name, target / name)
@@ -118,7 +118,7 @@ def main() -> None:
     output.mkdir(parents=True)
     zip_skin(output, args.revision, skin_version)
     repository_zip = zip_repository(output, repository_version)
-    copy_metadata(output, skin_id, ROOT / "resources")
+    copy_metadata(output, skin_id, ROOT / "resources", "resources")
     copy_metadata(output, repository_id, REPOSITORY_SOURCE)
 
     skin_root = ET.fromstring(skin_xml)
