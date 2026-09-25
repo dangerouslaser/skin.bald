@@ -124,6 +124,9 @@
 	<!-- The current row's item position is odd. Flips on every one-step move and holds until the next. -->
 	<expression name="Bald_ItemOdd">[String.IsEqual(Window(home).Property(Bald.Row),9101) + Integer.IsOdd(Container(9101).CurrentItem)] | [String.IsEqual(Window(home).Property(Bald.Row),9102) + Integer.IsOdd(Container(9102).CurrentItem)] | [String.IsEqual(Window(home).Property(Bald.Row),9103) + Integer.IsOdd(Container(9103).CurrentItem)]</expression>
 	<expression name="Bald_MenuOpen">!String.IsEmpty(Window(home).Property(Bald.Menu))</expression>
+	<!-- The main menu or the context menu (restyled as the same menu over Home) is open: the caption slides out,
+	     the section line hides, the rows dim. -->
+	<expression name="Bald_OverlayOpen">!String.IsEmpty(Window(home).Property(Bald.Menu)) | Window.IsVisible(contextmenu)</expression>
 	<!-- Menu open with a screen other than Home focused: its (placeholder) rows preview instead of Home's. -->
 	<expression name="Bald_PreviewOther">!String.IsEmpty(Window(home).Property(Bald.Menu)) + !String.IsEqual(Container(9000).ListItem.Property(id),home)</expression>
 	<expression name="Bald_Idle">System.IdleTime(60) + Window.IsActive(home)</expression>
@@ -184,7 +187,7 @@
 	</include>
 	<!-- Things that hide while the menu is open: out 160, back 360 after 120. -->
 	<include name="Bald_AnimMenuHides">
-		<animation type="Conditional" condition="$EXP[Bald_MenuOpen]">
+		<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
 			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 		</animation>
 	</include>
@@ -505,7 +508,7 @@
 				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_PreviewOther]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
-				<animation type="Conditional" condition="$EXP[Bald_MenuOpen]">
+				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
 					<effect type="fade" start="100" end="60" time="360" tween="sine" easing="inout" />
 				</animation>
 				<animation type="Conditional" condition="$EXP[Bald_Idle]">
@@ -605,7 +608,7 @@
 				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_PreviewOther]] | !Integer.IsGreater(Container($PARAM[id]).NumItems,0)</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
-				<animation type="Conditional" condition="$EXP[Bald_MenuOpen]">
+				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
 					<effect type="fade" start="100" end="60" time="360" tween="sine" easing="inout" />
 				</animation>
 				<animation type="Conditional" condition="$EXP[Bald_Idle]">
@@ -636,13 +639,13 @@
 							<effect type="zoom" start="100" end="105" center="98,59" time="280" tween="back" easing="out" />
 							<effect type="fade" start="55" end="100" time="300" tween="sine" easing="inout" />
 						</animation>
-						<animation type="Conditional" condition="$EXP[Bald_MenuOpen]">
+						<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
 							<effect type="zoom" start="100" end="95.2" center="98,59" time="300" tween="cubic" easing="out" />
 							<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
 						</animation>
 						<include content="Bald_LandscapeTile">
 							<param name="diffuse">FFFFFFFF</param>
-							<param name="ring">!$EXP[Bald_MenuOpen]</param>
+							<param name="ring">!$EXP[Bald_OverlayOpen]</param>
 						</include>
 					</control>
 				</focusedlayout>
