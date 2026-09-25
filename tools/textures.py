@@ -89,6 +89,11 @@ def main():
     save(rounded(118, 118, 59, stroke=3), "ring_118.png")
     # More like this: 256 x 144 tile, 4 px corners.
     save(rounded(256, 144, 4), "tile_256.png")
+    # Context menu focus marker: the Home menu's 10 px accent dot, vertically centred at the left of a 440 x 56 item.
+    im = Image.new("RGBA", (440, 56), (255, 255, 255, 0))
+    d = dot.resize((10, 10), Image.LANCZOS)
+    im.paste((255, 255, 255, 255), (0, 23), d)
+    save(im, "menu_dot.png")
     # Progress track and bar: 4 px, rounded. 9-slice border 2.
     save(rounded(8, 4, 2), "bar.png")
 
