@@ -17,6 +17,13 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 - Verified on macOS Kodi22: direct keyboard entry, 13-row result scrolling, stable category counts, right-side options/new-search behavior, detail round-trip, blurred-backdrop transitions, Home Search focus restoration and clean logs apart from the existing external IPTV HTTP403. CoreELEC verification remains outstanding.
 - TMDb Helper can emit a bare `EXCEPTION: Window id does not exist` shortly after Global Search closes because its local-container poll overlaps destruction of the script WindowXML. Clearing the local properties on unload does not eliminate that race; the modal still closes correctly and restores the exact Home or library focus. Avoiding local polling would also remove the shared dynamic blur, so the harmless external-helper message is retained for now.
 
+## Live TV guide milestone (2026-09-25)
+
+- Home Live TV now activates Kodi's native TV Guide. The first Bald pass replaces Estuary's four guide orientations with one primary vertical timeline while preserving native controls50/11/60/63/9000, the channel-number input and PVR sidebar/actions.
+- The selected programme summary, optional EPG artwork, date strip and guide grid use Bald's safe margins, typography, palette and motion tokens. Channels retain native logos/numbers; programme focus inverts the block and the progress/timer indicators use the accent.
+- macOS Kodi22 runtime verified Home→Guide and Back with no skin/XML errors. Populated-grid, date, Info, programme selection and options checks remain blocked because the configured IPTV Simple M3U endpoint returns HTTP403 continuously and PVR remains at startup0% with no guide items. No playback, timer, recording or PVR-setting mutations were made.
+- Kodi's global PVR startup/busy overlay currently draws a progress line and a near-duplicate status line beside the spinner. This is outside `MyPVRGuide.xml`; theme/deduplication belongs to the later shared busy-dialog/PVR-status pass.
+
 ## Paged movie information (2026-09-25)
 
 - Recommendation fanart now also reuses `Bald_ArtLayer`, with its texture parameter defaulting to Home's original variable. Odd/Even instances bound to container5100 preserve the outgoing art while fading for 700 ms and replay the 105→100% / 1500 ms settling zoom. A frame-sized grouplist did **not** contain animated overflow in Kodi. Both Home and recommendations now use the extracted `Bald_ArtFrameMasks`: four fixed backdrop strips outside the artwork frame. The clearlogo overlay and instant-switch footer remain independent of the zoom.

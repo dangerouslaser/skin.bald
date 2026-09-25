@@ -322,6 +322,13 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Kodi's native keyboard retains every required control ID and navigation route while replacing Estuary's dialog tint, input outline, type and character-key focus treatment with Bald field, ink, outline and pill tokens. Keyboard input, autocomplete, password/numeric variants, confirmation and cancellation remain native contracts.
 - Result windows owned by external add-ons are outside the skin's XML contract; native video results continue into Bald library/detail views where their content type supports them.
 
+### 5.14 Live TV guide
+
+- Home Live TV opens Kodi's native TV Guide directly. The first PVR milestone provides one primary vertical timeline view and disables Estuary's alternate guide orientations until Bald variants exist.
+- The Guide retains Kodi 22's native EPG grid50, date selector11, wrapper63, scrollbar60, channel-number input, menu9000, PVR sidebar, programme information and timer/recording actions.
+- Layout uses the 96px safe margin: heading/clock at the top, selected channel/programme summary and optional EPG artwork above the grid, date strip at y354 and timeline from y420. Channel rows use logos, number/name and 68px spacing; programme blocks use quiet ink surfaces with an inverted focused block and accent progress/timer marks.
+- This milestone does not replace Channels, Recordings, Timers, programme dialogs or the PVR sidebar. Those remain native Estuary contracts until their dedicated Bald passes.
+
 ### 5.14 Native popups
 
 - Shared confirmation, selection, settings and file/add-on popup surfaces use the fixed `field` panel, a quiet 10% `ink` header, Instrument Sans typography and Bald pill actions. Preserve every native control ID and dispatch action.

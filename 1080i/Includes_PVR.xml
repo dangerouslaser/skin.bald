@@ -792,6 +792,23 @@
 			</control>
 		</definition>
 	</include>
+	<include name="Bald_EpgGrid">
+		<definition>
+			<control type="epggrid" id="$PARAM[control_id]">
+				<left>96</left><top>420</top><right>96</right><bottom>92</bottom>
+				<orientation>vertical</orientation><pagecontrol>60</pagecontrol>
+				<scrolltime tween="cubic" easing="out">440</scrolltime><timeblocks>180</timeblocks><minspertimeblock>1</minspertimeblock><rulerunit>6</rulerunit>
+				<onleft>9000</onleft><onright>60</onright><onup>11</onup><ondown>11</ondown><viewtype label="19298">list</viewtype>
+				<progresstexture colordiffuse="bald_accent">bald/white.png</progresstexture>
+				<rulerlayout height="40" width="1428"><control type="label"><width>238</width><height>40</height><font>Bald_Hint</font><label>$INFO[ListItem.Label]</label><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor></control></rulerlayout>
+				<channellayout height="68" width="300"><control type="label"><width>54</width><height>68</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.ChannelNumberLabel]</label></control><control type="image"><left>72</left><top>10</top><width>72</width><height>48</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.ChannelLogo]</texture></control><control type="label" id="1"><left>158</left><width>134</width><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.ChannelName]</label></control></channellayout>
+				<focusedchannellayout height="68" width="300"><control type="image"><top>30</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control><control type="label"><width>54</width><height>68</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.ChannelNumberLabel]</label></control><control type="image"><left>72</left><top>10</top><width>72</width><height>48</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.ChannelLogo]</texture></control><control type="label" id="1"><left>158</left><width>134</width><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><scroll>true</scroll><label>$INFO[ListItem.ChannelName]</label></control></focusedchannellayout>
+				<itemlayout height="68" width="60"><control type="image"><left>2</left><top>2</top><right>2</right><bottom>2</bottom><texture colordiffuse="bald_ink10">bald/white.png</texture></control><control type="label" id="1"><left>12</left><right>12</right><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.Label]</label></control><control type="image"><left>10</left><bottom>8</bottom><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>ListItem.HasTimer | ListItem.IsRecording</visible></control></itemlayout>
+				<focusedlayout height="68" width="60"><control type="image" id="2"><left>2</left><top>2</top><right>2</right><bottom>2</bottom><texture colordiffuse="bald_ink">bald/white.png</texture><visible>Control.HasFocus($PARAM[control_id])</visible></control><control type="image"><left>2</left><top>2</top><right>2</right><bottom>2</bottom><texture colordiffuse="bald_ink28">bald/white.png</texture><visible>!Control.HasFocus($PARAM[control_id])</visible></control><control type="label" id="1"><left>12</left><right>12</right><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_field</textcolor><label>$INFO[ListItem.Label]</label><visible>Control.HasFocus($PARAM[control_id])</visible></control><control type="label" id="1"><left>12</left><right>12</right><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label><visible>!Control.HasFocus($PARAM[control_id])</visible></control></focusedlayout>
+			</control>
+			<control type="scrollbar" id="60"><right>72</right><top>460</top><width>8</width><bottom>104</bottom><orientation>vertical</orientation><onleft>50</onleft><onright>50</onright><texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground><textureslidernib colordiffuse="bald_accent">bald/white.png</textureslidernib><textureslidernibfocus colordiffuse="bald_accent">bald/white.png</textureslidernibfocus></control>
+		</definition>
+	</include>
 	<include name="PVRBackendDiskspace">
 		<control type="label">
 			<left>0</left>
