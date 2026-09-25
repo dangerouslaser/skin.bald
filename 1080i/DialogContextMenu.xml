@@ -3,8 +3,9 @@
      6 px gap, unfocused items at 34% and 6 px left, in fade 380 and slide 40 px over 480 after 120, out 160.
      Over Home the caption slides out as for the main menu (Bald_OverlayOpen); elsewhere a dark scrim sits behind it.
      Kodi (CGUIDialogContextMenu) fills grouplist 996 with copies of button 1000, and centres the dialog on the focused
-     control using background image 999's size, clamped to the screen. 999 is an invisible full-screen image, so the
-     clamp always lands the dialog at 0,0 and these coordinates are absolute. -->
+     control using background image 999's size, clamped to the screen. 999 is invisible and taller than the screen by
+     the list's maximum height (1080 + 592): Kodi shrinks it by the list's unused height, and it must stay at least
+     screen-sized so the clamp always lands the dialog at 0,0 and these coordinates are absolute. -->
 <window>
 	<defaultcontrol>996</defaultcontrol>
 	<coordinates>
@@ -14,7 +15,7 @@
 	<controls>
 		<control type="image" id="999">
 			<width>1920</width>
-			<height>1080</height>
+			<height>1672</height>
 			<texture colordiffuse="00FFFFFF">bald/white.png</texture>
 		</control>
 		<!-- Scrim when not over Home (library windows still use Estuary's layouts). -->
@@ -43,10 +44,11 @@
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
 			</animation>
+			<!-- Starts 10 px left of the menu column (1430) because grouplists clip, and the focus dot sits at 1440. -->
 			<control type="grouplist" id="996">
-				<left>1440</left>
+				<left>1430</left>
 				<top>392</top>
-				<width>440</width>
+				<width>450</width>
 				<!-- Up to 592 px (to the bottom safe margin); longer menus scroll. Auto height keeps 999 full-screen. -->
 				<height max="592">auto</height>
 				<orientation>vertical</orientation>
@@ -54,16 +56,20 @@
 				<usecontrolcoords>true</usecontrolcoords>
 			</control>
 		</control>
-		<!-- Button template: 46 px menu item. Unfocused 34% at x 20; focused full ink, sliding 6 px right to 26 (320). -->
+		<!-- Button template: 46 px menu item. Unfocused 34%; focused full ink, sliding 6 px right (320), with the accent dot. -->
 		<control type="button" id="1000">
-			<width>440</width>
+			<!-- At 1434 (list at 1430 plus 4) so that after the 6 px focus slide the dot sits at 1440, like the Home menu's;
+			     text lands at 1460 unfocused and 1466 focused, also as in the Home menu. -->
+			<left>4</left>
+			<width>446</width>
 			<height>56</height>
 			<font>Bald_MenuItem</font>
-			<textoffsetx>20</textoffsetx>
+			<textoffsetx>26</textoffsetx>
 			<aligny>center</aligny>
 			<textcolor>bald_ink34</textcolor>
 			<focusedcolor>bald_ink</focusedcolor>
-			<texturefocus />
+			<!-- Focused item: the Home menu's accent dot at x 1440, marking the highlighted entry. -->
+			<texturefocus colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
 			<texturenofocus />
 			<animation type="Focus">
 				<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
