@@ -2,10 +2,14 @@
 <addon id="skin.bald" version="0.1.0" name="Bald" provider-name="Bryan Hoban">
 	<requires>
 		<import addon="xbmc.gui" version="5.18.0"/>
+		<import addon="xbmc.python" version="3.0.1"/>
+		<import addon="plugin.video.themoviedb.helper" version="6.17.4" optional="true"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
 	</extension>
+	<!-- Run the bundled info bridge with this add-on's declared Python dependencies. -->
+	<extension point="xbmc.python.script" library="scripts/info.py" />
 	<extension point="xbmc.addon.metadata">
 		<platform>all</platform>
 		<summary lang="en_GB">Minimal, artwork-first skin for Kodi 22.</summary>

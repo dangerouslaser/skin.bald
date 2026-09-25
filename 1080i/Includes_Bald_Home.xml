@@ -25,10 +25,12 @@
 	     and scale 1.53846 in the prototype, i.e. zoom about 274,343), 640 move after 40, and back 540 after 160 when
 	     it closes; Home chrome goes out 200 and returns 380 / 480 after 440. Paired non-reversible Conditionals keep
 	     open and close timings separate; Kodi applies a Conditional's end state silently at window load. -->
-	<expression name="Bald_InfoOpen">Window.IsVisible(movieinformation)</expression>
+	<expression name="Bald_InfoOpen">Window.IsVisible(movieinformation) | !String.IsEmpty(Window(home).Property(Bald.InfoSwitch))</expression>
+	<!-- Keep the outgoing art during exchanges; don't show a previous dialog's property on initial open. -->
+	<expression name="Bald_InfoArtReady">!String.IsEmpty(Window(home).Property(Bald.InfoSwitch)) | [!String.IsEmpty(Window(movieinformation).Property(Bald.Identity)) + String.IsEqual(Window(movieinformation).Property(Bald.ArtIdentity),Window(movieinformation).Property(Bald.Identity))]</expression>
 	<!-- A modal dialog is over Home. <visible> and animation conditions are evaluated without a window context, so
 	     under a modal dialog any Container(...) in them resolves against the dialog; Home guards on this. -->
-	<expression name="Bald_DialogOver">System.HasActiveModalDialog | Window.IsVisible(movieinformation) | Window.IsVisible(contextmenu)</expression>
+	<expression name="Bald_DialogOver">System.HasActiveModalDialog | $EXP[Bald_InfoOpen] | Window.IsVisible(contextmenu)</expression>
 	<include name="Bald_AnimInfoFrame">
 		<animation type="Conditional" condition="$EXP[Bald_InfoOpen]" reversible="false">
 			<effect type="zoom" start="100" end="153.846" center="274,343" time="640" delay="40" tween="cubic" easing="out" />
@@ -76,6 +78,8 @@
 			<aspectratio>scale</aspectratio>
 			<fadetime>800</fadetime>
 			<texture background="true">$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</texture>
+			<!-- Optional enhancement: the field underneath is the supported no-helper fallback. -->
+			<visible>System.HasAddon(plugin.video.themoviedb.helper) + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</include>
