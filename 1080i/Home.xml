@@ -11,11 +11,6 @@
 	<onload>ClearProperty(Bald.Start9101,home)</onload>
 	<onload>ClearProperty(Bald.Start9102,home)</onload>
 	<onload>ClearProperty(Bald.Start9103,home)</onload>
-	<onload>ClearProperty(Bald.Shown9101,home)</onload>
-	<onload>ClearProperty(Bald.Shown9102,home)</onload>
-	<onload>ClearProperty(Bald.Shown9103,home)</onload>
-	<onload>ClearProperty(Bald.ArtRow,home)</onload>
-	<onload>ClearProperty(Bald.ArtItem,home)</onload>
 	<controls>
 		<control type="image">
 			<width>1920</width>
@@ -41,11 +36,19 @@
 				<control type="image">
 					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
 				</control>
-				<!-- Two fanart layers, as in the prototype: the bald_art_* timers put each new fanart in the idle layer
-				     and flip Bald.ArtSlot, so the new art fades in (700) while settling from 1.05 (1500) and the old
-				     art fades out untouched. -->
-				<include content="Bald_ArtLayer"><param name="slot">a</param></include>
-				<include content="Bald_ArtLayer"><param name="slot">b</param></include>
+				<!-- Fanart: a base image crossfades slowly (2000) to the current art at 1.0, so it still mostly shows the old
+				     art while the row's overlay fades the new art in over it (700) with the settle zoom. Reads as the
+				     prototype's crossfade; faint ghosting mid-fade is gone once the zoom settles. -->
+				<control type="image">
+					<width>1248</width>
+					<height>702</height>
+					<aspectratio>scale</aspectratio>
+					<fadetime>2000</fadetime>
+					<texture background="true">$VAR[Bald_Fanart]</texture>
+				</control>
+				<include content="Bald_ArtOverlay"><param name="c">9101</param></include>
+				<include content="Bald_ArtOverlay"><param name="c">9102</param></include>
+				<include content="Bald_ArtOverlay"><param name="c">9103</param></include>
 			</control>
 			<!-- Scrim and clearlogo (not zoomed; inside the frame, so the masks never touch them). -->
 			<control type="group">
@@ -110,7 +113,7 @@
 				</control>
 			</control>
 
-			<!-- Callout: the dot pops and the line grows from the left each time an item is shown.
+			<!-- Callout: the dot pops and the line grows from the left each time the current item changes.
 			     The line stops 24 px short of the caption (1416), a deliberate change from the prototype's 1440. -->
 			<control type="group">
 				<include>Bald_AnimMenuHides</include>
