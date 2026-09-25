@@ -48,6 +48,14 @@ class LibraryViewTests(unittest.TestCase):
         home = ET.parse(ROOT / "Home.xml").getroot()
         self.assertIn("ActivateWindow(Videos,videodb://movies/titles/,return)", [n.text for n in home.iter("onclick")])
 
+    def test_frame_masks_are_outside_preview_menu_animations(self):
+        root = self.view.find("include[@name='View_510_Bald_Posters']/control")
+        self.assertEqual(len(root.findall("include[@content='Bald_BackdropWindow']")), 4)
+        preview = next(n for n in root.findall('control') if 'ListItem.IsParentFolder' in (n.findtext('visible') or ''))
+        self.assertFalse(preview.findall(".//include[@content='Bald_BackdropWindow']"))
+        self.assertFalse(preview.findall("animation/effect[@type='slide']"))
+        self.assertEqual(preview.find("animation[@type='Hidden']/effect").get('time'), '180')
+
     def test_posters_crop_to_fill_the_frame_in_both_focus_states(self):
         item = self.view.find("include[@name='Bald_LibraryPosterItem']")
         poster = next(n for n in item.iter('control') if n.findtext('texture') == '$VAR[Bald_LibraryPoster]')
