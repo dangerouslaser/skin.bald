@@ -13,6 +13,23 @@ class InfoPagesTests(unittest.TestCase):
         self.pages = ET.parse(ROOT / "Includes_Bald_InfoPages.xml").getroot()
         self.shared = ET.parse(ROOT / "Includes_Bald_Info.xml").getroot()
 
+    def test_hint_pair_right_aligns_as_a_unit_with_20px_separator(self):
+        pair = self.shared.find("include[@name='Bald_InfoHintPair']/definition/control")
+        self.assertEqual(pair.get("type"), "grouplist")
+        self.assertEqual(pair.findtext("align"), "right")
+        self.assertEqual(pair.findtext("width"), "384")
+        self.assertEqual(pair.findtext("itemgap"), "0")
+        labels = pair.findall("control")
+        self.assertEqual([node.findtext("width") for node in labels], ["auto", "20", "auto"])
+        self.assertEqual(labels[1].findtext("label"), "·")
+        self.assertTrue(all(node.findtext("height") == "24" for node in labels))
+        overview = next(node for node in self.dialog.iter("control") if node.findtext("label") == "Down for cast & details")
+        self.assertEqual(overview.findtext("align"), "right")
+        self.assertEqual(overview.findtext("height"), "24")
+        self.assertEqual(overview.findtext("top"), "954")
+        self.assertFalse(self.pages.findall(".//include[@content='Bald_InfoHintPair']"))
+        self.assertEqual(len(self.dialog.findall(".//include[@content='Bald_InfoHintPair']")), 2)
+
     def test_native_playback_and_cast_contracts(self):
         for control_id in ("8", "9", "11"):
             self.assertIsNotNone(self.dialog.find(f".//control[@id='{control_id}']"))

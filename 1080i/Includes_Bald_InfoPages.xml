@@ -267,7 +267,6 @@
 				<onfocus>SetProperty(Bald.InfoSec,2,home)</onfocus><include>Bald_InfoBackToCast</include>
 				<ondown>noop</ondown><onleft>noop</onleft><onright>noop</onright><onclick>noop</onclick>
 			</control>
-			<control type="group"><left>1440</left><top>954</top><include content="Bald_InfoHintPair"><param name="first">Up for cast &amp; details</param><param name="second">Select to open</param></include></control>
 		</control>
 	</include>
 </includes>

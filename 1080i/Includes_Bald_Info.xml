@@ -101,9 +101,12 @@
 	<include name="Bald_InfoHintPair">
 		<param name="first" /><param name="second" />
 		<definition>
-			<control type="label"><width>170</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[first]</label></control>
-			<control type="label"><left>170</left><width>20</width><height>24</height><align>center</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label></control>
-			<control type="label"><left>190</left><width>194</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[second]</label></control>
+			<control type="grouplist">
+				<width>384</width><height>24</height><orientation>horizontal</orientation><align>right</align><itemgap>0</itemgap>
+				<control type="label"><width>auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[first]</label></control>
+				<control type="label"><width>20</width><height>24</height><align>center</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label></control>
+				<control type="label"><width>auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[second]</label></control>
+			</control>
 		</definition>
 	</include>
 	<!-- Action pill: 54 px tall, 28 px side padding. Focused: filled ink, label in field, pop to 1.04 (260). -->
