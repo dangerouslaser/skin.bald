@@ -4,6 +4,8 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 
 ## Paged movie information (2026-09-25)
 
+- Recommendation fanart now also reuses `Bald_ArtLayer`, with its texture parameter defaulting to Home's original variable. Odd/Even instances bound to container5100 preserve the outgoing art while fading for 700 ms and replay the 105→100% / 1500 ms settling zoom. A frame-sized grouplist clips zoom overflow; the clearlogo overlay and instant-switch footer remain outside it.
+
 - Recommendation caption follow-up: replaced its static, separately positioned labels with the shared `Bald_Caption` Odd/Even pair bound to container5100. This mirrors Home's title baseline, metadata/flags/genre/plot spacing and 180/250/275/300/350 ms stagger, using the same fade/slide effects. A boolean bypass of the Home-row visibility guard keeps this reusable without changing Home's selected row or the native info item.
 
 - Clearlogo follow-up: recommendations reuse `Bald_ArtLogo` with container5100 and an explicit bypass of the Home-row guard. Keep the guard in the definition: embedding `$PARAM[c]` inside another parameter's default did not resolve in Kodi and hid Home's logos. A plain boolean bypass preserves both contexts.

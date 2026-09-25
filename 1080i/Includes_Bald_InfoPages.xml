@@ -218,9 +218,15 @@
 		<control type="group" id="5202">
 			<include content="Bald_InfoPage"><param name="page">2</param></include>
 			<control type="image"><left>96</left><top>120</top><width>1248</width><height>702</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
-			<control type="image" id="5205">
-				<left>96</left><top>120</top><width>1248</width><height>702</height><aspectratio>scale</aspectratio>
-				<fadetime>700</fadetime><texture background="true">$VAR[Bald_MorePreviewArt]</texture><visible>$EXP[Bald_HasRecommendations]</visible>
+			<!-- Clip the shared Home settling zoom to the frame; logos stay outside this clip/zoom. -->
+			<control type="grouplist" id="5205">
+				<left>96</left><top>120</top><width>1248</width><height>702</height>
+				<visible>$EXP[Bald_HasRecommendations]</visible>
+				<control type="group">
+					<width>1248</width><height>702</height>
+					<include content="Bald_ArtLayer"><param name="texture">$VAR[Bald_MorePreviewArt]</param><param name="visible">Integer.IsOdd(Container(5100).CurrentItem)</param></include>
+					<include content="Bald_ArtLayer"><param name="texture">$VAR[Bald_MorePreviewArt]</param><param name="visible">Integer.IsEven(Container(5100).CurrentItem)</param></include>
+				</control>
 			</control>
 			<!-- Reuse Home's logo placement, fallback and parity-driven transitions for the highlighted recommendation. -->
 			<control type="group">

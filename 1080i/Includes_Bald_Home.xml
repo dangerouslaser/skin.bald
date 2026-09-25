@@ -253,13 +253,14 @@
 	     layer's texture instead, which <fadetime> crossfades (it waits until the new image has loaded). -->
 	<include name="Bald_ArtLayer">
 		<param name="visible" />
+		<param name="texture">$VAR[Bald_Fanart]</param>
 		<definition>
 			<control type="image">
 				<width>1248</width>
 				<height>702</height>
 				<aspectratio>scale</aspectratio>
 				<fadetime>700</fadetime>
-				<texture background="true">$VAR[Bald_Fanart]</texture>
+				<texture background="true">$PARAM[texture]</texture>
 				<visible>$PARAM[visible]</visible>
 				<animation type="Visible">
 					<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
