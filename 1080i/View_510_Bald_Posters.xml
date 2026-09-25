@@ -97,20 +97,26 @@
 			<control type="group">
 				<visible>!$EXP[Bald_LibraryMenuOpen] + !Container(510).ListItem.IsParentFolder + !String.IsEmpty(Container(510).ListItem.Title)</visible>
 				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
-				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
 				<control type="group"><left>1296</left><top>222</top>
 					<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 					<include content="Bald_LibraryArt"><param name="p">Odd</param></include>
 					<include content="Bald_LibraryArt"><param name="p">Even</param></include>
 				</control>
-				<!-- Reuse Home's backdrop-window masking rather than relying on clipping transformed images. -->
-				<include content="Bald_BackdropWindow"><param name="x">1264</param><param name="y">198</param><param name="w">32</param><param name="h">345</param></include>
-				<include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">198</param><param name="w">32</param><param name="h">345</param></include>
-				<include content="Bald_BackdropWindow"><param name="x">1296</param><param name="y">198</param><param name="w">528</param><param name="h">24</param></include>
-				<include content="Bald_BackdropWindow"><param name="x">1296</param><param name="y">519</param><param name="w">528</param><param name="h">24</param></include>
-				<include content="Bald_LibraryCaption"><param name="p">Odd</param></include>
-				<include content="Bald_LibraryCaption"><param name="p">Even</param></include>
+				<control type="group">
+					<visible>!$EXP[Bald_LibraryMenuOpen]</visible>
+					<!-- Retain the caption while the parent completes its outgoing fade. -->
+					<animation type="Hidden"><effect type="fade" start="100" end="100" time="180" tween="sine" easing="inout" /></animation>
+					<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+					<include content="Bald_LibraryCaption"><param name="p">Odd</param></include>
+					<include content="Bald_LibraryCaption"><param name="p">Even</param></include>
+				</control>
 			</control>
+			<!-- Keep masks opaque and fixed in screen space: fading their base and blur separately creates a dark border. -->
+			<include content="Bald_BackdropWindow"><param name="x">1264</param><param name="y">198</param><param name="w">32</param><param name="h">345</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">198</param><param name="w">32</param><param name="h">345</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">1296</param><param name="y">198</param><param name="w">528</param><param name="h">24</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">1296</param><param name="y">519</param><param name="w">528</param><param name="h">24</param></include>
 			<control type="label"><left>96</left><top>954</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>
 			<control type="group"><left>1000</left><top>954</top>
 				<visible>!$EXP[Bald_LibraryMenuOpen]</visible>

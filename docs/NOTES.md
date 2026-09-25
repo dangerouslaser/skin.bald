@@ -101,6 +101,8 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 
 ## First native movie library (2026-09-25)
 
+- Options transition fix: frame-overflow masks must stay outside the fading preview group. Each mask composites an opaque field and blurred fanart; applying the preview fade to both layers exposes a transient dark rectangle. Masks now stay fixed and opaque, artwork fades in place, and only the caption slides on return. This also keeps the art aligned with its masks throughout the transition.
+
 - Right-column options polish: view510 now opens a five-row static menu (9150) in place of the preview, reusing Home's menu animation and parameterized note include. Native control IDs 3/4/8/10 remain unique in the hidden original sidebar and receive Sort/Order/Search/Watched actions via SendClick. Advanced Filter opens Kodi's native dialog. Switching views returns focus through Kodi's native view manager; the original sidebar remains available outside view510. A hidden focus router handles Kodi's Menu action for both layouts. No scans or library metadata edits were performed during verification.
 - Verified five-row scrolling and end stops, Back/Left returning to posters, native sort/search/filter dialogs, reversible sort order, all three watched filters (restored All videos), and switching to another view and back. The runtime log has no skin/XML errors; external HTTP403 and an unavailable audio-output device are separate existing runtime issues.
 
