@@ -15,6 +15,9 @@
 	<onload>SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
 	<onload>SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
 	<onload>ClearProperty(Bald.Menu,home)</onload>
+	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetProperty(Bald.Menu,1,home)</onload>
+	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetFocus(9000,4,absolute)</onload>
+	<onload>ClearProperty(Bald.ReturnSearch,home)</onload>
 	<onload>ClearProperty(Bald.Start9101,home)</onload>
 	<onload>ClearProperty(Bald.Start9102,home)</onload>
 	<onload>ClearProperty(Bald.Start9103,home)</onload>
@@ -248,8 +251,10 @@
 						<label>Search</label>
 						<property name="id">search</property>
 						<property name="note">Select to search your library.</property>
-						<onclick>ClearProperty(Bald.Menu,home)</onclick>
-						<onclick>ActivateWindow(1107)</onclick>
+						<onclick>SetProperty(Bald.SearchOrigin,home,home)</onclick>
+						<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
+						<onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick>
+						<onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
 					</item>
 					<item>
 						<label>$LOCALIZE[5]</label>

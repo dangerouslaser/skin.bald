@@ -3,6 +3,7 @@
 	<requires>
 		<import addon="xbmc.gui" version="5.18.0"/>
 		<import addon="xbmc.python" version="3.0.1"/>
+		<import addon="script.globalsearch" version="9.2.1" optional="true"/>
 		<import addon="plugin.video.themoviedb.helper" version="6.17.4" optional="true"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
