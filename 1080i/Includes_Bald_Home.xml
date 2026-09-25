@@ -21,12 +21,74 @@
 	<!-- Curves (docs/SPEC.md section 4): move = cubic out, fade = sine inout, pop = back out. -->
 
 	<!-- ============ Palette ============ -->
-	<!-- Field: TMDb Helper's fanart color at 7% lightness (it steps between colors over about 1 s itself);
-	     neutral fallback until one is available. -->
-	<variable name="Bald_FieldColor">
-		<value condition="!String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.Colors.Main))">$INFO[Window(home).Property(TMDbHelper.ListItem.Colors.Main)]</value>
+	<!-- Field: TMDb Helper's fanart color at 7% lightness. Kodi cannot animate a color, so two layers crossfade
+	     (800, as the spec's palette change): the bald_field timer copies each new color into the idle layer's
+	     property (Bald.Fielda / Bald.Fieldb) and flips Bald.FieldSlot. A timer is fine here: the color already
+	     arrives asynchronously, after TMDb Helper has processed the image. -->
+	<variable name="Bald_Fielda">
+		<value condition="!String.IsEmpty(Window(home).Property(Bald.Fielda))">$INFO[Window(home).Property(Bald.Fielda)]</value>
 		<value>bald_field</value>
 	</variable>
+	<variable name="Bald_Fieldb">
+		<value condition="!String.IsEmpty(Window(home).Property(Bald.Fieldb))">$INFO[Window(home).Property(Bald.Fieldb)]</value>
+		<value>bald_field</value>
+	</variable>
+	<variable name="Bald_FieldSlotNext">
+		<value condition="String.IsEqual(Window(home).Property(Bald.FieldSlot),a)">b</value>
+		<value>a</value>
+	</variable>
+	<include name="Bald_AnimPalette">
+		<animation type="Visible">
+			<effect type="fade" start="0" end="100" time="800" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Hidden">
+			<effect type="fade" start="100" end="0" time="800" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<include name="Bald_FieldLayer">
+		<param name="slot" />
+		<definition>
+			<control type="image">
+				<width>1920</width>
+				<height>1080</height>
+				<texture>bald/white.png</texture>
+				<colordiffuse>$VAR[Bald_Field$PARAM[slot]]</colordiffuse>
+				<visible>String.IsEqual(Window(home).Property(Bald.FieldSlot),$PARAM[slot])</visible>
+				<include>Bald_AnimPalette</include>
+			</control>
+		</definition>
+	</include>
+	<!-- The four bars around the art frame, in one field color. -->
+	<include name="Bald_FieldMasks">
+		<param name="color" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="group">
+				<visible>$PARAM[visible]</visible>
+				<include>Bald_AnimPalette</include>
+				<control type="image">
+					<left>0</left><top>80</top><width>96</width><height>782</height>
+					<texture>bald/white.png</texture>
+					<colordiffuse>$PARAM[color]</colordiffuse>
+				</control>
+				<control type="image">
+					<left>1344</left><top>80</top><width>60</width><height>782</height>
+					<texture>bald/white.png</texture>
+					<colordiffuse>$PARAM[color]</colordiffuse>
+				</control>
+				<control type="image">
+					<left>96</left><top>80</top><width>1248</width><height>40</height>
+					<texture>bald/white.png</texture>
+					<colordiffuse>$PARAM[color]</colordiffuse>
+				</control>
+				<control type="image">
+					<left>96</left><top>822</top><width>1248</width><height>30</height>
+					<texture>bald/white.png</texture>
+					<colordiffuse>$PARAM[color]</colordiffuse>
+				</control>
+			</control>
+		</definition>
+	</include>
 
 	<!-- ============ Current-row variables (art frame) ============ -->
 	<variable name="Bald_Fanart">
