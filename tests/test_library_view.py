@@ -48,6 +48,15 @@ class LibraryViewTests(unittest.TestCase):
         home = ET.parse(ROOT / "Home.xml").getroot()
         self.assertIn("ActivateWindow(Videos,videodb://movies/titles/,return)", [n.text for n in home.iter("onclick")])
 
+    def test_posters_crop_to_fill_the_frame_in_both_focus_states(self):
+        item = self.view.find("include[@name='Bald_LibraryPosterItem']")
+        poster = next(n for n in item.iter('control') if n.findtext('texture') == '$VAR[Bald_LibraryPoster]')
+        self.assertEqual(poster.findtext('aspectratio'), 'scale')
+        self.assertEqual((poster.findtext('width'), poster.findtext('height')), ('360', '540'))
+        container = self.view.find(".//control[@id='510']")
+        self.assertEqual(container.findtext('itemlayout/include'), 'Bald_LibraryPosterItem')
+        self.assertEqual(container.find('focusedlayout/include').get('content'), 'Bald_LibraryPosterItem')
+
     def test_footer_reuses_detail_view_hint_spacing(self):
         hint = self.view.find(".//include[@content='Bald_InfoHintPair']")
         self.assertEqual(hint.findtext("param[@name='width']"), "824")

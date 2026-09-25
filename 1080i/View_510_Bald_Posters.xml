@@ -55,7 +55,7 @@
 			<control type="group">
 				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="192,282" time="280" tween="back" easing="out" /></animation>
 				<control type="image"><left>12</left><top>12</top><width>360</width><height>540</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
-				<control type="image"><left>12</left><top>12</top><width>360</width><height>540</height><aspectratio>keep</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[Bald_LibraryPoster]</texture></control>
+				<control type="image"><left>12</left><top>12</top><width>360</width><height>540</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[Bald_LibraryPoster]</texture></control>
 				<control type="image"><left>9</left><top>9</top><width>366</width><height>546</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
 			</control>
 			<control type="label"><left>12</left><top>574</top><width>360</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><wrapmultiline>true</wrapmultiline><aligny>top</aligny><label>$INFO[ListItem.Label]</label></control>
