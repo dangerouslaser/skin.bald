@@ -62,10 +62,10 @@
 					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
 					<label>Down for cast &amp; details</label><visible>String.IsEqual(Window(home).Property(Bald.InfoSec),0)</visible>
 				</control>
-				<control type="label">
-					<left>1300</left><top>954</top><width>524</width><height>28</height><align>right</align>
-					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
-					<label>Up for overview · Down for more like this</label><visible>String.IsEqual(Window(home).Property(Bald.InfoSec),1)</visible>
+				<control type="group">
+					<left>1440</left><top>954</top>
+					<visible>String.IsEqual(Window(home).Property(Bald.InfoSec),1)</visible>
+					<include content="Bald_InfoHintPair"><param name="first">Up for overview</param><param name="second">Down for more like this</param></include>
 				</control>
 			</control>
 		</control>

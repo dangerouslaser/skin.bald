@@ -271,7 +271,7 @@
 				<ondown>noop</ondown><onleft>noop</onleft><onright>noop</onright><onclick>noop</onclick>
 			</control>
 			<control type="label"><left>1440</left><top>926</top><width>384</width><height>28</height><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>• More like this</label></control>
-			<control type="label"><left>1440</left><top>962</top><width>384</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Up for cast &amp; details · Select to open</label></control>
+			<control type="group"><left>1440</left><top>962</top><include content="Bald_InfoHintPair"><param name="first">Up for cast &amp; details</param><param name="second">Select to open</param></include></control>
 		</control>
 	</include>
 </includes>
