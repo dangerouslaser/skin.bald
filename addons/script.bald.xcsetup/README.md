@@ -2,9 +2,9 @@
 
 Quick one-shot configurator for Kodi 22 and IPTV Simple 22.x.
 
-It accepts an Xtream Codes server URL, username and password, then writes the standard `get.php` M3U and `xmltv.php` EPG URLs into an existing IPTV Simple instance. The original instance XML is copied once to `instance-settings-N.xml.bald-xc-backup` before changes are applied.
+It accepts an Xtream Codes server URL, username and password, generates a local extended M3U from the XC live-stream API, and writes that file plus the standard `xmltv.php` EPG URL into an existing IPTV Simple instance. The original instance XML is copied once to `instance-settings-N.xml.bald-xc-backup` before changes are applied.
 
-This is intentionally not a streaming proxy. IPTV Simple can consume standard XC URLs directly, avoiding another always-running service and another place to expose credentials.
+The helper reads the XC live-category and live-stream APIs and generates a local extended M3U for IPTV Simple. This supports services whose `get.php` endpoint returns account metadata instead of a playlist, without requiring an always-running proxy service.
 
 ## Install
 
