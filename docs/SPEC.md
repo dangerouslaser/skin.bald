@@ -161,6 +161,7 @@ Title handling: caption title is always text. The clearlogo only ever appears on
 | Menu | Up or Down | Move; the row and art preview that screen live |
 | Menu | Left or Select | Enter the screen (screens without rows stay in the menu) |
 | Menu | Back | Close without switching |
+| Menu | Settings | Open Kodi's native Settings hub (alpha maintenance access) |
 | Menu | Last item | Customize home (0.2) |
 
 Menu state lives in a window property (for example `Window(Home).Property(MenuOpen)`), set in `onup`, `onback` and `onleft` handlers. Caption, menu and section line animate on that property with conditional animations.
@@ -182,6 +183,8 @@ The "Back for menu" hint hides after the menu has been opened three times (skin 
 
 Open info as a dialog over Home. Home stays rendered underneath, so the art frame can zoom to full screen in Home itself with a conditional animation on the info dialog being visible, while the dialog fades its content in. This avoids a two-window handoff and gives true continuity. If that proves impossible, fall back to a zoom animation with a start rectangle of 96,120,1248,702 on the dialog's own full-screen fanart.
 
+Alpha robustness update (2026-09-25): Home keeps this handoff and follows the current info item's artwork when a related title replaces it. When opened outside Home (library/search/add-ons), info draws its own full-screen artwork over `field`, fading in over 380 FADE and out over 130 FADE. Missing artwork leaves the field, never an unrelated title's art.
+
 Layout (content column starts at x 96):
 
 | Group | Top | Contents |
@@ -200,8 +203,10 @@ Actions: in progress gives Resume, Start over, Trailer, Mark watched. Otherwise 
 | From | Key | Result |
 | --- | --- | --- |
 | Actions | Left or Right | Move between actions |
-| Actions | Down | Cast |
-| Cast | Down | More like this |
+| Actions | Down | Cast; if empty, focus Details at section offset 560 |
+| Cast | Down | More like this; if empty, focus Details |
+| Details | Down | More like this if available; otherwise stay |
+| Details | Up | Cast if available; otherwise actions |
 | Any | Up | Previous section |
 | More like this | Select | Replace this info with that title |
 | Any | Back | Close; return to the originating tile |
