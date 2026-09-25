@@ -26,7 +26,8 @@ class LibraryViewTests(unittest.TestCase):
     def test_caption_reuses_home_media_flags_and_motion(self):
         caption = self.view.find("include[@name='Bald_LibraryCaption']//include")
         self.assertEqual(caption.get("content"), "Bald_Caption")
-        self.assertEqual(caption.findtext("param[@name='c']"), "510")
+        self.assertEqual(caption.findtext("param[@name='c']"), "$PARAM[c]")
+        self.assertEqual(self.view.findtext("include[@name='Bald_LibraryCaption']/param[@name='c']"), "510")
         self.assertEqual(caption.findtext("param[@name='width']"), "528")
         shared = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         home_caption = shared.find("include[@name='Bald_Caption']")
@@ -50,7 +51,7 @@ class LibraryViewTests(unittest.TestCase):
         self.assertIn("ActivateWindow(Videos,videodb://movies/titles/,return)", [n.text for n in home.iter("onclick")])
 
     def test_frame_masks_are_outside_preview_menu_animations(self):
-        root = self.view.find("include[@name='View_510_Bald_Posters']/control")
+        root = self.view.find("include[@name='Bald_LibraryPreview']/definition")
         self.assertEqual(len(root.findall("include[@content='Bald_BackdropWindow']")), 4)
         preview = next(n for n in root.findall('control') if 'ListItem.IsParentFolder' in (n.findtext('visible') or ''))
         self.assertFalse(preview.findall(".//include[@content='Bald_BackdropWindow']"))
