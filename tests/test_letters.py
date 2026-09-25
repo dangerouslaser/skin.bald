@@ -35,6 +35,20 @@ class LetterAvailabilityTests(unittest.TestCase):
         xbmc.getCondVisibility.return_value = False
         publish(xbmc, gui)
         self.assertNotIn('Bald.AvailableLetters', props)
-        xbmc.getCondVisibility.return_value = True
+        xbmc.getCondVisibility.side_effect = lambda condition: condition != 'Control.IsVisible(511)'
         publish(xbmc, gui)
         self.assertEqual(props['Bald.AvailableLetters'], ';A;')
+
+    def test_wall_container_is_scanned_when_active(self):
+        xbmc, gui, window = Mock(), Mock(), Mock()
+        gui.Window.return_value = window
+        props = {}
+        window.setProperty.side_effect = props.__setitem__
+        window.getProperty.side_effect = lambda key: props.get(key, '')
+        xbmc.getCondVisibility.return_value = True
+        xbmc.getInfoLabel.side_effect = lambda key: {
+            'Container(511).NumAllItems': '1', 'Container.FolderPath': 'movies',
+            'Container(511).ListItemAbsolute(0).SortLetter': 'B',
+        }.get(key, '')
+        publish(xbmc, gui)
+        self.assertEqual(props['Bald.AvailableLetters'], ';B;')

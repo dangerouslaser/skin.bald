@@ -5,18 +5,18 @@
 	<expression name="Bald_LibraryTitleSorted">String.IsEqual(Container.SortMethod,$LOCALIZE[556])</expression>
 	<variable name="Bald_LibraryLetterLabel">
 		<value condition="!$EXP[Bald_LibraryTitleSorted]">Choose Title sort in options</value>
-		<value condition="String.IsEmpty(Container(510).ListItem.Title)">No movies to browse</value>
+		<value condition="String.IsEmpty(Container(0).ListItem.Title)">No movies to browse</value>
 		<value>Browse by letter</value>
 	</variable>
-	<expression name="Bald_LibraryLatinLetter">String.IsEqual(Container(510).ListItem.SortLetter,A) | String.IsEqual(Container(510).ListItem.SortLetter,B) | String.IsEqual(Container(510).ListItem.SortLetter,C) | String.IsEqual(Container(510).ListItem.SortLetter,D) | String.IsEqual(Container(510).ListItem.SortLetter,E) | String.IsEqual(Container(510).ListItem.SortLetter,F) | String.IsEqual(Container(510).ListItem.SortLetter,G) | String.IsEqual(Container(510).ListItem.SortLetter,H) | String.IsEqual(Container(510).ListItem.SortLetter,I) | String.IsEqual(Container(510).ListItem.SortLetter,J) | String.IsEqual(Container(510).ListItem.SortLetter,K) | String.IsEqual(Container(510).ListItem.SortLetter,L) | String.IsEqual(Container(510).ListItem.SortLetter,M) | String.IsEqual(Container(510).ListItem.SortLetter,N) | String.IsEqual(Container(510).ListItem.SortLetter,O) | String.IsEqual(Container(510).ListItem.SortLetter,P) | String.IsEqual(Container(510).ListItem.SortLetter,Q) | String.IsEqual(Container(510).ListItem.SortLetter,R) | String.IsEqual(Container(510).ListItem.SortLetter,S) | String.IsEqual(Container(510).ListItem.SortLetter,T) | String.IsEqual(Container(510).ListItem.SortLetter,U) | String.IsEqual(Container(510).ListItem.SortLetter,V) | String.IsEqual(Container(510).ListItem.SortLetter,W) | String.IsEqual(Container(510).ListItem.SortLetter,X) | String.IsEqual(Container(510).ListItem.SortLetter,Y) | String.IsEqual(Container(510).ListItem.SortLetter,Z)</expression>
+	<expression name="Bald_LibraryLatinLetter">String.IsEqual(Container(0).ListItem.SortLetter,A) | String.IsEqual(Container(0).ListItem.SortLetter,B) | String.IsEqual(Container(0).ListItem.SortLetter,C) | String.IsEqual(Container(0).ListItem.SortLetter,D) | String.IsEqual(Container(0).ListItem.SortLetter,E) | String.IsEqual(Container(0).ListItem.SortLetter,F) | String.IsEqual(Container(0).ListItem.SortLetter,G) | String.IsEqual(Container(0).ListItem.SortLetter,H) | String.IsEqual(Container(0).ListItem.SortLetter,I) | String.IsEqual(Container(0).ListItem.SortLetter,J) | String.IsEqual(Container(0).ListItem.SortLetter,K) | String.IsEqual(Container(0).ListItem.SortLetter,L) | String.IsEqual(Container(0).ListItem.SortLetter,M) | String.IsEqual(Container(0).ListItem.SortLetter,N) | String.IsEqual(Container(0).ListItem.SortLetter,O) | String.IsEqual(Container(0).ListItem.SortLetter,P) | String.IsEqual(Container(0).ListItem.SortLetter,Q) | String.IsEqual(Container(0).ListItem.SortLetter,R) | String.IsEqual(Container(0).ListItem.SortLetter,S) | String.IsEqual(Container(0).ListItem.SortLetter,T) | String.IsEqual(Container(0).ListItem.SortLetter,U) | String.IsEqual(Container(0).ListItem.SortLetter,V) | String.IsEqual(Container(0).ListItem.SortLetter,W) | String.IsEqual(Container(0).ListItem.SortLetter,X) | String.IsEqual(Container(0).ListItem.SortLetter,Y) | String.IsEqual(Container(0).ListItem.SortLetter,Z)</expression>
 	<include name="Bald_LibraryLetterCell">
 		<param name="letter" /><param name="label" /><param name="x" /><param name="width" /><param name="selected" />
 		<definition>
 			<control type="group"><left>$PARAM[x]</left>
-				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_ink34</textcolor><label>$PARAM[label]</label><visible>!String.Contains(Window(videos).Property(Bald.AvailableLetters),;$PARAM[letter];) + [![$PARAM[selected]] | String.IsEmpty(Container(510).ListItem.Title)]</visible></control>
+				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_ink34</textcolor><label>$PARAM[label]</label><visible>!String.Contains(Window(videos).Property(Bald.AvailableLetters),;$PARAM[letter];) + [![$PARAM[selected]] | String.IsEmpty(Container(0).ListItem.Title)]</visible></control>
 				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_ink70</textcolor><label>$PARAM[label]</label><visible>String.Contains(Window(videos).Property(Bald.AvailableLetters),;$PARAM[letter];) + ![$PARAM[selected]]</visible></control>
-				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[label]</label><visible>[$PARAM[selected]] + !String.IsEmpty(Container(510).ListItem.Title)</visible></control>
-				<control type="image"><left>0</left><top>37</top><width>$PARAM[width]</width><height>6</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>[$PARAM[selected]] + !String.IsEmpty(Container(510).ListItem.Title)</visible></control>
+				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[label]</label><visible>[$PARAM[selected]] + !String.IsEmpty(Container(0).ListItem.Title)</visible></control>
+				<control type="image"><left>0</left><top>37</top><width>$PARAM[width]</width><height>6</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>[$PARAM[selected]] + !String.IsEmpty(Container(0).ListItem.Title)</visible></control>
 			</control>
 		</definition>
 	</include>
@@ -28,45 +28,45 @@
 			<control type="label"><left>96</left><top>856</top><width>1140</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_LibraryLetterLabel]</label></control>
 			<control type="group"><left>96</left><top>888</top><visible>$EXP[Bald_LibraryTitleSorted]</visible>
 				<include content="Bald_LibraryLetterCell"><param name="letter">0</param><param name="label">0–9</param><param name="x">0</param><param name="width">68</param><param name="selected">!$EXP[Bald_LibraryLatinLetter]</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">A</param><param name="label">A</param><param name="x">68</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,A)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">B</param><param name="label">B</param><param name="x">109</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,B)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">C</param><param name="label">C</param><param name="x">150</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,C)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">D</param><param name="label">D</param><param name="x">191</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,D)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">E</param><param name="label">E</param><param name="x">232</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,E)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">F</param><param name="label">F</param><param name="x">273</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,F)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">G</param><param name="label">G</param><param name="x">314</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,G)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">H</param><param name="label">H</param><param name="x">355</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,H)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">I</param><param name="label">I</param><param name="x">396</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,I)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">J</param><param name="label">J</param><param name="x">437</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,J)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">K</param><param name="label">K</param><param name="x">478</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,K)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">L</param><param name="label">L</param><param name="x">519</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,L)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">M</param><param name="label">M</param><param name="x">560</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,M)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">N</param><param name="label">N</param><param name="x">601</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,N)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">O</param><param name="label">O</param><param name="x">642</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,O)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">P</param><param name="label">P</param><param name="x">683</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,P)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">Q</param><param name="label">Q</param><param name="x">724</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,Q)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">R</param><param name="label">R</param><param name="x">765</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,R)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">S</param><param name="label">S</param><param name="x">806</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,S)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">T</param><param name="label">T</param><param name="x">847</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,T)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">U</param><param name="label">U</param><param name="x">888</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,U)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">V</param><param name="label">V</param><param name="x">929</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,V)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">W</param><param name="label">W</param><param name="x">970</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,W)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">X</param><param name="label">X</param><param name="x">1011</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,X)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">Y</param><param name="label">Y</param><param name="x">1052</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,Y)</param></include>
-				<include content="Bald_LibraryLetterCell"><param name="letter">Z</param><param name="label">Z</param><param name="x">1093</param><param name="width">41</param><param name="selected">String.IsEqual(Container(510).ListItem.SortLetter,Z)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">A</param><param name="label">A</param><param name="x">68</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,A)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">B</param><param name="label">B</param><param name="x">109</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,B)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">C</param><param name="label">C</param><param name="x">150</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,C)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">D</param><param name="label">D</param><param name="x">191</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,D)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">E</param><param name="label">E</param><param name="x">232</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,E)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">F</param><param name="label">F</param><param name="x">273</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,F)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">G</param><param name="label">G</param><param name="x">314</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,G)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">H</param><param name="label">H</param><param name="x">355</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,H)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">I</param><param name="label">I</param><param name="x">396</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,I)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">J</param><param name="label">J</param><param name="x">437</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,J)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">K</param><param name="label">K</param><param name="x">478</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,K)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">L</param><param name="label">L</param><param name="x">519</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,L)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">M</param><param name="label">M</param><param name="x">560</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,M)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">N</param><param name="label">N</param><param name="x">601</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,N)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">O</param><param name="label">O</param><param name="x">642</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,O)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">P</param><param name="label">P</param><param name="x">683</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,P)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">Q</param><param name="label">Q</param><param name="x">724</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,Q)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">R</param><param name="label">R</param><param name="x">765</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,R)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">S</param><param name="label">S</param><param name="x">806</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,S)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">T</param><param name="label">T</param><param name="x">847</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,T)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">U</param><param name="label">U</param><param name="x">888</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,U)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">V</param><param name="label">V</param><param name="x">929</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,V)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">W</param><param name="label">W</param><param name="x">970</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,W)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">X</param><param name="label">X</param><param name="x">1011</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,X)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">Y</param><param name="label">Y</param><param name="x">1052</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,Y)</param></include>
+				<include content="Bald_LibraryLetterCell"><param name="letter">Z</param><param name="label">Z</param><param name="x">1093</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,Z)</param></include>
 			</control>
 		</control>
 		<control type="button" id="9160">
 			<left>96</left><top>888</top><width>1140</width><height>48</height><label></label><texturefocus /><texturenofocus />
 			<visible allowhiddenfocus="true">$EXP[Bald_LibraryLettersOpen]</visible>
-			<onfocus>SetProperty(TMDbHelper.WidgetContainer,510,videos)</onfocus>
-			<onleft condition="$EXP[Bald_LibraryTitleSorted]">SetFocus(510)</onleft>
+			<onfocus>SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(videos).Property(Bald.LibraryContainer)],videos)</onfocus>
+			<onleft condition="$EXP[Bald_LibraryTitleSorted]">SetFocus(50)</onleft>
 			<onleft condition="$EXP[Bald_LibraryTitleSorted]">Action(PrevLetter)</onleft>
 			<onleft>SetFocus(9160)</onleft>
-			<onright condition="$EXP[Bald_LibraryTitleSorted]">SetFocus(510)</onright>
+			<onright condition="$EXP[Bald_LibraryTitleSorted]">SetFocus(50)</onright>
 			<onright condition="$EXP[Bald_LibraryTitleSorted]">Action(NextLetter)</onright>
 			<onright>SetFocus(9160)</onright>
-			<onup>510</onup><onback>510</onback><onclick>SetFocus(510)</onclick><ondown>noop</ondown>
+			<onup>50</onup><onback>50</onback><onclick>SetFocus(50)</onclick><ondown>noop</ondown>
 		</control>
 	</include>
 	<expression name="Bald_LibraryMenuOpen">Control.HasFocus(9150)</expression>
@@ -86,7 +86,7 @@
 		<control type="list" id="9150">
 			<left>1296</left><top>392</top><width>528</width><height>310</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
 			<visible allowhiddenfocus="true">$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
-			<onleft>510</onleft><onback>510</onback><onright>noop</onright><onup>noop</onup><ondown>noop</ondown>
+			<onleft>50</onleft><onback>50</onback><onright>noop</onright><onup>noop</onup><ondown>noop</ondown>
 			<itemlayout width="528" height="62">
 				<control type="label"><left>20</left><width>508</width><height>56</height><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><aligny>center</aligny><label>$INFO[ListItem.Label]</label></control>
 			</itemlayout>
@@ -119,14 +119,15 @@
 	</variable>
 	<include name="Bald_LibraryPosterItem">
 		<param name="diffuse">bald_ink55</param><param name="focused">false</param>
+		<param name="width">360</param><param name="height">540</param><param name="ring_width">366</param><param name="ring_height">546</param><param name="center">192,282</param><param name="show_label">true</param>
 		<definition>
 			<control type="group">
-				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="192,282" time="280" tween="back" easing="out" /></animation>
-				<control type="image"><left>12</left><top>12</top><width>360</width><height>540</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
-				<control type="image"><left>12</left><top>12</top><width>360</width><height>540</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[Bald_LibraryPoster]</texture></control>
-				<control type="image"><left>9</left><top>9</top><width>366</width><height>546</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
+				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
+				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[Bald_LibraryPoster]</texture></control>
+				<control type="image"><left>9</left><top>9</top><width>$PARAM[ring_width]</width><height>$PARAM[ring_height]</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
 			</control>
-			<control type="label"><left>12</left><top>574</top><width>360</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><wrapmultiline>true</wrapmultiline><aligny>top</aligny><label>$INFO[ListItem.Label]</label></control>
+			<control type="label"><left>12</left><top>574</top><width>360</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><wrapmultiline>true</wrapmultiline><aligny>top</aligny><label>$INFO[ListItem.Label]</label><visible>$PARAM[show_label]</visible></control>
 		</definition>
 	</include>
 	<include name="Bald_LibraryCaption">
@@ -155,7 +156,7 @@
 				<left>84</left><top>210</top><width>1152</width><height>648</height>
 				<orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems>
 				<viewtype label="Bald posters">icon</viewtype><visible>Container.Content(movies)</visible>
-				<onfocus>SetProperty(TMDbHelper.WidgetContainer,510,videos)</onfocus>
+				<onfocus>SetProperty(Bald.LibraryContainer,510,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,510,videos)</onfocus>
 				<onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
 				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters)</ondown><onleft>noop</onleft><onright>noop</onright>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
@@ -196,8 +197,6 @@
 			<control type="group"><left>1296</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">528</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include>
 			</control>
-			<include>Bald_LibraryOptions</include>
-			<include>Bald_LibraryLetters</include>
 		</control>
 	</include>
 </includes>
