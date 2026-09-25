@@ -38,7 +38,7 @@
 
 	<!-- ============ Animations ============ -->
 	<!-- Caption element in: after the 180 ms settle, fade 380 and move 540 from 14 px left, staggered by delay.
-	     The Conditional plays when the row becomes current or stops fast-scrolling. Item changes play the Visible
+	     The Conditional plays when the row becomes current. Item changes play the Visible
 	     animation: each element's <visible> includes !Container(c).OnNext + !Container(c).OnPrevious, so it is
 	     hidden on the move frame and animates back in. (Kodi resets a reversible="false" Conditional as soon as
 	     its condition turns false, so OnNext cannot be the animation condition itself, and skin timers only run
@@ -47,7 +47,7 @@
 		<param name="c" />
 		<param name="delay" />
 		<definition>
-			<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + !Container($PARAM[c]).Scrolling" reversible="false">
+			<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])" reversible="false">
 				<effect type="fade" start="0" end="100" time="380" delay="$PARAM[delay]" tween="sine" easing="inout" />
 				<effect type="slide" start="-14,0" end="0,0" time="540" delay="$PARAM[delay]" tween="cubic" easing="out" />
 			</animation>
@@ -183,7 +183,7 @@
 		<param name="c" />
 		<definition>
 			<control type="group">
-				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + !Container($PARAM[c]).Scrolling</visible>
+				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 					<effect type="slide" start="0,0" end="-14,0" time="130" tween="sine" easing="inout" />
