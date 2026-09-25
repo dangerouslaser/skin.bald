@@ -82,6 +82,8 @@
 				<itemlayout width="160" height="234"><include content="Bald_PosterLowTile" /></itemlayout>
 				<focusedlayout width="160" height="234"><include content="Bald_PosterLowTile"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(515) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
+			<!-- Draw after the poster rail so options always have a quiet field-backed column. -->
+			<control type="group"><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_BackdropWindow"><param name="x">1264</param><param name="y">198</param><param name="w">592</param><param name="h">652</param></include></control>
 			<!-- Letter mode deliberately covers the low row; otherwise the full alphabet collides with poster art. -->
 			<control type="group"><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_BackdropWindow"><param name="x">84</param><param name="y">730</param><param name="w">1280</param><param name="h">242</param></include></control>
 			<control type="label"><left>110</left><top>768</top><width>1228</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>No movies to display. Open options to adjust your filters.</label><visible>Integer.IsEqual(Container(515).NumItems,0)</visible></control>

@@ -92,9 +92,24 @@ class LibraryViewTests(unittest.TestCase):
         for direction in ('onleft', 'onback'):
             self.assertEqual(menu.findtext(direction), '50')
         actions = [n.text for n in menu.iter('onclick')]
-        for action in ('SendClick(3)', 'SendClick(4)', 'SendClick(8)', 'SendClick(10)', 'Filter', 'Container.NextViewMode'):
+        for action in ('SendClick(3)', 'SendClick(4)', 'SendClick(8)', 'SendClick(10)', 'Filter'):
             self.assertIn(action, actions)
+        self.assertNotIn('Container.NextViewMode', actions)
+        self.assertEqual(
+            [n.text for n in menu.findall("content/item/onclick[1]") if (n.text or '').startswith('Container.SetViewMode')],
+            [f'Container.SetViewMode({view})' for view in (511, 512, 513, 514, 515, 510)],
+        )
+        view_items = [item for item in menu.findall('content/item') if item.findtext('label') == 'View']
+        self.assertEqual(len(view_items), 6)
+        self.assertTrue(all(item.findall('onclick')[1].text == 'SetFocus(9150)' for item in view_items))
         self.assertIsNotNone(self.view.find("include[@name='Bald_LibraryOptions']//include[@content='Bald_MenuNote']"))
+
+    def test_movie_entry_rejects_legacy_estuary_view_modes(self):
+        nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
+        action = next(node for node in nav.findall('onload') if node.text == 'Container.SetViewMode(510)')
+        self.assertIn('Container.Content(movies)', action.get('condition'))
+        for view in range(510, 516):
+            self.assertIn(f'!Control.IsVisible({view})', action.get('condition'))
 
     def test_letter_mode_uses_native_jumps_and_restores_its_focus(self):
         mode = self.view.find(".//control[@id='9160']")

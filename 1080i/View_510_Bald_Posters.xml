@@ -97,7 +97,13 @@
 				</control>
 			</focusedlayout>
 			<content>
-				<item><label>View</label><property name="option">view</property><onclick>Container.NextViewMode</onclick><onclick>SetFocus(50)</onclick><visible>Integer.IsGreater(Container.ViewCount,1)</visible></item>
+				<!-- Keep the options list open and constrain movie browsing to Bald's native layouts. -->
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(511)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(510)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(512)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(511)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(513)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(512)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(514)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(513)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(515)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(514)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(510)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(515)</visible></item>
 				<item><label>Sort by</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
 				<item><label>Order</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
 				<item><label>Search</label><property name="note">Find a title in your video library.</property><onclick>SendClick(8)</onclick></item>
