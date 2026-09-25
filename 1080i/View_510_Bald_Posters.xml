@@ -97,6 +97,15 @@
 				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(514)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(513)</visible></item>
 				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(515)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(514)</visible></item>
 				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(510)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(515)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(521)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(520)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(522)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(521)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(523)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(522)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(520)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(523)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(531)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(530)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(530)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(531)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(541)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(540)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(542)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(541)</visible></item>
+				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(540)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(542)</visible></item>
 				<item><label>Sort by</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
 				<item><label>Order</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
 				<item><label>Search</label><property name="note">Find a title in your video library.</property><onclick>SendClick(8)</onclick></item>

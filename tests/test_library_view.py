@@ -95,12 +95,14 @@ class LibraryViewTests(unittest.TestCase):
         for action in ('SendClick(3)', 'SendClick(4)', 'SendClick(8)', 'SendClick(10)', 'Filter'):
             self.assertIn(action, actions)
         self.assertNotIn('Container.NextViewMode', actions)
-        self.assertEqual(
-            [n.text for n in menu.findall("content/item/onclick[1]") if (n.text or '').startswith('Container.SetViewMode')],
-            [f'Container.SetViewMode({view})' for view in (511, 512, 513, 514, 515, 510)],
-        )
+        movie_view_actions = [
+            item.find('onclick').text for item in menu.findall('content/item')
+            if (item.findtext('visible') or '') in {f'Control.IsVisible({view})' for view in (510, 511, 512, 513, 514, 515)}
+            and (item.findtext('onclick') or '').startswith('Container.SetViewMode')
+        ]
+        self.assertEqual(movie_view_actions, [f'Container.SetViewMode({view})' for view in (511, 512, 513, 514, 515, 510)])
         view_items = [item for item in menu.findall('content/item') if item.findtext('label') == 'View']
-        self.assertEqual(len(view_items), 6)
+        self.assertEqual(len(view_items), 15)
         self.assertTrue(all(item.findall('onclick')[1].text == 'SetFocus(9150)' for item in view_items))
         self.assertIsNotNone(self.view.find("include[@name='Bald_LibraryOptions']//include[@content='Bald_MenuNote']"))
         self.assertEqual(menu.findtext('itemlayout/include'), 'Bald_MenuRowUnfocused')

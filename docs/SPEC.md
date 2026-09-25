@@ -307,6 +307,13 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Episodes540 uses a seven-row artwork-focused list at x96 and a1008×567 16:9 preview at x816. Rows show S/E code, title, air date, runtime and Resume/Watched state. The preview shows episode thumb, then episode/show fanart fallback, followed by episode metadata, codec-inclusive media flags and plot. Episodes do not expose alphabet mode.
 - All three levels share the Home-width library options menu, x1824 footer alignment, blurred selected-art background, native sorting/filtering/context actions and 440 MOVE scrolling. Missing artwork falls back through Kodi's native TV artwork inheritance and then the field/placeholder—never unrelated art.
 
+### 5.12 TV library — alternative layouts
+
+- Series adds three alternatives to the primary three-poster shelf: a five-column/two-row wall with the shared right preview (521), a thirteen-row compact list with the same preview (522), and a cinematic poster-low view (523). All retain alphabet browsing, Series metadata, native Select/Info behavior and the shared options/footer geometry.
+- Seasons adds a thirteen-row compact list (531) with episode totals and watched progress. It retains the selected season/show artwork preview and clearlogo fallback; Seasons never enters alphabet mode.
+- Episodes adds a thirteen-row compact list with a 528×297 selected thumbnail and caption (541), plus a five-column/two-row 16:9 thumbnail wall using 192×108 cards (542). Both retain episode code, title, air date/runtime, watch state, media flags and plot; Episodes never enters alphabet mode.
+- The View option cycles only within layouts valid for the current content level and keeps the options menu open after every switch: Series 520→521→522→523, Seasons 530→531 and Episodes 540→541→542. Legacy Estuary video views remain unavailable for all three redesigned TV levels.
+
 ---
 
 ## 6. Default rows (alpha uses a fixed configuration)
