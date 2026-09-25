@@ -65,7 +65,16 @@ One UI family: **Instrument Sans** (SIL OFL, ship the TTFs in `fonts/`). Clearlo
 
 ### Color
 
-Every screen is tinted from the focused item's fanart. Three tokens drive the UI:
+**Changed 2026-09-24 (tried in Kodi).** The fanart-tinted palette below is replaced for alpha by a blurred-fanart background and fixed tokens. A tinted `field` at 7% lightness read as near-black even at high saturation, and the user preferred the blurred art.
+
+| Element | Rule |
+| --- | --- |
+| Background | The focused item's fanart, blurred (Gaussian radius 40 on a 480 px copy, from TMDb Helper), darkened to 30% brightness, over `field`. Crossfades 800 FADE between titles once the new image has loaded. |
+| `field` | Constant `#0B0C10`. Base under the background, and the color of scrims and dimming layers. |
+| `accent` | Constant `#9FB0C6`. |
+| `ink` | Constant `#ECEEF2`. |
+
+The original tinted palette, kept for a later release (it needs a small service add-on to compute three tokens with the k-means rule):
 
 | Token | Rule |
 | --- | --- |
@@ -74,8 +83,6 @@ Every screen is tinted from the focused item's fanart. Three tokens drive the UI
 | `ink` | Accent hue, lightness 93%, saturation 35% |
 
 Monochrome art (accent saturation under 12%): keep everything neutral. Use accent at lightness 74% and its own saturation, and ink at 2% saturation, so black-and-white films never pick up a false tint.
-
-Neutral fallback when no palette is available: field `#0B0C10`, accent `#9FB0C6`, ink `#ECEEF2`.
 
 Clustering: k-means, k = 6, on a 96 by 54 downsample. The JavaScript implementation in the real-data prototype is the reference.
 
@@ -108,7 +115,7 @@ Static values: scrims are black at the alphas given per component below. Focus r
 | Row swap (Up or Down between rows) | out 140 fade and drop 18 px, in 360 fade and 440 rise |
 | Menu open | caption out 180, menu in fade 380 and slide 40 px over 480, delay 120 |
 | Menu close | menu out 160, caption back fade 380 and slide over 480, delay 140 |
-| Palette change | 800 FADE on every tinted element |
+| Background change | 800 FADE crossfade of the blurred fanart (was: palette change, 800 FADE on every tinted element) |
 | Info open | home chrome out 200; art frame zoom to full screen 640 MOVE, delay 40; info content base delay 380 then stagger 0, 60, 100, 140, 180, 220, 270, 310 |
 | Info close | content out 130; art frame back 540 MOVE, delay 160; home chrome back 380, delay 440 |
 | Info section scroll | 560 MOVE; art dims to 60% field over 460 |
@@ -239,8 +246,8 @@ Content sources to confirm for Kodi 22: recently added (`videodb://recentlyadded
 
 | Item | Plan |
 | --- | --- |
-| Palette extraction | Find a maintained Kodi 22 helper that exposes dominant colors as window properties. Fallback idea: precompute palettes on the media server and have a small service add-on publish them. Alpha ships the neutral palette if neither is ready. |
-| Dynamic colors | Confirm `textcolor` and `colordiffuse` accept `$INFO` or `$VAR` values in Kodi 22 for the tinted tokens. |
+| Palette extraction | Deferred. Alpha uses the blurred-fanart background and fixed tokens (section 3). A tinted accent and ink need a helper that exposes three k-means tokens; TMDb Helper's color feature gives one mean color at one forced lightness. |
+| Dynamic colors | Confirmed: `colordiffuse` accepts `$INFO` / `$VAR` values in Kodi 22 (used while trialling the tinted field). |
 | Dark clearlogos | Prototype turns near-black logos white by measuring brightness. Kodi cannot read pixels natively, so the alpha relies on the drop shadow. |
 | Atmos flag | Confirm how Kodi 22 exposes Atmos in stream details. |
 | Fanart performance | Measure on AM6B+ and AM9 Pro: crossfade plus settle zoom plus tinted fades. Reduce the settle zoom first if frames drop. |
