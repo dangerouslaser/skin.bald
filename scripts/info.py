@@ -96,6 +96,11 @@ def run(action="", media_type="", dbid=""):
     import xbmc
     import xbmcgui
 
+    if action == "letters":
+        from letters import publish
+        publish(xbmc, xbmcgui)
+        return
+
     identity = "{}:{}".format(media_type, dbid)
     window = xbmcgui.Window(12003)
     if action == "recommendations":
