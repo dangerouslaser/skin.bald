@@ -15,8 +15,10 @@
 			<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
 			<control type="image"><left>0</left><top>8</top><width>150</width><height>112</height><aspectratio align="center" aligny="center">keep</aspectratio><fadetime>380</fadetime><texture>$INFO[ListItem.ChannelLogo]</texture></control>
 			<control type="label"><left>184</left><top>0</top><width>980</width><height>48</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.EpgEventTitle]</label></control>
+			<control type="label"><left>184</left><top>0</top><width>980</width><height>48</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>No programme information</label><visible>String.IsEmpty(ListItem.EpgEventTitle)</visible></control>
 			<control type="label"><left>184</left><top>52</top><width>980</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.ChannelNumberLabel]$INFO[ListItem.ChannelName, · ]$INFO[ListItem.StartTime, · ]$INFO[ListItem.EndTime,– ]</label></control>
 			<control type="textbox"><left>184</left><top>94</top><width>980</width><height>82</height><font>Bald_CaptionPlot</font><textcolor>bald_ink76</textcolor><label>$INFO[ListItem.Plot]</label></control>
+			<control type="label"><left>184</left><top>94</top><width>980</width><height>34</height><font>Bald_CaptionPlot</font><textcolor>bald_ink60</textcolor><label>The selected channel has no matching guide data.</label><visible>String.IsEmpty(ListItem.EpgEventTitle)</visible></control>
 			<control type="image"><left>1200</left><top>0</top><width>528</width><height>176</height><aspectratio>scale</aspectratio><fadetime>700</fadetime><texture background="true">$INFO[ListItem.EpgEventIcon]</texture><visible>!String.IsEmpty(ListItem.EpgEventIcon)</visible></control>
 		</control>
 		<control type="fixedlist" id="11"><left>96</left><top>354</top><width>1728</width><height>44</height><orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><onleft>noop</onleft><onright>noop</onright><onup>50</onup><ondown>50</ondown>
