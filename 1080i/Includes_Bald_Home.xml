@@ -277,6 +277,7 @@
 	<include name="Bald_ArtLogo">
 		<param name="c" />
 		<param name="p" />
+		<param name="ignore_home_row">false</param>
 		<definition>
 			<control type="image">
 				<left>52</left>
@@ -285,7 +286,7 @@
 				<height>170</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(clearlogo)]</texture>
-				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
+				<visible>[$PARAM[ignore_home_row] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
 			<control type="image">
@@ -295,7 +296,7 @@
 				<height>170</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)]</texture>
-				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
+				<visible>[$PARAM[ignore_home_row] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
 		</definition>

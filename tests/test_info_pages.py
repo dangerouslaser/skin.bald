@@ -36,6 +36,20 @@ class InfoPagesTests(unittest.TestCase):
         self.assertTrue(all("Container(5100).ListItem.Art" in node.text for node in art))
         self.assertEqual(self.pages.findtext(".//control[@id='5204']/texture"), "$VAR[Bald_InfoPoster]")
 
+    def test_recommendations_reuse_home_clearlogos_for_both_parities(self):
+        logos = self.pages.findall("include[@name='Bald_InfoRecommendationsPage']//include[@content='Bald_ArtLogo']")
+        self.assertEqual(len(logos), 2)
+        self.assertEqual({node.findtext("param[@name='p']") for node in logos}, {"Odd", "Even"})
+        for node in logos:
+            self.assertEqual(node.findtext("param[@name='c']"), "5100")
+            self.assertEqual(node.findtext("param[@name='ignore_home_row']"), "true")
+        home = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
+        shared = home.find("include[@name='Bald_ArtLogo']")
+        self.assertEqual(shared.findtext("param[@name='ignore_home_row']"), "false")
+        for image in shared.findall("definition/control"):
+            self.assertIn("String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])", image.findtext("visible"))
+            self.assertIn("!String.IsEmpty", image.findtext("visible"))
+
     def test_reuses_home_blur_and_clears_local_override(self):
         self.assertEqual(self.dialog.findtext(".//control[@id='5200']/include"), "Bald_BackdropImage")
         self.assertIn("ClearProperty(TMDbHelper.WidgetContainer,movieinformation)", [node.text for node in self.dialog.findall("onunload")])
