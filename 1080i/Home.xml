@@ -245,7 +245,7 @@
 						<label>Live TV</label>
 						<property name="id">livetv</property>
 						<property name="note">Select to open the guide.</property>
-						<onclick>noop</onclick>
+						<onclick>ActivateWindow(TVGuide)</onclick>
 					</item>
 					<item>
 						<label>Search</label>
