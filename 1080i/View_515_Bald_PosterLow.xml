@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald movie library: cinematic fanart with a low horizontal poster row. -->
+<includes>
+	<include name="Bald_PosterLowTile">
+		<param name="diffuse">bald_ink55</param><param name="focused">false</param>
+		<definition>
+			<include content="Bald_LibraryPosterItem">
+				<param name="width">144</param><param name="height">216</param><param name="ring_width">148</param><param name="ring_height">222</param><param name="center">80,120</param><param name="show_label">false</param>
+				<param name="diffuse">$PARAM[diffuse]</param><param name="focused">$PARAM[focused]</param>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_PosterLowArt">
+		<param name="p" />
+		<definition>
+			<include content="Bald_ArtLayer">
+				<param name="texture">$VAR[Bald_LibraryFanart]</param><param name="width">1248</param><param name="height">576</param><param name="center">624,288</param>
+				<param name="visible">Integer.Is$PARAM[p](Container(515).CurrentItem)</param>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_PosterLowLogo">
+		<param name="p" />
+		<definition>
+			<include content="Bald_ArtLogo">
+				<param name="c">515</param><param name="p">$PARAM[p]</param><param name="ignore_home_row">true</param>
+				<param name="x">52</param><param name="y">392</param><param name="width">560</param><param name="height">138</param>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_PosterLowCaption">
+		<param name="p" />
+		<definition>
+			<include content="Bald_Caption">
+				<param name="c">515</param><param name="p">$PARAM[p]</param><param name="ignore_home_row">true</param>
+				<param name="x">1420</param><param name="title_y">270</param><param name="title_height">132</param><param name="body_y">402</param><param name="width">384</param><param name="clip_width">440</param>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_PosterLowFooter">
+		<definition>
+			<control type="label"><left>96</left><top>704</top><width>420</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(515).CurrentItem] / $INFO[Container(515).NumItems]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible></control>
+			<control type="group"><left>700</left><top>704</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">Down for letters</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include></control>
+			<control type="group"><left>800</left><top>954</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
+			<control type="group"><left>1364</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">460</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
+		</definition>
+	</include>
+	<include name="View_515_Bald_PosterLow">
+		<control type="group">
+			<visible>Control.IsVisible(515)</visible>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+			<include>Bald_BackdropImage</include>
+			<control type="label"><left>1440</left><top>120</top><width>384</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<control type="group">
+				<visible>!Container(515).ListItem.IsParentFolder + !String.IsEmpty(Container(515).ListItem.Title)</visible>
+				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
+				<control type="group"><left>96</left><top>120</top>
+					<control type="image"><width>1248</width><height>576</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+					<include content="Bald_PosterLowArt"><param name="p">Odd</param></include>
+					<include content="Bald_PosterLowArt"><param name="p">Even</param></include>
+					<control type="image"><width>1248</width><height>576</height><texture>bald/scrim_logo.png</texture><visible>!String.IsEmpty(Container(515).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(515).ListItem.Art(tvshow.clearlogo))</visible><animation effect="fade" start="0" end="100" time="500" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="150" tween="sine" easing="inout">Hidden</animation></control>
+					<include content="Bald_PosterLowLogo"><param name="p">Odd</param></include>
+					<include content="Bald_PosterLowLogo"><param name="p">Even</param></include>
+				</control>
+			</control>
+			<control type="group"><visible>!$EXP[Bald_LibraryMenuOpen]</visible>
+				<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+				<include content="Bald_PosterLowCaption"><param name="p">Odd</param></include>
+				<include content="Bald_PosterLowCaption"><param name="p">Even</param></include>
+			</control>
+			<!-- Fixed masks contain the fanart settle zoom while retaining the blurred backdrop underneath. -->
+			<include content="Bald_BackdropWindow"><param name="x">64</param><param name="y">94</param><param name="w">32</param><param name="h">628</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">1344</param><param name="y">94</param><param name="w">32</param><param name="h">628</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">94</param><param name="w">1248</param><param name="h">26</param></include>
+			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">696</param><param name="w">1248</param><param name="h">26</param></include>
+			<control type="list" id="515">
+				<left>84</left><top>738</top><width>1280</width><height>234</height><orientation>horizontal</orientation>
+				<viewtype label="Bald poster low">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>4</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<onfocus>SetProperty(Bald.LibraryContainer,515,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,515,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
+				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters)</ondown><onleft>noop</onleft><onright>noop</onright>
+				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
+				<itemlayout width="160" height="234"><include content="Bald_PosterLowTile" /></itemlayout>
+				<focusedlayout width="160" height="234"><include content="Bald_PosterLowTile"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(515) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
+			</control>
+			<!-- Letter mode deliberately covers the low row; otherwise the full alphabet collides with poster art. -->
+			<control type="group"><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_BackdropWindow"><param name="x">84</param><param name="y">730</param><param name="w">1280</param><param name="h">242</param></include></control>
+			<control type="label"><left>110</left><top>768</top><width>1228</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>No movies to display. Open options to adjust your filters.</label><visible>Integer.IsEqual(Container(515).NumItems,0)</visible></control>
+			<include>Bald_PosterLowFooter</include>
+		</control>
+	</include>
+</includes>
