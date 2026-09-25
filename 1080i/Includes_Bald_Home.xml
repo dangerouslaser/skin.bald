@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald Home: variables, animations and repeated control groups (docs/SPEC.md sections 4 and 5.1).
+
+     Animation model. Kodi animations are state-driven: Visible/Hidden animations fire on edges of a visibility
+     condition, Conditional animations expect their condition to hold. So every item-change transition is keyed to a
+     state that flips on each move and then holds: whether the current row's item position is odd or even
+     (Integer.IsOdd(Container(c).CurrentItem)). Each animated piece exists twice, an Odd and an Even instance:
+       - the incoming instance becomes visible and plays its Visible animation (fade, stagger, rise, pop, zoom);
+       - the outgoing one hides. Images keep their old texture while a Hidden animation plays
+         (CGUIImage::UpdateInfo), so fanart and clearlogos fade out with the old picture. Labels cannot freeze,
+         so text has no Hidden animation and disappears at once.
+     Row swaps and the menu use Visible/Hidden on groups keyed to the Bald.Row and Bald.Menu properties.
+     Do not use Container.OnNext (true for one frame; a reversible="false" Conditional is reset when its condition
+     drops), skin timers (they run every 500 ms) or Container.Scrolling (briefly true at the end of every scroll).
+
      State lives in Home window properties:
        Bald.Row      id of the current row (9101 to 9103); art and caption follow it, not the focused control
        Bald.Menu     set while the menu is open
@@ -19,9 +32,8 @@
 		<value>$INFO[Container(9101).ListItem.Art(thumb)]</value>
 	</variable>
 	<expression name="Bald_HasLogo">[String.IsEqual(Window(home).Property(Bald.Row),9102) + [!String.IsEmpty(Container(9102).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9102).ListItem.Art(tvshow.clearlogo))]] | [String.IsEqual(Window(home).Property(Bald.Row),9103) + [!String.IsEmpty(Container(9103).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9103).ListItem.Art(tvshow.clearlogo))]] | [!String.IsEqual(Window(home).Property(Bald.Row),9102) + !String.IsEqual(Window(home).Property(Bald.Row),9103) + !String.IsEmpty(Container(9101).ListItem.Art(clearlogo))]</expression>
-	<!-- False on the frame(s) in which the current row moves: elements with this in <visible> are hidden for that
-	     frame and replay their Visible animation. (Container.OnNext/OnPrevious are true only on the move frame.) -->
-	<expression name="Bald_Settled">[String.IsEqual(Window(home).Property(Bald.Row),9101) + !Container(9101).OnNext + !Container(9101).OnPrevious] | [String.IsEqual(Window(home).Property(Bald.Row),9102) + !Container(9102).OnNext + !Container(9102).OnPrevious] | [String.IsEqual(Window(home).Property(Bald.Row),9103) + !Container(9103).OnNext + !Container(9103).OnPrevious]</expression>
+	<!-- The current row's item position is odd. Flips on every one-step move and holds until the next. -->
+	<expression name="Bald_ItemOdd">[String.IsEqual(Window(home).Property(Bald.Row),9101) + Integer.IsOdd(Container(9101).CurrentItem)] | [String.IsEqual(Window(home).Property(Bald.Row),9102) + Integer.IsOdd(Container(9102).CurrentItem)] | [String.IsEqual(Window(home).Property(Bald.Row),9103) + Integer.IsOdd(Container(9103).CurrentItem)]</expression>
 	<expression name="Bald_MenuOpen">!String.IsEmpty(Window(home).Property(Bald.Menu))</expression>
 	<!-- Menu open with a screen other than Home focused: its (placeholder) rows preview instead of Home's. -->
 	<expression name="Bald_PreviewOther">!String.IsEmpty(Window(home).Property(Bald.Menu)) + !String.IsEqual(Container(9000).ListItem.Property(id),home)</expression>
@@ -37,12 +49,9 @@
 	</variable>
 
 	<!-- ============ Animations ============ -->
-	<!-- Caption element in: after the 180 ms settle, fade 380 and move 540 from 14 px left, staggered by delay.
-	     The Conditional plays when the row becomes current. Item changes play the Visible
-	     animation: each element's <visible> includes !Container(c).OnNext + !Container(c).OnPrevious, so it is
-	     hidden on the move frame and animates back in. (Kodi resets a reversible="false" Conditional as soon as
-	     its condition turns false, so OnNext cannot be the animation condition itself, and skin timers only run
-	     every 500 ms, so they cannot track items.) -->
+	<!-- Caption element in: fade 380 and move 540 from 14 px left after a delay (180 settle plus the stagger).
+	     Visible plays when this Odd/Even instance takes over (an item change); the Conditional plays when the row
+	     becomes current (a row swap), since the element's own visibility does not change then. -->
 	<include name="Bald_AnimCaptionIn">
 		<param name="c" />
 		<param name="delay" />
@@ -114,46 +123,35 @@
 			</animation>
 		</definition>
 	</include>
-	<!-- Fanart overlay for one row: hidden on the move frame, then fades in (700) while settling from 1.05 (1500)
-	     over the slow base crossfade in Home.xml. -->
-	<include name="Bald_ArtOverlay">
-		<param name="c" />
+	<!-- Fanart layer for one parity. The incoming layer fades in (700) while settling from 1.05 (1500); the outgoing
+	     layer fades out (700) still showing the old art. A row swap that keeps the parity changes the visible
+	     layer's texture instead, which <fadetime> crossfades (it waits until the new image has loaded). -->
+	<include name="Bald_ArtLayer">
+		<param name="visible" />
 		<definition>
 			<control type="image">
 				<width>1248</width>
 				<height>702</height>
 				<aspectratio>scale</aspectratio>
-				<texture background="true">$VAR[Bald_Fanart_$PARAM[c]]</texture>
-				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + !Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious</visible>
+				<fadetime>700</fadetime>
+				<texture background="true">$VAR[Bald_Fanart]</texture>
+				<visible>$PARAM[visible]</visible>
 				<animation type="Visible">
 					<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
 					<effect type="zoom" start="105" end="100" center="624,351" time="1500" tween="cubic" easing="out" />
 				</animation>
 				<animation type="Hidden">
-					<effect type="fade" start="100" end="0" time="150" tween="sine" easing="inout" />
+					<effect type="fade" start="100" end="0" time="700" tween="sine" easing="inout" />
 				</animation>
 			</control>
 		</definition>
 	</include>
-	<variable name="Bald_Fanart_9101">
-		<value condition="!String.IsEmpty(Container(9101).ListItem.Art(fanart))">$INFO[Container(9101).ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(Container(9101).ListItem.Art(tvshow.fanart))">$INFO[Container(9101).ListItem.Art(tvshow.fanart)]</value>
-		<value>$INFO[Container(9101).ListItem.Art(thumb)]</value>
-	</variable>
-	<variable name="Bald_Fanart_9102">
-		<value condition="!String.IsEmpty(Container(9102).ListItem.Art(fanart))">$INFO[Container(9102).ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(Container(9102).ListItem.Art(tvshow.fanart))">$INFO[Container(9102).ListItem.Art(tvshow.fanart)]</value>
-		<value>$INFO[Container(9102).ListItem.Art(thumb)]</value>
-	</variable>
-	<variable name="Bald_Fanart_9103">
-		<value condition="!String.IsEmpty(Container(9103).ListItem.Art(fanart))">$INFO[Container(9103).ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(Container(9103).ListItem.Art(tvshow.fanart))">$INFO[Container(9103).ListItem.Art(tvshow.fanart)]</value>
-		<value>$INFO[Container(9103).ListItem.Art(thumb)]</value>
-	</variable>
 
-	<!-- Clearlogo on the art for one row: fade 520 and rise 10 px over 760, 380 after the art starts. -->
+	<!-- Clearlogo on the art for one row and parity: fade 520 and rise 10 px over 760, 380 after the art starts;
+	     the outgoing logo fades out (150) still showing the old picture. -->
 	<include name="Bald_ArtLogo">
 		<param name="c" />
+		<param name="p" />
 		<definition>
 			<control type="image">
 				<left>52</left>
@@ -162,7 +160,7 @@
 				<height>170</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(clearlogo)]</texture>
-				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + !Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
+				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
 			<control type="image">
@@ -172,15 +170,46 @@
 				<height>170</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)]</texture>
-				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + !Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
+				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c]) + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
 		</definition>
 	</include>
 
-	<!-- ============ Caption (one instance per row, bound to that row's container) ============ -->
+	<!-- Callout for one parity: dot pops (240 fade, 360 pop from 0.2 after 220), line grows from the left (560 after 260). -->
+	<include name="Bald_Callout">
+		<param name="visible" />
+		<definition>
+			<control type="image">
+				<left>1339</left>
+				<top>505</top>
+				<width>10</width>
+				<height>10</height>
+				<texture colordiffuse="bald_ink">bald/dot.png</texture>
+				<visible>$PARAM[visible]</visible>
+				<animation type="Visible">
+					<effect type="fade" start="0" end="100" time="240" delay="220" tween="sine" easing="inout" />
+					<effect type="zoom" start="20" end="100" center="1344,510" time="360" delay="220" tween="back" easing="out" />
+				</animation>
+			</control>
+			<control type="image">
+				<left>1349</left>
+				<top>510</top>
+				<width>67</width>
+				<height>1</height>
+				<texture colordiffuse="bald_ink50">bald/white.png</texture>
+				<visible>$PARAM[visible]</visible>
+				<animation type="Visible">
+					<effect type="zoom" start="0,100" end="100,100" center="1349,510" time="560" delay="260" tween="cubic" easing="out" />
+				</animation>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Caption (per row and parity, bound to that row's container) ============ -->
 	<include name="Bald_Caption">
 		<param name="c" />
+		<param name="p" />
 		<definition>
 			<control type="group">
 				<visible>String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
@@ -206,7 +235,7 @@
 						<font>Bald_CaptionTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.TVShowTitle]</label>
-						<visible>Container($PARAM[c]).ListItem.IsEpisode + !Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious</visible>
+						<visible>Container($PARAM[c]).ListItem.IsEpisode + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">180</param></include>
 					</control>
 					<control type="textbox">
@@ -216,7 +245,7 @@
 						<font>Bald_CaptionTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Title]</label>
-						<visible>!Container($PARAM[c]).ListItem.IsEpisode + !Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious</visible>
+						<visible>!Container($PARAM[c]).ListItem.IsEpisode + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">180</param></include>
 					</control>
 				</control>
@@ -232,26 +261,31 @@
 					<!-- Meta: one label per item type -->
 					<include content="Bald_CaptionMeta">
 						<param name="c">$PARAM[c]</param>
+						<param name="p">$PARAM[p]</param>
 						<param name="label">S$INFO[Container($PARAM[c]).ListItem.Season] E$INFO[Container($PARAM[c]).ListItem.Episode]$INFO[Container($PARAM[c]).ListItem.Title,$COMMA ,]</param>
 						<param name="visible">Container($PARAM[c]).ListItem.IsEpisode</param>
 					</include>
 					<include content="Bald_CaptionMeta">
 						<param name="c">$PARAM[c]</param>
+						<param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year,,$COMMA ]1 season</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow) + String.IsEqual(Container($PARAM[c]).ListItem.Property(TotalSeasons),1)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
 						<param name="c">$PARAM[c]</param>
+						<param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Property(TotalSeasons),$COMMA , seasons]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow) + !String.IsEqual(Container($PARAM[c]).ListItem.Property(TotalSeasons),1)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
 						<param name="c">$PARAM[c]</param>
+						<param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year,,$COMMA ]$INFO[Container($PARAM[c]).ListItem.Duration(h),,h ]$INFO[Container($PARAM[c]).ListItem.Duration(mm),,m]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + Integer.IsGreaterOrEqual(Container($PARAM[c]).ListItem.Duration(mins),60)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
 						<param name="c">$PARAM[c]</param>
+						<param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Duration(mins),$COMMA , min]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + !Integer.IsGreaterOrEqual(Container($PARAM[c]).ListItem.Duration(mins),60)</param>
 					</include>
@@ -263,7 +297,7 @@
 						<height>26</height>
 						<orientation>horizontal</orientation>
 						<itemgap>8</itemgap>
-						<visible>!Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious + String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + [String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,4K) | String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,1080) | !String.IsEmpty(Container($PARAM[c]).ListItem.HdrType) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,6) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,8)]</visible>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + [String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,4K) | String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,1080) | !String.IsEmpty(Container($PARAM[c]).ListItem.HdrType) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,6) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,8)]</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">275</param></include>
 						<include content="Bald_Flag"><param name="label">4K</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,4K)</param></include>
 						<include content="Bald_Flag"><param name="label">1080p</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,1080)</param></include>
@@ -284,7 +318,7 @@
 						<font>Bald_Accent</font>
 						<textcolor>bald_accent</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Genre]</label>
-						<visible>!Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious</visible>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">300</param></include>
 					</control>
 					<!-- Plot: Kodi draws ceil(height / line height) lines, so 116 / 30 gives 4. No ellipsis is possible, see docs/NOTES.md. -->
@@ -298,7 +332,7 @@
 						<font>Bald_CaptionPlot</font>
 						<textcolor>bald_ink76</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Plot]</label>
-						<visible>!Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious</visible>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
 					</control>
 				</control>
@@ -307,6 +341,7 @@
 	</include>
 	<include name="Bald_CaptionMeta">
 		<param name="c" />
+		<param name="p" />
 		<param name="label" />
 		<param name="visible" />
 		<definition>
@@ -318,7 +353,7 @@
 				<font>Bald_CaptionMeta</font>
 				<textcolor>bald_ink80</textcolor>
 				<label>$PARAM[label]</label>
-				<visible>$PARAM[visible] + !Container($PARAM[c]).OnNext + !Container($PARAM[c]).OnPrevious</visible>
+				<visible>$PARAM[visible] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">250</param></include>
 			</control>
 		</definition>
