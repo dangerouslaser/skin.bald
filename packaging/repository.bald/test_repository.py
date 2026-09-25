@@ -46,8 +46,8 @@ def main() -> None:
         assert "script.bald.xcsetup/resources/settings.xml" in names
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
 
-    assert (root / "skin.bald" / "icon.png").is_file()
-    assert (root / "skin.bald" / "fanart.jpg").is_file()
+    assert (root / "skin.bald" / "resources" / "icon.png").is_file()
+    assert (root / "skin.bald" / "resources" / "fanart.jpg").is_file()
 
 
 if __name__ == "__main__":
