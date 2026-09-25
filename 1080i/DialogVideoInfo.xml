@@ -52,13 +52,13 @@
 			<include>Bald_InfoCastPage</include>
 			<include>Bald_InfoRecommendationsPage</include>
 			<control type="group">
-				<visible>!String.IsEqual(Window(home).Property(Bald.InfoSec),2)</visible>
 				<control type="label">
 					<left>96</left><top>954</top><width>1100</width><height>28</height>
 					<font>Bald_Hint</font><textcolor>bald_ink58</textcolor><label>$VAR[Bald_InfoPageTrail]</label>
+					<visible>!String.IsEqual(Window(home).Property(Bald.InfoSec),2)</visible>
 				</control>
 				<control type="label">
-					<left>1440</left><top>954</top><width>384</width><height>28</height><align>right</align>
+					<left>1440</left><top>954</top><width>384</width><height>24</height><align>right</align><aligny>center</aligny>
 					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
 					<label>Down for cast &amp; details</label><visible>String.IsEqual(Window(home).Property(Bald.InfoSec),0)</visible>
 				</control>
@@ -66,6 +66,12 @@
 					<left>1440</left><top>954</top>
 					<visible>String.IsEqual(Window(home).Property(Bald.InfoSec),1)</visible>
 					<include content="Bald_InfoHintPair"><param name="first">Up for overview</param><param name="second">Down for more like this</param></include>
+				</control>
+				<!-- Page hints switch immediately; they are not children of the animated page content. -->
+				<control type="group">
+					<left>1440</left><top>954</top>
+					<visible>String.IsEqual(Window(home).Property(Bald.InfoSec),2)</visible>
+					<include content="Bald_InfoHintPair"><param name="first">Up for cast &amp; details</param><param name="second">Select to open</param></include>
 				</control>
 			</control>
 		</control>
