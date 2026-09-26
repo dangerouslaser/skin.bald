@@ -19,6 +19,32 @@
 	<onload condition="Skin.HasSetting(Bald.OSD.DetailsOnControls)">Skin.SetBool(Bald.OSD.DetailsPlot)</onload>
 	<onload condition="Skin.HasSetting(Bald.OSD.DetailsOnControls)">Skin.Reset(Bald.OSD.DetailsOnControls)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.Reset(OSDAutoCloseTime)</onload>
+	<!-- Estuary settings folded into Bald's Appearance (docs/NOTES.md, "Estuary windows settings folded into Bald"):
+	     carry an old choice over once, then clear the old setting. Image packs copy name and extension before the path,
+	     because each copy only runs while the Bald path is still empty, and never copy an empty value (Skin.SetString
+	     with no value opens the keyboard). -->
+	<onload condition="Skin.HasSetting(no_fanart)">Skin.SetBool(Bald.HideBrowseFanart)</onload>
+	<onload condition="Skin.HasSetting(no_fanart)">Skin.Reset(no_fanart)</onload>
+	<onload condition="Skin.HasSetting(show_musicvideoposter)">Skin.SetBool(Bald.MusicVideoPosters)</onload>
+	<onload condition="Skin.HasSetting(show_musicvideoposter)">Skin.Reset(show_musicvideoposter)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(MovieGenreFanart.path)) + String.IsEmpty(Skin.String(Bald.GenreFanart.path)) + !String.IsEmpty(Skin.String(MovieGenreFanart.name))">Skin.SetString(Bald.GenreFanart.name,$INFO[Skin.String(MovieGenreFanart.name)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(MovieGenreFanart.path)) + String.IsEmpty(Skin.String(Bald.GenreFanart.path)) + !String.IsEmpty(Skin.String(MovieGenreFanart.ext))">Skin.SetString(Bald.GenreFanart.ext,$INFO[Skin.String(MovieGenreFanart.ext)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(MovieGenreFanart.path)) + String.IsEmpty(Skin.String(Bald.GenreFanart.path))">Skin.SetString(Bald.GenreFanart.path,$INFO[Skin.String(MovieGenreFanart.path)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(MovieGenreFanart.path))">Skin.Reset(MovieGenreFanart.name)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(MovieGenreFanart.path))">Skin.Reset(MovieGenreFanart.ext)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(MovieGenreFanart.path))">Skin.Reset(MovieGenreFanart.path)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherFanart.path)) + String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) + !String.IsEmpty(Skin.String(WeatherFanart.name))">Skin.SetString(Bald.WeatherFanart.name,$INFO[Skin.String(WeatherFanart.name)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherFanart.path)) + String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) + !String.IsEmpty(Skin.String(WeatherFanart.ext))">Skin.SetString(Bald.WeatherFanart.ext,$INFO[Skin.String(WeatherFanart.ext)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherFanart.path)) + String.IsEmpty(Skin.String(Bald.WeatherFanart.path))">Skin.SetString(Bald.WeatherFanart.path,$INFO[Skin.String(WeatherFanart.path)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherFanart.path))">Skin.Reset(WeatherFanart.name)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherFanart.path))">Skin.Reset(WeatherFanart.ext)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherFanart.path))">Skin.Reset(WeatherFanart.path)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path)) + String.IsEmpty(Skin.String(Bald.WeatherIcons.path)) + !String.IsEmpty(Skin.String(WeatherOutlookIcon.name))">Skin.SetString(Bald.WeatherIcons.name,$INFO[Skin.String(WeatherOutlookIcon.name)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path)) + String.IsEmpty(Skin.String(Bald.WeatherIcons.path)) + !String.IsEmpty(Skin.String(WeatherOutlookIcon.ext))">Skin.SetString(Bald.WeatherIcons.ext,$INFO[Skin.String(WeatherOutlookIcon.ext)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path)) + String.IsEmpty(Skin.String(Bald.WeatherIcons.path))">Skin.SetString(Bald.WeatherIcons.path,$INFO[Skin.String(WeatherOutlookIcon.path)])</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">Skin.Reset(WeatherOutlookIcon.name)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">Skin.Reset(WeatherOutlookIcon.ext)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">Skin.Reset(WeatherOutlookIcon.path)</onload>
 	<!-- Estuary settings retired with Appearance's "Estuary windows" category (docs/NOTES.md, "Estuary windows
 	     settings folded into Bald"): clear what an old install left behind. -->
 	<onload condition="Skin.HasSetting(touchmode)">Skin.Reset(touchmode)</onload>

@@ -171,6 +171,19 @@
 	</variable>
 
 	<!-- Appearance > Typography (1118): the current fontset (Skin.Font is lookandfeel.font, a Font.xml fontset id). -->
+	<!-- Appearance > Artwork image packs: the chosen pack's name, or what shows without one. -->
+	<variable name="Bald_GenreFanartName">
+		<value condition="!String.IsEmpty(Skin.String(Bald.GenreFanart.path))">$INFO[Skin.String(Bald.GenreFanart.name)]</value>
+		<value>$LOCALIZE[231]</value>
+	</variable>
+	<variable name="Bald_WeatherFanartName">
+		<value condition="!String.IsEmpty(Skin.String(Bald.WeatherFanart.path))">$INFO[Skin.String(Bald.WeatherFanart.name)]</value>
+		<value>$LOCALIZE[231]</value>
+	</variable>
+	<variable name="Bald_WeatherIconsName">
+		<value condition="!String.IsEmpty(Skin.String(Bald.WeatherIcons.path))">$INFO[Skin.String(Bald.WeatherIcons.name)]</value>
+		<value>$LOCALIZE[571]</value>
+	</variable>
 	<variable name="Bald_FontName">
 		<value condition="String.IsEqual(Skin.Font,DMSans)">$LOCALIZE[31941]</value>
 		<value condition="String.IsEqual(Skin.Font,Arial)">$LOCALIZE[31053]</value>

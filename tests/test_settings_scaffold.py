@@ -13,7 +13,7 @@ WINDOWS = {
     "SkinSettings.xml": ("9000", ["9001"]),
     "Custom_1116_BaldHomeWidgets.xml": ("9100", ["9200", "9201", "9202", "9203", "9204", "9205", "9206", "9207", "9208", "9209"]),
     "Custom_1117_BaldHomeScreens.xml": ("9300", ["9400", "9401", "9402"]),
-    "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9611", "9612", "9621", "9622", "9623", "9624"]),
+    "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9603", "9604", "9605", "9606", "9607", "9611", "9612", "9621", "9622", "9623", "9624"]),
     "Custom_1119_BaldPlayback.xml": ("9700", ["9800", "9801", "9802", "9803", "9811", "9812", "9821", "9822", "9831",
                                               "9832", "9833", "9834", "9835"]),
 }
@@ -26,16 +26,18 @@ LIVE_ESTUARY_SETTINGS = {
     "show_weatherinfo": "AddonBrowser.xml",
     "show_profilename": "AddonBrowser.xml",
     "OriginalTitleFormat_1st": "AddonBrowser.xml",
-    "show_musicvideoposter": "MyMusicNav.xml",
-    "no_fanart": "FileManager.xml",
-    "WeatherFanart": "MyWeather.xml",
-    "MovieGenreFanart": "FileManager.xml",
-    "WeatherOutlookIcon": "MyWeather.xml",
 }
 # Estuary settings folded into a Bald setting, the Bald setting, and windows that must read it through it.
 FOLDED_ESTUARY_SETTINGS = {
     "hide_mediaflags": ("Bald.HideMediaFlags", ("AddonBrowser.xml", "MyMusicNav.xml")),
+    "no_fanart": ("Bald.HideBrowseFanart", ("FileManager.xml", "MyVideoNav.xml")),
+    "show_musicvideoposter": ("Bald.MusicVideoPosters", ("MyMusicNav.xml", "MyVideoNav.xml")),
+    "MovieGenreFanart": ("Bald.GenreFanart", ("MyVideoNav.xml",)),
+    "WeatherFanart": ("Bald.WeatherFanart", ("MyWeather.xml",)),
+    "WeatherOutlookIcon": ("Bald.WeatherIcons", ("MyWeather.xml",)),
 }
+# Folded settings Startup.xml carries over (hide_mediaflags is only cleared: Bald's switch also governs Home).
+MIGRATED_ESTUARY_SETTINGS = [old for old in FOLDED_ESTUARY_SETTINGS if old != "hide_mediaflags"]
 # Files Kodi reads directly rather than as windows.
 KODI_READ_FILES = {"Timers.xml"}
 DEAD_ESTUARY_SETTINGS = (
@@ -208,12 +210,32 @@ class SettingsScaffoldTests(unittest.TestCase):
     def test_folded_estuary_settings_are_read_as_bald_settings(self):
         appearance = ET.tostring(self.windows["Custom_1118_BaldAppearance.xml"], encoding="unicode")
         for old, (setting, readers) in FOLDED_ESTUARY_SETTINGS.items():
-            self.assertIn(f"({setting})", appearance, f"{setting} is not offered")
+            # A bool reads as (Name); an image pack's strings as (Name.path) and its picker as property=Name&.
+            new_name = re.compile(r"[(=]" + re.escape(setting) + r"[.)&]")
+            old_name = re.compile(r"[(=]" + re.escape(old) + r"[.)&_]", re.I)
+            self.assertRegex(appearance, new_name, f"{setting} is not offered")
+            self.assertNotRegex(appearance, old_name)
             for reader in readers:
                 with self.subTest(setting=setting, reader=reader):
                     text = window_reach(reader)
-                    self.assertIn(f"({setting})", text)
-                    self.assertNotIn(f"({old})", text)
+                    self.assertRegex(text, new_name)
+                    self.assertNotRegex(text, old_name)
+
+    def test_startup_carries_folded_settings_over_once(self):
+        loads = [(node.get("condition") or "", node.text or "")
+                 for node in ET.parse(SKIN / "Startup.xml").getroot().findall("onload")]
+        replace = next(i for i, (_, action) in enumerate(loads) if action.startswith("ReplaceWindow("))
+        for old in MIGRATED_ESTUARY_SETTINGS:
+            new = FOLDED_ESTUARY_SETTINGS[old][0]
+            with self.subTest(setting=old):
+                copies = [i for i, (condition, action) in enumerate(loads)
+                          if old in condition and new in action and "Reset" not in action]
+                resets = [i for i, (condition, action) in enumerate(loads)
+                          if old in condition and action.startswith(f"Skin.Reset({old}")]
+                self.assertTrue(copies, f"{old} is not carried over to {new}")
+                self.assertTrue(resets, f"{old} is not cleared")
+                self.assertLess(max(copies), min(resets), "the old value is cleared before it is copied")
+                self.assertLess(max(resets), replace)
 
     def test_dead_estuary_settings_are_gone(self):
         for name in ("SkinSettings.xml", "Custom_1118_BaldAppearance.xml"):
@@ -224,7 +246,8 @@ class SettingsScaffoldTests(unittest.TestCase):
 
     def test_image_pack_buttons_run_install_or_enable_the_picker(self):
         picker = "script.image.resource.select"
-        for control_id, setting, kind in (("609", "WeatherFanart", "weatherfanart"), ("6066", "MovieGenreFanart", "moviegenrefanart"), ("6068", "WeatherOutlookIcon", "weathericons")):
+        for control_id, setting, kind in (("9605", "Bald.GenreFanart", "moviegenrefanart"), ("9606", "Bald.WeatherFanart", "weatherfanart"),
+                                          ("9607", "Bald.WeatherIcons", "weathericons")):
             with self.subTest(control=control_id):
                 actions = [(node.get("condition"), node.text)
                            for node in self.control("Custom_1118_BaldAppearance.xml", control_id).findall("onclick")]

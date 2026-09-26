@@ -27,8 +27,8 @@
 				<include>Bald_BrowseDim</include>
 				<include content="Bald_BrowseWallLayouts">
 					<param name="c">54</param>
-					<param name="poster">Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(games) | [Container.Content(musicvideos) + Skin.HasSetting(show_musicvideoposter)]</param>
-					<param name="landscape">Container.Content(episodes) | Container.Content(images) | Container.Content(videos) | Container.Content(videoassets) | Container.Content(videoversions) | Container.Content(videoextras) | [Container.Content(musicvideos) + !Skin.HasSetting(show_musicvideoposter)]</param>
+					<param name="poster">Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(games) | [Container.Content(musicvideos) + Skin.HasSetting(Bald.MusicVideoPosters)]</param>
+					<param name="landscape">Container.Content(episodes) | Container.Content(images) | Container.Content(videos) | Container.Content(videoassets) | Container.Content(videoversions) | Container.Content(videoextras) | [Container.Content(musicvideos) + !Skin.HasSetting(Bald.MusicVideoPosters)]</param>
 				</include>
 			</control>
 		</control>
