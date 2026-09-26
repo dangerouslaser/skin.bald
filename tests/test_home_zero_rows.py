@@ -14,10 +14,10 @@ HAS_ROW = "!String.IsEmpty(Window(home).Property(Bald.Row))"
 class HomeZeroRowsTests(unittest.TestCase):
     def test_generator_reports_whether_each_screen_has_rows(self):
         fallback = ET.parse(XML / "Includes_Bald_HomeDefaults.xml").getroot()
-        for screen, count in (("home", 3), ("movies", 2), ("tvshows", 2)):
-            # An "or" of a false seed and one true term per configured row.
+        for screen, count in (("home", 3), ("livetv", 3), ("hub1", 2), ("hub2", 2), ("hub3", 0)):
+            # An "or" of a false seed and one true term per configured row; an empty slot is just false.
             tree = parse(fallback.findtext(f"expression[@name='Bald_HasRows_{screen}']"))
-            self.assertEqual(tree, ("or", [False] + [True] * count))
+            self.assertEqual(tree, ("or", [False] + [True] * count) if count else False)
 
     def test_home_without_rows_focuses_the_menu_instead_of_a_missing_row(self):
         home = ET.parse(XML / "Home.xml").getroot()
@@ -48,11 +48,16 @@ class HomeZeroRowsTests(unittest.TestCase):
         ambient = next(t for t in timers.findall("timer") if t.findtext("name") == "bald_ambient")
         self.assertTrue(implies(ambient.find("onstop").get("condition"), HAS_ROW))
 
-    def test_widget_editor_keeps_at_least_one_row(self):
+    def test_widget_editor_keeps_at_least_one_home_row(self):
         editor = ET.parse(XML / "Custom_1116_BaldHomeWidgets.xml").getroot()
         remove = editor.find(".//control[@id='9207']")
         self.assertEqual(remove.findtext("label"), loc("Remove widget"))
-        self.assertTrue(equivalent(remove.findtext("visible"), "Integer.IsGreater(Container(9100).NumItems,1)"))
+        home = "String.IsEqual(Window(home).Property(Bald.ConfigureNode),homewidgets)"
+        # Home's last row stays; a hub or Live TV may lose its last row (then Select or Right opens its target).
+        self.assertTrue(implies(f"{home} + !Integer.IsGreater(Container(9100).NumItems,1)", f"![{remove.findtext('visible')}]"))
+        self.assertTrue(equivalent(remove.findtext("visible"),
+                                   f"[Integer.IsGreater(Container(9100).NumItems,1) | !{home}]"
+                                   " + String.IsEmpty(Container(9100).ListItem.Property(blank))"))
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from home_screens import SCREENS as HOME_SCREENS, rows as shipped_rows
 from conditions import equivalent, implies
 from kodi_includes import Skin, expand_call, include_definitions
 from skin_strings import bald_strings
@@ -16,7 +17,7 @@ XML = ROOT / "1080i"
 FALLBACK = XML / "Includes_Bald_HomeDefaults.xml"
 LANDSCAPE = ("fanart", "thumbnail", "logo")
 STYLES = LANDSCAPE + ("poster",)
-SCREENS = (("home", "Home"), ("movies", "Movies"), ("tvshows", "TVShows"))
+SCREENS = tuple((screen, title) for screen, title, _, _ in HOME_SCREENS)
 
 
 def load_builder():
@@ -248,7 +249,9 @@ class RowStylePropertyTests(unittest.TestCase):
         values = [(value.get("condition"), value.text) for value in
                   ET.parse(XML / "Includes_Bald_Home.xml").getroot().findall("variable[@name='Bald_PreviewRowStyle']/value")]
         for screen, _ in SCREENS:
-            self.assertIn((f"$EXP[Bald_MenuPreview_{screen}]", f"$VAR[Bald_RowStyle_{screen}]"), values)
+            # Live TV's rows only show with a PVR add-on.
+            condition = f"$EXP[Bald_MenuPreview_{screen}]" + (" + System.HasPVRAddon" if screen == "livetv" else "")
+            self.assertIn((condition, f"$VAR[Bald_RowStyle_{screen}]"), values)
         # Generated: each screen's style variable reads that screen's remembered row, Bald.Row.<screen>.
         root = ET.parse(FALLBACK).getroot()
         for screen, title in SCREENS:
@@ -260,9 +263,9 @@ class RowStylePropertyTests(unittest.TestCase):
 class GeneratedStyleTests(unittest.TestCase):
     def test_fallback_carries_a_style_for_every_row(self):
         root = ET.parse(FALLBACK).getroot()
-        for _, title in SCREENS:
+        for screen, title in SCREENS:
             rows = row_calls(root, title)
-            self.assertTrue(rows, title)
+            self.assertEqual(bool(rows), bool(shipped_rows(screen)), title)
             for row in rows:
                 self.assertIn(param(row, "style"), STYLES, param(row, "id"))
 

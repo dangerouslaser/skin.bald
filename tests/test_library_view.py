@@ -61,10 +61,11 @@ class LibraryViewTests(unittest.TestCase):
 
     def test_no_redundant_details_button(self):
         self.assertIsNone(self.view.find(".//control[@id='6101']"))
-        item = home_menu.entry(preview="movies")
-        self.assertTrue(equivalent(item.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)"))
+        # Movies is the first seeded hub (slot 1).
+        item = home_menu.entry(preview="hub1")
+        self.assertTrue(equivalent(item.findtext("visible"), "$EXP[Bald_HubShown_hub1]"))
         self.assertIn(
-            "SetFocus($INFO[Window(home).Property(Bald.Row.movies)])",
+            "SetFocus($INFO[Window(home).Property(Bald.Row.hub1)])",
             [action for _, action in home_menu.select_actions(item)],
         )
 

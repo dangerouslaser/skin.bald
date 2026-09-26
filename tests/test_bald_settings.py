@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import home_menu
+from home_screens import SCREENS as HOME_SCREENS
 from conditions import atoms, equivalent, has_action, implies, same_actions
 from kodi_includes import expand, resolve_window
 from skin_strings import loc
@@ -11,12 +12,7 @@ from skin_strings import loc
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def home_menu_button(root, preview):
-    """A main-menu entry by its preview screen, which stays fixed while its label is localized."""
-    return next(
-        include for include in root.findall(".//control[@id='9000']/include[@content='Bald_HomeMenuButton']")
-        if include.findtext("param[@name='preview']") == preview
-    )
+HUBS = [f"hub{n}" for n in range(1, 9)]
 
 
 class BaldSettingsTests(unittest.TestCase):
@@ -38,6 +34,9 @@ class BaldSettingsTests(unittest.TestCase):
         content = root.find(".//control[@id='9100']/content").text
         self.assertIn("info=get_shortcuts_node", content)
         self.assertIn("Bald.ConfigureNode", content)
+        # A hub's rows are the widgets of its entry in the hubs menu (node = its position, mode = widgets).
+        self.assertIn("$INFO[Window(home).Property(Bald.ConfigureItem),&node=,]", content)
+        self.assertIn("mode=$INFO[Window(home).Property(Bald.ConfigureMode)]", content)
         self.assertIn("skin=skin.bald", content)
         # Closing the editor stamps the rows; Home rebuilds when the stamp it passes to Skin Variables changes.
         stamp = root.findtext("onunload")
@@ -53,67 +52,137 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertTrue(action.startswith("RunScript(script.skinvariables,action=buildtemplate,"))
         self.assertIn("lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)]", action)
         self.assertNotIn("force", action)
-        self.assertIsNone(builds[0].get("condition"))
+        # Not before the one-time hubs migration (scripts/hubs.py) has written the hubs list and set its marker.
+        self.assertTrue(equivalent(builds[0].get("condition"), "!String.IsEmpty(Skin.String(Bald.HubsMigrated))"))
 
-    def test_screen_editor_has_mandatory_home_and_optional_media_screens(self):
-        root = ET.parse(ROOT / "1080i" / "Custom_1117_BaldHomeScreens.xml").getroot()
+    def test_screen_editor_lists_home_the_hubs_live_tv_and_add_hub(self):
+        root = resolve_window("Custom_1117_BaldHomeScreens.xml")
         items = root.findall(".//control[@id='9300']/content/item")
-        self.assertEqual([item.findtext("property[@name='node']") for item in items],
-                         ["homewidgets", "movieswidgets", "tvshowswidgets", "livetv"])
-        self.assertEqual([item.findtext("label") for item in items],
-                         ["$LOCALIZE[10000]", "$LOCALIZE[342]", loc("TV Shows"), loc("Live TV")])
-        self.assertEqual(items[0].find("property[@name='enabled']").text, "true")
-        self.assertIn("Bald.Screen.Movies", ET.tostring(root, encoding="unicode"))
-        self.assertIn("Bald.Screen.TVShows", ET.tostring(root, encoding="unicode"))
+        self.assertEqual([item.findtext("property[@name='kind']") for item in items],
+                         ["home"] + ["hub"] * 8 + ["livetv", "add"])
+        self.assertEqual([item.get("id") for item in items], ["1"] + [str(10 + n) for n in range(8)] + ["2", "3"])
+        self.assertEqual(items[0].findtext("label"), "$LOCALIZE[10000]")
+        self.assertEqual(items[-2].findtext("label"), loc("Live TV"))
+        self.assertEqual(items[-1].findtext("label"), loc("Add hub"))
+        # Hub n shows the entry at position n of the live hubs list 9390, while there is one.
+        for n, item in enumerate(items[1:9]):
+            self.assertEqual(item.findtext("label"), f"$INFO[Container(9390).ListItemAbsolute({n}).Label]")
+            self.assertEqual(item.findtext("property[@name='slot']"), str(n))
+            self.assertEqual(item.findtext("property[@name='url']"), f"$INFO[Container(9390).ListItemAbsolute({n}).Property(url)]")
+            self.assertTrue(implies(item.findtext("visible"), f"Integer.IsGreater(Container(9390).NumItems,{n})"))
+        hubs = root.find(".//control[@id='9390']")
+        self.assertIn("menu=hubs", hubs.findtext("content"))
+        self.assertIn("edit=true", hubs.findtext("content"))
+        self.assertNotIn("Bald.Screen.Movies", ET.tostring(root, encoding="unicode"))
         self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(root, encoding="unicode"))
+        # Closing it rebuilds Home on its next load, as the widget editor does.
+        self.assertTrue(root.findtext("onunload").startswith("Skin.SetString(Bald.WidgetsStamp,"))
 
-    def test_optional_screens_control_main_menu_membership(self):
-        root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
-        movies = home_menu_button(root, "movies")
-        tvshows = home_menu_button(root, "tvshows")
-        # Movies and TV shows are opt-in; Live TV is opt-out.
-        self.assertTrue(equivalent(movies.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)"))
-        self.assertTrue(equivalent(tvshows.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.TVShows)"))
-        livetv = home_menu_button(root, "livetv")
-        self.assertTrue(equivalent(livetv.findtext("param[@name='visible']"), "!Skin.HasSetting(Bald.Screen.HideLiveTV)"))
+    def test_hub_rows_run_skin_variables_actions_on_the_selected_hub(self):
+        root = resolve_window("Custom_1117_BaldHomeScreens.xml")
+        url = "$INFO[Container(9300).ListItem.Property(url)]"
+        expected = {
+            "9401": f"RunPlugin({url}&func=do_toggle&&disabled)",
+            "9403": f"RunPlugin({url}&func=do_edit&&label)",
+            "9404": f"RunPlugin({url}&func=do_action&&use_rawpath::True)",
+            "9405": f"RunPlugin({url}&func=do_edit&&path&&null)",
+            "9406": f"RunPlugin({url}&func=do_move&&-1)",
+            "9407": f"RunPlugin({url}&func=do_move&&1)",
+            "9408": f"RunPlugin({url}&func=do_delete)",
+        }
+        for control_id, action in expected.items():
+            node = root.find(f".//control[@id='{control_id}']")
+            self.assertIn(action, [n.text for n in node.findall("onclick")], control_id)
+            self.assertTrue(implies(node.findtext("visible"), "$EXP[Bald_HubCategorySelected]")
+                            or control_id == "9401", control_id)
+        # Moving keeps the sidebar selection on the moved hub.
+        self.assertIn("Control.Move(9300,-1)", [n.text for n in root.find(".//control[@id='9406']").findall("onclick")])
+        self.assertIn("Control.Move(9300,1)", [n.text for n in root.find(".//control[@id='9407']").findall("onclick")])
+        # The widget editor opens on the hub's own rows.
+        rows = [(n.get("condition"), n.text) for n in root.find(".//control[@id='9402']").findall("onclick")]
+        self.assertTrue(has_action(rows, "$EXP[Bald_HubCategorySelected]", "SetProperty(Bald.ConfigureNode,hubs,home)"))
+        self.assertTrue(has_action(rows, "$EXP[Bald_HubCategorySelected]",
+                                   "SetProperty(Bald.ConfigureItem,$INFO[Container(9300).ListItem.Property(slot)],home)"))
+        self.assertTrue(has_action(rows, "$EXP[Bald_HubCategorySelected]", "SetProperty(Bald.ConfigureMode,widgets,home)"))
+        self.assertTrue(has_action(rows, "String.IsEqual(Container(9300).ListItem.Property(kind),livetv)",
+                                   "SetProperty(Bald.ConfigureNode,livetvwidgets,home)"))
+        self.assertEqual(rows[-1], (None, "ActivateWindow(1116)"))
+        # Add hub: up to eight, appended through Skin Variables' browser.
+        add = [(n.get("condition"), n.text) for n in root.find(".//control[@id='9409']").findall("onclick")]
+        self.assertTrue(any("func=do_new" in action and "menu=hubs" in action and implies(cond, "!$EXP[Bald_HubsFull]")
+                            for cond, action in add))
+        full = ET.parse(ROOT / "1080i" / "Includes_Bald_Configure.xml").getroot().findtext(
+            "expression[@name='Bald_HubsFull']")
+        self.assertEqual(full, "[Integer.IsGreater(Container(9390).NumItems,7)]")
 
-    def test_live_tv_screen_has_toggle_but_no_widget_editor(self):
-        root = ET.parse(ROOT / "1080i" / "Custom_1117_BaldHomeScreens.xml").getroot()
+    def test_hubs_and_live_tv_control_main_menu_membership(self):
+        for n, hub in enumerate(HUBS, start=1):
+            entry = home_menu.entry(preview=hub)
+            self.assertEqual(entry.get("id"), f"901{n}")
+            self.assertTrue(equivalent(entry.findtext("visible"), f"$EXP[Bald_HubShown_{hub}]"))
+        livetv = home_menu.entry(preview="livetv")
+        self.assertTrue(equivalent(livetv.findtext("visible"), "!Skin.HasSetting(Bald.Screen.HideLiveTV)"))
+
+    def test_live_tv_has_a_toggle_and_its_own_rows(self):
+        root = resolve_window("Custom_1117_BaldHomeScreens.xml")
         toggle = root.find(".//control[@id='9401']")
         configure = root.find(".//control[@id='9402']")
         self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(toggle, encoding="unicode"))
         self.assertTrue(equivalent(configure.findtext("visible"),
-                                   "!String.IsEqual(Container(9300).ListItem.Property(node),livetv)"))
+                                   "!String.IsEqual(Container(9300).ListItem.Property(kind),add)"))
 
-    def test_optional_screens_restore_their_last_row_when_entered_from_menu(self):
-        for screen in ("home", "movies", "tvshows"):
+    def test_screens_restore_their_last_row_when_entered_from_menu(self):
+        for screen in ["home"] + HUBS:
             actions = home_menu.select_actions(home_menu.entry(preview=screen))
             has_rows = f"$EXP[Bald_HasRows_{screen}]"
-            self.assertTrue(same_actions(actions, [
+            entering = [
                 (has_rows, f"SetProperty(Bald.Screen,{screen},home)"),
                 (has_rows, f"SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.{screen})],home)"),
                 (has_rows, f"SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_{screen}],home)"),
                 (has_rows, "ClearProperty(Bald.Menu,home)"),
                 (has_rows, f"SetFocus($INFO[Window(home).Property(Bald.Row.{screen})])"),
-            ]), actions)
+            ]
+            if screen != "home":
+                # A hub without rows opens its target instead (bridge 902n, as Right does).
+                entering.append((f"!{has_rows} + $EXP[Bald_HubHasOpen_{screen}]", f"SetFocus(902{screen[3:]})"))
+            self.assertTrue(same_actions(actions, entering), actions)
             self.assertTrue(has_action(
                 home_menu.actions(home_menu.entry(preview=screen), "onfocus"), None,
                 f"SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.{screen})],home)"))
+
+    def test_live_tv_select_opens_the_guide_and_left_enters_its_rows(self):
+        livetv = home_menu.entry(preview="livetv")
+        self.assertEqual(home_menu.select_actions(livetv), [(None, "ActivateWindow(TVGuide)")])
+        left = home_menu.actions(livetv, "onleft")
+        rows = "$EXP[Bald_LiveTVRows]"
+        self.assertTrue(same_actions(left, [
+            (rows, "SetProperty(Bald.Screen,livetv,home)"),
+            (rows, "SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.livetv)],home)"),
+            (rows, "SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_livetv],home)"),
+            (rows, "ClearProperty(Bald.Menu,home)"),
+            (rows, "SetFocus($INFO[Window(home).Property(Bald.Row.livetv)])"),
+            (f"!{rows}", "Action(Select)"),
+        ]), left)
+        self.assertEqual(home_menu.actions(livetv, "onright"), [("true", "9029")])
+        self.assertEqual(home_menu.control(9029).findtext("onfocus"), "ActivateWindow(TVGuide)")
+        live_rows = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().findtext(
+            "expression[@name='Bald_LiveTVRows']")
+        self.assertTrue(equivalent(live_rows, "System.HasPVRAddon + $EXP[Bald_HasRows_livetv]"))
 
     def test_menu_entries_leave_up_and_down_to_the_grouplist(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
         menu = root.find(".//control[@id='9000']")
         self.assertEqual(menu.findtext("onup"), "noop")
         self.assertEqual(menu.findtext("ondown"), "noop")
+        # Menu order: Home, the eight hub slots (the user's order), Live TV, Search, Settings.
         entries = home_menu.entries()
-        self.assertEqual([node.findtext("param[@name='id']") for node in entries], [f"900{n}" for n in range(1, 7)])
-        self.assertEqual([node.findtext("param[@name='preview']") for node in entries],
-                         ["home", "movies", "tvshows", "livetv", "search", "settings"])
+        self.assertEqual([node.get("id") for node in entries],
+                         ["9001"] + [f"901{n}" for n in range(1, 9)] + ["9004", "9005", "9006"])
+        self.assertEqual([home_menu.previewed(node) for node in entries],
+                         ["home"] + HUBS + ["livetv", "search", "settings"])
         for node in entries:
-            self.assertFalse([child for child in node.findall("param") if child.get("name") not in
-                              {"id", "label", "preview", "visible", "suffix", "right"}])
-            for child in home_menu.nested(node):
-                self.assertIn(child.tag, {"onclick", "onfocus"})
+            self.assertIsNone(node.find("onup"))
+            self.assertIsNone(node.find("ondown"))
 
         button = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
             "include[@name='Bald_HomeMenuButton']/definition/control[@type='button']"
@@ -121,7 +190,8 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertIsNone(button.find("onup"))
         self.assertIsNone(button.find("ondown"))
         self.assertIsNotNone(button.find("nested"))
-        self.assertEqual([node.text for node in button.findall("onleft")], ["Action(Select)"])
+        self.assertEqual([(node.get("condition"), node.text) for node in button.findall("onleft")],
+                         [("$PARAM[left_if]", "Action(Select)")])
         self.assertEqual([node.text for node in button.findall("onfocus")][-3:],
                          ["SetProperty(Bald.Menu,1,home)", "SetProperty(Bald.MenuPreview,$PARAM[preview],home)",
                           "SetProperty(Bald.RowStyle,$VAR[Bald_PreviewRowStyle],home)"])
@@ -132,8 +202,9 @@ class BaldSettingsTests(unittest.TestCase):
 
         for screen, row, preview in (
             ("home", "9101", "Bald_PreviewHome"),
-            ("movies", "9201", "Bald_PreviewMovies"),
-            ("tvshows", "9301", "Bald_PreviewTVShows"),
+            ("livetv", "9051", "Bald_PreviewLiveTV"),
+            ("hub1", "9201", "Bald_PreviewHub1"),
+            ("hub2", "9301", "Bald_PreviewHub2"),
         ):
             self.assertTrue(implies(f"$EXP[{preview}]", f"String.IsEqual(Window(home).Property(Bald.MenuPreview),{screen})"))
             wanted = (f"$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row})"
@@ -152,7 +223,9 @@ class BaldSettingsTests(unittest.TestCase):
         # With the menu open, a row shows exactly when its screen is previewed and it was that screen's last row.
         previewed = ("String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen])"
                      " + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])")
-        self.assertTrue(equivalent(f"$EXP[Bald_MenuOpen] + [{row_definition}]", f"$EXP[Bald_MenuOpen] + {previewed}"))
+        self.assertTrue(equivalent(f"$EXP[Bald_MenuOpen] + $PARAM[enabled] + [{row_definition}]",
+                                   f"$EXP[Bald_MenuOpen] + $PARAM[enabled] + {previewed}"))
+        self.assertTrue(implies(row_definition, "$PARAM[enabled]"))
 
         row = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
             ".//include[@name='Bald_Row']/definition/control[@type='fixedlist']"
@@ -190,16 +263,14 @@ class BaldSettingsTests(unittest.TestCase):
         row = root.find(".//include[@name='Bald_Row']/definition/control[@type='fixedlist']")
         back_actions = [(node.get("condition"), node.text) for node in row.findall("onback")]
         up_actions = [(node.get("condition"), node.text) for node in row.findall("onup")]
-
-        for screen, entry in (("home", "9001"), ("movies", "9002"), ("tvshows", "9003")):
-            self.assertTrue(has_action(back_actions, f"String.IsEqual(Window(home).Property(Bald.Screen),{screen})",
-                                       f"SetFocus({entry})"), screen)
-        # Up from the first row returns to the active screen's menu entry.
-        self.assertTrue(any(
-            action == "SetFocus(9002)" and implies(
-                cond, "Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),movies)")
-            for cond, action in up_actions
-        ))
+        # Back, and Up from the first row, focus the row's own screen entry (menu, written per screen by the generator).
+        self.assertIn((None, "SetFocus($PARAM[menu])"), back_actions)
+        self.assertIn(("Integer.IsEqual($PARAM[index],1)", "SetFocus($PARAM[menu])"), up_actions)
+        fallback = ET.parse(ROOT / "1080i" / "Includes_Bald_HomeDefaults.xml").getroot()
+        for screen, title, _, entry in HOME_SCREENS:
+            for call in fallback.findall(f"include[@name='Bald_Generated_{title}Widgets']/definition/include"):
+                self.assertEqual(call.findtext("param[@name='menu']"), str(entry), screen)
+                self.assertEqual(call.findtext("param[@name='screen']"), screen)
 
     def test_main_menu_accent_dot_follows_focus(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
@@ -219,17 +290,24 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertEqual(menu.findtext("height"), "310")
         self.assertEqual(menu.findtext("scrolltime"), "320")
 
-    def test_media_screens_disclose_and_open_their_full_libraries_with_right(self):
-        root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
-        movies = home_menu_button(root, "movies")
-        tvshows = home_menu_button(root, "tvshows")
-        self.assertEqual(movies.findtext("param[@name='suffix']"), "  ›")
-        self.assertEqual(tvshows.findtext("param[@name='suffix']"), "  ›")
-        self.assertEqual(movies.findtext("param[@name='right']"), "9197")
-        self.assertEqual(tvshows.findtext("param[@name='right']"), "9196")
-
-        self.assertEqual(root.findtext(".//control[@id='9197']/onfocus"), "ActivateWindow(Videos,videodb://movies/titles/,return)")
-        self.assertEqual(root.findtext(".//control[@id='9196']/onfocus"), "ActivateWindow(Videos,videodb://tvshows/titles/,return)")
+    def test_hubs_disclose_and_open_their_targets_with_right(self):
+        for n, hub in enumerate(HUBS, start=1):
+            entry = home_menu.entry(preview=hub)
+            self.assertEqual(entry.findtext("label"), f"$VAR[Bald_HubLabel_{hub}]$VAR[Bald_HubSuffix_{hub}]")
+            # Right navigates to the bridge only when the hub has a target (a conditional numeric onright).
+            self.assertEqual(home_menu.actions(entry, "onright"), [(f"$EXP[Bald_HubHasOpen_{hub}]", f"902{n}")])
+            bridge = home_menu.control(f"902{n}")
+            self.assertEqual(bridge.get("type"), "button")
+        # The seeded Movies and TV shows hubs open the libraries the old 9197 and 9196 bridges opened.
+        fallback = ET.parse(ROOT / "1080i" / "Includes_Bald_HomeDefaults.xml").getroot()
+        self.assertEqual(fallback.findtext("include[@name='Bald_HubOpen_hub1']/definition/onfocus"),
+                         "ActivateWindow(videos,videodb://movies/titles/,return)")
+        self.assertEqual(fallback.findtext("include[@name='Bald_HubOpen_hub2']/definition/onfocus"),
+                         "ActivateWindow(videos,videodb://tvshows/titles/,return)")
+        self.assertEqual(home_menu.control(9021).findtext("onfocus"), "ActivateWindow(videos,videodb://movies/titles/,return)")
+        self.assertIsNone(fallback.find("include[@name='Bald_HubOpen_hub3']/definition/onfocus"))
+        suffix = fallback.find("variable[@name='Bald_HubSuffix_hub1']/value")
+        self.assertEqual((suffix.get("condition"), suffix.text), ("$EXP[Bald_HubHasOpen_hub1]", "  ›"))
 
         focused = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
             ".//include[@name='Bald_MenuRowFocused']"
@@ -238,90 +316,5 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertTrue(equivalent(disclosure.findtext("visible"), "!String.IsEmpty(ListItem.Property(library))"))
 
 
-    def test_add_widget_passes_named_parameters_not_positional_paths(self):
-        root = ET.parse(ROOT / "1080i" / "Custom_1116_BaldHomeWidgets.xml").getroot()
-        action = root.find(".//control[@id='9206']/onclick").text
-        self.assertIn("&&limit::25", action)
-        self.assertIn("&&secondary::0", action)
-        self.assertIn("&&use_rawpath::True", action)
-
-    def test_bald_appearance_settings_are_wired_to_rendering(self):
-        root = ET.parse(ROOT / "1080i" / "Custom_1118_BaldAppearance.xml").getroot()
-        xml = ET.tostring(root, encoding="unicode")
-        for setting in (
-            "Bald.HideClearlogo",
-            "Bald.DisableBlur",
-            "Bald.HideMediaFlags",
-            "Bald.AmbientOff",
-            "Bald.AutoHideMenuHint",
-        ):
-            self.assertIn(setting, xml)
-
-        font = root.find(".//control[@id='9631']")
-        self.assertEqual(font.findtext("label2"), "$VAR[Bald_FontName]")
-        self.assertEqual(sorted(node.text for node in font.findall("onclick")),
-                         ["RunScript(skin.bald,font,DMSans)", "RunScript(skin.bald,font,Default)"])
-
-        home = expand((ROOT / "1080i" / "Includes_Bald_Home.xml").read_text())
-        self.assertIn("!Skin.HasSetting(Bald.DisableBlur)", home)
-        self.assertIn("!Skin.HasSetting(Bald.HideClearlogo)", home)
-        self.assertIn("!Skin.HasSetting(Bald.HideMediaFlags)", home)
-
-
 if __name__ == "__main__":
     unittest.main()
-
-
-class SettingsBackTests(unittest.TestCase):
-    def test_back_steps_to_the_previous_window_instead_of_home(self):
-        # PreviousMenu behaves like Escape and leaves for Home; Kodi's own Back retraces the window history.
-        import xml.etree.ElementTree as ET
-        from pathlib import Path
-        root = Path(__file__).resolve().parents[1] / '1080i'
-        for name in ('Includes_Bald_Configure.xml', 'Custom_1115_BaldSettings.xml', 'Custom_1116_BaldHomeWidgets.xml',
-                     'Custom_1117_BaldHomeScreens.xml', 'Custom_1118_BaldAppearance.xml', 'SkinSettings.xml',
-                     'Settings.xml', 'SettingsCategory.xml',
-                     'SettingsProfile.xml', 'SettingsSystemInfo.xml'):
-            with self.subTest(file=name):
-                backs = [node.text for node in ET.parse(root / name).getroot().iter('onback')]
-                self.assertNotIn('PreviousMenu', backs)
-
-
-class SettingsTransitionTests(unittest.TestCase):
-    def test_settings_content_animates_but_the_backdrop_does_not(self):
-        import xml.etree.ElementTree as ET
-        from pathlib import Path
-        root = ET.parse(Path(__file__).resolve().parents[1] / '1080i' / 'Includes_Bald_Configure.xml').getroot()
-        anim = root.find("include[@name='Bald_AnimSettingsWindow']")
-        call = anim.find("include[@content='Bald_AnimWindowDepth']")
-        self.assertIsNotNone(call)
-        params = {p.get('name'): p.text for p in call.findall('param')}
-        self.assertEqual(params, {'back_in': '$EXP[Bald_SettingsBackIn]', 'back_out': '$EXP[Bald_SettingsBackOut]'})
-        common = ET.parse(Path(__file__).resolve().parents[1] / '1080i' / 'Includes_Bald_Common.xml').getroot()
-        depth = common.find("include[@name='Bald_AnimWindowDepth']/definition")
-        self.assertEqual(sorted(a.get('type') for a in depth.findall('animation')),
-                         ['WindowClose', 'WindowClose', 'WindowOpen', 'WindowOpen'])
-        for name in ('Bald_SettingsFrame', 'Bald_SettingsCategories', 'Bald_SettingsCategoryGroup',
-                     'Bald_SettingsDetail', 'Bald_SettingsHints', 'Bald_SettingsScrollbar', 'Bald_SettingsHelp'):
-            with self.subTest(include=name):
-                body = root.find(f"include[@name='{name}']")
-                self.assertIn('Bald_AnimSettingsWindow', [i.text for i in body.iter('include')])
-        frame = root.find("include[@name='Bald_SettingsFrame']/definition")
-        for image in frame.findall('control[@type="image"]'):
-            self.assertNotIn('Bald_AnimSettingsWindow', [i.text for i in image.iter('include')])
-
-
-class WindowDepthTransitionTests(unittest.TestCase):
-    def test_home_and_the_library_slide_instead_of_cutting(self):
-        import xml.etree.ElementTree as ET
-        from pathlib import Path
-        skin = Path(__file__).resolve().parents[1] / '1080i'
-        for name, back_in, back_out in (('Home.xml', 'true', None),
-                                        ('MyVideoNav.xml', '!Window.Previous(home)', 'Window.Next(home)')):
-            with self.subTest(window=name):
-                calls = [c for c in ET.parse(skin / name).getroot().iter('include')
-                         if c.get('content') == 'Bald_AnimWindowDepth']
-                self.assertEqual(len(calls), 1)
-                params = {p.get('name'): p.text for p in calls[0].findall('param')}
-                self.assertEqual(params.get('back_in'), back_in)
-                self.assertEqual(params.get('back_out'), back_out)

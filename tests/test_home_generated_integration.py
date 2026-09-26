@@ -3,6 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from home_screens import SCREENS
 from kodi_includes import EXP, NATIVE
 
 
@@ -33,9 +34,12 @@ class HomeGeneratedIntegrationTests(unittest.TestCase):
     def test_home_consumes_the_generated_rows_and_bindings(self):
         home = ET.parse(XML / "Home.xml").getroot()
         used = {(node.text or "").strip() for node in home.iter("include")} | {node.get("content") for node in home.iter("include")}
-        for name in ("Bald_Generated_HomeWidgets", "Bald_Generated_MoviesWidgets", "Bald_Generated_TVShowsWidgets",
-                     "Bald_ConfiguredArtLogos", "Bald_ConfiguredCaptions"):
+        for name in ("Bald_GeneratedRows", "Bald_ConfiguredArtLogos", "Bald_ConfiguredCaptions"):
             self.assertIn(name, used)
+        # Bald_GeneratedRows takes every screen's rows: Home, Live TV and the eight hub slots.
+        rows = ET.parse(XML / "Includes_Bald_Home.xml").getroot().find("include[@name='Bald_GeneratedRows']")
+        self.assertEqual([node.text for node in rows.findall("include")],
+                         [f"Bald_Generated_{title}Widgets" for _, title, _, _ in SCREENS])
         self.assertFalse(any(node.get("content") == "Bald_Row" for node in home.iter("include")))
 
     def test_names_the_skin_expects_from_the_generator_exist_in_the_fallback(self):
@@ -47,7 +51,7 @@ class HomeGeneratedIntegrationTests(unittest.TestCase):
             includes |= {node.get("content") or (node.text or "").strip()
                          for node in ET.parse(path).getroot().iter("include") if not node.get("name")}
         wanted = set()
-        for screen in ("home", "movies", "tvshows"):
+        for screen, _, _, _ in SCREENS:
             for name in ("ItemOdd", "HasLogo", "PreviewItemOdd", "PreviewHasLogo", "RowsLoading"):
                 self.assertIn(f"Bald_{name}_{screen}", expressions)
                 wanted.add(("expression", f"Bald_{name}_{screen}"))
