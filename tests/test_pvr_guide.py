@@ -15,7 +15,8 @@ REPO = ROOT.parent
 class PVRGuideTests(unittest.TestCase):
     def test_home_live_tv_opens_native_guide(self):
         item = home_menu.entry(preview='livetv')
-        self.assertEqual(home_menu.select_actions(item), [(None, 'ActivateWindow(TVGuide)')])
+        self.assertEqual(home_menu.select_actions(item), [(None, 'SetProperty(Bald.ReturnMenu,9004,home)'),
+                                                          (None, 'ActivateWindow(TVGuide)')])
         self.assertTrue(equivalent(item.findtext("visible"), '!Skin.HasSetting(Bald.Screen.HideLiveTV)'))
 
     def test_primary_guide_preserves_native_contract(self):
