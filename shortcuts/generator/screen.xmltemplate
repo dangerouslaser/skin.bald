@@ -20,6 +20,7 @@
     </definition>
 </include>
 <expression name="Bald_HasRows_{screen}">[false]{has_rows}</expression>
+<expression name="Bald_RowsLoading_{screen}">[false]{rows_loading}</expression>
 <expression name="Bald_ItemOdd_{screen}">[false]{item_odd}</expression>
 <expression name="Bald_HasLogo_{screen}">[false]{has_logo}</expression>
 <expression name="Bald_PreviewItemOdd_{screen}">[false]{preview_item_odd}</expression>
