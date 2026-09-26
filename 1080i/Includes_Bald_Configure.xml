@@ -321,10 +321,12 @@
 		</definition>
 	</include>
 
-	<!-- Colour button (template 15): the chosen colour as a 20 px dot at the row's end. -->
+	<!-- Colour button (template 15): the chosen colour as a 20 px dot 26 px in from the row's end, like a value. Kodi
+	     would put it flush right, where the 6 px focus slide would clip it; 1060 = 1106 - 26 - 20. -->
 	<include name="Bald_SettingsColorButton">
 		<definition>
 			<include>Bald_SettingsTemplate</include>
+			<colorposx>1060</colorposx>
 			<colorwidth>20</colorwidth>
 			<colorheight>20</colorheight>
 			<texturecolormask>bald/dot.png</texturecolormask>
@@ -332,14 +334,16 @@
 		</definition>
 	</include>
 
-	<!-- Group title (template 14): a small section label over its group's rows, aligned with the row text. -->
+	<!-- Group title (template 14): a small section label over its group's rows, aligned with the row text. Labels
+	     have no bottom alignment in Kodi ("bottom" reads as top), so the text is pushed down with textoffsety. -->
 	<include name="Bald_SettingsGroupTitle">
 		<definition>
 			<width>1106</width>
 			<height>56</height>
 			<textoffsetx>26</textoffsetx>
+			<textoffsety>24</textoffsety>
 			<align>left</align>
-			<aligny>bottom</aligny>
+			<aligny>top</aligny>
 			<font>Bald_RowLabel</font>
 			<textcolor>bald_ink60</textcolor>
 			<label />
