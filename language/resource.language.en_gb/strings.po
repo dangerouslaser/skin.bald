@@ -2259,7 +2259,23 @@ msgctxt "#31965"
 msgid "Select a profile to edit it, or add a new one."
 msgstr ""
 
+#: /1080i/DialogPictureInfo.xml
 #: /1080i/SettingsSystemInfo.xml
 msgctxt "#31966"
 msgid "Up and down to browse"
+msgstr ""
+
+#: /1080i/LoginScreen.xml
+msgctxt "#31980"
+msgid "Select to log in"
+msgstr ""
+
+#: /1080i/LoginScreen.xml
+msgctxt "#31981"
+msgid "Down for power options"
+msgstr ""
+
+#: /1080i/DialogPictureInfo.xml
+msgctxt "#31982"
+msgid "Left and right to change picture"
 msgstr ""

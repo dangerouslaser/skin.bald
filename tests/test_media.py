@@ -21,9 +21,18 @@ NATIVE_IDS = {
     # CGUIDialogVideoManager (+Versions, +Extras): title, list, play, remove, choose art, add/rename/default version,
     # add/rename extra.
     "DialogVideoManager.xml": {"2", "50", "21", "26", "27", "22", "24", "25", "23", "28"},
+    # CGUIWindowLoginScreen: profile list, heading, selected-profile counter.
+    "LoginScreen.xml": {"52", "2", "3"},
+    # CGUIWindowSlideShow: the error-message font label.
+    "SlideShow.xml": {"10"},
+    # CGUIDialogPictureInfo: the details list.
+    "DialogPictureInfo.xml": {"5"},
 }
 # Kodi reads these control types by id, so the type must stay what Kodi casts to.
 NATIVE_TYPES = {
+    ("DialogPictureInfo.xml", "5"): "list",
+    ("LoginScreen.xml", "52"): "fixedlist",
+    ("SlideShow.xml", "10"): "label",
     ("DialogColorPicker.xml", "6"): "panel",
     ("DialogMediaSource.xml", "12"): "edit",
 }

@@ -1,15 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- From Kodi 22 Estuary's SlideShow.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt), restyled for Bald
+     (docs/NOTES.md, "Media windows restyle"). Kodi draws the pictures itself. It reads label 10 only for the font
+     of its "unable to load image" message (so the message uses Instrument Sans), and would toggle 13 as a pause
+     marker, which Estuary and Bald leave out. -->
 <window>
 	<controls>
 		<include condition="Skin.HasSetting(touchmode)">TouchBackSlideshowButton</include>
-		<control type="image">
+		<control type="label" id="10">
+			<width>1</width>
+			<height>1</height>
+			<font>Bald_InfoMeta</font>
+			<textcolor>bald_ink</textcolor>
+			<label></label>
+		</control>
+		<!-- Video slide, paused or not yet playing: Estuary's play glyph in 80% ink on a quiet field disc. -->
+		<control type="group">
 			<centerleft>50%</centerleft>
 			<centertop>50%</centertop>
-			<width>256</width>
-			<height>256</height>
-			<texture>icons/settings/player.png</texture>
+			<width>200</width>
+			<height>200</height>
 			<visible>SlideShow.IsVideo</visible>
 			<visible>![Player.Playing + Player.HasVideo] | SlideShow.IsPaused</visible>
+			<animation type="Visible" reversible="false">
+				<effect type="fade" start="0" end="100" time="360" tween="sine" easing="inout" />
+				<effect type="zoom" start="94" end="100" center="auto" time="280" tween="back" easing="out" />
+			</animation>
+			<animation type="Hidden" reversible="false">
+				<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
+			</animation>
+			<control type="image">
+				<width>200</width>
+				<height>200</height>
+				<texture colordiffuse="bald_field60">bald/circle_112.png</texture>
+			</control>
+			<control type="image">
+				<left>44</left>
+				<top>44</top>
+				<width>112</width>
+				<height>112</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_ink80">icons/settings/player.png</texture>
+			</control>
 		</control>
 	</controls>
 </window>

@@ -1,127 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- From Kodi 22 Estuary's DialogPictureInfo.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt), restyled for Bald
+     (docs/NOTES.md, "Media windows restyle"). Kodi binds 5 (the label / value list it fills with the picture's
+     details); 9000 wraps it with its scrollbar 60. From the pictures window the picture sits sharp on the field at
+     the left; over a running slideshow only the right column draws, on a right-hand field scrim. -->
 <window>
 	<depth>DepthOSD</depth>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<onload>SetProperty(infobackground,$ESCINFO[ListItem.FolderPath],home)</onload>
 	<onunload>ClearProperty(infobackground,home)</onunload>
+	<include>Bald_MediaOpenClose</include>
 	<controls>
 		<control type="group">
-			<centertop>50%</centertop>
-			<height>1080</height>
-			<centerleft>50%</centerleft>
-			<width>1920</width>
-			<control type="group">
-				<visible>!Window.IsActive(Slideshow)</visible>
-				<include>OpenClose_Left</include>
-				<top>160</top>
-				<control type="image">
-					<left>70</left>
-					<width>1280</width>
-					<height>820</height>
-					<texture border="21">dialogs/dialog-bg.png</texture>
-				</control>
-				<control type="image">
-					<left>120</left>
-					<top>50</top>
-					<width>1180</width>
-					<height>720</height>
-					<aspectratio aligny="center">keep</aspectratio>
-					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
-					<bordersize>4</bordersize>
-					<texture border="4" background="true" fallback="colors/black.png">$INFO[ListItem.FolderPath]</texture>
-				</control>
+			<visible>!Window.IsActive(Slideshow)</visible>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+			<control type="image">
+				<left>Bald_SafeLeft</left>
+				<top>Bald_PageTitleTop</top>
+				<width>1136</width>
+				<height>846</height>
+				<aspectratio>keep</aspectratio>
+				<fadetime>300</fadetime>
+				<texture background="true">$INFO[ListItem.FolderPath]</texture>
 			</control>
-			<control type="group">
-				<include>OpenClose_Right</include>
-				<top>160</top>
-				<control type="image">
-					<description>background image</description>
-					<right>70</right>
-					<width>510</width>
-					<height>820</height>
-					<texture border="22">dialogs/dialog-bg.png</texture>
+		</control>
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<texture flipx="true" colordiffuse="bald_field">bald/scrim_info_h.png</texture>
+			<visible>Window.IsActive(Slideshow)</visible>
+		</control>
+		<control type="group">
+			<left>Bald_PreviewLeft</left>
+			<animation type="WindowOpen" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
+				<effect type="slide" start="40,0" end="0,0" time="480" delay="120" tween="cubic" easing="out" />
+			</animation>
+			<control type="label">
+				<top>Bald_PageTitleTop</top>
+				<width>528</width>
+				<height>40</height>
+				<aligny>center</aligny>
+				<font>Bald_InfoTagline</font>
+				<textcolor>bald_ink</textcolor>
+				<scroll>true</scroll>
+				<label>$VAR[PictureInfoMainLabelVar]</label>
+			</control>
+			<control type="label">
+				<top>152</top>
+				<width>528</width>
+				<height>30</height>
+				<aligny>center</aligny>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink70</textcolor>
+				<label>$VAR[PictureInfoSubLabelVar]</label>
+			</control>
+			<control type="group" id="9000">
+				<control type="list" id="5">
+					<left>-20</left>
+					<top>Bald_ContentTop</top>
+					<width>528</width>
+					<height>680</height>
+					<orientation>vertical</orientation>
+					<onleft>Dialog.Close(all,true)</onleft>
+					<onleft>Action(left)</onleft>
+					<onleft>info</onleft>
+					<onright>Dialog.Close(all,true)</onright>
+					<onright>Action(right)</onright>
+					<onright>info</onright>
+					<onup>5</onup>
+					<ondown>5</ondown>
+					<pagecontrol>60</pagecontrol>
+					<scrolltime tween="cubic" easing="out">200</scrolltime>
+					<include content="Bald_MediaDetailLayout">
+						<param name="width">528</param>
+					</include>
 				</control>
-				<include content="UpDownArrows">
-					<param name="container_id" value="5" />
-					<param name="posx" value="1590" />
-					<param name="up_posy" value="-20" />
-					<param name="down_posy" value="820" />
-				</include>
-				<control type="group" id="9000">
-					<control type="scrollbar" id="60">
-						<left>1840</left>
-						<top>20</top>
-						<width>12</width>
-						<height>780</height>
-						<orientation>vertical</orientation>
-					</control>
-					<control type="list" id="5">
-						<right>70</right>
-						<top>30</top>
-						<width>480</width>
-						<height>750</height>
-						<orientation>vertical</orientation>
-						<onleft>Dialog.Close(all,true)</onleft>
-						<onleft>Action(left)</onleft>
-						<onleft>info</onleft>
-						<onright>Dialog.Close(all,true)</onright>
-						<onright>Action(right)</onright>
-						<onright>info</onright>
-						<onup>5</onup>
-						<ondown>5</ondown>
-						<pagecontrol>60</pagecontrol>
-						<focusedlayout height="50">
-							<control type="label">
-								<left>10</left>
-								<height>50</height>
-								<width>430</width>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<label>$INFO[ListItem.Label]</label>
-								<textcolor>button_focus</textcolor>
-								<shadowcolor>text_shadow</shadowcolor>
-							</control>
-							<control type="label">
-								<left>10</left>
-								<height>50</height>
-								<width>430</width>
-								<align>right</align>
-								<font>font12</font>
-								<aligny>center</aligny>
-								<label>$INFO[ListItem.Label2]</label>
-								<shadowcolor>text_shadow</shadowcolor>
-							</control>
-						</focusedlayout>
-						<itemlayout height="50">
-							<control type="label">
-								<left>10</left>
-								<height>50</height>
-								<width>430</width>
-								<aligny>center</aligny>
-								<label>$INFO[ListItem.Label]</label>
-								<font>font12</font>
-								<textcolor>button_focus</textcolor>
-								<shadowcolor>text_shadow</shadowcolor>
-							</control>
-							<control type="label">
-								<left>10</left>
-								<height>50</height>
-								<width>430</width>
-								<align>right</align>
-								<font>font12</font>
-								<aligny>center</aligny>
-								<label>$INFO[ListItem.Label2]</label>
-								<shadowcolor>text_shadow</shadowcolor>
-							</control>
-						</itemlayout>
-					</control>
+				<control type="scrollbar" id="60">
+					<left>524</left>
+					<top>Bald_ContentTop</top>
+					<height>680</height>
+					<include>Bald_MediaScrollbarLook</include>
 				</control>
 			</control>
 		</control>
-		<include content="InfoDialogTopBarInfo">
-			<param name="main_label" value="$VAR[PictureInfoMainLabelVar]" />
-			<param name="sub_label" value="$VAR[PictureInfoSubLabelVar]" />
-		</include>
+		<control type="group">
+			<left>Bald_RightColumn</left>
+			<top>Bald_HintTop</top>
+			<include content="Bald_InfoHintPair">
+				<param name="first">$LOCALIZE[31966]</param>
+				<param name="second">$LOCALIZE[31982]</param>
+			</include>
+		</control>
 		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>
