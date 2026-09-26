@@ -1,49 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Toast notifications. Started from Kodi 22 Estuary's DialogNotification.xml (GPL-2.0-or-later, see
+     LICENSE-Estuary.txt). Kodi (CGUIDialogKaiToast) binds image 400 (the toast's icon: an add-on's art or Kodi's
+     DefaultIconInfo/Warning/Error), label 401 (caption) and fadelabel 402 (message; Kodi keeps the toast up until a
+     fadelabel has scrolled through, so 402 stays a fadelabel).
+     Bald: a 560 x 104 field card on the right safe edge at the safe top, icon at 64 px (not tinted: it is usually an
+     add-on's own artwork), caption in the section face at full ink, message at 60%. Fades in with a 24 px slide from the
+     right. -->
 <window>
 	<zorder>3</zorder>
 	<controls>
 		<control type="group">
 			<depth>DepthMax</depth>
-			<top>85</top>
-			<right>0</right>
-			<width>640</width>
-			<include>OpenClose_Right</include>
+			<top>Bald_ToastTop</top>
+			<left>1264</left>
+			<width>560</width>
+			<height>104</height>
+			<include content="Bald_OverlayOpenClose">
+				<param name="offset" value="24,0" />
+			</include>
 			<visible>String.IsEmpty(Window(Home).Property(script.cinemavision.running))</visible>
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>640</width>
-				<height>160</height>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
-			</control>
+			<include content="Bald_OverlaySurface">
+				<param name="width" value="560" />
+				<param name="height" value="104" />
+			</include>
 			<control type="image" id="400">
 				<description>avatar</description>
-				<left>25</left>
-				<top>25</top>
-				<width>110</width>
-				<height>110</height>
-				<aspectratio>stretch</aspectratio>
+				<left>20</left>
+				<top>20</top>
+				<width>64</width>
+				<height>64</height>
+				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="fadelabel" id="401">
 				<description>Line 1 Label</description>
-				<left>150</left>
-				<top>40</top>
-				<width>450</width>
-				<height>18</height>
-				<font>font37</font>
+				<left>104</left>
+				<top>20</top>
+				<width>432</width>
+				<height>32</height>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink</textcolor>
 				<aligny>center</aligny>
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
 			</control>
 			<control type="fadelabel" id="402">
 				<description>Line 2 Label</description>
-				<left>151</left>
-				<top>68</top>
-				<width>450</width>
-				<height>60</height>
-				<font>font27_narrow</font>
+				<left>104</left>
+				<top>54</top>
+				<width>432</width>
+				<height>30</height>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>bald_ink60</textcolor>
 				<aligny>center</aligny>
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>

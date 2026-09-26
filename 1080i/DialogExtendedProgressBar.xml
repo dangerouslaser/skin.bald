@@ -1,75 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Background progress (library scans, PVR startup, add-on updates). Started from Kodi 22 Estuary's
+     DialogExtendedProgressBar.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Kodi (CGUIDialogExtendedProgressBar)
+     binds label 30 (the task's title, "(n) " prefixed when several run), label 31 (its current step) and progress 32
+     (shown once the task reports a percentage).
+     Bald: one line in the overlay band above the page, ending on the right safe edge: pulsing dots, the title at 80%
+     ink and the step at 45% after a dot separator, with a 4 px accent bar under it. The step is left out when empty or
+     when the title already says it, and the percentage is shown by the bar only (Estuary printed it after the title as
+     well, so PVR startup read as two near-identical lines beside its spinner). Faded out over fullscreen video and games,
+     where Estuary slid it off screen. -->
 <window>
 	<zorder>3</zorder>
-	<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+	<include content="Bald_OverlayOpenClose">
+		<param name="offset" value="0,-14" />
+	</include>
 	<controls>
 		<control type="group">
 			<depth>DepthBars</depth>
-			<right>20</right>
-			<width>80</width>
-			<top>0</top>
-			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
-			<animation effect="slide" end="0,-80" time="150" condition="Window.IsVisible(FullscreenVideo) | Window.IsVisible(FullscreenGame)">conditional</animation>
-			<control type="image">
-				<left>20</left>
-				<top>10</top>
-				<width>60</width>
-				<height>60</height>
-				<texture>dialogs/extendedprogress/loading-back.png</texture>
-			</control>
-			<control type="group">
-				<visible>!Window.IsActive(volumebar)</visible>
-				<animation effect="fade" time="200">VisibleChange</animation>
-				<control type="image">
-					<left>20</left>
-					<top>10</top>
-					<width>60</width>
-					<height>60</height>
-					<texture>$INFO[Control.GetLabel(32),dialogs/volume/progress/p,.png]</texture>
-					<animation effect="fade" end="50" time="0" condition="true">Conditional</animation>
-				</control>
-				<control type="image">
-					<left>20</left>
-					<top>10</top>
-					<width>60</width>
-					<height>60</height>
-					<texture>dialogs/extendedprogress/loading.png</texture>
-					<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
-				</control>
-			</control>
+			<left>1224</left>
+			<top>Bald_OverlayBandTop</top>
+			<width>600</width>
+			<height>40</height>
+			<animation effect="fade" start="100" end="0" time="240" tween="sine" easing="inout" condition="Window.IsVisible(fullscreenvideo) | Window.IsVisible(FullscreenGame)">Conditional</animation>
 			<control type="grouplist">
-				<left>-800</left>
-				<top>7</top>
-				<width>800</width>
-				<height>120</height>
-				<align>right</align>
+				<left>0</left>
+				<top>0</top>
+				<width>600</width>
+				<height>24</height>
 				<orientation>horizontal</orientation>
+				<align>right</align>
+				<itemgap>0</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<control type="group">
+					<width>42</width>
+					<height>24</height>
+					<control type="group">
+						<top>8</top>
+						<include content="Bald_BusyDots">
+							<param name="size" value="8" />
+							<param name="second" value="14" />
+							<param name="third" value="28" />
+							<param name="color" value="bald_ink60" />
+						</include>
+					</control>
+				</control>
 				<control type="label" id="30">
-					<width min="0" max="680">auto</width>
-					<height>120</height>
-					<font>font12</font>
+					<description>Title label</description>
+					<width min="0" max="340">auto</width>
+					<height>24</height>
+					<font>Bald_Progress</font>
+					<textcolor>bald_ink80</textcolor>
+					<aligny>center</aligny>
 				</control>
 				<control type="label">
-					<width min="0" max="120">auto</width>
-					<height>120</height>
-					<font>font12</font>
-					<label>$INFO[Control.GetLabel(32),: ,%]</label>
+					<width>20</width>
+					<height>24</height>
+					<font>Bald_Progress</font>
+					<textcolor>bald_ink45</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>·</label>
+					<visible>Control.IsVisible(31)</visible>
+				</control>
+				<control type="label" id="31">
+					<description>Step label</description>
+					<width min="0" max="198">auto</width>
+					<height>24</height>
+					<font>Bald_Progress</font>
+					<textcolor>bald_ink45</textcolor>
+					<aligny>center</aligny>
+					<visible>!String.IsEmpty(Control.GetLabel(31)) + !String.Contains(Control.GetLabel(30),Control.GetLabel(31))</visible>
 				</control>
 			</control>
-			<control type="label" id="31">
-				<description>Title label</description>
-				<left>-750</left>
-				<top>33</top>
-				<width>750</width>
-				<height>120</height>
-				<font>font12</font>
-				<textcolor>80FFFFFF</textcolor>
-				<align>right</align>
-			</control>
 			<control type="progress" id="32">
-				<left>3000</left>
-				<height>15</height>
+				<left>240</left>
+				<top>36</top>
+				<width>360</width>
+				<include>Bald_OverlayBarTextures</include>
 			</control>
 		</control>
 	</controls>
