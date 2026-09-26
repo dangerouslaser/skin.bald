@@ -4,7 +4,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import home_menu
-from kodi_includes import condition, expand
+from kodi_includes import condition, expand, parse
 
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1] / "1080i"
 
 class LibraryViewTests(unittest.TestCase):
     def setUp(self):
-        self.view = ET.parse(ROOT / "View_510_Bald_Posters.xml").getroot()
+        self.view = parse(ROOT / "View_510_Bald_Posters.xml")
 
     def test_registered_native_movie_only_view_with_three_slots(self):
         nav = ET.parse(ROOT / "MyVideoNav.xml").getroot()

@@ -3,7 +3,7 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
-from kodi_includes import condition, expand
+from kodi_includes import condition, expand, parse
 
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[1] / "1080i"
 
 class InfoPagesTests(unittest.TestCase):
     def setUp(self):
-        self.dialog = ET.parse(ROOT / "DialogVideoInfo.xml").getroot()
-        self.pages = ET.parse(ROOT / "Includes_Bald_InfoPages.xml").getroot()
+        self.dialog = parse(ROOT / "DialogVideoInfo.xml")
+        self.pages = parse(ROOT / "Includes_Bald_InfoPages.xml")
         self.shared = ET.parse(ROOT / "Includes_Bald_Info.xml").getroot()
 
     def test_hint_pair_right_aligns_as_a_unit_with_20px_separator(self):

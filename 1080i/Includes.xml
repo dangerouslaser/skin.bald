@@ -2,6 +2,7 @@
 <includes>
 	<include file="Defaults.xml" />
 	<include file="Includes_Home.xml" />
+	<include file="Includes_Bald_Constants.xml" />
 	<include file="Includes_Bald_Common.xml" />
 	<include file="Includes_Bald_Home.xml" />
 	<!-- Home rows and their bindings, built per install by Skin Variables from the widget editor's row lists

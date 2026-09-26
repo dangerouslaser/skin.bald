@@ -34,8 +34,8 @@
 		<control type="group">
 			<visible>$EXP[Bald_LibraryLettersOpen]</visible>
 			<animation type="Visible"><effect type="fade" start="0" end="100" time="180" tween="sine" easing="inout" /></animation>
-			<control type="label"><left>96</left><top>856</top><width>1140</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_LibraryLetterLabel]</label></control>
-			<control type="group"><left>96</left><top>888</top><visible>$EXP[Bald_LibraryTitleSorted]</visible>
+			<control type="label"><left>Bald_SafeLeft</left><top>856</top><width>1140</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_LibraryLetterLabel]</label></control>
+			<control type="group"><left>Bald_SafeLeft</left><top>888</top><visible>$EXP[Bald_LibraryTitleSorted]</visible>
 				<include content="Bald_LibraryLetterCell"><param name="letter">0</param><param name="label">0–9</param><param name="x">0</param><param name="width">68</param><param name="selected">!$EXP[Bald_LibraryLatinLetter]</param></include>
 				<include content="Bald_LibraryLetterCell"><param name="letter">A</param><param name="label">A</param><param name="x">68</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,A)</param></include>
 				<include content="Bald_LibraryLetterCell"><param name="letter">B</param><param name="label">B</param><param name="x">109</param><param name="width">41</param><param name="selected">String.IsEqual(Container(0).ListItem.SortLetter,B)</param></include>
@@ -66,7 +66,7 @@
 			</control>
 		</control>
 		<control type="button" id="9160">
-			<left>96</left><top>888</top><width>1140</width><height>48</height><label></label><texturefocus /><texturenofocus />
+			<left>Bald_SafeLeft</left><top>888</top><width>1140</width><height>48</height><label></label><texturefocus /><texturenofocus />
 			<visible allowhiddenfocus="true">$EXP[Bald_LibraryLettersOpen]</visible>
 			<onfocus>SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(videos).Property(Bald.LibraryContainer)],videos)</onfocus>
 			<onleft condition="$EXP[Bald_LibraryTitleSorted]">SetFocus(50)</onleft>
@@ -93,7 +93,7 @@
 			<include content="Bald_MenuNote"><param name="text">$VAR[Bald_LibraryMenuNote]</param></include>
 		</control>
 		<control type="list" id="9150">
-			<left>1440</left><top>392</top><width>420</width><height>310</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
+			<left>Bald_RightColumn</left><top>392</top><width>420</width><height>310</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
 			<visible allowhiddenfocus="true">$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
 			<onleft>50</onleft><onback>50</onback><onright>noop</onright><onup>noop</onup><ondown>noop</ondown>
 			<itemlayout width="420" height="62"><include>Bald_MenuRowUnfocused</include></itemlayout>
@@ -178,7 +178,7 @@
 				<visible>!$EXP[Bald_LibraryMenuOpen] + !Container($PARAM[c]).ListItem.IsParentFolder + !String.IsEmpty(Container($PARAM[c]).ListItem.Title)</visible>
 				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
 				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
-				<control type="group"><left>1296</left><top>222</top>
+				<control type="group"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top>
 					<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 					<include content="Bald_LibraryArt"><param name="c">$PARAM[c]</param><param name="p">Odd</param></include>
 					<include content="Bald_LibraryArt"><param name="c">$PARAM[c]</param><param name="p">Even</param></include>
@@ -209,8 +209,8 @@
 			<visible>Control.IsVisible(510)</visible>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
 			<include>Bald_BackdropImage</include>
-			<control type="label"><left>96</left><top>108</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>Movies</label></control>
-			<control type="label"><left>1296</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>Movies</label></control>
+			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="list" id="510">
 				<left>84</left><top>210</top><width>1152</width><height>648</height>
 				<orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems>
@@ -223,15 +223,15 @@
 				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
 			<include>Bald_LibraryPreview</include>
-			<control type="label"><left>96</left><top>954</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>
-			<control type="group"><left>800</left><top>954</top>
+			<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>
+			<control type="group"><left>800</left><top>Bald_HintTop</top>
 				<visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Down for letters</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include>
 			</control>
-			<control type="group"><left>800</left><top>954</top><visible>$EXP[Bald_LibraryLettersOpen]</visible>
+			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include>
 			</control>
-			<control type="group"><left>1404</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
+			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
 				<include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include>
 			</control>
 		</control>

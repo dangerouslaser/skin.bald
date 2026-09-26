@@ -280,7 +280,7 @@
 			<include content="Bald_InfoPage"><param name="page">0</param></include>
 			<!-- Header: stagger 0, 60, 100, 180 after the 380 base (the prototype's i0, i1, i2, i4). -->
 			<control type="group">
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>150</top>
 				<height>170</height>
 				<include content="Bald_AnimInfoIn"><param name="delay">380</param></include>
@@ -302,7 +302,7 @@
 				</control>
 			</control>
 			<control type="label">
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>346</top>
 				<width>1400</width>
 				<height>30</height>
@@ -312,7 +312,7 @@
 				<include content="Bald_AnimInfoIn"><param name="delay">440</param></include>
 			</control>
 			<control type="label">
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>384</top>
 				<width>1400</width>
 				<height>26</height>
@@ -323,7 +323,7 @@
 			</control>
 			<!-- Plot: 2 lines of 34 px (Kodi draws ceil(height / line height) lines). -->
 			<control type="label">
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>424</top>
 				<width>780</width>
 				<height>68</height>
@@ -337,7 +337,7 @@
 			<!-- Actions (i5). An opened episode plays itself natively (8, or 9 to resume); a show or season plays
 			     the script's next episode. -->
 			<control type="grouplist" id="5000">
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>522</top>
 				<width>1400</width>
 				<height>70</height>
@@ -375,7 +375,7 @@
 			</control>
 			<!-- Season tabs (i6): 34 px between labels. -->
 			<control type="list" id="5301">
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>620</top>
 				<width>1728</width>
 				<height>40</height>
@@ -430,7 +430,7 @@
 				<!-- Detail: code and title 24, then runtime / air date / state 18 at 70% and the episode's media flags,
 				     baselines aligned; one-line synopsis (a single-line label ends with an ellipsis). -->
 				<control type="grouplist">
-					<left>96</left>
+					<left>Bald_SafeLeft</left>
 					<top>894</top>
 					<width>1300</width>
 					<height>30</height>
@@ -465,7 +465,7 @@
 					</control>
 				</control>
 				<control type="label">
-					<left>96</left>
+					<left>Bald_SafeLeft</left>
 					<top>934</top>
 					<width>1100</width>
 					<height>30</height>
@@ -481,8 +481,8 @@
 	<!-- Right-hand hints on the TV Overview. They switch immediately, outside the animated page. -->
 	<include name="Bald_InfoTVHints">
 		<control type="group">
-			<left>1440</left>
-			<top>954</top>
+			<left>Bald_RightColumn</left>
+			<top>Bald_HintTop</top>
 			<visible>$EXP[Bald_InfoOnOverview] + $EXP[Bald_InfoTVEpisodesFocused]</visible>
 			<include content="Bald_InfoHintPair"><param name="first">Select to play</param><param name="second">Down for cast &amp; details</param></include>
 		</control>

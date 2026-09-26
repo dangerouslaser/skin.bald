@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import re
 
 import home_menu
-from kodi_includes import expand
+from kodi_includes import expand, parse
 
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
@@ -37,7 +37,7 @@ class SearchUITests(unittest.TestCase):
         )
 
     def test_global_search_override_preserves_addon_contract(self):
-        root = ET.parse(ROOT / 'script-globalsearch.xml').getroot()
+        root = parse(ROOT / 'script-globalsearch.xml')
         self.assertEqual(root.findtext('views'), '50')
         for control_id in ('50', '990', '991', '999', '9000'):
             self.assertIsNotNone(root.find(f".//control[@id='{control_id}']"), control_id)

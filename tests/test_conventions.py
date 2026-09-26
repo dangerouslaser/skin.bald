@@ -3,7 +3,7 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
-from kodi_includes import EXP, SKIN, expressions
+from kodi_includes import CONSTANT_TAGS, EXP, SKIN, constants, expressions
 
 # Bald-native files (CLAUDE.md); the rest of 1080i is Estuary and keeps Estuary's style.
 NATIVE = sorted(
@@ -48,6 +48,36 @@ class ExpressionTests(unittest.TestCase):
         # docs/NOTES.md: $EXP in a Timers.xml condition did not trigger in Kodi 22.
         self.assertNotIn("$EXP[", (SKIN / "Timers.xml").read_text())
 
+
+
+# Layout values named in Includes_Bald_Constants.xml, by the tag they are used in.
+LAYOUT = {("left", "96"): "Bald_SafeLeft", ("top", "954"): "Bald_HintTop", ("left", "1440"): "Bald_RightColumn",
+          ("left", "1296"): "Bald_PreviewLeft", ("top", "108"): "Bald_PageTitleTop", ("top", "222"): "Bald_ContentTop"}
+
+
+class ConstantTests(unittest.TestCase):
+    def test_bald_constants_load_at_every_screen_height(self):
+        # Constants_720/1080.xml are conditional on the screen height; Bald's 1080i values must not be.
+        registered = {node.get("file"): node.get("condition") for node in ET.parse(SKIN / "Includes.xml").getroot().findall("include")
+                      if node.get("file")}
+        self.assertIn("Includes_Bald_Constants.xml", registered)
+        self.assertIsNone(registered["Includes_Bald_Constants.xml"])
+        values = constants()
+        for (tag, number), name in LAYOUT.items():
+            self.assertEqual(values[name], number)
+
+    def test_native_layout_uses_the_named_constants(self):
+        values = constants()
+        for path in NATIVE:
+            root = ET.parse(path).getroot()
+            for node in root.iter():
+                text = (node.text or "").strip()
+                if node.tag not in CONSTANT_TAGS or not text:
+                    continue
+                with self.subTest(file=path.name, tag=node.tag, value=text):
+                    if text.startswith("Bald_"):
+                        self.assertIn(text, values)
+                    self.assertNotIn((node.tag, text), LAYOUT)
 
 if __name__ == "__main__":
     unittest.main()

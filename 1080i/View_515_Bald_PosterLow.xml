@@ -39,10 +39,10 @@
 	</include>
 	<include name="Bald_PosterLowFooter">
 		<definition>
-			<control type="label"><left>96</left><top>704</top><width>420</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(515).CurrentItem] / $INFO[Container(515).NumItems]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible></control>
-			<control type="group"><left>700</left><top>954</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">Down for letters</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include></control>
-			<control type="group"><left>800</left><top>954</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
-			<control type="group"><left>1404</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>704</top><width>420</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(515).CurrentItem] / $INFO[Container(515).NumItems]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible></control>
+			<control type="group"><left>700</left><top>Bald_HintTop</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">Down for letters</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include></control>
+			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
+			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
 		</definition>
 	</include>
 	<include name="View_515_Bald_PosterLow">
@@ -50,11 +50,11 @@
 			<visible>Control.IsVisible(515)</visible>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
 			<include>Bald_BackdropImage</include>
-			<control type="label"><left>1440</left><top>120</top><width>384</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<control type="label"><left>Bald_RightColumn</left><top>120</top><width>384</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="group">
 				<visible>!Container(515).ListItem.IsParentFolder + !String.IsEmpty(Container(515).ListItem.Title)</visible>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
-				<control type="group"><left>96</left><top>120</top>
+				<control type="group"><left>Bald_SafeLeft</left><top>120</top>
 					<control type="image"><width>1248</width><height>576</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 					<include content="Bald_PosterLowArt"><param name="p">Odd</param></include>
 					<include content="Bald_PosterLowArt"><param name="p">Even</param></include>
@@ -74,7 +74,7 @@
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">94</param><param name="w">1248</param><param name="h">26</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">696</param><param name="w">1248</param><param name="h">26</param></include>
 			<control type="list" id="515">
-				<left>96</left><top>738</top><width>1248</width><height>234</height><orientation>horizontal</orientation>
+				<left>Bald_SafeLeft</left><top>738</top><width>1248</width><height>234</height><orientation>horizontal</orientation>
 				<viewtype label="Bald poster low">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>4</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,515,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,515,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
 				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,515)</ondown><onleft>noop</onleft><onright>noop</onright>
