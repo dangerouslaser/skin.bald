@@ -1073,6 +1073,7 @@ msgstr ""
 #: /1080i/Includes_Bald_Home.xml
 #: /1080i/Includes_Bald_Info.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
+#: /scripts/info.py
 #. Season count of a show with one season
 msgctxt "#31711"
 msgid "1 season"
@@ -1081,6 +1082,7 @@ msgstr ""
 #: /1080i/Includes_Bald_Home.xml
 #: /1080i/Includes_Bald_Info.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
+#: /scripts/info.py
 #. Follows a season count, "4 seasons"
 msgctxt "#31712"
 msgid "seasons"
@@ -1122,6 +1124,12 @@ msgstr ""
 #. Follows an episode count, "24 episodes"
 msgctxt "#31718"
 msgid "episodes"
+msgstr ""
+
+#: /scripts/info.py
+#. Joins the first and last year a show aired, "2019 to 2024"
+msgctxt "#31719"
+msgid "to"
 msgstr ""
 
 #: /1080i/Includes_Bald_Configure.xml

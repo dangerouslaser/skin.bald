@@ -26,7 +26,8 @@ Within Bald's block, IDs are grouped by area with room to grow:
 
 ## Rules
 
-- Add new strings to en_gb only, with a `#: /1080i/<file>` line for every file that uses the ID. Other languages fall back to en_gb until someone translates them.
+- Add new strings to en_gb only, with a `#: /1080i/<file>` line for every file that uses the ID (and
+  `#: /scripts/info.py` for text the script shows). Other languages fall back to en_gb until someone translates them.
 - Reuse a Kodi core string when its wording and meaning are the same (for example `$LOCALIZE[342]` Movies,
   `$LOCALIZE[13404]` Resume). Do not reuse one whose meaning only looks the same: core 21483 "View" is a verb, so
   Bald's layout option has its own "View".
@@ -36,6 +37,8 @@ Within Bald's block, IDs are grouped by area with room to grow:
 - Proper names (CoreELEC, LibreELEC, Dolby Vision, HDR10, HLG) and the S/E, h/m and p unit letters stay literal.
 - Don't localize Home row names. They come from the Skin Variables shortcut files
   (`shortcuts/skinvariables-shortcut-*.json`), and the user can rename them, so they are data.
+- `scripts/info.py` resolves its IDs with `xbmc.getLocalizedString` and keeps the en_gb wording in `STRINGS` for runs
+  without Kodi.
 
 `tests/test_localization.py` checks that every ID the skin shows is defined, that every Bald string is used and cites
 its files, that no Bald string is duplicated, and that Bald's own windows have no hardcoded English left.
