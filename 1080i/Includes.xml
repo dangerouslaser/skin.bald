@@ -16,6 +16,7 @@
 	<include file="Includes_Bald_ContextMenu.xml" />
 	<include file="Includes_Bald_Foundations.xml" />
 	<include file="Includes_Bald_Playback.xml" />
+	<include file="Includes_Bald_OSD.xml" />
 	<include file="Includes_Bald_Overlays.xml" />
 	<include file="Includes_Bald_Browse.xml" />
 	<include file="Includes_Bald_Media.xml" />

@@ -263,10 +263,10 @@ VIDEO INFORMATION PAGES (DialogVideoInfo.xml, Includes_Bald_InfoPages.xml, Inclu
 PLAYBACK (Includes_Bald_Playback.xml and the player windows that use it; docs/SPEC.md 5, "Playback (proposed)")
 Kodi binds these by number (checked against xbmc master):
 DialogSeekBar.xml (CGUIDialogSeekBar)
-401		File progress slider (Kodi selects the position)
-402		EPG event progress (optional; not drawn)
+401		File progress slider: the seek-preview nib (Kodi selects the position, the seek target while seeking)
+402		EPG event progress slider: the Live TV seek-preview nib
 403		Timeshift progress slider
-40000	Seek state label (Estuary's id, kept)
+40000	Seek state label (Estuary's id, kept hidden)
 VideoFullScreen.xml (CGUIWindowFullScreen)
 0		View-mode group Kodi shows and hides; 10, 11, 12 its three lines
 1		Buffering indicator group and its parts (Estuary's numbering)

@@ -171,6 +171,18 @@ def playback_textures():
     ImageDraw.Draw(mark).ellipse([0, 0, 8 * SS - 1, 8 * SS - 1], fill=255)
     im.paste((255, 255, 255, 255), (28, 70), mark.resize((8, 8), Image.LANCZOS))
     save(im, "osd_focus.png")
+    osd_textures()
+
+
+def osd_textures():
+    """Video OSD buttons (Includes_Bald_OSD.xml): the focus texture of an 80 x 96 button, a 72 px disc centred at the
+    top (x 4-76, y 0-72) behind the 48 px icon, transparent below where the language code sits. Drawn at its own size,
+    so no border."""
+    im = Image.new("RGBA", (80, 96), (255, 255, 255, 0))
+    disc = Image.new("L", (72 * SS, 72 * SS), 0)
+    ImageDraw.Draw(disc).ellipse([0, 0, 72 * SS - 1, 72 * SS - 1], fill=255)
+    im.paste((255, 255, 255, 255), (4, 0), disc.resize((72, 72), Image.LANCZOS))
+    save(im, "osd_disc.png")
 
 
 if __name__ == "__main__":
