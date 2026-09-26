@@ -67,8 +67,8 @@ class BaldSettingsTests(unittest.TestCase):
         # Hub n shows the entry at position n of the live hubs list 9390, while there is one.
         for n, item in enumerate(items[1:9]):
             self.assertEqual(item.findtext("label"), f"$INFO[Container(9390).ListItemAbsolute({n}).Label]")
-            # $NUMBER keeps it a number: Kodi reads a plain number in a static item's property as a string id.
-            self.assertEqual(item.findtext("property[@name='slot']"), f"$NUMBER[{n}]")
+            # Skin Variables' own index for the entry: Kodi reads a plain number in a static item's property as a string id.
+            self.assertEqual(item.findtext("property[@name='slot']"), f"$INFO[Container(9390).ListItemAbsolute({n}).Property(item)]")
             self.assertEqual(item.findtext("property[@name='url']"), f"$INFO[Container(9390).ListItemAbsolute({n}).Property(url)]")
             self.assertTrue(implies(item.findtext("visible"), f"Integer.IsGreater(Container(9390).NumItems,{n})"))
         hubs = root.find(".//control[@id='9390']")
@@ -107,7 +107,9 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertTrue(has_action(rows, "$EXP[Bald_HubCategorySelected]", "SetProperty(Bald.ConfigureMode,widgets,home)"))
         self.assertTrue(has_action(rows, "String.IsEqual(Container(9300).ListItem.Property(kind),livetv)",
                                    "SetProperty(Bald.ConfigureNode,livetvwidgets,home)"))
-        self.assertEqual(rows[-1], (None, "ActivateWindow(1116)"))
+        # The editor never opens on a hub without its index (Skin Variables would edit the hubs list as rows).
+        self.assertEqual(rows[-1], ("!$EXP[Bald_HubCategorySelected] | !String.IsEmpty(Container(9300).ListItem.Property(slot))",
+                                    "ActivateWindow(1116)"))
         # Add hub: up to eight, appended through Skin Variables' browser.
         add = [(n.get("condition"), n.text) for n in root.find(".//control[@id='9409']").findall("onclick")]
         self.assertTrue(any("func=do_new" in action and "menu=hubs" in action and implies(cond, "!$EXP[Bald_HubsFull]")

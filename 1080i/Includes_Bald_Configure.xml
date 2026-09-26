@@ -180,9 +180,10 @@
 			<item id="1$PARAM[n]">
 				<label>$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Label]</label>
 				<property name="kind">hub</property>
-				<!-- $NUMBER: Kodi reads a plain number in a static item's label or property as a string id (2 would be
-				     "Music"), which broke the widget editor's node and the Move rows. -->
-				<property name="slot">$NUMBER[$PARAM[n]]</property>
+				<!-- The entry's index as Skin Variables lists it (its "item" property), not the bare number: Kodi reads a
+				     plain number in a static item's label or property as a string id (2 would be "Music"), and $NUMBER[]
+				     resolves to nothing there. Without it the widget editor opens the hubs list itself as the row list. -->
+				<property name="slot">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(item)]</property>
 				<property name="url">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(url)]</property>
 				<property name="path">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(path)]</property>
 				<property name="disabled">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(disabled)]</property>
