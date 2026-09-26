@@ -87,8 +87,28 @@ class OSDContractTests(unittest.TestCase):
         ups = [(n.get("condition"), n.text) for n in found["602"].findall("onup")]
         self.assertTrue(all("Player.SeekEnabled" in (condition or "") for condition, _ in ups), ups)
 
+    def test_radio_textures_are_static(self):
+        # Kodi's radio textures take no $VAR (0.2.0's play/pause drew a broken icon); icons switch through <selected>.
+        for name, root in self.windows.items():
+            for node in root.iter():
+                if node.tag.startswith("textureradio"):
+                    with self.subTest(window=name, tag=node.tag):
+                        self.assertNotIn("$VAR[", node.text or "")
+                        self.assertNotIn("$INFO[", node.text or "")
+
+    def test_sliders_have_a_real_bar_texture(self):
+        # Kodi scales the nib by the control height over the bar texture's height; an empty bar ballooned it.
+        for name, root in self.windows.items():
+            for slider in root.iter("control"):
+                if slider.get("type") == "slider":
+                    with self.subTest(window=name, slider=slider.get("id")):
+                        self.assertTrue((slider.findtext("texturesliderbar") or "").strip())
+
     def test_live_tv_swaps_back_and_forward(self):
         found = ids(self.windows["VideoOSD.xml"])
+        self.assertEqual(found["600"].findtext("textureradioonnofocus"), "osd/fullscreen/buttons/guide.png")
+        self.assertEqual(found["607"].findtext("textureradioonnofocus"), "osd/fullscreen/buttons/record-white.png")
+        self.assertEqual(found["600"].findtext("selected"), "VideoPlayer.Content(livetv)")
         back = [(n.get("condition") or "", n.text) for n in found["600"].findall("onclick")]
         self.assertIn(("VideoPlayer.Content(livetv)", "ActivateWindow(TVGuide)"), back)
         forward = [(n.get("condition") or "", n.text) for n in found["607"].findall("onclick")]
@@ -336,7 +356,9 @@ class OSDStyleTests(unittest.TestCase):
         for name, root in self.roots.items():
             for node in root.iter():
                 text = (node.text or "").strip()
-                if node.tag not in TEXTURE_TAGS or not text or "$INFO[" in text or "$VAR[" in text:
+                # slider_clear.png is fully transparent: it only sizes a slider's nib.
+                if (node.tag not in TEXTURE_TAGS or not text or "$INFO[" in text or "$VAR[" in text
+                        or text == "bald/slider_clear.png"):
                     continue
                 with self.subTest(window=name, tag=node.tag, texture=text):
                     self.assertIn(node.get("colordiffuse"), self.colors)
