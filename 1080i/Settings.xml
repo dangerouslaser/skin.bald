@@ -13,48 +13,48 @@
 			<content>
 				<item>
 					<label>$LOCALIZE[31730]</label>
-					<label2>$LOCALIZE[31932]</label2>
+					<label2>$LOCALIZE[31951]</label2>
 					<onclick>ActivateWindow(1115)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[14200]</label>
-					<label2>$LOCALIZE[31933]</label2>
+					<label2>$LOCALIZE[31952]</label2>
 					<onclick>ActivateWindow(PlayerSettings)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[14211]</label>
-					<label2>$LOCALIZE[31934]</label2>
+					<label2>$LOCALIZE[31953]</label2>
 					<onclick>ActivateWindow(MediaSettings)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[14204]</label>
-					<label2>$LOCALIZE[31935]</label2>
+					<label2>$LOCALIZE[31954]</label2>
 					<onclick>ActivateWindow(PVRSettings)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[14036]</label>
-					<label2>$LOCALIZE[31936]</label2>
+					<label2>$LOCALIZE[31955]</label2>
 					<onclick>ActivateWindow(ServiceSettings)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[15016]</label>
-					<label2>$LOCALIZE[31937]</label2>
+					<label2>$LOCALIZE[31956]</label2>
 					<onclick>ActivateWindow(GameSettings)</onclick>
 					<visible>System.GetBool(gamesgeneral.enable)</visible>
 				</item>
 				<item>
 					<label>$LOCALIZE[14206]</label>
-					<label2>$LOCALIZE[31938]</label2>
+					<label2>$LOCALIZE[31957]</label2>
 					<onclick>ActivateWindow(InterfaceSettings)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[13200]</label>
-					<label2>$LOCALIZE[31939]</label2>
+					<label2>$LOCALIZE[31958]</label2>
 					<onclick>ActivateWindow(Profiles)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[13000]</label>
-					<label2>$LOCALIZE[31940]</label2>
+					<label2>$LOCALIZE[31959]</label2>
 					<onclick>ActivateWindow(SystemSettings)</onclick>
 				</item>
 				<item>
@@ -76,17 +76,17 @@
 				</item>
 				<item>
 					<label>$LOCALIZE[10003]</label>
-					<label2>$LOCALIZE[31941]</label2>
+					<label2>$LOCALIZE[31960]</label2>
 					<onclick>ActivateWindow(filemanager)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[130]</label>
-					<label2>$LOCALIZE[31942]</label2>
+					<label2>$LOCALIZE[31961]</label2>
 					<onclick>ActivateWindow(systeminfo)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[31067]</label>
-					<label2>$LOCALIZE[31943]</label2>
+					<label2>$LOCALIZE[31962]</label2>
 					<onclick>ActivateWindow(eventlog)</onclick>
 				</item>
 			</content>
@@ -96,6 +96,6 @@
 			<param name="note">$INFO[Container(9000).ListItem.Label2]</param>
 			<include content="Bald_SettingsOpen"><param name="list">9000</param></include>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31944]</param><param name="second">$LOCALIZE[31739]</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31963]</param><param name="second">$LOCALIZE[31739]</param></include>
 	</controls>
 </window>

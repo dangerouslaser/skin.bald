@@ -1961,86 +1961,86 @@ msgid "Select an action for this item."
 msgstr ""
 
 #: /1080i/SettingsCategory.xml
-msgctxt "#31931"
+msgctxt "#31950"
 msgid "Settings level"
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31932"
+msgctxt "#31951"
 msgid "Home screens, widgets, and Bald's appearance."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31933"
+msgctxt "#31952"
 msgid "Playback of videos, music, discs, and pictures, with language and subtitle choices."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31934"
+msgctxt "#31953"
 msgid "Library, media sources, and how media is shown and browsed."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31935"
+msgctxt "#31954"
 msgid "Live TV clients, the guide, channels, and recordings."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31936"
+msgctxt "#31955"
 msgid "Remote control, UPnP, AirPlay, file sharing, and weather."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31937"
+msgctxt "#31956"
 msgid "Game add-ons, controllers, and emulation."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31938"
+msgctxt "#31957"
 msgid "Skin, language and region, screensaver, and master lock."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31939"
+msgctxt "#31958"
 msgid "User profiles and the login screen."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31940"
+msgctxt "#31959"
 msgid "Display, audio, input, internet access, power saving, and add-on updates."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31941"
+msgctxt "#31960"
 msgid "Browse, copy, and delete files on your sources."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31942"
+msgctxt "#31961"
 msgid "Hardware, storage, network, and version details."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31943"
+msgctxt "#31962"
 msgid "Recent notifications and events from Kodi and its add-ons."
 msgstr ""
 
 #: /1080i/Settings.xml
-msgctxt "#31944"
+msgctxt "#31963"
 msgid "Back to return"
 msgstr ""
 
 #: /1080i/SettingsProfile.xml
-msgctxt "#31945"
+msgctxt "#31964"
 msgid "Choose whether Kodi starts at the login screen, and which profile loads automatically."
 msgstr ""
 
 #: /1080i/SettingsProfile.xml
-msgctxt "#31946"
+msgctxt "#31965"
 msgid "Select a profile to edit it, or add a new one."
 msgstr ""
 
 #: /1080i/SettingsSystemInfo.xml
-msgctxt "#31947"
+msgctxt "#31966"
 msgid "Up and down to browse"
 msgstr ""

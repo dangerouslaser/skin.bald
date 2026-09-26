@@ -23,6 +23,7 @@ Within Bald's block, IDs are grouped by area with room to grow:
 | 31870-31889 | Live TV guide                                      |
 | 31890-31899 | Global Search                                      |
 | 31900-31949 | Context menu notes                                 |
+| 31950-31969 | Kodi settings windows (hub, pages, profiles, info) |
 
 ## Rules
 
