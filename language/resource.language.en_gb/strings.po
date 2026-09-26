@@ -1337,6 +1337,12 @@ msgctxt "#31726"
 msgid "Preload Home at startup"
 msgstr ""
 
+#. The skin's name as the startup splash wordmark, with its full stop; keep as is.
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31727"
+msgid "Bald."
+msgstr ""
+
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Settings.xml
 msgctxt "#31730"

@@ -237,6 +237,57 @@
 	<expression name="Bald_Preloading">[!String.IsEmpty(Window(home).Property(Bald.Preload))]</expression>
 	<expression name="Bald_RowsLoading">[$EXP[Bald_RowsLoading_home] | [Skin.HasSetting(Bald.Screen.Movies) + $EXP[Bald_RowsLoading_movies]] | [Skin.HasSetting(Bald.Screen.TVShows) + $EXP[Bald_RowsLoading_tvshows]]]</expression>
 	<expression name="Bald_RowsLoaded">[!$EXP[Bald_DialogOver] + !$EXP[Bald_RowsLoading]]</expression>
+	<!-- The splash: random library fanart, darkened like Home's backdrop, crossfading (1000) every 4.5 s, with the
+	     wordmark centred. List 9180 drives it: random movies then random shows, ten each, auto-advancing. It sits inside
+	     the splash group, so it is processed (Kodi skips hidden lists) only while the splash shows, and draws nothing.
+	     With an empty library the image stays blank over the field. -->
+	<variable name="Bald_SplashFanart">
+		<value condition="!String.IsEmpty(Container(9180).ListItem.Art(fanart))">$INFO[Container(9180).ListItem.Art(fanart)]</value>
+		<value>$INFO[Container(9180).ListItem.Art(tvshow.fanart)]</value>
+	</variable>
+	<include name="Bald_Splash">
+		<control type="group">
+			<visible>$EXP[Bald_Preloading]</visible>
+			<animation type="Hidden">
+				<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
+			</animation>
+			<control type="image">
+				<width>1920</width>
+				<height>1080</height>
+				<texture colordiffuse="bald_field">bald/white.png</texture>
+			</control>
+			<control type="list" id="9180">
+				<width>1</width>
+				<height>1</height>
+				<orientation>vertical</orientation>
+				<autoscroll time="4500">true</autoscroll>
+				<itemlayout width="1" height="1" />
+				<focusedlayout width="1" height="1" />
+				<content limit="10" browse="never">special://skin/playlists/random_movies.xsp</content>
+				<content limit="10" browse="never">special://skin/playlists/random_tvshows.xsp</content>
+			</control>
+			<control type="image">
+				<width>1920</width>
+				<height>1080</height>
+				<aspectratio>scale</aspectratio>
+				<fadetime>1000</fadetime>
+				<texture background="true">$VAR[Bald_SplashFanart]</texture>
+				<colordiffuse>bald_backdrop</colordiffuse>
+			</control>
+			<control type="label">
+				<width>1920</width>
+				<height>1080</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>Bald_Clock</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$LOCALIZE[31727]</label>
+				<animation type="WindowOpen">
+					<effect type="fade" start="0" end="100" time="400" tween="sine" easing="inout" />
+				</animation>
+			</control>
+		</control>
+	</include>
 	<include name="Bald_ConfiguredArtLogos">
 		<include>Bald_ConfiguredArtLogos_home</include>
 		<include>Bald_ConfiguredArtLogos_movies</include>
