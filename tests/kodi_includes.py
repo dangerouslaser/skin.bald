@@ -29,6 +29,9 @@ NATIVE = sorted(
     {path for pattern in ("Home.xml", "Includes_Bald_*.xml", "View_51?_*.xml", "View_52?_*.xml", "MyVideoNav.xml",
                           "DialogVideoInfo.xml", "Custom_111[5-8]_*.xml", "SkinSettings.xml", "script-globalsearch.xml",
                           "MyPVRGuide.xml", "DialogContextMenu.xml",
+                          # Live TV windows restyled in Bald (Includes_Bald_PVR.xml; tests/test_pvr.py).
+                          "MyPVR[CPRST]*.xml", "DialogPVRChannel*.xml", "DialogPVRGroupManager.xml",
+                          "DialogPVRGuideControls.xml", "DialogPVRInfo.xml", "DialogPVRRadioRDSInfo.xml",
                           "Settings.xml", "SettingsCategory.xml", "SettingsProfile.xml",
                           "SettingsSystemInfo.xml")
      for path in SKIN.glob(pattern)}
