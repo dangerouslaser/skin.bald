@@ -6,6 +6,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from kodi_includes import condition
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SHORTCUTS = ROOT / "shortcuts"
@@ -211,8 +213,9 @@ class WidgetGeneratorTests(unittest.TestCase):
                              ", ".join(item["label"] for item in defaults(screen)))
         self.assertEqual(resolve("$VAR[Bald_RowsNote_home]"), "Recently added movies, Continue watching, Next up")
 
-        note = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
-            "variable[@name='Bald_MenuPreviewNote']/value[@condition='String.IsEqual(Window(home).Property(Bald.MenuPreview),home)']"
+        note = next(
+            value for value in ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().findall("variable[@name='Bald_MenuPreviewNote']/value")
+            if condition(value.get("condition")) == "String.IsEqual(Window(home).Property(Bald.MenuPreview),home)"
         )
         self.assertEqual(note.text, "$VAR[Bald_RowsNote_home]")
 

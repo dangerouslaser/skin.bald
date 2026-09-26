@@ -19,8 +19,8 @@
 	<!-- Background: TMDb Helper's blurred fanart of the current row item (its image service only; no TMDB lookups),
 	     watching the current row (TMDbHelper.WidgetContainer). The earlier color tint is switched off. -->
 	<onload condition="Skin.HasSetting(TMDbHelper.EnableColors)">Skin.Reset(TMDbHelper.EnableColors)</onload>
-	<onload condition="System.HasAddon(plugin.video.themoviedb.helper) + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
-	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<onload>SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
 	<onload>SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
 	<onload>ClearProperty(Bald.Menu,home)</onload>
@@ -109,7 +109,7 @@
 				<height>702</height>
 				<control type="image">
 					<texture>bald/scrim_logo.png</texture>
-					<visible>!Skin.HasSetting(Bald.HideClearlogo) + $EXP[Bald_EffectiveHasLogo]</visible>
+					<visible>$EXP[Bald_ShowClearlogo] + $EXP[Bald_EffectiveHasLogo]</visible>
 					<animation type="Visible">
 						<effect type="fade" start="0" end="100" time="500" tween="sine" easing="inout" />
 					</animation>

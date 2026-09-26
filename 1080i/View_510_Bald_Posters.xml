@@ -2,23 +2,30 @@
 <!-- Bald movie library: three large posters, selected artwork and the shared media caption. -->
 <includes>
 	<!-- A Bald library view is showing; MyVideoNav hides Estuary's chrome and routes Menu to Bald options. -->
-	<expression name="Bald_LibraryViewActive">Control.IsVisible(510) | Control.IsVisible(511) | Control.IsVisible(512) | Control.IsVisible(513) | Control.IsVisible(514) | Control.IsVisible(515) | Control.IsVisible(520) | Control.IsVisible(521) | Control.IsVisible(522) | Control.IsVisible(523) | Control.IsVisible(530) | Control.IsVisible(531) | Control.IsVisible(540) | Control.IsVisible(541) | Control.IsVisible(542)</expression>
-	<expression name="Bald_LibraryLettersOpen">Control.HasFocus(9160)</expression>
-	<expression name="Bald_LibraryTitleSorted">String.IsEqual(Container.SortMethod,$LOCALIZE[556])</expression>
+	<!-- Which Bald layout is showing, by content level (view ids in 1080i/IDs). -->
+	<expression name="Bald_LibraryMovieView">[Control.IsVisible(510) | Control.IsVisible(511) | Control.IsVisible(512) | Control.IsVisible(513) | Control.IsVisible(514) | Control.IsVisible(515)]</expression>
+	<expression name="Bald_LibrarySeriesView">[Control.IsVisible(520) | Control.IsVisible(521) | Control.IsVisible(522) | Control.IsVisible(523)]</expression>
+	<expression name="Bald_LibrarySeasonView">[Control.IsVisible(530) | Control.IsVisible(531)]</expression>
+	<expression name="Bald_LibraryEpisodeView">[Control.IsVisible(540) | Control.IsVisible(541) | Control.IsVisible(542)]</expression>
+	<expression name="Bald_LibraryViewActive">[$EXP[Bald_LibraryMovieView] | $EXP[Bald_LibrarySeriesView] | $EXP[Bald_LibrarySeasonView] | $EXP[Bald_LibraryEpisodeView]]</expression>
+	<!-- The library is empty (or filtered to nothing). -->
+	<expression name="Bald_LibraryEmpty">[String.IsEmpty(Container(0).ListItem.Title)]</expression>
+	<expression name="Bald_LibraryLettersOpen">[Control.HasFocus(9160)]</expression>
+	<expression name="Bald_LibraryTitleSorted">[String.IsEqual(Container.SortMethod,$LOCALIZE[556])]</expression>
 	<variable name="Bald_LibraryLetterLabel">
 		<value condition="!$EXP[Bald_LibraryTitleSorted]">Choose Title sort in options</value>
-		<value condition="String.IsEmpty(Container(0).ListItem.Title)">No movies to browse</value>
+		<value condition="$EXP[Bald_LibraryEmpty]">No movies to browse</value>
 		<value>Browse by letter</value>
 	</variable>
-	<expression name="Bald_LibraryLatinLetter">String.IsEqual(Container(0).ListItem.SortLetter,A) | String.IsEqual(Container(0).ListItem.SortLetter,B) | String.IsEqual(Container(0).ListItem.SortLetter,C) | String.IsEqual(Container(0).ListItem.SortLetter,D) | String.IsEqual(Container(0).ListItem.SortLetter,E) | String.IsEqual(Container(0).ListItem.SortLetter,F) | String.IsEqual(Container(0).ListItem.SortLetter,G) | String.IsEqual(Container(0).ListItem.SortLetter,H) | String.IsEqual(Container(0).ListItem.SortLetter,I) | String.IsEqual(Container(0).ListItem.SortLetter,J) | String.IsEqual(Container(0).ListItem.SortLetter,K) | String.IsEqual(Container(0).ListItem.SortLetter,L) | String.IsEqual(Container(0).ListItem.SortLetter,M) | String.IsEqual(Container(0).ListItem.SortLetter,N) | String.IsEqual(Container(0).ListItem.SortLetter,O) | String.IsEqual(Container(0).ListItem.SortLetter,P) | String.IsEqual(Container(0).ListItem.SortLetter,Q) | String.IsEqual(Container(0).ListItem.SortLetter,R) | String.IsEqual(Container(0).ListItem.SortLetter,S) | String.IsEqual(Container(0).ListItem.SortLetter,T) | String.IsEqual(Container(0).ListItem.SortLetter,U) | String.IsEqual(Container(0).ListItem.SortLetter,V) | String.IsEqual(Container(0).ListItem.SortLetter,W) | String.IsEqual(Container(0).ListItem.SortLetter,X) | String.IsEqual(Container(0).ListItem.SortLetter,Y) | String.IsEqual(Container(0).ListItem.SortLetter,Z)</expression>
+	<expression name="Bald_LibraryLatinLetter">[String.IsEqual(Container(0).ListItem.SortLetter,A) | String.IsEqual(Container(0).ListItem.SortLetter,B) | String.IsEqual(Container(0).ListItem.SortLetter,C) | String.IsEqual(Container(0).ListItem.SortLetter,D) | String.IsEqual(Container(0).ListItem.SortLetter,E) | String.IsEqual(Container(0).ListItem.SortLetter,F) | String.IsEqual(Container(0).ListItem.SortLetter,G) | String.IsEqual(Container(0).ListItem.SortLetter,H) | String.IsEqual(Container(0).ListItem.SortLetter,I) | String.IsEqual(Container(0).ListItem.SortLetter,J) | String.IsEqual(Container(0).ListItem.SortLetter,K) | String.IsEqual(Container(0).ListItem.SortLetter,L) | String.IsEqual(Container(0).ListItem.SortLetter,M) | String.IsEqual(Container(0).ListItem.SortLetter,N) | String.IsEqual(Container(0).ListItem.SortLetter,O) | String.IsEqual(Container(0).ListItem.SortLetter,P) | String.IsEqual(Container(0).ListItem.SortLetter,Q) | String.IsEqual(Container(0).ListItem.SortLetter,R) | String.IsEqual(Container(0).ListItem.SortLetter,S) | String.IsEqual(Container(0).ListItem.SortLetter,T) | String.IsEqual(Container(0).ListItem.SortLetter,U) | String.IsEqual(Container(0).ListItem.SortLetter,V) | String.IsEqual(Container(0).ListItem.SortLetter,W) | String.IsEqual(Container(0).ListItem.SortLetter,X) | String.IsEqual(Container(0).ListItem.SortLetter,Y) | String.IsEqual(Container(0).ListItem.SortLetter,Z)]</expression>
 	<include name="Bald_LibraryLetterCell">
 		<param name="letter" /><param name="label" /><param name="x" /><param name="width" /><param name="selected" />
 		<definition>
 			<control type="group"><left>$PARAM[x]</left>
-				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_ink34</textcolor><label>$PARAM[label]</label><visible>!String.Contains(Window(videos).Property(Bald.AvailableLetters),;$PARAM[letter];) + [![$PARAM[selected]] | String.IsEmpty(Container(0).ListItem.Title)]</visible></control>
+				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_ink34</textcolor><label>$PARAM[label]</label><visible>!String.Contains(Window(videos).Property(Bald.AvailableLetters),;$PARAM[letter];) + [![$PARAM[selected]] | $EXP[Bald_LibraryEmpty]]</visible></control>
 				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_ink70</textcolor><label>$PARAM[label]</label><visible>String.Contains(Window(videos).Property(Bald.AvailableLetters),;$PARAM[letter];) + ![$PARAM[selected]]</visible></control>
-				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[label]</label><visible>[$PARAM[selected]] + !String.IsEmpty(Container(0).ListItem.Title)</visible></control>
-				<control type="image"><left>0</left><top>37</top><width>$PARAM[width]</width><height>6</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>[$PARAM[selected]] + !String.IsEmpty(Container(0).ListItem.Title)</visible></control>
+				<control type="label"><width>$PARAM[width]</width><height>32</height><align>center</align><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[label]</label><visible>[$PARAM[selected]] + !$EXP[Bald_LibraryEmpty]</visible></control>
+				<control type="image"><left>0</left><top>37</top><width>$PARAM[width]</width><height>6</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>[$PARAM[selected]] + !$EXP[Bald_LibraryEmpty]</visible></control>
 			</control>
 		</definition>
 	</include>
@@ -71,7 +78,7 @@
 			<onup>50</onup><onback>50</onback><onclick>SetFocus(50)</onclick><ondown>noop</ondown>
 		</control>
 	</include>
-	<expression name="Bald_LibraryMenuOpen">Control.HasFocus(9150)</expression>
+	<expression name="Bald_LibraryMenuOpen">[Control.HasFocus(9150)]</expression>
 	<variable name="Bald_LibraryMenuNote">
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),view)">$INFO[Container.Viewmode,Current view: ,. Select to switch to the next library layout.]</value>
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),sort)">$INFO[Container.SortMethod,Currently sorted by ,. Choose how items are arranged.]</value>
@@ -110,9 +117,9 @@
 				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(540)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(542)</visible></item>
 				<item><label>Sort by</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
 				<item><label>Order</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
-				<item><label>Search</label><property name="note">Search your movie library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,movies=true)</onclick><visible>Control.IsVisible(510) | Control.IsVisible(511) | Control.IsVisible(512) | Control.IsVisible(513) | Control.IsVisible(514) | Control.IsVisible(515)</visible></item>
-				<item><label>Search</label><property name="note">Search your TV-show library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,tvshows=true)</onclick><visible>Control.IsVisible(520) | Control.IsVisible(521) | Control.IsVisible(522) | Control.IsVisible(523) | Control.IsVisible(530) | Control.IsVisible(531)</visible></item>
-				<item><label>Search</label><property name="note">Search your episode library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,episodes=true)</onclick><visible>Control.IsVisible(540) | Control.IsVisible(541) | Control.IsVisible(542)</visible></item>
+				<item><label>Search</label><property name="note">Search your movie library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,movies=true)</onclick><visible>$EXP[Bald_LibraryMovieView]</visible></item>
+				<item><label>Search</label><property name="note">Search your TV-show library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,tvshows=true)</onclick><visible>$EXP[Bald_LibrarySeriesView] | $EXP[Bald_LibrarySeasonView]</visible></item>
+				<item><label>Search</label><property name="note">Search your episode library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,episodes=true)</onclick><visible>$EXP[Bald_LibraryEpisodeView]</visible></item>
 				<item><label>Filter</label><property name="note">Narrow the items shown by genre, year, rating and other library details.</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
 				<item><label>Filter</label><property name="note">Narrow the items shown by matching their titles.</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
 				<item><label>Watched status</label><property name="option">watched</property><onclick>SendClick(10)</onclick></item>

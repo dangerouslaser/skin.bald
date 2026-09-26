@@ -3,6 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import home_menu
+from kodi_includes import expand
 
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
@@ -59,7 +60,7 @@ class TVLibraryTests(unittest.TestCase):
         custom = ('520', '530', '540')
         visible_conditions = [n.text or '' for n in self.nav.findall('.//visible')]
         self.assertIn('!$EXP[Bald_LibraryViewActive]', visible_conditions)
-        active = ET.parse(ROOT / 'View_510_Bald_Posters.xml').getroot().findtext(".//expression[@name='Bald_LibraryViewActive']")
+        active = expand('$EXP[Bald_LibraryViewActive]')
         self.assertTrue(all(f'Control.IsVisible({view})' in active for view in custom))
 
     def test_legacy_video_views_route_tv_levels_to_bald_views(self):

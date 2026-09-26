@@ -6,13 +6,13 @@
 	<menucontrol>9151</menucontrol>
 	<onload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onload>
 	<onunload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunload>
-	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
-	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<!-- Estuary remains a fallback for content we have not redesigned; movie libraries always enter a Bald view. -->
-	<onload condition="Container.Content(movies) + !Control.IsVisible(510) + !Control.IsVisible(511) + !Control.IsVisible(512) + !Control.IsVisible(513) + !Control.IsVisible(514) + !Control.IsVisible(515)">Container.SetViewMode(510)</onload>
-	<onload condition="Container.Content(tvshows) + !Control.IsVisible(520) + !Control.IsVisible(521) + !Control.IsVisible(522) + !Control.IsVisible(523)">Container.SetViewMode(520)</onload>
-	<onload condition="Container.Content(seasons) + !Control.IsVisible(530) + !Control.IsVisible(531)">Container.SetViewMode(530)</onload>
-	<onload condition="Container.Content(episodes) + !Control.IsVisible(540) + !Control.IsVisible(541) + !Control.IsVisible(542)">Container.SetViewMode(540)</onload>
+	<onload condition="Container.Content(movies) + !$EXP[Bald_LibraryMovieView]">Container.SetViewMode(510)</onload>
+	<onload condition="Container.Content(tvshows) + !$EXP[Bald_LibrarySeriesView]">Container.SetViewMode(520)</onload>
+	<onload condition="Container.Content(seasons) + !$EXP[Bald_LibrarySeasonView]">Container.SetViewMode(530)</onload>
+	<onload condition="Container.Content(episodes) + !$EXP[Bald_LibraryEpisodeView]">Container.SetViewMode(540)</onload>
 	<controls>
 		<!-- Route Kodi's Menu action without duplicating native menu/control IDs. -->
 		<control type="button" id="9151">

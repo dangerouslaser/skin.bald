@@ -4,6 +4,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import home_menu
+from kodi_includes import condition, expand
 
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
@@ -134,8 +135,10 @@ class LibraryViewTests(unittest.TestCase):
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
         action = next(node for node in nav.findall('onload') if node.text == 'Container.SetViewMode(510)')
         self.assertIn('Container.Content(movies)', action.get('condition'))
+        self.assertIn('!$EXP[Bald_LibraryMovieView]', action.get('condition'))
+        movie_views = expand('$EXP[Bald_LibraryMovieView]')
         for view in range(510, 516):
-            self.assertIn(f'!Control.IsVisible({view})', action.get('condition'))
+            self.assertIn(f'Control.IsVisible({view})', movie_views)
 
     def test_letter_mode_uses_native_jumps_and_restores_its_focus(self):
         mode = self.view.find(".//control[@id='9160']")
@@ -148,7 +151,7 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(mode.findtext('onclick'), 'SetFocus(50)')
         self.assertEqual(mode.findtext('ondown'), 'noop')
         self.assertEqual(mode.findtext('onfocus'), 'SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(videos).Property(Bald.LibraryContainer)],videos)')
-        self.assertEqual(self.view.findtext("expression[@name='Bald_LibraryTitleSorted']"), 'String.IsEqual(Container.SortMethod,$LOCALIZE[556])')
+        self.assertEqual(condition('$EXP[Bald_LibraryTitleSorted]'), 'String.IsEqual(Container.SortMethod,$LOCALIZE[556])')
 
     def test_full_alphabet_fits_beneath_posters(self):
         cells = self.view.findall("include[@name='Bald_LibraryLetters']//include[@content='Bald_LibraryLetterCell']")

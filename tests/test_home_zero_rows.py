@@ -2,6 +2,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from kodi_includes import condition
+
 
 XML = Path(__file__).resolve().parents[1] / "1080i"
 NO_ROWS = "!$EXP[Bald_HasRows_home]"
@@ -28,14 +30,15 @@ class HomeZeroRowsTests(unittest.TestCase):
 
     def test_focus_returns_to_the_menu_when_there_is_no_current_row(self):
         includes = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
-        values = [(value.get("condition"), value.text) for value in includes.findall("variable[@name='Bald_RowFocus']/value")]
+        values = [(value.get("condition") and condition(value.get("condition")), value.text) for value in includes.findall("variable[@name='Bald_RowFocus']/value")]
         self.assertEqual(values, [(HAS_ROW, "$INFO[Window(home).Property(Bald.Row)]"), (None, "9001")])
         wake = ET.parse(XML / "Home.xml").getroot().find(".//control[@id='9199']")
         for tag in ("onup", "ondown", "onleft", "onright", "onclick", "onback"):
             self.assertEqual(wake.findtext(tag), "SetFocus($VAR[Bald_RowFocus])")
         button = includes.find("include[@name='Bald_HomeMenuButton']/definition/control")
         for node in button.findall("onback"):
-            self.assertEqual(node.get("condition"), HAS_ROW)
+            self.assertEqual(condition(node.get("condition")), HAS_ROW)
+        # Timers.xml keeps the literal (docs/NOTES.md: $EXP in a timer condition did not trigger).
         timers = ET.parse(XML / "Timers.xml").getroot()
         ambient = next(t for t in timers.findall("timer") if t.findtext("name") == "bald_ambient")
         self.assertIn(HAS_ROW, ambient.find("onstop").get("condition"))

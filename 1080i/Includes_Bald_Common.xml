@@ -5,6 +5,14 @@
      window's or layout's own item (ListItem.*), or "Container(511)." for a list's focused item
      (Container(511).ListItem.*). -->
 <includes>
+	<!-- ============ Shared conditions ============ -->
+	<!-- Expression bodies are wrapped in [...] so a name negates and combines safely wherever it is used. -->
+	<expression name="Bald_HasTMDbHelper">[System.HasAddon(plugin.video.themoviedb.helper)]</expression>
+	<expression name="Bald_ShowClearlogo">[!Skin.HasSetting(Bald.HideClearlogo)]</expression>
+	<expression name="Bald_ShowMediaFlags">[!Skin.HasSetting(Bald.HideMediaFlags)]</expression>
+	<!-- Global Search's right-hand options menu has focus (script-globalsearch.xml sets it on its own window). -->
+	<expression name="Bald_SearchMenuOpen">[!String.IsEmpty(Window.Property(Bald.SearchMenu))]</expression>
+
 	<!-- ============ Artwork fallbacks ============ -->
 	<!-- Named by what they pick, suffixed with the container id when they read Container(id).ListItem.* (Kodi variables
 	     take no params); the plain names read ListItem.*, so they follow the list layout or window that uses them. -->
@@ -77,7 +85,7 @@
 		<param name="height">26</param>
 		<param name="font">Bald_Flag</param>
 		<definition>
-			<visible>!Skin.HasSetting(Bald.HideMediaFlags)</visible>
+			<visible>$EXP[Bald_ShowMediaFlags]</visible>
 			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">4K</param><param name="visible">String.IsEqual($PARAM[container]ListItem.VideoResolution,4K)</param></include>
 			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">1080p</param><param name="visible">String.IsEqual($PARAM[container]ListItem.VideoResolution,1080)</param></include>
 			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">Dolby Vision</param><param name="visible">String.IsEqual($PARAM[container]ListItem.HdrType,dolbyvision)</param></include>

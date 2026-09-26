@@ -49,6 +49,62 @@ def _substitute(element, params):
             node.attrib[key] = replace(value)
 
 
+EXP = re.compile(r"\$EXP\[([^\]]+)\]")
+_ATOM = re.compile(r"(?<![A-Z])\[([^\[\]|+]*)\]")
+
+
+def expressions(folder=SKIN):
+    """Every <expression> body in the include files by name, first definition kept; the per-install Skin Variables
+    output is skipped as on a fresh install."""
+    bodies = {}
+    for path in sorted(folder.glob("*.xml")):
+        if path.name == GENERATED:
+            continue
+        root = ET.parse(path).getroot()
+        if root.tag == "includes":
+            for node in root.findall("expression"):
+                bodies.setdefault(node.get("name"), node.text or "")
+    return bodies
+
+
+def expand(text, bodies=None):
+    """Replace each $EXP[name] with its body until none is left, as Kodi flattens expressions. Unknown names stay."""
+    bodies = bodies if bodies is not None else expressions()
+    while True:
+        expanded = EXP.sub(lambda match: bodies.get(match.group(1), match.group(0)), text)
+        if expanded == text:
+            return text
+        text = expanded
+
+
+def condition(text, bodies=None):
+    """A condition in plain form for comparisons: expressions expanded, then the brackets around a single term or the
+    whole condition dropped (the [...] each expression body is wrapped in) and double negation removed, so
+    "!$EXP[Bald_HasRow]" reads "String.IsEmpty(Window(home).Property(Bald.Row))"."""
+    text = expand(text or "", bodies)
+    kept = []
+
+    def keep(match):
+        kept.append(match.group(0))
+        return f"\0{len(kept) - 1}\0"
+
+    text = re.sub(r"\$[A-Z]+\[[^\[\]]*\]", keep, text)
+    while True:
+        plain = _ATOM.sub(r"\1", text).replace("!!", "")
+        if plain.startswith("[") and plain.endswith("]"):
+            depth = 0
+            for index, char in enumerate(plain):
+                depth += (char == "[") - (char == "]")
+                if depth == 0:
+                    break
+            if index == len(plain) - 1:
+                plain = plain[1:-1]
+        if plain == text:
+            break
+        text = plain
+    return re.sub(r"\0(\d+)\0", lambda match: kept[int(match.group(1))], text)
+
+
 class UnresolvedInclude(KeyError):
     pass
 
