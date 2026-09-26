@@ -218,18 +218,6 @@
 		<value condition="ListItem.IsAutoUpdateable">icons/addonstatus/install.png</value>
 		<value>icons/addonstatus/install-pinned.png</value>
 	</variable>
-	<variable name="ResolutionFlagVar">
-		<value condition="ListItem.IsStereoscopic">flags/videoresolution/3D.png</value>
-		<value>$INFO[ListItem.VideoResolution,flags/videoresolution/,.png]</value>
-	</variable>
-	<variable name="ContainerResolutionFlagVar">
-		<value condition="Container.ListItem.IsStereoscopic">flags/videoresolution/3D.png</value>
-		<value>$INFO[Container.ListItem.VideoResolution,flags/videoresolution/,.png]</value>
-	</variable>
-	<variable name="BannerVar">
-		<value condition="!String.IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
-		<value>$INFO[ListItem.Art(tvshow.banner)]</value>
-	</variable>
 	<variable name="PosterVar">
 		<value condition="ListItem.IsParentFolder">DefaultFolderBackPoster.png</value>
 		<value condition="!String.IsEmpty(Container.Art(season.poster)) + Container.Content(episodes)">$INFO[Container.Art(season.poster)]</value>
@@ -238,11 +226,6 @@
 		<value condition="Container.Content(actors) | Container.Content(directors)">$INFO[Container.ListItem.Art(thumb)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster)) + !String.IsEqual(listitem.dbtype,season)">$INFO[ListItem.Art(tvshow.poster)]</value>
 		<value>$INFO[ListItem.Art(poster)]</value>
-	</variable>
-	<variable name="InfoDialogPosterVar">
-		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(season.poster))">$INFO[ListItem.Art(season.poster)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
 	</variable>
 	<variable name="WatchedStatusVar">
 		<value condition="String.IsEqual(Listitem.DBType,tvshow) | String.IsEqual(Listitem.DBType,season)">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
@@ -323,27 +306,9 @@
 		<value condition="ListItem.IsCollection"></value>
 		<value>[COLOR grey]$INFO[ListItem.Year, (,)][/COLOR]</value>
 	</variable>
-	<variable name="VideoInfoMainLabelVar">
-		<value condition="String.IsEqual(ListItem.DBType,set)">$INFO[ListItem.Title]</value>
-		<value condition="!String.IsEmpty(ListItem.TVShowTitle)">$INFO[ListItem.TVShowTitle]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_1st) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]$INFO[ListItem.Label, (,)]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_2nd) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.Label]$INFO[ListItem.OriginalTitle, (,)]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_Only) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
-		<value condition="!String.IsEmpty(ListItem.Title)">$INFO[ListItem.Title]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
-		<value>$INFO[ListItem.Label]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
-	</variable>
 	<variable name="VideoInfoPlotVar">
 		<value condition="!String.IsEmpty(ListItem.Tagline) | !String.IsEmpty(ListItem.Plot)">$INFO[ListItem.Tagline,[B][I],[/I][/B][CR]]$INFO[ListItem.Plot]</value>
 		<value condition="String.IsEqual(ListItem.DBType,season)">$INFO[Container.ShowPlot]</value>
-	</variable>
-	<variable name="VideoInfoPlayButtonLabelVar">
-		<value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)">$LOCALIZE[1024]</value>
-		<value>$LOCALIZE[208]</value>
-	</variable>
-	<variable name="VideoInfoSubLabelVar">
-		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.Season]$INFO[ListItem.Episode,[COLOR grey]x[/COLOR],: ]$INFO[ListItem.Title]</value>
-		<value condition="String.IsEqual(ListItem.DBType,season)">$INFO[ListItem.Label]</value>
-		<value>$INFO[ListItem.Genre]</value>
 	</variable>
 	<variable name="PictureInfoMainLabelVar">
 		<value condition="Window.IsActive(Slideshow)">$INFO[SlideShow.Filename]</value>
@@ -556,9 +521,6 @@
 	<variable name="FirstAiredLabel">
 		<value condition="String.IsEqual(ListItem.DBType,movie)">$LOCALIZE[20473]</value>
 		<value>$LOCALIZE[20416]</value>
-	</variable>
-	<variable name="PremieredLabel">
-		<value>$INFO[ListItem.Premiered,[COLOR grey]$LOCALIZE[20416]:[/COLOR] ,[CR]]</value>
 	</variable>
 	<variable name="FlagLabel">
 		<value condition="ListItem.IsPremiere">[B][COLOR button_focus]$LOCALIZE[838][/COLOR][/B]</value>
