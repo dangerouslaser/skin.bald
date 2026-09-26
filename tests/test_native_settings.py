@@ -32,7 +32,7 @@ ROW_TEMPLATES = ("7", "8", "9", "12", "13", "15")
 # Motion (CLAUDE.md): move = cubic out, fade = sine in-out, pop = back out. Only fade, slide and zoom.
 CURVES = {"fade": ("sine", "inout"), "slide": ("cubic", "out"), "zoom": ("back", "out")}
 
-WINDOWS = ("SettingsCategory.xml",)
+WINDOWS = ("Settings.xml", "SettingsCategory.xml")
 
 
 def tokens(path, tag):
@@ -141,6 +141,30 @@ class NativeSettingsTests(unittest.TestCase):
         self.assertEqual(title.findtext("textcolor"), "bald_ink60")
         separator = self.control("SettingsCategory.xml", "11")
         self.assertEqual(separator.find("texture").get("colordiffuse"), "bald_ink10")
+
+    # ---- The settings hub ----
+
+    def test_hub_reaches_every_settings_page_and_tool(self):
+        hub = self.control("Settings.xml", "9000")
+        items = hub.findall("content/item")
+        actions = [item.findtext("onclick") for item in items]
+        for window in ("1115", "PlayerSettings", "MediaSettings", "PVRSettings", "ServiceSettings", "GameSettings",
+                       "InterfaceSettings", "Profiles", "SystemSettings", "addonbrowser", "filemanager", "systeminfo",
+                       "eventlog"):
+            self.assertIn(f"ActivateWindow({window})", actions)
+        for item in items:
+            self.assertTrue(item.findtext("label"), actions)
+            self.assertTrue(item.findtext("label2"), f"{item.findtext('onclick')} has no note")
+
+    def test_hub_is_a_scaffold_list_with_open(self):
+        hub = self.control("Settings.xml", "9000")
+        self.assertEqual(hub.get("type"), "list")
+        dot = hub.find("focusedlayout//control[@type='image']/texture")
+        self.assertEqual((dot.text, dot.get("colordiffuse")), ("bald/dot.png", "bald_accent"))
+        self.assertEqual(hub.findtext("onright"), "9001")
+        open_button = self.control("Settings.xml", "9001")
+        self.assertEqual(open_button.findtext("onclick"), "SendClick(9000)")
+        self.assertEqual(open_button.findtext("onleft"), "9000")
 
     # ---- Scaffold conventions ----
 

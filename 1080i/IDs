@@ -140,6 +140,10 @@ DIALOGS AND CUSTOM WINDOWS
 DialogContextMenu.xml
 995		Context note label (Bald_MenuNote)
 
+Settings.xml (Kodi's settings hub; Kodi binds no ids here)
+9000	Entry list (Bald_SettingsCategories); every entry is an onclick action
+9001	Open button (Bald_SettingsOpen)
+
 Custom_1110_TempoControl.xml (window 1110, Estuary)
 11, 12	Buttons
 
