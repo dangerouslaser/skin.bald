@@ -109,5 +109,19 @@ class PlaybackHintSeparatorTests(unittest.TestCase):
         self.assertIn("·", texts)
 
 
+class GuideScrollbarTests(unittest.TestCase):
+    def test_guide_scrollbar_sets_every_texture_itself(self):
+        root = Skin().window("MyPVRGuide.xml")
+        bar = next(node for node in root.iter("control") if node.get("type") == "scrollbar" and node.get("id") == "60")
+        known = tokens()
+        for tag in ("texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib",
+                    "textureslidernibfocus"):
+            node = bar.find(tag)
+            with self.subTest(texture=tag):
+                self.assertIsNotNone(node)
+                self.assertEqual(node.text, "bald/white.png")
+                self.assertIn(node.get("colordiffuse"), known)
+
+
 if __name__ == "__main__":
     unittest.main()
