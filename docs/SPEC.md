@@ -140,9 +140,11 @@ Layout, all absolute at 1080:
 | Menu (open) | 1440, 392, width 420 | Vertical list, 6 px gap; note paragraph below |
 | Section line | left 1440, bottom 88 | Accent dot 8 px, current screen name, "Back for menu" hint |
 | Row label line | 96, 856 | Label, row dots (6 px, active 95%, others 28%), count |
-| Row | 96, 894, clip width 1248 | Landscape tiles 176 by 99, gap 16. Poster tiles 66 by 99, gap 12. |
+| Row | 96, 894, clip width 1248 | Landscape tiles 176 by 99, gap 16. ~~Poster tiles 66 by 99, gap 12.~~ Poster rows: see Row styles below. |
 
 Row behavior: `fixedlist` with the focus allowed to travel to slot 2 (landscape) or slot 5 (poster), then the list scrolls. Unfocused tiles 55% opacity, 40% while the menu is open.
+
+Row styles (2026-09-26): each configured row has a style, chosen in the widget editor: **Fanart** (default; the landscape tile above), **Thumbnail** (same tile; episode stills, else landscape art, else fanart), **Fanart with logo** (the fanart tile with the item's clearlogo at its bottom left, max 100 by 34, 8 px in, over the logo scrim; hidden without a logo or with clearlogos off) and **Poster**. A poster row reuses the Poster-low composition (5.10) and replaces the "66 by 99" poster tile above: rail at 96, 738, 1248 by 234, eight 156 px slots with 140 by 210 posters (2.5% focus pop and ring), focus to slot 5; row label line at 96, 712 (12 px above the posters, as on landscape rows); episodes use the season poster, then the show's. The art frame shrinks to 1248 by 576 (96, 120) while a poster row is shown or previewed: the bottom edge (frame mask, logo scrim, clearlogo) moves up 126 px and the art up 63 px so the crop stays centred, both 540 MOVE after 30 (the info close's frame timing), and back the same way for a landscape row; a fixed mask over the new bottom edge fades in 200 FADE after 370 and out 150 FADE. This runs alongside the row swap (out 140, in after 170). With info open from a poster row the art's 63 px returns in step with the frame zoom (640 MOVE after 40), so the zoom about 274,343 is the same as from a landscape row; it moves up again with the zoom back (540 MOVE after 30).
 
 Media flags: movies only (series-level items never show them). Source labels: `ListItem.VideoResolution`, `ListItem.HdrType`, `ListItem.AudioCodec`, `ListItem.AudioChannels`. Map to display strings: 4K, 1080p, Dolby Vision, HDR10, HDR10+, HLG, Dolby Atmos, 7.1, 5.1.
 

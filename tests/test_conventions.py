@@ -43,7 +43,8 @@ class ExpressionTests(unittest.TestCase):
 
 # Layout values named in Includes_Bald_Constants.xml, by the tag they are used in.
 LAYOUT = {("left", "96"): "Bald_SafeLeft", ("top", "954"): "Bald_HintTop", ("left", "1440"): "Bald_RightColumn",
-          ("left", "1296"): "Bald_PreviewLeft", ("top", "108"): "Bald_PageTitleTop", ("top", "222"): "Bald_ContentTop"}
+          ("left", "1296"): "Bald_PreviewLeft", ("top", "108"): "Bald_PageTitleTop", ("top", "222"): "Bald_ContentTop",
+          ("top", "738"): "Bald_LowRailTop"}
 
 
 class ConstantTests(unittest.TestCase):

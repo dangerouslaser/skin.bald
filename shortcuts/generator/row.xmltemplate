@@ -8,6 +8,8 @@
     <param name="dots">Bald_RowDots_{row_id}</param>
     <param name="dots_width">{dots_width}</param>
     <param name="style">{row_style}</param>
+    <param name="slot">{row_slot}</param>
+    <param name="start">{row_start}</param>
     <content target="{item_target_escaped}" limit="{item_limit_escaped}" browse="never">{item_path_escaped}</content>
     {secondary_content}
     {next_start}

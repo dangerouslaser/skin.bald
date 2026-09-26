@@ -28,3 +28,7 @@
 {note_head}
     <value></value>
 </variable>
+<variable name="Bald_RowStyle_{screen}">
+{row_styles}
+    <value>fanart</value>
+</variable>

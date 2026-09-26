@@ -92,6 +92,7 @@ class BaldSettingsTests(unittest.TestCase):
             self.assertTrue(same_actions(actions, [
                 (has_rows, f"SetProperty(Bald.Screen,{screen},home)"),
                 (has_rows, f"SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.{screen})],home)"),
+                (has_rows, f"SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_{screen}],home)"),
                 (has_rows, "ClearProperty(Bald.Menu,home)"),
                 (has_rows, f"SetFocus($INFO[Window(home).Property(Bald.Row.{screen})])"),
             ]), actions)
@@ -121,8 +122,9 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertIsNone(button.find("ondown"))
         self.assertIsNotNone(button.find("nested"))
         self.assertEqual([node.text for node in button.findall("onleft")], ["Action(Select)"])
-        self.assertEqual([node.text for node in button.findall("onfocus")][-2:],
-                         ["SetProperty(Bald.Menu,1,home)", "SetProperty(Bald.MenuPreview,$PARAM[preview],home)"])
+        self.assertEqual([node.text for node in button.findall("onfocus")][-3:],
+                         ["SetProperty(Bald.Menu,1,home)", "SetProperty(Bald.MenuPreview,$PARAM[preview],home)",
+                          "SetProperty(Bald.RowStyle,$VAR[Bald_PreviewRowStyle],home)"])
 
     def test_menu_selection_previews_each_screens_last_active_widget(self):
         rows = ET.parse(ROOT / "1080i" / "Includes_Bald_HomeDefaults.xml").getroot()

@@ -24,7 +24,31 @@
                                 <value>logo</value>
                             </rule>
                             <rule>
+                                <condition>{item_style}==poster</condition>
+                                <value>poster</value>
+                            </rule>
+                            <rule>
                                 <value>fanart</value>
+                            </rule>
+                        </rules>
+                        <!-- Focus slot and the item a fresh fixedlist selects there (focusposition + 1): poster rows let focus
+                             travel to slot 5 (docs/SPEC.md 5.1), landscape rows to slot 2. -->
+                        <rules name="row_slot">
+                            <rule>
+                                <condition>{item_style}==poster</condition>
+                                <value>5</value>
+                            </rule>
+                            <rule>
+                                <value>2</value>
+                            </rule>
+                        </rules>
+                        <rules name="row_start">
+                            <rule>
+                                <condition>{item_style}==poster</condition>
+                                <value>6</value>
+                            </rule>
+                            <rule>
+                                <value>3</value>
                             </rule>
                         </rules>
                         <rules name="row_up">
@@ -55,14 +79,15 @@
                             </rule>
                         </rules>
                         <!-- The next row is hidden (and already loaded) while this one has focus: move it back to its first
-                             item now, so it never shows the fixedlist's pristine item 3 (docs/NOTES.md, Fixedlist focus). -->
+                             item now, so it never shows the fixedlist's pristine item at its focus slot (docs/NOTES.md,
+                             Fixedlist focus). Bald_RowStart_<next row> is written with that row's own slot (row_parts). -->
                         <rules name="next_start">
                             <rule>
                                 <condition>{item_x}==$MATH[{item_length_x} - 1]</condition>
                                 <value></value>
                             </rule>
                             <rule>
-                                <value>&lt;onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$MATH[{base} + 2 + {item_x}])) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).CurrentItem,3) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).Position,2)"&gt;SetProperty(Bald.Start$MATH[{base} + 2 + {item_x}],1,home)&lt;/onfocus&gt;&lt;onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$MATH[{base} + 2 + {item_x}])) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).CurrentItem,3) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).Position,2)"&gt;Control.Move($MATH[{base} + 2 + {item_x}],-2)&lt;/onfocus&gt;</value>
+                                <value>&lt;include&gt;Bald_RowStart_$MATH[{base} + 2 + {item_x}]&lt;/include&gt;</value>
                             </rule>
                         </rules>
                     </item>
@@ -74,6 +99,25 @@
                         <template>generator/row-parts.xmltemplate</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                         <value name="row_index">$MATH[1 + {item_x}]</value>
+                        <!-- As in rows above. -->
+                        <rules name="row_slot">
+                            <rule>
+                                <condition>{item_style}==poster</condition>
+                                <value>5</value>
+                            </rule>
+                            <rule>
+                                <value>2</value>
+                            </rule>
+                        </rules>
+                        <rules name="row_start">
+                            <rule>
+                                <condition>{item_style}==poster</condition>
+                                <value>6</value>
+                            </rule>
+                            <rule>
+                                <value>3</value>
+                            </rule>
+                        </rules>
                         <value name="dots">
                             <items menu="{menu}" mode="submenu">
                                 <item>
@@ -98,6 +142,31 @@
                             </rule>
                             <rule>
                                 <value>, $VAR[Bald_RowsNote_{screen}_$MATH[2 + {item_x}]]</value>
+                            </rule>
+                        </rules>
+                    </item>
+                </items>
+            </value>
+            <value name="row_styles">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>&lt;value condition="String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id})"&gt;{row_style}&lt;/value&gt;</template>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                        <rules name="row_style">
+                            <rule>
+                                <condition>{item_style}==thumbnail</condition>
+                                <value>thumbnail</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_style}==logo</condition>
+                                <value>logo</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_style}==poster</condition>
+                                <value>poster</value>
+                            </rule>
+                            <rule>
+                                <value>fanart</value>
                             </rule>
                         </rules>
                     </item>

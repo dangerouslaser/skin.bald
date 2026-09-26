@@ -17,4 +17,6 @@
 	<constant name="Bald_PageTitleTop">108</constant>
 	<!-- Library and Search content: lists and the preview column. -->
 	<constant name="Bald_ContentTop">222</constant>
+	<!-- Low poster rail under a 1248 x 576 art frame: library views 515 and 523, and Home's poster rows. -->
+	<constant name="Bald_LowRailTop">738</constant>
 </includes>

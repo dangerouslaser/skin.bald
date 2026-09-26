@@ -57,7 +57,8 @@ class InfoPagesTests(unittest.TestCase):
         bounds = [tuple(int(node.findtext(f"param[@name='{key}']")) for key in ("x", "y", "w", "h")) for node in masks]
         self.assertEqual(bounds, [(0, 80, 96, 782), (1344, 80, 60, 782), (96, 80, 1248, 40), (96, 822, 1248, 30)])
         home_window = ET.parse(ROOT / "Home.xml").getroot()
-        self.assertIn("Bald_ArtFrameMasks", [node.text for node in home_window.iter("include")])
+        # Home has its own masks, which also shape the frame for poster rows (test_home_row_styles).
+        self.assertIn("Bald_HomeFrameMasks", [node.text for node in home_window.iter("include")])
         self.assertEqual(layer.findtext("param[@name='texture']"), "$VAR[Bald_Fanart]")
         zoom = layer.find(".//effect[@type='zoom']")
         self.assertEqual((zoom.get("start"), zoom.get("end"), zoom.get("time")), ("105", "100", "1500"))

@@ -1151,6 +1151,12 @@ msgctxt "#31722"
 msgid "Fanart with logo"
 msgstr ""
 
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31723"
+msgid "Poster"
+msgstr ""
+
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Settings.xml
 msgctxt "#31730"
