@@ -157,6 +157,12 @@
 		<include>Bald_ConfiguredArtLogos_movies</include>
 		<include>Bald_ConfiguredArtLogos_tvshows</include>
 	</include>
+	<!-- Home onload: clear every configured row's row-start mark (see Bald_Row). -->
+	<include name="Bald_RowStartReset">
+		<include>Bald_RowStartReset_home</include>
+		<include>Bald_RowStartReset_movies</include>
+		<include>Bald_RowStartReset_tvshows</include>
+	</include>
 	<include name="Bald_ConfiguredCaptions">
 		<include>Bald_ConfiguredCaptions_home</include>
 		<include>Bald_ConfiguredCaptions_movies</include>
@@ -746,6 +752,13 @@
 				<onfocus>SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
 				<onfocus>SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
 				<onfocus>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onfocus>
+				<!-- Row start: a fixedlist first selects item 3 at its focus slot. The row above moves this one back while
+				     it is hidden (generated onfocus, see shortcuts/generator/screen.xml) and Timers.xml covers the rows shown
+				     before they are focused; if the row is still pristine when it gains focus, move it here. Loaded rows are
+				     marked once focused, so a later item 3 at slot 2 is the viewer's own. Home clears the marks in onload.
+				     Conditions are evaluated before any of these actions run (CGUIAction::ExecuteActions). -->
+				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$PARAM[id])) + String.IsEqual(Container($PARAM[id]).CurrentItem,3) + String.IsEqual(Container($PARAM[id]).Position,2)">Control.Move($PARAM[id],-2)</onfocus>
+				<onfocus condition="Integer.IsGreater(Container($PARAM[id]).NumItems,0)">SetProperty(Bald.Start$PARAM[id],1,home)</onfocus>
 				<!-- Opening the menu is screen-relative: keep the active screen selected instead of
 				     resetting the navigation model to Home. TV moves up one slot when Movies is disabled. -->
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.Menu,1,home)</onup>

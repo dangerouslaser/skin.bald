@@ -39,6 +39,24 @@
                                 <value></value>
                             </rule>
                         </rules>
+                        <!-- The next row is hidden (and already loaded) while this one has focus: move it back to its first
+                             item now, so it never shows the fixedlist's pristine item 3 (docs/NOTES.md, Fixedlist focus). -->
+                        <rules name="next_start">
+                            <rule>
+                                <condition>{item_x}==$MATH[{item_length_x} - 1]</condition>
+                                <value></value>
+                            </rule>
+                            <rule>
+                                <value>&lt;onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$MATH[{base} + 2 + {item_x}])) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).CurrentItem,3) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).Position,2)"&gt;SetProperty(Bald.Start$MATH[{base} + 2 + {item_x}],1,home)&lt;/onfocus&gt;&lt;onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$MATH[{base} + 2 + {item_x}])) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).CurrentItem,3) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).Position,2)"&gt;Control.Move($MATH[{base} + 2 + {item_x}],-2)&lt;/onfocus&gt;</value>
+                            </rule>
+                        </rules>
+                    </item>
+                </items>
+            </value>
+            <value name="start_reset">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>&lt;onload&gt;ClearProperty(Bald.Start$MATH[{base} + 1 + {item_x}],home)&lt;/onload&gt;</template>
                     </item>
                 </items>
             </value>
