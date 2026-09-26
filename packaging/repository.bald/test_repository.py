@@ -60,6 +60,9 @@ def main() -> None:
         assert not any("script-skinvariables-generator-includes" in name for name in names)
         assert "skin.bald/playlists/inprogress_movies.xsp" in names
         assert "skin.bald/playlists/inprogress_episodes.xsp" in names
+        # Files that started from Estuary point readers to its licence notice.
+        assert "skin.bald/LICENSE.txt" in names
+        assert "skin.bald/LICENSE-Estuary.txt" in names
 
     assert (root / "skin.bald" / "resources" / "icon.png").is_file()
     assert (root / "skin.bald" / "resources" / "fanart.jpg").is_file()
