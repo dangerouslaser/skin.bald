@@ -126,3 +126,19 @@ class FocusFadeTests(unittest.TestCase):
                     continue
                 with self.subTest(file=path.name):
                     self.assertEqual(anim.get('reversible'), 'false')
+
+
+class StaticItemNumberTests(unittest.TestCase):
+    """Kodi reads a static list item's label or property that is a plain number as a string id (CGUIControlFactory::
+    GetInfoLabelFromElement), so a property meant as the number 2 reads "Music". Bald's static item properties must
+    not be bare numbers or a bare $PARAM that a caller fills with one; wrap a number in $NUMBER[...]."""
+
+    def test_static_item_properties_are_not_bare_numbers(self):
+        for path in sorted(SKIN.glob('*.xml')):
+            if path.name.startswith('script-skinvariables'):
+                continue
+            for item in ET.parse(path).getroot().iter('item'):
+                for prop in item.findall('property'):
+                    value = (prop.text or '').strip()
+                    with self.subTest(file=path.name, property=prop.get('name')):
+                        self.assertFalse(value.isdigit() or re.fullmatch(r'\$PARAM\[\w+\]', value), value)

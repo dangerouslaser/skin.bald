@@ -67,7 +67,8 @@ class BaldSettingsTests(unittest.TestCase):
         # Hub n shows the entry at position n of the live hubs list 9390, while there is one.
         for n, item in enumerate(items[1:9]):
             self.assertEqual(item.findtext("label"), f"$INFO[Container(9390).ListItemAbsolute({n}).Label]")
-            self.assertEqual(item.findtext("property[@name='slot']"), str(n))
+            # $NUMBER keeps it a number: Kodi reads a plain number in a static item's property as a string id.
+            self.assertEqual(item.findtext("property[@name='slot']"), f"$NUMBER[{n}]")
             self.assertEqual(item.findtext("property[@name='url']"), f"$INFO[Container(9390).ListItemAbsolute({n}).Property(url)]")
             self.assertTrue(implies(item.findtext("visible"), f"Integer.IsGreater(Container(9390).NumItems,{n})"))
         hubs = root.find(".//control[@id='9390']")
