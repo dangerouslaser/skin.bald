@@ -29,7 +29,7 @@ class PosterLowTests(unittest.TestCase):
         caption = self.root.find("include[@name='Bald_PosterLowCaption']//include[@content='Bald_Caption']")
         self.assertEqual(caption.findtext("param[@name='c']"), '515')
         shared = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot()
-        self.assertIsNotNone(shared.find("include[@name='Bald_Caption']//include[@content='Bald_MediaFlagItems']"))
+        self.assertIsNotNone(shared.find("include[@name='Bald_Caption']//include[@content='Bald_MediaFlags']"))
 
     def test_masks_are_fixed_and_alphabet_covers_low_rail(self):
         view = self.root.find("include[@name='View_515_Bald_PosterLow']/control")

@@ -467,7 +467,7 @@
 						<itemgap>8</itemgap>
 						<visible>!Skin.HasSetting(Bald.HideMediaFlags) + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + [String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,4K) | String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,1080) | !String.IsEmpty(Container($PARAM[c]).ListItem.HdrType) | !String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,6) | String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,8)]</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">275</param></include>
-						<include content="Bald_MediaFlagItems"><param name="c">$PARAM[c]</param></include>
+						<include content="Bald_MediaFlags"><param name="container">Container($PARAM[c]).</param></include>
 					</control>
 					<!-- Accent line -->
 					<control type="label">
@@ -522,44 +522,6 @@
 				<label>$PARAM[label]</label>
 				<visible>$PARAM[visible] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">250</param></include>
-			</control>
-		</definition>
-	</include>
-
-	<include name="Bald_MediaFlagItems">
-		<param name="c" />
-		<definition>
-			<visible>!Skin.HasSetting(Bald.HideMediaFlags)</visible>
-			<include content="Bald_Flag"><param name="label">4K</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,4K)</param></include>
-			<include content="Bald_Flag"><param name="label">1080p</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.VideoResolution,1080)</param></include>
-			<include content="Bald_Flag"><param name="label">Dolby Vision</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.HdrType,dolbyvision)</param></include>
-			<include content="Bald_Flag"><param name="label">HDR10</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.HdrType,hdr10)</param></include>
-			<include content="Bald_Flag"><param name="label">HDR10+</param><param name="visible">String.StartsWith(Container($PARAM[c]).ListItem.HdrType,hdr10) + !String.IsEqual(Container($PARAM[c]).ListItem.HdrType,hdr10)</param></include>
-			<include content="Bald_Flag"><param name="label">HLG</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.HdrType,hlg)</param></include>
-			<include content="Bald_Flag"><param name="label">$MAP[DefaultCodecMap, Container($PARAM[c]).ListItem.AudioCodec]</param><param name="visible">!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)</param></include>
-			<include content="Bald_Flag"><param name="label">7.1</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,8)</param></include>
-			<include content="Bald_Flag"><param name="label">5.1</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.AudioChannels,6)</param></include>
-		</definition>
-	</include>
-
-	<!-- One outlined media flag chip. -->
-	<include name="Bald_Flag">
-		<param name="label" />
-		<param name="visible">true</param>
-		<definition>
-			<control type="button">
-				<width>auto</width>
-				<height>26</height>
-				<label>$PARAM[label]</label>
-				<font>Bald_Flag</font>
-				<textoffsetx>10</textoffsetx>
-				<aligny>center</aligny>
-				<textcolor>bald_ink</textcolor>
-				<disabledcolor>bald_ink</disabledcolor>
-				<texturenofocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturenofocus>
-				<texturefocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturefocus>
-				<enable>false</enable>
-				<visible>$PARAM[visible]</visible>
 			</control>
 		</definition>
 	</include>

@@ -148,9 +148,9 @@ class InfoTvTests(unittest.TestCase):
         self.assertIn("Integer.IsGreater(ListItem.PlayCount,0)", visible)
         self.assertIn("ListItem.IsResumable", visible)
         self.assertEqual(card.find(".//control[@type='progress']").findtext("info"), "ListItem.PercentPlayed")
-        # Episode detail reuses Home's flag items on the episode row.
-        flags = self.page.find(".//include[@content='Bald_MediaFlagItems']")
-        self.assertEqual(params(flags)["c"], "5302")
+        # Episode detail reuses the shared flag row on the episode list's item.
+        flags = self.page.find(".//include[@content='Bald_MediaFlags']")
+        self.assertEqual(params(flags)["container"], "Container(5302).")
 
     def test_landscape_tile_defaults_are_homes_row_tile(self):
         tile = self.home.find("include[@name='Bald_LandscapeTile']")

@@ -34,8 +34,7 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(caption.findtext("param[@name='width']"), "528")
         shared = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         home_caption = shared.find("include[@name='Bald_Caption']")
-        self.assertIsNotNone(home_caption.find(".//include[@content='Bald_MediaFlagItems']"))
-        self.assertEqual(len(shared.findall("include[@name='Bald_MediaFlagItems']//include[@content='Bald_Flag']")), 9)
+        self.assertIsNotNone(home_caption.find(".//include[@content='Bald_MediaFlags']"))
         self.assertEqual(home_caption.findtext("param[@name='width']"), "384")
         self.assertEqual(home_caption.findtext("param[@name='x']"), "1420")
 
@@ -83,10 +82,10 @@ class LibraryViewTests(unittest.TestCase):
     def test_audio_codec_flag_maps_names_and_hides_missing_data(self):
         shared = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         caption = shared.find("include[@name='Bald_Caption']")
-        codec = next(n for n in shared.findall("include[@name='Bald_MediaFlagItems']//include[@content='Bald_Flag']") if "$MAP[" in n.findtext("param[@name='label']"))
-        self.assertEqual(codec.findtext("param[@name='label']"), "$MAP[DefaultCodecMap, Container($PARAM[c]).ListItem.AudioCodec]")
-        self.assertEqual(codec.findtext("param[@name='visible']"), "!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)")
-        group = next(n for n in caption.iter("control") if n.find("include[@content='Bald_MediaFlagItems']") is not None)
+        # The chips themselves are covered by tests/test_common.py; here the caption's row reads the caption's item.
+        group = next(n for n in caption.iter("control") if n.find("include[@content='Bald_MediaFlags']") is not None)
+        flags = group.find("include[@content='Bald_MediaFlags']")
+        self.assertEqual(flags.findtext("param[@name='container']"), "Container($PARAM[c]).")
         self.assertIn("!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)", group.findtext("visible"))
 
     def test_options_have_five_rows_native_actions_and_return_routes(self):

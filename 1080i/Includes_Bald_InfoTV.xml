@@ -466,7 +466,7 @@
 						<height>26</height>
 						<orientation>horizontal</orientation>
 						<itemgap>8</itemgap>
-						<include content="Bald_MediaFlagItems"><param name="c">5302</param></include>
+						<include content="Bald_MediaFlags"><param name="container">Container(5302).</param></include>
 					</control>
 				</control>
 				<control type="label">

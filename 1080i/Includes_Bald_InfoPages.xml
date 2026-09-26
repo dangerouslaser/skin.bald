@@ -60,15 +60,7 @@
 					<itemgap>8</itemgap>
 					<visible>!Skin.HasSetting(Bald.HideMediaFlags) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,episode)]</visible>
 					<include content="Bald_AnimInfoIn"><param name="delay">520</param></include>
-					<include content="Bald_InfoFlag"><param name="label">4K</param><param name="visible">String.IsEqual(ListItem.VideoResolution,4K)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">1080p</param><param name="visible">String.IsEqual(ListItem.VideoResolution,1080)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">Dolby Vision</param><param name="visible">String.IsEqual(ListItem.HdrType,dolbyvision)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">HDR10</param><param name="visible">String.IsEqual(ListItem.HdrType,hdr10)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">HDR10+</param><param name="visible">String.StartsWith(ListItem.HdrType,hdr10) + !String.IsEqual(ListItem.HdrType,hdr10)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">HLG</param><param name="visible">String.IsEqual(ListItem.HdrType,hlg)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">$MAP[DefaultCodecMap, ListItem.AudioCodec]</param><param name="visible">!String.IsEmpty(ListItem.AudioCodec)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">7.1</param><param name="visible">String.IsEqual(ListItem.AudioChannels,8)</param></include>
-					<include content="Bald_InfoFlag"><param name="label">5.1</param><param name="visible">String.IsEqual(ListItem.AudioChannels,6)</param></include>
+					<include content="Bald_MediaFlags"><param name="height">30</param><param name="font">Bald_FlagL</param></include>
 				</control>
 				<control type="label">
 					<top>28</top>

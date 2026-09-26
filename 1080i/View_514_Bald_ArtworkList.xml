@@ -7,7 +7,7 @@
 				<visible>Integer.Is$PARAM[p](Container(514).CurrentItem)</visible>
 				<control type="label"><left>816</left><top>774</top><width>1008</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[Container(514).ListItem.Year]$INFO[Container(514).ListItem.Duration(mins), · , min]$INFO[Container(514).ListItem.Genre, · ,]</label><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">250</param></include></control>
 				<control type="group"><left>816</left><top>806</top><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">275</param></include>
-					<control type="grouplist"><width>1008</width><height>26</height><orientation>horizontal</orientation><itemgap>8</itemgap><include content="Bald_MediaFlagItems"><param name="c">514</param></include></control>
+					<control type="grouplist"><width>1008</width><height>26</height><orientation>horizontal</orientation><itemgap>8</itemgap><include content="Bald_MediaFlags"><param name="container">Container(514).</param></include></control>
 				</control>
 				<control type="textbox"><left>816</left><top>848</top><width>1008</width><height>60</height><font>Bald_CaptionPlot</font><textcolor>bald_ink76</textcolor><label>$INFO[Container(514).ListItem.Plot]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">350</param></include></control>
 			</control>

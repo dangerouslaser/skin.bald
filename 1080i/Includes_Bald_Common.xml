@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald components shared by Home, the info dialog and the library views.
+
+     Item prefix. Includes that read an item take `container`, the text placed before ListItem: empty for the
+     window's or layout's own item (ListItem.*), or "Container(511)." for a list's focused item
+     (Container(511).ListItem.*). -->
+<includes>
+	<!-- ============ Media flags ============ -->
+	<!-- One outlined media flag chip. Defaults are the caption chip (26 px, Bald_Flag); the info Overview passes
+	     30 px and Bald_FlagL. -->
+	<include name="Bald_FlagChip">
+		<param name="label" />
+		<param name="visible">true</param>
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
+		<definition>
+			<control type="button">
+				<width>auto</width>
+				<height>$PARAM[height]</height>
+				<label>$PARAM[label]</label>
+				<font>$PARAM[font]</font>
+				<textoffsetx>10</textoffsetx>
+				<aligny>center</aligny>
+				<textcolor>bald_ink</textcolor>
+				<disabledcolor>bald_ink</disabledcolor>
+				<texturenofocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturenofocus>
+				<texturefocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturefocus>
+				<enable>false</enable>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- The flag chips for one item, as children of the caller's horizontal grouplist (hidden chips take no space).
+	     The <visible> applies to that grouplist: the Media flags setting hides every chip row. -->
+	<include name="Bald_MediaFlags">
+		<param name="container" />
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
+		<definition>
+			<visible>!Skin.HasSetting(Bald.HideMediaFlags)</visible>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">4K</param><param name="visible">String.IsEqual($PARAM[container]ListItem.VideoResolution,4K)</param></include>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">1080p</param><param name="visible">String.IsEqual($PARAM[container]ListItem.VideoResolution,1080)</param></include>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">Dolby Vision</param><param name="visible">String.IsEqual($PARAM[container]ListItem.HdrType,dolbyvision)</param></include>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">HDR10</param><param name="visible">String.IsEqual($PARAM[container]ListItem.HdrType,hdr10)</param></include>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">HDR10+</param><param name="visible">String.StartsWith($PARAM[container]ListItem.HdrType,hdr10) + !String.IsEqual($PARAM[container]ListItem.HdrType,hdr10)</param></include>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">HLG</param><param name="visible">String.IsEqual($PARAM[container]ListItem.HdrType,hlg)</param></include>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">$MAP[DefaultCodecMap, $PARAM[container]ListItem.AudioCodec]</param><param name="visible">!String.IsEmpty($PARAM[container]ListItem.AudioCodec)</param></include>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">7.1</param><param name="visible">String.IsEqual($PARAM[container]ListItem.AudioChannels,8)</param></include>
+			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">5.1</param><param name="visible">String.IsEqual($PARAM[container]ListItem.AudioChannels,6)</param></include>
+		</definition>
+	</include>
+</includes>
