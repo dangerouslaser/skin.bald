@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: Estuary's side options menu (grouplist 9000) is now the right-hand options column of the Bald library
+     (SPEC 5.5): it fades and slides in at x 1440 over the hidden preview while the view dims, with settings-style rows
+     (Bald_ConfigureButton: accent dot, full ink focused, 45% ink otherwise). Every Kodi-bound id (3, 4, 8, 19 and the
+     windows' own buttons) and every action is unchanged. -->
 <includes>
 	<include name="MediaMenuItemsCommon">
-		<width>470</width>
-		<textoffsetx>20</textoffsetx>
-		<top>0</top>
-		<height>80</height>
-		<radioposx>370</radioposx>
-		<aligny>center</aligny>
-		<invalidcolor>invalid</invalidcolor>
-		<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-		<texturenofocus />
-		<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
-		<alttexturenofocus></alttexturenofocus>
+		<include content="Bald_ConfigureButton"><param name="width">440</param></include>
+		<invalidcolor>bald_ink45</invalidcolor>
+		<alttexturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</alttexturefocus>
+		<alttexturenofocus />
 	</include>
 	<include name="PVRQuickNavItemsCommon">
 		<param name="height">110</param>
@@ -22,17 +20,17 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<font></font>
-				<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+				<texturefocus colordiffuse="bald_ink">bald/circle_112.png</texturefocus>
 				<texturenofocus />
 				<radioposx>26</radioposx>
 				<radioposy>0</radioposy>
 				<radiowidth>40</radiowidth>
 				<radioheight>40</radioheight>
-				<textureradioonfocus>$PARAM[icon]</textureradioonfocus>
-				<textureradioonnofocus>$PARAM[icon]</textureradioonnofocus>
-				<textureradioofffocus>$PARAM[icon]</textureradioofffocus>
-				<textureradiooffnofocus>$PARAM[icon]</textureradiooffnofocus>
-				<textureradiooffdisabled colordiffuse="button_focus">$PARAM[icon]</textureradiooffdisabled>
+				<textureradioonfocus colordiffuse="bald_field">$PARAM[icon]</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="bald_ink70">$PARAM[icon]</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="bald_field">$PARAM[icon]</textureradioofffocus>
+				<textureradiooffnofocus colordiffuse="bald_ink70">$PARAM[icon]</textureradiooffnofocus>
+				<textureradiooffdisabled colordiffuse="bald_accent">$PARAM[icon]</textureradiooffdisabled>
 				<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TV$PARAM[area])</onclick>
 				<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(Radio$PARAM[area])</onclick>
 				<enable>!Window.IsActive(TV$PARAM[area]) + !Window.IsActive(Radio$PARAM[area])</enable>
@@ -51,9 +49,9 @@
 				<left>0</left>
 				<width>470</width>
 				<height>100%</height>
-				<onleft>9000</onleft>
+				<onleft>50</onleft>
 				<onup>9000</onup>
-				<onright>50</onright>
+				<onright>9000</onright>
 				<ondown>14100</ondown>
 				<onback>50</onback>
 				<control type="group" id="60520">
@@ -63,14 +61,14 @@
 						<label>$LOCALIZE[31148]</label>
 					</control>
 					<control type="label">
-						<width>470</width>
+						<width>440</width>
 						<textoffsetx>20</textoffsetx>
 						<textoffsety>15</textoffsety>
 						<height>50</height>
-						<font>font12</font>
+						<font>Bald_Hint</font>
 						<align>right</align>
 						<aligny>top</aligny>
-						<textcolor>grey</textcolor>
+						<textcolor>bald_ink60</textcolor>
 						<label>$VAR[PVRAreaVar]</label>
 					</control>
 				</control>
@@ -81,8 +79,8 @@
 						<itemgap>-18</itemgap>
 						<left>0</left>
 						<height>120</height>
-						<onleft>6056</onleft>
-						<onright>50</onright>
+						<onleft>50</onleft>
+						<onright>6056</onright>
 						<onup>14100</onup>
 						<ondown>6051</ondown>
 						<width>1000</width>
@@ -125,14 +123,14 @@
 				<control type="button" id="6051">
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[31023]</label>
-					<label2>[B]$INFO[Container.Viewmode][/B]</label2>
+					<label2>$INFO[Container.Viewmode]</label2>
 					<onclick>Container.NextViewMode</onclick>
 					<visible>Window.IsActive(MyPVRGuide.xml)</visible>
 				</control>
 				<control type="button" id="6054">
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[19141]</label>
-					<label2>[B]$PARAM[group_label2][/B]</label2>
+					<label2>$PARAM[group_label2]</label2>
 					<onclick>SendClick(28)</onclick>
 					<visible>Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRGuide.xml)</visible>
 				</control>
@@ -146,20 +144,20 @@
 				<control type="button" id="6053">
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[31022]</label>
-					<label2>[B]$INFO[Container.SortMethod][/B]</label2>
+					<label2>$INFO[Container.SortMethod]</label2>
 					<onclick>SendClick(3)</onclick>
 				</control>
 				<control type="button" id="6055">
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[31032]</label>
-					<label2>[B]$INFO[Container.SortOrder][/B]</label2>
+					<label2>$INFO[Container.SortOrder]</label2>
 					<onclick>Container.SetSortDirection</onclick>
 				</control>
 				<control type="button" id="10">
 					<description>Watched Toggle</description>
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[20367]</label>
-					<label2>[B]$INFO[Container.NumNonFolderItems][/B]</label2>
+					<label2>$INFO[Container.NumNonFolderItems]</label2>
 					<visible>Window.IsActive(MyPVRRecordings.xml)</visible>
 				</control>
 				<control type="label" id="300">
@@ -171,7 +169,7 @@
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[587]</label>
 					<selected>Container.Filtered</selected>
-					<onclick>right</onclick>
+					<onclick>left</onclick>
 					<visible>Window.IsActive(MyPVRChannels.xml)</visible>
 				</control>
 				<control type="radiobutton" id="5">
@@ -211,91 +209,49 @@
 					<visible>Window.IsActive(MyPVRRecordings.xml) + Integer.IsGreater(Playlist.Length(video),0)</visible>
 				</control>
 				<control type="group" id="141000">
-					<control type="grouplist" id="14100">
-						<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-						<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-						<animation effect="fade" time="300">VisibleChange</animation>
-						<orientation>horizontal</orientation>
-						<itemgap>-17</itemgap>
-						<left>5</left>
-						<onleft>14100</onleft>
-						<onup>302</onup>
-						<ondown>6056</ondown>
-						<visible>Player.HasMedia + [$EXP[sidebar_visible]]</visible>
-						<visible>!System.HasActiveModalDialog</visible>
-						<include content="BottomMainMenuToggleItem">
-							<param name="control_id" value="14101" />
-							<param name="onclick" value="PlayerControl(Play)" />
-							<param name="icon_on" value="icons/now-playing/play.png" />
-							<param name="icon_off" value="icons/now-playing/pause.png" />
-							<param name="selected" value="Player.Paused" />
-						</include>
-						<include content="IconButton">
-							<param name="control_id" value="14102" />
-							<param name="onclick" value="Stop" />
-							<param name="icon" value="icons/now-playing/stop.png" />
-						</include>
-						<include content="IconButton">
-							<param name="control_id" value="14104" />
-							<param name="onclick" value="Next" />
-							<param name="icon" value="icons/now-playing/next.png" />
-							<param name="visible" value="Integer.IsLess(Playlist.Position(video), Playlist.Length(video)) | MusicPlayer.HasNext" />
-						</include>
-						<include content="IconButton">
-							<param name="control_id" value="14105" />
-							<param name="onclick" value="Fullscreen" />
-							<param name="icon" value="icons/now-playing/fullscreen.png" />
-							<param name="visible" value="Player.HasMedia + [ !Player.IsRemote | Player.HasAudio ]" />
-						</include>
-						<include content="IconButton">
-							<param name="control_id" value="14106" />
-							<param name="onclick" value="ActivateWindow(playercontrols)" />
-							<param name="icon" value="icons/now-playing/fullscreen.png" />
-							<param name="label" value="$LOCALIZE[31000]" />
-							<param name="visible" value="Player.HasMedia + Player.IsRemote" />
-						</include>
-					</control>
+					<height>88</height>
+					<include content="MediaMenuNowPlaying">
+						<param name="onup">302</param>
+						<param name="ondown">6056</param>
+						<param name="onclick_stop" />
+						<param name="onclick_next">Next</param>
+						<param name="remote_visible">Player.HasMedia + Player.IsRemote</param>
+					</include>
 				</control>
 			</control>
 		</definition>
 	</include>
+	<!-- A section heading inside the menu: caption-meta type at 60% ink, as "Library options". -->
 	<include name="MediaMenuLabelCommon">
-		<width>470</width>
-		<textoffsetx>20</textoffsetx>
-		<textoffsety>15</textoffsety>
-		<height>50</height>
-		<radioposx>300</radioposx>
-		<font>font25_title</font>
+		<width>440</width>
+		<textoffsetx>26</textoffsetx>
+		<textoffsety>16</textoffsety>
+		<height>52</height>
+		<font>Bald_CaptionMeta</font>
 		<aligny>top</aligny>
-		<textcolor>button_focus</textcolor>
+		<textcolor>bald_ink60</textcolor>
 	</include>
+	<!-- The menu column. Windows place it inside their own group and the grouplist 9000 at top 50 in it, so the first
+	     row lands at y 292, where the library options menu's heading sits. Closed, the column is faded out and 40 px to
+	     the right but stays focusable; opening plays the Home menu's show motion (fade 380 and slide 480 after 120),
+	     closing its hide motion (fade 160, slide 180). -->
 	<include name="MediaMenuCommon">
-		<include>OpenClose_Left</include>
 		<depth>DepthSideBlade</depth>
-		<left>-520</left>
-		<animation type="Conditional" condition="$EXP[sidebar_visible]" reversible="true">
-			<effect type="slide" start="0" end="520" time="400" tween="cubic" easing="out" />
+		<left>Bald_RightColumn</left>
+		<top>242</top>
+		<animation type="Conditional" condition="!$EXP[sidebar_visible]" reversible="false">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
 		</animation>
-		<control type="image">
-			<width>4000</width>
-			<height>100%</height>
-			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
-			<visible>$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
-			<animation effect="fade" time="200">VisibleChange</animation>
-		</control>
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>520</width>
-			<height>100%</height>
-			<texture border="0,0,52,0">lists/panel-mediamenu.png</texture>
-		</control>
+		<animation type="Conditional" condition="$EXP[sidebar_visible]" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
+			<effect type="slide" start="40,0" end="0,0" time="480" delay="120" tween="cubic" easing="out" />
+		</animation>
 		<control type="button" id="6131">
 			<left>0</left>
 			<top>0</top>
-			<width>500</width>
-			<height>100%</height>
+			<width>440</width>
+			<height>620</height>
 			<label></label>
 			<texturefocus />
 			<texturenofocus />
@@ -309,67 +265,79 @@
 			<include>HiddenObject</include>
 		</control>
 	</include>
+	<!-- Now playing transport under the options (ids 14100-14106), shown while media plays and the menu is open. -->
 	<include name="MediaMenuNowPlaying">
-        <param name="left">5</param>
+		<param name="left">0</param>
+		<param name="onup">14100</param>
+		<param name="ondown">14100</param>
+		<param name="onclick_stop">SetFocus(50)</param>
+		<param name="onclick_next">PlayerControl(Next)</param>
+		<param name="remote_visible">Player.HasMedia + Player.IsRemote + !Player.HasAudio</param>
 		<definition>
 			<control type="grouplist" id="14100">
-				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<animation effect="fade" time="300">VisibleChange</animation>
-				<animation effect="slide" end="-10,0" time="0" condition ="Window.IsActive(MyPlaylist.xml)">Conditional</animation>
+				<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>
+				<animation effect="fade" time="240" tween="sine" easing="inout">VisibleChange</animation>
 				<orientation>horizontal</orientation>
-				<itemgap>-17</itemgap>
+				<itemgap>8</itemgap>
 				<left>$PARAM[left]</left>
+				<top>16</top>
+				<width>440</width>
+				<height>72</height>
 				<onleft>14100</onleft>
-				<width>450</width>
+				<onup>$PARAM[onup]</onup>
+				<ondown>$PARAM[ondown]</ondown>
 				<visible>Player.HasMedia + [$EXP[sidebar_visible]]</visible>
 				<visible>!System.HasActiveModalDialog</visible>
-				<include content="BottomMainMenuToggleItem">
-					<param name="control_id" value="14101" />
-					<param name="onclick" value="PlayerControl(Play)" />
-					<param name="icon_on" value="icons/now-playing/play.png" />
-					<param name="icon_off" value="icons/now-playing/pause.png" />
-					<param name="selected" value="Player.Paused" />
+				<include content="Bald_BrowseTransportButton">
+					<param name="control_id">14101</param>
+					<param name="onclick">PlayerControl(Play)</param>
+					<param name="icon_on">icons/now-playing/play.png</param>
+					<param name="icon">icons/now-playing/pause.png</param>
+					<param name="selected">Player.Paused</param>
 				</include>
-				<include content="IconButton">
-					<param name="control_id" value="14102" />
-					<param name="onclick" value="Stop" />
-					<param name="onclick_2" value="SetFocus(50)" />
-					<param name="icon" value="icons/now-playing/stop.png" />
+				<include content="Bald_BrowseTransportButton">
+					<param name="control_id">14102</param>
+					<param name="onclick">Stop</param>
+					<param name="onclick_2">$PARAM[onclick_stop]</param>
+					<param name="icon">icons/now-playing/stop.png</param>
 				</include>
-				<include content="IconButton">
-					<param name="control_id" value="14104" />
-					<param name="onclick" value="PlayerControl(Next)" />
-					<param name="icon" value="icons/now-playing/next.png" />
-					<param name="visible" value="Integer.IsLess(Playlist.Position(video), Playlist.Length(video)) | MusicPlayer.HasNext" />
+				<include content="Bald_BrowseTransportButton">
+					<param name="control_id">14104</param>
+					<param name="onclick">$PARAM[onclick_next]</param>
+					<param name="icon">icons/now-playing/next.png</param>
+					<param name="visible">Integer.IsLess(Playlist.Position(video), Playlist.Length(video)) | MusicPlayer.HasNext</param>
 				</include>
-				<include content="IconButton">
-					<param name="control_id" value="14105" />
-					<param name="onclick" value="Fullscreen" />
-					<param name="icon" value="icons/now-playing/fullscreen.png" />
-					<param name="visible" value="Player.HasMedia + [ !Player.IsRemote | Player.HasAudio ]" />
+				<include content="Bald_BrowseTransportButton">
+					<param name="control_id">14105</param>
+					<param name="onclick">Fullscreen</param>
+					<param name="icon">icons/now-playing/fullscreen.png</param>
+					<param name="visible">Player.HasMedia + [ !Player.IsRemote | Player.HasAudio ]</param>
 				</include>
-				<include content="IconButton">
-					<param name="control_id" value="14106" />
-					<param name="onclick" value="ActivateWindow(playercontrols)" />
-					<param name="icon" value="icons/now-playing/fullscreen.png" />
-					<param name="visible" value="Player.HasMedia + Player.IsRemote + !Player.HasAudio" />
+				<include content="Bald_BrowseTransportButton">
+					<param name="control_id">14106</param>
+					<param name="onclick">ActivateWindow(playercontrols)</param>
+					<param name="icon">icons/now-playing/fullscreen.png</param>
+					<param name="visible">$PARAM[remote_visible]</param>
 				</include>
 			</control>
 		</definition>
 	</include>
+	<!-- The shared rows of every media window's menu. Left or Back returns to the view (the menu sits to its right);
+	     playlists return to their list, 55. -->
 	<include name="MediaMenuListCommon">
 		<definition>
 			<left>0</left>
-			<top>100</top>
-			<width>470</width>
-			<height>100%</height>
-			<onleft>9000</onleft>
+			<width>440</width>
+			<height>620</height>
+			<itemgap>6</itemgap>
+			<onright>9000</onright>
 			<onup>9000</onup>
-			<onright condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onright>
-			<onright condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onright>
+			<onleft condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onleft>
+			<onleft condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onleft>
 			<ondown>9000</ondown>
-			<onback>50</onback>
+			<onback condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onback>
+			<onback condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onback>
 			<control type="label" id="200">
 				<include>MediaMenuLabelCommon</include>
 				<label>$LOCALIZE[14018]</label>
@@ -377,21 +345,21 @@
 			<control type="button" id="6051">
 				<include>MediaMenuItemsCommon</include>
 				<label>$LOCALIZE[31023]</label>
-				<label2>[B]$INFO[Container.Viewmode][/B]</label2>
+				<label2>$INFO[Container.Viewmode]</label2>
 				<visible>Integer.IsGreater(Container.ViewCount,1)</visible>
 				<onclick>Container.NextViewMode</onclick>
 			</control>
 			<control type="button" id="6053">
 				<include>MediaMenuItemsCommon</include>
 				<label>$LOCALIZE[31022]</label>
-				<label2>[B]$INFO[Container.SortMethod][/B]</label2>
+				<label2>$INFO[Container.SortMethod]</label2>
 				<visible>Control.IsEnabled(3)</visible>
 				<onclick>SendClick(3)</onclick>
 			</control>
 			<control type="button" id="6052">
 				<include>MediaMenuItemsCommon</include>
 				<label>$LOCALIZE[31032]</label>
-				<label2>[B]$INFO[Container.SortOrder][/B]</label2>
+				<label2>$INFO[Container.SortOrder]</label2>
 				<visible>Control.IsEnabled(4)</visible>
 				<onclick>SendClick(4)</onclick>
 			</control>
@@ -399,14 +367,14 @@
 			<control type="button" id="19">
 				<visible>Container.CanFilter + !Container.CanFilterAdvanced</visible>
 				<include>MediaMenuItemsCommon</include>
-				<onclick>right</onclick>
+				<onclick>left</onclick>
 				<label>$LOCALIZE[587]</label>
 			</control>
 			<control type="button" id="199">
 				<visible>Container.CanFilterAdvanced</visible>
 				<include>MediaMenuItemsCommon</include>
 				<label>$LOCALIZE[587]</label>
-				<onclick>right</onclick>
+				<onclick>left</onclick>
 				<onclick>Filter</onclick>
 			</control>
 		</definition>
@@ -417,13 +385,14 @@
 			<label>$LOCALIZE[137]</label>
 		</control>
 	</include>
+	<!-- Estuary's mouse strip for opening the menu; mouse input is off in Bald, so it only keeps the id. -->
 	<include name="MediaMenuMouseOverlay">
 		<control type="button" id="6130">
 			<label></label>
-			<left>-50</left>
-			<top>200</top>
-			<bottom>0</bottom>
+			<left>1870</left>
+			<top>Bald_ContentTop</top>
 			<width>50</width>
+			<height>624</height>
 			<texturefocus />
 			<texturenofocus />
 		</control>
