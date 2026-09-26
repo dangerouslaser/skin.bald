@@ -76,6 +76,19 @@ Global Search (script-globalsearch.xml, script.globalsearch 9.x)
 9000	Category list (right-hand options menu)
 		The add-on requires all five and owns their data and actions.
 
+Select dialogs (DialogSelect.xml via Includes_DialogSelect.xml and Includes_Bald_Foundations.xml)
+1		Heading label (DialogBackgroundCommons header_id)
+3		Simple list (Bald_SelectSimpleList); the game saves panel in gamesaves
+6		Detailed list (Bald_SelectDetailedItem rows, or Bald_SelectStreamList for the stream pickers)
+5, 8	Extra buttons Kodi labels and shows on demand; 7 Cancel (Bald_SelectButtons)
+61		Page indicator of 3 and 6 (Bald_SelectScrollbar)
+9001	Action grouplist (skin-side, not bound by Kodi)
+10820-10826, 10828
+		Game saves (CDialogGameSaves): 10820 heading, 10822 caption, 10823 emulator name, 10824 emulator
+		icon, 10825 new save, 10826 cancel, 10828 emulator version
+10811, 10812
+		Game video pickers (CDialogGameVideoSelect): 10811 thumbnail panel, 10812 description
+
 
 LIBRARY VIEWS (MyVideoNav.xml <views>; one container per view mode)
 

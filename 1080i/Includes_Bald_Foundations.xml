@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Shared foundations: the pieces of Kodi's select dialogs (DialogSelect.xml through Includes_DialogSelect.xml)
+     that repeat across its layouts, in Bald's popup language (docs/SPEC.md 5.14): 70% ink rows on a 10% ink focus
+     row, a hairline between the list and the actions, a 4 px page indicator and pill actions. Control ids are Kodi's
+     (CGUIDialogSelect, CDialogGameSaves, CDialogGameVideoSelect) and are listed in 1080i/IDs. -->
+<includes>
+	<!-- Hairline between a select dialog's list and its action column, at the list's right edge. -->
+	<include name="Bald_SelectDivider">
+		<param name="left" />
+		<definition>
+			<control type="image">
+				<left>$PARAM[left]</left>
+				<top>70</top>
+				<width>1</width>
+				<bottom>0</bottom>
+				<texture colordiffuse="bald_ink10">bald/white.png</texture>
+			</control>
+		</definition>
+	</include>
+
+	<!-- The simple list (3) Kodi fills for plain selections, in the shared popup list look. -->
+	<include name="Bald_SelectSimpleList">
+		<param name="width" />
+		<param name="row_width" />
+		<definition>
+			<control type="list" id="3">
+				<left>20</left>
+				<top>100</top>
+				<width>$PARAM[width]</width>
+				<bottom>20</bottom>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime tween="cubic" easing="out">200</scrolltime>
+				<include content="DefaultSimpleListLayout">
+					<param name="width" value="$PARAM[row_width]" />
+					<param name="list_id" value="3" />
+				</include>
+			</control>
+		</definition>
+	</include>
+
+	<!-- The list's page indicator (61): a 4 px bar like the settings pages', never a focus stop in normal use. -->
+	<include name="Bald_SelectScrollbar">
+		<param name="left" />
+		<definition>
+			<control type="scrollbar" id="61">
+				<left>$PARAM[left]</left>
+				<top>100</top>
+				<width>4</width>
+				<bottom>20</bottom>
+				<onleft condition="Control.IsVisible(3)">3</onleft>
+				<onleft condition="Control.IsVisible(6)">6</onleft>
+				<onright>9001</onright>
+				<orientation>vertical</orientation>
+				<texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground>
+				<texturesliderbar colordiffuse="bald_ink34">bald/white.png</texturesliderbar>
+				<texturesliderbarfocus colordiffuse="bald_ink">bald/white.png</texturesliderbarfocus>
+				<textureslidernib />
+				<textureslidernibfocus />
+			</control>
+		</definition>
+	</include>
+
+	<!-- Item count and page, bottom right of the action column. -->
+	<include name="Bald_SelectCount">
+		<param name="left" />
+		<param name="label">$VAR[SelectLabel]</param>
+		<definition>
+			<control type="label">
+				<left>$PARAM[left]</left>
+				<bottom>10</bottom>
+				<width>275</width>
+				<height>35</height>
+				<font>Bald_Hint</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>bald_ink60</textcolor>
+				<label>$PARAM[label]</label>
+			</control>
+		</definition>
+	</include>
+
+	<!-- The action column: Kodi's extra buttons 5 and 8 (labelled by Kodi, hidden when unused) and Cancel (7). -->
+	<include name="Bald_SelectButtons">
+		<param name="left" />
+		<definition>
+			<control type="grouplist" id="9001">
+				<left>$PARAM[left]</left>
+				<top>80</top>
+				<onleft>61</onleft>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<onright>3</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="5" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="8" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="7" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+			</control>
+		</definition>
+	</include>
+
+	<!-- The row focus surface of the popup lists: 10% ink, halved while the list is not focused. -->
+	<include name="Bald_SelectFocusRow">
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<right>0</right>
+			<bottom>0</bottom>
+			<texture colordiffuse="bald_ink10">bald/white.png</texture>
+			<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
+		</control>
+	</include>
+
+	<!-- One row of the detailed list (6): thumb or PVR timer icon, label and a two-line label2. -->
+	<include name="Bald_SelectDetailedItem">
+		<param name="focused">false</param>
+		<param name="color">bald_ink70</param>
+		<param name="color2">bald_ink45</param>
+		<definition>
+			<control type="group">
+				<visible>$PARAM[focused]</visible>
+				<include>Bald_SelectFocusRow</include>
+			</control>
+			<control type="image">
+				<left>12</left>
+				<top>7</top>
+				<width>110</width>
+				<height>110</height>
+				<texture>$VAR[InfoWallThumbVar]</texture>
+				<aspectratio>keep</aspectratio>
+				<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
+			</control>
+			<control type="image">
+				<left>27</left>
+				<top>22</top>
+				<width>80</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<aligny>center</aligny>
+				<texture>icons/pvr/timers/recording.png</texture>
+				<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
+			</control>
+			<control type="image">
+				<left>27</left>
+				<top>22</top>
+				<width>80</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<aligny>center</aligny>
+				<texture>icons/pvr/timers/bell.png</texture>
+				<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
+			</control>
+			<control type="gamecontroller">
+				<description>The animated controller image for game controllers in the select dialog</description>
+				<left>12</left>
+				<top>7</top>
+				<width>110</width>
+				<height>110</height>
+				<texture>$INFO[ListItem.Art(icon)]</texture>
+				<peripherallocation>$INFO[ListItem.FilenameAndPath]</peripherallocation>
+				<controllerdiffuse>bald_accent</controllerdiffuse>
+				<visible>String.StartsWith(ListItem.FilenameAndPath,peripherals://)</visible>
+			</control>
+			<control type="label">
+				<left>135</left>
+				<top>6</top>
+				<right>20</right>
+				<height>50</height>
+				<font>Bald_Section</font>
+				<aligny>center</aligny>
+				<textcolor>$PARAM[color]</textcolor>
+				<scroll>$PARAM[focused]</scroll>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="textbox">
+				<left>135</left>
+				<top>56</top>
+				<right>20</right>
+				<height>56</height>
+				<font>Bald_CaptionPlot</font>
+				<textcolor>$PARAM[color2]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+		</definition>
+	</include>
+
+	<!-- The stream pickers' detailed list (6): an accent check on the stream in use, the stream's name and details,
+	     and Estuary's star on the default stream tinted with ink. The two lines come from the calling layout. -->
+	<include name="Bald_SelectStreamList">
+		<param name="width" />
+		<param name="label" />
+		<param name="label2" />
+		<definition>
+			<control type="fixedlist" id="6">
+				<left>20</left>
+				<top>100</top>
+				<width>$PARAM[width]</width>
+				<bottom>20</bottom>
+				<onup>6</onup>
+				<ondown>6</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<focusposition>4</focusposition>
+				<startmovement>4</startmovement>
+				<endmovement>5</endmovement>
+				<aligny>top</aligny>
+				<scrolltime tween="cubic" easing="out">200</scrolltime>
+				<itemlayout height="75" width="$PARAM[width]">
+					<include content="Bald_SelectStreamItem">
+						<param name="label" value="$PARAM[label]" />
+						<param name="label2" value="$PARAM[label2]" />
+					</include>
+				</itemlayout>
+				<focusedlayout height="75" width="$PARAM[width]">
+					<include content="Bald_SelectStreamItem">
+						<param name="label" value="$PARAM[label]" />
+						<param name="label2" value="$PARAM[label2]" />
+						<param name="focused" value="true" />
+						<param name="color" value="bald_ink" />
+						<param name="color2" value="bald_ink60" />
+					</include>
+				</focusedlayout>
+			</control>
+		</definition>
+	</include>
+
+	<include name="Bald_SelectStreamItem">
+		<param name="label" />
+		<param name="label2" />
+		<param name="focused">false</param>
+		<param name="color">bald_ink70</param>
+		<param name="color2">bald_ink45</param>
+		<definition>
+			<control type="group">
+				<visible>$PARAM[focused]</visible>
+				<include>Bald_SelectFocusRow</include>
+			</control>
+			<control type="image">
+				<left>13</left>
+				<top>8</top>
+				<width>24</width>
+				<height>24</height>
+				<texture colordiffuse="bald_accent">bald/check.png</texture>
+				<visible>ListItem.IsSelected</visible>
+			</control>
+			<control type="label">
+				<left>50</left>
+				<top>5</top>
+				<right>50</right>
+				<height>30</height>
+				<aligny>center</aligny>
+				<font>Bald_Section</font>
+				<textcolor>$PARAM[color]</textcolor>
+				<scroll>$PARAM[focused]</scroll>
+				<label>$PARAM[label]</label>
+			</control>
+			<control type="label">
+				<left>50</left>
+				<top>42</top>
+				<right>50</right>
+				<height>26</height>
+				<font>Bald_CaptionMeta</font>
+				<aligny>center</aligny>
+				<textcolor>$PARAM[color2]</textcolor>
+				<scroll>$PARAM[focused]</scroll>
+				<label>$PARAM[label2]</label>
+			</control>
+			<control type="image">
+				<right>13</right>
+				<top>8</top>
+				<width>24</width>
+				<height>24</height>
+				<aspectratio>keep</aspectratio>
+				<align>right</align>
+				<texture colordiffuse="$PARAM[color2]">icons/menumarks/star.png</texture>
+				<visible>ListItem.Property(stream.isdefault)</visible>
+			</control>
+		</definition>
+	</include>
+
+	<!-- One savestate tile (panel 3 of the game saves dialog): screenshot, name and date, focus surface. -->
+	<include name="Bald_GameSaveItem">
+		<param name="focused">false</param>
+		<param name="color">bald_ink70</param>
+		<param name="color2">bald_ink45</param>
+		<definition>
+			<control type="image">
+				<texture colordiffuse="bald_ink10">bald/white.png</texture>
+				<visible>$PARAM[focused] + Control.HasFocus(3)</visible>
+			</control>
+			<control type="image">
+				<left>10</left>
+				<right>10</right>
+				<top>10</top>
+				<height>256</height>
+				<texture>$INFO[ListItem.Art(screenshot)]</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<left>10</left>
+				<right>10</right>
+				<top>282</top>
+				<height>30</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>$PARAM[focused]</scroll>
+				<font>Bald_Section</font>
+				<textcolor>$PARAM[color]</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>10</left>
+				<right>10</right>
+				<top>318</top>
+				<height>28</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>$PARAM[focused]</scroll>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>$PARAM[color2]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+		</definition>
+	</include>
+
+	<!-- The game video pickers (filter, stretch mode, rotation, in-game saves) are bottom sheets over the game:
+	     a click-outside close area, then an opaque field sheet with a quiet ink hairline on top. -->
+	<include name="Bald_GameSheetCloseArea">
+		<param name="height" />
+		<definition>
+			<control type="button">
+				<description>background close area</description>
+				<left>0</left>
+				<top>0</top>
+				<width>100%</width>
+				<bottom>$PARAM[height]</bottom>
+				<texturefocus />
+				<texturenofocus />
+				<onclick>Action(close)</onclick>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_GameSheetSurface">
+		<control type="group">
+			<animation type="WindowOpen">
+				<effect type="fade" start="0" end="100" time="300" tween="sine" easing="inout" />
+			</animation>
+			<animation type="WindowClose">
+				<effect type="fade" start="100" end="0" time="300" tween="sine" easing="inout" />
+			</animation>
+			<control type="image">
+				<texture colordiffuse="bald_field">bald/white.png</texture>
+			</control>
+			<control type="image">
+				<height>1</height>
+				<texture colordiffuse="bald_ink10">bald/white.png</texture>
+			</control>
+		</control>
+	</include>
+
+	<!-- One tile of a game video picker (panel 10811): a placeholder well, the item's icon, Kodi's live preview
+	     (the <gamewindow> passed as the include's child), the name over its description, and the focus ring. -->
+	<include name="Bald_GameVideoTile">
+		<param name="focused">false</param>
+		<param name="label_height">80</param>
+		<param name="color">bald_ink70</param>
+		<definition>
+			<control type="group">
+				<left>18</left>
+				<right>18</right>
+				<top>5</top>
+				<control type="image">
+					<width>444</width>
+					<height>250</height>
+					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
+				</control>
+				<control type="image">
+					<width>444</width>
+					<height>250</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[ListItem.Icon]</texture>
+				</control>
+				<nested />
+				<control type="label">
+					<top>262</top>
+					<width>444</width>
+					<height>$PARAM[label_height]</height>
+					<label>$INFO[ListItem.Label][CR][COLOR bald_ink60]$INFO[ListItem.Label2][/COLOR]</label>
+					<font>Bald_Section</font>
+					<textcolor>$PARAM[color]</textcolor>
+					<align>center</align>
+				</control>
+				<control type="image">
+					<left>-4</left>
+					<top>-4</top>
+					<width>452</width>
+					<height>258</height>
+					<texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture>
+					<visible>$PARAM[focused] + Control.HasFocus(10811)</visible>
+				</control>
+			</control>
+		</definition>
+	</include>
+</includes>
