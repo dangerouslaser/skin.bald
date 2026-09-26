@@ -64,7 +64,8 @@
 					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.ConfigureNode,hubs,home)</onclick>
 					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.ConfigureItem,$INFO[Container(9300).ListItem.Property(slot)],home)</onclick>
 					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.ConfigureMode,widgets,home)</onclick>
-					<onclick>ActivateWindow(1116)</onclick>
+					<!-- Never without a hub's index: with no node, Skin Variables edits the hubs list itself as rows. -->
+					<onclick condition="!$EXP[Bald_HubCategorySelected] | !String.IsEmpty(Container(9300).ListItem.Property(slot))">ActivateWindow(1116)</onclick>
 				</control>
 				<control type="button" id="9403"><include>Bald_ConfigureButton</include><label>$LOCALIZE[118]</label>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>

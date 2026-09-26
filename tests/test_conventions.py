@@ -131,7 +131,7 @@ class FocusFadeTests(unittest.TestCase):
 class StaticItemNumberTests(unittest.TestCase):
     """Kodi reads a static list item's label or property that is a plain number as a string id (CGUIControlFactory::
     GetInfoLabelFromElement), so a property meant as the number 2 reads "Music". Bald's static item properties must
-    not be bare numbers or a bare $PARAM that a caller fills with one; wrap a number in $NUMBER[...]."""
+    not be bare numbers or a bare $PARAM that a caller fills with one ($NUMBER[] resolves to nothing there either)."""
 
     def test_static_item_properties_are_not_bare_numbers(self):
         for path in sorted(SKIN.glob('*.xml')):

@@ -56,7 +56,7 @@ class HubSlotTests(unittest.TestCase):
         editor = resolve_window("Custom_1117_BaldHomeScreens.xml")
         slots = [item.findtext("property[@name='slot']") for item in editor.findall(".//control[@id='9300']/content/item")
                  if item.findtext("property[@name='kind']") == "hub"]
-        self.assertEqual(slots, [f"$NUMBER[{n}]" for n in range(HUB_SLOTS)])
+        self.assertEqual(slots, [f"$INFO[Container(9390).ListItemAbsolute({n}).Property(item)]" for n in range(HUB_SLOTS)])
         full = ET.parse(XML / "Includes_Bald_Configure.xml").getroot().findtext("expression[@name='Bald_HubsFull']")
         self.assertEqual(full, f"[Integer.IsGreater(Container(9390).NumItems,{HUB_SLOTS - 1})]")
         timers = {node.findtext("name") for node in ET.parse(XML / "Timers.xml").getroot().findall("timer")}
