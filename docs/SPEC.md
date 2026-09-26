@@ -41,7 +41,7 @@ Fork Kodi 22's Estuary into the new skin id so every required window exists from
 
 ### Type
 
-One UI family: **Instrument Sans** (SIL OFL, ship the TTFs in `fonts/`). Clearlogos provide all title personality; the UI never uses a display face.
+One UI family at a time: **Instrument Sans** by default, or **DM Sans** as an optional skin-wide alternative, selected in Bald Settings › Appearance › Typography (both SIL OFL, static TTFs shipped in `fonts/`). Each is a `Font.xml` fontset with the same font names and sizes. DM Sans' fontset adjusts line spacing so multi-line text keeps Instrument Sans' pixel line heights. The scale below is specified in Instrument Sans. Clearlogos provide all title personality; the UI never uses a display face.
 
 | Role | Size | Weight | Notes |
 | --- | --- | --- | --- |
