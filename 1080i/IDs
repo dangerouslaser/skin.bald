@@ -26,8 +26,10 @@ Video library (MyVideoNav.xml)
 
 TV guide (MyPVRGuide.xml)
 11		Channel-group list (kept off-screen; Bald_PVRGuideTools draws the visible one)
+28		Channel-groups button (hidden; Bald_PVRGuideTools in Includes_PVR.xml)
 29, 30	Hidden labels Kodi fills; 30 is echoed as the footer hint
 50		EPG grid (Bald_EpgGrid, control_id param)
+1, 2	Label 1 and image 2 inside the EPG grid's layouts, numbered as Estuary numbers them
 63		EPG grid group
 
 Global Search (script-globalsearch.xml, script.globalsearch 9.x)
@@ -63,6 +65,12 @@ Hundreds digit 5, tens digit is the content level, units digit the layout.
   542	Episodes wall
 500-599	scripts/letters.py accepts only this range from RunScript(skin.bald,letters,<id>).
 		Each letter-mode entry passes the id of the container it sits on.
+
+TV guide chrome (MyPVRGuide.xml, Bald_EpgGrid and Bald_PVRGuideTools in Includes_PVR.xml)
+60		EPG grid scrollbar (the grid's pagecontrol)
+9000	Tools drawer grouplist (the window's menucontrol)
+9009-9016	Drawer buttons (Bald_PVRGuideToolButton, id param): 9009 Return to guide, 9010 Jump to now,
+		9011 Channel group, 9014 Choose date, 9015 Search, 9016 Exit Live TV; 9012-9013 unused
 
 Library chrome (MyVideoNav.xml and View_510_Bald_Posters.xml, shared by all Bald views)
 9000	Estuary side panel grouplist (non-Bald content)
