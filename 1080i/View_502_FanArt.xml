@@ -1,74 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: the compact list over the focused item's full-bleed fanart, darkened toward the list with Bald's info
+     scrims (field-coloured) so the art stays clear on the right, where the plot sits. Id 502, its viewtype and page
+     control 502600 are Estuary's. -->
 <includes>
 	<include name="View_502_FanArt">
 		<control type="group">
-			<include>OpenClose_Left</include>
 			<visible>Control.IsVisible(502)</visible>
-			<include>Visible_Left</include>
+			<include>Bald_BrowseViewIn</include>
+			<control type="image">
+				<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>700</fadetime>
+				<texture background="true">$VAR[Bald_BrowseWideArt]</texture>
+				<include>Bald_BrowseDim</include>
+			</control>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_h.png</texture></control>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_b.png</texture></control>
 			<include content="ListContainer">
-				<param name="left" value="-5" />
-				<param name="right" value="1195" />
 				<param name="list_id" value="502" />
+				<param name="width" value="900" />
+				<param name="label_width" value="560" />
+				<param name="label2_left" value="620" />
+				<param name="state_left" value="780" />
 				<param name="viewtype_label" value="$LOCALIZE[20445]" />
 			</include>
-		</control>
-		<control type="group">
-			<depth>DepthContentPanel</depth>
-			<include>OpenClose_Right</include>
-			<visible>Control.IsVisible(502)</visible>
-			<include>Visible_Right</include>
+			<control type="scrollbar" id="502600">
+				<left>1012</left>
+				<top>Bald_ContentTop</top>
+				<width>4</width>
+				<height>624</height>
+				<onleft>502</onleft>
+				<onright>502</onright>
+				<include content="Bald_BrowseScrollbarStyle" />
+			</control>
 			<control type="group">
-				<right>-20</right>
-				<width>1235</width>
-				<include content="ContentPanel">
-					<param name="width" value="1235" />
-					<param name="left" value="0" />
-					<param name="top" value="-20" />
-					<param name="flipx" value="true" />
-				</include>
-				<control type="image">
-					<left>38</left>
-					<right>36</right>
-					<top>115</top>
-					<height>644</height>
-					<fadetime>300</fadetime>
-					<texture border="2" fallback="special://skin/extras/home-images/movie.jpg" background="true">$VAR[FanartImageVar]</texture>
-					<aspectratio align="center" aligny="bottom">scale</aspectratio>
-				</control>
-				<control type="group">
-					<left>600</left>
-					<top>82</top>
-					<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
+				<visible>!ListItem.IsParentFolder + !$EXP[Bald_BrowseMenuOpen]</visible>
+				<include>Bald_BrowseFade</include>
+				<control type="label">
+					<left>Bald_PreviewLeft</left><top>600</top><width>528</width><height>28</height>
+					<font>Bald_CaptionMeta</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowseMeta]</label>
 				</control>
 				<control type="textbox">
-					<left>50</left>
-					<right>50</right>
-					<top>769</top>
-					<bottom>105</bottom>
-					<label>$VAR[PlotTextBoxVar]</label>
+					<left>Bald_PreviewLeft</left><top>640</top><width>528</width><height>240</height>
+					<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowsePlot]</label>
 					<autoscroll time="3000" delay="7000" repeat="5000">!System.HasActiveModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
-				</control>
-				<control type="scrollbar" id="502600">
-					<left>20</left>
-					<top>list_top_offset</top>
-					<width>12</width>
-					<bottom>list_bottom_offset</bottom>
-					<onleft>502</onleft>
-					<onright>502</onright>
-					<orientation>vertical</orientation>
-					<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(502600)">conditional</animation>
-				</control>
-				<control type="group">
-					<left>40</left>
-					<top>770</top>
-					<visible>ListItem.IsCollection + String.IsEmpty(ListItem.PlotOutline) + String.IsEmpty(ListItem.Plot)</visible>
-					<include content="InfoList">
-						<param name="bottom" value="108" />
-						<param name="width" value="1000" />
-						<param name="sortby" value="year" />
-						<param name="sortorder" value="ascending" />
-						<param name="font" value="font13" />
-					</include>
 				</control>
 			</control>
 		</control>

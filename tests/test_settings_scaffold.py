@@ -19,10 +19,10 @@ WINDOWS = {
 # Estuary skin settings that windows Bald still ships read, and where one reader is.
 LIVE_ESTUARY_SETTINGS = {
     "no_slide_animations": "Includes_Animations.xml",
-    "autoscroll": "MyVideoNav.xml",
+    "autoscroll": "Includes_Bald_Browse.xml",
     "touchmode": "Includes.xml",
     "show_weatherinfo": "Includes.xml",
-    "hide_mediaflags": "MyVideoNav.xml",
+    "hide_mediaflags": "Includes_Bald_Browse.xml",
     "circle_userrating": "Includes.xml",
     "show_profilename": "Includes.xml",
     "OriginalTitleFormat_1st": "Variables.xml",

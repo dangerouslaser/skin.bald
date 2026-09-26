@@ -1,133 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: video versions and extras as 88 px rows with a 16:9 still, title, duration and stream details, beside the
+     preview column the window supplies. Id, viewtype, visibility, page control 531 and label 50401 are Estuary's. -->
 <includes>
+	<include name="Bald_MediaListRow">
+		<param name="ink">bald_ink70</param>
+		<param name="diffuse">bald_poster_dim</param>
+		<param name="details_visible">true</param>
+		<definition>
+			<control type="image"><left>26</left><top>12</top><width>112</width><height>63</height><texture colordiffuse="bald_tile_placeholder">bald/white.png</texture></control>
+			<control type="image">
+				<left>26</left><top>12</top><width>112</width><height>63</height><aspectratio>scale</aspectratio>
+				<texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[VideoListThumbVar]</texture>
+			</control>
+			<control type="label">
+				<left>158</left><top>12</top><width>820</width><height>32</height>
+				<font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><label>$VAR[ListLabelVar]</label>
+			</control>
+			<control type="label">
+				<left>990</left><top>12</top><width>150</width><height>32</height><align>right</align>
+				<font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><label>$INFO[ListItem.Duration]</label>
+			</control>
+			<control type="label">
+				<left>158</left><top>48</top><width>980</width><height>26</height>
+				<font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[MediaInfoListLabel2Var]</label>
+				<visible>$PARAM[details_visible]</visible>
+			</control>
+		</definition>
+	</include>
 	<include name="View_504_MediaList">
 		<param name="bottom_offset">list_bottom_offset</param>
 		<definition>
 			<control type="group">
-				<include>OpenClose_Right</include>
 				<visible>Control.IsVisible(504)</visible>
-				<include>Visible_Right</include>
-				<control type="fixedlist" id="504">
+				<include>Bald_BrowseViewIn</include>
+				<control type="list" id="504">
 					<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
 					<visible>$EXP[videoasset_true]</visible>
-					<left>594</left>
-					<top>list_top_offset</top>
-					<bottom>$PARAM[bottom_offset]</bottom>
-					<right>0</right>
-					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<left>Bald_SafeLeft</left>
+					<top>Bald_ContentTop</top>
+					<width>1140</width>
+					<height>616</height>
+					<scrolltime tween="cubic" easing="out">440</scrolltime>
 					<orientation>vertical</orientation>
+					<preloaditems>2</preloaditems>
 					<pagecontrol>531</pagecontrol>
-					<movement>3</movement>
-					<focusposition>3</focusposition>
 					<onleft>9000</onleft>
 					<onright>531</onright>
 					<onup>504</onup>
 					<ondown>504</ondown>
 					<viewtype label="$LOCALIZE[31108]">list</viewtype>
-					<focusedlayout height="100" condition="$EXP[videoasset_true]">
-					<control type="image">
-							<left>0</left>
-							<right>0</right>
-							<bottom>0</bottom>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
-							<visible>Control.HasFocus(504)</visible>
-						</control>
-						<control type="image">
-							<left>35</left>
-							<top>17</top>
-							<width>32</width>
-							<height>32</height>
-							<texture>$VAR[ListWatchedIconVar]</texture>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<top>10</top>
-							<height>50</height>
-							<right>40</right>
-							<aligny>center</aligny>
-							<label>$VAR[ListLabelVar]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<top>10</top>
-							<height>50</height>
-							<right>40</right>
-							<align>right</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Duration]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label" id="50401">
-							<left>105</left>
-							<right>40</right>
-							<top>53</top>
-							<height>30</height>
-							<font>font12</font>
-							<aligny>top</aligny>
-							<label>$VAR[MediaInfoListLabel2Var]</label>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<right>40</right>
-							<top>53</top>
-							<height>30</height>
-							<font>font12</font>
-							<aligny>top</aligny>
-							<align>right</align>
-							<label>$VAR[ListLabel2Var]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</focusedlayout>
-					<itemlayout height="100" condition="$EXP[videoasset_true]">
-					<control type="image">
-							<left>35</left>
-							<top>17</top>
-							<width>32</width>
-							<height>32</height>
-							<texture>$VAR[ListWatchedIconVar]</texture>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<top>10</top>
-							<height>50</height>
-							<right>40</right>
-							<aligny>center</aligny>
-							<label>$VAR[ListLabelVar]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<top>10</top>
-							<height>50</height>
-							<right>40</right>
-							<align>right</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Duration]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<right>40</right>
-							<top>53</top>
-							<height>30</height>
-							<font>font12</font>
-							<aligny>top</aligny>
-							<label>$VAR[MediaInfoListLabel2Var]</label>
-							<textcolor>grey</textcolor>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<right>40</right>
-							<top>53</top>
-							<height>30</height>
-							<font>font12</font>
-							<aligny>top</aligny>
-							<align>right</align>
-							<label>$VAR[ListLabel2Var]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+					<include>Bald_BrowseDim</include>
+					<itemlayout height="88" width="1140">
+						<include content="Bald_MediaListRow" />
 					</itemlayout>
+					<focusedlayout height="88" width="1140">
+						<include content="Bald_BrowseRowDot"><param name="top">40</param><param name="visible">Control.HasFocus(504)</param></include>
+						<control type="label" id="50401">
+							<left>158</left><top>48</top><width>980</width><height>26</height>
+							<font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[MediaInfoListLabel2Var]</label>
+						</control>
+						<include content="Bald_MediaListRow"><param name="ink">bald_ink</param><param name="diffuse">bald_ink</param><param name="details_visible">false</param></include>
+					</focusedlayout>
 				</control>
 			</control>
 		</definition>
