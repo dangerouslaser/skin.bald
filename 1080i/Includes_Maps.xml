@@ -110,13 +110,4 @@
 		<entry key="hdr10">HDR10</entry>
 		<entry key="hlg">HLG</entry>
 	</map>
-	<map name="DefaultAudioTrackMap" ref="DefaultCodecMap">
-		<entry key="aac_latm">AAC LATM</entry>
-		<entry key="mp3float">MP3 Float</entry>
-		<entry key="pcm_bluray">PCM Bluray</entry>
-		<entry key="pcm_s16le">PCM S16LE</entry>
-		<entry key="pcm_s24le">PCM S24LE</entry>
-		<entry key="wavpack">WAVPACK</entry>
-		<entry key="wmav2">WMAv2</entry>
-	</map>
 </includes>
