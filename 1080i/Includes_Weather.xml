@@ -1,153 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<!-- Weather includes for MyWeather.xml, from Kodi 22 Estuary's Includes_Home.xml (GPL-2.0-or-later, see
-	     LICENSE-Estuary.txt). Estuary's Home widget includes that shared the file were removed with Estuary's Home. -->
+	     LICENSE-Estuary.txt). Estuary's Home widget includes that shared the file were removed with Estuary's Home.
+	     Restyled for Bald (docs/NOTES.md, "Media windows restyle"): forecast rows are captioned Bald rows of
+	     forecast cards, and the maps sit on the safe margin. Item content and ids are Estuary's. -->
+	<!-- Row caption, shown while its panel has items (or is still loading). -->
 	<include name="CategoryLabel">
 		<param name="visible">true</param>
 		<param name="item_treshold">0</param>
 		<definition>
 			<control type="label" id="$PARAM[list_id]666">
-				<left>55</left>
-				<top>80</top>
-				<width>900</width>
-				<height>90</height>
+				<left>Bald_SafeLeft</left>
+				<top>0</top>
+				<width>1200</width>
+				<height>32</height>
+				<aligny>center</aligny>
+				<font>Bald_RowLabel</font>
+				<textcolor>bald_ink60</textcolor>
 				<label>$PARAM[label]</label>
-				<shadowcolor>text_shadow</shadowcolor>
 				<visible>$PARAM[visible]</visible>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold]) | [Container($PARAM[list_id]).IsUpdating + Integer.IsEqual(Container($PARAM[list_id]).NumItems,0)]</visible>
 			</control>
 		</definition>
 	</include>
+	<!-- One forecast row: caption and a horizontal panel of cards (Bald_WeatherCard), 400 px in the page. -->
 	<include name="WeatherWidget">
 		<param name="width">266</param>
 		<definition>
-			<include content="CategoryLabel">
-				<param name="label">$PARAM[widget_header]</param>
-				<param name="list_id" value="$PARAM[list_id]"/>
-				<param name="visible" value="$PARAM[visible]"/>
-			</include>
-			<control type="panel" id="$PARAM[list_id]">
-				<left>0</left>
-				<top>90</top>
-				<right>0</right>
-				<height>396</height>
-				<include content="WidgetListCommon">
+			<control type="group">
+				<height>400</height>
+				<visible>$PARAM[visible]</visible>
+				<include content="CategoryLabel">
+					<param name="label">$PARAM[widget_header]</param>
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
-				<visible>$PARAM[visible]</visible>
-				<itemlayout width="$PARAM[width]" height="320">
-					<control type="group">
-						<left>70</left>
-						<control type="image">
-							<left>0</left>
-							<top>20</top>
-							<width>254</width>
-							<height>280</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-						</control>
-						<control type="multiimage">
-							<left>60</left>
-							<top>108</top>
-							<width>130</width>
-							<height>130</height>
-							<imagepath>$INFO[ListItem.Icon]</imagepath>
-							<aspectratio>keep</aspectratio>
-							<timeperimage>20</timeperimage>
-							<fadetime>10</fadetime>
-							<randomize>false</randomize>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>45</top>
-							<align>center</align>
-							<label>$INFO[ListItem.Label]</label>
-							<width>230</width>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>78</top>
-							<align>center</align>
-							<font>font12</font>
-							<label>$INFO[ListItem.Property(ShortDate)]</label>
-							<width>230</width>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>236</top>
-							<align>center</align>
-							<label>$INFO[ListItem.Label2]</label>
-							<font>font12</font>
-							<width>230</width>
-						</control>
-					</control>
-				</itemlayout>
-				<focusedlayout width="$PARAM[width]" height="400">
-					<control type="group">
-						<left>70</left>
-						<depth>DepthContentPopout</depth>
-						<animation type="Focus">
-							<effect type="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="180,140" />
-						</animation>
-						<animation type="Unfocus">
-							<effect type="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="180,140" />
-						</animation>
-						<control type="image">
-							<left>0</left>
-							<top>20</top>
-							<width>254</width>
-							<height>280</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>20</top>
-							<width>254</width>
-							<height>280</height>
-							<texture colordiffuse="button_focus">colors/grey.png</texture>
-							<bordersize>20</bordersize>
-							<include>Animation_FocusTextureFade</include>
-						</control>
-						<control type="multiimage">
-							<left>60</left>
-							<top>108</top>
-							<width>130</width>
-							<height>130</height>
-							<imagepath>$INFO[ListItem.Icon]</imagepath>
-							<aspectratio>keep</aspectratio>
-							<timeperimage>20</timeperimage>
-							<fadetime>10</fadetime>
-							<randomize>false</randomize>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>45</top>
-							<align>center</align>
-							<label>$INFO[ListItem.Label]</label>
-							<width>230</width>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>78</top>
-							<align>center</align>
-							<font>font12</font>
-							<label>$INFO[ListItem.Property(ShortDate)]</label>
-							<width>230</width>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>236</top>
-							<align>center</align>
-							<label>$INFO[ListItem.Label2]</label>
-							<font>font12</font>
-							<width>230</width>
-						</control>
-					</control>
-				</focusedlayout>
-				<include>$PARAM[content_include]</include>
+				<control type="panel" id="$PARAM[list_id]">
+					<left>76</left>
+					<top>44</top>
+					<right>76</right>
+					<height>340</height>
+					<include content="WidgetListCommon">
+						<param name="list_id" value="$PARAM[list_id]"/>
+					</include>
+					<itemlayout width="$PARAM[width]" height="340">
+						<include content="Bald_WeatherCard" />
+					</itemlayout>
+					<focusedlayout width="$PARAM[width]" height="340">
+						<include content="Bald_WeatherCard">
+							<param name="focused">true</param>
+						</include>
+					</focusedlayout>
+					<include>$PARAM[content_include]</include>
+				</control>
 			</control>
 		</definition>
 	</include>
@@ -307,7 +211,7 @@
 	<include name="WeatherHourlyItem">
 		<item>
 			<label>$INFO[Weather.Data(Hourly.$PARAM[item_index].Time)]</label>
-			<label2>$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)]$INFO[Weather.Data(Hourly.$PARAM[item_index].Precipitation), • ]</label2>
+			<label2>$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)]$INFO[Weather.Data(Hourly.$PARAM[item_index].Precipitation), · ]</label2>
 			<property name="Temperature">$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)]</property>
 			<property name="Outlook">$INFO[Weather.Data(Hourly.$PARAM[item_id].Outlook)]</property>
 			<property name="Cloudiness">$INFO[Weather.Data(Hourly.$PARAM[item_index].Cloudiness)]</property>
@@ -321,7 +225,7 @@
 	<include name="WeatherDailyItem">
 		<item>
 			<label>$INFO[Weather.Data(Daily.$PARAM[item_index].ShortDay)]</label>
-			<label2>[COLOR blue]$INFO[Weather.Data(Daily.$PARAM[item_index].LowTemperature)][/COLOR]$INFO[Weather.Data(Daily.$PARAM[item_index].HighTemperature), • [COLOR red],[/COLOR]]</label2>
+			<label2>$INFO[Weather.Data(Daily.$PARAM[item_index].HighTemperature)]$INFO[Weather.Data(Daily.$PARAM[item_index].LowTemperature), · [COLOR bald_ink60],[/COLOR]]</label2>
 			<property name="LongDay">$INFO[Weather.Data(Daily.$PARAM[item_index].LongDay)]</property>
 			<property name="TempDay">$INFO[Weather.Data(Daily.$PARAM[item_index].TempDay)]</property>
 			<property name="Cloudiness">$INFO[Weather.Data(Daily.$PARAM[item_index].Cloudiness)]</property>
@@ -336,7 +240,7 @@
 	<include name="WeatherDayItem">
 		<item>
 			<label>$INFO[Weather.Data(Day$PARAM[item_index].Title)]</label>
-			<label2>[COLOR blue]$INFO[Weather.Data(Day$PARAM[item_index].LowTemp)][/COLOR] • [COLOR red]$INFO[Weather.Data(Day$PARAM[item_index].HighTemp)][/COLOR]</label2>
+			<label2>$INFO[Weather.Data(Day$PARAM[item_index].HighTemp)]$INFO[Weather.Data(Day$PARAM[item_index].LowTemp), · [COLOR bald_ink60],[/COLOR]]</label2>
 			<property name="LongDay"></property>
 			<property name="TempDay"></property>
 			<property name="Cloudiness"></property>
@@ -348,72 +252,71 @@
 			<visible>String.IsEmpty(Weather.Data(Daily.IsFetched)) + !String.IsEmpty(Weather.Data(Day$PARAM[item_index].Outlook))</visible>
 		</item>
 	</include>
+	<!-- One weather map page: heading, the map area with its layer, and the legend on a field chip. The page is
+	     1000 px tall so the grouplist brings one map at a time into view. -->
 	<include name="WeatherMapItem">
 		<control type="group" id="700$PARAM[item_id]">
-			<height>1110</height>
+			<height>1000</height>
 			<visible>Weather.IsFetched + !String.IsEmpty(Weather.Data(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Weather.Data(Map.IsFetched))</visible>
-			<centerleft>50%</centerleft>
-			<width>1920</width>
+			<control type="label" id="700$PARAM[item_id]9">
+				<left>Bald_SafeLeft</left>
+				<top>Bald_PageTitleTop</top>
+				<width>1200</width>
+				<height>52</height>
+				<aligny>center</aligny>
+				<font>Bald_CaptionTitle</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[Weather.Data(Map.$PARAM[item_id].Heading)]</label>
+			</control>
 			<control type="button" id="700$PARAM[item_id]0">
-				<left>50</left>
-				<top>100</top>
-				<width>1820</width>
-				<height>920</height>
+				<left>84</left>
+				<top>198</top>
+				<width>1752</width>
+				<height>744</height>
+				<texturefocus border="8" colordiffuse="bald_ink">bald/focus_ring.png</texturefocus>
+				<texturenofocus />
 				<onup>$PARAM[onup_id]</onup>
 				<ondown>$PARAM[ondown_id]</ondown>
 			</control>
 			<control type="image" id="700$PARAM[item_id]1">
-				<left>50</left>
-				<top>100</top>
-				<width>1820</width>
-				<height>920</height>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
+				<left>Bald_SafeLeft</left>
+				<top>210</top>
+				<width>1728</width>
+				<height>720</height>
+				<texture colordiffuse="bald_tile_placeholder">bald/white.png</texture>
 			</control>
 			<control type="image" id="700$PARAM[item_id]2">
-				<left>120</left>
-				<top>160</top>
-				<width>1680</width>
-				<height>800</height>
+				<left>Bald_SafeLeft</left>
+				<top>210</top>
+				<width>1728</width>
+				<height>720</height>
 				<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Area)]</texture>
 				<aspectratio>scale</aspectratio>
 			</control>
 			<control type="image" id="700$PARAM[item_id]3">
-				<left>120</left>
-				<top>160</top>
-				<width>1680</width>
-				<height>800</height>
+				<left>Bald_SafeLeft</left>
+				<top>210</top>
+				<width>1728</width>
+				<height>720</height>
 				<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Layer)]</texture>
 				<aspectratio>scale</aspectratio>
-				<colordiffuse>B0FFFFFF</colordiffuse>
+				<colordiffuse>bald_ink70</colordiffuse>
 			</control>
 			<control type="image" id="700$PARAM[item_id]4">
-				<left>1000</left>
-				<top>858</top>
-				<width>340</width>
-				<height>100</height>
-				<texture border="21">buttons/button-nofo.png</texture>
+				<left>1400</left>
+				<top>846</top>
+				<width>400</width>
+				<height>64</height>
+				<texture border="27" colordiffuse="bald_field60">bald/pill.png</texture>
 			</control>
 			<control type="image" id="700$PARAM[item_id]5">
-				<left>1340</left>
-				<top>880</top>
-				<width>350</width>
-				<height>55</height>
+				<left>1424</left>
+				<top>854</top>
+				<width>352</width>
+				<height>48</height>
+				<aspectratio>keep</aspectratio>
 				<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Legend)]</texture>
 			</control>
-		</control>
-		<control type="label" id="700$PARAM[item_id]9">
-			<left>1000</left>
-			<top>0</top>
-			<width>340</width>
-			<height>100</height>
-			<align>center</align>
-			<aligny>center</aligny>
-			<animation effect="slide" end="0,-92" time="0" condition="true">Conditional</animation>
-			<font>font30_title</font>
-			<label>$INFO[Weather.Data(Map.$PARAM[item_id].Heading)]</label>
-			<visible>Weather.IsFetched + !String.IsEmpty(Weather.Data(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Weather.Data(Map.IsFetched))</visible>
 		</control>
 	</include>
 	<include name="WidgetListCommon">

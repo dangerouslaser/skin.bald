@@ -542,4 +542,83 @@
 			</control>
 		</definition>
 	</include>
+	<!-- ============ Weather ============ -->
+	<!-- Forecast card (Includes_Weather.xml WeatherWidget, 240 x 300 in a 258 x 340 cell): day, date, the outlook
+	     icon and the temperatures. Focus fills a 10% ink tile and pops it to 1.05 (tile focus pop). -->
+	<include name="Bald_WeatherCard">
+		<param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<left>20</left>
+				<top>12</top>
+				<animation effect="zoom" start="100" end="105" center="120,150" time="280" tween="back" easing="out" condition="$PARAM[focused]">Conditional</animation>
+				<control type="image">
+					<width>240</width><height>300</height>
+					<texture border="8" colordiffuse="bald_ink10">bald/tile_256.png</texture>
+					<visible>$PARAM[focused]</visible>
+				</control>
+				<control type="label">
+					<left>12</left><top>24</top><width>216</width><height>30</height>
+					<align>center</align><aligny>center</aligny><font>Bald_Section</font>
+					<textcolor>bald_ink70</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>![$PARAM[focused]]</visible>
+				</control>
+				<control type="label">
+					<left>12</left><top>24</top><width>216</width><height>30</height>
+					<align>center</align><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>$PARAM[focused]</visible>
+				</control>
+				<control type="label">
+					<left>12</left><top>56</top><width>216</width><height>24</height>
+					<align>center</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink45</textcolor>
+					<label>$INFO[ListItem.Property(ShortDate)]</label>
+				</control>
+				<control type="multiimage">
+					<left>60</left><top>96</top><width>120</width><height>120</height>
+					<imagepath>$INFO[ListItem.Icon]</imagepath>
+					<aspectratio>keep</aspectratio>
+					<timeperimage>20</timeperimage>
+					<fadetime>10</fadetime>
+					<randomize>false</randomize>
+				</control>
+				<control type="label">
+					<left>12</left><top>236</top><width>216</width><height>30</height>
+					<align>center</align><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink</textcolor>
+					<label>$INFO[ListItem.Label2]</label>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- Current conditions figure (MyWeather.xml): Estuary's weather icon in 60% ink, the name over the value of the
+	     infolabel named by `info`. -->
+	<include name="Bald_WeatherStat">
+		<param name="info" />
+		<param name="texture" />
+		<param name="header" />
+		<definition>
+			<control type="group">
+				<width>280</width>
+				<height>56</height>
+				<visible>!String.IsEmpty($PARAM[info])</visible>
+				<include content="Bald_MediaIcon">
+					<param name="texture">$PARAM[texture]</param>
+					<param name="left">0</param>
+					<param name="top">8</param>
+					<param name="ink">bald_ink60</param>
+				</include>
+				<control type="label">
+					<left>56</left><top>0</top><width>220</width><height>22</height>
+					<font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor>
+					<label>$PARAM[header]</label>
+				</control>
+				<control type="label">
+					<left>56</left><top>24</top><width>220</width><height>30</height>
+					<font>Bald_DetailValue</font><textcolor>bald_ink</textcolor>
+					<label>$INFO[$PARAM[info]]</label>
+				</control>
+			</control>
+		</definition>
+	</include>
 </includes>

@@ -2260,6 +2260,7 @@ msgid "Select a profile to edit it, or add a new one."
 msgstr ""
 
 #: /1080i/DialogPictureInfo.xml
+#: /1080i/MyWeather.xml
 #: /1080i/SettingsSystemInfo.xml
 msgctxt "#31966"
 msgid "Up and down to browse"
@@ -2283,4 +2284,9 @@ msgstr ""
 #: /1080i/DialogMusicInfo.xml
 msgctxt "#31983"
 msgid "Details"
+msgstr ""
+
+#: /1080i/MyWeather.xml
+msgctxt "#31984"
+msgid "Menu for weather settings"
 msgstr ""
