@@ -27,11 +27,17 @@ NATIVE_IDS = {
     "SlideShow.xml": {"10"},
     # CGUIDialogPictureInfo: the details list.
     "DialogPictureInfo.xml": {"5"},
+    # CGUIWindowVisualisation: the visualisation.
+    "MusicVisualisation.xml": {"2"},
+    # CGUIDialogMusicInfo: refresh, rating, play, choose art, artist/album info, list.
+    "DialogMusicInfo.xml": {"6", "7", "8", "10", "12", "50"},
 }
 # Kodi reads these control types by id, so the type must stay what Kodi casts to.
 NATIVE_TYPES = {
+    ("DialogMusicInfo.xml", "50"): "panel",
     ("DialogPictureInfo.xml", "5"): "list",
     ("LoginScreen.xml", "52"): "fixedlist",
+    ("MusicVisualisation.xml", "2"): "visualisation",
     ("SlideShow.xml", "10"): "label",
     ("DialogColorPicker.xml", "6"): "panel",
     ("DialogMediaSource.xml", "12"): "edit",
@@ -40,6 +46,7 @@ NATIVE_TYPES = {
 # Files this stream restyled; every colour, font and chrome texture in them is Bald's.
 RESTYLED = sorted(NATIVE_IDS) + [
     "Includes_Bald_Media.xml",
+    "Includes_MusicInfo.xml",
 ]
 COLOR_TAGS = {"textcolor", "focusedcolor", "disabledcolor", "invalidcolor", "selectedcolor", "shadowcolor",
               "colordiffuse", "controllerdiffuse"}
@@ -85,6 +92,15 @@ class NativeContractTests(unittest.TestCase):
             types = {node.get("type") for node in root.iter("control") if node.get("id") == control_id}
             with self.subTest(window=name, id=control_id):
                 self.assertEqual(types, {kind})
+
+    def test_music_info_leaves_kodi_managed_visibility_alone(self):
+        # Kodi shows and hides 7, 8 and 12 itself; a <visible> on them would override it every frame.
+        root = Skin().window("DialogMusicInfo.xml")
+        for node in root.iter("control"):
+            if node.get("id") in ("7", "8", "12"):
+                visible = [v.text for v in node.findall("visible")]
+                with self.subTest(id=node.get("id")):
+                    self.assertTrue(all((v or "").strip() in ("", "true") for v in visible), visible)
 
     def test_no_onback_previousmenu(self):
         for name in NATIVE_IDS:
