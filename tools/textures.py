@@ -29,6 +29,9 @@ def save(im, name):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     save(Image.new("RGBA", (8, 8), (255, 255, 255, 255)), "white.png")
+    # Fully transparent 16 px square: the bar texture for sliders whose bar is not drawn. Kodi scales a slider's nib
+    # by the control height over this texture's height, so it matches slider_nib.png (16 px) for a 1:1 nib.
+    save(Image.new("RGBA", (16, 16), (0, 0, 0, 0)), "slider_clear.png")
     dot = Image.new("L", (64 * SS, 64 * SS), 0)
     ImageDraw.Draw(dot).ellipse([0, 0, 64 * SS - 1, 64 * SS - 1], fill=255)
     im = Image.new("RGBA", (64, 64), (255, 255, 255, 0)); im.putalpha(dot.resize((64, 64), Image.LANCZOS))

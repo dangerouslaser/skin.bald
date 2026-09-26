@@ -420,8 +420,11 @@
 		<param name="nib">bald_accent</param>
 		<definition>
 			<height>16</height>
-			<texturesliderbar />
-			<texturesliderbardisabled />
+			<!-- Kodi scales the nib by the control height over the bar texture's height, so the bar must be a real
+			     texture the nib's size (bald/slider_clear.png, fully transparent). An empty bar left nothing to scale from, and on
+			     CoreELEC the 16 px accent nib blew up into a screen-sized blob. -->
+			<texturesliderbar>bald/slider_clear.png</texturesliderbar>
+			<texturesliderbardisabled>bald/slider_clear.png</texturesliderbardisabled>
 			<textureslidernib colordiffuse="$PARAM[nib]">bald/slider_nib.png</textureslidernib>
 			<textureslidernibfocus colordiffuse="$PARAM[nib]">bald/slider_nib.png</textureslidernibfocus>
 			<textureslidernibdisabled />
@@ -434,8 +437,9 @@
 		<top>762</top>
 		<width>1728</width>
 		<height>16</height>
-		<texturesliderbar />
-		<texturesliderbardisabled />
+		<!-- Transparent, nib-sized bar for the same reason as Bald_PlaybackNib; the nibs stay empty (invisible). -->
+		<texturesliderbar>bald/slider_clear.png</texturesliderbar>
+		<texturesliderbardisabled>bald/slider_clear.png</texturesliderbardisabled>
 		<textureslidernib />
 		<textureslidernibfocus />
 		<textureslidernibdisabled />
