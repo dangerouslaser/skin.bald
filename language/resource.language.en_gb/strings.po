@@ -1367,6 +1367,11 @@ msgctxt "#31767"
 msgid "Style"
 msgstr ""
 
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31769"
+msgid "Show item count in rows"
+msgstr ""
+
 #: /1080i/Includes_Bald_Info.xml
 msgctxt "#31770"
 msgid "Overview"

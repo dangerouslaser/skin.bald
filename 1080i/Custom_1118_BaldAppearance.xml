@@ -28,6 +28,7 @@
 				<control type="radiobutton" id="9602"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31762]</label><selected>!Skin.HasSetting(Bald.DisableBlur)</selected><onclick>Skin.ToggleSetting(Bald.DisableBlur)</onclick></control>
 				<!-- Information -->
 				<control type="radiobutton" id="9611"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31763]</label><selected>!Skin.HasSetting(Bald.HideMediaFlags)</selected><onclick>Skin.ToggleSetting(Bald.HideMediaFlags)</onclick></control>
+				<control type="radiobutton" id="9612"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31769]</label><selected>Skin.HasSetting(Bald.ShowRowCount)</selected><onclick>Skin.ToggleSetting(Bald.ShowRowCount)</onclick></control>
 				<!-- Behavior -->
 				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
 				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>
