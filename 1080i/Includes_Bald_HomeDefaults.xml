@@ -204,6 +204,9 @@
             </include>
         </definition>
     </include>
+    <expression name="Bald_HasRows_home">[false]| [true]
+| [true]
+| [true]</expression>
     <expression name="Bald_ItemOdd_home">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9101) + Integer.IsOdd(Container(9101).CurrentItem)]
 | [String.IsEqual(Window(home).Property(Bald.Row),9102) + Integer.IsOdd(Container(9102).CurrentItem)]
 | [String.IsEqual(Window(home).Property(Bald.Row),9103) + Integer.IsOdd(Container(9103).CurrentItem)]</expression>
@@ -344,6 +347,8 @@
             </include>
         </definition>
     </include>
+    <expression name="Bald_HasRows_movies">[false]| [true]
+| [true]</expression>
     <expression name="Bald_ItemOdd_movies">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9201) + Integer.IsOdd(Container(9201).CurrentItem)]
 | [String.IsEqual(Window(home).Property(Bald.Row),9202) + Integer.IsOdd(Container(9202).CurrentItem)]</expression>
     <expression name="Bald_HasLogo_movies">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9201) + [!String.IsEmpty(Container(9201).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9201).ListItem.Art(tvshow.clearlogo))]]
@@ -480,6 +485,8 @@
             </include>
         </definition>
     </include>
+    <expression name="Bald_HasRows_tvshows">[false]| [true]
+| [true]</expression>
     <expression name="Bald_ItemOdd_tvshows">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9301) + Integer.IsOdd(Container(9301).CurrentItem)]
 | [String.IsEqual(Window(home).Property(Bald.Row),9302) + Integer.IsOdd(Container(9302).CurrentItem)]</expression>
     <expression name="Bald_HasLogo_tvshows">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9301) + [!String.IsEmpty(Container(9301).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9301).ListItem.Art(tvshow.clearlogo))]]
