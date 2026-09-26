@@ -278,3 +278,22 @@ class SettingsBackTests(unittest.TestCase):
             with self.subTest(file=name):
                 backs = [node.text for node in ET.parse(root / name).getroot().iter('onback')]
                 self.assertNotIn('PreviousMenu', backs)
+
+
+class SettingsTransitionTests(unittest.TestCase):
+    def test_settings_content_animates_but_the_backdrop_does_not(self):
+        import xml.etree.ElementTree as ET
+        from pathlib import Path
+        root = ET.parse(Path(__file__).resolve().parents[1] / '1080i' / 'Includes_Bald_Configure.xml').getroot()
+        anim = root.find("include[@name='Bald_AnimSettingsWindow']")
+        kinds = sorted((a.get('type'), a.get('condition')) for a in anim.findall('animation'))
+        self.assertEqual([k for k, _ in kinds], ['WindowClose', 'WindowClose', 'WindowOpen', 'WindowOpen'])
+        self.assertTrue(all('Bald_SettingsBack' in c for _, c in kinds))
+        for name in ('Bald_SettingsFrame', 'Bald_SettingsCategories', 'Bald_SettingsCategoryGroup',
+                     'Bald_SettingsDetail', 'Bald_SettingsHints', 'Bald_SettingsScrollbar', 'Bald_SettingsHelp'):
+            with self.subTest(include=name):
+                body = root.find(f"include[@name='{name}']")
+                self.assertIn('Bald_AnimSettingsWindow', [i.text for i in body.iter('include')])
+        frame = root.find("include[@name='Bald_SettingsFrame']/definition")
+        for image in frame.findall('control[@type="image"]'):
+            self.assertNotIn('Bald_AnimSettingsWindow', [i.text for i in image.iter('include')])
