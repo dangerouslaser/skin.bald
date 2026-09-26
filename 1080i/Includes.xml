@@ -105,41 +105,6 @@
 		<label></label>
 		<font></font>
 	</include>
-	<include name="RatingCircle">
-		<param name="animation">false</param>
-		<definition>
-			<control type="group">
-				<animation effect="fade" time="0" condition="$PARAM[animation]">VisibleChange</animation>
-				<include content="UserRatingContent" condition="Skin.HasSetting(circle_userrating)">
-					<param name="infolabel" value="ListItem.UserRating" />
-				</include>
-				<include content="UserRatingContent" condition="Skin.HasSetting(circle_rating)">
-					<param name="infolabel" value="ListItem.Rating" />
-				</include>
-			</control>
-		</definition>
-	</include>
-	<include name="UserRatingContent">
-		<visible>!String.IsEmpty($PARAM[infolabel])</visible>
-		<control type="image">
-			<left>3</left>
-			<top>-3</top>
-			<width>44</width>
-			<height>44</height>
-			<aspectratio>keep</aspectratio>
-			<texture colordiffuse="button_focus">overlays/badge.png</texture>
-		</control>
-		<control type="label">
-			<left>3</left>
-			<top>-3</top>
-			<align>center</align>
-			<aligny>center</aligny>
-			<width>44</width>
-			<height>44</height>
-			<font>font20_title</font>
-			<label>$INFO[$PARAM[infolabel]]</label>
-		</control>
-	</include>
 	<include name="InfoList">
 		<param name="item_label">$INFO[ListItem.Year,[COLOR bald_ink60],  ·  [/COLOR]]$INFO[ListItem.Label]</param>
 		<param name="path">$VAR[InfoListPathVar]</param>
