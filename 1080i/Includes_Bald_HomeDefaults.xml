@@ -14,7 +14,7 @@
                 <param name="down">9102</param>
                 <param name="dots">Bald_RowDots_9101</param>
                 <param name="dots_width">30</param>
-                <content target="videos" limit="25">videodb://recentlyaddedmovies/</content>
+                <content target="videos" limit="25" browse="never">videodb://recentlyaddedmovies/</content>
                 <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">SetProperty(Bald.Start9102,1,home)</onfocus>
                 <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">Control.Move(9102,-2)</onfocus>
             </include>
@@ -27,8 +27,8 @@
                 <param name="down">9103</param>
                 <param name="dots">Bald_RowDots_9102</param>
                 <param name="dots_width">30</param>
-                <content target="videos" limit="15">special://skin/playlists/inprogress_movies.xsp</content>
-                <content target="videos" limit="15">special://skin/playlists/inprogress_episodes.xsp</content>
+                <content target="videos" limit="15" browse="never">special://skin/playlists/inprogress_movies.xsp</content>
+                <content target="videos" limit="15" browse="never">special://skin/playlists/inprogress_episodes.xsp</content>
                 <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">SetProperty(Bald.Start9103,1,home)</onfocus>
                 <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">Control.Move(9103,-2)</onfocus>
             </include>
@@ -41,7 +41,7 @@
                 <param name="down"/>
                 <param name="dots">Bald_RowDots_9103</param>
                 <param name="dots_width">30</param>
-                <content target="videos" limit="25">videodb://inprogresstvshows/</content>
+                <content target="videos" limit="25" browse="never">videodb://inprogresstvshows/</content>
             </include>
         </definition>
     </include>
@@ -234,7 +234,7 @@
                 <param name="down">9202</param>
                 <param name="dots">Bald_RowDots_9201</param>
                 <param name="dots_width">18</param>
-                <content target="videos" limit="25">videodb://recentlyaddedmovies/</content>
+                <content target="videos" limit="25" browse="never">videodb://recentlyaddedmovies/</content>
                 <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">SetProperty(Bald.Start9202,1,home)</onfocus>
                 <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">Control.Move(9202,-2)</onfocus>
             </include>
@@ -247,7 +247,7 @@
                 <param name="down"/>
                 <param name="dots">Bald_RowDots_9202</param>
                 <param name="dots_width">18</param>
-                <content target="videos" limit="25">special://skin/playlists/top_rated_movies.xsp</content>
+                <content target="videos" limit="25" browse="never">special://skin/playlists/top_rated_movies.xsp</content>
             </include>
         </definition>
     </include>
@@ -372,7 +372,7 @@
                 <param name="down">9302</param>
                 <param name="dots">Bald_RowDots_9301</param>
                 <param name="dots_width">18</param>
-                <content target="videos" limit="25">videodb://recentlyaddedepisodes/</content>
+                <content target="videos" limit="25" browse="never">videodb://recentlyaddedepisodes/</content>
                 <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">SetProperty(Bald.Start9302,1,home)</onfocus>
                 <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">Control.Move(9302,-2)</onfocus>
             </include>
@@ -385,7 +385,7 @@
                 <param name="down"/>
                 <param name="dots">Bald_RowDots_9302</param>
                 <param name="dots_width">18</param>
-                <content target="videos" limit="25">special://skin/playlists/top_rated_tvshows.xsp</content>
+                <content target="videos" limit="25" browse="never">special://skin/playlists/top_rated_tvshows.xsp</content>
             </include>
         </definition>
     </include>

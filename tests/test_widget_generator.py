@@ -143,6 +143,16 @@ class WidgetGeneratorTests(unittest.TestCase):
                 self.assertEqual(param(row, "up"), up)
                 self.assertEqual(param(row, "down"), down)
 
+    def test_row_contents_have_no_browse_item(self):
+        # Kodi appends a "Browse" item to a limited <content> unless browse="never"; ambient advance would land on it,
+        # and Continue watching would get one between its two sources.
+        root = fallback()
+        for _, title, _ in SCREENS:
+            contents = [node for row in definition(root, f"Bald_Generated_{title}Widgets").findall("include")
+                        for node in row.findall("content")]
+            self.assertTrue(contents)
+            self.assertTrue(all(node.get("browse") == "never" for node in contents), title)
+
     def test_bindings_exist_only_for_configured_rows(self):
         root = fallback()
         for screen, title, base in SCREENS:

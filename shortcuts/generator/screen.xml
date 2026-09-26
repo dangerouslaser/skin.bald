@@ -34,7 +34,7 @@
                         <rules name="secondary_content">
                             <rule>
                                 <condition>{item_secondary}==1</condition>
-                                <value>&lt;content target="{item_target_escaped}" limit="{item_limit_escaped}"&gt;{item_path2_escaped}&lt;/content&gt;</value>
+                                <value>&lt;content target="{item_target_escaped}" limit="{item_limit_escaped}" browse="never"&gt;{item_path2_escaped}&lt;/content&gt;</value>
                             </rule>
                             <rule>
                                 <value></value>

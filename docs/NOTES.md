@@ -33,6 +33,9 @@ Static checks only (`tools/kodi_dev.py validate`, the unit tests); nothing here 
 16. Back from a page returns to the hub (settings saved); Back from the hub returns to Home.
 17. Profiles (hub, Profiles): General shows "Show login screen on startup" and "Automatic Login on startup" rows (the second disabled while the login screen is on); Profiles lists profiles with avatar, name, last login ("Never" when empty), an accent check on the profile in use, and "Add profile..." last without avatar; Select on a profile opens Kodi's profile editor.
 18. System info (hub, System information): the eight sections are sidebar rows (PVR service disabled when PVR is off); the heading reads "Summary information", "Storage information" and so on; the twelve lines fill; Privacy policy shows scrolling text and Right reaches its scrollbar; Thank you shows the note, the QR code and kodi.tv/donate, and hides the memory block; memory and CPU meters move; version, build date and git hash are shown.
+## No Browse item in Home rows (2026-09-26)
+
+- Kodi appends a "Browse" item to any `<content>` with a limit unless it says `browse="never"` (as the recommendations row already does), so every Home row ended on an empty tile that the ambient advance landed on. Both generated row contents (`row.xmltemplate` and the secondary source in `screen.xml`) now carry `browse="never"`. To verify live: ambient advance past a row's last item never stops on an empty tile, and Continue watching goes straight from its last movie to its first episode.
 
 ## Settings windows scaffold (2026-09-26)
 
