@@ -11,11 +11,10 @@ REPO = ROOT.parent
 class PVRGuideTests(unittest.TestCase):
     def test_home_live_tv_opens_native_guide(self):
         home = ET.parse(ROOT / 'Home.xml').getroot()
-        item = next(node for node in home.findall(".//control[@id='9000']/content/item")
-                    if node.findtext("property[@name='id']") == 'livetv')
-        self.assertEqual([node.text for node in item.findall('onclick')],
-                         ['ActivateWindow(TVGuide)'])
-        self.assertEqual(item.findtext('visible'),
+        item = next(node for node in home.findall(".//control[@id='9000']/include")
+                    if node.findtext("param[@name='preview']") == 'livetv')
+        self.assertEqual(item.findtext("param[@name='enter1']"), 'ActivateWindow(TVGuide)')
+        self.assertEqual(item.findtext("param[@name='visible']"),
                          '!Skin.HasSetting(Bald.Screen.HideLiveTV)')
 
     def test_primary_guide_preserves_native_contract(self):

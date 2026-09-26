@@ -20,7 +20,7 @@
 	<onload>SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
 	<onload>ClearProperty(Bald.Menu,home)</onload>
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetProperty(Bald.Menu,1,home)</onload>
-	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetFocus(9000,4,absolute)</onload>
+	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetFocus(9005)</onload>
 	<onload>ClearProperty(Bald.ReturnSearch,home)</onload>
 	<onload>ClearProperty(Bald.Start9101,home)</onload>
 	<onload>ClearProperty(Bald.Start9102,home)</onload>
@@ -181,105 +181,21 @@
 			<control type="group">
 				<visible>$EXP[Bald_MenuOpen]</visible>
 				<include>Bald_AnimMenuShows</include>
-				<include content="Bald_MenuNote"><param name="text">$INFO[Container(9000).ListItem.Property(note)]</param></include>
+				<include content="Bald_MenuNote"><param name="text">$VAR[Bald_MenuPreviewNote]</param></include>
 			</control>
-			<control type="list" id="9000">
+			<control type="group" id="9000">
 				<left>1440</left>
 				<top>392</top>
 				<width>420</width>
-				<height>310</height>
-				<orientation>vertical</orientation>
-				<scrolltime>0</scrolltime>
+				<height>372</height>
 				<visible allowhiddenfocus="true">$EXP[Bald_MenuOpen]</visible>
 				<include>Bald_AnimMenuShows</include>
-				<!-- Opening: set state and count opens (the hint hides after three). Checked high to low so one open adds one. -->
-				<onfocus>SetProperty(Bald.Menu,1,home)</onfocus>
-				<onfocus condition="String.IsEqual(Skin.String(Bald.MenuOpens),2)">Skin.SetString(Bald.MenuOpens,3)</onfocus>
-				<onfocus condition="String.IsEqual(Skin.String(Bald.MenuOpens),1)">Skin.SetString(Bald.MenuOpens,2)</onfocus>
-				<onfocus condition="String.IsEmpty(Skin.String(Bald.MenuOpens))">Skin.SetString(Bald.MenuOpens,1)</onfocus>
-				<!-- Left or Select enters a screen; screens without rows stay in the menu. Back closes without switching. -->
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">ClearProperty(Bald.Menu,home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">SetProperty(Bald.Screen,home,home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.home)],home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">SetFocus($INFO[Window(home).Property(Bald.Row.home)])</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">SetProperty(Bald.Screen,movies,home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.movies)],home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">ClearProperty(Bald.Menu,home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">SetFocus($INFO[Window(home).Property(Bald.Row.movies)])</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">SetProperty(Bald.Screen,tvshows,home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.tvshows)],home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">ClearProperty(Bald.Menu,home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),settings)">ActivateWindow(settings)</onleft>
-				<onback>ClearProperty(Bald.Menu,home)</onback>
-				<onback>SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
-				<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">9197</onright>
-				<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">9196</onright>
-				<onright condition="String.IsEmpty(Container(9000).ListItem.Property(library))">noop</onright>
-				<!-- No wrapping at either end. -->
-				<onup>noop</onup>
-				<ondown>noop</ondown>
-				<itemlayout width="420" height="62">
-					<include>Bald_MenuRowUnfocused</include>
-				</itemlayout>
-				<focusedlayout width="420" height="62">
-					<include>Bald_MenuRowFocused</include>
-				</focusedlayout>
-				<content>
-					<item>
-						<label>Home</label>
-						<property name="id">home</property>
-						<property name="note">Recently added movies, Continue watching, Next up</property>
-						<onclick>SetProperty(Bald.Screen,home,home)</onclick>
-						<onclick>SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.home)],home)</onclick>
-						<onclick>ClearProperty(Bald.Menu,home)</onclick>
-						<onclick>SetFocus($INFO[Window(home).Property(Bald.Row.home)])</onclick>
-					</item>
-					<item>
-						<label>Movies</label>
-						<property name="id">movies</property>
-						<property name="library">videodb://movies/titles/</property>
-						<property name="note">Browse your movie library with large posters and an artwork preview.</property>
-						<visible>Skin.HasSetting(Bald.Screen.Movies)</visible>
-						<onclick>SetProperty(Bald.Screen,movies,home)</onclick>
-						<onclick>SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.movies)],home)</onclick>
-						<onclick>ClearProperty(Bald.Menu,home)</onclick>
-						<onclick>SetFocus($INFO[Window(home).Property(Bald.Row.movies)])</onclick>
-					</item>
-					<item>
-						<label>TV shows</label>
-						<property name="id">tvshows</property>
-						<property name="library">videodb://tvshows/titles/</property>
-						<property name="note">Browse series, seasons and episodes in your TV library.</property>
-						<visible>Skin.HasSetting(Bald.Screen.TVShows)</visible>
-						<onclick>SetProperty(Bald.Screen,tvshows,home)</onclick>
-						<onclick>SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.tvshows)],home)</onclick>
-						<onclick>ClearProperty(Bald.Menu,home)</onclick>
-						<onclick>SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])</onclick>
-					</item>
-					<item>
-						<label>Live TV</label>
-						<property name="id">livetv</property>
-						<property name="note">Select to open the guide.</property>
-						<visible>!Skin.HasSetting(Bald.Screen.HideLiveTV)</visible>
-						<onclick>ActivateWindow(TVGuide)</onclick>
-					</item>
-					<item>
-						<label>Search</label>
-						<property name="id">search</property>
-						<property name="note">Select to search your library.</property>
-						<onclick>SetProperty(Bald.SearchOrigin,home,home)</onclick>
-						<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
-						<onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick>
-						<onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
-					</item>
-					<item>
-						<label>$LOCALIZE[5]</label>
-						<property name="id">settings</property>
-						<property name="note">Configure Kodi, manage media sources, or change the skin.</property>
-						<onclick>ActivateWindow(settings)</onclick>
-					</item>
-				</content>
+				<include content="Bald_HomeMenuButton"><param name="id">9001</param><param name="y">0</param><param name="label">Home</param><param name="preview">home</param><param name="widget">home</param><param name="enter1">SetProperty(Bald.Screen,home,home)</param><param name="enter2">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.home)],home)</param><param name="enter3">ClearProperty(Bald.Menu,home)</param><param name="enter4">SetFocus($INFO[Window(home).Property(Bald.Row.home)])</param><param name="down1">9002</param><param name="down_preview1">movies</param><param name="down_widget1">movies</param><param name="down_condition1">Skin.HasSetting(Bald.Screen.Movies)</param><param name="down2">9003</param><param name="down_preview2">tvshows</param><param name="down_widget2">tvshows</param><param name="down_condition2">!Skin.HasSetting(Bald.Screen.Movies) + Skin.HasSetting(Bald.Screen.TVShows)</param><param name="down3">9004</param><param name="down_preview3">livetv</param><param name="down_condition3">!Skin.HasSetting(Bald.Screen.Movies) + !Skin.HasSetting(Bald.Screen.TVShows) + !Skin.HasSetting(Bald.Screen.HideLiveTV)</param><param name="down4">9005</param><param name="down_preview4">search</param><param name="down_condition4">!Skin.HasSetting(Bald.Screen.Movies) + !Skin.HasSetting(Bald.Screen.TVShows) + Skin.HasSetting(Bald.Screen.HideLiveTV)</param></include>
+				<include content="Bald_HomeMenuButton"><param name="id">9002</param><param name="y">62</param><param name="label">Movies</param><param name="suffix">  ›</param><param name="preview">movies</param><param name="widget">movies</param><param name="visible">Skin.HasSetting(Bald.Screen.Movies)</param><param name="library">true</param><param name="enter1">SetProperty(Bald.Screen,movies,home)</param><param name="enter2">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.movies)],home)</param><param name="enter3">ClearProperty(Bald.Menu,home)</param><param name="enter4">SetFocus($INFO[Window(home).Property(Bald.Row.movies)])</param><param name="right">9197</param><param name="up1">9001</param><param name="up_preview1">home</param><param name="up_widget1">home</param><param name="down1">9003</param><param name="down_preview1">tvshows</param><param name="down_widget1">tvshows</param><param name="down_condition1">Skin.HasSetting(Bald.Screen.TVShows)</param><param name="down2">9004</param><param name="down_preview2">livetv</param><param name="down_condition2">!Skin.HasSetting(Bald.Screen.TVShows) + !Skin.HasSetting(Bald.Screen.HideLiveTV)</param><param name="down3">9005</param><param name="down_preview3">search</param><param name="down_condition3">!Skin.HasSetting(Bald.Screen.TVShows) + Skin.HasSetting(Bald.Screen.HideLiveTV)</param></include>
+				<include content="Bald_HomeMenuButton"><param name="id">9003</param><param name="y">124</param><param name="label">TV shows</param><param name="suffix">  ›</param><param name="preview">tvshows</param><param name="widget">tvshows</param><param name="visible">Skin.HasSetting(Bald.Screen.TVShows)</param><param name="library">true</param><param name="enter1">SetProperty(Bald.Screen,tvshows,home)</param><param name="enter2">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.tvshows)],home)</param><param name="enter3">ClearProperty(Bald.Menu,home)</param><param name="enter4">SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])</param><param name="right">9196</param><param name="up1">9002</param><param name="up_preview1">movies</param><param name="up_widget1">movies</param><param name="up_condition1">Skin.HasSetting(Bald.Screen.Movies)</param><param name="up2">9001</param><param name="up_preview2">home</param><param name="up_widget2">home</param><param name="up_condition2">!Skin.HasSetting(Bald.Screen.Movies)</param><param name="down1">9004</param><param name="down_preview1">livetv</param><param name="down_condition1">!Skin.HasSetting(Bald.Screen.HideLiveTV)</param><param name="down2">9005</param><param name="down_preview2">search</param><param name="down_condition2">Skin.HasSetting(Bald.Screen.HideLiveTV)</param></include>
+				<include content="Bald_HomeMenuButton"><param name="id">9004</param><param name="y">186</param><param name="label">Live TV</param><param name="preview">livetv</param><param name="visible">!Skin.HasSetting(Bald.Screen.HideLiveTV)</param><param name="enter1">ActivateWindow(TVGuide)</param><param name="up1">9003</param><param name="up_preview1">tvshows</param><param name="up_widget1">tvshows</param><param name="up_condition1">Skin.HasSetting(Bald.Screen.TVShows)</param><param name="up2">9002</param><param name="up_preview2">movies</param><param name="up_widget2">movies</param><param name="up_condition2">!Skin.HasSetting(Bald.Screen.TVShows) + Skin.HasSetting(Bald.Screen.Movies)</param><param name="up3">9001</param><param name="up_preview3">home</param><param name="up_widget3">home</param><param name="up_condition3">!Skin.HasSetting(Bald.Screen.TVShows) + !Skin.HasSetting(Bald.Screen.Movies)</param><param name="down1">9005</param><param name="down_preview1">search</param></include>
+				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="y">248</param><param name="label">Search</param><param name="preview">search</param><param name="enter1">SetProperty(Bald.SearchOrigin,home,home)</param><param name="enter2">RunScript(script.globalsearch)</param><param name="condition2">System.AddonIsEnabled(script.globalsearch)</param><param name="enter3">EnableAddon(script.globalsearch)</param><param name="condition3">System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)</param><param name="enter4">InstallAddon(script.globalsearch)</param><param name="condition4">!System.HasAddon(script.globalsearch)</param><param name="up1">9004</param><param name="up_preview1">livetv</param><param name="up_condition1">!Skin.HasSetting(Bald.Screen.HideLiveTV)</param><param name="up2">9003</param><param name="up_preview2">tvshows</param><param name="up_widget2">tvshows</param><param name="up_condition2">Skin.HasSetting(Bald.Screen.HideLiveTV) + Skin.HasSetting(Bald.Screen.TVShows)</param><param name="up3">9002</param><param name="up_preview3">movies</param><param name="up_widget3">movies</param><param name="up_condition3">Skin.HasSetting(Bald.Screen.HideLiveTV) + !Skin.HasSetting(Bald.Screen.TVShows) + Skin.HasSetting(Bald.Screen.Movies)</param><param name="down1">9006</param><param name="down_preview1">settings</param></include>
+				<include content="Bald_HomeMenuButton"><param name="id">9006</param><param name="y">310</param><param name="label">$LOCALIZE[5]</param><param name="preview">settings</param><param name="enter1">ActivateWindow(settings)</param><param name="up1">9005</param><param name="up_preview1">search</param></include>
 			</control>
 
 			<!-- Section line: accent dot, screen name, "Back for menu" hint. -->
@@ -347,7 +263,7 @@
 					<aligny>center</aligny>
 					<font>Bald_RowLabel</font>
 					<textcolor>bald_ink</textcolor>
-					<label>$INFO[Container(9000).ListItem.Label]</label>
+					<label>$VAR[Bald_MenuPreviewLabel]</label>
 				</control>
 				<control type="label">
 					<left>96</left>
@@ -356,7 +272,7 @@
 					<height>30</height>
 					<font>Bald_Date</font>
 					<textcolor>bald_ink70</textcolor>
-					<label>$INFO[Container(9000).ListItem.Property(note)]</label>
+					<label>$VAR[Bald_MenuPreviewNote]</label>
 				</control>
 			</control>
 		</control>

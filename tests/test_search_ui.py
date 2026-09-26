@@ -9,10 +9,9 @@ ROOT = Path(__file__).resolve().parents[1] / '1080i'
 class SearchUITests(unittest.TestCase):
     def test_home_search_launches_global_search_directly(self):
         home = ET.parse(ROOT / 'Home.xml').getroot()
-        item = next(node for node in home.findall(".//control[@id='9000']/content/item")
-                    if node.findtext("property[@name='id']") == 'search')
-        actions = [(node.get('condition'), node.text) for node in item.findall('onclick')
-                   if node.text != 'SetProperty(Bald.SearchOrigin,home,home)']
+        item = next(node for node in home.findall(".//control[@id='9000']/include")
+                    if node.findtext("param[@name='preview']") == 'search')
+        actions = [(item.findtext(f"param[@name='condition{index}']"), item.findtext(f"param[@name='enter{index}']")) for index in range(2, 5)]
         self.assertEqual(actions, [
             ('System.AddonIsEnabled(script.globalsearch)', 'RunScript(script.globalsearch)'),
             ('System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)', 'EnableAddon(script.globalsearch)'),

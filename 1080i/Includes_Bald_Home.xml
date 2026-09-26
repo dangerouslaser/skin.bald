@@ -79,20 +79,7 @@
 			<fadetime>800</fadetime>
 			<texture background="true">$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</texture>
 			<!-- Optional enhancement: the field underneath is the supported no-helper fallback. -->
-			<visible>!$EXP[Bald_WidgetPreview] + !Skin.HasSetting(Bald.DisableBlur) + System.HasAddon(plugin.video.themoviedb.helper) + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
-			<colordiffuse>bald_backdrop</colordiffuse>
-		</control>
-		<!-- A static list does not emit a per-item focus action, so TMDb Helper cannot be pointed at a
-		     newly previewed screen until one of its rows receives focus. While the menu is open, use
-		     the same live fanart variable as the foreground preview. The strong backdrop diffuse keeps
-		     this transient source quiet; fadetime preserves the normal artwork crossfade. -->
-		<control type="image">
-			<width>1920</width>
-			<height>1080</height>
-			<aspectratio>scale</aspectratio>
-			<fadetime>800</fadetime>
-			<texture background="true">$VAR[Bald_Fanart]</texture>
-			<visible>$EXP[Bald_WidgetPreview]</visible>
+			<visible>!Skin.HasSetting(Bald.DisableBlur) + System.HasAddon(plugin.video.themoviedb.helper) + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</include>
@@ -158,9 +145,9 @@
 	<!-- ============ Current-row variables (art frame) ============ -->
 	<!-- Current-row artwork variables and parity are defined in Includes_Bald_HomeRows.xml for every supported configurable row. -->
 	<expression name="Bald_MenuOpen">!String.IsEmpty(Window(home).Property(Bald.Menu))</expression>
-	<expression name="Bald_PreviewHome">$EXP[Bald_MenuOpen] + String.IsEqual(Container(9000).ListItem.Property(id),home)</expression>
-	<expression name="Bald_PreviewMovies">$EXP[Bald_MenuOpen] + String.IsEqual(Container(9000).ListItem.Property(id),movies)</expression>
-	<expression name="Bald_PreviewTVShows">$EXP[Bald_MenuOpen] + String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</expression>
+	<expression name="Bald_PreviewHome">$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),home)</expression>
+	<expression name="Bald_PreviewMovies">$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),movies)</expression>
+	<expression name="Bald_PreviewTVShows">$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),tvshows)</expression>
 	<expression name="Bald_WidgetPreview">$EXP[Bald_PreviewHome] | $EXP[Bald_PreviewMovies] | $EXP[Bald_PreviewTVShows]</expression>
 	<expression name="Bald_EffectiveItemOdd">[$EXP[Bald_WidgetPreview] + $EXP[Bald_PreviewItemOdd]] | [!$EXP[Bald_WidgetPreview] + $EXP[Bald_ItemOdd]]</expression>
 	<expression name="Bald_EffectiveHasLogo">[$EXP[Bald_WidgetPreview] + $EXP[Bald_PreviewHasLogo]] | [!$EXP[Bald_WidgetPreview] + $EXP[Bald_HasLogo]]</expression>
@@ -168,7 +155,20 @@
 	     the section line hides, the rows dim. -->
 	<expression name="Bald_OverlayOpen">!String.IsEmpty(Window(home).Property(Bald.Menu)) | Window.IsVisible(contextmenu)</expression>
 	<!-- Menu open with a screen other than Home focused: its (placeholder) rows preview instead of Home's. -->
-	<expression name="Bald_PreviewOther">$EXP[Bald_MenuOpen] + !String.IsEqual(Container(9000).ListItem.Property(id),home) + !String.IsEqual(Container(9000).ListItem.Property(id),movies) + !String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</expression>
+	<expression name="Bald_PreviewOther">$EXP[Bald_MenuOpen] + !String.IsEqual(Window(home).Property(Bald.MenuPreview),home) + !String.IsEqual(Window(home).Property(Bald.MenuPreview),movies) + !String.IsEqual(Window(home).Property(Bald.MenuPreview),tvshows)</expression>
+	<variable name="Bald_MenuPreviewLabel">
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),livetv)">Live TV</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),search)">Search</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),settings)">$LOCALIZE[5]</value>
+	</variable>
+	<variable name="Bald_MenuPreviewNote">
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),home)">Recently added movies, Continue watching, Next up</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),movies)">Browse your movie library with large posters and an artwork preview.</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),tvshows)">Browse series, seasons and episodes in your TV library.</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),livetv)">Select to open the guide.</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),search)">Select to search your library.</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),settings)">Configure Kodi, manage media sources, or change the skin.</value>
+	</variable>
 	<expression name="Bald_Idle">System.IdleTime(60) + Window.IsActive(home)</expression>
 	<variable name="Bald_ScreenLabel">
 		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),movies)">Movies</value>
@@ -303,7 +303,7 @@
 				<height>$PARAM[height]</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(clearlogo)]</texture>
-				<visible>!Skin.HasSetting(Bald.HideClearlogo) + [$PARAM[ignore_home_row] | $PARAM[preview] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
+				<visible>!Skin.HasSetting(Bald.HideClearlogo) + [$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
 			<control type="image">
@@ -313,13 +313,13 @@
 				<height>$PARAM[height]</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)]</texture>
-				<visible>!Skin.HasSetting(Bald.HideClearlogo) + [$PARAM[ignore_home_row] | $PARAM[preview] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
+				<visible>!Skin.HasSetting(Bald.HideClearlogo) + [$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
 			<control type="image">
 				<left>$PARAM[x]</left><top>$PARAM[y]</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$INFO[Container.Art(tvshow.clearlogo)]</texture>
-				<visible>!Skin.HasSetting(Bald.HideClearlogo) + [$PARAM[ignore_home_row] | $PARAM[preview] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)) + !String.IsEmpty(Container.Art(tvshow.clearlogo))</visible>
+				<visible>!Skin.HasSetting(Bald.HideClearlogo) + [$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)) + !String.IsEmpty(Container.Art(tvshow.clearlogo))</visible>
 				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
 			</control>
 		</definition>
@@ -590,6 +590,7 @@
 	     the others keep focus reachable with allowhiddenfocus. -->
 	<include name="Bald_Row">
 		<param name="id" />
+		<param name="y" />
 		<param name="label" />
 		<param name="index" />
 		<param name="screen">home</param>
@@ -597,7 +598,7 @@
 		<param name="down">noop</param>
 		<definition>
 			<control type="group">
-				<visible>[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Container(9000).ListItem.Property(id),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]</visible>
+				<visible>[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
 				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
@@ -698,7 +699,7 @@
 				<!-- Kodi does not process hidden lists, so a row also counts as visible until its items load;
 				     that lets it load (and the row-start timer fix its selection) before it is first shown. Not while a
 				     dialog is up: <visible> has no window context then, and NumItems would read empty for every row. -->
-				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + [[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !$EXP[Bald_DialogOver]]]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Container(9000).ListItem.Property(id),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]</visible>
+				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + [[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !$EXP[Bald_DialogOver]]]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
 				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
@@ -718,18 +719,22 @@
 				<onfocus>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onfocus>
 				<!-- Opening the menu is screen-relative: keep the active screen selected instead of
 				     resetting the navigation model to Home. TV moves up one slot when Movies is disabled. -->
-				<onup condition="Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),home)">SetFocus(9000,0,absolute)</onup>
-				<onup condition="Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),movies)">SetFocus(9000,1,absolute)</onup>
-				<onup condition="Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),tvshows) + Skin.HasSetting(Bald.Screen.Movies)">SetFocus(9000,2,absolute)</onup>
-				<onup condition="Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),tvshows) + !Skin.HasSetting(Bald.Screen.Movies)">SetFocus(9000,1,absolute)</onup>
+				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.Menu,1,home)</onup>
+				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onup>
+				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onup>
+				<onup condition="Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),home)">SetFocus(9001)</onup>
+				<onup condition="Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),movies)">SetFocus(9002)</onup>
+				<onup condition="Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),tvshows)">SetFocus(9003)</onup>
 				<onup condition="!Integer.IsEqual($PARAM[index],1)">$PARAM[up]</onup>
 				<ondown>$PARAM[down]</ondown>
 				<onleft>SetProperty(Bald.NudgeL,$VAR[Bald_NudgeLNext],home)</onleft>
 				<onright>SetProperty(Bald.NudgeR,$VAR[Bald_NudgeRNext],home)</onright>
-				<onback condition="String.IsEqual(Window(home).Property(Bald.Screen),home)">SetFocus(9000,0,absolute)</onback>
-				<onback condition="String.IsEqual(Window(home).Property(Bald.Screen),movies)">SetFocus(9000,1,absolute)</onback>
-				<onback condition="String.IsEqual(Window(home).Property(Bald.Screen),tvshows) + Skin.HasSetting(Bald.Screen.Movies)">SetFocus(9000,2,absolute)</onback>
-				<onback condition="String.IsEqual(Window(home).Property(Bald.Screen),tvshows) + !Skin.HasSetting(Bald.Screen.Movies)">SetFocus(9000,1,absolute)</onback>
+				<onback>SetProperty(Bald.Menu,1,home)</onback>
+				<onback>SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onback>
+				<onback>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onback>
+				<onback condition="String.IsEqual(Window(home).Property(Bald.Screen),home)">SetFocus(9001)</onback>
+				<onback condition="String.IsEqual(Window(home).Property(Bald.Screen),movies)">SetFocus(9002)</onback>
+				<onback condition="String.IsEqual(Window(home).Property(Bald.Screen),tvshows)">SetFocus(9003)</onback>
 				<onclick>Action(Info)</onclick>
 				<itemlayout width="192" height="119">
 					<include content="Bald_LandscapeTile" />
@@ -757,6 +762,48 @@
 	</include>
 
 	<!-- ============ Menu ============ -->
+	<include name="Bald_HomeMenuButton">
+		<param name="id" />
+		<param name="label" />
+		<param name="preview" />
+		<param name="widget" />
+		<param name="visible">true</param>
+		<param name="library">false</param>
+		<param name="suffix" />
+		<param name="enter1">noop</param><param name="enter2">noop</param><param name="enter3">noop</param><param name="enter4">noop</param>
+		<param name="condition1">true</param><param name="condition2">true</param><param name="condition3">true</param><param name="condition4">true</param>
+		<param name="right">noop</param>
+		<param name="up1">noop</param><param name="up_condition1">true</param><param name="up2">noop</param><param name="up_condition2">false</param><param name="up3">noop</param><param name="up_condition3">false</param>
+		<param name="down1">noop</param><param name="down_condition1">true</param><param name="down2">noop</param><param name="down_condition2">false</param><param name="down3">noop</param><param name="down_condition3">false</param><param name="down4">noop</param><param name="down_condition4">false</param>
+		<param name="up_preview1" /><param name="up_widget1" /><param name="up_preview2" /><param name="up_widget2" /><param name="up_preview3" /><param name="up_widget3" />
+		<param name="down_preview1" /><param name="down_widget1" /><param name="down_preview2" /><param name="down_widget2" /><param name="down_preview3" /><param name="down_widget3" /><param name="down_preview4" /><param name="down_widget4" />
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<left>-6</left><top>$PARAM[y]</top><width>426</width><height>62</height><visible>$PARAM[visible]</visible>
+				<texturefocus colordiffuse="bald_accent">bald/menu_dot.png</texturefocus><texturenofocus /><font>Bald_MenuItem</font><align>left</align><aligny>center</aligny><textoffsetx>26</textoffsetx>
+				<textcolor>bald_ink34</textcolor><focusedcolor>bald_ink</focusedcolor><label>$PARAM[label]$PARAM[suffix]</label>
+				<animation type="Focus"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" /></animation>
+				<animation type="Unfocus"><effect type="slide" start="6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
+				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Menu)) + String.IsEqual(Skin.String(Bald.MenuOpens),2)">Skin.SetString(Bald.MenuOpens,3)</onfocus>
+				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Menu)) + String.IsEqual(Skin.String(Bald.MenuOpens),1)">Skin.SetString(Bald.MenuOpens,2)</onfocus>
+				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Menu)) + String.IsEmpty(Skin.String(Bald.MenuOpens))">Skin.SetString(Bald.MenuOpens,1)</onfocus>
+				<onfocus>SetProperty(Bald.Menu,1,home)</onfocus>
+				<onfocus>SetProperty(Bald.MenuPreview,$PARAM[preview],home)</onfocus>
+				<onfocus condition="!String.IsEmpty($PARAM[widget])">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[widget])],home)</onfocus>
+				<onclick condition="$PARAM[condition1]">$PARAM[enter1]</onclick><onclick condition="$PARAM[condition2]">$PARAM[enter2]</onclick><onclick condition="$PARAM[condition3]">$PARAM[enter3]</onclick><onclick condition="$PARAM[condition4]">$PARAM[enter4]</onclick>
+				<onleft condition="$PARAM[condition1]">$PARAM[enter1]</onleft><onleft condition="$PARAM[condition2]">$PARAM[enter2]</onleft><onleft condition="$PARAM[condition3]">$PARAM[enter3]</onleft><onleft condition="$PARAM[condition4]">$PARAM[enter4]</onleft>
+				<onright>$PARAM[right]</onright>
+				<onup condition="$PARAM[up_condition1]">SetProperty(Bald.MenuPreview,$PARAM[up_preview1],home)</onup><onup condition="$PARAM[up_condition1]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[up_widget1])],home)</onup><onup condition="$PARAM[up_condition1]">$PARAM[up1]</onup>
+				<onup condition="$PARAM[up_condition2]">SetProperty(Bald.MenuPreview,$PARAM[up_preview2],home)</onup><onup condition="$PARAM[up_condition2]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[up_widget2])],home)</onup><onup condition="$PARAM[up_condition2]">$PARAM[up2]</onup>
+				<onup condition="$PARAM[up_condition3]">SetProperty(Bald.MenuPreview,$PARAM[up_preview3],home)</onup><onup condition="$PARAM[up_condition3]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[up_widget3])],home)</onup><onup condition="$PARAM[up_condition3]">$PARAM[up3]</onup>
+				<ondown condition="$PARAM[down_condition1]">SetProperty(Bald.MenuPreview,$PARAM[down_preview1],home)</ondown><ondown condition="$PARAM[down_condition1]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget1])],home)</ondown><ondown condition="$PARAM[down_condition1]">$PARAM[down1]</ondown>
+				<ondown condition="$PARAM[down_condition2]">SetProperty(Bald.MenuPreview,$PARAM[down_preview2],home)</ondown><ondown condition="$PARAM[down_condition2]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget2])],home)</ondown><ondown condition="$PARAM[down_condition2]">$PARAM[down2]</ondown>
+				<ondown condition="$PARAM[down_condition3]">SetProperty(Bald.MenuPreview,$PARAM[down_preview3],home)</ondown><ondown condition="$PARAM[down_condition3]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget3])],home)</ondown><ondown condition="$PARAM[down_condition3]">$PARAM[down3]</ondown>
+				<ondown condition="$PARAM[down_condition4]">SetProperty(Bald.MenuPreview,$PARAM[down_preview4],home)</ondown><ondown condition="$PARAM[down_condition4]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget4])],home)</ondown><ondown condition="$PARAM[down_condition4]">$PARAM[down4]</ondown>
+				<onback>ClearProperty(Bald.Menu,home)</onback><onback>SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
+			</control>
+		</definition>
+	</include>
 	<include name="Bald_MenuRowUnfocused">
 		<definition>
 			<control type="label"><left>20</left><width>400</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><label>$INFO[ListItem.Label]</label></control>
