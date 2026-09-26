@@ -21,6 +21,10 @@ TV_TYPES = ("tvshow", "season", "episode")
 # Native lists in Includes_Bald_InfoTV.xml, and the primary actions shown for an opened episode.
 SEASONS, EPISODES = 5301, 5302
 EPISODE_ACTIONS = "Control.HasFocus(5001) | Control.HasFocus(5002)"
+# Text this script shows, as string ids: Kodi core (Resume, Play) and Bald's en_gb strings.po block. In Kodi the
+# ids resolve through xbmc.getLocalizedString; the en_gb wording here is the default when no Kodi is present.
+RESUME, PLAY, ONE_SEASON, SEASONS_WORD, YEARS_TO = 13404, 208, 31711, 31712, 31719
+STRINGS = {RESUME: "Resume", PLAY: "Play", ONE_SEASON: "1 season", SEASONS_WORD: "seasons", YEARS_TO: "to"}
 
 
 def recommendation_path(media_type, title, genres):
@@ -109,24 +113,24 @@ def next_episode(episodes):
     return candidate, is_resumable(candidate)
 
 
-def action_label(episode, resume):
-    return "{} S{} E{}".format("Resume" if resume else "Play", episode.get("season", 0), episode.get("episode", 0))
+def action_label(episode, resume, text=STRINGS.get):
+    return "{} S{} E{}".format(text(RESUME if resume else PLAY), episode.get("season", 0), episode.get("episode", 0))
 
 
-def years_label(first_year, episodes):
+def years_label(first_year, episodes, text=STRINGS.get):
     aired = [int(e["firstaired"][:4]) for e in episodes if str(e.get("firstaired", ""))[:4].isdigit()]
     start = first_year or (min(aired) if aired else 0)
     if not start:
         return ""
     end = max(aired) if aired else start
-    return str(start) if end <= start else "{} to {}".format(start, end)
+    return str(start) if end <= start else "{} {} {}".format(start, text(YEARS_TO), end)
 
 
-def tv_meta(years, seasons, rating):
+def tv_meta(years, seasons, rating, text=STRINGS.get):
     """The "years, N seasons, rating" header line (docs/SPEC.md 5.3), skipping what the library lacks."""
     parts = [years] if years else []
     if seasons > 0:
-        parts.append("1 season" if seasons == 1 else "{} seasons".format(seasons))
+        parts.append(text(ONE_SEASON) if seasons == 1 else "{} {}".format(seasons, text(SEASONS_WORD)))
     if rating:
         parts.append(rating)
     return ", ".join(parts)
@@ -164,15 +168,15 @@ def tv_publish(xbmc, window, identity, media_type, dbid):
     # The dialog may have been replaced while the library answered.
     if window.getProperty("Bald.Identity") != identity:
         return None
-    years = years_label(show.get("year", 0), episodes)
+    years = years_label(show.get("year", 0), episodes, xbmc.getLocalizedString)
     window.setProperty("Bald.TV.ShowID", str(tvshowid))
     window.setProperty("Bald.TV.Title", show.get("title", ""))
     window.setProperty("Bald.TV.Years", years)
-    window.setProperty("Bald.TV.Meta", tv_meta(years, show.get("season", 0), show.get("mpaa", "")))
+    window.setProperty("Bald.TV.Meta", tv_meta(years, show.get("season", 0), show.get("mpaa", ""), xbmc.getLocalizedString))
     window.setProperty("Bald.TV.Genre", " / ".join(show.get("genre", [])))
     window.setProperty("Bald.TV.Plot", show.get("plot", ""))
     if upcoming:
-        window.setProperty("Bald.TV.NextLabel", action_label(upcoming, resume))
+        window.setProperty("Bald.TV.NextLabel", action_label(upcoming, resume, xbmc.getLocalizedString))
         window.setProperty("Bald.TV.NextID", str(upcoming["episodeid"]))
     # A show opens on the next episode's season at its first episode (prototype); a season or episode on itself.
     if season is None:

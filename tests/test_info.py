@@ -78,6 +78,8 @@ class InfoLifecycleTests(unittest.TestCase):
         self.xbmc = Mock()
         self.xbmc.getInfoLabel.return_value = 'image://fanart'
         self.xbmc.getCondVisibility.return_value = True
+        # Kodi's string table under en_gb, for the ids the script shows.
+        self.xbmc.getLocalizedString.side_effect = info.STRINGS.__getitem__
         self.gui = Mock()
         self.gui.Window.side_effect = self.windows.__getitem__
         self.modules = patch.dict('sys.modules', {'xbmc': self.xbmc, 'xbmcgui': self.gui})
@@ -175,6 +177,15 @@ class NextEpisodeTests(unittest.TestCase):
         self.assertEqual(info.tv_meta(years, 3, 'TV-14'), '2019 to 2024, 3 seasons, TV-14')
         self.assertEqual(info.tv_meta(info.years_label(2020, []), 1, ''), '2020, 1 season')
         self.assertEqual(info.tv_meta('', 0, ''), '')
+
+    def test_shown_text_comes_from_the_string_table(self):
+        french = {info.RESUME: 'Reprendre', info.PLAY: 'Lire', info.ONE_SEASON: '1 saison',
+                  info.SEASONS_WORD: 'saisons', info.YEARS_TO: 'à'}.get
+        self.assertEqual(info.action_label(episode(2, 1, 2), True, french), 'Reprendre S1 E2')
+        self.assertEqual(info.action_label(episode(2, 1, 2), False, french), 'Lire S1 E2')
+        years = info.years_label(2019, [episode(1, 3, 8, firstaired='2024-11-30')], french)
+        self.assertEqual(info.tv_meta(years, 3, '', french), '2019 à 2024, 3 saisons')
+        self.assertEqual(info.tv_meta('2020', 1, '', french), '2020, 1 saison')
 
 
 class FakeKodi:
@@ -283,6 +294,8 @@ class TvInfoLifecycleTests(unittest.TestCase):
         self.assertEqual(published['Bald.TV.Meta'], '2019 to 2021, 2 seasons, TV-14')
         self.assertEqual(published['Bald.TV.Genre'], 'Drama / Mystery')
         self.assertEqual((published['Bald.TV.NextLabel'], published['Bald.TV.NextID']), ('Play S2 E2', '22'))
+        looked_up = {c.args[0] for c in self.xbmc.getLocalizedString.call_args_list}
+        self.assertEqual(looked_up, {info.PLAY, info.YEARS_TO, info.SEASONS_WORD})
         position.assert_called_once()
         self.assertEqual(position.call_args.args[3:], (2, 22, True))
         methods = [json.loads(c.args[0])['method'] for c in self.xbmc.executeJSONRPC.call_args_list]
