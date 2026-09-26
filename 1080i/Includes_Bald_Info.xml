@@ -8,7 +8,8 @@
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
 		<value>$INFO[ListItem.Art(thumb)]</value>
 	</variable>
-	<variable name="Bald_MorePreviewArt">
+	<!-- Bald_ItemFanart for the highlighted recommendation. -->
+	<variable name="Bald_ItemFanart5100">
 		<value condition="!String.IsEmpty(Container(5100).ListItem.Art(fanart))">$INFO[Container(5100).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Container(5100).ListItem.Art(tvshow.fanart))">$INFO[Container(5100).ListItem.Art(tvshow.fanart)]</value>
 		<value>$INFO[Container(5100).ListItem.Art(thumb)]</value>
@@ -21,16 +22,7 @@
 		<value condition="String.IsEqual(Window(home).Property(Bald.InfoSec),0)">[COLOR bald_ink]Overview[/COLOR]     ·     Cast &amp; details     ·     More like this</value>
 		<value>[COLOR bald_ink58]Overview[/COLOR]     ·     [COLOR bald_ink]Cast &amp; details[/COLOR]     ·     More like this</value>
 	</variable>
-	<variable name="Bald_InfoFanart">
-		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
-		<value>$INFO[ListItem.Art(thumb)]</value>
-	</variable>
 	<!-- ============ Variables (ListItem.* is the dialog's item) ============ -->
-	<variable name="Bald_InfoLogo">
-		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
-		<value>$INFO[ListItem.Art(tvshow.clearlogo)]</value>
-	</variable>
 	<variable name="Bald_InfoTitle">
 		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.Title]</value>
 		<value>$INFO[ListItem.Title]</value>

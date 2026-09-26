@@ -59,11 +59,6 @@
 		<value condition="String.IsEqual(ListItem.Season,0)">Specials</value>
 		<value>Season $INFO[ListItem.Season]</value>
 	</variable>
-	<variable name="Bald_InfoTVEpisodeArt">
-		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
-		<value>$INFO[ListItem.Art(tvshow.fanart)]</value>
-	</variable>
 	<variable name="Bald_InfoTVEpisodeState">
 		<value condition="Container(5302).ListItem.IsResumable">, in progress</value>
 		<value condition="Integer.IsGreater(Container(5302).ListItem.PlayCount,0)">, watched</value>
@@ -213,7 +208,7 @@
 				<include content="Bald_LandscapeTile">
 					<param name="diffuse">FFFFFFFF</param>
 					<param name="ring">$PARAM[ring]</param>
-					<param name="art">$VAR[Bald_InfoTVEpisodeArt]</param>
+					<param name="art">$VAR[Bald_EpisodeThumb]</param>
 					<param name="x">12</param>
 					<param name="y">12</param>
 					<param name="w">320</param>
@@ -293,7 +288,7 @@
 					<width>700</width>
 					<height>170</height>
 					<aspectratio align="left" aligny="bottom">keep</aspectratio>
-					<texture background="true">$VAR[Bald_InfoLogo]</texture>
+					<texture background="true">$VAR[Bald_ItemLogo]</texture>
 					<visible>!Skin.HasSetting(Bald.HideClearlogo)</visible>
 				</control>
 				<control type="label">

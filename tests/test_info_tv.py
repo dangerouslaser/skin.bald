@@ -141,7 +141,7 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(slot - int(p["w"]), 24)
         self.assertEqual(int(p["x"]) * 2, slot - int(p["w"]))
         self.assertEqual((int(p["ring_x"]), int(p["ring_w"])), (int(p["x"]) - 3, int(p["w"]) + 6))
-        self.assertEqual(p["art"], "$VAR[Bald_InfoTVEpisodeArt]")
+        self.assertEqual(p["art"], "$VAR[Bald_EpisodeThumb]")
         pop = card.find(".//animation[@type='Focus']/effect")
         self.assertEqual((pop.get("end"), pop.get("time"), pop.get("tween")), ("105", "280", "back"))
         visible = {n.findtext("visible") for n in card.iter("control") if n.findtext("visible")}
@@ -155,7 +155,7 @@ class InfoTvTests(unittest.TestCase):
     def test_landscape_tile_defaults_are_homes_row_tile(self):
         tile = self.home.find("include[@name='Bald_LandscapeTile']")
         p = params(tile)
-        self.assertEqual(p["art"], "$VAR[Bald_TileArt]")
+        self.assertEqual(p["art"], "$VAR[Bald_ItemFanart]")
         self.assertEqual([p[k] for k in ("x", "y", "w", "h", "ring_x", "ring_y", "ring_w", "ring_h")],
                          ["10", "10", "176", "99", "7", "7", "182", "105"])
 

@@ -1,5 +1,6 @@
 """Shared components (Includes_Bald_Common.xml): each is defined once and every caller resolves it."""
 
+import re
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -81,6 +82,58 @@ class MediaFlagsTest(unittest.TestCase):
         p = {n.get("name"): n.text or "" for n in call.findall("param")}
         self.assertEqual(p.get("container", ""), "")
         self.assertEqual((p["height"], p["font"]), ("30", "Bald_FlagL"))
+
+
+class ArtworkFallbackTest(unittest.TestCase):
+    """Each ListItem.* fallback chain is defined once; per-container copies differ only by their container."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.variables = {}
+        for path in sorted(SKIN.glob("*.xml")):
+            root = ET.parse(path).getroot()
+            if root.tag == "includes":
+                for node in root.findall("variable"):
+                    cls.variables.setdefault(node.get("name"), []).append((path.name, node))
+
+    def chain(self, name):
+        (_, node), = self.variables[name]
+        return [(value.get("condition"), value.text) for value in node.findall("value")]
+
+    def test_shared_chains_live_in_common_and_are_defined_once(self):
+        for name in ("Bald_ItemFanart", "Bald_ItemLogo", "Bald_EpisodeThumb"):
+            self.assertEqual([f for f, _ in self.variables[name]], ["Includes_Bald_Common.xml"])
+        self.assertEqual([v for _, v in self.chain("Bald_ItemFanart")],
+                         ["$INFO[ListItem.Art(fanart)]", "$INFO[ListItem.Art(tvshow.fanart)]", "$INFO[ListItem.Art(thumb)]"])
+        self.assertEqual([v for _, v in self.chain("Bald_ItemLogo")],
+                         ["$INFO[ListItem.Art(clearlogo)]", "$INFO[ListItem.Art(tvshow.clearlogo)]"])
+
+    def test_no_other_variable_repeats_a_shared_chain(self):
+        shared = {name: self.chain(name) for name in ("Bald_ItemFanart", "Bald_ItemLogo", "Bald_EpisodeThumb")}
+        for name, defs in self.variables.items():
+            if name in shared:
+                continue
+            for _, node in defs:
+                chain = [(value.get("condition"), value.text) for value in node.findall("value")]
+                self.assertNotIn(chain, shared.values(), name)
+
+    def test_container_variants_match_the_listitem_chain(self):
+        fanart = self.chain("Bald_ItemFanart")
+        self.assertEqual(self.chain("Bald_ItemFanart5100"),
+                         [(c and c.replace("ListItem.", "Container(5100).ListItem."), v.replace("ListItem.", "Container(5100).ListItem."))
+                          for c, v in fanart])
+        for container in (540, 541, 542):
+            values = [v for _, v in self.chain(f"Bald_EpisodeThumb{container}")]
+            self.assertEqual(values, [f"$INFO[Container({container}).ListItem.Art(thumb)]",
+                                      f"$INFO[Container({container}).ListItem.Art(fanart)]",
+                                      "$INFO[Container.Art(tvshow.fanart)]"])
+
+    def test_every_art_reference_resolves(self):
+        pattern = re.compile(r"\$VAR\[(Bald_(?:ItemFanart|ItemLogo|EpisodeThumb)(?:\w|\$PARAM\[c\])*)\]")
+        for path in sorted(SKIN.glob("*.xml")):
+            for name in pattern.findall(path.read_text()):
+                name = name.replace("$PARAM[c]", "541")
+                self.assertIn(name, self.variables, (path.name, name))
 
 
 if __name__ == "__main__":

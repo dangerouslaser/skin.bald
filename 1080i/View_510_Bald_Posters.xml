@@ -121,6 +121,8 @@
 			</content>
 		</control>
 	</include>
+	<!-- Bald_ItemFanart (Includes_Bald_Common.xml) for whichever library view is showing (Container(0)), with the show
+	     folder's fanart before the thumb so seasons and episodes without their own keep a backdrop. -->
 	<variable name="Bald_LibraryFanart">
 		<value condition="!String.IsEmpty(Container(0).ListItem.Art(fanart))">$INFO[Container(0).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Container(0).ListItem.Art(tvshow.fanart))">$INFO[Container(0).ListItem.Art(tvshow.fanart)]</value>

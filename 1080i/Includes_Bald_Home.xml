@@ -527,22 +527,13 @@
 	</include>
 
 	<!-- ============ Rows ============ -->
-	<variable name="Bald_TileArt">
-		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
-		<value>$INFO[ListItem.Art(thumb)]</value>
-	</variable>
-	<variable name="Bald_TileLogo">
-		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
-		<value>$INFO[ListItem.Art(tvshow.clearlogo)]</value>
-	</variable>
 	<!-- A landscape tile: 176 x 99, 3 px corners, drawn 10 px inside its 192 px slot so the pop and ring are not clipped.
 	     Geometry and art are parameters so the TV info episode cards (320 x 180) reuse it; the defaults are Home's row tile.
 	     The ring sits 3 px outside the tile. -->
 	<include name="Bald_LandscapeTile">
 		<param name="diffuse">bald_tile_dim</param>
 		<param name="ring">false</param>
-		<param name="art">$VAR[Bald_TileArt]</param>
+		<param name="art">$VAR[Bald_ItemFanart]</param>
 		<param name="x">10</param>
 		<param name="y">10</param>
 		<param name="w">176</param>
@@ -583,7 +574,7 @@
 				<width>56</width>
 				<height>17</height>
 				<aspectratio>keep</aspectratio>
-				<texture colordiffuse="00FFFFFF" background="true">$VAR[Bald_TileLogo]</texture>
+				<texture colordiffuse="00FFFFFF" background="true">$VAR[Bald_ItemLogo]</texture>
 			</control>
 		</definition>
 	</include>
