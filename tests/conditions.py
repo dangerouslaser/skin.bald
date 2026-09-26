@@ -236,3 +236,8 @@ def same_actions(actual, expected, bodies=None):
 def find_value(values, condition, bodies=None):
     """The first of (condition, value) pairs whose condition means `condition`; None when there is none."""
     return next((value for cond, value in values if cond is not None and equivalent(cond, condition, bodies)), None)
+
+
+def has_action(actions, condition, action, bodies=None):
+    """Some (condition, action) pair runs `action` under a condition that means `condition` (None: unconditional)."""
+    return any(text == action and equivalent(cond or "true", condition or "true", bodies) for cond, text in actions)

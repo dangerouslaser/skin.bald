@@ -4,7 +4,8 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
-from kodi_includes import SKIN, _expand_in_place, condition, include_definitions
+from conditions import equivalent, find_value
+from kodi_includes import SKIN, _expand_in_place, include_definitions
 from skin_strings import loc
 
 
@@ -36,7 +37,7 @@ class MediaFlagsTest(unittest.TestCase):
             holder = self.flags(container)
             chips = holder.findall("control[@type='button']")
             self.assertEqual(len(chips), len(FLAG_LABELS))
-            self.assertEqual(condition(holder.findtext("visible")), "!Skin.HasSetting(Bald.HideMediaFlags)")
+            self.assertTrue(equivalent(holder.findtext("visible"), "!Skin.HasSetting(Bald.HideMediaFlags)"))
             for chip in chips:
                 visible = chip.findtext("visible")
                 self.assertIn(prefix, visible)
@@ -44,7 +45,7 @@ class MediaFlagsTest(unittest.TestCase):
                     self.assertNotIn("Container(", visible)
             codec = next(c for c in chips if "$MAP[" in c.findtext("label"))
             self.assertEqual(codec.findtext("label"), f"$MAP[DefaultCodecMap, {prefix}AudioCodec]")
-            self.assertEqual(codec.findtext("visible"), f"!String.IsEmpty({prefix}AudioCodec)")
+            self.assertTrue(equivalent(codec.findtext("visible"), f"!String.IsEmpty({prefix}AudioCodec)"))
 
     def test_chip_defaults_are_the_caption_chip_and_info_overrides(self):
         caption = self.flags("Container(514).").findall("control[@type='button']")
@@ -172,11 +173,11 @@ class MetaLineTest(unittest.TestCase):
         info = ET.parse(SKIN / "Includes_Bald_Info.xml").getroot()
         tv = ET.parse(SKIN / "Includes_Bald_InfoTV.xml").getroot()
         seasons = info.find("variable[@name='Bald_InfoSeasons']").findall("value")
-        self.assertEqual(seasons[0].get("condition"), "String.IsEqual(ListItem.Property(TotalSeasons),1)")
+        self.assertTrue(equivalent(seasons[0].get("condition"), "String.IsEqual(ListItem.Property(TotalSeasons),1)"))
         self.assertTrue(seasons[0].text.endswith(loc("1 season")))
         self.assertTrue(seasons[1].text.endswith(f" {loc('seasons')}]"))
-        meta = {condition(v.get("condition")): v.text for v in info.find("variable[@name='Bald_InfoMeta']").findall("value")}
-        self.assertEqual(meta["String.IsEqual(ListItem.DBType,tvshow)"], "$VAR[Bald_InfoSeasons]")
+        meta = [(v.get("condition"), v.text) for v in info.find("variable[@name='Bald_InfoMeta']").findall("value")]
+        self.assertEqual(find_value(meta, "String.IsEqual(ListItem.DBType,tvshow)"), "$VAR[Bald_InfoSeasons]")
         tv_meta = [v.text for v in tv.find("variable[@name='Bald_InfoTVMeta']").findall("value")]
         self.assertEqual(sum("$VAR[Bald_InfoSeasons]" in text for text in tv_meta), 1)
         self.assertFalse(any("TotalSeasons" in text for text in tv_meta))
