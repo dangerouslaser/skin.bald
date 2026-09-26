@@ -340,7 +340,7 @@
 				</control>
 				<control type="grouplist">
 					<left>20</left><top>10</top><width>528</width><height>26</height><orientation>horizontal</orientation><itemgap>8</itemgap>
-					<visible>!Skin.HasSetting(hide_mediaflags) + Integer.Is$PARAM[p](Container.CurrentItem) + $EXP[Bald_BrowseVideoItem] + $EXP[Bald_BrowseHasFlags]</visible>
+					<visible>!Skin.HasSetting(Bald.HideMediaFlags) + Integer.Is$PARAM[p](Container.CurrentItem) + $EXP[Bald_BrowseVideoItem] + $EXP[Bald_BrowseHasFlags]</visible>
 					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">275</param></include>
 					<include content="Bald_MediaFlags" />
 				</control>

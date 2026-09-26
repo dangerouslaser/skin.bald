@@ -24,7 +24,6 @@ WINDOWS = {
 LIVE_ESTUARY_SETTINGS = {
     "autoscroll": "AddonBrowser.xml",
     "show_weatherinfo": "AddonBrowser.xml",
-    "hide_mediaflags": "AddonBrowser.xml",
     "show_profilename": "AddonBrowser.xml",
     "OriginalTitleFormat_1st": "AddonBrowser.xml",
     "show_musicvideoposter": "MyMusicNav.xml",
@@ -32,6 +31,10 @@ LIVE_ESTUARY_SETTINGS = {
     "WeatherFanart": "MyWeather.xml",
     "MovieGenreFanart": "FileManager.xml",
     "WeatherOutlookIcon": "MyWeather.xml",
+}
+# Estuary settings folded into a Bald setting, the Bald setting, and windows that must read it through it.
+FOLDED_ESTUARY_SETTINGS = {
+    "hide_mediaflags": ("Bald.HideMediaFlags", ("AddonBrowser.xml", "MyMusicNav.xml")),
 }
 # Files Kodi reads directly rather than as windows.
 KODI_READ_FILES = {"Timers.xml"}
@@ -60,6 +63,9 @@ DEAD_ESTUARY_SETTINGS = (
     "background_overlay",
     # The skin fanart pack: Bald's Home never read it; its last reader was the weather page's fallback image.
     "HomeFanart",
+    # Estuary's media flags switch duplicated Appearance > Information > Media flags (Bald.HideMediaFlags), which the
+    # browse preview and the music window's flags now read.
+    "hide_mediaflags",
 )
 
 
@@ -198,6 +204,16 @@ class SettingsScaffoldTests(unittest.TestCase):
             self.assertIn(setting, appearance, f"{setting} is no longer configurable")
             text = (SKIN / reader).read_text() if reader in KODI_READ_FILES else window_reach(reader)
             self.assertTrue(setting in text, f"{setting} is no longer read by {reader}")
+
+    def test_folded_estuary_settings_are_read_as_bald_settings(self):
+        appearance = ET.tostring(self.windows["Custom_1118_BaldAppearance.xml"], encoding="unicode")
+        for old, (setting, readers) in FOLDED_ESTUARY_SETTINGS.items():
+            self.assertIn(f"({setting})", appearance, f"{setting} is not offered")
+            for reader in readers:
+                with self.subTest(setting=setting, reader=reader):
+                    text = window_reach(reader)
+                    self.assertIn(f"({setting})", text)
+                    self.assertNotIn(f"({old})", text)
 
     def test_dead_estuary_settings_are_gone(self):
         for name in ("SkinSettings.xml", "Custom_1118_BaldAppearance.xml"):
