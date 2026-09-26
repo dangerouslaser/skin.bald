@@ -6,6 +6,12 @@ from pathlib import Path
 
 PO = Path(__file__).resolve().parents[1] / "language" / "resource.language.en_gb" / "strings.po"
 BALD_RANGE = range(31700, 32000)
+# Bald strings added later, inside Estuary's unused 31178-31596 gap: Home hubs.
+BALD_EXTRA_RANGES = (range(31200, 31300),)
+
+
+def is_bald(num):
+    return num in BALD_RANGE or any(num in extra for extra in BALD_EXTRA_RANGES)
 LOCALIZE = re.compile(r"\$LOCALIZE\[(\d+)\]")
 _ENTRY = re.compile(r'^msgctxt "#(\d+)"\nmsgid "((?:[^"\\]|\\.)*)"', re.M)
 
@@ -16,7 +22,7 @@ def strings():
 
 
 def bald_strings():
-    return {num: text for num, text in strings().items() if num in BALD_RANGE}
+    return {num: text for num, text in strings().items() if is_bald(num)}
 
 
 def loc(msgid):
