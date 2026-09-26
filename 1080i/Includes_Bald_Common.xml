@@ -104,4 +104,30 @@
 			<include content="Bald_FlagChip"><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param><param name="label">5.1</param><param name="visible">String.IsEqual($PARAM[container]ListItem.AudioChannels,6)</param></include>
 		</definition>
 	</include>
+	<!-- Moving between full windows (Home, the library, settings): only the content moves, the backgrounds stay still,
+	     and Kodi finishes one window's close before the next opens, so nothing flashes. Leaving: 160 FADE and a 40 px
+	     move over 180. Arriving: 380 FADE and a 40 px move over 480. Deeper moves right to left; back moves left to right.
+	     back_in: the opening window is being returned to. back_out: the closing window is going back. -->
+	<include name="Bald_AnimWindowDepth">
+		<param name="back_in">false</param>
+		<param name="back_out">false</param>
+		<definition>
+			<animation type="WindowOpen" condition="![$PARAM[back_in]]">
+				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+				<effect type="slide" start="40,0" end="0,0" time="480" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowOpen" condition="$PARAM[back_in]">
+				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+				<effect type="slide" start="-40,0" end="0,0" time="480" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose" condition="![$PARAM[back_out]]">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+				<effect type="slide" start="0,0" end="-40,0" time="180" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose" condition="$PARAM[back_out]">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+				<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
+			</animation>
+		</definition>
+	</include>
 </includes>

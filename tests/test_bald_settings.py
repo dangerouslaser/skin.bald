@@ -293,9 +293,14 @@ class SettingsTransitionTests(unittest.TestCase):
         from pathlib import Path
         root = ET.parse(Path(__file__).resolve().parents[1] / '1080i' / 'Includes_Bald_Configure.xml').getroot()
         anim = root.find("include[@name='Bald_AnimSettingsWindow']")
-        kinds = sorted((a.get('type'), a.get('condition')) for a in anim.findall('animation'))
-        self.assertEqual([k for k, _ in kinds], ['WindowClose', 'WindowClose', 'WindowOpen', 'WindowOpen'])
-        self.assertTrue(all('Bald_SettingsBack' in c for _, c in kinds))
+        call = anim.find("include[@content='Bald_AnimWindowDepth']")
+        self.assertIsNotNone(call)
+        params = {p.get('name'): p.text for p in call.findall('param')}
+        self.assertEqual(params, {'back_in': '$EXP[Bald_SettingsBackIn]', 'back_out': '$EXP[Bald_SettingsBackOut]'})
+        common = ET.parse(Path(__file__).resolve().parents[1] / '1080i' / 'Includes_Bald_Common.xml').getroot()
+        depth = common.find("include[@name='Bald_AnimWindowDepth']/definition")
+        self.assertEqual(sorted(a.get('type') for a in depth.findall('animation')),
+                         ['WindowClose', 'WindowClose', 'WindowOpen', 'WindowOpen'])
         for name in ('Bald_SettingsFrame', 'Bald_SettingsCategories', 'Bald_SettingsCategoryGroup',
                      'Bald_SettingsDetail', 'Bald_SettingsHints', 'Bald_SettingsScrollbar', 'Bald_SettingsHelp'):
             with self.subTest(include=name):
@@ -304,3 +309,19 @@ class SettingsTransitionTests(unittest.TestCase):
         frame = root.find("include[@name='Bald_SettingsFrame']/definition")
         for image in frame.findall('control[@type="image"]'):
             self.assertNotIn('Bald_AnimSettingsWindow', [i.text for i in image.iter('include')])
+
+
+class WindowDepthTransitionTests(unittest.TestCase):
+    def test_home_and_the_library_slide_instead_of_cutting(self):
+        import xml.etree.ElementTree as ET
+        from pathlib import Path
+        skin = Path(__file__).resolve().parents[1] / '1080i'
+        for name, back_in, back_out in (('Home.xml', 'true', None),
+                                        ('MyVideoNav.xml', '!Window.Previous(home)', 'Window.Next(home)')):
+            with self.subTest(window=name):
+                calls = [c for c in ET.parse(skin / name).getroot().iter('include')
+                         if c.get('content') == 'Bald_AnimWindowDepth']
+                self.assertEqual(len(calls), 1)
+                params = {p.get('name'): p.text for p in calls[0].findall('param')}
+                self.assertEqual(params.get('back_in'), back_in)
+                self.assertEqual(params.get('back_out'), back_out)

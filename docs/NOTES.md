@@ -452,6 +452,12 @@ Built and statically validated only (XML parse, include resolution, unit tests);
 - Direction follows the hierarchy (Home > Settings hub > Bald Settings / Kodi's settings pages / Profiles / System info > Home Screens, Appearance, Add-ons > Widgets). Deeper moves right to left; Back (and leaving for Home) moves left to right. It is chosen by `Window.Previous(...)` on open and `Window.Next(...)` plus `Window.IsVisible(...)` on close (expressions `Bald_SettingsBackIn` / `Bald_SettingsBackOut`), the same infobools Estuary uses for screen calibration.
 - To verify live: hub > Interface > Back > Bald Settings > Appearance > Back > Back > Home, and Home Screens > Widgets > Back. Each step should slide the right way with no black frame; opening a popup (spinner list, keyboard) inside a settings page should not replay the window animation.
 
+## Home and library transitions (2026-09-26)
+
+- Home and the video library (MyVideoNav) had no window animations, so moving between them cut. Both now use `Bald_AnimWindowDepth` (Includes_Bald_Common.xml), the motion the settings windows already used (which now call it too): content leaves in 160 FADE plus a 40 px move over 180 and arrives in 380 FADE plus a 40 px move over 480; backgrounds never animate. Kodi finishes a window's close before the next opens.
+- Direction: Home is the root, so it always arrives from the left and always leaves to the left. The library arrives from the right when entered from Home, from the left when returned to from anything deeper (playback, settings), and leaves to the right when going back to Home.
+- To verify live: Home > Movies (Right from the menu entry) > Back; Home > a TV show row item's library route > Back; start playback from the library and stop it; the startup splash still covers Home's first arrival.
+
 ## OSD remote stuck on Live TV (2026-09-26)
 
 - On CoreELEC (Kodi 22 Beta 2), Live TV's OSD opened with focus on play/pause 602 and ignored every arrow and OK; Back still closed it. A read-only focus poll over JSON-RPC showed focus pinned to 602 for the whole session, while no play/pause button was on screen (Live TV cannot pause).
