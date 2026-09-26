@@ -169,6 +169,13 @@
 		</definition>
 	</include>
 
+	<!-- The widget editor's Style value (1116): the selected row's style field, empty meaning fanart. -->
+	<variable name="Bald_WidgetStyleLabel">
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(style),thumbnail)">$LOCALIZE[31721]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(style),logo)">$LOCALIZE[31722]</value>
+		<value>$LOCALIZE[31720]</value>
+	</variable>
+
 	<!-- One settings row (button or radiobutton), in the Home menu's focus language: unfocused at 50%, focused full ink
 	     with the accent dot, sliding 6 px right. A radiobutton's state is a dot at the right: accent on, dim off. -->
 	<include name="Bald_ConfigureButton">
