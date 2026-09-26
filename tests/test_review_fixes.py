@@ -65,5 +65,19 @@ class TimerIconTests(unittest.TestCase):
                         self.assertTrue(node.get("colordiffuse"))
 
 
+class PopupFocusRowTests(unittest.TestCase):
+    def test_unfocused_popup_list_rows_all_dim_to_half(self):
+        rows = {
+            "Bald_SelectFocusRow": {},
+            "Bald_PVRManagerFocus": {"list_id": "20"},
+        }
+        for name, params in rows.items():
+            root = holder(expand_call(name, params))
+            ends = {node.get("end") for node in root.iter() if node.tag in ("animation", "effect")
+                    and (node.get("effect") or node.get("type")) == "fade"}
+            with self.subTest(include=name):
+                self.assertEqual(ends, {"50"})
+
+
 if __name__ == "__main__":
     unittest.main()

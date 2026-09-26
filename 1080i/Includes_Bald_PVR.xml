@@ -546,14 +546,15 @@
 	</include>
 
 	<!-- ============ Channel and group managers ============ -->
-	<!-- Rows inside the shared popup surface: 70% ink labels on a 10% ink focus row (docs/SPEC.md 5.14). -->
+	<!-- Rows inside the shared popup surface: 70% ink labels on a 10% ink focus row, halved while the list is not
+	     focused like the other popup lists (docs/SPEC.md 5.14). -->
 	<include name="Bald_PVRManagerFocus">
 		<param name="list_id" />
 		<definition>
 			<control type="image">
 				<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
 				<texture colordiffuse="bald_ink10">bald/white.png</texture>
-				<animation type="Conditional" condition="!Control.HasFocus($PARAM[list_id])"><effect type="fade" start="100" end="40" time="0" /></animation>
+				<animation type="Conditional" condition="!Control.HasFocus($PARAM[list_id])"><effect type="fade" start="100" end="50" time="0" /></animation>
 			</control>
 		</definition>
 	</include>
