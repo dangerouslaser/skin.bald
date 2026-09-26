@@ -637,16 +637,18 @@
 	</include>
 	<!-- Info: focusing it opens the details block (1120, with 1128); Select shows the info overlay. -->
 	<include name="Bald_OSDInfoBody">
-		<include content="Bald_OSDButton">
-			<param name="id">70043</param>
-			<param name="icon">osd/fullscreen/buttons/information.png</param>
-			<param name="on">osd/fullscreen/buttons/information.png</param>
-			<onclick>Dialog.Close(1120,true)</onclick>
-			<onclick>Dialog.Close(videoosd,true)</onclick>
-			<onclick>ActivateWindow(fullscreeninfo)</onclick>
-			<nested />
-			<include>Bald_OSDChainFrom_0</include>
-		</include>
+		<definition>
+			<include content="Bald_OSDButton">
+				<param name="id">70043</param>
+				<param name="icon">osd/fullscreen/buttons/information.png</param>
+				<param name="on">osd/fullscreen/buttons/information.png</param>
+				<onclick>Dialog.Close(1120,true)</onclick>
+				<onclick>Dialog.Close(videoosd,true)</onclick>
+				<onclick>ActivateWindow(fullscreeninfo)</onclick>
+				<nested />
+				<include>Bald_OSDChainFrom_0</include>
+			</include>
+		</definition>
 	</include>
 	<include name="Bald_OSDSlot_Real_Info">
 		<include content="Bald_OSDInfoBody">
@@ -668,15 +670,17 @@
 	<!-- Audio: the language code under it; focusing it opens the audio streams (1121); Select opens Kodi's audio
 	     settings. -->
 	<include name="Bald_OSDAudioBody">
-		<include content="Bald_OSDButton">
-			<param name="id">70060</param>
-			<param name="icon">osd/fullscreen/buttons/streams.png</param>
-			<param name="on">osd/fullscreen/buttons/streams.png</param>
-			<param name="code">$VAR[Bald_OSDAudioCode]</param>
-			<onclick>ActivateWindow(osdaudiosettings)</onclick>
-			<nested />
-			<include>Bald_OSDChainFrom_0</include>
-		</include>
+		<definition>
+			<include content="Bald_OSDButton">
+				<param name="id">70060</param>
+				<param name="icon">osd/fullscreen/buttons/streams.png</param>
+				<param name="on">osd/fullscreen/buttons/streams.png</param>
+				<param name="code">$VAR[Bald_OSDAudioCode]</param>
+				<onclick>ActivateWindow(osdaudiosettings)</onclick>
+				<nested />
+				<include>Bald_OSDChainFrom_0</include>
+			</include>
+		</definition>
 	</include>
 	<include name="Bald_OSDSlot_Real_Audio">
 		<include content="Bald_OSDAudioBody">
@@ -698,15 +702,17 @@
 	<!-- Subtitles: the language code while subtitles are on; focusing opens the subtitle streams (1122); Select opens
 	     Kodi's subtitle settings. -->
 	<include name="Bald_OSDSubtitlesBody">
-		<include content="Bald_OSDButton">
-			<param name="id">70061</param>
-			<param name="icon">osd/fullscreen/buttons/settings-subtitle.png</param>
-			<param name="on">osd/fullscreen/buttons/settings-subtitle.png</param>
-			<param name="code">$VAR[Bald_OSDSubtitleCode]</param>
-			<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
-			<nested />
-			<include>Bald_OSDChainFrom_0</include>
-		</include>
+		<definition>
+			<include content="Bald_OSDButton">
+				<param name="id">70061</param>
+				<param name="icon">osd/fullscreen/buttons/settings-subtitle.png</param>
+				<param name="on">osd/fullscreen/buttons/settings-subtitle.png</param>
+				<param name="code">$VAR[Bald_OSDSubtitleCode]</param>
+				<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
+				<nested />
+				<include>Bald_OSDChainFrom_0</include>
+			</include>
+		</definition>
 	</include>
 	<include name="Bald_OSDSlot_Real_Subtitles">
 		<include content="Bald_OSDSubtitlesBody">
@@ -727,14 +733,16 @@
 	</include>
 	<!-- Video: focusing opens the video panel (1123); Select opens Kodi's video settings. -->
 	<include name="Bald_OSDVideoBody">
-		<include content="Bald_OSDButton">
-			<param name="id">70062</param>
-			<param name="icon">osd/fullscreen/buttons/settings.png</param>
-			<param name="on">osd/fullscreen/buttons/settings.png</param>
-			<onclick>ActivateWindow(osdvideosettings)</onclick>
-			<nested />
-			<include>Bald_OSDChainFrom_0</include>
-		</include>
+		<definition>
+			<include content="Bald_OSDButton">
+				<param name="id">70062</param>
+				<param name="icon">osd/fullscreen/buttons/settings.png</param>
+				<param name="on">osd/fullscreen/buttons/settings.png</param>
+				<onclick>ActivateWindow(osdvideosettings)</onclick>
+				<nested />
+				<include>Bald_OSDChainFrom_0</include>
+			</include>
+		</definition>
 	</include>
 	<include name="Bald_OSDSlot_Real_Video">
 		<include content="Bald_OSDVideoBody">
