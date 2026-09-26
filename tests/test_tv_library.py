@@ -56,7 +56,9 @@ class TVLibraryTests(unittest.TestCase):
     def test_legacy_chrome_is_hidden_for_every_bald_tv_level(self):
         custom = ('520', '530', '540')
         visible_conditions = [n.text or '' for n in self.nav.findall('.//visible')]
-        self.assertTrue(any(all(f'!Control.IsVisible({view})' in condition for view in custom) for condition in visible_conditions))
+        self.assertIn('!$EXP[Bald_LibraryViewActive]', visible_conditions)
+        active = ET.parse(ROOT / 'View_510_Bald_Posters.xml').getroot().findtext(".//expression[@name='Bald_LibraryViewActive']")
+        self.assertTrue(all(f'Control.IsVisible({view})' in active for view in custom))
 
     def test_legacy_video_views_route_tv_levels_to_bald_views(self):
         files = ('View_50_List.xml', 'View_51_Poster.xml', 'View_52_IconWall.xml', 'View_53_Shift.xml', 'View_54_InfoWall.xml', 'View_55_WideList.xml', 'View_500_Wall.xml', 'View_501_Banner.xml', 'View_504_MediaList.xml')
