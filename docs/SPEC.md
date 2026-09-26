@@ -158,13 +158,16 @@ Title handling: caption title is always text. The clearlogo only ever appears on
 | Row | Back | Open the menu |
 | Row | Select | Open info (movie or TV) |
 | Row | Context (C) | Kodi's context menu for the item (Play, Information, Mark as watched, add-on entries), drawn as the Home menu: caption slides out, items slide in at the menu position. Changed 2026-09-24 at the user's request; this replaces "Customize home, jumped to this row (0.2)", which stays reachable from the menu's last item. |
-| Menu | Up or Down | Move; the row and art preview that screen live |
+| Menu | Up or Down | Move; preview that screen at its last active widget row and item |
 | Menu | Left or Select | Enter the screen (screens without rows stay in the menu) |
+| Menu | Right | Open the selected screen's full native library when a disclosure chevron is shown |
 | Menu | Back | Close without switching |
 | Menu | Settings | Open Kodi's native Settings hub (alpha maintenance access) |
 | Menu | Last item | Customize home (0.2) |
 
 Menu state lives in a window property (for example `Window(Home).Property(MenuOpen)`), set in `onup`, `onback` and `onleft` handlers. Caption, menu and section line animate on that property with conditional animations.
+
+Settings separates Kodi's native categories from a dedicated **Bald Settings** tile and customization view. Customization uses Arctic Fuse 3's screen-first behavior as a reference: Home is mandatory and enabled by default; Movies and TV Shows are optional screens, each with its own independent widget node. Enabling an optional screen adds it to the Home main menu; disabling it removes the menu entry rather than falling back to a different native-library action. Each screen supports up to 20 ordered rows. The editor regenerates the three Home-screen includes when it closes. CoreELEC and LibreELEC use their native service launch actions (`RunAddon(service.coreelec.settings)` and `RunAddon(service.libreelec.settings)`) and appear only when the corresponding service is enabled; unsupported platforms therefore show no dead entry.
 
 Context menu update (2026-09-25): show at most five actions, scrolling as focus moves beyond the visible entries, with no wrapping at either end. Keep the main menu's instant scroll and 56 px buttons / 6 px gaps. The selected action's tooltip uses the same note position (1466,714), 394 px width, font and opacity as Home. Native and known add-on actions have descriptions; unknown actions use a generic label-based hint.
 
@@ -231,7 +234,7 @@ Art dims to 70% field at rest on this screen because content runs the full heigh
 
 Three columns, fully D-pad driven: Screens (plus Add screen, Appearance), the screen's settings and rows, and the row's settings (Content, Style, Items, move, remove). Select cycles values. Build on script.skinvariables, as Arctic Fuse does, so menus and widgets are stored as JSON and rendered into includes.
 
-Appearance settings: Clearlogo on artwork (default on), Media flags (default on), Ambient when idle (default on).
+Appearance settings: Clearlogo on artwork (default on), blurred fanart backgrounds (default on), media flags (default on), Ambient when idle (default on), and an optional auto-hide for the Home navigation hint. Bald Settings follows Arctic Fuse 3's launcher pattern: its Customization entry opens the screen-first widget editor, while Appearance opens a focused Bald-owned settings window instead of the inherited Estuary skin settings.
 
 ---
 
@@ -325,9 +328,10 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 ### 5.14 Live TV guide
 
 - Home Live TV opens Kodi's native TV Guide directly. The first PVR milestone provides one primary vertical timeline view and disables Estuary's alternate guide orientations until Bald variants exist.
-- The Guide retains Kodi 22's native EPG grid50, date selector11, wrapper63, scrollbar60, channel-number input, menu9000, PVR sidebar, programme information and timer/recording actions.
+- The Guide retains Kodi 22's native EPG grid50, channel-group binding11, wrapper63, scrollbar60, channel-number input, menu9000, programme information and timer/recording actions. Control11 remains available to Kodi but is not rendered as a wide carousel.
 - Layout uses the 96px safe margin: heading/clock at the top, selected channel/programme summary and optional EPG artwork above the grid, date strip at y354 and timeline from y420. Channel rows use logos, number/name and 68px spacing; programme blocks use quiet ink surfaces with an inverted focused block and accent progress/timer marks.
-- This milestone does not replace Channels, Recordings, Timers, programme dialogs or the PVR sidebar. Those remain native Estuary contracts until their dedicated Bald passes.
+- Left moves backward through programmes and earlier guide time. At the grid's left boundary, Left opens the 480px right-side Guide tools drawer matching Home; Menu always opens it from anywhere. The drawer provides Jump to now, Choose/Previous/Next channel group, Choose date and Search through Kodi's native `PVR.EpgGridControl` actions. Right never transfers remote focus to the thin scrollbar; the scrollbar remains the grid's page control. Programme focus uses a narrow accent marker so it cannot be confused with Kodi's current-time progress shading.
+- This milestone does not replace Channels, Recordings, Timers or programme dialogs. Those remain native Estuary contracts until their dedicated Bald passes.
 
 ### 5.14 Native popups
 

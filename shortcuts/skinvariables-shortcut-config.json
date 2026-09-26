@@ -1,0 +1,25 @@
+{
+    "grouping://shortcuts/": [
+        {
+            "name": "Video library",
+            "path": "library://video/",
+            "icon": "DefaultVideo.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Bald playlists",
+            "path": "special://skin/playlists/",
+            "icon": "DefaultVideoPlaylists.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Video add-ons",
+            "path": "addons://sources/video/",
+            "icon": "DefaultAddonVideo.png",
+            "link": "false",
+            "node": "videos"
+        }
+    ]
+}

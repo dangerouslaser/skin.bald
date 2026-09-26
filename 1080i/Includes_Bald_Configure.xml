@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="Bald_ConfigureButton">
+		<param name="width">520</param>
+		<width>$PARAM[width]</width>
+		<height>62</height>
+		<font>font27</font>
+		<textcolor>B0FFFFFF</textcolor>
+		<focusedcolor>white</focusedcolor>
+		<texturefocus colordiffuse="30FFFFFF">bald/white.png</texturefocus>
+		<texturenofocus colordiffuse="0CFFFFFF">bald/white.png</texturenofocus>
+	</include>
+</includes>

@@ -1,0 +1,4 @@
+[
+    {"label":"Recently added episodes","path":"videodb://recentlyaddedepisodes/","path2":"","secondary":"0","target":"videos","limit":"25"},
+    {"label":"Top rated TV shows","path":"special://skin/playlists/top_rated_tvshows.xsp","path2":"","secondary":"0","target":"videos","limit":"25"}
+]

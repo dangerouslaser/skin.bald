@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="window" id="1116">
+	<defaultcontrol always="true">9100</defaultcontrol>
+	<backgroundcolor>bald_field</backgroundcolor>
+	<onunload>RunScript(script.skinvariables,action=buildtemplate,force)</onunload>
+	<controls>
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+		<include content="Bald_Backdrop" />
+		<control type="image"><width>590</width><height>1080</height><texture colordiffuse="E0121518">bald/white.png</texture></control>
+		<control type="label">
+			<left>96</left><top>72</top><width>398</width><height>60</height><label>$INFO[Window(home).Property(Bald.ConfigureLabel)] Widgets</label><font>font37</font><textcolor>white</textcolor>
+		</control>
+		<control type="list" id="9100">
+			<left>96</left><top>174</top><width>398</width><height>650</height><orientation>vertical</orientation><scrolltime tween="cubic" easing="out">320</scrolltime>
+			<onright>9200</onright><onback>PreviousMenu</onback>
+			<itemlayout height="92">
+				<control type="label"><left>20</left><width>358</width><height>84</height><label>$INFO[ListItem.Label]</label><font>font27</font><textcolor>80FFFFFF</textcolor><aligny>center</aligny></control>
+			</itemlayout>
+			<focusedlayout height="92">
+				<control type="image"><width>398</width><height>84</height><texture colordiffuse="30FFFFFF">bald/white.png</texture></control>
+				<control type="label"><left>20</left><width>358</width><height>84</height><label>$INFO[ListItem.Label]</label><font>font27</font><textcolor>white</textcolor><aligny>center</aligny></control>
+			</focusedlayout>
+			<content>plugin://script.skinvariables/?info=get_shortcuts_node&amp;edit=true&amp;skin=skin.bald&amp;menu=$INFO[Window(home).Property(Bald.ConfigureNode)]&amp;mode=submenu$INFO[Window(Home).Property(SkinVariables.ShortcutsNode.Reload),&amp;reload=,]</content>
+		</control>
+		<control type="group">
+			<left>686</left><top>174</top><width>1138</width><height>760</height>
+			<control type="label"><width>1050</width><height>64</height><label>$INFO[Container(9100).ListItem.Label]</label><font>font37</font><textcolor>white</textcolor></control>
+			<control type="label"><top>76</top><width>1050</width><height>40</height><label>$INFO[Container(9100).ListItem.Property(path)]</label><font>font20</font><textcolor>80FFFFFF</textcolor></control>
+			<control type="grouplist" id="9200">
+				<top>158</top><width>520</width><height>520</height><orientation>vertical</orientation><itemgap>12</itemgap><onleft>9100</onleft><onback>PreviousMenu</onback>
+				<control type="button" id="9201"><include>Bald_ConfigureButton</include><label>Choose content</label><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url),,&amp;func=do_choose&amp;&amp;use_rawpath::True&amp;&amp;limit::25&amp;&amp;secondary::0&amp;&amp;path2::])</onclick></control>
+				<control type="button" id="9202"><include>Bald_ConfigureButton</include><label>Rename</label><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;label)</onclick></control>
+				<control type="button" id="9203"><include>Bald_ConfigureButton</include><label>Items per row</label><label2>$INFO[Container(9100).ListItem.Property(limit)]</label2><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_numeric&amp;&amp;limit)</onclick></control>
+				<control type="button" id="9204"><include>Bald_ConfigureButton</include><label>Move up</label><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_move&amp;&amp;-1&amp;&amp;refocus::9100)</onclick></control>
+				<control type="button" id="9205"><include>Bald_ConfigureButton</include><label>Move down</label><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_move&amp;&amp;1&amp;&amp;refocus::9100)</onclick></control>
+				<control type="button" id="9206"><include>Bald_ConfigureButton</include><label>Add widget</label><visible>Integer.IsLess(Container(9100).NumItems,20)</visible><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url),,&amp;func=do_new&amp;&amp;use_rawpath::True&amp;&amp;limit::25&amp;&amp;secondary::0&amp;&amp;path2::&amp;&amp;refocus::9100])</onclick></control>
+				<control type="button" id="9207"><include>Bald_ConfigureButton</include><label>Remove widget</label><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_delete)</onclick></control>
+			</control>
+		</control>
+		<control type="label">
+			<right>96</right><bottom>62</bottom><width>1050</width><height>40</height><label>BACK  •  SAVE &amp; APPLY    LEFT  •  WIDGETS</label><font>font20</font><textcolor>80FFFFFF</textcolor><align>right</align>
+		</control>
+	</controls>
+</window>

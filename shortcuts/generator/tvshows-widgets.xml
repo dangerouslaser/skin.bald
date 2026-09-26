@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <items menu="tvshowswidgets" mode="submenu">
+        <item>
+            <value name="screen">tvshows</value>
+            <value name="row_id">$MATH[9301 + {item_x}]</value>
+            <value name="row_index">$MATH[1 + {item_x}]</value>
+            <rules name="row_up"><rule><condition>Integer.IsEqual({item_x},0)</condition><value>SetFocus(9000,0,absolute)</value></rule><rule><condition>true</condition><value>$MATH[9300 + {item_x}]</value></rule></rules>
+            <rules name="row_down"><rule><condition>Integer.IsEqual({item_x},$MATH[{item_length_x} - 1])</condition><value></value></rule><rule><condition>true</condition><value>$MATH[9302 + {item_x}]</value></rule></rules>
+            <rules name="secondary_content"><rule><condition>Integer.IsGreater({item_secondary},0)</condition><value>&lt;content target="{item_target_escaped}" limit="{item_limit_escaped}"&gt;{item_path2_escaped}&lt;/content&gt;</value></rule><rule><condition>true</condition><value></value></rule></rules>
+            <template>generator/home-widget.xmltemplate</template>
+        </item>
+    </items>
+</root>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="window" id="1115">
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<backgroundcolor>bald_field</backgroundcolor>
+	<controls>
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="bald_field">bald/white.png</texture>
+		</control>
+		<include content="Bald_Backdrop" />
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>590</width>
+			<height>1080</height>
+			<texture colordiffuse="E0121518">bald/white.png</texture>
+		</control>
+		<control type="label">
+			<left>96</left>
+			<top>72</top>
+			<width>398</width>
+			<height>60</height>
+			<label>Bald Settings</label>
+			<font>font37</font>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="list" id="9000">
+			<left>96</left>
+			<top>190</top>
+			<width>398</width>
+			<height>560</height>
+			<orientation>vertical</orientation>
+			<onright>9001</onright>
+			<onback>PreviousMenu</onback>
+			<itemlayout height="84">
+				<control type="label">
+					<left>20</left><top>0</top><width>358</width><height>84</height>
+					<label>$INFO[ListItem.Label]</label><font>font27</font><textcolor>80FFFFFF</textcolor><aligny>center</aligny>
+				</control>
+			</itemlayout>
+			<focusedlayout height="84">
+				<control type="image">
+					<width>398</width><height>76</height><texture colordiffuse="30FFFFFF">bald/white.png</texture>
+				</control>
+				<control type="label">
+					<left>20</left><top>0</top><width>358</width><height>76</height>
+					<label>$INFO[ListItem.Label]</label><font>font27</font><textcolor>white</textcolor><aligny>center</aligny>
+				</control>
+			</focusedlayout>
+			<content>
+				<item>
+					<label>Customization</label>
+					<label2>Configure Home, Movies, and TV Shows screens and their widgets.</label2>
+					<onclick>ActivateWindow(1117)</onclick>
+				</item>
+				<item>
+					<label>Appearance</label>
+					<label2>Artwork, media information, motion, and navigation hints.</label2>
+					<onclick>ActivateWindow(1118)</onclick>
+				</item>
+				<item>
+					<label>CoreELEC</label>
+					<label2>Open CoreELEC service and hardware settings.</label2>
+					<onclick>RunAddon(service.coreelec.settings)</onclick>
+					<visible>System.AddonIsEnabled(service.coreelec.settings)</visible>
+				</item>
+				<item>
+					<label>LibreELEC</label>
+					<label2>Open LibreELEC service and hardware settings.</label2>
+					<onclick>RunAddon(service.libreelec.settings)</onclick>
+					<visible>System.AddonIsEnabled(service.libreelec.settings)</visible>
+				</item>
+				<item>
+					<label>Services &amp; Helpers</label>
+					<label2>Manage installed add-ons and their settings.</label2>
+					<onclick>ActivateWindow(addonbrowser)</onclick>
+				</item>
+			</content>
+		</control>
+		<control type="group">
+			<left>686</left><top>214</top><width>1138</width><height>600</height>
+			<control type="label">
+				<width>1050</width><height>70</height><label>$INFO[Container(9000).ListItem.Label]</label><font>font37</font><textcolor>white</textcolor>
+			</control>
+			<control type="textbox">
+				<top>96</top><width>900</width><height>160</height><label>$INFO[Container(9000).ListItem.Label2]</label><font>font27</font><textcolor>B0FFFFFF</textcolor>
+			</control>
+		</control>
+		<control type="button" id="9001">
+			<left>686</left><top>650</top><width>330</width><height>68</height>
+			<label>Open</label><font>font27</font><textcolor>white</textcolor><focusedcolor>white</focusedcolor>
+			<texturefocus colordiffuse="30FFFFFF">bald/white.png</texturefocus><texturenofocus colordiffuse="16FFFFFF">bald/white.png</texturenofocus>
+			<onleft>9000</onleft><onback>PreviousMenu</onback><onclick>SendClick(9000)</onclick>
+		</control>
+		<control type="label">
+			<right>96</right><bottom>62</bottom><width>900</width><height>40</height>
+			<label>BACK  •  SETTINGS    SELECT  •  OPEN</label><font>font20</font><textcolor>80FFFFFF</textcolor><align>right</align>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="movies">
+    <name>Movies in 4K</name>
+    <match>all</match>
+    <rule field="videoresolution" operator="is">
+        <value>2160</value>
+    </rule>
+    <limit>50</limit>
+    <order direction="descending">dateadded</order>
+</smartplaylist>

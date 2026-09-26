@@ -1,0 +1,4 @@
+[
+    {"label":"Recently added movies","path":"videodb://recentlyaddedmovies/","path2":"","secondary":"0","target":"videos","limit":"25"},
+    {"label":"Top rated movies","path":"special://skin/playlists/top_rated_movies.xsp","path2":"","secondary":"0","target":"videos","limit":"25"}
+]
