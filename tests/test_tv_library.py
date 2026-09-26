@@ -2,6 +2,9 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+import home_menu
+
+
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
 
 
@@ -45,12 +48,11 @@ class TVLibraryTests(unittest.TestCase):
         self.assertIsNone(episodes.find('ondown'))
 
     def test_home_tv_item_opens_configured_screen(self):
-        home = ET.parse(ROOT / 'Home.xml').getroot()
-        item = next(item for item in home.findall(".//control[@id='9000']/include") if item.findtext("param[@name='label']") == 'TV shows')
+        item = home_menu.entry(label='TV shows')
         self.assertEqual(item.findtext("param[@name='visible']"), 'Skin.HasSetting(Bald.Screen.TVShows)')
         self.assertIn(
             'SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])',
-            [item.findtext("param[@name='enter4']")],
+            [action for _, action in home_menu.select_actions(item)],
         )
 
     def test_legacy_chrome_is_hidden_for_every_bald_tv_level(self):

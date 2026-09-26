@@ -2,6 +2,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+import home_menu
 from kodi_includes import resolve_window
 
 
@@ -86,17 +87,44 @@ class BaldSettingsTests(unittest.TestCase):
         )
 
     def test_optional_screens_restore_their_last_row_when_entered_from_menu(self):
-        root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
-        for screen, label in (("movies", "Movies"), ("tvshows", "TV shows")):
-            item = home_menu_button(root, label)
-            screen_actions = [item.findtext(f"param[@name='enter{index}']") for index in range(1, 5)]
-            self.assertIn(f"SetProperty(Bald.Screen,{screen},home)", screen_actions)
+        for screen, label in (("home", "Home"), ("movies", "Movies"), ("tvshows", "TV shows")):
+            actions = home_menu.select_actions(home_menu.entry(label=label))
+            has_rows = f"$EXP[Bald_HasRows_{screen}]"
+            self.assertEqual(actions, [
+                (has_rows, f"SetProperty(Bald.Screen,{screen},home)"),
+                (has_rows, f"SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.{screen})],home)"),
+                (has_rows, "ClearProperty(Bald.Menu,home)"),
+                (has_rows, f"SetFocus($INFO[Window(home).Property(Bald.Row.{screen})])"),
+            ])
             self.assertIn(
-                f"SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.{screen})],home)",
-                screen_actions,
+                (None, f"SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.{screen})],home)"),
+                home_menu.actions(home_menu.entry(label=label), "onfocus"),
             )
-            self.assertIn("ClearProperty(Bald.Menu,home)", screen_actions)
-            self.assertIn(f"SetFocus($INFO[Window(home).Property(Bald.Row.{screen})])", screen_actions)
+
+    def test_menu_entries_leave_up_and_down_to_the_grouplist(self):
+        root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
+        menu = root.find(".//control[@id='9000']")
+        self.assertEqual(menu.findtext("onup"), "noop")
+        self.assertEqual(menu.findtext("ondown"), "noop")
+        entries = home_menu.entries()
+        self.assertEqual([node.findtext("param[@name='id']") for node in entries], [f"900{n}" for n in range(1, 7)])
+        self.assertEqual([node.findtext("param[@name='preview']") for node in entries],
+                         ["home", "movies", "tvshows", "livetv", "search", "settings"])
+        for node in entries:
+            self.assertFalse([child for child in node.findall("param") if child.get("name") not in
+                              {"id", "label", "preview", "visible", "suffix", "right"}])
+            for child in home_menu.nested(node):
+                self.assertIn(child.tag, {"onclick", "onfocus"})
+
+        button = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
+            "include[@name='Bald_HomeMenuButton']/definition/control[@type='button']"
+        )
+        self.assertIsNone(button.find("onup"))
+        self.assertIsNone(button.find("ondown"))
+        self.assertIsNotNone(button.find("nested"))
+        self.assertEqual([node.text for node in button.findall("onleft")], ["Action(Select)"])
+        self.assertEqual([node.text for node in button.findall("onfocus")][-2:],
+                         ["SetProperty(Bald.Menu,1,home)", "SetProperty(Bald.MenuPreview,$PARAM[preview],home)"])
 
     def test_menu_selection_previews_each_screens_last_active_widget(self):
         home_includes = (ROOT / "1080i" / "Includes_Bald_Home.xml").read_text()
