@@ -194,6 +194,33 @@ Library chrome (MyVideoNav.xml and View_510_Bald_Posters.xml, shared by all Bald
 9160	Letter mode (alphabet strip)
 
 
+BROWSE WINDOWS (restyled Estuary windows and views; Includes_Bald_Browse.xml, docs/SPEC.md 5.19)
+No new ids: every id below is Estuary's, kept for Kodi or for Estuary's own routes.
+Media windows (MyVideoNav, AddonBrowser, MyPrograms, MyFavourites, MyPlaylist; GUIMediaWindow)
+3, 4		Sort by and order buttons (hidden, in MediaMenuCommon); the menus SendClick them
+8		Search (MediaMenuSearchButton)
+19, 199		Filter (keyboard / advanced)
+9000		Options menu grouplist (menucontrol); 6051-6053 its view, sort and order rows
+6130, 6131	Estuary's mouse strips for the menu (kept, inert with mouse input off)
+14100-14106	Now-playing transport row (MediaMenuNowPlaying)
+18900, 7700, 23000	Header sort summary, now-playing sub label, fast-scroll letter (TopBar)
+31111, 32111	Background fanart group and image (DefaultBackground)
+Views and their page controls
+50 (50600), 51 (5199), 52 (531), 53 (5199), 54 (531), 55 (531), 500 (531), 501 (531),
+502 (502600), 503 (503600), 504 (531; 50401 its detail label)
+20000		View 51's hidden animation helper
+15599		Now-playing text in view 503's column
+5000		Movie set contents list in the preview (InfoList)
+AddonBrowser.xml	5 settings, 7 hide foreign, 8 hide incompatible, 9 check for updates
+DialogAddonInfo.xml	6 install/uninstall, 7 enable/disable, 8 update, 9 settings, 10 dependencies, 12 open,
+		13 auto-update, 14 versions, 50 screenshots, 5000 description block, 9000 actions
+FileManager.xml		20, 21 lists; 60, 61 their page controls; 101, 102 path labels
+EventLog.xml		50 list, 60 its page control, 4 sort order, 20 clear, 21 level, 22 this level only,
+		501 logging settings, 9000 options column
+MyPlaylist.xml		20 shuffle, 21 save, 22 clear, 26 repeat
+SmartPlaylistEditor.xml	2 heading, 10 rules, 12 name, 16-19, 22-25, 20 OK, 21 Cancel; 500, 9001 grouplists
+SmartPlaylistRule.xml	2 heading, 15 field, 16 operator, 17 value, 20 browse, 18 OK, 19 Cancel
+
 HOME (Home.xml, Includes_Bald_Home.xml)
 
 9000	Main menu grouplist

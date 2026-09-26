@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald browsing outside the Bald movie and TV views: the restyled Estuary library views (View_50-55, View_500-504),
      their preview column, tiles, rows and scrollbars, the side options menu's transport buttons, and the add-on,
-     file manager, event log and smart playlist windows. See docs/SPEC.md 5.15 and docs/NOTES.md "Browse restyle".
+     file manager, event log and smart playlist windows. See docs/SPEC.md 5.19 and docs/NOTES.md "Browse restyle".
 
      Items are read as ListItem.* (the focused item of the window's active view), as Estuary's panels did, so the
      same preview serves every view and window that includes it. -->
