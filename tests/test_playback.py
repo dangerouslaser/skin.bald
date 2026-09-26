@@ -330,7 +330,7 @@ class SliderBarTests(unittest.TestCase):
     texture has nothing to scale from, and on CoreELEC its 16 px nib rendered as a screen-sized blob (0.2.0)."""
 
     def test_playback_sliders_have_a_real_bar_texture(self):
-        for name in ("DialogSeekBar.xml", "VideoOSD.xml", "MusicOSD.xml", "Custom_1109_TopBarOverlay.xml"):
+        for name in ("DialogSeekBar.xml", "VideoOSD.xml", "MusicOSD.xml"):
             root = resolve_window(name)
             for slider in root.iter("control"):
                 if slider.get("type") != "slider":

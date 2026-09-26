@@ -391,13 +391,11 @@
 	     202 ending at x 1824 (disc menu 804, teletext 70045 and 3D 70047 when they apply, then info 70043, audio 70060,
 	     subtitles 70061, video 70062). 80 x 96 buttons, 8 px apart, at y 836. Left from the first transport button
 	     wraps to the last tool, Right from the last tool to the first transport button. -->
-	<variable name="Bald_OSDBackIcon">
-		<value condition="VideoPlayer.Content(livetv)">osd/fullscreen/buttons/guide.png</value>
-		<value>osd/fullscreen/buttons/previous.png</value>
-	</variable>
-	<variable name="Bald_OSDForwardIcon">
-		<value condition="VideoPlayer.Content(livetv)">osd/fullscreen/buttons/record-white.png</value>
-		<value>osd/fullscreen/buttons/next.png</value>
+	<!-- Kodi's radio textures take no $VAR, so back and forward carry both icons and pick one with <selected>: the
+	     guide and record icons on Live TV. A recording shows as an accent-free dot under the record icon (the status
+	     line says "Currently recording"). -->
+	<variable name="Bald_OSDRecordCode">
+		<value condition="VideoPlayer.Content(livetv) + PVR.IsRecordingPlayingChannel">●</value>
 	</variable>
 	<!-- One OSD button: an 80 x 96 radiobutton, a direct child of its row with its own <visible> (a hidden parent group
 	     would leave it focusable: CGUIControl::CanFocus ignores the parent's visibility). The 48 px icon sits at 16,12,
@@ -505,8 +503,9 @@
 	<include name="Bald_OSDSlot_Real_Back">
 		<include content="Bald_OSDButton">
 			<param name="id">600</param>
-			<param name="icon">$VAR[Bald_OSDBackIcon]</param>
-			<param name="on">$VAR[Bald_OSDBackIcon]</param>
+			<param name="icon">osd/fullscreen/buttons/previous.png</param>
+			<param name="on">osd/fullscreen/buttons/guide.png</param>
+			<param name="selected">VideoPlayer.Content(livetv)</param>
 			<onclick condition="VideoPlayer.Content(livetv)">Dialog.Close(videoosd,true)</onclick>
 			<onclick condition="VideoPlayer.Content(livetv)">ActivateWindow(TVGuide)</onclick>
 			<onclick condition="!VideoPlayer.Content(livetv) + [$EXP[Bald_OSDChapterBehind] | !$EXP[Bald_OSDPlaylistBehind]]">ChapterOrBigStepBack</onclick>
@@ -530,10 +529,10 @@
 		<definition>
 			<include content="Bald_OSDButton">
 				<param name="id">607</param>
-				<param name="icon">$VAR[Bald_OSDForwardIcon]</param>
-				<param name="on">$VAR[Bald_OSDForwardIcon]</param>
-				<param name="selected">VideoPlayer.Content(livetv) + PVR.IsRecordingPlayingChannel</param>
-				<param name="on_color">bald_accent</param>
+				<param name="icon">osd/fullscreen/buttons/next.png</param>
+				<param name="on">osd/fullscreen/buttons/record-white.png</param>
+				<param name="selected">VideoPlayer.Content(livetv)</param>
+				<param name="code">$VAR[Bald_OSDRecordCode]</param>
 				<param name="enable">!VideoPlayer.Content(livetv) | PVR.CanRecordPlayingChannel</param>
 				<onclick condition="VideoPlayer.Content(livetv)">PVR.ToggleRecordPlayingChannel</onclick>
 				<onclick condition="!VideoPlayer.Content(livetv) + [$EXP[Bald_OSDChapterAhead] | ![$PARAM[click_next]]]">ChapterOrBigStepForward</onclick>
@@ -814,15 +813,17 @@
 		</definition>
 	</include>
 	<!-- The seek sliders over the lifted bar (x 264, 1392 wide, centre y 796): invisible but for an accent nib while
-	     focused. Left and Right seek (Kodi's slider "seek" and "pvr.seek" actions); Down returns to the buttons. -->
+	     focused. Left and Right seek (Kodi's slider "seek" and "pvr.seek" actions); Down returns to the buttons. Kodi
+	     scales a slider's nib by the control height over the bar texture's height, so the bar is the transparent,
+	     nib-sized bald/slider_clear.png (an empty bar ballooned the nib on CoreELEC). -->
 	<include name="Bald_OSDSeekSliders">
 		<control type="slider" id="87">
 			<left>264</left>
 			<top>788</top>
 			<width>1392</width>
 			<height>16</height>
-			<texturesliderbar />
-			<texturesliderbardisabled />
+			<texturesliderbar>bald/slider_clear.png</texturesliderbar>
+			<texturesliderbardisabled>bald/slider_clear.png</texturesliderbardisabled>
 			<textureslidernib />
 			<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
 			<textureslidernibdisabled />
@@ -837,8 +838,8 @@
 			<top>788</top>
 			<width>1392</width>
 			<height>16</height>
-			<texturesliderbar />
-			<texturesliderbardisabled />
+			<texturesliderbar>bald/slider_clear.png</texturesliderbar>
+			<texturesliderbardisabled>bald/slider_clear.png</texturesliderbardisabled>
 			<textureslidernib />
 			<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
 			<textureslidernibdisabled />
