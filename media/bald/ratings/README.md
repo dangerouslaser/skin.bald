@@ -6,14 +6,15 @@ SVGs in `tools/rating_glyphs/`.
 
 ## Brand marks: Simple Icons (CC0 1.0)
 
-`imdb`, `tmdb`, `rt`, `metacritic`, `trakt`, `jellyfin` and `kodi` are the Simple Icons 16.32.0 icons `imdb`,
-`themoviedatabase`, `rottentomatoes`, `metacritic`, `trakt`, `jellyfin` and `kodi` (https://simpleicons.org). Simple
-Icons releases its SVG data under CC0 1.0 Universal (public domain dedication).
+`imdb`, `tmdb`, `rt`, `metacritic`, `trakt`, `letterboxd`, `myanimelist`, `mdblist`, `jellyfin` and `kodi` are the
+Simple Icons 16.32.0 icons `imdb`, `themoviedatabase`, `rottentomatoes`, `metacritic`, `trakt`, `letterboxd`,
+`myanimelist`, `mdblist`, `jellyfin` and `kodi` (https://simpleicons.org). Simple Icons releases its SVG data under
+CC0 1.0 Universal (public domain dedication).
 
 The marks themselves are trademarks of their owners: IMDb (IMDb.com, Inc.), The Movie Database (TMDB), Rotten Tomatoes
-(Fandango), Metacritic (Fandom), Trakt (Trakt, Inc.), Jellyfin (the Jellyfin project) and Kodi (the XBMC
-Foundation). Bald uses them only nominatively, to say which service a score came from; it implies no affiliation or
-endorsement. Simple Icons' own disclaimer applies: CC0 covers the icon data, not the trademarks, and each owner's
+(Fandango), Metacritic (Fandom), Trakt (Trakt, Inc.), Letterboxd (Letterboxd Limited), MyAnimeList (MyAnimeList
+Co., Ltd.), MDbList (mdblist.com), Jellyfin (the Jellyfin project) and Kodi (the XBMC Foundation). Bald uses them only
+nominatively, to say which service a score came from; it implies no affiliation or endorsement. Simple Icons' own disclaimer applies: CC0 covers the icon data, not the trademarks, and each owner's
 brand guidelines still govern use of the mark. The guidelines Simple Icons links to:
 
 - IMDb: https://brand.imdb.com/imdb
@@ -21,8 +22,9 @@ brand guidelines still govern use of the mark. The guidelines Simple Icons links
 - Metacritic: https://developer.iva-api.com/docs/v2/metacritic-brand-guidelines
 - Trakt: https://trakt.tv/branding
 - Jellyfin: https://jellyfin.org/docs/general/contributing/branding.html
-- Rotten Tomatoes and Kodi: no guidelines listed (sources: Wikimedia Commons' alternative Rotten Tomatoes logo;
-  https://kodi.tv).
+- Letterboxd: https://letterboxd.com/about/brand/
+- Rotten Tomatoes, MyAnimeList, MDbList and Kodi: no guidelines listed (sources: Wikimedia Commons' alternative Rotten
+  Tomatoes logo; https://myanimelist.net; https://mdblist.com; https://kodi.tv).
 
 In line with those guidelines Bald shows each mark whole, unaltered in shape, in one flat colour, at a size that
 names the source, and never as Bald's own branding.
@@ -31,5 +33,6 @@ names the source, and never as Bald's own branding.
 
 Where Simple Icons has no mark, Bald draws a plain geometric glyph: `rating` (a star, Kodi's default rating or a
 source Bald cannot name), `you` (a person, the user's own rating), `rt_audience` (a popcorn bucket, the Rotten
-Tomatoes audience score; Rotten Tomatoes' own popcorn mark is not used) and `tvdb` (a television, for TheTVDB, which
-has no Simple Icons mark).
+Tomatoes audience score; Rotten Tomatoes' own popcorn mark is not used), `metacritic_user` (a speech bubble,
+Metacritic's user score, which has no mark of its own), `rogerebert` (a thumbs-up, Roger Ebert's rating; Simple Icons
+has no mark) and `tvdb` (a television, for TheTVDB, which has no Simple Icons mark).

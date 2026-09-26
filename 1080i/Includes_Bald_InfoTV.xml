@@ -331,7 +331,6 @@
 				<!-- Only for the show itself: a season or episode keeps the show's line, and its own ratings are the episode's. -->
 				<include content="Bald_Ratings">
 					<param name="visible">$EXP[Bald_RatingsInfo] + $EXP[Bald_InfoTVIsShow]</param>
-					<param name="fallback">true</param>
 					<param name="height">30</param>
 					<param name="font">Bald_FlagL</param>
 				</include>
@@ -480,7 +479,8 @@
 						<textcolor>bald_ink70</textcolor>
 						<label>$VAR[Bald_InfoTVEpisodeMeta]</label>
 					</control>
-					<!-- The focused episode's ratings (no TMDb Helper fallback: its monitor follows the dialog's item). -->
+					<!-- The focused episode's ratings. TMDb Helper's monitor follows the dialog's item (the show), so the guard keeps
+					     its values off the episode line. -->
 					<include content="Bald_Ratings">
 						<param name="container">Container(5302).</param>
 						<param name="visible">$EXP[Bald_RatingsInfo]</param>
