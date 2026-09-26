@@ -3,6 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import equivalent, shows_for_content
+from kodi_includes import expand_call
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
 
@@ -22,13 +23,11 @@ class ArtworkListTests(unittest.TestCase):
         self.assertIn('View_514_Bald_ArtworkList', [n.text for n in nav.iter('include')])
 
     def test_logo_geometry_keeps_home_defaults(self):
-        root = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot()
-        logo = root.find("include[@name='Bald_ArtLogo']")
-        for key, value in [('x','52'), ('y','486'), ('width','560'), ('height','170')]:
-            self.assertEqual(logo.findtext(f"param[@name='{key}']"), value)
-        for image in logo.findall('definition/control'):
-            self.assertEqual(image.findtext('width'), '$PARAM[width]')
-            self.assertEqual(image.findtext('height'), '$PARAM[height]')
+        # Called with only a row and parity (as Home does), every fallback image sits in Home's logo box.
+        images = expand_call('Bald_ArtLogo', {'c': '9101', 'p': 'Odd'})
+        self.assertEqual(len(images), 3)
+        for image in images:
+            self.assertEqual([image.findtext(key) for key in ('left', 'top', 'width', 'height')], ['52', '486', '560', '170'])
 
     def test_preview_reuses_home_art_logo_and_flags(self):
         root = ET.parse(ROOT / 'View_514_Bald_ArtworkList.xml').getroot()

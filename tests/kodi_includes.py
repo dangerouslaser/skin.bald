@@ -32,8 +32,12 @@ NATIVE = sorted(
 
 
 def include_definitions(folder=SKIN):
+    """Every named <include> in the include files; the per-install Skin Variables output is skipped, as on a fresh
+    install, so results do not depend on the local build."""
     definitions = {}
     for path in sorted(folder.glob("*.xml")):
+        if path.name == GENERATED:
+            continue
         root = ET.parse(path).getroot()
         if root.tag != "includes":
             continue
@@ -185,6 +189,19 @@ def _expand_include(call, definitions):
                     parent.insert(index + offset, node)
     _expand_in_place(holder, definitions)
     return list(holder)
+
+
+def expand_call(name, params=None, definitions=None):
+    """What one <include content="name"> call with these params expands to, as a list of elements, nested includes
+    and constants resolved. Tests use it to check an include's effective output instead of its $PARAM plumbing."""
+    definitions = definitions if definitions is not None else include_definitions()
+    call = ET.Element("include", content=name)
+    for key, value in (params or {}).items():
+        ET.SubElement(call, "param", name=key).text = value
+    holder = ET.Element("holder")
+    holder.append(call)
+    _expand_in_place(holder, definitions)
+    return list(resolve_constants(holder))
 
 
 def resolve_window(filename, definitions=None):

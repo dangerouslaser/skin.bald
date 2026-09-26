@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 import home_menu
 from conditions import equivalent, implies, shows_for_content
-from kodi_includes import parse
+from kodi_includes import expand_call, parse
 from skin_strings import loc
 
 
@@ -32,14 +32,23 @@ class LibraryViewTests(unittest.TestCase):
     def test_caption_reuses_home_media_flags_and_motion(self):
         caption = self.view.find("include[@name='Bald_LibraryCaption']//include")
         self.assertEqual(caption.get("content"), "Bald_Caption")
-        self.assertEqual(caption.findtext("param[@name='c']"), "$PARAM[c]")
-        self.assertEqual(self.view.findtext("include[@name='Bald_LibraryCaption']/param[@name='c']"), "510")
-        self.assertEqual(caption.findtext("param[@name='width']"), "528")
         shared = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         home_caption = shared.find("include[@name='Bald_Caption']")
         self.assertIsNotNone(home_caption.find(".//include[@content='Bald_MediaFlags']"))
-        self.assertEqual(home_caption.findtext("param[@name='width']"), "384")
-        self.assertEqual(home_caption.findtext("param[@name='x']"), "1420")
+
+        def titles(elements):
+            # The caption's title text boxes and the grouplists placing them.
+            boxes = [n for e in elements for n in e.iter("control") if n.findtext("font") == "Bald_CaptionTitle"]
+            columns = [n for e in elements for n in e.iter("control") if n.get("type") == "grouplist"
+                       and any(box in list(n) for box in boxes)]
+            return {n.findtext("width") for n in boxes}, {n.findtext("left") for n in columns}, boxes
+
+        # The library caption reads the poster list and is 528 wide; Home's default is 384 wide at x 1420.
+        widths, _, boxes = titles(expand_call("Bald_LibraryCaption"))
+        self.assertEqual(widths, {"528"})
+        self.assertTrue(any("Container(510).ListItem.Title" in (n.findtext("label") or "") for n in boxes))
+        widths, lefts, _ = titles(expand_call("Bald_Caption", {"c": "9101", "p": "Odd"}))
+        self.assertEqual((widths, lefts), ({"384"}, {"1420"}))
 
     def test_art_reuses_transition_with_four_overflow_masks(self):
         art = self.view.find("include[@name='Bald_LibraryArt']//include")
@@ -68,11 +77,11 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(preview.find("animation[@type='Hidden']/effect").get('time'), '180')
 
     def test_posters_crop_to_fill_the_frame_in_both_focus_states(self):
-        item = self.view.find("include[@name='Bald_LibraryPosterItem']")
-        poster = next(n for n in item.iter('control') if n.findtext('texture') == '$VAR[Bald_LibraryPoster]')
+        # Both layouts call the item with its defaults: a 360 x 540 poster cropped to fill.
+        item = expand_call('Bald_LibraryPosterItem')
+        poster = next(n for e in item for n in e.iter('control') if n.findtext('texture') == '$VAR[Bald_LibraryPoster]')
         self.assertEqual(poster.findtext('aspectratio'), 'scale')
-        self.assertEqual((poster.findtext('width'), poster.findtext('height')), ('$PARAM[width]', '$PARAM[height]'))
-        self.assertEqual((item.findtext("param[@name='width']"), item.findtext("param[@name='height']")), ('360', '540'))
+        self.assertEqual((poster.findtext('width'), poster.findtext('height')), ('360', '540'))
         container = self.view.find(".//control[@id='510']")
         self.assertEqual(container.findtext('itemlayout/include'), 'Bald_LibraryPosterItem')
         self.assertEqual(container.find('focusedlayout/include').get('content'), 'Bald_LibraryPosterItem')
@@ -136,7 +145,10 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(library.find('focusedlayout/include').get('content'), 'Bald_MenuRowFocused')
         includes = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot()
         shared = includes.find("include[@name='Bald_MenuRowFocused']")
-        self.assertEqual(shared.findtext(".//control[@type='image']/visible"), '$PARAM[always_dot]')
+        for always in ("true", "false"):
+            dot = next(n for e in expand_call("Bald_MenuRowFocused", {"always_dot": always}) for n in e.iter("control")
+                       if n.get("type") == "image")
+            self.assertEqual(dot.findtext("visible"), always)
         home_button = includes.find("include[@name='Bald_HomeMenuButton']")
         self.assertEqual(home_button.findtext(".//texturefocus"), 'bald/menu_dot.png')
 

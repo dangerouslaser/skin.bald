@@ -2,6 +2,8 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from kodi_includes import expand_call
+
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
 
@@ -9,11 +11,10 @@ ROOT = Path(__file__).resolve().parents[1] / "1080i"
 class PopupThemeTests(unittest.TestCase):
     def test_dialog_buttons_use_bald_pills_without_overlap(self):
         includes = ET.parse(ROOT / "Includes_Buttons.xml").getroot()
-        style = includes.find("include[@name='DefaultDialogButton']")
-        self.assertEqual(style.findtext("param[@name='height']"), "72")
-        button = style.find("definition/control")
-        self.assertEqual(style.findtext("param[@name='font']"), "Bald_Section")
-        self.assertEqual(button.findtext("font"), "$PARAM[font]")
+        # A dialog button as dialogs call it (id and label only): a 72 px Bald pill.
+        button, = expand_call("DefaultDialogButton", {"id": "10", "label": "$LOCALIZE[186]"})
+        self.assertEqual(button.findtext("height"), "72")
+        self.assertEqual(button.findtext("font"), "Bald_Section")
         self.assertEqual(button.findtext("textcolor"), "bald_ink")
         self.assertEqual(button.findtext("focusedcolor"), "bald_field")
         self.assertEqual(button.findtext("texturefocus"), "bald/pill.png")
@@ -55,7 +56,8 @@ class PopupThemeTests(unittest.TestCase):
         base = group.find("control[@type='image'][1]")
         self.assertEqual(base.findtext("bottom"), "0")
         self.assertEqual(base.find("texture").get("colordiffuse"), "bald_field")
-        header = surface.find(".//control[@id='$PARAM[header_id]']")
+        header = next(node for element in expand_call("DialogBackgroundCommons", {"header_id": "1"})
+                      for node in element.iter("control") if node.get("id") == "1")
         self.assertEqual(header.findtext("font"), "Bald_CaptionTitle")
         self.assertEqual(header.findtext("textcolor"), "bald_ink")
 

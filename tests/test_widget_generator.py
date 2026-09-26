@@ -6,7 +6,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from kodi_includes import condition
+from kodi_includes import _expand_in_place, condition, include_definitions
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -189,11 +189,17 @@ class WidgetGeneratorTests(unittest.TestCase):
                                  ["bald_ink95" if n == index else "bald_ink28" for n in range(count)])
                 self.assertTrue(all(dot.findtext("texture") == "bald/dot.png" for dot in dots))
 
-        group = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
-            ".//include[@name='Bald_Row']/definition/control[@type='group']/control[@type='grouplist']/control[@type='group']"
-        )
-        self.assertEqual(group.findtext("width"), "$PARAM[dots_width]")
-        self.assertEqual(group.find("include").get("content"), "$PARAM[dots]")
+        # Each row, expanded as Home expands it, draws its dots in a group exactly as wide as they are.
+        definitions = include_definitions()
+        for screen, title, _ in SCREENS:
+            count = len(defaults(screen))
+            for call in definition(root, f"Bald_Generated_{title}Widgets").findall("include"):
+                holder = ET.Element("holder")
+                holder.append(call)
+                _expand_in_place(holder, definitions)
+                groups = [g for g in holder.iter("control") if g.get("type") == "group"
+                          and [c.findtext("texture") for c in g.findall("control")] == ["bald/dot.png"] * count]
+                self.assertEqual([g.findtext("width") for g in groups], [str(12 * count - 6)], param(call, "id"))
 
     def test_menu_note_lists_the_configured_row_labels(self):
         root = fallback()
