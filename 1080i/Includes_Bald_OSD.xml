@@ -1024,4 +1024,194 @@
 		<value condition="!String.IsEmpty(Skin.String(Bald.OSD.PauseDelay))">$INFO[Skin.String(Bald.OSD.PauseDelay),, $LOCALIZE[31637]]</value>
 		<value>3 $LOCALIZE[31637]</value>
 	</variable>
+	<!-- ============ Down-chain panels (1125, videobookmarks, 1126) ============
+	     A bottom panel sits under the seek layer, which lifts its bar to y 436 and dims the video (Bald_OSDPanelUp):
+	     a heading at y 484, the row from y 528 and, where the row has details, a tray from y 800; hints on y 954. The
+	     OSD's buttons fade meanwhile. Up closes the panel (back to the one above), Down opens the next in the chain. -->
+	<variable name="Bald_OSDPlaylistPath">
+		<value condition="Integer.IsGreater(Playlist.Length(video),1)">playlistvideo://</value>
+		<value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TvShowDBID)">videodb://tvshows/titles/$INFO[VideoPlayer.TvShowDBID]/$INFO[VideoPlayer.Season]/?tvshowid=$INFO[VideoPlayer.TvShowDBID]&amp;xsp=%7B%22order%22%3A%7B%22method%22%3A%22episode%22%7D%2C%22type%22%3A%22episodes%22%7D</value>
+	</variable>
+	<variable name="Bald_OSDPlaylistHeading">
+		<value condition="Integer.IsGreater(Playlist.Length(video),1)">$LOCALIZE[559]$INFO[Playlist.Position(video), · ]$INFO[Playlist.Length(video), / ]</value>
+		<value>$INFO[VideoPlayer.TVShowTitle,, · ]$LOCALIZE[20373]$INFO[VideoPlayer.Season, ]</value>
+	</variable>
+	<!-- The focused row item's second line: "S1 E2 · 42 min", or the year and duration. -->
+	<variable name="Bald_OSDPanelItemMeta">
+		<value condition="ListItem.IsPlaying">$LOCALIZE[31634]</value>
+		<value condition="!String.IsEmpty(ListItem.Episode)">$INFO[ListItem.Season,S]$INFO[ListItem.Episode, E]$INFO[ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
+	</variable>
+	<variable name="Bald_OSDPlaylistTrayMeta">
+		<value condition="!String.IsEmpty(Container(8150).ListItem.Episode)">$INFO[Container(8150).ListItem.TVShowTitle,, · ]$INFO[Container(8150).ListItem.Season,S]$INFO[Container(8150).ListItem.Episode, E]$INFO[Container(8150).ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
+		<value>$INFO[Container(8150).ListItem.Year]$INFO[Container(8150).ListItem.Genre, · ]$INFO[Container(8150).ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
+	</variable>
+	<!-- The cast panel's list: TMDb Helper's cast, or its crew while Bald.OSD.Credits on Home is crew. -->
+	<variable name="Bald_OSDCastPath">
+		<value condition="VideoPlayer.Content(movies) + String.StartsWith(VideoPlayer.IMDBNumber,tt) + String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">plugin://plugin.video.themoviedb.helper/?info=crew&amp;tmdb_type=movie$INFO[VideoPlayer.IMDBNumber,&amp;imdb_id=]</value>
+		<value condition="VideoPlayer.Content(movies) + String.StartsWith(VideoPlayer.IMDBNumber,tt)">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=movie$INFO[VideoPlayer.IMDBNumber,&amp;imdb_id=]</value>
+		<value condition="VideoPlayer.Content(movies) + String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">plugin://plugin.video.themoviedb.helper/?info=crew&amp;tmdb_type=movie$INFO[VideoPlayer.Title,&amp;query=]$INFO[VideoPlayer.Year,&amp;year=]</value>
+		<value condition="VideoPlayer.Content(movies)">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=movie$INFO[VideoPlayer.Title,&amp;query=]$INFO[VideoPlayer.Year,&amp;year=]</value>
+		<value condition="VideoPlayer.Content(episodes) + String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">plugin://plugin.video.themoviedb.helper/?info=crew&amp;tmdb_type=tv$INFO[VideoPlayer.TVShowTitle,&amp;query=]$INFO[VideoPlayer.Season,&amp;season=]$INFO[VideoPlayer.Episode,&amp;episode=]</value>
+		<value condition="VideoPlayer.Content(episodes)">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=tv$INFO[VideoPlayer.TVShowTitle,&amp;query=]$INFO[VideoPlayer.Season,&amp;season=]$INFO[VideoPlayer.Episode,&amp;episode=]</value>
+	</variable>
+	<variable name="Bald_OSDCastHeading">
+		<value condition="String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">$LOCALIZE[31629]$INFO[VideoPlayer.Title, · ]</value>
+		<value>$LOCALIZE[206]$INFO[VideoPlayer.Title, · ]</value>
+	</variable>
+	<variable name="Bald_OSDCastHint">
+		<value condition="String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">$LOCALIZE[31631]</value>
+		<value>$LOCALIZE[31630]</value>
+	</variable>
+	<variable name="Bald_OSDPersonText">
+		<value condition="!String.IsEmpty(Container(8160).ListItem.Plot)">$INFO[Container(8160).ListItem.Plot]</value>
+		<value>$INFO[Container(8160).ListItem.Property(biography)]</value>
+	</variable>
+	<!-- The panel heading at y 484. -->
+	<include name="Bald_OSDPanelHeading">
+		<param name="label" />
+		<definition>
+			<control type="label">
+				<left>Bald_SafeLeft</left>
+				<top>484</top>
+				<width>1728</width>
+				<height>30</height>
+				<aligny>center</aligny>
+				<font>Bald_RowLabel</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$PARAM[label]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- Tray under a row: the focused item's title, a meta line and two lines of text. -->
+	<include name="Bald_OSDPanelTray">
+		<param name="title" />
+		<param name="meta" />
+		<param name="text" />
+		<definition>
+			<control type="label">
+				<left>Bald_SafeLeft</left>
+				<top>800</top>
+				<width>1200</width>
+				<height>30</height>
+				<aligny>center</aligny>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$PARAM[title]</label>
+			</control>
+			<control type="label">
+				<left>Bald_SafeLeft</left>
+				<top>832</top>
+				<width>1200</width>
+				<height>28</height>
+				<aligny>center</aligny>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>bald_ink70</textcolor>
+				<label>$PARAM[meta]</label>
+			</control>
+			<control type="textbox">
+				<left>Bald_SafeLeft</left>
+				<top>866</top>
+				<width>1200</width>
+				<height>60</height>
+				<font>Bald_CaptionPlot</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$PARAM[text]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- Hints on y 954 for a panel. -->
+	<include name="Bald_OSDPanelHints">
+		<param name="first" />
+		<param name="second" />
+		<definition>
+			<control type="group">
+				<left>1224</left>
+				<top>Bald_HintTop</top>
+				<include content="Bald_InfoHintPair">
+					<param name="first">$PARAM[first]</param>
+					<param name="second">$PARAM[second]</param>
+					<param name="width">600</param>
+				</include>
+			</control>
+		</definition>
+	</include>
+	<!-- One 320 x 180 landscape tile of a panel row with two lines under it; the focused one full and ringed. -->
+	<include name="Bald_OSDPanelTile">
+		<param name="focused">false</param>
+		<param name="dim">bald_poster_dim</param>
+		<param name="color">bald_ink70</param>
+		<definition>
+			<control type="image">
+				<left>12</left>
+				<top>12</top>
+				<width>320</width>
+				<height>180</height>
+				<texture colordiffuse="bald_tile_placeholder">bald/tile.png</texture>
+			</control>
+			<control type="image">
+				<left>12</left>
+				<top>12</top>
+				<width>320</width>
+				<height>180</height>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<texture diffuse="bald/tile.png" colordiffuse="$PARAM[dim]" background="true">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+			<control type="image">
+				<left>6</left>
+				<top>6</top>
+				<width>332</width>
+				<height>192</height>
+				<texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture>
+				<visible>$PARAM[focused]</visible>
+			</control>
+			<control type="label">
+				<left>12</left>
+				<top>202</top>
+				<width>320</width>
+				<height>26</height>
+				<aligny>center</aligny>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>$PARAM[color]</textcolor>
+				<label>$INFO[ListItem.Title]</label>
+			</control>
+			<control type="label">
+				<left>12</left>
+				<top>230</top>
+				<width>320</width>
+				<height>24</height>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$VAR[Bald_OSDPanelItemMeta]</label>
+			</control>
+			<!-- The playing item: an accent dot before its title. -->
+			<control type="image">
+				<left>12</left>
+				<top>174</top>
+				<width>8</width>
+				<height>8</height>
+				<texture colordiffuse="bald_accent">bald/dot.png</texture>
+				<visible>ListItem.IsPlaying</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- The panel content fades while a later chain panel covers it (focus is in that panel meanwhile). -->
+	<include name="Bald_OSDPanelCovered">
+		<param name="condition" />
+		<definition>
+			<animation type="Conditional" condition="$PARAM[condition]">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			</animation>
+		</definition>
+	</include>
+	<!-- A panel's second hint: "Down for more" while the chain goes on after it, else "Back to close". -->
+	<variable name="Bald_OSDHintAfter3">
+		<value condition="$EXP[Bald_OSDChainBookmarks] | $EXP[Bald_OSDChainCast]">$LOCALIZE[31627]</value>
+		<value>$LOCALIZE[31619]</value>
+	</variable>
+	<variable name="Bald_OSDHintAfter4">
+		<value condition="$EXP[Bald_OSDChainCast]">$LOCALIZE[31627]</value>
+		<value>$LOCALIZE[31619]</value>
+	</variable>
 </includes>

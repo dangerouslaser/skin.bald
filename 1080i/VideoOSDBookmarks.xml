@@ -1,158 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bald bookmarks sheet (docs/SPEC.md 5, "Playback (proposed)"): over the bottom scrim, the pill actions at the
-     safe margin and a row of rounded 16:9 thumbnails, dimmed until focused, with the tile focus ring. Started from
-     Kodi 22 Estuary's VideoOSDBookmarks.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt).
+<!-- Bald bookmarks and chapters panel (docs/SPEC.md 5.16, "Video OSD"): a down-chain panel under the seek layer's
+     lifted bar, which also dims the video. The heading at y 484, the pill actions at y 528 and a row of rounded 16:9
+     thumbnails, dimmed until focused, with the tile focus ring. Up from the actions closes the panel; Down from the
+     row (or from the actions when there are no bookmarks) opens the next panel of the chain. Started from Kodi 22
+     Estuary's VideoOSDBookmarks.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt).
      Kodi (CGUIDialogVideoBookmarks) binds 2 (create bookmark), 3 (clear bookmarks), 4 (set episode bookmark, enabled
-     by Kodi) and 11 (the bookmark list); 9001 is the button row. -->
+     by Kodi) and 11 (the bookmark list, chapters included); 9001 is the button row. -->
 <window>
 	<defaultcontrol always="true">2</defaultcontrol>
-	<include>Bald_PlaybackAnimWindow</include>
+	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<include>Bald_OSDAnimPanel</include>
 	<depth>DepthDialog</depth>
+	<zorder>1</zorder>
 	<controls>
-		<control type="button">
-			<description>background close area</description>
-			<left>0</left>
-			<top>0</top>
-			<width>1920</width>
-			<height>560</height>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>Action(close)</onclick>
-		</control>
-		<!-- The OSD and seek bar stay open underneath: dim them, then the bottom scrim. -->
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>1920</width>
-			<height>1080</height>
-			<texture colordiffuse="bald_field60">bald/white.png</texture>
-		</control>
-		<include>Bald_PlaybackScrim</include>
-		<control type="label">
-			<left>Bald_SafeLeft</left>
-			<top>560</top>
-			<width>1100</width>
-			<height>48</height>
-			<aligny>center</aligny>
-			<font>Bald_CaptionTitle</font>
-			<textcolor>bald_ink</textcolor>
-			<label>$LOCALIZE[298]</label>
-		</control>
-		<control type="grouplist" id="9001">
-			<left>Bald_SafeLeft</left>
-			<top>632</top>
-			<width>1728</width>
-			<height>72</height>
-			<orientation>horizontal</orientation>
-			<itemgap>8</itemgap>
-			<onup>11</onup>
-			<ondown>11</ondown>
-			<include content="DefaultDialogButton">
-				<param name="id" value="2" />
-				<param name="label" value="$LOCALIZE[294]" />
-				<param name="width" value="320" />
+		<control type="group">
+			<include content="Bald_OSDPanelCovered"><param name="condition">Window.IsVisible(1126)</param></include>
+			<include content="Bald_OSDPanelHeading"><param name="label">$LOCALIZE[298]$INFO[Player.Chapter, · $LOCALIZE[21396] ]$INFO[Player.ChapterCount, / ]</param></include>
+			<control type="grouplist" id="9001">
+				<left>Bald_SafeLeft</left>
+				<top>528</top>
+				<width>1728</width>
+				<height>72</height>
+				<orientation>horizontal</orientation>
+				<itemgap>8</itemgap>
+				<onup>Dialog.Close(videobookmarks)</onup>
+				<ondown condition="Integer.IsGreater(Container(11).NumItems,0)">11</ondown>
+				<ondown condition="Integer.IsEqual(Container(11).NumItems,0) + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
+				<include content="DefaultDialogButton">
+					<param name="id" value="2" />
+					<param name="label" value="$LOCALIZE[294]" />
+					<param name="width" value="320" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="3" />
+					<param name="label" value="$LOCALIZE[296]" />
+					<param name="width" value="320" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="4" />
+					<param name="label" value="$LOCALIZE[20406]" />
+					<param name="width" value="320" />
+					<param name="visible" value="Control.IsEnabled(4)" />
+				</include>
+			</control>
+			<control type="label">
+				<left>Bald_SafeLeft</left>
+				<top>640</top>
+				<width>1728</width>
+				<height>40</height>
+				<aligny>center</aligny>
+				<font>Bald_InfoTagline</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$LOCALIZE[31155]</label>
+				<visible>Integer.IsEqual(Container(11).NumItems,0)</visible>
+			</control>
+			<control type="panel" id="11">
+				<left>84</left>
+				<top>612</top>
+				<width>1752</width>
+				<height>250</height>
+				<onup>9001</onup>
+				<include>Bald_OSDChainFrom_4</include>
+				<preloaditems>2</preloaditems>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<orientation>horizontal</orientation>
+				<itemlayout width="312" height="250">
+					<control type="image">
+						<left>12</left>
+						<top>12</top>
+						<width>288</width>
+						<height>162</height>
+						<aspectratio scalediffuse="false">scale</aspectratio>
+						<texture diffuse="bald/tile.png" colordiffuse="bald_poster_dim" fallback="DefaultVideo.png">$INFO[ListItem.Art(thumb)]</texture>
+					</control>
+					<control type="label">
+						<left>12</left>
+						<top>186</top>
+						<width>288</width>
+						<height>26</height>
+						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink70</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>12</left>
+						<top>214</top>
+						<width>288</width>
+						<height>24</height>
+						<aligny>center</aligny>
+						<font>Bald_Hint</font>
+						<textcolor>bald_ink45</textcolor>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout width="312" height="250">
+					<control type="image">
+						<left>12</left>
+						<top>12</top>
+						<width>288</width>
+						<height>162</height>
+						<aspectratio scalediffuse="false">scale</aspectratio>
+						<texture diffuse="bald/tile.png" fallback="DefaultVideo.png">$INFO[ListItem.Art(thumb)]</texture>
+					</control>
+					<control type="image">
+						<left>6</left>
+						<top>6</top>
+						<width>300</width>
+						<height>174</height>
+						<texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture>
+						<visible>Control.HasFocus(11)</visible>
+					</control>
+					<control type="label">
+						<left>12</left>
+						<top>186</top>
+						<width>288</width>
+						<height>26</height>
+						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>12</left>
+						<top>214</top>
+						<width>288</width>
+						<height>24</height>
+						<aligny>center</aligny>
+						<font>Bald_Hint</font>
+						<textcolor>bald_ink60</textcolor>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+				</focusedlayout>
+			</control>
+			<include content="Bald_OSDPanelHints">
+				<param name="first">$LOCALIZE[31619]</param>
+				<param name="second">$VAR[Bald_OSDHintAfter4]</param>
 			</include>
-			<include content="DefaultDialogButton">
-				<param name="id" value="3" />
-				<param name="label" value="$LOCALIZE[296]" />
-				<param name="width" value="320" />
-			</include>
-			<include content="DefaultDialogButton">
-				<param name="id" value="4" />
-				<param name="label" value="$LOCALIZE[20406]" />
-				<param name="width" value="320" />
-				<param name="visible" value="Control.IsEnabled(4)" />
-			</include>
-		</control>
-		<control type="label">
-			<left>Bald_SafeLeft</left>
-			<top>760</top>
-			<width>1728</width>
-			<height>40</height>
-			<aligny>center</aligny>
-			<font>Bald_InfoTagline</font>
-			<textcolor>bald_ink60</textcolor>
-			<label>$LOCALIZE[31155]</label>
-			<visible>Integer.IsEqual(Container(11).NumItems,0)</visible>
-		</control>
-		<control type="panel" id="11">
-			<left>84</left>
-			<top>724</top>
-			<width>1752</width>
-			<height>250</height>
-			<onup>9001</onup>
-			<ondown>9001</ondown>
-			<preloaditems>2</preloaditems>
-			<scrolltime tween="cubic" easing="out">440</scrolltime>
-			<orientation>horizontal</orientation>
-			<itemlayout width="312" height="250">
-				<control type="image">
-					<left>12</left>
-					<top>12</top>
-					<width>288</width>
-					<height>162</height>
-					<aspectratio scalediffuse="false">scale</aspectratio>
-					<texture diffuse="bald/tile.png" colordiffuse="bald_poster_dim" fallback="DefaultVideo.png">$INFO[ListItem.Art(thumb)]</texture>
-				</control>
-				<control type="label">
-					<left>12</left>
-					<top>186</top>
-					<width>288</width>
-					<height>26</height>
-					<aligny>center</aligny>
-					<font>Bald_CaptionMeta</font>
-					<textcolor>bald_ink70</textcolor>
-					<label>$INFO[ListItem.Label]</label>
-				</control>
-				<control type="label">
-					<left>12</left>
-					<top>214</top>
-					<width>288</width>
-					<height>24</height>
-					<aligny>center</aligny>
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink45</textcolor>
-					<label>$INFO[ListItem.Label2]</label>
-				</control>
-			</itemlayout>
-			<focusedlayout width="312" height="250">
-				<control type="image">
-					<left>12</left>
-					<top>12</top>
-					<width>288</width>
-					<height>162</height>
-					<aspectratio scalediffuse="false">scale</aspectratio>
-					<texture diffuse="bald/tile.png" fallback="DefaultVideo.png">$INFO[ListItem.Art(thumb)]</texture>
-				</control>
-				<control type="image">
-					<left>6</left>
-					<top>6</top>
-					<width>300</width>
-					<height>174</height>
-					<texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture>
-					<visible>Control.HasFocus(11)</visible>
-				</control>
-				<control type="label">
-					<left>12</left>
-					<top>186</top>
-					<width>288</width>
-					<height>26</height>
-					<aligny>center</aligny>
-					<font>Bald_CaptionMeta</font>
-					<textcolor>bald_ink</textcolor>
-					<label>$INFO[ListItem.Label]</label>
-				</control>
-				<control type="label">
-					<left>12</left>
-					<top>214</top>
-					<width>288</width>
-					<height>24</height>
-					<aligny>center</aligny>
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$INFO[ListItem.Label2]</label>
-				</control>
-			</focusedlayout>
 		</control>
 	</controls>
 </window>

@@ -1028,6 +1028,7 @@ msgstr ""
 
 #: /1080i/Includes_Bald_Playback.xml
 #: /1080i/Includes_Bald_OSD.xml
+#: /1080i/VideoOSDBookmarks.xml
 #. OSD hint when there is no seek row, and the touch back button
 msgctxt "#31619"
 msgid "Back to close"
@@ -1089,6 +1090,36 @@ msgstr ""
 #. Video OSD: the seek slider over the bar
 msgctxt "#31628"
 msgid "Seek"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD cast panel heading while it lists the crew
+msgctxt "#31629"
+msgid "Crew"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD cast panel hint
+msgctxt "#31630"
+msgid "Down for crew"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD cast panel hint while it lists the crew
+msgctxt "#31631"
+msgid "Up for cast"
+msgstr ""
+
+#: /1080i/Custom_1126_OSDCast.xml
+#. Video OSD cast panel hint
+msgctxt "#31632"
+msgid "Select for the biography"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD playlist panel: marks the item that is playing
+msgctxt "#31634"
+msgid "Now playing"
 msgstr ""
 
 #: /1080i/Includes_Bald_OSD.xml
@@ -1185,6 +1216,7 @@ msgstr ""
 
 #: /1080i/DialogPVRChannelsOSD.xml
 #: /1080i/MyPVRChannels.xml
+#: /1080i/Custom_1125_OSDPlaylist.xml
 msgctxt "#31662"
 msgid "Select to watch"
 msgstr ""

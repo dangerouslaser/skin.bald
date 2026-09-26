@@ -319,7 +319,7 @@ Custom_1123_OSDVideoPanel.xml (window 1123)
 Custom_1124_OSDNextItem.xml (window 1124)
 8140	Hidden list: the next episode of the season (videodb, one item)
 Custom_1125_OSDPlaylist.xml (window 1125, down chain)
-8150	Playlist or season row; 8151 hidden button the focus timer uses
+8150	Playlist or season row (the bald_osd_playlist_focus timer moves it to what plays next)
 Custom_1126_OSDCast.xml (window 1126, down chain; TMDb Helper)
 8160	Cast or crew row
 Custom_1127_OSDInfoOverlay.xml (window 1127) and Custom_1128_OSDDetails.xml (window 1128)
