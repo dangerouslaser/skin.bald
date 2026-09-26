@@ -192,6 +192,16 @@
 			</item>
 		</definition>
 	</include>
+	<!-- The widget editor's (1116) plugin URL for the focused row. Skin Variables 2.2.4 loses the node when it lists a
+	     nested list: resolving it assigns a tuple to its string-only node setter, which falls back to no node, so each
+	     listed row's own "url" has no node= and an action on it edits the top-level hubs list (it replaced hubs). A
+	     function call with node= in its URL resolves the right list, so a hub's rows are addressed here from the hub's
+	     index (Bald.ConfigureItem) and the row's index (its "item" property). Home's and Live TV's rows are top-level
+	     menus, whose own url is right. -->
+	<variable name="Bald_WidgetItemUrl">
+		<value condition="!String.IsEmpty(Window(home).Property(Bald.ConfigureItem))">plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=$INFO[Window(home).Property(Bald.ConfigureNode)]&amp;skin=skin.bald&amp;mode=$INFO[Window(home).Property(Bald.ConfigureMode)]&amp;item=$INFO[Container(9100).ListItem.Property(item)]&amp;node=$INFO[Window(home).Property(Bald.ConfigureItem)]</value>
+		<value>$INFO[Container(9100).ListItem.Property(url)]</value>
+	</variable>
 	<expression name="Bald_HubCategorySelected">[String.IsEqual(Container(9300).ListItem.Property(kind),hub)]</expression>
 	<!-- Eight hubs fill the eight Home slots (shortcuts/generator/screens.xml). -->
 	<expression name="Bald_HubsFull">[Integer.IsGreater(Container(9390).NumItems,7)]</expression>

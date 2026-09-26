@@ -101,6 +101,10 @@ Glyphs and the default rating source (2026-09-26, added after the list above; it
 
 ## Home hubs (2026-09-26, not yet run in Kodi)
 
+**Found in Kodi (2026-09-26).** Two bugs made the widget editor edit the top-level hubs list instead of a hub's rows (a chosen widget replaced the Movies hub; Add row created new hubs):
+- Kodi reads a static list item's property that is a plain number as a string id (`CGUIControlFactory::GetInfoLabelFromElement`), so the Home Screens sidebar's `slot` "2" read "Music". `$NUMBER[2]` resolves to nothing there. The slot is now `$INFO[Container(9390).ListItemAbsolute(n).Property(item)]`, the index Skin Variables publishes on each entry; `tests/test_conventions.py` rejects bare-number static properties, and Home Screens never opens the editor for a hub without it.
+- Skin Variables 2.2.4 drops the node from the `url` of every row it lists in a nested list: `ListGetShortcutsNode.menunode` assigns `get_menunode()`'s tuple back to `self.node`, whose setter only splits strings and falls back to `()`, so `get_url()` omits `node=`. A function call that carries `node=` in its own URL still resolves the right list before it acts. The widget editor therefore builds its action URLs itself (`Bald_WidgetItemUrl`: the hub's index as `node`, the row's `item`) and uses a row's own `url` only for Home's and Live TV's top-level row menus (`tests/test_home_hubs.py` WidgetEditorUrlTests).
+
 The Home menu is now Home, up to eight user hubs in the user's order, Live TV, Search and Settings. Home, Live TV, Search and Settings are fixed; the hubs are added, renamed, reordered, switched off and removed in Bald Settings > Home Screens (1117). Movies and TV shows are no longer fixed screens: they are the two seeded hubs. Live TV has its own widget rows. The pattern follows Arctic Fuse 3 (fixed slots, one Skin Variables menu per purpose, the menu editor in the skin's own settings window); no AF3 code was copied. Static checks only (`tools/kodi_dev.py validate`, the unit tests, and the generator run through the installed Skin Variables 2.2.4 with Kodi modules stubbed); nothing was reloaded or sent to Kodi.
 
 ### Design

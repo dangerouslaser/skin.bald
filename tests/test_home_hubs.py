@@ -341,3 +341,25 @@ class MigrationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WidgetEditorUrlTests(unittest.TestCase):
+    """Skin Variables 2.2.4 drops the node from the url of each row it lists for a nested list (its node setter only
+    takes a string, and resolving the node assigns it a tuple), so an action on that url edits the top-level hubs list.
+    The widget editor must address rows through Bald_WidgetItemUrl, which names the hub's node itself."""
+
+    def test_editor_actions_never_use_the_rows_own_url(self):
+        window = ET.parse(XML / "Custom_1116_BaldHomeWidgets.xml").getroot()
+        actions = [re.fullmatch(r"RunPlugin\((.*)\)", node.text).group(1) for node in window.iter("onclick")
+                   if node.text.startswith("RunPlugin(")]
+        self.assertTrue(actions)
+        for action in actions:
+            with self.subTest(action=action[:60]):
+                self.assertTrue(action.startswith("$VAR[Bald_WidgetItemUrl]&func="), action)
+
+    def test_hub_rows_are_addressed_by_node_and_item(self):
+        root = ET.parse(XML / "Includes_Bald_Configure.xml").getroot()
+        values = root.find("variable[@name='Bald_WidgetItemUrl']").findall("value")
+        self.assertIn("&node=$INFO[Window(home).Property(Bald.ConfigureItem)]", values[0].text)
+        self.assertIn("&item=$INFO[Container(9100).ListItem.Property(item)]", values[0].text)
+        self.assertEqual(values[-1].text, "$INFO[Container(9100).ListItem.Property(url)]")

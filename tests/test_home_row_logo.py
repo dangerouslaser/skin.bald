@@ -117,7 +117,7 @@ class EditorLogoTests(unittest.TestCase):
         button = root.find(".//control[@id='9209']")
         self.assertEqual(button.findtext("label"), "$LOCALIZE[31768]")
         self.assertEqual(button.findtext("label2"), "$VAR[Bald_WidgetLogoLabel]")
-        match = re.fullmatch(r"RunPlugin\(\$INFO\[Container\(9100\)\.ListItem\.Property\(url\)\]&func=do_edit"
+        match = re.fullmatch(r"RunPlugin\(\$VAR\[Bald_WidgetItemUrl\]&func=do_edit"
                              r"&&logo&&(?P<pairs>[^,]+?)&&(?P<heading>[^&]+)&&True\)", button.findtext("onclick"))
         self.assertIsNotNone(match, button.findtext("onclick"))
         pairs = [pair.split("=") for pair in match.group("pairs").split("&")]

@@ -294,7 +294,7 @@ class EditorStyleTests(unittest.TestCase):
         self.assertEqual(button.findtext("label2"), "$VAR[Bald_WidgetStyleLabel]")
         action = button.findtext("onclick")
         # Skin Variables' do_edit: key, then label=value pairs joined by &, a heading, and use_prop_pairs.
-        match = re.fullmatch(r"RunPlugin\(\$INFO\[Container\(9100\)\.ListItem\.Property\(url\)\]&func=do_edit"
+        match = re.fullmatch(r"RunPlugin\(\$VAR\[Bald_WidgetItemUrl\]&func=do_edit"
                              r"&&style&&(?P<pairs>[^,]+?)&&(?P<heading>[^&]+)&&True\)", action)
         self.assertIsNotNone(match, action)
         pairs = [pair.split("=") for pair in match.group("pairs").split("&")]
