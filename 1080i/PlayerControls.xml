@@ -2,7 +2,7 @@
 <!-- Bald player controls popup (docs/SPEC.md 5, "Playback (proposed)"), shown outside full screen: the Bald popup
      surface with the now-playing art, title and meta, the seek track and the OSD's icon buttons. Started from Kodi 22
      Estuary's PlayerControls.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogPlayerControls binds no
-     control ids; the buttons keep Estuary's ids and actions (201 row, 600-607, 699 and 704 repeat, 23 progress and
+     control ids; the buttons keep Estuary's ids and actions (201 row, 600-607, 704 repeat, 23 progress and
      87 seek button). -->
 <window>
 	<defaultcontrol always="true">201</defaultcontrol>
@@ -113,17 +113,17 @@
 					<onclick>PlayerControl(Next)</onclick>
 					<visible>!VideoPlayer.Content(livetv) + [Integer.IsGreater(Playlist.Length(video),1) | Integer.IsGreater(Playlist.Length(music),1)]</visible>
 				</control>
-				<include content="Bald_PlaybackIconGroup">
-					<param name="group_id">699</param>
-					<param name="id">704</param>
-					<param name="icon">$VAR[PlayerControlsRepeatImageVar]</param>
-					<param name="visible">Player.HasAudio + !MusicPlayer.Content(LiveTV)</param>
+				<!-- A direct child of the row that hides itself: a control hidden only through a parent group can still
+				     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
+				<control type="radiobutton" id="704">
+					<include content="Bald_PlaybackButton"><param name="icon">$VAR[PlayerControlsRepeatImageVar]</param></include>
 					<onleft>605</onleft>
 					<onright>607</onright>
 					<onup>1000</onup>
 					<ondown>1000</ondown>
 					<onclick>PlayerControl(Repeat)</onclick>
-				</include>
+					<visible>Player.HasAudio + !MusicPlayer.Content(LiveTV)</visible>
+				</control>
 				<control type="radiobutton" id="607">
 					<include content="Bald_PlaybackToggle">
 						<param name="icon">osd/fullscreen/buttons/random-off.png</param>
