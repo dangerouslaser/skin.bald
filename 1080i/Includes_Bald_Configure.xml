@@ -144,7 +144,7 @@
 			<font>Bald_Section</font>
 			<textoffsetx>26</textoffsetx>
 			<aligny>center</aligny>
-			<textcolor>bald_ink50</textcolor>
+			<textcolor>bald_ink45</textcolor>
 			<focusedcolor>bald_ink</focusedcolor>
 			<disabledcolor>bald_ink28</disabledcolor>
 			<!-- menu_dot.png is 440 x 56 with the dot in its first 10 px: the left border keeps it round at any width. -->

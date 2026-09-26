@@ -146,7 +146,7 @@
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<include name="Bald_LibraryPosterItem">
-		<param name="diffuse">bald_ink55</param><param name="focused">false</param>
+		<param name="diffuse">bald_poster_dim</param><param name="focused">false</param>
 		<param name="width">360</param><param name="height">540</param><param name="ring_width">366</param><param name="ring_height">546</param><param name="center">192,282</param><param name="show_label">true</param>
 		<definition>
 			<control type="group">

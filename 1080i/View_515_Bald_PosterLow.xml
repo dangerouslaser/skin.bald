@@ -2,7 +2,7 @@
 <!-- Bald movie library: cinematic fanart with a low horizontal poster row. -->
 <includes>
 	<include name="Bald_PosterLowTile">
-		<param name="diffuse">bald_ink55</param><param name="focused">false</param>
+		<param name="diffuse">bald_poster_dim</param><param name="focused">false</param>
 		<definition>
 			<include content="Bald_LibraryPosterItem">
 				<param name="width">140</param><param name="height">210</param><param name="ring_width">144</param><param name="ring_height">216</param><param name="center">78,117</param><param name="show_label">false</param>

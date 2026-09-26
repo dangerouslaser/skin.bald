@@ -71,8 +71,8 @@
 				<aligny>center</aligny>
 				<textcolor>bald_ink</textcolor>
 				<disabledcolor>bald_ink</disabledcolor>
-				<texturenofocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturenofocus>
-				<texturefocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturefocus>
+				<texturenofocus border="6" colordiffuse="bald_ink45">bald/chip.png</texturenofocus>
+				<texturefocus border="6" colordiffuse="bald_ink45">bald/chip.png</texturefocus>
 				<enable>false</enable>
 				<visible>$PARAM[visible]</visible>
 			</control>
