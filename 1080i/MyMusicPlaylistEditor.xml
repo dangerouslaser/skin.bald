@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+	<!-- From Kodi 22 Estuary's MyMusicPlaylistEditor.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Its load, save
+	     and clear actions are Bald pills and its scrollbars Bald tracks (docs/NOTES.md, "Media windows restyle"); the
+	     file panels, bars and background are Estuary's shared includes and stay theirs. Kodi binds 6 (load), 7 (save),
+	     8 (clear), 50 (files) and 100 (playlist). -->
 	<defaultcontrol always="true">6</defaultcontrol>
 	<views>50</views>
 	<menucontrol>9000</menucontrol>
@@ -23,32 +27,25 @@
 				<param name="width" value="360" />
 			</include>
 			<control type="grouplist" id="9000">
-				<left>0</left>
-				<top>160</top>
+				<left>40</left>
+				<top>170</top>
 				<onright>50</onright>
 				<onleft>100</onleft>
-				<itemgap>-20</itemgap>
+				<itemgap>14</itemgap>
 				<control type="button" id="6">
-					<description>Button Network</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="120" />
-					</include>
-					<width>300</width>
+					<width>280</width>
 					<label>$LOCALIZE[502]</label>
+					<include>Bald_MediaPillLook</include>
 				</control>
 				<control type="button" id="7">
-					<include content="DefaultSettingButton">
-						<param name="height" value="120" />
-					</include>
-					<width>300</width>
+					<width>280</width>
 					<label>$LOCALIZE[190]</label>
+					<include>Bald_MediaPillLook</include>
 				</control>
 				<control type="button" id="8">
-					<include content="DefaultSettingButton">
-						<param name="height" value="120" />
-					</include>
-					<width>300</width>
+					<width>280</width>
 					<label>$LOCALIZE[192]</label>
+					<include>Bald_MediaPillLook</include>
 				</control>
 			</control>
 		</control>
@@ -71,28 +68,22 @@
 			<control type="scrollbar" id="60">
 				<left>0</left>
 				<top>80</top>
-				<width>12</width>
 				<bottom>80</bottom>
 				<onleft>50</onleft>
 				<onright>100</onright>
-				<texturesliderbackground />
-				<animation effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
-				<orientation>vertical</orientation>
+				<include>Bald_MediaScrollbarLook</include>
 			</control>
 			<control type="scrollbar" id="61">
 				<left>834</left>
 				<top>80</top>
-				<width>12</width>
 				<bottom>80</bottom>
 				<onleft>100</onleft>
 				<onright>9000</onright>
-				<texturesliderbackground></texturesliderbackground>
-				<animation effect="zoom" end="50,100" time="300" tween="sine" center="848,0" easing="inout" condition="!Control.HasFocus(61)">conditional</animation>
-				<orientation>vertical</orientation>
+				<include>Bald_MediaScrollbarLook</include>
 			</control>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[10503][COLOR=button_focus][/COLOR]" />
+			<param name="breadcrumbs_label" value="$LOCALIZE[10503]" />
 		</include>
 		<include>BottomBar</include>
 		<include content="BottomBarTwoListInfo">

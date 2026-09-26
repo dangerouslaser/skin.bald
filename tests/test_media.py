@@ -36,6 +36,14 @@ NATIVE_IDS = {
     # Controller, port and agent dialogs and the disc manager (games/*/windows/*Defines.h, DiscManagerIDs.h).
     "DialogGameControllers.xml": {"2", "3", "4", "5", "7", "8", "9", "10", "17", "18", "19", "20", "21", "22", "31", "32", "108321"},
 }
+# Library windows whose own panels were restyled while their views, bars, side panel and background stay Estuary's
+# shared includes (owned with the other Estuary views). Their own markup follows the same rules; ids are Kodi's
+# (GUIWindowPictures, GUIWindowMusicPlaylistEditor).
+PARTIAL = {
+    "MyPics.xml": {"6", "7", "9"},
+    "MyGames.xml": set(),
+    "MyMusicPlaylistEditor.xml": {"6", "7", "8", "50", "100"},
+}
 # Kodi reads these control types by id, so the type must stay what Kodi casts to.
 NATIVE_TYPES = {
     ("DialogMusicInfo.xml", "50"): "panel",
@@ -54,7 +62,7 @@ RESTYLED = sorted(NATIVE_IDS) + [
     "Includes_Games.xml",
     "MyWeather.xml",
     "Includes_Weather.xml",
-]
+] + sorted(PARTIAL)
 COLOR_TAGS = {"textcolor", "focusedcolor", "disabledcolor", "invalidcolor", "selectedcolor", "shadowcolor",
               "colordiffuse", "controllerdiffuse"}
 TEXT_CONTROLS = {"label", "fadelabel", "textbox", "edit"}
@@ -87,7 +95,7 @@ def colours_in(root):
 
 class NativeContractTests(unittest.TestCase):
     def test_native_ids_are_present(self):
-        for name, ids in NATIVE_IDS.items():
+        for name, ids in list(NATIVE_IDS.items()) + list(PARTIAL.items()):
             root = Skin().window(name)
             present = {node.get("id") for node in root.iter("control")}
             with self.subTest(window=name):
@@ -118,7 +126,7 @@ class NativeContractTests(unittest.TestCase):
                     self.assertTrue(all((v or "").strip() in ("", "true") for v in visible), visible)
 
     def test_no_onback_previousmenu(self):
-        for name in NATIVE_IDS:
+        for name in sorted(NATIVE_IDS) + sorted(PARTIAL):
             root = Skin().window(name)
             with self.subTest(window=name):
                 self.assertFalse([n for n in root.iter("onback") if "previousmenu" in (n.text or "").lower()])
