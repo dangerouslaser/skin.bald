@@ -9,27 +9,30 @@
 	<zorder>1</zorder>
 	<depth>DepthOSD</depth>
 	<controls>
-		<include content="Bald_OSDStreamPanel">
-			<param name="id">8110</param>
-			<param name="button">70060</param>
-			<param name="type">audio</param>
-			<param name="method">set_player_audiostream</param>
-			<param name="heading">$LOCALIZE[292]</param>
-		</include>
-		<include content="Bald_OSDRow">
-			<param name="owner">1121</param>
-			<param name="play">Fake</param>
-			<param name="back">Fake</param>
-			<param name="forward">Fake</param>
-			<param name="stop">Fake</param>
-			<param name="menu">Fake</param>
-			<param name="teletext">Fake</param>
-			<param name="stereo">Fake</param>
-			<param name="info">Fake</param>
-			<param name="audio">Panel</param>
-			<param name="subtitles">Fake</param>
-			<param name="video">Fake</param>
-		</include>
-		<include>Bald_OSDHints</include>
+		<control type="group">
+			<include>Bald_OSDCompanionHide</include>
+			<include content="Bald_OSDStreamPanel">
+				<param name="id">8110</param>
+				<param name="button">70060</param>
+				<param name="type">audio</param>
+				<param name="method">set_player_audiostream</param>
+				<param name="heading">$LOCALIZE[292]</param>
+			</include>
+			<include content="Bald_OSDRow">
+				<param name="owner">1121</param>
+				<param name="play">Fake</param>
+				<param name="back">Fake</param>
+				<param name="forward">Fake</param>
+				<param name="stop">Fake</param>
+				<param name="menu">Fake</param>
+				<param name="teletext">Fake</param>
+				<param name="stereo">Fake</param>
+				<param name="info">Fake</param>
+				<param name="audio">Panel</param>
+				<param name="subtitles">Fake</param>
+				<param name="video">Fake</param>
+			</include>
+			<include>Bald_OSDHints</include>
+		</control>
 	</controls>
 </window>

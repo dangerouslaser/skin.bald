@@ -8,20 +8,23 @@
 	<zorder>1</zorder>
 	<depth>DepthOSD</depth>
 	<controls>
-		<include content="Bald_OSDRow">
-			<param name="owner">1120</param>
-			<param name="play">Fake</param>
-			<param name="back">Fake</param>
-			<param name="forward">Fake</param>
-			<param name="stop">Fake</param>
-			<param name="menu">Fake</param>
-			<param name="teletext">Fake</param>
-			<param name="stereo">Fake</param>
-			<param name="info">Panel</param>
-			<param name="audio">Fake</param>
-			<param name="subtitles">Fake</param>
-			<param name="video">Fake</param>
-		</include>
-		<include>Bald_OSDHints</include>
+		<control type="group">
+			<include>Bald_OSDCompanionHide</include>
+			<include content="Bald_OSDRow">
+				<param name="owner">1120</param>
+				<param name="play">Fake</param>
+				<param name="back">Fake</param>
+				<param name="forward">Fake</param>
+				<param name="stop">Fake</param>
+				<param name="menu">Fake</param>
+				<param name="teletext">Fake</param>
+				<param name="stereo">Fake</param>
+				<param name="info">Panel</param>
+				<param name="audio">Fake</param>
+				<param name="subtitles">Fake</param>
+				<param name="video">Fake</param>
+			</include>
+			<include>Bald_OSDHints</include>
+		</control>
 	</controls>
 </window>
