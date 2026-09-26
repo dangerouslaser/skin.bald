@@ -79,7 +79,20 @@
 			<fadetime>800</fadetime>
 			<texture background="true">$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</texture>
 			<!-- Optional enhancement: the field underneath is the supported no-helper fallback. -->
-			<visible>!Skin.HasSetting(Bald.DisableBlur) + System.HasAddon(plugin.video.themoviedb.helper) + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
+			<visible>!$EXP[Bald_WidgetPreview] + !Skin.HasSetting(Bald.DisableBlur) + System.HasAddon(plugin.video.themoviedb.helper) + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
+			<colordiffuse>bald_backdrop</colordiffuse>
+		</control>
+		<!-- A static list does not emit a per-item focus action, so TMDb Helper cannot be pointed at a
+		     newly previewed screen until one of its rows receives focus. While the menu is open, use
+		     the same live fanart variable as the foreground preview. The strong backdrop diffuse keeps
+		     this transient source quiet; fadetime preserves the normal artwork crossfade. -->
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<aspectratio>scale</aspectratio>
+			<fadetime>800</fadetime>
+			<texture background="true">$VAR[Bald_Fanart]</texture>
+			<visible>$EXP[Bald_WidgetPreview]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</include>
