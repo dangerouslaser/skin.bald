@@ -23,7 +23,7 @@ A Kodi 22 skin: minimal, artwork-first, fluid motion. Kodi 22 only. `addon.xml` 
 ## Conventions
 
 - Coordinates are 1080i (1920 x 1080). Safe margin is 96 px on every side.
-- One UI font family, Instrument Sans, shipped as TTF in `fonts/`, declared in `1080i/Font.xml`.
+- One UI font family at a time: Instrument Sans (default) or DM Sans, chosen skin-wide in Appearance › Typography. Both ship as static TTFs in `fonts/` and are declared as fontsets in `1080i/Font.xml`; a new font name must be added to both fontsets with the same size (DM Sans may differ only in `linespacing`, see `tests/test_fonts.py`).
 - Animation curves map exactly as the spec says: move = `tween="cubic" easing="out"`, fade = `tween="sine" easing="inout"`, pop = `tween="back" easing="out"`. Use only fade, slide and zoom.
 - Put repeated control groups and animations in `1080i/Includes_*.xml` with params rather than copying them.
 - Take control IDs from the ranges in `1080i/IDs` and record new ones there.
