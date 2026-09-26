@@ -118,6 +118,20 @@ class BaldSettingsTests(unittest.TestCase):
             [node.text for node in row.findall("onfocus")],
         )
 
+    def test_menu_preview_backdrop_uses_the_same_live_fanart_as_the_preview(self):
+        root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
+        backdrop = root.find(".//include[@name='Bald_BackdropImage']")
+        images = backdrop.findall("control[@type='image']")
+
+        self.assertEqual(len(images), 2)
+        self.assertIn("!$EXP[Bald_WidgetPreview]", images[0].findtext("visible"))
+        self.assertEqual(images[1].findtext("texture"), "$VAR[Bald_Fanart]")
+        self.assertEqual(
+            images[1].findtext("visible"),
+            "$EXP[Bald_WidgetPreview]",
+        )
+        self.assertEqual(images[1].findtext("fadetime"), "800")
+
     def test_widget_rows_reopen_menu_on_the_active_screen(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
         row = root.find(".//include[@name='Bald_Row']/definition/control[@type='fixedlist']")

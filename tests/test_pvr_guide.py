@@ -36,6 +36,8 @@ class PVRGuideTests(unittest.TestCase):
         self.assertEqual(grid.findtext('onleft'), '9000')
         self.assertEqual(grid.findtext('onright'), '50')
         self.assertEqual(grid.findtext('onup'), '50')
+        self.assertEqual(grid.findtext('onback'), '9000')
+        self.assertEqual(grid.findtext('scrolltime'), '200')
         progress = grid.find('progresstexture')
         self.assertEqual(progress.text, 'bald/epg_now.png')
         self.assertEqual(progress.get('border'), '0,0,1,0')
@@ -58,13 +60,15 @@ class PVRGuideTests(unittest.TestCase):
         tools = includes.find("include[@name='Bald_PVRGuideTools']")
         self.assertIsNotNone(tools)
         actions = [node.text for node in tools.findall(".//param[@name='action']")]
-        for action in ('PVR.EpgGridControl(CurrentProgramme)',
+        for action in ('SetFocus(50)',
+                       'PVR.EpgGridControl(CurrentProgramme)',
                        'PVR.EpgGridControl(SelectGroup)',
-                       'PVR.EpgGridControl(PreviousGroup)',
-                       'PVR.EpgGridControl(NextGroup)',
                        'PVR.EpgGridControl(SelectDate)',
-                       'ActivateWindow(TVSearch)'):
+                       'ActivateWindow(TVSearch)',
+                       'PreviousMenu'):
             self.assertIn(action, actions)
+        self.assertNotIn('PVR.EpgGridControl(PreviousGroup)', actions)
+        self.assertNotIn('PVR.EpgGridControl(NextGroup)', actions)
 
     def test_retired_guide_left_keymap_cleanup_is_idempotent(self):
         path = REPO / 'scripts' / 'pvr_keymap.py'
