@@ -179,6 +179,16 @@
                     </item>
                 </items>
             </value>
+            <!-- Startup splash: a row is still loading until its list provider has fetched (Container.IsUpdating is true
+                 from window load until then, and while a refresh is pending), so a row that loaded empty counts as done. -->
+            <value name="rows_loading">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>| [Container({row_id}).IsUpdating]</template>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    </item>
+                </items>
+            </value>
             <value name="note_head">
                 <items menu="{menu}" mode="submenu">
                     <item>

@@ -226,6 +226,17 @@
 	<expression name="Bald_HasLogo">[$EXP[Bald_HasLogo_home] | $EXP[Bald_HasLogo_movies] | $EXP[Bald_HasLogo_tvshows]]</expression>
 	<expression name="Bald_PreviewItemOdd">[$EXP[Bald_PreviewItemOdd_home] | $EXP[Bald_PreviewItemOdd_movies] | $EXP[Bald_PreviewItemOdd_tvshows]]</expression>
 	<expression name="Bald_PreviewHasLogo">[$EXP[Bald_PreviewHasLogo_home] | $EXP[Bald_PreviewHasLogo_movies] | $EXP[Bald_PreviewHasLogo_tvshows]]</expression>
+	<!-- Startup splash (docs/NOTES.md, Startup splash). Startup.xml sets Bald.Preload on Home when Kodi starts on Home
+	     with the Appearance setting on; Home draws the splash over itself and every configured row on every screen
+	     counts as visible while its list is still loading (Bald_Row), so all of them load behind it. It lifts once
+	     no row is loading (Timers.xml bald_preload reads the 9194 marker in Home.xml) or after a 10 s alarm.
+	     A row is loading until its provider has fetched: Container.IsUpdating holds from window load, when Kodi starts
+	     every list's job, until the visible list takes the result, so a row that loaded empty also counts as done.
+	     Rows of a screen that is turned off in Home Screens still preload but are not waited for. Under a modal dialog
+	     Container(...) here resolves against the dialog, so the splash waits for it to close. -->
+	<expression name="Bald_Preloading">[!String.IsEmpty(Window(home).Property(Bald.Preload))]</expression>
+	<expression name="Bald_RowsLoading">[$EXP[Bald_RowsLoading_home] | [Skin.HasSetting(Bald.Screen.Movies) + $EXP[Bald_RowsLoading_movies]] | [Skin.HasSetting(Bald.Screen.TVShows) + $EXP[Bald_RowsLoading_tvshows]]]</expression>
+	<expression name="Bald_RowsLoaded">[!$EXP[Bald_DialogOver] + !$EXP[Bald_RowsLoading]]</expression>
 	<include name="Bald_ConfiguredArtLogos">
 		<include>Bald_ConfiguredArtLogos_home</include>
 		<include>Bald_ConfiguredArtLogos_movies</include>
@@ -865,8 +876,10 @@
 				<include content="Bald_RowTiles_$PARAM[style]" />
 				<!-- Kodi does not process hidden lists, so a row also counts as visible until its items load;
 				     that lets it load (and the row-start timer fix its selection) before it is first shown. Not while a
-				     dialog is up: <visible> has no window context then, and NumItems would read empty for every row. -->
-				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + [[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !$EXP[Bald_DialogOver]]]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]</visible>
+				     dialog is up: <visible> has no window context then, and NumItems would read empty for every row.
+				     Behind the startup splash every row, on every screen, counts as visible until its list has fetched
+				     (Bald_Preloading, see Bald_RowsLoaded), so it hides again before the splash lifts. -->
+				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + [[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !$EXP[Bald_DialogOver]]]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])] | [$EXP[Bald_Preloading] + Container($PARAM[id]).IsUpdating]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
 				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">

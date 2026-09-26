@@ -48,7 +48,7 @@ class HomeGeneratedIntegrationTests(unittest.TestCase):
                          for node in ET.parse(path).getroot().iter("include") if not node.get("name")}
         wanted = set()
         for screen in ("home", "movies", "tvshows"):
-            for name in ("ItemOdd", "HasLogo", "PreviewItemOdd", "PreviewHasLogo"):
+            for name in ("ItemOdd", "HasLogo", "PreviewItemOdd", "PreviewHasLogo", "RowsLoading"):
                 self.assertIn(f"Bald_{name}_{screen}", expressions)
                 wanted.add(("expression", f"Bald_{name}_{screen}"))
             for name in ("ConfiguredArtLogos", "ConfiguredCaptions"):
