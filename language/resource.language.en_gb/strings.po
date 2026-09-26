@@ -1178,6 +1178,7 @@ msgstr ""
 
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/SettingsCategory.xml
+#: /1080i/SettingsProfile.xml
 msgctxt "#31738"
 msgid "Back for settings"
 msgstr ""
@@ -1230,6 +1231,7 @@ msgstr ""
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 #: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/SettingsCategory.xml
+#: /1080i/SettingsProfile.xml
 #: /1080i/View_510_Bald_Posters.xml
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
@@ -2025,4 +2027,14 @@ msgstr ""
 #: /1080i/Settings.xml
 msgctxt "#31944"
 msgid "Back to return"
+msgstr ""
+
+#: /1080i/SettingsProfile.xml
+msgctxt "#31945"
+msgid "Choose whether Kodi starts at the login screen, and which profile loads automatically."
+msgstr ""
+
+#: /1080i/SettingsProfile.xml
+msgctxt "#31946"
+msgid "Select a profile to edit it, or add a new one."
 msgstr ""
