@@ -4,6 +4,8 @@
      Custom_1110_TempoControl.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Buttons 11 (slower) and 12 (faster)
      keep Estuary's actions and navigation. -->
 <window id="1110" type="dialog">
+	<!-- Parks the video OSD's auto-close while this dialog is open over it (Includes_Bald_OSD.xml). -->
+	<include>Bald_OSDSuspendAutoClose</include>
 	<defaultcontrol>11</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD+</depth>

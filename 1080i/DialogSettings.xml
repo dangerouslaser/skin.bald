@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+	<!-- Parks the video OSD's auto-close while this dialog is open over it (Includes_Bald_OSD.xml). -->
+	<include>Bald_OSDSuspendAutoClose</include>
 	<defaultcontrol>5</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>

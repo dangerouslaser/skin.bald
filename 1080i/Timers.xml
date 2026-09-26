@@ -7,13 +7,20 @@
         <onstart>SetFocus(5100)</onstart>
         <stop>!Control.HasFocus(5150) | !Window.IsActive(movieinformation)</stop>
     </timer>
+    <!-- Video OSD auto-close (Includes_Bald_OSD.xml, Bald_OSDAutoCloseArm): the OSD buttons run the alarm
+         bald_osd_close, which only sets Bald.OSD.Close on Home; this closes the companion panels and the OSD. Replaces
+         Estuary's autoclosevideoosd timer and its OSDAutoClose settings (migrated in Startup.xml). -->
     <timer>
-        <name>autoclosevideoosd</name>
-        <description>Timer to auto close the video OSD (if enabled in the skin settings)</description>
-        <start reset="true">Window.IsActive(videoosd) + Skin.HasSetting(OSDAutoClose) + !String.IsEqual(window(home).Property(settingsdialog_content),osd) + !Window.IsActive(osdsubtitlesettings) + !Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(OSDCMSSettings)</start>
-        <reset>Window.IsActive(videoosd) + !System.IdleTime(1) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(autoclosevideoosd), 1) | String.IsEqual(window(home).Property(settingsdialog_content),osd) | Window.IsActive(osdsubtitlesettings) | Window.IsActive(osdaudiosettings) | Window.IsActive(osdvideosettings) | Window.IsActive(OSDCMSSettings)</reset>
-        <stop>!Window.IsActive(videoosd) | String.IsEmpty(Skin.String(OSDAutoCloseTime)) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(autoclosevideoosd), 4) | !String.IsEmpty(Skin.String(OSDAutoCloseTime)) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(autoclosevideoosd),Skin.Numeric(OSDAutoCloseTime))</stop>
-        <onstop>Dialog.Close(videoosd)</onstop>
+        <name>bald_osd_close</name>
+        <start>!String.IsEmpty(Window(home).Property(Bald.OSD.Close))</start>
+        <onstart>ClearProperty(Bald.OSD.Close,home)</onstart>
+        <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1120,true)</onstart>
+        <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1121,true)</onstart>
+        <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1122,true)</onstart>
+        <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1123,true)</onstart>
+        <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1124,true)</onstart>
+        <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(videoosd)</onstart>
+        <stop>String.IsEmpty(Window(home).Property(Bald.OSD.Close))</stop>
     </timer>
     <!-- Bald skin timers run in CApplication::ProcessSlow, every 500 ms: fine for row start and idle, too coarse
          for anything that must follow item changes. -->

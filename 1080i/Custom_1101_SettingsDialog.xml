@@ -6,6 +6,8 @@
      Custom_1101_SettingsDialog.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Skin ids: 1 heading, 11000 row group
      (default focus), 11100 row list, 22101-22110 rows. -->
 <window type="dialog" id="1101">
+	<!-- Parks the video OSD's auto-close while this dialog is open over it (Includes_Bald_OSD.xml). -->
+	<include>Bald_OSDSuspendAutoClose</include>
 	<defaultcontrol always="true">11000</defaultcontrol>
 	<depth>DepthDialog</depth>
 	<onunload>ClearProperty(settingsdialog_header,Home)</onunload>

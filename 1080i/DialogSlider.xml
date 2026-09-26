@@ -5,6 +5,8 @@
      (GPL-2.0-or-later, see LICENSE-Estuary.txt). Kodi (CGUIDialogSlider) binds 10 (heading), 11 (slider) and
      12 (value); 13 and 14 are the mouse step buttons, kept with Estuary's actions. -->
 <window>
+	<!-- Parks the video OSD's auto-close while this dialog is open over it (Includes_Bald_OSD.xml). -->
+	<include>Bald_OSDSuspendAutoClose</include>
 	<defaultcontrol>11</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD+</depth>

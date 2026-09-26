@@ -8,6 +8,12 @@
 	     (Timers.xml bald_preload); alarms and Home's properties outlive the reload a Home row rebuild triggers. -->
 	<onload condition="!Skin.HasSetting(Bald.DisablePreload) + String.IsEqual(System.StartupWindow,10000)">SetProperty(Bald.Preload,1,home)</onload>
 	<onload condition="!Skin.HasSetting(Bald.DisablePreload) + String.IsEqual(System.StartupWindow,10000)">AlarmClock(bald_preload,noop,00:10,silent)</onload>
+	<!-- Estuary's video OSD auto-close (OSDAutoClose, OSDAutoCloseTime, default 4 s) became Bald.OSD.AutoClose
+	     (Bald Settings, Playback). Carry an old choice over once, then clear the old settings. -->
+	<onload condition="Skin.HasSetting(OSDAutoClose) + String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.SetString(Bald.OSD.AutoClose,4)</onload>
+	<onload condition="Skin.HasSetting(OSDAutoClose) + String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + !String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.SetString(Bald.OSD.AutoClose,$INFO[Skin.String(OSDAutoCloseTime)])</onload>
+	<onload condition="Skin.HasSetting(OSDAutoClose)">Skin.Reset(OSDAutoClose)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.Reset(OSDAutoCloseTime)</onload>
 	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
 	<controls />
 </window>

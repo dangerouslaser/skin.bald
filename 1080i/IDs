@@ -371,7 +371,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 9611, 9612	Information: media flags, row item count
 9621-9624	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup
 9631	Typography: font (fontset)
-605, 607-609, 623, 624, 701-708, 6066-6068
+605, 607-609, 701-708, 6066-6068
 		Estuary windows: Estuary's own SkinSettings control IDs, kept as Estuary numbers them
 
 GLOBAL OVERLAYS (Includes_Bald_Overlays.xml)
