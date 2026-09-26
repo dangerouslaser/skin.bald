@@ -621,4 +621,30 @@
 			</control>
 		</definition>
 	</include>
+	<!-- ============ Pictures ============ -->
+	<!-- One EXIF line in MyPics.xml's details panel, shown only when the item has the value: name in 60% ink, value
+	     in ink (replaces Estuary's PicsInfoLine for that window). -->
+	<include name="Bald_PicsInfoLine">
+		<param name="label" />
+		<param name="value" />
+		<definition>
+			<control type="grouplist">
+				<visible>!String.IsEmpty($PARAM[value])</visible>
+				<width>570</width>
+				<height>34</height>
+				<orientation>horizontal</orientation>
+				<itemgap>12</itemgap>
+				<control type="label">
+					<width>auto</width><height>34</height><aligny>center</aligny>
+					<font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor>
+					<label>$PARAM[label]</label>
+				</control>
+				<control type="label">
+					<width>auto</width><height>34</height><aligny>center</aligny>
+					<font>Bald_DetailValue</font><textcolor>bald_ink</textcolor>
+					<label>$INFO[$PARAM[value]]</label>
+				</control>
+			</control>
+		</definition>
+	</include>
 </includes>
