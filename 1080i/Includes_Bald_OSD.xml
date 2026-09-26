@@ -1004,4 +1004,24 @@
 			<texture colordiffuse="bald_field">bald/scrim_info_h.png</texture>
 		</control>
 	</include>
+	<!-- ============ Playback settings values (Custom_1119_BaldPlayback.xml) ============
+	     Each shows the current value; the last value is the default (the setting unset). -->
+	<variable name="Bald_OSDAutoCloseLabel">
+		<value condition="$EXP[Bald_OSDAutoCloses]">$INFO[Skin.String(Bald.OSD.AutoClose),, $LOCALIZE[31637]]</value>
+		<value>$LOCALIZE[13170]</value>
+	</variable>
+	<variable name="Bald_OSDTimeDisplayLabel">
+		<value condition="Skin.String(Bald.OSD.TimeDisplay,remaining)">$LOCALIZE[31643]</value>
+		<value condition="Skin.String(Bald.OSD.TimeDisplay,combined)">$LOCALIZE[31644]</value>
+		<value>$LOCALIZE[31642]</value>
+	</variable>
+	<variable name="Bald_OSDPauseModeLabel">
+		<value condition="Skin.String(Bald.OSD.PauseMode,hide)">$LOCALIZE[31640]</value>
+		<value condition="Skin.String(Bald.OSD.PauseMode,info)">$LOCALIZE[31641]</value>
+		<value>$LOCALIZE[231]</value>
+	</variable>
+	<variable name="Bald_OSDPauseDelayLabel">
+		<value condition="!String.IsEmpty(Skin.String(Bald.OSD.PauseDelay))">$INFO[Skin.String(Bald.OSD.PauseDelay),, $LOCALIZE[31637]]</value>
+		<value>3 $LOCALIZE[31637]</value>
+	</variable>
 </includes>

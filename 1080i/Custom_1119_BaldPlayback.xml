@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald Settings, Playback: the video OSD's options (docs/SPEC.md 5.16, "Video OSD"; Includes_Bald_OSD.xml names every
+     setting). Rows belong to a category by the category item's id (Bald_SettingRow). Settings are named so that unset
+     means the default; buttons cycle their values and show the current one through a label variable whose last value
+     is the default (Bald_OSD*Label). -->
+<window type="window" id="1119">
+	<defaultcontrol always="true">9700</defaultcontrol>
+	<backgroundcolor>bald_field</backgroundcolor>
+	<controls>
+		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[14086]</param></include>
+		<control type="list" id="9700">
+			<include content="Bald_SettingsCategories"><param name="id">9700</param><param name="right">9800</param></include>
+			<content>
+				<item id="1"><label>$LOCALIZE[31970]</label><property name="note">$LOCALIZE[31971]</property></item>
+				<item id="2"><label>$LOCALIZE[31621]</label><property name="note">$LOCALIZE[31972]</property></item>
+				<item id="3"><label>$LOCALIZE[31973]</label><property name="note">$LOCALIZE[31974]</property></item>
+				<item id="4"><label>$LOCALIZE[31975]</label><property name="note">$LOCALIZE[31976]</property></item>
+			</content>
+		</control>
+		<include content="Bald_SettingsDetail">
+			<param name="heading">$INFO[Container(9700).ListItem.Label]</param>
+			<param name="note">$INFO[Container(9700).ListItem.Property(note)]</param>
+			<control type="grouplist" id="9800">
+				<include content="Bald_SettingsRows"><param name="left">9700</param></include>
+				<!-- Controls: auto-close cycles never, 4, 6, 8, 10, 15 seconds. -->
+				<control type="button" id="9801"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31977]</label><label2>$VAR[Bald_OSDAutoCloseLabel]</label2>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.OSD.AutoClose))">Skin.SetString(Bald.OSD.AutoClose,4)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.AutoClose,4)">Skin.SetString(Bald.OSD.AutoClose,6)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.AutoClose,6)">Skin.SetString(Bald.OSD.AutoClose,8)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.AutoClose,8)">Skin.SetString(Bald.OSD.AutoClose,10)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.AutoClose,10)">Skin.SetString(Bald.OSD.AutoClose,15)</onclick>
+					<onclick condition="!String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + !Skin.String(Bald.OSD.AutoClose,4) + !Skin.String(Bald.OSD.AutoClose,6) + !Skin.String(Bald.OSD.AutoClose,8) + !Skin.String(Bald.OSD.AutoClose,10)">Skin.Reset(Bald.OSD.AutoClose)</onclick>
+				</control>
+				<control type="button" id="9802"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31646]</label><label2>$VAR[Bald_OSDTimeDisplayLabel]</label2>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.OSD.TimeDisplay))">Skin.SetString(Bald.OSD.TimeDisplay,remaining)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.TimeDisplay,remaining)">Skin.SetString(Bald.OSD.TimeDisplay,combined)</onclick>
+					<onclick condition="!String.IsEmpty(Skin.String(Bald.OSD.TimeDisplay)) + !Skin.String(Bald.OSD.TimeDisplay,remaining)">Skin.Reset(Bald.OSD.TimeDisplay)</onclick>
+				</control>
+				<control type="radiobutton" id="9803"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31647]</label><selected>Skin.HasSetting(Bald.OSD.DetailsOnControls)</selected><onclick>Skin.ToggleSetting(Bald.OSD.DetailsOnControls)</onclick></control>
+				<!-- Pause: none, hide the bar or show info, after a 0-3 s delay (empty = 3 s). -->
+				<control type="button" id="9811"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">2</param></include><label>$LOCALIZE[31978]</label><label2>$VAR[Bald_OSDPauseModeLabel]</label2>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.OSD.PauseMode))">Skin.SetString(Bald.OSD.PauseMode,hide)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.PauseMode,hide)">Skin.SetString(Bald.OSD.PauseMode,info)</onclick>
+					<onclick condition="!String.IsEmpty(Skin.String(Bald.OSD.PauseMode)) + !Skin.String(Bald.OSD.PauseMode,hide)">Skin.Reset(Bald.OSD.PauseMode)</onclick>
+				</control>
+				<control type="button" id="9812"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">2</param></include><label>$LOCALIZE[31979]</label><label2>$VAR[Bald_OSDPauseDelayLabel]</label2>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.OSD.PauseDelay))">Skin.SetString(Bald.OSD.PauseDelay,0)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.PauseDelay,0)">Skin.SetString(Bald.OSD.PauseDelay,1)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.PauseDelay,1)">Skin.SetString(Bald.OSD.PauseDelay,2)</onclick>
+					<onclick condition="!String.IsEmpty(Skin.String(Bald.OSD.PauseDelay)) + !Skin.String(Bald.OSD.PauseDelay,0) + !Skin.String(Bald.OSD.PauseDelay,1)">Skin.Reset(Bald.OSD.PauseDelay)</onclick>
+					<visible>!String.IsEmpty(Skin.String(Bald.OSD.PauseMode))</visible>
+				</control>
+				<!-- Info overlay -->
+				<control type="radiobutton" id="9821"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">3</param></include><label>$LOCALIZE[31648]</label><selected>!Skin.HasSetting(Bald.OSD.HideInfoArt)</selected><onclick>Skin.ToggleSetting(Bald.OSD.HideInfoArt)</onclick></control>
+				<control type="radiobutton" id="9822"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">3</param></include><label>$LOCALIZE[207]</label><selected>!Skin.HasSetting(Bald.OSD.HideInfoPlot)</selected><onclick>Skin.ToggleSetting(Bald.OSD.HideInfoPlot)</onclick></control>
+				<!-- Down from the controls, in chain order. -->
+				<control type="radiobutton" id="9831"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[19069]</label><selected>!Skin.HasSetting(Bald.OSD.NoGuidePanel)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoGuidePanel)</onclick></control>
+				<control type="radiobutton" id="9832"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[19019]</label><selected>!Skin.HasSetting(Bald.OSD.NoChannelsPanel)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoChannelsPanel)</onclick></control>
+				<control type="radiobutton" id="9833"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[31639]</label><selected>!Skin.HasSetting(Bald.OSD.NoPlaylistPanel)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoPlaylistPanel)</onclick></control>
+				<control type="radiobutton" id="9834"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[298]</label><selected>!Skin.HasSetting(Bald.OSD.NoBookmarksPanel)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoBookmarksPanel)</onclick></control>
+				<!-- Needs TMDb Helper (an optional dependency); dimmed without it. -->
+				<control type="radiobutton" id="9835"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[31638]</label><selected>!Skin.HasSetting(Bald.OSD.NoCastPanel) + $EXP[Bald_OSDHasTMDbHelper]</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoCastPanel)</onclick><enable>$EXP[Bald_OSDHasTMDbHelper]</enable></control>
+			</control>
+		</include>
+		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>
+	</controls>
+</window>

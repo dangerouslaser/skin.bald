@@ -1042,6 +1042,7 @@ msgstr ""
 
 #: /1080i/Includes_Bald_Playback.xml
 #: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
 #. OSD play/pause button while playing
 msgctxt "#31621"
 msgid "Pause"
@@ -1088,6 +1089,78 @@ msgstr ""
 #. Video OSD: the seek slider over the bar
 msgctxt "#31628"
 msgid "Seek"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Unit after a number of seconds, for example '5 seconds'. Shown inside $INFO, so no comma
+msgctxt "#31637"
+msgid "seconds"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: the cast panel under the controls
+msgctxt "#31638"
+msgid "Cast and crew"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: the playlist or season panel under the controls
+msgctxt "#31639"
+msgid "Playlist and episodes"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, When paused: the seek bar leaves after the delay
+msgctxt "#31640"
+msgid "Hide the bar"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, When paused: the info overlay appears after the delay
+msgctxt "#31641"
+msgid "Show info"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31642"
+msgid "Elapsed and total"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31643"
+msgid "Remaining and total"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31644"
+msgid "Elapsed and remaining"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: what the times either side of the bar show
+msgctxt "#31646"
+msgid "Time display"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: title, info line and plot at the top while the OSD is up
+msgctxt "#31647"
+msgid "Details on the controls"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings, Info overlay: the landscape art with its progress line
+msgctxt "#31648"
+msgid "Artwork"
+msgstr ""
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Bald Settings: note under Playback
+msgctxt "#31649"
+msgid "Controls, seek bar and pause"
 msgstr ""
 
 # Bald global overlays: 31650-31659.
@@ -1472,6 +1545,7 @@ msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 #: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
 msgctxt "#31746"
 msgid "Back for Bald settings"
 msgstr ""
@@ -1485,6 +1559,7 @@ msgstr ""
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/Includes.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
 msgctxt "#31747"
 msgid "Select to change"
 msgstr ""
@@ -2340,6 +2415,66 @@ msgstr ""
 #: /1080i/SettingsSystemInfo.xml
 msgctxt "#31966"
 msgid "Up and down to browse"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings category
+msgctxt "#31970"
+msgid "Controls"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Controls
+msgctxt "#31971"
+msgid "How long the controls stay up and what they show."
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Pause
+msgctxt "#31972"
+msgid "What the seek bar does when you pause."
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings category
+msgctxt "#31973"
+msgid "Info overlay"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Info overlay
+msgctxt "#31974"
+msgid "What the Info key and pausing in Show info mode show."
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings category
+msgctxt "#31975"
+msgid "Down from the controls"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Down from the controls
+msgctxt "#31976"
+msgid "The panels Down opens from the controls, in this order. Each one opens only when it applies."
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: OSD auto-close time
+msgctxt "#31977"
+msgid "Close the controls after"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: pause behaviour
+msgctxt "#31978"
+msgid "When paused"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: seconds before the pause behaviour starts
+msgctxt "#31979"
+msgid "Pause delay"
 msgstr ""
 
 #: /1080i/LoginScreen.xml
