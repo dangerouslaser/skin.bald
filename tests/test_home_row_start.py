@@ -3,6 +3,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from conditions import has_action, same_actions
+
 
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
@@ -31,10 +33,10 @@ class HomeRowStartTests(unittest.TestCase):
                     self.assertEqual(actions, [])
                     continue
                 condition = PRISTINE.format(id=following)
-                self.assertEqual(sorted(actions), sorted([
-                    (condition, f"SetProperty(Bald.Start{following},1,home)"),
-                    (condition, f"Control.Move({following},-2)"),
-                ]))
+                expected = [(condition, f"SetProperty(Bald.Start{following},1,home)"),
+                            (condition, f"Control.Move({following},-2)")]
+                self.assertTrue(same_actions(sorted(actions, key=lambda pair: pair[1]),
+                                             sorted(expected, key=lambda pair: pair[1])), (row_id, actions))
 
     def test_home_clears_the_start_mark_of_every_configured_row(self):
         for screen, _, base in SCREENS:
@@ -53,9 +55,9 @@ class HomeRowStartTests(unittest.TestCase):
             "include[@name='Bald_Row']/definition/control[@type='fixedlist']"
         )
         actions = [(node.get("condition"), node.text) for node in row.findall("onfocus")]
-        self.assertIn((PRISTINE.format(id="$PARAM[id]"), "Control.Move($PARAM[id],-2)"), actions)
-        self.assertIn(("Integer.IsGreater(Container($PARAM[id]).NumItems,0)", "SetProperty(Bald.Start$PARAM[id],1,home)"),
-                      actions)
+        self.assertTrue(has_action(actions, PRISTINE.format(id="$PARAM[id]"), "Control.Move($PARAM[id],-2)"))
+        self.assertTrue(has_action(actions, "Integer.IsGreater(Container($PARAM[id]).NumItems,0)",
+                                   "SetProperty(Bald.Start$PARAM[id],1,home)"))
 
     def test_rows_shown_before_focus_keep_their_timers(self):
         timers = ET.parse(XML / "Timers.xml").getroot()
