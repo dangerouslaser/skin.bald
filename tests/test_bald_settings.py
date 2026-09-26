@@ -174,6 +174,15 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertIsNone(unfocused.find(".//control[@type='image']"))
         self.assertNotIn("ListItem.Property(id),home", ET.tostring(focused, encoding="unicode"))
 
+    def test_disabled_optional_menu_entries_collapse_without_gaps(self):
+        root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
+        menu = root.find(".//control[@id='9000']")
+        self.assertEqual(menu.get("type"), "grouplist")
+        self.assertEqual(menu.findtext("orientation"), "vertical")
+        self.assertEqual(menu.findtext("itemgap"), "0")
+        self.assertEqual(menu.findtext("height"), "310")
+        self.assertEqual(menu.findtext("scrolltime"), "320")
+
     def test_media_screens_disclose_and_open_their_full_libraries_with_right(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
         movies = home_menu_button(root, "Movies")
