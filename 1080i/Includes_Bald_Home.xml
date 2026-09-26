@@ -433,15 +433,11 @@
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Property(TotalSeasons),$COMMA , seasons]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow) + !String.IsEqual(Container($PARAM[c]).ListItem.Property(TotalSeasons),1)</param>
 					</include>
+					<!-- Seasons show only this line; shows show it under the year and season count. -->
 					<include content="Bald_CaptionMeta">
 						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Property(WatchedEpisodes)]$INFO[Container($PARAM[c]).ListItem.Property(TotalEpisodes), / , episodes watched]</param>
-						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,season)</param>
-					</include>
-					<include content="Bald_CaptionMeta">
-						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
-						<param name="label">$INFO[Container($PARAM[c]).ListItem.Property(WatchedEpisodes)]$INFO[Container($PARAM[c]).ListItem.Property(TotalEpisodes), / , episodes watched]</param>
-						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow)</param>
+						<param name="visible">[String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow)]</param>
 					</include>
 					<include content="Bald_CaptionMeta">
 						<param name="width">$PARAM[width]</param>

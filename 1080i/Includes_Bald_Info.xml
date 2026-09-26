@@ -29,9 +29,14 @@
 	</variable>
 	<variable name="Bald_InfoMeta">
 		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.TVShowTitle] · S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Duration(mins), · , min]</value>
-		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , seasons]</value>
+		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$VAR[Bald_InfoSeasons]</value>
 		<value condition="Integer.IsGreaterOrEqual(ListItem.Duration(mins),60)">$INFO[ListItem.Year,,$COMMA ]$INFO[ListItem.Duration(h),,h ]$INFO[ListItem.Duration(mm),,m]</value>
 		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins),$COMMA , min]</value>
+	</variable>
+	<!-- A show's year and season count, shared by Cast & details and the TV Overview (which adds the rating). -->
+	<variable name="Bald_InfoSeasons">
+		<value condition="String.IsEqual(ListItem.Property(TotalSeasons),1)">$INFO[ListItem.Year,,$COMMA ]1 season</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , seasons]</value>
 	</variable>
 	<variable name="Bald_InfoResolution">
 		<value condition="String.IsEqual(ListItem.VideoResolution,4K)">4K</value>

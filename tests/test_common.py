@@ -136,5 +136,50 @@ class ArtworkFallbackTest(unittest.TestCase):
                 self.assertIn(name, self.variables, (path.name, name))
 
 
+class MetaLineTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.definitions = include_definitions()
+
+    def label(self, name, container):
+        holder = expand(f'<control type="label"><include content="{name}"><param name="container">{container}</param>'
+                        '</include></control>', self.definitions)
+        labels = holder.findall("control/label")
+        self.assertEqual(len(labels), 1)
+        return labels[0].text
+
+    def test_library_lines_read_the_given_item(self):
+        movie = self.label("Bald_MetaLibraryMovie", "Container(511).")
+        for field in ("Year", "Duration(mins)", "Genre"):
+            self.assertIn(f"Container(511).ListItem.{field}", movie)
+        episode = self.label("Bald_MetaLibraryEpisode", "Container(540).")
+        for field in ("Season", "Episode", "Premiered", "Duration(mins)"):
+            self.assertIn(f"Container(540).ListItem.{field}", episode)
+        self.assertNotIn("$PARAM", movie + episode)
+
+    def test_library_captions_use_the_shared_lines(self):
+        expected = {"View_511_Bald_Wall.xml": ("Bald_MetaLibraryMovie", "Container(511)."),
+                    "View_514_Bald_ArtworkList.xml": ("Bald_MetaLibraryMovie", "Container(514)."),
+                    "View_520_Bald_TV.xml": ("Bald_MetaLibraryEpisode", "Container(540)."),
+                    "View_521_Bald_TV_Alternates.xml": ("Bald_MetaLibraryEpisode", "Container($PARAM[c]).")}
+        for filename, (name, container) in expected.items():
+            root = ET.parse(SKIN / filename).getroot()
+            calls = root.findall(f".//include[@content='{name}']")
+            self.assertEqual([c.findtext("param[@name='container']") for c in calls], [container], filename)
+
+    def test_show_season_line_is_shared_by_both_info_pages(self):
+        info = ET.parse(SKIN / "Includes_Bald_Info.xml").getroot()
+        tv = ET.parse(SKIN / "Includes_Bald_InfoTV.xml").getroot()
+        seasons = info.find("variable[@name='Bald_InfoSeasons']").findall("value")
+        self.assertEqual(seasons[0].get("condition"), "String.IsEqual(ListItem.Property(TotalSeasons),1)")
+        self.assertTrue(seasons[0].text.endswith("1 season"))
+        self.assertTrue(seasons[1].text.endswith(" seasons]"))
+        meta = {v.get("condition"): v.text for v in info.find("variable[@name='Bald_InfoMeta']").findall("value")}
+        self.assertEqual(meta["String.IsEqual(ListItem.DBType,tvshow)"], "$VAR[Bald_InfoSeasons]")
+        tv_meta = [v.text for v in tv.find("variable[@name='Bald_InfoTVMeta']").findall("value")]
+        self.assertEqual(sum("$VAR[Bald_InfoSeasons]" in text for text in tv_meta), 1)
+        self.assertFalse(any("TotalSeasons" in text for text in tv_meta))
+
+
 if __name__ == "__main__":
     unittest.main()
