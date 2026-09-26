@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald video OSD, information: while this panel is up the details block (1128) shows at the top.
+     A companion panel of the video OSD (docs/SPEC.md 5.16, "Video OSD"; Includes_Bald_OSD.xml): VideoOSD opens it when
+     its button (70043) takes focus. The row is repeated with that button real and the others as stand-ins that
+     close this panel and focus the OSD's own button, so Left and Right keep moving along the row. -->
+<window type="dialog" id="1120">
+	<defaultcontrol always="true">70043</defaultcontrol>
+	<zorder>1</zorder>
+	<depth>DepthOSD</depth>
+	<controls>
+		<include content="Bald_OSDRow">
+			<param name="owner">1120</param>
+			<param name="play">Fake</param>
+			<param name="back">Fake</param>
+			<param name="forward">Fake</param>
+			<param name="stop">Fake</param>
+			<param name="menu">Fake</param>
+			<param name="teletext">Fake</param>
+			<param name="stereo">Fake</param>
+			<param name="info">Panel</param>
+			<param name="audio">Fake</param>
+			<param name="subtitles">Fake</param>
+			<param name="video">Fake</param>
+		</include>
+		<include>Bald_OSDHints</include>
+	</controls>
+</window>

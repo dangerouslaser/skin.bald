@@ -209,10 +209,16 @@
 		<value condition="Control.HasFocus(70060)">$LOCALIZE[292]</value>
 		<value condition="Control.HasFocus(70061)">$LOCALIZE[287]</value>
 		<value condition="Control.HasFocus(70062)">$LOCALIZE[157]</value>
+		<value condition="Control.HasFocus(8110)">$LOCALIZE[292]</value>
+		<value condition="Control.HasFocus(8120)">$LOCALIZE[287]</value>
+		<value condition="Control.HasFocus(8131)">$LOCALIZE[10116]</value>
+		<value condition="Control.HasFocus(8132)">$LOCALIZE[31142]</value>
 	</variable>
 	<!-- Second hint: where Up and Down lead from the buttons. -->
 	<variable name="Bald_OSDHint">
-		<value condition="Control.HasFocus(87) | Control.HasFocus(88)">$LOCALIZE[31623]</value>
+		<value condition="Control.HasFocus(87) | Control.HasFocus(88) | Control.HasFocus(8110) | Control.HasFocus(8120) | Control.HasFocus(8131)">$LOCALIZE[31623]</value>
+		<value condition="Control.HasFocus(8132)">$LOCALIZE[31645]</value>
+		<value condition="[Control.HasFocus(70060) + Integer.IsGreater(Container(8110).NumItems,0)] | [Control.HasFocus(70061) + Integer.IsGreater(Container(8120).NumItems,0)] | Control.HasFocus(70062)">$LOCALIZE[31633]</value>
 		<value condition="$EXP[Bald_OSDHasChain]">$LOCALIZE[31627]</value>
 		<value condition="Player.SeekEnabled">$LOCALIZE[31618]</value>
 		<value>$LOCALIZE[31619]</value>
@@ -845,17 +851,24 @@
 			<include>Bald_OSDAnimFade</include>
 		</control>
 	</include>
-	<!-- OSD hints on the y 954 line, right-aligned to x 1824. -->
+	<!-- OSD hints on the y 954 line, right-aligned to x 1824. The OSD's own hints fade while a companion panel draws
+	     its copy (<hidden>), so the two never overlap. -->
 	<include name="Bald_OSDHints">
-		<control type="group">
-			<left>1224</left>
-			<top>Bald_HintTop</top>
-			<include content="Bald_InfoHintPair">
-				<param name="first">$VAR[Bald_OSDHelp]</param>
-				<param name="second">$VAR[Bald_OSDHint]</param>
-				<param name="width">600</param>
-			</include>
-		</control>
+		<param name="hidden">false</param>
+		<definition>
+			<control type="group">
+				<left>1224</left>
+				<top>Bald_HintTop</top>
+				<animation type="Conditional" condition="$PARAM[hidden]">
+					<effect type="fade" start="100" end="0" time="0" />
+				</animation>
+				<include content="Bald_InfoHintPair">
+					<param name="first">$VAR[Bald_OSDHelp]</param>
+					<param name="second">$VAR[Bald_OSDHint]</param>
+					<param name="width">600</param>
+				</include>
+			</control>
+		</definition>
 	</include>
 	<!-- ============ Info overlay and details (1127, 1128) ============ -->
 	<!-- Under the plot: where playback is and when it ends. -->
@@ -1214,4 +1227,457 @@
 		<value condition="$EXP[Bald_OSDChainCast]">$LOCALIZE[31627]</value>
 		<value>$LOCALIZE[31619]</value>
 	</variable>
+	<!-- ============ Companion panels (1120-1124) ============
+	     A panel window opened by focusing a tool: its content sits above the row, and the row is repeated with the
+	     owning button real and the rest as stand-ins (Bald_OSDRow). The panel surface is a field panel ending at the
+	     right safe edge, bottom at y 712 (over the lifted status line), with ink rows and the accent-dot focus of the
+	     settings rows. Closing is instant (no WindowClose animation) so a stand-in can hand focus straight back. -->
+	<!-- Content that hides under DialogSlider and process info (a fade: focus may be in it). -->
+	<include name="Bald_OSDCompanionHide">
+		<animation type="Conditional" condition="Window.IsVisible(sliderdialog) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(DialogSettings.xml)">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<!-- The field panel with its heading: <rows> rows of 64 px under a 72 px heading, 16 px padding. -->
+	<include name="Bald_OSDPanelSurface">
+		<param name="width">720</param>
+		<param name="height" />
+		<param name="heading" />
+		<definition>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
+				<texture colordiffuse="bald_field">bald/white.png</texture>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>$PARAM[width]</width>
+				<height>72</height>
+				<texture colordiffuse="bald_ink10">bald/white.png</texture>
+			</control>
+			<control type="label">
+				<left>32</left>
+				<top>0</top>
+				<width>600</width>
+				<height>72</height>
+				<aligny>center</aligny>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$PARAM[heading]</label>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Stream lists (1121, 1122; script.skinvariables) ============ -->
+	<!-- Forced, default, original, codec and channels for a stream row. -->
+	<variable name="Bald_OSDStreamFlags">
+		<value>$VAR[Bald_OSDStreamForced]$VAR[Bald_OSDStreamDefault]$VAR[Bald_OSDStreamOriginal]$INFO[ListItem.Property(codec),[UPPERCASE],[/UPPERCASE]]$INFO[ListItem.Property(channels), · , $LOCALIZE[10127]]</value>
+	</variable>
+	<variable name="Bald_OSDStreamForced">
+		<value condition="!String.IsEmpty(ListItem.Property(isforced))">$LOCALIZE[39106] · </value>
+	</variable>
+	<variable name="Bald_OSDStreamDefault">
+		<value condition="!String.IsEmpty(ListItem.Property(isdefault))">[LOWERCASE]$LOCALIZE[571][/LOWERCASE] · </value>
+	</variable>
+	<variable name="Bald_OSDStreamOriginal">
+		<value condition="!String.IsEmpty(ListItem.Property(isoriginal))">$LOCALIZE[39111] · </value>
+	</variable>
+	<!-- One 64 px stream row, 688 wide: language code, name, details, a hearing-impaired mark, and the accent check on
+	     the stream in use (only while subtitles are on, for subtitles). -->
+	<include name="Bald_OSDStreamRow">
+		<param name="focused">false</param>
+		<param name="color">bald_ink70</param>
+		<param name="current">!String.IsEmpty(ListItem.Property(iscurrent))</param>
+		<definition>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>688</width>
+				<height>64</height>
+				<texture colordiffuse="bald_ink10">bald/white.png</texture>
+				<visible>$PARAM[focused]</visible>
+			</control>
+			<control type="image">
+				<left>16</left>
+				<top>27</top>
+				<width>10</width>
+				<height>10</height>
+				<texture colordiffuse="bald_accent">bald/dot.png</texture>
+				<visible>$PARAM[focused]</visible>
+			</control>
+			<control type="label">
+				<left>40</left>
+				<top>0</top>
+				<width>72</width>
+				<height>64</height>
+				<aligny>center</aligny>
+				<font>Bald_Section</font>
+				<textcolor>$PARAM[color]</textcolor>
+				<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+			</control>
+			<control type="label">
+				<left>120</left>
+				<top>6</top>
+				<width>480</width>
+				<height>28</height>
+				<aligny>center</aligny>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>$PARAM[color]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+			<control type="label">
+				<left>120</left>
+				<top>32</top>
+				<width>480</width>
+				<height>24</height>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$VAR[Bald_OSDStreamFlags]</label>
+			</control>
+			<control type="image">
+				<left>604</left>
+				<top>22</top>
+				<width>30</width>
+				<height>20</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_ink60">windows/subtitles/icon_close_caption.png</texture>
+				<visible>!String.IsEmpty(ListItem.Property(isimpaired))</visible>
+			</control>
+			<control type="image">
+				<left>648</left>
+				<top>20</top>
+				<width>24</width>
+				<height>24</height>
+				<texture colordiffuse="bald_accent">bald/check.png</texture>
+				<visible>$PARAM[current]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- A stream list panel over the tools: sized to its row count (up to six rows; more scroll). The group slides down
+	     by 64 px per missing row and one surface of the matching height shows. -->
+	<include name="Bald_OSDStreamPanel">
+		<param name="id" />
+		<param name="button" />
+		<param name="type" />
+		<param name="method" />
+		<param name="heading" />
+		<param name="current">!String.IsEmpty(ListItem.Property(iscurrent))</param>
+		<param name="toggle">false</param>
+		<definition>
+			<control type="group">
+				<left>1104</left>
+				<top>240</top>
+				<width>720</width>
+				<height>472</height>
+				<include>Bald_OSDAnimCompanion</include>
+				<include>Bald_OSDCompanionHide</include>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,0)">
+					<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+				</animation>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,5)"><effect type="slide" start="0,0" end="0,64" time="0" /></animation>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,4)"><effect type="slide" start="0,0" end="0,128" time="0" /></animation>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,3)"><effect type="slide" start="0,0" end="0,192" time="0" /></animation>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,2)"><effect type="slide" start="0,0" end="0,256" time="0" /></animation>
+				<animation type="Conditional" condition="Integer.IsLess(Container($PARAM[id]).NumItems,2)"><effect type="slide" start="0,0" end="0,320" time="0" /></animation>
+				<control type="group"><visible>Integer.IsGreaterOrEqual(Container($PARAM[id]).NumItems,6)</visible><include content="Bald_OSDPanelSurface"><param name="height">472</param><param name="heading">$PARAM[heading]</param></include></control>
+				<control type="group"><visible>Integer.IsEqual(Container($PARAM[id]).NumItems,5)</visible><include content="Bald_OSDPanelSurface"><param name="height">408</param><param name="heading">$PARAM[heading]</param></include></control>
+				<control type="group"><visible>Integer.IsEqual(Container($PARAM[id]).NumItems,4)</visible><include content="Bald_OSDPanelSurface"><param name="height">344</param><param name="heading">$PARAM[heading]</param></include></control>
+				<control type="group"><visible>Integer.IsEqual(Container($PARAM[id]).NumItems,3)</visible><include content="Bald_OSDPanelSurface"><param name="height">280</param><param name="heading">$PARAM[heading]</param></include></control>
+				<control type="group"><visible>Integer.IsEqual(Container($PARAM[id]).NumItems,2)</visible><include content="Bald_OSDPanelSurface"><param name="height">216</param><param name="heading">$PARAM[heading]</param></include></control>
+				<control type="group"><visible>Integer.IsLess(Container($PARAM[id]).NumItems,2)</visible><include content="Bald_OSDPanelSurface"><param name="height">152</param><param name="heading">$PARAM[heading]</param></include></control>
+				<control type="list" id="$PARAM[id]">
+					<left>16</left>
+					<top>80</top>
+					<width>688</width>
+					<height>384</height>
+					<orientation>vertical</orientation>
+					<scrolltime tween="cubic" easing="out">320</scrolltime>
+					<onup>noop</onup>
+					<ondown>$PARAM[button]</ondown>
+					<onleft>$PARAM[button]</onleft>
+					<onright>$PARAM[button]</onright>
+					<visible>$EXP[Bald_OSDHasSkinVariables]</visible>
+					<content>plugin://script.skinvariables/?info=get_player_streams&amp;stream_type=$PARAM[type]&amp;reload=$INFO[Window.Property(UID)]</content>
+					<onclick condition="$PARAM[toggle] + !String.IsEmpty(ListItem.Property(iscurrent)) + VideoPlayer.SubtitlesEnabled">Action(ShowSubtitles)</onclick>
+					<onclick condition="![$PARAM[toggle] + !String.IsEmpty(ListItem.Property(iscurrent)) + VideoPlayer.SubtitlesEnabled]">RunScript(script.skinvariables,$PARAM[method]=$INFO[ListItem.Property(index)],reload_property=UID)</onclick>
+					<itemlayout height="64" width="688">
+						<include content="Bald_OSDStreamRow"><param name="current">$PARAM[current]</param></include>
+					</itemlayout>
+					<focusedlayout height="64" width="688">
+						<include content="Bald_OSDStreamRow">
+							<param name="focused">Control.HasFocus($PARAM[id])</param>
+							<param name="color">bald_ink</param>
+							<param name="current">$PARAM[current]</param>
+						</include>
+					</focusedlayout>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Video panel (1123) ============ -->
+	<variable name="Bald_OSDVideoFlags">
+		<value>$VAR[Bald_OSDResolution][UPPERCASE]$INFO[VideoPlayer.VideoCodec, · ][/UPPERCASE]$VAR[Bald_OSDHdr]$INFO[VideoPlayer.VideoAspect, · ,:1]$INFO[VideoPlayer.AudioCodec, · ]$INFO[VideoPlayer.AudioChannels, · , $LOCALIZE[10127]]</value>
+	</variable>
+	<variable name="Bald_OSDResolution">
+		<value condition="String.IsEqual(VideoPlayer.VideoResolution,4K) | String.IsEqual(VideoPlayer.VideoResolution,8K)">$INFO[VideoPlayer.VideoResolution]</value>
+		<value>$INFO[VideoPlayer.VideoResolution,,p]</value>
+	</variable>
+	<variable name="Bald_OSDHdr">
+		<value condition="String.IsEqual(VideoPlayer.HdrType,dolbyvision)"> · Dolby Vision</value>
+		<value condition="String.IsEqual(VideoPlayer.HdrType,hdr10)"> · HDR10</value>
+		<value condition="String.StartsWith(VideoPlayer.HdrType,hdr10)"> · HDR10+</value>
+		<value condition="String.IsEqual(VideoPlayer.HdrType,hlg)"> · HLG</value>
+	</variable>
+	<!-- The speed row's value: the tempo, or the fast forward or rewind speed. -->
+	<variable name="Bald_OSDSpeedValue">
+		<value condition="Player.Forwarding">$LOCALIZE[31039] $VAR[VideoPlayerForwardRewindVar]</value>
+		<value condition="Player.Rewinding">$LOCALIZE[31038] $VAR[VideoPlayerForwardRewindVar]</value>
+		<value condition="Player.TempoEnabled + !String.IsEmpty(Player.PlaySpeed)">$INFO[Player.PlaySpeed,,x]</value>
+		<value>1.00x</value>
+	</variable>
+	<!-- One step of the speed scale: a 60 px label, 45% ink. -->
+	<include name="Bald_OSDSpeedStep">
+		<param name="label" />
+		<definition>
+			<control type="label">
+				<width>60</width>
+				<height>24</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink45</textcolor>
+				<label>$PARAM[label]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- The accent nib over the scale: slides to the current step (60 px per step, 0 = the first). -->
+	<include name="Bald_OSDSpeedNib">
+		<control type="image">
+			<left>24</left>
+			<top>0</top>
+			<width>12</width>
+			<height>12</height>
+			<texture colordiffuse="bald_accent">bald/dot.png</texture>
+			<!-- Tempo 0.80 to 1.50 in 0.10 steps (8 steps). -->
+			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,0.90)"><effect type="slide" start="0,0" end="60,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="Player.TempoEnabled + [String.IsEqual(Player.PlaySpeed,1.00) | String.IsEqual(Player.PlaySpeed,0.00) | String.IsEmpty(Player.PlaySpeed)]"><effect type="slide" start="0,0" end="120,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.10)"><effect type="slide" start="0,0" end="180,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.20)"><effect type="slide" start="0,0" end="240,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.30)"><effect type="slide" start="0,0" end="300,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.40)"><effect type="slide" start="0,0" end="360,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.50)"><effect type="slide" start="0,0" end="420,0" time="240" tween="cubic" easing="out" /></animation>
+			<!-- Rewind 32x to fast forward 32x (11 steps, the middle one is play). -->
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Rewinding16x"><effect type="slide" start="0,0" end="60,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Rewinding8x"><effect type="slide" start="0,0" end="120,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Rewinding4x"><effect type="slide" start="0,0" end="180,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Rewinding2x"><effect type="slide" start="0,0" end="240,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + !Player.Rewinding + !Player.Forwarding"><effect type="slide" start="0,0" end="300,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding2x"><effect type="slide" start="0,0" end="360,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding4x"><effect type="slide" start="0,0" end="420,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding8x"><effect type="slide" start="0,0" end="480,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding16x"><effect type="slide" start="0,0" end="540,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding32x"><effect type="slide" start="0,0" end="600,0" time="240" tween="cubic" easing="out" /></animation>
+		</control>
+	</include>
+	<!-- The video panel over the tools: codec flags on a process-info row, then the speed row with its scale. -->
+	<include name="Bald_OSDVideoPanel">
+		<control type="group">
+			<left>1104</left>
+			<top>376</top>
+			<width>720</width>
+			<height>336</height>
+			<include>Bald_OSDAnimCompanion</include>
+			<include>Bald_OSDCompanionHide</include>
+			<include content="Bald_OSDPanelSurface"><param name="height">336</param><param name="heading">$LOCALIZE[157]</param></include>
+			<control type="grouplist" id="8130">
+				<left>16</left>
+				<top>80</top>
+				<width>688</width>
+				<height>240</height>
+				<orientation>vertical</orientation>
+				<itemgap>8</itemgap>
+				<onup>noop</onup>
+				<!-- Process info: the codec flags; Select opens Kodi's player process info. -->
+				<control type="button" id="8131">
+					<width>688</width>
+					<height>80</height>
+					<label>$LOCALIZE[10116]</label>
+					<label2>$VAR[Bald_OSDVideoFlags]</label2>
+					<font>Bald_Section</font>
+					<textoffsetx>32</textoffsetx>
+					<aligny>center</aligny>
+					<textcolor>bald_ink70</textcolor>
+					<focusedcolor>bald_ink</focusedcolor>
+					<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
+					<texturenofocus />
+					<onclick>Action(PlayerProcessInfo)</onclick>
+					<ondown>8132</ondown>
+					<onleft>70062</onleft>
+					<onright>70062</onright>
+				</control>
+				<!-- Speed: Left and Right change the tempo, or rewind and fast forward; either resumes a paused video. -->
+				<control type="button" id="8132">
+					<width>688</width>
+					<height>144</height>
+					<label>$LOCALIZE[31142]</label>
+					<label2>$VAR[Bald_OSDSpeedValue]</label2>
+					<font>Bald_Section</font>
+					<textoffsetx>32</textoffsetx>
+					<textoffsety>20</textoffsety>
+					<aligny>top</aligny>
+					<textcolor>bald_ink70</textcolor>
+					<focusedcolor>bald_ink</focusedcolor>
+					<texturefocus colordiffuse="bald_ink10">bald/white.png</texturefocus>
+					<texturenofocus />
+					<onup>8131</onup>
+					<ondown>70062</ondown>
+					<onleft condition="Player.Paused">PlayerControl(Play)</onleft>
+					<onright condition="Player.Paused">PlayerControl(Play)</onright>
+					<onleft condition="!Player.Paused + Player.TempoEnabled">PlayerControl(TempoDown)</onleft>
+					<onright condition="!Player.Paused + Player.TempoEnabled">PlayerControl(TempoUp)</onright>
+					<onleft condition="!Player.Paused + !Player.TempoEnabled + !Player.Rewinding32x">PlayerControl(Rewind)</onleft>
+					<onright condition="!Player.Paused + !Player.TempoEnabled + !Player.Forwarding32x">PlayerControl(Forward)</onright>
+				</control>
+			</control>
+			<!-- The scale under the speed row's label: tempo steps, or rewind and fast forward speeds. -->
+			<control type="group">
+				<left>44</left>
+				<top>262</top>
+				<width>660</width>
+				<height>48</height>
+				<include>Bald_OSDSpeedNib</include>
+				<control type="grouplist">
+					<top>18</top>
+					<width>660</width>
+					<height>24</height>
+					<orientation>horizontal</orientation>
+					<itemgap>0</itemgap>
+					<visible>Player.TempoEnabled</visible>
+					<include content="Bald_OSDSpeedStep"><param name="label">0.8</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">0.9</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">1.0</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">1.1</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">1.2</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">1.3</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">1.4</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">1.5</param></include>
+				</control>
+				<control type="grouplist">
+					<top>18</top>
+					<width>660</width>
+					<height>24</height>
+					<orientation>horizontal</orientation>
+					<itemgap>0</itemgap>
+					<visible>!Player.TempoEnabled</visible>
+					<include content="Bald_OSDSpeedStep"><param name="label">32×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">16×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">8×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">4×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">2×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">·</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">2×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">4×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">8×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">16×</param></include>
+					<include content="Bald_OSDSpeedStep"><param name="label">32×</param></include>
+				</control>
+			</control>
+		</control>
+	</include>
+
+	<!-- ============ Next item card (1124) ============ -->
+	<!-- The card shows when no chapter is left and something follows: the next playlist item, or (in the last ten
+	     minutes of a library episode) the next episode of its season, from the hidden list 8140. -->
+	<expression name="Bald_OSDNextCard">[!$EXP[Bald_OSDChapterAhead] + [$EXP[Bald_OSDPlaylistAhead] | $EXP[Bald_OSDNextEpisodeReady]] + !VideoPlayer.Content(livetv)]</expression>
+	<variable name="Bald_OSDNextPath">
+		<value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TvShowDBID) + !String.IsEmpty(VideoPlayer.Episode)">videodb://tvshows/titles/$INFO[VideoPlayer.TvShowDBID]/$INFO[VideoPlayer.Season]/?tvshowid=$INFO[VideoPlayer.TvShowDBID]&amp;xsp=%7B%22order%22%3A%7B%22method%22%3A%22episode%22%7D%2C%22rules%22%3A%7B%22and%22%3A%5B%7B%22field%22%3A%22episode%22%2C%22operator%22%3A%22greaterthan%22%2C%22value%22%3A%22$INFO[VideoPlayer.Episode]%22%7D%5D%7D%2C%22type%22%3A%22episodes%22%7D</value>
+	</variable>
+	<variable name="Bald_OSDNextArt">
+		<value condition="$EXP[Bald_OSDPlaylistAhead] + !String.IsEmpty(VideoPlayer.offset(1).Art(thumb))">$INFO[VideoPlayer.offset(1).Art(thumb)]</value>
+		<value condition="$EXP[Bald_OSDPlaylistAhead]">$INFO[VideoPlayer.offset(1).Art(fanart)]</value>
+		<value>$INFO[Container(8140).ListItem.Art(thumb)]</value>
+	</variable>
+	<variable name="Bald_OSDNextTitle">
+		<value condition="$EXP[Bald_OSDPlaylistAhead]">$INFO[VideoPlayer.offset(1).Title]</value>
+		<value>$INFO[Container(8140).ListItem.Title]</value>
+	</variable>
+	<variable name="Bald_OSDNextMeta">
+		<value condition="$EXP[Bald_OSDPlaylistAhead] + !String.IsEmpty(VideoPlayer.offset(1).Episode)">$INFO[VideoPlayer.offset(1).TVShowTitle,, · ]$INFO[VideoPlayer.offset(1).Season,S]$INFO[VideoPlayer.offset(1).Episode, E]</value>
+		<value condition="$EXP[Bald_OSDPlaylistAhead]">$INFO[VideoPlayer.offset(1).Year]$INFO[VideoPlayer.offset(1).Genre, · ]</value>
+		<value>$INFO[Container(8140).ListItem.TVShowTitle,, · ]$INFO[Container(8140).ListItem.Season,S]$INFO[Container(8140).ListItem.Episode, E]$INFO[Container(8140).ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
+	</variable>
+	<include name="Bald_OSDNextCard">
+		<control type="list" id="8140">
+			<include>HiddenObject</include>
+			<itemlayout width="1" height="1" />
+			<focusedlayout width="1" height="1" />
+			<content target="videos" limit="1">$VAR[Bald_OSDNextPath]</content>
+		</control>
+		<control type="group">
+			<left>Bald_SafeLeft</left>
+			<top>96</top>
+			<width>1000</width>
+			<height>216</height>
+			<visible>$EXP[Bald_OSDNextCard]</visible>
+			<include>Bald_OSDCompanionHide</include>
+			<animation type="Visible" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" delay="240" tween="sine" easing="inout" />
+				<effect type="slide" start="0,-40" end="0,0" time="480" delay="240" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowOpen" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" delay="240" tween="sine" easing="inout" />
+				<effect type="slide" start="0,-40" end="0,0" time="480" delay="240" tween="cubic" easing="out" />
+			</animation>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>384</width>
+				<height>216</height>
+				<texture colordiffuse="bald_tile_placeholder">bald/tile.png</texture>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>384</width>
+				<height>216</height>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<texture diffuse="bald/tile.png" background="true">$VAR[Bald_OSDNextArt]</texture>
+			</control>
+			<control type="label">
+				<left>416</left>
+				<top>64</top>
+				<width>584</width>
+				<height>28</height>
+				<aligny>center</aligny>
+				<font>Bald_Accent</font>
+				<textcolor>bald_accent</textcolor>
+				<label>$VAR[Bald_OSDNextHeading]</label>
+			</control>
+			<control type="label">
+				<left>416</left>
+				<top>96</top>
+				<width>584</width>
+				<height>34</height>
+				<aligny>center</aligny>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$VAR[Bald_OSDNextTitle]</label>
+			</control>
+			<control type="label">
+				<left>416</left>
+				<top>134</top>
+				<width>584</width>
+				<height>28</height>
+				<aligny>center</aligny>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>bald_ink70</textcolor>
+				<label>$VAR[Bald_OSDNextMeta]</label>
+			</control>
+		</control>
+	</include>
 </includes>

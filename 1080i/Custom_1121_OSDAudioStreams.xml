@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald video OSD, audio: the audio streams (script.skinvariables get_player_streams); Select switches stream
+     (set_player_audiostream). Up from the audio button enters the list, Down or Left or Right leaves it.
+     A companion panel of the video OSD (docs/SPEC.md 5.16, "Video OSD"; Includes_Bald_OSD.xml): VideoOSD opens it when
+     its button (70060) takes focus. The row is repeated with that button real and the others as stand-ins that
+     close this panel and focus the OSD's own button, so Left and Right keep moving along the row. -->
+<window type="dialog" id="1121">
+	<defaultcontrol always="true">70060</defaultcontrol>
+	<zorder>1</zorder>
+	<depth>DepthOSD</depth>
+	<controls>
+		<include content="Bald_OSDStreamPanel">
+			<param name="id">8110</param>
+			<param name="button">70060</param>
+			<param name="type">audio</param>
+			<param name="method">set_player_audiostream</param>
+			<param name="heading">$LOCALIZE[292]</param>
+		</include>
+		<include content="Bald_OSDRow">
+			<param name="owner">1121</param>
+			<param name="play">Fake</param>
+			<param name="back">Fake</param>
+			<param name="forward">Fake</param>
+			<param name="stop">Fake</param>
+			<param name="menu">Fake</param>
+			<param name="teletext">Fake</param>
+			<param name="stereo">Fake</param>
+			<param name="info">Fake</param>
+			<param name="audio">Panel</param>
+			<param name="subtitles">Fake</param>
+			<param name="video">Fake</param>
+		</include>
+		<include>Bald_OSDHints</include>
+	</controls>
+</window>

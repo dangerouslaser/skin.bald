@@ -311,9 +311,9 @@ VideoOSD.xml (CGUIDialogVideoOSD binds none) and the companion panels 1120-1124,
 		playlist and bookmarks into the down chain, streams and settings into the audio, subtitle and video buttons.
 Custom_1120_OSDInfoPanel.xml (window 1120): the information button's panel (the details are 1128)
 Custom_1121_OSDAudioStreams.xml (window 1121)
-8110	Audio stream list (script.skinvariables get_player_streams); 8111 its scrollbar
+8110	Audio stream list (script.skinvariables get_player_streams)
 Custom_1122_OSDSubtitleStreams.xml (window 1122)
-8120	Subtitle stream list; 8121 its scrollbar
+8120	Subtitle stream list
 Custom_1123_OSDVideoPanel.xml (window 1123)
 8130	Panel grouplist; 8131 process-info button (codec flags); 8132 speed row (tempo or FF/RW scale)
 Custom_1124_OSDNextItem.xml (window 1124)
