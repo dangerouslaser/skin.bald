@@ -47,6 +47,21 @@
         <onstart>Control.Move(9103,-2)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9103))</stop>
     </timer>
+    <!-- The first Movies and TV Shows rows preview in the menu before they are ever focused. -->
+    <timer>
+        <name>bald_rowstart_9201</name>
+        <start>Window.IsActive(home) + !Container(9201).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9201)) + String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)</start>
+        <onstart>SetProperty(Bald.Start9201,1,home)</onstart>
+        <onstart>Control.Move(9201,-2)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9201))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9301</name>
+        <start>Window.IsActive(home) + !Container(9301).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9301)) + String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)</start>
+        <onstart>SetProperty(Bald.Start9301,1,home)</onstart>
+        <onstart>Control.Move(9301,-2)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9301))</stop>
+    </timer>
     <!-- Bald Home idle (60 s): close the menu and park focus on the wake button so the first key only wakes. -->
     <timer>
         <name>bald_idle</name>
