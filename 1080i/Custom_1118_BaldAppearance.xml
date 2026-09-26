@@ -57,6 +57,16 @@
 				     Every name is negative so unset means shown, except vote counts (off by default). The rows under the
 				     master switch grey out while it is off. -->
 				<include content="Bald_RatingsSettingRow"><param name="id">9641</param><param name="label">$LOCALIZE[31302]</param><param name="setting">Bald.Ratings.Hide</param><param name="enable">true</param></include>
+				<!-- Online ratings from TMDb Helper: its monitors publish the scores the library lacks (MDbList, OMDb and Trakt keys
+				     are entered in TMDb Helper's own settings; Bald never asks for a key or calls an API). Turning it on or off
+				     also starts or stops TMDb Helper's ListItem monitor (TMDbHelper.Service), as Home's onload does. Greyed
+				     without TMDb Helper; the next row opens its settings. -->
+				<control type="radiobutton" id="9657"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31323]</label><selected>$EXP[Bald_RatingsOnline]</selected><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_HasTMDbHelper]</enable>
+					<onclick condition="Skin.HasSetting(Bald.Ratings.NoOnline)">Skin.SetBool(TMDbHelper.Service)</onclick>
+					<onclick condition="!Skin.HasSetting(Bald.Ratings.NoOnline)">Skin.Reset(TMDbHelper.Service)</onclick>
+					<onclick>Skin.ToggleSetting(Bald.Ratings.NoOnline)</onclick>
+				</control>
+				<control type="button" id="9658"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31324]</label><label2>$LOCALIZE[31325]</label2><enable>$EXP[Bald_HasTMDbHelper]</enable><onclick>Addon.OpenSettings(plugin.video.themoviedb.helper)</onclick></control>
 				<include content="Bald_RatingsSettingRow"><param name="id">9642</param><param name="label">$LOCALIZE[31303]</param><param name="setting">Bald.Ratings.NoIMDb</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9643</param><param name="label">$LOCALIZE[31304]</param><param name="setting">Bald.Ratings.NoTMDb</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9644</param><param name="label">$LOCALIZE[31311]</param><param name="setting">Bald.Ratings.NoRTCritics</param></include>
@@ -64,6 +74,13 @@
 				<include content="Bald_RatingsSettingRow"><param name="id">9646</param><param name="label">$LOCALIZE[31307]</param><param name="setting">Bald.Ratings.NoMetacritic</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9647</param><param name="label">$LOCALIZE[31308]</param><param name="setting">Bald.Ratings.NoTrakt</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9648</param><param name="label">$LOCALIZE[31309]</param><param name="setting">Bald.Ratings.NoTVDb</param></include>
+				<!-- Sources only TMDb Helper supplies (from MDbList): greyed while online ratings are off. Letterboxd is on by
+				     default; Metacritic users, MyAnimeList, Roger Ebert and the MDbList score are off until asked for. -->
+				<control type="radiobutton" id="9659"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31326]</label><selected>!Skin.HasSetting(Bald.Ratings.NoLetterboxd)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.NoLetterboxd)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnline]</enable></control>
+				<control type="radiobutton" id="9660"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31327]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMetacriticUser)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMetacriticUser)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnline]</enable></control>
+				<control type="radiobutton" id="9661"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31328]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMyAnimeList)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMyAnimeList)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnline]</enable></control>
+				<control type="radiobutton" id="9662"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31329]</label><selected>Skin.HasSetting(Bald.Ratings.ShowRogerEbert)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowRogerEbert)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnline]</enable></control>
+				<control type="radiobutton" id="9663"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31330]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMDbList)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMDbList)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnline]</enable></control>
 				<include content="Bald_RatingsSettingRow"><param name="id">9649</param><param name="label">$LOCALIZE[38018]</param><param name="setting">Bald.Ratings.NoUser</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9650</param><param name="label">$LOCALIZE[31313]</param><param name="setting">Bald.Ratings.NoDefault</param></include>
 				<!-- Which service Kodi's unnamed default rating came from (a Jellyfin-synced library stores only "default"):

@@ -949,7 +949,7 @@ msgstr ""
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance > Ratings: category description
 msgctxt "#31301"
-msgid "Choose which of your library's ratings Bald shows and where. They come from your NFO files or scrapers; sources without a value stay hidden."
+msgid "Choose which ratings Bald shows and where. Your library's come from NFO files or scrapers. With TMDb Helper, online ratings fill the gaps: enter an MDbList (or OMDb) API key in its settings and keep its \"Use online ratings in details monitor\" on."
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
@@ -1064,6 +1064,54 @@ msgstr ""
 #. Appearance > Ratings > Default rating source: Kodi itself (brand name)
 msgctxt "#31322"
 msgid "Kodi"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: TMDb Helper's online ratings switch
+msgctxt "#31323"
+msgid "Online ratings from TMDb Helper"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: opens TMDb Helper's add-on settings
+msgctxt "#31324"
+msgid "TMDb Helper settings"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings > TMDb Helper settings: what is entered there
+msgctxt "#31325"
+msgid "MDbList or OMDb API key"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source (brand name)
+msgctxt "#31326"
+msgid "Letterboxd"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, Metacritic's user score
+msgctxt "#31327"
+msgid "Metacritic users"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source (brand name)
+msgctxt "#31328"
+msgid "MyAnimeList"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, Roger Ebert's star rating
+msgctxt "#31329"
+msgid "Roger Ebert"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, MDbList's own combined score
+msgctxt "#31330"
+msgid "MDbList score"
 msgstr ""
 
 #: /xml/Includes_SettingsDialog.xml
