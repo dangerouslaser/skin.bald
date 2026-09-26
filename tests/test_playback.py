@@ -255,7 +255,8 @@ class PlaybackStyleTests(unittest.TestCase):
             slider = ids[control_id]
             self.assertEqual(slider.findtext("textureslidernib"), "bald/slider_nib.png")
             self.assertEqual(slider.find("textureslidernib").get("colordiffuse"), "bald_accent")
-            self.assertIn(slider.findtext("texturesliderbar"), (None, ""))
+            # A real, transparent, nib-sized bar: Kodi scales the nib by it (see SliderBarTests).
+            self.assertEqual(slider.findtext("texturesliderbar"), "bald/slider_clear.png")
         lines = [node for node in root.iter("control") if node.findtext("texture") == "bald/bar.png"]
         self.assertTrue(lines)
         self.assertEqual({node.findtext("height") for node in lines}, {"4"})
@@ -335,3 +336,19 @@ class HiddenParentFocusTests(unittest.TestCase):
                         wrapped = [c for c in entry.iter("control") if c is not entry and c.get("type") in self.FOCUSABLE]
                         self.assertFalse(entry.get("type") == "group" and wrapped,
                                          "focusable control hidden only through its parent group")
+
+
+class SliderBarTests(unittest.TestCase):
+    """Kodi scales a slider's nib by the control height over the bar texture's height. A slider with an empty bar
+    texture has nothing to scale from, and on CoreELEC its 16 px nib rendered as a screen-sized blob (0.2.0)."""
+
+    def test_playback_sliders_have_a_real_bar_texture(self):
+        for name in ("DialogSeekBar.xml", "VideoOSD.xml", "MusicOSD.xml", "Custom_1109_TopBarOverlay.xml"):
+            root = resolve_window(name)
+            for slider in root.iter("control"):
+                if slider.get("type") != "slider":
+                    continue
+                with self.subTest(window=name, slider=slider.get("id")):
+                    bar = slider.find("texturesliderbar")
+                    self.assertIsNotNone(bar)
+                    self.assertTrue((bar.text or "").strip(), "empty texturesliderbar")
