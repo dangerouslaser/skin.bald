@@ -4,6 +4,7 @@ RunScript(skin.bald,recommendations,movie,123)
 RunScript(skin.bald,open,movie,456)
 RunScript(skin.bald,tvinfo,episode,789)
 RunScript(skin.bald,play,episode,789)
+RunScript(skin.bald,font,DMSans)
 No network requests, library writes, or long-running service.
 """
 import json
@@ -312,6 +313,22 @@ def disable_mouse(xbmc):
         raise RuntimeError("Could not disable mouse input: {}".format(response["error"]))
 
 
+# Font.xml fontset ids Bald Settings > Appearance offers (Default is Instrument Sans, lookandfeel.font's default).
+FONTSETS = ("Default", "DMSans")
+
+
+def set_fontset(xbmc, fontset):
+    """Select a Font.xml fontset; Kodi reloads the skin itself when lookandfeel.font changes."""
+    if fontset not in FONTSETS:
+        raise ValueError("Unknown fontset: {!r}".format(fontset))
+    response = json.loads(xbmc.executeJSONRPC(json.dumps({
+        "jsonrpc": "2.0", "id": 1, "method": "Settings.SetSettingValue",
+        "params": {"setting": "lookandfeel.font", "value": fontset},
+    })))
+    if "error" in response:
+        raise RuntimeError("Could not set the font: {}".format(response["error"]))
+
+
 def run(action="", media_type="", dbid=""):
     import xbmc
     import xbmcgui
@@ -322,6 +339,10 @@ def run(action="", media_type="", dbid=""):
         return
     if action == "mouse":
         disable_mouse(xbmc)
+        return
+    if action == "font":
+        # RunScript(skin.bald,font,<fontset id>): the id arrives in the second argument.
+        set_fontset(xbmc, media_type)
         return
 
     identity = "{}:{}".format(media_type, dbid)
