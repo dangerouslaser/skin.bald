@@ -31,6 +31,10 @@ NATIVE_IDS = {
     "MusicVisualisation.xml": {"2"},
     # CGUIDialogMusicInfo: refresh, rating, play, choose art, artist/album info, list.
     "DialogMusicInfo.xml": {"6", "7", "8", "10", "12", "50"},
+    # CDialogGameOSD / CDialogGameOSDHelp: menu and help text.
+    "GameOSD.xml": {"1103", "1101"},
+    # Controller, port and agent dialogs and the disc manager (games/*/windows/*Defines.h, DiscManagerIDs.h).
+    "DialogGameControllers.xml": {"2", "3", "4", "5", "7", "8", "9", "10", "17", "18", "19", "20", "21", "22", "31", "32", "108321"},
 }
 # Kodi reads these control types by id, so the type must stay what Kodi casts to.
 NATIVE_TYPES = {
@@ -47,6 +51,7 @@ NATIVE_TYPES = {
 RESTYLED = sorted(NATIVE_IDS) + [
     "Includes_Bald_Media.xml",
     "Includes_MusicInfo.xml",
+    "Includes_Games.xml",
 ]
 COLOR_TAGS = {"textcolor", "focusedcolor", "disabledcolor", "invalidcolor", "selectedcolor", "shadowcolor",
               "colordiffuse", "controllerdiffuse"}
@@ -92,6 +97,14 @@ class NativeContractTests(unittest.TestCase):
             types = {node.get("type") for node in root.iter("control") if node.get("id") == control_id}
             with self.subTest(window=name, id=control_id):
                 self.assertEqual(types, {kind})
+
+    def test_disc_manager_keeps_its_menu_template(self):
+        # DiscManagerIDs.h: menu 3 is built from items 108323-108327 in this order.
+        root = ET.parse(SKIN / "Includes_Games.xml").getroot()
+        menu = next(node for node in root.iter("control") if node.get("id") == "3"
+                    and node.find("content/item[@id='108323']") is not None)
+        self.assertEqual([item.get("id") for item in menu.findall("content/item")],
+                         ["108323", "108324", "108325", "108326", "108327"])
 
     def test_music_info_leaves_kodi_managed_visibility_alone(self):
         # Kodi shows and hides 7, 8 and 12 itself; a <visible> on them would override it every frame.
@@ -166,7 +179,9 @@ class BaldLookTests(unittest.TestCase):
             root = ET.parse(SKIN / name).getroot()
             for where, text in shown_texts(root):
                 with self.subTest(file=name, where=where):
-                    self.assertNotRegex(literal_text(text), r"[A-Za-z]{2,}", text)
+                    # $FEATURE[feature,controller] names a controller button, not text.
+                    shown = literal_text(re.sub(r"\$FEATURE\[[^\]]*\]", "", text))
+                    self.assertNotRegex(shown, r"[A-Za-z]{2,}", text)
 
     def test_estuary_origin_is_credited(self):
         for name in RESTYLED:

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+	<!-- From Kodi 22 Estuary's DialogGameControllers.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). The four game
+	     dialogs it hosts are restyled for Bald in Includes_Games.xml (docs/NOTES.md, "Media windows restyle"). -->
 	<description>
 		Window for game functionality. This dialog was originally for controllers,
 		but adding new XML windows breaks old skins, so it has been repurposed
