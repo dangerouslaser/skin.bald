@@ -89,7 +89,8 @@ class BaldSettingsTests(unittest.TestCase):
 
     def test_menu_selection_previews_each_screens_last_active_widget(self):
         home_includes = (ROOT / "1080i" / "Includes_Bald_Home.xml").read_text()
-        row_includes = (ROOT / "1080i" / "Includes_Bald_HomeRows.xml").read_text()
+        rows = ET.parse(ROOT / "1080i" / "Includes_Bald_HomeDefaults.xml").getroot()
+        fanart = [value.get("condition") for value in rows.findall("variable[@name='Bald_Fanart']/value")]
 
         for screen, row, preview in (
             ("home", "9101", "Bald_PreviewHome"),
@@ -101,12 +102,16 @@ class BaldSettingsTests(unittest.TestCase):
                 home_includes,
             )
             self.assertIn(
-                f'<value condition="$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row}) + !String.IsEmpty(Container({row}).ListItem.Art(fanart))">',
-                row_includes,
+                f"$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row}) + !String.IsEmpty(Container({row}).ListItem.Art(fanart))",
+                fanart,
             )
-            self.assertIn(
-                f'<param name="c">{row}</param><param name="p">Odd</param><param name="preview">$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row})</param>',
-                row_includes,
+            logo = next(
+                node for node in rows.findall(f"include[@name='Bald_ConfiguredArtLogos_{screen}']/definition/include")
+                if node.findtext("param[@name='c']") == row and node.findtext("param[@name='p']") == "Odd"
+            )
+            self.assertEqual(
+                logo.findtext("param[@name='preview']"),
+                f"$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row})",
             )
 
         row_definition = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(

@@ -1,0 +1,19 @@
+<include name="Bald_Generated_{title}Widgets">
+    <definition>
+{rows}
+    </definition>
+</include>
+<include name="Bald_ConfiguredArtLogos_{screen}">
+    <definition>
+{art_logos}
+    </definition>
+</include>
+<include name="Bald_ConfiguredCaptions_{screen}">
+    <definition>
+{captions}
+    </definition>
+</include>
+<expression name="Bald_ItemOdd_{screen}">[false]{item_odd}</expression>
+<expression name="Bald_HasLogo_{screen}">[false]{has_logo}</expression>
+<expression name="Bald_PreviewItemOdd_{screen}">[false]{preview_item_odd}</expression>
+<expression name="Bald_PreviewHasLogo_{screen}">[false]{preview_has_logo}</expression>

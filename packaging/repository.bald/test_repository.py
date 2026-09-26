@@ -53,8 +53,11 @@ def main() -> None:
     with zipfile.ZipFile(skin_zip) as zipped:
         names = set(zipped.namelist())
         assert "skin.bald/shortcuts/skinvariables-generator.json" in names
-        assert "skin.bald/shortcuts/generator/home-widgets.xml" in names
+        assert "skin.bald/shortcuts/generator/screen.xml" in names
         assert "skin.bald/shortcuts/skinvariables-shortcut-homewidgets.json" in names
+        assert "skin.bald/shortcuts/generator/screens.xml" in names
+        assert "skin.bald/1080i/Includes_Bald_HomeDefaults.xml" in names
+        assert not any("script-skinvariables-generator-includes" in name for name in names)
         assert "skin.bald/playlists/inprogress_movies.xsp" in names
         assert "skin.bald/playlists/inprogress_episodes.xsp" in names
 

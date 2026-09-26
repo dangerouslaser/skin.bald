@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Values of Bald_Fanart for each configured row, while it is the current row (Bald.Row). -->
+<contents>
+    <items>
+        <item>
+            <items menu="{menu}" mode="submenu">
+                <item>
+                    <template>generator/fanart.xmltemplate</template>
+                    <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    <value name="prefix">String.IsEqual(Window(home).Property(Bald.Row),$MATH[{base} + 1 + {item_x}])</value>
+                </item>
+            </items>
+        </item>
+    </items>
+</contents>

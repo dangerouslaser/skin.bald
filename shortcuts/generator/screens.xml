@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The three Home screens with rows. Every datafile in skinvariables-generator.json loads this first, so each
+     one loops over the screens in this order and then over that screen's rows ({menu} node).
+       screen  Bald.Screen / Bald.MenuPreview value and the Bald.Row.<screen> property suffix
+       title   include and expression name part (Bald_Generated_<title>Widgets, Bald_Preview<title>)
+       base    row ids are base + 1 onward (9101, 9201, 9301) -->
+<contents>
+    <lists>
+        <list name="home">
+            <value name="screen">home</value>
+            <value name="menu">homewidgets</value>
+            <value name="title">Home</value>
+            <value name="base">9100</value>
+        </list>
+        <list name="movies">
+            <value name="screen">movies</value>
+            <value name="menu">movieswidgets</value>
+            <value name="title">Movies</value>
+            <value name="base">9200</value>
+        </list>
+        <list name="tvshows">
+            <value name="screen">tvshows</value>
+            <value name="menu">tvshowswidgets</value>
+            <value name="title">TVShows</value>
+            <value name="base">9300</value>
+        </list>
+    </lists>
+</contents>

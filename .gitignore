@@ -1,2 +1,4 @@
 .DS_Store
 *.pyc
+# Built per install by Skin Variables (the skin folder is symlinked into Kodi, so it lands here).
+1080i/script-skinvariables-generator-includes*.xml

@@ -3,10 +3,11 @@
 	<include file="Defaults.xml" />
 	<include file="Includes_Home.xml" />
 	<include file="Includes_Bald_Home.xml" />
-	<!-- Shipped baseline is regenerated from Skin Variables widget configuration. -->
+	<!-- Home rows and their bindings, built per install by Skin Variables from the widget editor's row lists
+	     (shortcuts/skinvariables-generator.json). Not shipped or tracked; Includes_Bald_HomeDefaults.xml below
+	     stands in until the first build. -->
 	<include file="script-skinvariables-generator-includes.xml" />
 	<include file="Includes_Bald_Configure.xml" />
-	<include file="Includes_Bald_HomeRows.xml" />
 	<include file="Includes_Bald_Info.xml" />
 	<include file="Includes_Bald_InfoPages.xml" />
 	<include file="Includes_Bald_InfoTV.xml" />
@@ -44,6 +45,10 @@
 	<include file="Variables.xml" />
 	<include condition="Integer.IsLessOrEqual(System.ScreenHeight,720)" file="Constants_720.xml" />
 	<include condition="Integer.IsGreater(System.ScreenHeight,720)" file="Constants_1080.xml" />
+	<!-- Load last. Kodi keeps the first definition of an include, variable or expression name
+	     (CGUIIncludes uses try_emplace), so these shipped defaults only apply where the generated file above
+	     is missing. Rebuild with tools/build_home_defaults.py. -->
+	<include file="Includes_Bald_HomeDefaults.xml" />
 	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)</expression>
 	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131)</expression>
 	<expression name="videoasset_true">Container.Content(videoassets) | Container.Content(videoversions) | Container.Content(videoextras)</expression>

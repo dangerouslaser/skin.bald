@@ -3,17 +3,20 @@
     "output": "script-skinvariables-generator-includes{skinuser}.xml",
     "header": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<includes>",
     "footer": "</includes>",
+    "buildv": "6163863fc134",
     "skinid": "skin.bald",
     "getnfo": {},
     "genxml": [
-        {"template": "<include name=\"Bald_Generated_HomeWidgets\"><definition>"},
-        {"datafile": "generator/home-widgets.xml"},
-        {"template": "</definition></include>"},
-        {"template": "<include name=\"Bald_Generated_MoviesWidgets\"><definition>"},
-        {"datafile": "generator/movies-widgets.xml"},
-        {"template": "</definition></include>"},
-        {"template": "<include name=\"Bald_Generated_TVShowsWidgets\"><definition>"},
-        {"datafile": "generator/tvshows-widgets.xml"},
-        {"template": "</definition></include>"}
+        {"datafile": ["generator/screens.xml", "generator/screen.xml"]},
+        {"template": "<variable name=\"Bald_Fanart\">"},
+        {"datafile": ["generator/screens.xml", "generator/fanart-preview.xml"]},
+        {"template": "<value condition=\"$EXP[Bald_WidgetPreview]\"></value>"},
+        {"datafile": ["generator/screens.xml", "generator/fanart-row.xml"]},
+        {"template": "<value></value>\n</variable>"},
+        {"template": "<variable name=\"Bald_Logo\">"},
+        {"datafile": ["generator/screens.xml", "generator/logo-preview.xml"]},
+        {"template": "<value condition=\"$EXP[Bald_WidgetPreview]\"></value>"},
+        {"datafile": ["generator/screens.xml", "generator/logo-row.xml"]},
+        {"template": "<value></value>\n</variable>"}
     ]
 }
