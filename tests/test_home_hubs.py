@@ -450,3 +450,21 @@ class ReturnDefaultFocusTests(unittest.TestCase):
                        "SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)", "SetProperty(Bald.RowStyle,$PARAM[style],home)"):
             with self.subTest(action=action):
                 self.assertEqual(guarded[action], "!$EXP[Bald_ReturningToMenu]")
+
+
+class HeldArtTests(unittest.TestCase):
+    """Kodi refetches Home's rows when Home opens again, so the art frame holds the fanart it was left with until the
+    art layers have their images again."""
+
+    def test_home_holds_its_last_art_over_the_refetch(self):
+        home = ET.parse(XML / "Home.xml").getroot()
+        self.assertIn("SetProperty(Bald.HoldArt,$ESCVAR[Bald_Fanart],home)", [n.text for n in home.findall("onunload")])
+        loads = [(n.get("condition"), n.text) for n in home.findall("onload")]
+        self.assertIn(("!String.IsEmpty(Window(home).Property(Bald.HoldArt))",
+                       "AlarmClock(bald_holdart,ClearProperty(Bald.HoldArt,home),00:03,silent)"), loads)
+        held = next(c for c in home.iter("control") if c.findtext("texture") == "$INFO[Window(home).Property(Bald.HoldArt)]")
+        self.assertIsNone(held.find("texture").get("background"))
+        frame = next(g for g in home.iter("control") if held in list(g))
+        images = [c for c in frame if c.get("type") == "image"]
+        # Above the placeholder, below the art layers.
+        self.assertEqual(images.index(held), 1)
