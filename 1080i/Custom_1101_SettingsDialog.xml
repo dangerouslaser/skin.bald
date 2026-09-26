@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bald OSD settings drawer (docs/SPEC.md 5, "Playback (proposed)"): the OSD's Settings, Streams and 3D buttons, the
+<!-- Bald OSD settings drawer (docs/SPEC.md 5.16, "Other playback windows"): the OSD's Settings, Streams and 3D buttons, the
      music OSD's Settings and the game OSD's menu open this window with its content in the Home window properties
      settingsdialog_content and settingsdialog_header. It is a right-hand drawer over the dimmed player, rows in the
      settings scaffold's language (Includes_SettingsDialog.xml). Started from Kodi 22 Estuary's

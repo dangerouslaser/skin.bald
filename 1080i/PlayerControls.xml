@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald player controls popup (docs/SPEC.md 5, "Playback (proposed)"), shown outside full screen: the Bald popup
+<!-- Bald player controls popup (docs/SPEC.md 5.16, "Other playback windows"), shown outside full screen: the Bald popup
      surface with the now-playing art, title and meta, the seek track and the OSD's icon buttons. Started from Kodi 22
      Estuary's PlayerControls.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogPlayerControls binds no
      control ids; the buttons keep Estuary's ids and actions (201 row, 600-607, 704 repeat, 23 progress and

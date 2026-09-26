@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bald full-screen video window (docs/SPEC.md 5, "Playback (proposed)"). Started from Kodi 22 Estuary's
+<!-- Bald full-screen video window (docs/SPEC.md 5.16, "Other playback windows"). Started from Kodi 22 Estuary's
      VideoFullScreen.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt).
      Kodi (CGUIWindowFullScreen) shows or hides group 0 and writes the three view-mode lines 10, 11 and 12 (zoom,
      pixel ratio and so on after a view-mode change): they sit top left over the top scrim. Group 1 is the

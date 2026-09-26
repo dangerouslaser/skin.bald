@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Subtitle search, Bald (docs/SPEC.md 5, "Playback (proposed)"). The Bald popup surface (DialogBackgroundCommons)
+<!-- Subtitle search, Bald (docs/SPEC.md 5.16, "Other playback windows"). The Bald popup surface (DialogBackgroundCommons)
      with three columns: the services (a standard popup list), the results (language chip, release name, rating,
      hearing-impaired and sync marks; 10% ink focus row) and the manual search action with the status. Started from
      Kodi 22 Estuary's DialogSubtitles.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt).

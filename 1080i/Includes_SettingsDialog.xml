@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- The OSD settings drawer (Custom_1101_SettingsDialog.xml), Bald (docs/SPEC.md 5, "Playback (proposed)"). Started
+<!-- The OSD settings drawer (Custom_1101_SettingsDialog.xml), Bald (docs/SPEC.md 5.16, "Other playback windows"). Started
      from Kodi 22 Estuary's Includes_SettingsDialog.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). The row contents,
      ids and actions are Estuary's; the rows are the settings scaffold's (Bald_PlaybackSettingRow). Estuary's Home
      widget toggles (moviewidgets, tvshowwidgets, musicwidgets, musicvideowidgets, tvwidgets, radiowidgets) were

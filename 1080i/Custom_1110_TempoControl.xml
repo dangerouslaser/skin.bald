@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bald play speed control (docs/SPEC.md 5, "Playback (proposed)"): an opaque field panel at the top centre with
+<!-- Bald play speed control (docs/SPEC.md 5.16, "Other playback windows"): an opaque field panel at the top centre with
      the name and speed and a pair of chevrons, dim until focused. Started from Kodi 22 Estuary's
      Custom_1110_TempoControl.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Buttons 11 (slower) and 12 (faster)
      keep Estuary's actions and navigation. -->
