@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Up next for service.upnext (im85288/service.upnext; the add-on loads this file from the skin when the skin has
+     it). Bald's bottom panel under the seek layer's lifted bar (docs/SPEC.md 5.16, "Video OSD";
+     Bald_OSDUpNext in Includes_Bald_OSD.xml). The add-on binds 3012, 3013 and 3014 by number and fills the window
+     properties. -->
+<window>
+	<defaultcontrol always="true">3012</defaultcontrol>
+	<zorder>1</zorder>
+	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<onload>Dialog.Close(fullscreeninfo,true)</onload>
+	<onload>Dialog.Close(videoosd,true)</onload>
+	<include>Bald_OSDAnimPanel</include>
+	<controls>
+		<include content="Bald_OSDUpNext">
+			<param name="heading">$LOCALIZE[31622]$INFO[Window.Property(remaining), · , $LOCALIZE[31637]]</param>
+			<param name="play">$LOCALIZE[31635]</param>
+		</include>
+	</controls>
+</window>
