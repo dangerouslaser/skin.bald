@@ -50,7 +50,9 @@
 					<!-- A direct child of the row that hides itself: a control hidden only through a parent group can still
 					     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
 					<control type="radiobutton" id="602">
-						<include content="Bald_PlaybackButton"><param name="icon">$VAR[PlayerControlsPlayImageVar]</param></include>
+						<!-- Radio textures are static in Kodi: off shows play, on (playing) shows pause. -->
+						<include content="Bald_PlaybackToggle"><param name="icon">osd/fullscreen/buttons/play.png</param><param name="on">osd/fullscreen/buttons/pause.png</param></include>
+						<selected>Player.Playing</selected>
 						<onleft>601</onleft>
 						<onright>603</onright>
 						<onup>87</onup>

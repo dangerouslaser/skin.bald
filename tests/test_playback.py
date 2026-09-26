@@ -128,12 +128,17 @@ class PlaybackContractTests(unittest.TestCase):
                 with self.subTest(window=name, id=control_id):
                     self.assertIn(control_id, bald)
                     new = bald[control_id]
+                    parent = parents.get(old)
+                    hoisted = parent is not None and parent.get("id") in HOISTED_GROUPS
                     for tag in ACTION_TAGS:
+                        if hoisted and tag == "selected":
+                            # Estuary's wrapper showed state through a variable image; Bald's toggle shows it with
+                            # static radio textures chosen by <selected>.
+                            continue
                         self.assertTrue(same_actions(_actions(new, tag), _actions(old, tag), bodies),
                                         f"{tag}: {_actions(new, tag)} != {_actions(old, tag)}")
                     old_visible = [v.text for v in old.findall("visible")]
-                    parent = parents.get(old)
-                    if parent is not None and parent.get("id") in HOISTED_GROUPS:
+                    if hoisted:
                         old_visible += [v.text for v in parent.findall("visible")]
                     self.assertTrue(equivalent(all_of([v.text for v in new.findall("visible")]),
                                                all_of(old_visible), bodies))

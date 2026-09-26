@@ -555,15 +555,23 @@
 	<!-- Body of an OSD toggle (radiobutton): 64 x 84 with the 56 px icon at the top, 60% ink, full ink on focus with
 	     the accent dot under it (bald/osd_focus.png) and the tile pop (1.05, 280 POP). <icon> is the off state, <on>
 	     the selected state (play and pause, record, random); <on_color> and <off_color> tint them while unfocused. -->
+	<variable name="Bald_PlaybackRepeatBadge">
+		<value condition="Playlist.IsRepeatOne">1</value>
+	</variable>
 	<include name="Bald_PlaybackToggle">
 		<param name="icon" />
 		<param name="on" />
 		<param name="on_color">bald_ink60</param>
 		<param name="off_color">bald_ink60</param>
+		<!-- A small badge over the icon's lower right (e.g. "1" for repeat one). Radio textures cannot take
+		     $VAR/$INFO in Kodi, so state that needs more than on/off is carried by this label. -->
+		<param name="badge" />
 		<definition>
 			<width>64</width>
 			<height>84</height>
-			<label />
+			<label>$PARAM[badge]</label>
+			<textoffsetx>44</textoffsetx>
+			<textoffsety>34</textoffsety>
 			<font>Bald_Hint</font>
 			<textcolor>bald_ink</textcolor>
 			<texturefocus colordiffuse="bald_accent">bald/osd_focus.png</texturefocus>
