@@ -363,3 +363,28 @@ class WidgetEditorUrlTests(unittest.TestCase):
         self.assertIn("&node=$INFO[Window(home).Property(Bald.ConfigureItem)]", values[0].text)
         self.assertIn("&item=$INFO[Container(9100).ListItem.Property(item)]", values[0].text)
         self.assertEqual(values[-1].text, "$INFO[Container(9100).ListItem.Property(url)]")
+
+
+class RowSortTests(unittest.TestCase):
+    """The widget editor's Sort by and Order rows write the row's sortby / sortorder fields, and the generator puts them
+    on the row's <content> only when set (no sortby keeps the path's own order)."""
+
+    METHODS = {"title", "year", "rating", "dateadded", "lastplayed", "playcount", "time", "random"}
+
+    def test_editor_offers_kodi_sort_methods_and_orders(self):
+        window = ET.parse(XML / "Custom_1116_BaldHomeWidgets.xml").getroot()
+        sort = window.find(".//control[@id='9210']").findtext("onclick")
+        pairs = dict(p.split("=") for p in re.search(r"&&sortby&&(.*?)&&", sort).group(1).split("&"))
+        self.assertEqual(pairs.pop("$LOCALIZE[571]"), "null")
+        self.assertEqual(set(pairs.values()), self.METHODS)
+        order = window.find(".//control[@id='9211']").findtext("onclick")
+        self.assertIn("&&sortorder&&$LOCALIZE[584]=ascending&$LOCALIZE[585]=descending&&", order)
+        self.assertIn("!String.IsEqual(Container(9100).ListItem.Property(sortby),random)", window.find(".//control[@id='9211']").findtext("visible"))
+
+    def test_generator_writes_sort_attributes_only_when_set(self):
+        rules = ET.parse(Path(__file__).resolve().parents[1] / "shortcuts" / "generator" / "screen.xml").getroot()
+        content_sort = next(r for r in rules.iter("rules") if r.get("name") == "content_sort").findall("rule")
+        self.assertEqual([c.text for c in content_sort[0].findall("condition")], ["{item_sortby}!=", "{item_sortorder}!="])
+        self.assertEqual([c.text for c in content_sort[1].findall("condition")], ["{item_sortby}!="])
+        self.assertEqual(content_sort[1].findtext("value"), ' sortby="{item_sortby}"')
+        self.assertEqual(content_sort[-1].findall("condition"), [])

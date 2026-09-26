@@ -118,11 +118,19 @@
                                 <value>$MATH[{base} + 2 + {item_x}]</value>
                             </rule>
                         </rules>
-                        <!-- Optional row fields sortby / sortorder (the Live TV defaults use them, as Estuary's PVR widgets do). -->
+                        <!-- Optional row fields sortby / sortorder: set in the widget editor's Sort by and Order (Kodi sort
+                             method names: title, year, rating, dateadded, lastplayed, playcount, time, random), and by the
+                             Live TV defaults as Estuary's PVR widgets do. No sortby keeps the path's own order; no
+                             sortorder is Kodi's default, ascending. -->
                         <rules name="content_sort">
                             <rule>
                                 <condition>{item_sortby}!=</condition>
+                                <condition>{item_sortorder}!=</condition>
                                 <value> sortby="{item_sortby}" sortorder="{item_sortorder}"</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_sortby}!=</condition>
+                                <value> sortby="{item_sortby}"</value>
                             </rule>
                             <rule>
                                 <value></value>
