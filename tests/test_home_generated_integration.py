@@ -3,6 +3,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from kodi_includes import EXP, NATIVE
+
 
 XML = Path(__file__).resolve().parents[1] / "1080i"
 GENERATED = "script-skinvariables-generator-includes.xml"
@@ -38,14 +40,19 @@ class HomeGeneratedIntegrationTests(unittest.TestCase):
 
     def test_names_the_skin_expects_from_the_generator_exist_in_the_fallback(self):
         fallback = defined_names(ET.parse(XML / FALLBACK).getroot())
-        home = (XML / "Includes_Bald_Home.xml").read_text() + (XML / "Home.xml").read_text()
+        # What the skin's own files reference, wherever the reference lives.
+        expressions, includes = set(), set()
+        for path in NATIVE:
+            expressions |= set(EXP.findall(path.read_text()))
+            includes |= {node.get("content") or (node.text or "").strip()
+                         for node in ET.parse(path).getroot().iter("include") if not node.get("name")}
         wanted = set()
         for screen in ("home", "movies", "tvshows"):
             for name in ("ItemOdd", "HasLogo", "PreviewItemOdd", "PreviewHasLogo"):
-                self.assertIn(f"$EXP[Bald_{name}_{screen}]", home)
+                self.assertIn(f"Bald_{name}_{screen}", expressions)
                 wanted.add(("expression", f"Bald_{name}_{screen}"))
             for name in ("ConfiguredArtLogos", "ConfiguredCaptions"):
-                self.assertIn(f"Bald_{name}_{screen}", home)
+                self.assertIn(f"Bald_{name}_{screen}", includes)
                 wanted.add(("include", f"Bald_{name}_{screen}"))
         wanted |= {("variable", "Bald_Fanart"), ("variable", "Bald_Logo")}
         self.assertLessEqual(wanted, fallback)

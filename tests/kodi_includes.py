@@ -8,6 +8,9 @@ Two entry points:
 - ``Skin`` loads Includes.xml and the files it names in order, keeping the first definition of each include, variable
   and expression name as CGUIIncludes does. The per-install Skin Variables output is skipped unless given, as on a
   fresh install. Used by the Home tests.
+
+``expand_call(name, params)`` expands one include call, for checking what an include produces rather than its
+$PARAM plumbing. Conditions are compared by meaning with tests/conditions.py.
 """
 
 import copy
@@ -95,7 +98,6 @@ def parse(path):
 
 
 EXP = re.compile(r"\$EXP\[([^\]]+)\]")
-_ATOM = re.compile(r"(?<![A-Z])\[([^\[\]|+]*)\]")
 
 
 def expressions(folder=SKIN):
@@ -120,34 +122,6 @@ def expand(text, bodies=None):
         if expanded == text:
             return text
         text = expanded
-
-
-def condition(text, bodies=None):
-    """A condition in plain form for comparisons: expressions expanded, then the brackets around a single term or the
-    whole condition dropped (the [...] each expression body is wrapped in) and double negation removed, so
-    "!$EXP[Bald_HasRow]" reads "String.IsEmpty(Window(home).Property(Bald.Row))"."""
-    text = expand(text or "", bodies)
-    kept = []
-
-    def keep(match):
-        kept.append(match.group(0))
-        return f"\0{len(kept) - 1}\0"
-
-    text = re.sub(r"\$[A-Z]+\[[^\[\]]*\]", keep, text)
-    while True:
-        plain = _ATOM.sub(r"\1", text).replace("!!", "")
-        if plain.startswith("[") and plain.endswith("]"):
-            depth = 0
-            for index, char in enumerate(plain):
-                depth += (char == "[") - (char == "]")
-                if depth == 0:
-                    break
-            if index == len(plain) - 1:
-                plain = plain[1:-1]
-        if plain == text:
-            break
-        text = plain
-    return re.sub(r"\0(\d+)\0", lambda match: kept[int(match.group(1))], text)
 
 
 class UnresolvedInclude(KeyError):

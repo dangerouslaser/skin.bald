@@ -144,7 +144,6 @@ class LibraryViewTests(unittest.TestCase):
         library = self.view.find(".//control[@id='9150']")
         self.assertEqual(library.find('focusedlayout/include').get('content'), 'Bald_MenuRowFocused')
         includes = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot()
-        shared = includes.find("include[@name='Bald_MenuRowFocused']")
         for always in ("true", "false"):
             dot = next(n for e in expand_call("Bald_MenuRowFocused", {"always_dot": always}) for n in e.iter("control")
                        if n.get("type") == "image")
