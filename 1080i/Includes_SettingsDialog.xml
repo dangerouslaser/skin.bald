@@ -1,123 +1,160 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- The OSD settings drawer (Custom_1101_SettingsDialog.xml), Bald (docs/SPEC.md 5, "Playback (proposed)"). Started
+     from Kodi 22 Estuary's Includes_SettingsDialog.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). The row contents,
+     ids and actions are Estuary's; the rows are the settings scaffold's (Bald_PlaybackSettingRow). Estuary's Home
+     widget toggles (moviewidgets, tvshowwidgets, musicwidgets, musicvideowidgets, tvwidgets, radiowidgets) were
+     removed: nothing opens them since Bald replaced Estuary's Home. -->
 <includes>
 	<include name="SettingsDialogOSDVisible">
 		<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
 	</include>
+	<!-- A right-hand drawer over the dimmed player: the settings scaffold's rows (56 px, 6 px gap) in a 672 px column
+	     ending on the right safe edge, under the heading at y 292 (the library options menu's heading line). -->
 	<include name="SettingsDialogLayout">
-		<param name="height">700</param>
-		<param name="width">700</param>
-		<definition>
+		<control type="group">
+			<include condition="String.IsEqual(window(home).Property(settingsdialog_content),osd) | String.IsEqual(window(home).Property(settingsdialog_content),3d) | String.IsEqual(window(home).Property(settingsdialog_content),games) | String.IsEqual(window(home).Property(settingsdialog_content),videosettings)">SettingsDialogOSDVisible</include>
+			<include>Bald_PlaybackAnimFade</include>
 			<control type="group">
-				<centerleft>50%</centerleft>
-				<height>$PARAM[height]</height>
-				<centertop>50%</centertop>
-				<width>$PARAM[width]</width>
-				<include condition="String.IsEqual(window(home).Property(settingsdialog_content),osd) | String.IsEqual(window(home).Property(settingsdialog_content),3d) | String.IsEqual(window(home).Property(settingsdialog_content),games) | String.IsEqual(window(home).Property(settingsdialog_content),videosettings)">SettingsDialogOSDVisible</include>
-				<animation effect="fade" time="200">VisibleChange</animation>
-				<include content="DialogBackgroundCommons">
-					<param name="width" value="$PARAM[width]" />
-					<param name="height" value="80" />
-					<param name="header_label" value="$INFO[Window(home).Property(settingsdialog_header)]" />
-					<param name="header_id" value="1" />
-				</include>
-				<control type="group" id="11000">
+				<animation type="WindowOpen" reversible="false">
+					<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+				</animation>
+				<animation type="WindowClose" reversible="false">
+					<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+				</animation>
+				<control type="image">
 					<left>0</left>
-					<top>80</top>
+					<top>0</top>
+					<width>1920</width>
+					<height>1080</height>
+					<texture colordiffuse="bald_field60">bald/white.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>1920</width>
+					<height>1080</height>
+					<texture flipx="true" colordiffuse="bald_field">bald/scrim_info_h.png</texture>
+				</control>
+			</control>
+			<control type="button">
+				<description>background close area</description>
+				<left>0</left>
+				<top>0</top>
+				<width>1056</width>
+				<height>1080</height>
+				<texturefocus />
+				<texturenofocus />
+				<onclick>Action(close)</onclick>
+			</control>
+			<control type="button" id="22002">
+				<description>drawer area: clicks here do not close it (Estuary's id)</description>
+				<left>1056</left>
+				<top>0</top>
+				<width>864</width>
+				<height>1080</height>
+				<texturefocus />
+				<texturenofocus />
+				<onclick>noop</onclick>
+			</control>
+			<control type="group">
+				<include>Bald_PlaybackAnimDrawer</include>
+				<control type="label" id="1">
+					<left>1178</left>
+					<top>292</top>
+					<width>646</width>
+					<height>30</height>
+					<aligny>center</aligny>
+					<font>Bald_CaptionMeta</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[Window(home).Property(settingsdialog_header)]</label>
+				</control>
+				<control type="group" id="11000">
+					<left>1152</left>
+					<top>344</top>
 					<control type="grouplist" id="11100">
-						<width>$PARAM[width]</width>
-						<height>$PARAM[height]</height>
-						<itemgap>0</itemgap>
+						<width>678</width>
+						<height>552</height>
+						<itemgap>6</itemgap>
 						<onup>11100</onup>
 						<ondown>11100</ondown>
 						<orientation>vertical</orientation>
+						<scrolltime tween="cubic" easing="out">320</scrolltime>
 						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),streamselection)">SettingsDialogStreamSelectionContent</include>
 						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),videosettings)">SettingsDialogVideoSettingsContent</include>
 						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),3d)">SettingsDialog3DContent</include>
 						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),games)">SettingsDialogGameContent</include>
 						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicsettings)">SettingsDialogMusicSettingsContent</include>
-						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),moviewidgets)">SettingsDialogMovieWidgetsContent</include>
-						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),tvshowwidgets)">SettingsDialogTVShowWidgetsContent</include>
-						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicwidgets)">SettingsDialogMusicWidgetsContent</include>
-						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicvideowidgets)">SettingsDialogMusicVideoWidgetsContent</include>
-						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),tvwidgets)">SettingsDialogTVWidgetsContent</include>
-						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),radiowidgets)">SettingsDialogRadioWidgetsContent</include>
 					</control>
 				</control>
 			</control>
-		</definition>
+		</control>
 	</include>
 	<include name="SettingsDialogStreamSelectionContent">
 		<control type="button" id="22106">
-			<include content="DialogSettingButton">
-				<param name="width" value="1000" />
-			</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31115]</label>
-			<label2>[B]$VAR[ActiveVideoPlayerSubtitleLanguage][/B]</label2>
+			<label2>$VAR[ActiveVideoPlayerSubtitleLanguage]</label2>
 			<onclick>DialogSelectSubtitle</onclick>
 			<enable>VideoPlayer.HasSubtitles</enable>
 		</control>
 		<control type="button" id="22105">
-			<include content="DialogSettingButton">
-				<param name="width" value="1000" />
-			</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31112]</label>
-			<label2>[B]$VAR[ActiveVideoPlayerAudioLanguage]$VAR[AudioCodecVar, | ]$VAR[AudioChannelsVar, ][/B]</label2>
+			<label2>$VAR[ActiveVideoPlayerAudioLanguage]$VAR[AudioCodecVar, | ]$VAR[AudioChannelsVar, ]</label2>
 			<onclick>DialogSelectAudio</onclick>
 			<enable>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</enable>
 		</control>
 		<control type="button" id="22110">
-			<include content="DialogSettingButton">
-				<param name="width" value="1000" />
-			</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31109]</label>
-			<label2>[B]$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[VideoPlayer.HdrDetail, P]$INFO[VideoPlayer.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ][/B]</label2>
+			<label2>$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[VideoPlayer.HdrDetail, P]$INFO[VideoPlayer.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ]</label2>
 			<onclick>DialogSelectVideo</onclick>
 			<enable>Integer.IsGreater(VideoPlayer.VideoStreamCount,1)</enable>
 		</control>
 	</include>
 	<include name="SettingsDialogVideoSettingsContent">
 		<control type="button" id="22101">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[13396]</label>
 			<onclick>ActivateWindow(osdaudiosettings)</onclick>
 		</control>
 		<control type="button" id="22102">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[24133]</label>
 			<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
 		</control>
 		<control type="button" id="22103">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[13395]</label>
 			<onclick>ActivateWindow(osdvideosettings)</onclick>
 		</control>
 		<control type="button" id="22104">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[36560]</label>
 			<onclick>ActivateWindow(osdcmssettings)</onclick>
 			<visible>System.HasCMS</visible>
 		</control>
 		<control type="button" id="22107">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31132]</label>
 			<onclick>PlayerProgramSelect</onclick>
 			<visible>Player.HasPrograms</visible>
 		</control>
 		<control type="button" id="22108">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31133]</label>
 			<onclick>PlayerResolutionSelect</onclick>
 			<visible>Player.HasResolutions</visible>
 		</control>
 		<control type="button" id="22109">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31142]</label>
 			<onclick>Dialog.Close(1101)</onclick>
 			<onclick>ActivateWindow(1110)</onclick>
 			<visible>Player.TempoEnabled</visible>
 		</control>
 		<control type="button" id="22110">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31597]</label>
 			<onclick>Dialog.Close(1101)</onclick>
 			<onclick>ActivateWindow(playerprocessinfo)</onclick>
@@ -125,21 +162,19 @@
 	</include>
 	<include name="SettingsDialog3DContent">
 		<control type="radiobutton" id="22101">
-			<include>DialogSettingButton</include>
-			<radioposx>590</radioposx>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[24022]</label>
 			<onclick>ToggleStereoMode</onclick>
 			<selected>Integer.IsGreater(System.StereoscopicMode,0)</selected>
 		</control>
 		<control type="button" id="22102">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31004]</label>
-			<label2>[B]$INFO[VideoPlayer.StereoscopicMode][/B]</label2>
+			<label2>$INFO[VideoPlayer.StereoscopicMode]</label2>
 			<onclick>StereoMode</onclick>
 		</control>
 		<control type="radiobutton" id="22103">
-			<include>DialogSettingButton</include>
-			<radioposx>590</radioposx>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31005]</label>
 			<onclick>StereoModeToMono</onclick>
 			<selected>Integer.IsEqual(System.StereoscopicMode,9)</selected>
@@ -148,369 +183,90 @@
 	<include name="SettingsDialogGameContent">
 		<control type="button" id="22101">
 			<description>Video filter button</description>
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[35225]</label>
 			<onclick>ActivateWindow(GameVideoFilter)</onclick>
 		</control>
 		<control type="button" id="22102">
 			<description>Stretch mode button</description>
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[35233]</label>
 			<onclick>ActivateWindow(GameStretchMode)</onclick>
 		</control>
 		<control type="button" id="22103">
 			<description>Video rotation button</description>
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[35227]</label>
 			<onclick>ActivateWindow(GameVideoRotation)</onclick>
 		</control>
 		<control type="button" id="22104">
 			<description>Volume button</description>
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[13376]</label>
-			<label2>[COLOR grey]$FEATURE[select,game.controller.snes] + $FEATURE[rightstick,game.controller.default][/COLOR]</label2>
+			<label2>$FEATURE[select,game.controller.snes] + $FEATURE[rightstick,game.controller.default]</label2>
 			<onclick>ActivateWindow(GameVolume)</onclick>
 		</control>
 		<control type="button" id="22105">
 			<description>Controller settings button</description>
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[35234]</label>
 			<onclick>ActivateWindow(GameControllers)</onclick>
 		</control>
 		<control type="button" id="22106">
 			<description>Controller port configuration</description>
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[35110]</label>
 			<onclick>ActivateWindow(GamePorts)</onclick>
 		</control>
 		<control type="button" id="22107">
 			<description>Advanced settings</description>
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[35226]</label>
 			<onclick>ActivateWindow(GameAdvancedSettings)</onclick>
 		</control>
 	</include>
 	<include name="SettingsDialogMusicSettingsContent">
 		<control type="radiobutton" id="22101">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31163]</label>
 			<onclick>Skin.ToggleSetting(hide_background_fanart)</onclick>
 			<selected>!Skin.HasSetting(hide_background_fanart)</selected>
 		</control>
 		<control type="radiobutton" id="22102">
 			<label>$LOCALIZE[31167]</label>
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<onclick>Skin.ToggleSetting(animate_background_fanart)</onclick>
 			<selected>Skin.HasSetting(animate_background_fanart)</selected>
 		</control>
 		<control type="button" id="22103">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[250]</label>
-			<label2>[B]$INFO[Visualisation.Name][/B]</label2>
+			<label2>$INFO[Visualisation.Name]</label2>
 			<onclick>Dialog.Close(all)</onclick>
 			<onclick>SendClick(500)</onclick>
 		</control>
 		<control type="button" id="22104">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31084]</label>
 			<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
 		</control>
 		<control type="button" id="22105">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31068]</label>
 			<onclick>ActivateWindow(visualisationpresetlist)</onclick>
 			<visible>Visualisation.HasPresets</visible>
 		</control>
 		<control type="button" id="22106">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31082]</label>
-			<label2>[B]$INFO[Skin.String(LyricScript_Path)][/B]</label2>
+			<label2>$INFO[Skin.String(LyricScript_Path)]</label2>
 			<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
 		</control>
 		<control type="button" id="22107">
-			<include>DialogSettingButton</include>
+			<include>Bald_PlaybackSettingRow</include>
 			<label>$LOCALIZE[31083]</label>
 			<onclick>Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])</onclick>
 			<visible>!String.IsEmpty(Skin.String(LyricScript_Path))</visible>
-		</control>
-	</include>
-	<include name="SettingsDialogMovieWidgetsContent">
-		<control type="radiobutton" id="22101">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31148]</label>
-			<onclick>Skin.ToggleSetting(home_no_movies_categories_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_movies_categories_widget)</selected>
-		</control>
-		<control type="button" id="22108">
-			<label>- $LOCALIZE[31157]</label>
-			<include>DialogSettingButton</include>
-			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">Dialog.Close(1101)</onclick>
-			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
-			<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-			<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
-			<enable>!Skin.HasSetting(home_no_movies_categories_widget)</enable>
-		</control>
-		<control type="radiobutton" id="22102">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31010]</label>
-			<onclick>Skin.ToggleSetting(home_no_movies_inprogress_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_movies_inprogress_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22103">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[20386]</label>
-			<onclick>Skin.ToggleSetting(home_no_movies_recentlyadded_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_movies_recentlyadded_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22104">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31007]</label>
-			<onclick>Skin.ToggleSetting(home_no_movies_unwatched_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_movies_unwatched_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22105">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31006]</label>
-			<onclick>Skin.ToggleSetting(home_no_movies_random_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_movies_random_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22106">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[135]</label>
-			<onclick>Skin.ToggleSetting(home_no_movies_genres_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_movies_genres_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22107">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31075]</label>
-			<onclick>Skin.ToggleSetting(home_no_movies_sets_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_movies_sets_widget)</selected>
-		</control>
-	</include>
-	<include name="SettingsDialogTVShowWidgetsContent">
-		<control type="radiobutton" id="22101">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31148]</label>
-			<onclick>Skin.ToggleSetting(home_no_tvshows_categories_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tvshows_categories_widget)</selected>
-		</control>
-		<control type="button" id="22108">
-			<label>- $LOCALIZE[31157]</label>
-			<include>DialogSettingButton</include>
-			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">Dialog.Close(1101)</onclick>
-			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
-			<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-			<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
-			<enable>!Skin.HasSetting(home_no_tvshows_categories_widget)</enable>
-		</control>
-		<control type="radiobutton" id="22102">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[626]</label>
-			<onclick>Skin.ToggleSetting(home_no_tvshows_inprogress_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tvshows_inprogress_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22103">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[20387]</label>
-			<onclick>Skin.ToggleSetting(home_no_tvshows_recentlyaddedepisodes_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tvshows_recentlyaddedepisodes_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22104">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31122]</label>
-			<onclick>Skin.ToggleSetting(home_no_tvshows_unwatched_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tvshows_unwatched_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22105">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[135]</label>
-			<onclick>Skin.ToggleSetting(home_no_tvshows_genres_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tvshows_genres_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22106">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[20388]</label>
-			<onclick>Skin.ToggleSetting(home_no_tvshows_studios_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tvshows_studios_widget)</selected>
-		</control>
-	</include>
-	<include name="SettingsDialogMusicWidgetsContent">
-		<control type="radiobutton" id="22101">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31148]</label>
-			<onclick>Skin.ToggleSetting(home_no_music_categories_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_music_categories_widget)</selected>
-		</control>
-		<control type="button" id="22108">
-			<label>- $LOCALIZE[31157]</label>
-			<include>DialogSettingButton</include>
-			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">Dialog.Close(1101)</onclick>
-			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
-			<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-			<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
-			<enable>!Skin.HasSetting(home_no_music_categories_widget)</enable>
-		</control>
-		<control type="radiobutton" id="22102">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[517]</label>
-			<onclick>Skin.ToggleSetting(home_no_music_recentlyplayedalbums_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_music_recentlyplayedalbums_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22103">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[359]</label>
-			<onclick>Skin.ToggleSetting(home_no_music_recentalbums_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_music_recentalbums_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22104">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31012]</label>
-			<onclick>Skin.ToggleSetting(home_no_music_randomalbums_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_music_randomalbums_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22105">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31013]</label>
-			<onclick>Skin.ToggleSetting(home_no_music_randomartists_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_music_randomartists_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22106">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31014]</label>
-			<onclick>Skin.ToggleSetting(home_no_music_unplayedalbums_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_music_unplayedalbums_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22107">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31011]</label>
-			<onclick>Skin.ToggleSetting(home_no_music_mostplayedalbums_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_music_mostplayedalbums_widget)</selected>
-		</control>
-	</include>
-	<include name="SettingsDialogMusicVideoWidgetsContent">
-		<control type="radiobutton" id="22101">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31148]</label>
-			<onclick>Skin.ToggleSetting(home_no_musicvideos_categories_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_musicvideos_categories_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22102">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[20390]</label>
-			<onclick>Skin.ToggleSetting(home_no_musicvideos_recentlyadded_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_musicvideos_recentlyadded_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22103">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31151]</label>
-			<onclick>Skin.ToggleSetting(home_no_musicvideos_unwatched_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_musicvideos_unwatched_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22104">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31013]</label>
-			<onclick>Skin.ToggleSetting(home_no_musicvideos_randomartists_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_musicvideos_randomartists_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22105">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31152]</label>
-			<onclick>Skin.ToggleSetting(home_no_musicvideos_random_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_musicvideos_random_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22106">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[20388]</label>
-			<onclick>Skin.ToggleSetting(home_no_musicvideos_studios_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_musicvideos_studios_widget)</selected>
-		</control>
-	</include>
-	<include name="SettingsDialogTVWidgetsContent">
-		<control type="radiobutton" id="22101">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31148]</label>
-			<onclick>Skin.ToggleSetting(home_no_tv_categories_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tv_categories_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22102">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31016]</label>
-			<onclick>Skin.ToggleSetting(home_no_tv_recentlyplayed_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tv_recentlyplayed_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22103">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31015]</label>
-			<onclick>Skin.ToggleSetting(home_no_tv_recentrecordings_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tv_recentrecordings_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22104">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[19040]</label>
-			<onclick>Skin.ToggleSetting(home_no_tv_timers_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tv_timers_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22105">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[19173]</label>
-			<onclick>Skin.ToggleSetting(home_no_tv_channelgroups_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tv_channelgroups_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22106">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[19337]</label>
-			<onclick>Skin.ToggleSetting(home_no_tv_savedsearches_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tv_savedsearches_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22107">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[855]</label>
-			<onclick>Skin.ToggleSetting(home_no_tv_recentlyaddedchannels_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_tv_recentlyaddedchannels_widget)</selected>
-		</control>
-	</include>
-	<include name="SettingsDialogRadioWidgetsContent">
-		<control type="radiobutton" id="22101">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31148]</label>
-			<onclick>Skin.ToggleSetting(home_no_radio_categories_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_radio_categories_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22102">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31018]</label>
-			<onclick>Skin.ToggleSetting(home_no_radio_recentlyplayed_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_radio_recentlyplayed_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22103">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31015]</label>
-			<onclick>Skin.ToggleSetting(home_no_radio_recentrecordings_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_radio_recentrecordings_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22104">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[19040]</label>
-			<onclick>Skin.ToggleSetting(home_no_radio_timers_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_radio_timers_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22105">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[19174]</label>
-			<onclick>Skin.ToggleSetting(home_no_radio_channelgroups_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_radio_channelgroups_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22106">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[19337]</label>
-			<onclick>Skin.ToggleSetting(home_no_radio_savedsearches_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_radio_savedsearches_widget)</selected>
-		</control>
-		<control type="radiobutton" id="22107">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[855]</label>
-			<onclick>Skin.ToggleSetting(home_no_radio_recentlyaddedchannels_widget)</onclick>
-			<selected>!Skin.HasSetting(home_no_radio_recentlyaddedchannels_widget)</selected>
 		</control>
 	</include>
 </includes>
