@@ -1,101 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald slider popup (docs/SPEC.md 5, "Playback (proposed)"), used by the OSD settings' sliders (audio delay,
+     subtitle delay, zoom and so on): an opaque field panel at the top centre with the name, the value and the
+     settings slider (4 px track, 16 px nib, accent on focus). Started from Kodi 22 Estuary's DialogSlider.xml
+     (GPL-2.0-or-later, see LICENSE-Estuary.txt). Kodi (CGUIDialogSlider) binds 10 (heading), 11 (slider) and
+     12 (value); 13 and 14 are the mouse step buttons, kept with Estuary's actions. -->
 <window>
 	<defaultcontrol>11</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD+</depth>
 	<controls>
 		<control type="group">
-			<top>20</top>
+			<top>96</top>
 			<centerleft>50%</centerleft>
 			<width>840</width>
-			<control type="image">
-				<left>-20</left>
-				<top>-30</top>
-				<width>840</width>
-				<height>155</height>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
-			</control>
+			<include>Bald_PlaybackPanel</include>
 			<control type="label" id="10">
 				<description>Dialog header</description>
 				<left>40</left>
-				<top>10</top>
-				<width>550</width>
-				<height>20</height>
+				<top>24</top>
+				<width>520</width>
+				<height>32</height>
 				<aligny>center</aligny>
-				<font>font14</font>
-				<textcolor>button_focus</textcolor>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink60</textcolor>
 			</control>
 			<control type="label" id="12">
 				<description>Slider Value</description>
-				<left>0</left>
-				<top>10</top>
-				<width>760</width>
-				<height>20</height>
+				<left>520</left>
+				<top>24</top>
+				<width>280</width>
+				<height>32</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font14</font>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink</textcolor>
 			</control>
 			<control type="slider" id="11">
 				<description>Slider</description>
-				<left>40</left>
-				<top>65</top>
-				<width>720</width>
-				<height>28</height>
+				<left>80</left>
+				<top>88</top>
+				<width>680</width>
+				<height>16</height>
 				<onup>11</onup>
 				<ondown>11</ondown>
 				<onleft>11</onleft>
 				<onright>11</onright>
+				<texturesliderbar border="8,0,8,0" colordiffuse="bald_ink28">bald/slider_bar.png</texturesliderbar>
+				<texturesliderbardisabled border="8,0,8,0" colordiffuse="bald_ink10">bald/slider_bar.png</texturesliderbardisabled>
+				<textureslidernib colordiffuse="bald_ink60">bald/slider_nib.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
+				<textureslidernibdisabled colordiffuse="bald_ink28">bald/slider_nib.png</textureslidernibdisabled>
 			</control>
 			<control type="group">
 				<visible>!System.GetBool(input.enablemouse)</visible>
 				<control type="image">
-					<left>0</left>
-					<top>65</top>
-					<width>28</width>
-					<height>28</height>
-					<texture flipx="true" colordiffuse="button_focus">overlays/arrowright.png</texture>
-					<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
-					<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
+					<left>40</left>
+					<top>84</top>
+					<width>24</width>
+					<height>24</height>
+					<texture flipx="true" colordiffuse="bald_ink45">bald/chevron.png</texture>
 				</control>
 				<control type="image">
-					<left>770</left>
-					<top>65</top>
-					<width>28</width>
-					<height>28</height>
-					<texture colordiffuse="button_focus">overlays/arrowright.png</texture>
-					<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
-					<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
+					<left>776</left>
+					<top>84</top>
+					<width>24</width>
+					<height>24</height>
+					<texture colordiffuse="bald_ink45">bald/chevron.png</texture>
 				</control>
 			</control>
 			<control type="group">
 				<visible>System.GetBool(input.enablemouse)</visible>
 				<control type="button" id="13">
-					<left>0</left>
-					<top>65</top>
-					<width>28</width>
-					<height>28</height>
+					<left>40</left>
+					<top>84</top>
+					<width>24</width>
+					<height>24</height>
+					<label />
+					<font>Bald_Hint</font>
 					<onclick>SetFocus(11)</onclick>
 					<onclick>Left</onclick>
 					<onclick>SetFocus(13)</onclick>
-					<texturefocus flipx="true" colordiffuse="button_focus">overlays/arrowright.png</texturefocus>
-					<texturenofocus flipx="true">overlays/arrowright.png</texturenofocus>
-					<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
-					<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
+					<texturefocus flipx="true" colordiffuse="bald_ink">bald/chevron.png</texturefocus>
+					<texturenofocus flipx="true" colordiffuse="bald_ink45">bald/chevron.png</texturenofocus>
 				</control>
 				<control type="button" id="14">
-					<left>770</left>
-					<top>65</top>
-					<width>28</width>
-					<height>28</height>
+					<left>776</left>
+					<top>84</top>
+					<width>24</width>
+					<height>24</height>
+					<label />
+					<font>Bald_Hint</font>
 					<onclick>SetFocus(11)</onclick>
 					<onclick>Right</onclick>
 					<onclick>SetFocus(14)</onclick>
-					<texturefocus colordiffuse="button_focus">overlays/arrowright.png</texturefocus>
-					<texturenofocus>overlays/arrowright.png</texturenofocus>
-					<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
-					<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
+					<texturefocus colordiffuse="bald_ink">bald/chevron.png</texturefocus>
+					<texturenofocus colordiffuse="bald_ink45">bald/chevron.png</texturenofocus>
 				</control>
 			</control>
 		</control>

@@ -1,62 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Bald play speed control (docs/SPEC.md 5, "Playback (proposed)"): an opaque field panel at the top centre with
+     the name and speed and a pair of chevrons, dim until focused. Started from Kodi 22 Estuary's
+     Custom_1110_TempoControl.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Buttons 11 (slower) and 12 (faster)
+     keep Estuary's actions and navigation. -->
 <window id="1110" type="dialog">
 	<defaultcontrol>11</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD+</depth>
 	<controls>
 		<control type="group">
-			<top>20</top>
+			<top>96</top>
 			<centerleft>50%</centerleft>
 			<width>840</width>
-			<control type="image">
-				<left>-20</left>
-				<top>-30</top>
-				<width>840</width>
-				<height>100</height>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
-			</control>
+			<include content="Bald_PlaybackPanel">
+				<param name="height">96</param>
+			</include>
 			<control type="label">
 				<description>Dialog header</description>
 				<left>40</left>
-				<top>10</top>
-				<width>550</width>
-				<height>20</height>
+				<top>0</top>
+				<width>400</width>
+				<height>96</height>
 				<aligny>center</aligny>
-				<font>font14</font>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink60</textcolor>
 				<label>$LOCALIZE[31142]</label>
 			</control>
 			<control type="label">
-				<left>120</left>
-				<top>10</top>
-				<width>550</width>
-				<height>20</height>
+				<left>400</left>
+				<top>0</top>
+				<width>256</width>
+				<height>96</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font14</font>
-				<label>$INFO[Player.playspeed]</label>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[Player.PlaySpeed]</label>
 			</control>
 			<control type="button" id="11">
-				<left>690</left>
-				<top>10</top>
-				<width>28</width>
-				<height>20</height>
+				<left>688</left>
+				<top>24</top>
+				<width>48</width>
+				<height>48</height>
+				<label />
+				<font>Bald_Hint</font>
 				<onleft>12</onleft>
 				<onright>12</onright>
-				<texturefocus colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
-				<texturenofocus>overlays/arrowdown.png</texturenofocus>
+				<texturefocus flipx="true" colordiffuse="bald_ink">bald/chevron.png</texturefocus>
+				<texturenofocus flipx="true" colordiffuse="bald_ink45">bald/chevron.png</texturenofocus>
 				<onclick>PlayerControl(TempoDown)</onclick>
 			</control>
 			<control type="button" id="12">
-				<left>730</left>
-				<top>10</top>
-				<width>28</width>
-				<height>20</height>
+				<left>752</left>
+				<top>24</top>
+				<width>48</width>
+				<height>48</height>
+				<label />
+				<font>Bald_Hint</font>
 				<onleft>11</onleft>
 				<onright>11</onright>
-				<texturefocus flipy="true" colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
-				<texturenofocus flipy="true">overlays/arrowdown.png</texturenofocus>
+				<texturefocus colordiffuse="bald_ink">bald/chevron.png</texturefocus>
+				<texturenofocus colordiffuse="bald_ink45">bald/chevron.png</texturenofocus>
 				<onclick>PlayerControl(TempoUp)</onclick>
 			</control>
 		</control>
