@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: programs and program add-ons in the browse language (views 50, 52, 55, 500 with the preview column and the
+     right-hand options menu). Kodi binds the media window's 2-4 and 12. -->
 <window>
 	<defaultcontrol always="true">52</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
@@ -7,19 +10,17 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" easing="inout" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
 			<include>View_55_WideList</include>
 			<include>View_500_Wall</include>
-			<control type="group">
-				<include>OpenClose_Left</include>
-				<include>Visible_Left</include>
-				<visible>Control.IsVisible(55)</visible>
-				<include>ListThumbInfoPanel</include>
-			</control>
+			<include content="ListThumbInfoPanel">
+				<param name="visible">Control.IsVisible(55)</param>
+			</include>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$LOCALIZE[10001]" />
+				<param name="top" value="108" />
 			</include>
 			<include content="BottomBar">
 				<param name="info_visible" value="true" />
@@ -50,8 +51,8 @@
 						<onclick>ActivateWindow(addonbrowser,addons://more/executable/,return)</onclick>
 						<visible>Container.Content(addons)</visible>
 					</control>
+					<include>MediaMenuNowPlaying</include>
 				</control>
-				<include>MediaMenuNowPlaying</include>
 			</control>
 		</control>
 	</controls>
