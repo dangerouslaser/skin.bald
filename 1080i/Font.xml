@@ -295,7 +295,9 @@
 		</font>
 	</fontset>
 	<!-- DM Sans: the Default fontset with each Instrument Sans weight swapped for the same DM Sans weight (static
-	     opsz 14 cuts). Names, sizes and line spacing must stay identical to Default (tests/test_fonts.py). -->
+	     opsz 14 cuts). Names and sizes stay identical to Default. DM Sans' natural line is taller (1.302 em against
+	     1.22), so every font drawn on several lines (textboxes, wrapped labels) has its own linespacing here that
+	     brings Kodi's pixel line height back to Instrument Sans' within 0.5 px (tests/test_fonts.py). -->
 	<fontset id="DMSans" idloc="31941">
         <font>
             <name>font23_narrow</name>
@@ -317,16 +319,19 @@
 			<name>font12</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>25</size>
+			<linespacing>0.939</linespacing>
 		</font>
 		<font>
 			<name>font13</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>30</size>
+			<linespacing>0.949</linespacing>
 		</font>
 		<font>
 			<name>font14</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>33</size>
+			<linespacing>0.93</linespacing>
 		</font>
 		<font>
 			<name>font23_narrow</name>
@@ -344,12 +349,13 @@
 			<name>font27</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>27</size>
+			<linespacing>0.943</linespacing>
 		</font>
 		<font>
 			<name>font27_narrow</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>27</size>
-			<linespacing>0.8</linespacing>
+			<linespacing>0.754</linespacing>
 		</font>
 		<font>
 			<name>font32</name>
@@ -360,6 +366,7 @@
 			<name>font37</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>37</size>
+			<linespacing>0.938</linespacing>
 		</font>
 		<font>
 			<name>font45</name>
@@ -396,16 +403,19 @@
 			<name>font30_title</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>30</size>
+			<linespacing>0.949</linespacing>
 		</font>
 		<font>
 			<name>font32_title</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>32</size>
+			<linespacing>0.929</linespacing>
 		</font>
 		<font>
 			<name>font36_title</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>36</size>
+			<linespacing>0.936</linespacing>
 		</font>
 		<font>
 			<name>font40_title</name>
@@ -416,6 +426,7 @@
 			<name>font45_title</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>45</size>
+			<linespacing>0.932</linespacing>
 		</font>
 		<font>
 			<name>font52_title</name>
@@ -456,13 +467,14 @@
 			<name>Bald_CaptionTitle</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>40</size>
-			<linespacing>0.92</linespacing>
+			<linespacing>0.867</linespacing>
 		</font>
 		<!-- Caption meta -->
 		<font>
 			<name>Bald_CaptionMeta</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>20</size>
+			<linespacing>0.923</linespacing>
 		</font>
 		<!-- Accent line -->
 		<font>
@@ -475,7 +487,7 @@
 			<name>Bald_CaptionPlot</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>20</size>
-			<linespacing>1.25</linespacing>
+			<linespacing>1.154</linespacing>
 		</font>
 		<!-- Media flag -->
 		<font>
@@ -494,13 +506,14 @@
 			<name>Bald_MenuNote</name>
 			<filename>DMSans-Medium.ttf</filename>
 			<size>19</size>
-			<linespacing>1.23</linespacing>
+			<linespacing>1.132</linespacing>
 		</font>
 		<!-- Section line, action button, section heading -->
 		<font>
 			<name>Bald_Section</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>22</size>
+			<linespacing>0.931</linespacing>
 		</font>
 		<!-- Kodi's generated keyboard symbol layers require broader Unicode coverage than DM Sans. -->
 		<font>
@@ -543,7 +556,7 @@
 			<name>Bald_InfoPlot</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>22</size>
-			<linespacing>1.29</linespacing>
+			<linespacing>1.201</linespacing>
 		</font>
 		<!-- Info genres -->
 		<font>
@@ -562,12 +575,14 @@
 			<name>Bald_CastName</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>18</size>
+			<linespacing>0.957</linespacing>
 		</font>
 		<!-- Cast role -->
 		<font>
 			<name>Bald_CastRole</name>
 			<filename>DMSans-Regular.ttf</filename>
 			<size>16</size>
+			<linespacing>0.952</linespacing>
 		</font>
 		<!-- Details label -->
 		<font>
@@ -580,6 +595,7 @@
 			<name>Bald_DetailValue</name>
 			<filename>DMSans-Medium.ttf</filename>
 			<size>21</size>
+			<linespacing>0.963</linespacing>
 		</font>
 		<!-- Info progress -->
 		<font>
