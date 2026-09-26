@@ -312,15 +312,29 @@
 					<visible>!$EXP[Bald_ShowClearlogo] | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
 				</control>
 			</control>
-			<control type="label">
+			<!-- "years, N seasons, certificate" then the show's ratings on the same line (SPEC 5.3 header). -->
+			<control type="grouplist">
 				<left>Bald_SafeLeft</left>
 				<top>346</top>
 				<width>1400</width>
 				<height>30</height>
-				<font>Bald_InfoMeta</font>
-				<textcolor>bald_ink</textcolor>
-				<label>$VAR[Bald_InfoTVMeta]</label>
+				<orientation>horizontal</orientation>
+				<itemgap>14</itemgap>
 				<include content="Bald_AnimInfoIn"><param name="delay">440</param></include>
+				<control type="label">
+					<width>auto</width>
+					<height>30</height>
+					<font>Bald_InfoMeta</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$VAR[Bald_InfoTVMeta]</label>
+				</control>
+				<!-- Only for the show itself: a season or episode keeps the show's line, and its own ratings are the episode's. -->
+				<include content="Bald_Ratings">
+					<param name="visible">$EXP[Bald_RatingsInfo] + $EXP[Bald_InfoTVIsShow]</param>
+					<param name="fallback">true</param>
+					<param name="height">30</param>
+					<param name="font">Bald_FlagL</param>
+				</include>
 			</control>
 			<control type="label">
 				<left>Bald_SafeLeft</left>
@@ -466,6 +480,12 @@
 						<textcolor>bald_ink70</textcolor>
 						<label>$VAR[Bald_InfoTVEpisodeMeta]</label>
 					</control>
+					<!-- The focused episode's ratings (no TMDb Helper fallback: its monitor follows the dialog's item). -->
+					<include content="Bald_Ratings">
+						<param name="container">Container(5302).</param>
+						<param name="visible">$EXP[Bald_RatingsInfo]</param>
+						<param name="top">2</param>
+					</include>
 					<control type="grouplist">
 						<top>2</top>
 						<width>600</width>
