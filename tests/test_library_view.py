@@ -48,11 +48,11 @@ class LibraryViewTests(unittest.TestCase):
     def test_no_redundant_details_button(self):
         self.assertIsNone(self.view.find(".//control[@id='6101']"))
         home = ET.parse(ROOT / "Home.xml").getroot()
-        item = next(item for item in home.findall(".//control[@id='9000']/content/item") if item.findtext("label") == "Movies")
-        self.assertEqual(item.findtext("visible"), "Skin.HasSetting(Bald.Screen.Movies)")
+        item = next(item for item in home.findall(".//control[@id='9000']/include") if item.findtext("param[@name='label']") == "Movies")
+        self.assertEqual(item.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)")
         self.assertIn(
             "SetFocus($INFO[Window(home).Property(Bald.Row.movies)])",
-            [n.text for n in item.findall("onclick")],
+            [item.findtext("param[@name='enter4']")],
         )
 
     def test_frame_masks_are_outside_preview_menu_animations(self):
@@ -121,13 +121,13 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual((footer.findtext('left'), footer.findtext("include/param[@name='width']")), ('1404', '420'))
 
     def test_home_and_library_share_menu_row_components(self):
-        home = ET.parse(ROOT / 'Home.xml').getroot().find(".//control[@id='9000']")
         library = self.view.find(".//control[@id='9150']")
-        self.assertEqual(home.findtext('itemlayout/include'), library.findtext('itemlayout/include'))
-        self.assertEqual(home.find('focusedlayout/include').text, 'Bald_MenuRowFocused')
         self.assertEqual(library.find('focusedlayout/include').get('content'), 'Bald_MenuRowFocused')
-        shared = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot().find("include[@name='Bald_MenuRowFocused']")
+        includes = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot()
+        shared = includes.find("include[@name='Bald_MenuRowFocused']")
         self.assertEqual(shared.findtext(".//control[@type='image']/visible"), '$PARAM[always_dot]')
+        home_button = includes.find("include[@name='Bald_HomeMenuButton']")
+        self.assertEqual(home_button.findtext(".//texturefocus"), 'bald/menu_dot.png')
 
     def test_movie_entry_rejects_legacy_estuary_view_modes(self):
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()

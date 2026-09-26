@@ -6,6 +6,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def home_menu_button(root, label):
+    return next(
+        include for include in root.findall(".//control[@id='9000']/include[@content='Bald_HomeMenuButton']")
+        if include.findtext("param[@name='label']") == label
+    )
+
+
 class BaldSettingsTests(unittest.TestCase):
     def test_settings_has_dedicated_bald_tile(self):
         root = ET.parse(ROOT / "1080i" / "Settings.xml").getroot()
@@ -42,17 +49,16 @@ class BaldSettingsTests(unittest.TestCase):
 
     def test_optional_screens_control_main_menu_membership(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
-        items = root.findall(".//control[@id='9000']/content/item")
-        movies = next(item for item in items if item.findtext("label") == "Movies")
-        tvshows = next(item for item in items if item.findtext("label") == "TV shows")
-        self.assertEqual(movies.findtext("visible"), "Skin.HasSetting(Bald.Screen.Movies)")
-        self.assertEqual(tvshows.findtext("visible"), "Skin.HasSetting(Bald.Screen.TVShows)")
-        self.assertNotIn("!Skin.HasSetting", ET.tostring(movies, encoding="unicode"))
-        self.assertNotIn("!Skin.HasSetting", ET.tostring(tvshows, encoding="unicode"))
+        movies = home_menu_button(root, "Movies")
+        tvshows = home_menu_button(root, "TV shows")
+        self.assertEqual(movies.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)")
+        self.assertEqual(tvshows.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.TVShows)")
+        self.assertNotIn("!Skin.HasSetting", movies.findtext("param[@name='visible']"))
+        self.assertNotIn("!Skin.HasSetting", tvshows.findtext("param[@name='visible']"))
 
-        livetv = next(item for item in items if item.findtext("label") == "Live TV")
+        livetv = home_menu_button(root, "Live TV")
         self.assertEqual(
-            livetv.findtext("visible"),
+            livetv.findtext("param[@name='visible']"),
             "!Skin.HasSetting(Bald.Screen.HideLiveTV)",
         )
 
@@ -68,12 +74,9 @@ class BaldSettingsTests(unittest.TestCase):
 
     def test_optional_screens_restore_their_last_row_when_entered_from_menu(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
-        menu = root.find(".//control[@id='9000']")
-        actions = [(node.get("condition"), node.text) for node in menu.findall("onleft")]
-
-        for screen in ("movies", "tvshows"):
-            condition = f"String.IsEqual(Container(9000).ListItem.Property(id),{screen})"
-            screen_actions = [action for action_condition, action in actions if action_condition == condition]
+        for screen, label in (("movies", "Movies"), ("tvshows", "TV shows")):
+            item = home_menu_button(root, label)
+            screen_actions = [item.findtext(f"param[@name='enter{index}']") for index in range(1, 5)]
             self.assertIn(f"SetProperty(Bald.Screen,{screen},home)", screen_actions)
             self.assertIn(
                 f"SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.{screen})],home)",
@@ -92,7 +95,7 @@ class BaldSettingsTests(unittest.TestCase):
             ("tvshows", "9301", "Bald_PreviewTVShows"),
         ):
             self.assertIn(
-                f'String.IsEqual(Container(9000).ListItem.Property(id),{screen})',
+                f'String.IsEqual(Window(home).Property(Bald.MenuPreview),{screen})',
                 home_includes,
             )
             self.assertIn(
@@ -107,7 +110,7 @@ class BaldSettingsTests(unittest.TestCase):
         row_definition = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
             ".//include[@name='Bald_Row']/definition/control[@type='group']/visible"
         ).text
-        self.assertIn("Container(9000).ListItem.Property(id),$PARAM[screen]", row_definition)
+        self.assertIn("Property(Bald.MenuPreview),$PARAM[screen]", row_definition)
         self.assertIn("Property(Bald.Row.$PARAM[screen]),$PARAM[id]", row_definition)
 
         row = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
@@ -123,14 +126,23 @@ class BaldSettingsTests(unittest.TestCase):
         backdrop = root.find(".//include[@name='Bald_BackdropImage']")
         images = backdrop.findall("control[@type='image']")
 
-        self.assertEqual(len(images), 2)
-        self.assertIn("!$EXP[Bald_WidgetPreview]", images[0].findtext("visible"))
-        self.assertEqual(images[1].findtext("texture"), "$VAR[Bald_Fanart]")
-        self.assertEqual(
-            images[1].findtext("visible"),
-            "$EXP[Bald_WidgetPreview]",
-        )
-        self.assertEqual(images[1].findtext("fadetime"), "800")
+        self.assertEqual(len(images), 1)
+        self.assertIn("TMDbHelper.ListItem.BlurImage", images[0].findtext("texture"))
+        self.assertEqual(images[0].findtext("fadetime"), "800")
+
+    def test_menu_preview_suppresses_the_previously_active_rows_clearlogo(self):
+        root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
+        logo = root.find(".//include[@name='Bald_ArtLogo']")
+        images = logo.findall("definition/control[@type='image']")
+
+        self.assertEqual(len(images), 3)
+        for image in images:
+            visibility = image.findtext("visible")
+            self.assertIn("$PARAM[preview]", visibility)
+            self.assertIn(
+                "[!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]",
+                visibility,
+            )
 
     def test_widget_rows_reopen_menu_on_the_active_screen(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
@@ -138,18 +150,18 @@ class BaldSettingsTests(unittest.TestCase):
         back_actions = [(node.get("condition"), node.text) for node in row.findall("onback")]
         up_actions = [(node.get("condition"), node.text) for node in row.findall("onup")]
 
-        self.assertIn(("String.IsEqual(Window(home).Property(Bald.Screen),home)", "SetFocus(9000,0,absolute)"), back_actions)
-        self.assertIn(("String.IsEqual(Window(home).Property(Bald.Screen),movies)", "SetFocus(9000,1,absolute)"), back_actions)
+        self.assertIn(("String.IsEqual(Window(home).Property(Bald.Screen),home)", "SetFocus(9001)"), back_actions)
+        self.assertIn(("String.IsEqual(Window(home).Property(Bald.Screen),movies)", "SetFocus(9002)"), back_actions)
         self.assertIn(
             (
-                "String.IsEqual(Window(home).Property(Bald.Screen),tvshows) + Skin.HasSetting(Bald.Screen.Movies)",
-                "SetFocus(9000,2,absolute)",
+                "String.IsEqual(Window(home).Property(Bald.Screen),tvshows)",
+                "SetFocus(9003)",
             ),
             back_actions,
         )
         self.assertTrue(any(
             condition.startswith("Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),movies)")
-            and action == "SetFocus(9000,1,absolute)"
+            and action == "SetFocus(9002)"
             for condition, action in up_actions
         ))
 
@@ -164,26 +176,12 @@ class BaldSettingsTests(unittest.TestCase):
 
     def test_media_screens_disclose_and_open_their_full_libraries_with_right(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
-        menu = root.find(".//control[@id='9000']")
-        items = {item.findtext("property[@name='id']"): item for item in menu.findall("content/item")}
-        right_actions = [(node.get("condition"), node.text) for node in menu.findall("onright")]
-
-        self.assertEqual(items["movies"].findtext("property[@name='library']"), "videodb://movies/titles/")
-        self.assertEqual(items["tvshows"].findtext("property[@name='library']"), "videodb://tvshows/titles/")
-        self.assertIn(
-            (
-                "String.IsEqual(Container(9000).ListItem.Property(id),movies)",
-                "9197",
-            ),
-            right_actions,
-        )
-        self.assertIn(
-            (
-                "String.IsEqual(Container(9000).ListItem.Property(id),tvshows)",
-                "9196",
-            ),
-            right_actions,
-        )
+        movies = home_menu_button(root, "Movies")
+        tvshows = home_menu_button(root, "TV shows")
+        self.assertEqual(movies.findtext("param[@name='suffix']"), "  ›")
+        self.assertEqual(tvshows.findtext("param[@name='suffix']"), "  ›")
+        self.assertEqual(movies.findtext("param[@name='right']"), "9197")
+        self.assertEqual(tvshows.findtext("param[@name='right']"), "9196")
 
         self.assertEqual(root.findtext(".//control[@id='9197']/onfocus"), "ActivateWindow(Videos,videodb://movies/titles/,return)")
         self.assertEqual(root.findtext(".//control[@id='9196']/onfocus"), "ActivateWindow(Videos,videodb://tvshows/titles/,return)")

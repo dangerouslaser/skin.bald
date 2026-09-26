@@ -46,11 +46,11 @@ class TVLibraryTests(unittest.TestCase):
 
     def test_home_tv_item_opens_configured_screen(self):
         home = ET.parse(ROOT / 'Home.xml').getroot()
-        item = next(item for item in home.findall(".//control[@id='9000']/content/item") if item.findtext('label') == 'TV shows')
-        self.assertEqual(item.findtext('visible'), 'Skin.HasSetting(Bald.Screen.TVShows)')
+        item = next(item for item in home.findall(".//control[@id='9000']/include") if item.findtext("param[@name='label']") == 'TV shows')
+        self.assertEqual(item.findtext("param[@name='visible']"), 'Skin.HasSetting(Bald.Screen.TVShows)')
         self.assertIn(
             'SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])',
-            [n.text for n in item.findall('onclick')],
+            [item.findtext("param[@name='enter4']")],
         )
 
     def test_legacy_chrome_is_hidden_for_every_bald_tv_level(self):
