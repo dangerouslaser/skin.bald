@@ -147,7 +147,7 @@
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
 				<aligny>center</aligny>
-				<texture>icons/pvr/timers/recording.png</texture>
+				<texture colordiffuse="bald_accent">icons/pvr/timers/recording.png</texture>
 				<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
 			</control>
 			<control type="image">
@@ -157,7 +157,7 @@
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
 				<aligny>center</aligny>
-				<texture>icons/pvr/timers/bell.png</texture>
+				<texture colordiffuse="$PARAM[color]">icons/pvr/timers/bell.png</texture>
 				<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
 			</control>
 			<control type="gamecontroller">
