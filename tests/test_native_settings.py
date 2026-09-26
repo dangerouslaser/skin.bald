@@ -104,6 +104,12 @@ class NativeSettingsTests(unittest.TestCase):
         for control_id in ROW_TEMPLATES + ("14",):
             self.assertEqual(self.control("SettingsCategory.xml", control_id).findtext("width"), width, control_id)
 
+    def test_colour_swatch_stays_inside_the_row(self):
+        colour = self.control("SettingsCategory.xml", "15")
+        width = int(self.control("SettingsCategory.xml", "5").findtext("width"))
+        right = int(colour.findtext("colorposx")) + int(colour.findtext("colorwidth"))
+        self.assertEqual(width - right, int(colour.findtext("textoffsetx")))
+
     def test_toggle_state_is_the_right_hand_dot(self):
         radio = self.control("SettingsCategory.xml", "8")
         self.assertEqual(radio.find("textureradioonnofocus").get("colordiffuse"), "bald_accent")
@@ -140,6 +146,8 @@ class NativeSettingsTests(unittest.TestCase):
         title = self.control("SettingsCategory.xml", "14")
         self.assertTrue(title.findtext("font").startswith("Bald_"))
         self.assertEqual(title.findtext("textcolor"), "bald_ink60")
+        # Kodi labels have no bottom alignment; "bottom" would silently read as top.
+        self.assertIn(title.findtext("aligny"), ("top", "center"))
         separator = self.control("SettingsCategory.xml", "11")
         self.assertEqual(separator.find("texture").get("colordiffuse"), "bald_ink10")
 
