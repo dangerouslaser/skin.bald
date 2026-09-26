@@ -70,6 +70,10 @@ def _apply(path: str, playlist_path: str, epg_url: str) -> str:
     if not os.path.exists(backup):
         shutil.copy2(path, backup)
 
+    # A configured but disabled multi-instance client never registers with Kodi's
+    # PVR manager. Applying XC credentials is an explicit request to use this
+    # instance, so enable it along with its playlist and EPG settings.
+    _set(root, "kodi_addon_instance_enabled", "true")
     _set(root, "m3uPathType", "0")
     _set(root, "m3uPath", playlist_path)
     _set(root, "m3uUrl", "")
