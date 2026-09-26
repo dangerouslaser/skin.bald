@@ -10,6 +10,9 @@
 <window>
 	<defaultcontrol always="true">602</defaultcontrol>
 	<onload condition="!Player.PauseEnabled">SetFocus(600)</onload>
+	<!-- A fresh key for the stream lists (1121, 1122), so each OSD opening reads the streams again. -->
+	<onload>SetProperty(UID,$INFO[System.Time(hh:mm:ss)],1121)</onload>
+	<onload>SetProperty(UID,$INFO[System.Time(hh:mm:ss)],1122)</onload>
 	<onunload>CancelAlarm(bald_osd_close,true)</onunload>
 	<onunload>Dialog.Close(1120,true)</onunload>
 	<onunload>Dialog.Close(1121,true)</onunload>
@@ -28,7 +31,7 @@
 			</animation>
 			<include>Bald_OSDRow</include>
 			<include>Bald_OSDSeekSliders</include>
-			<include>Bald_OSDHints</include>
+			<include content="Bald_OSDHints"><param name="hidden">Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124)</param></include>
 		</control>
 	</controls>
 </window>

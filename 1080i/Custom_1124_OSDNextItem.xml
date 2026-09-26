@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald video OSD, next item: while the forward button has focus and no chapter is left, a card at the top left
+     shows what plays next: the next playlist item (VideoPlayer.offset(1)) or, in the last ten minutes of a
+     library episode, the next episode of its season (hidden list 8140), which forward then plays.
+     A companion panel of the video OSD (docs/SPEC.md 5.16, "Video OSD"; Includes_Bald_OSD.xml): VideoOSD opens it when
+     its button (607) takes focus. The row is repeated with that button real and the others as stand-ins that
+     close this panel and focus the OSD's own button, so Left and Right keep moving along the row. -->
+<window type="dialog" id="1124">
+	<defaultcontrol always="true">607</defaultcontrol>
+	<zorder>1</zorder>
+	<depth>DepthOSD</depth>
+	<controls>
+		<include>Bald_OSDNextCard</include>
+		<include content="Bald_OSDRow">
+			<param name="owner">1124</param>
+			<param name="play">Fake</param>
+			<param name="back">Fake</param>
+			<param name="forward">Panel</param>
+			<param name="stop">Fake</param>
+			<param name="menu">Fake</param>
+			<param name="teletext">Fake</param>
+			<param name="stereo">Fake</param>
+			<param name="info">Fake</param>
+			<param name="audio">Fake</param>
+			<param name="subtitles">Fake</param>
+			<param name="video">Fake</param>
+		</include>
+		<include>Bald_OSDHints</include>
+	</controls>
+</window>

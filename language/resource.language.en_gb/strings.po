@@ -1117,6 +1117,12 @@ msgid "Select for the biography"
 msgstr ""
 
 #: /1080i/Includes_Bald_OSD.xml
+#. Video OSD hint on the audio and subtitle buttons: Up focuses the stream list
+msgctxt "#31633"
+msgid "Up to choose"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
 #. Video OSD playlist panel: marks the item that is playing
 msgctxt "#31634"
 msgid "Now playing"
@@ -1168,6 +1174,12 @@ msgstr ""
 #. Playback settings, Time display
 msgctxt "#31644"
 msgid "Elapsed and remaining"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD video panel: the play speed row
+msgctxt "#31645"
+msgid "Left and right to change speed"
 msgstr ""
 
 #: /1080i/Custom_1119_BaldPlayback.xml
