@@ -416,6 +416,16 @@ Decisions the spec did not cover, made while restyling the music, pictures, game
 - **Small popups** (colour picker, media source, video versions): Estuary's inner panel frames are gone; lists use the popup list row, section captions are the row-label style at 60% `ink`, text fields are the keyboard's outline pill, counters and paths sit in the hint style at the panel's foot, and colour swatches are rounded tiles that pop to 1.12 inside an `ink` ring.
 - **Icons**: Estuary's icon textures stay (Bald has no icon set), always tinted with an `ink` step and sized 40-48 px.
 
+### 5.21 Restyle review follow-ups (2026-09-26, proposed; not yet seen in Kodi)
+
+Small decisions made while fixing the merged restyles' review findings. Please review.
+
+- **Music playlist editor footer.** Two item counters on the y 954 hint line in hint type at 60% `ink`, "n / total": the files list's at the left safe margin, the playlist's flush with the right one. They replace Estuary's badge counters; the window's single `BottomBar` count is left empty so the two do not overlap.
+- **PVR timer icons in popup lists.** Estuary's recording icon is tinted `accent`, its reminder bell the row's `ink` step (70% unfocused, full on the focused row), in both the select dialog's detailed rows and the simple list.
+- **Popup list focus row.** Every popup list's 10% `ink` focus row halves while its list is not focused; the PVR managers' row now does the same (it dimmed to 40%).
+- **OSD help with a state.** Where Estuary's OSD help named a control and its state in one label ("Random · On", "Rewind · Fast forward"), the state is a separate hint part after the hint line's own 20 px dot. The PlayerControls caption under its row uses the same dot. The hints still name the focused control rather than "<key> for <action>", as Estuary's help did.
+- **Rating circle setting dropped.** Appearance no longer offers Estuary's "Choose rating to display for media items": nothing drew the circle after the library views and music information became Bald. If a rating mark is wanted, it belongs in the Bald preview caption as a new design.
+
 ---
 
 ## 6. Default rows (alpha uses a fixed configuration)

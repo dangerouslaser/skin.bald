@@ -4,12 +4,53 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 
 ## Restyle streams merged (2026-09-26, not yet run in Kodi)
 
-The six restyle streams (shared foundations, playback, global overlays, Live TV windows, browse, media windows) were merged onto main in that order. Only registrations in `Includes.xml`, blocks in `strings.po` and `1080i/IDs`, and these docs overlapped; no window file was edited by two streams, and no string or control id collides. Static checks only.
+The six restyle streams (shared foundations, playback, global overlays, Live TV windows, browse, media windows) were merged onto main in that order. Only registrations in `Includes.xml`, blocks in `strings.po` and `1080i/IDs`, and these docs overlapped; no window file was edited by two streams, and no string or control id collides between streams. (Within the browse windows, the preview's movie-set list repeated control 5000; see "Restyle review fixes" below.) Static checks only.
 
 - **SPEC numbering.** Each stream proposed its own 5.15; they are now 5.15 Shared foundations, 5.16 Playback, 5.17 Global overlays, 5.18 Live TV windows and dialogs, 5.19 Browsing outside the Bald views, 5.20 Media utility windows, and the file headers and notes that cite them were updated.
 - **Still open between streams.** `MyGames.xml` and `MyPics.xml` (media stream) still wrap Estuary's left `ContentPanel` (views 50 and 54) and, in MyGames, `ListThumbInfoPanel` in `OpenClose_Left` groups; with the browse stream's views on the left and its preview at x 1296, those panels overlap the list and the preview slides in from the wrong side. They need a layout decision and a live look. `PVRSideBar` in `Includes_MediaMenu.xml` has no callers any more (the Live TV windows use their own options column), so the browse note about the PVR side menu opening on the right no longer applies; it can go in a dead-code pass.
 - **Duplicate English text under different ids.** "Back to close" (31619, 31669), "Left for options" (31661, 31685), and PVR's 31663, 31664 and 31666, which repeat 31784, 31827 and 31739. Harmless, but they could be merged later, together with each stream's string tests.
+- **Stream notes that the merge made stale.**
+  - Browse ("Deliberately left alone") says `Variables.xml`'s list label variables keep Estuary's `[COLOR grey]`. They do not: after the foundations stream no `Variables.xml` label names `grey` (and `grey` itself is `bald_ink60`).
+  - Playback ("Left alone on purpose") lists `MediaFlags` among Estuary includes left unchanged. The browse stream turned `MediaFlag` / `MediaFlags` into the shared `Bald_FlagChip`, so the includes it names are Bald now whichever windows call them.
+  - Browse and media both list `BottomBarTwoListInfo` as another stream's; neither restyled it. It is now Bald (review fixes below). Browse's `RatingCircle` had no callers; it and its setting are removed.
 - **Live check.** Run the six stream checklists below; in addition, open a Live TV window, the video OSD, the music library and a game list one after another and check the log once for include or variable errors across all the new `Includes_Bald_*.xml` files together.
+
+## Restyle review fixes (2026-09-26, not yet run in Kodi)
+
+Static checks only (`tools/kodi_dev.py validate`, the unit tests including the new `tests/test_review_fixes.py`, and `packaging/repository.bald/test_repository.py` on a scratch build); nothing was reloaded. Design choices are in SPEC 5.21.
+
+- **What changed.**
+  - `BottomBarTwoListInfo` (`Includes.xml`; the music playlist editor is its only caller) draws two `Bald_Hint` counters at 60% `ink` on the y 954 line, the files list's at the left margin and the playlist's right-aligned at the right margin, with sine/inout fades. Estuary's cyan `frame/item-count.png` badges and `text_shadow` are gone. The editor passes `BottomBar` an empty `count` so its own counter does not sit under the left one.
+  - The PVR timer icons in `Bald_SelectDetailedItem` and `DefaultSimpleListLayout` are tinted: recording `bald_accent`, the bell the row's ink (`$PARAM[color]` in the detailed row; `bald_ink70` / `bald_ink` in the simple list).
+  - `Bald_PVRManagerFocus` dims to 50% when its list is not focused, like `Bald_SelectFocusRow` and `Bald_MediaFocusRow` (was 40%).
+  - `Bald_PlaybackHelp` no longer joins a control and its state with an inline " · ". The state is the new `Bald_PlaybackHelpDetail`, shown when `$EXP[Bald_PlaybackHelpHasDetail]` holds: on the OSD hint line as the second `Bald_InfoHintPair` part (the row hint moves to the third, via `Bald_PlaybackHintAfterHelp`), and in PlayerControls as a new `Bald_PlaybackHelpLine` grouplist with the same 20 px dot.
+  - The TV guide's scrollbar 60 names its bar and focused bar (34% and full `ink`) instead of inheriting `Defaults.xml`.
+  - The TV guide's typed channel number uses `Bald_PVRChannelNumberInput`, as the Live TV windows do. Estuary's `PVRProgress` and `PVRChannelNumberInput` had no callers left and were removed; the `Includes_PVR.xml` header now describes the file.
+  - Appearance row 706 ("Choose rating to display for media items") is gone with `RatingCircle`, `UserRatingContent` and `RatingSettingLabel2Var`: the restyles had removed every caller. `circle_userrating`, `circle_rating` and `circle_none` are now in the tests' dead settings. String 31024 stays in `strings.po`, unused.
+  - `tests/test_settings_scaffold.py` checks that each live Estuary setting is read by a window: the resolved window, its include calls with their conditions, and the variables and expressions they reach. It no longer searches a file's raw text, where an uncalled include still counted.
+  - The release zip ships `LICENSE-Estuary.txt`, which 65 files now cite; the repository check asserts both licence files.
+  - `Bald_BrowsePreview` passes its movie-set `InfoList` an empty id. It is included by several views per window, and each copy took InfoList's default 5000 (up to five per window). Nothing addresses it by id. MyGames' own InfoList keeps its single 5000; `1080i/IDs` says so.
+  - The browse and media tests explain the explicit-font rule by role fonts, not Estuary's font13 (the label default is `Bald_InfoPlot` now).
+  - `Bald_BrowseListWidth` and `Bald_BrowseListHeight` were never used and are removed.
+- **Deliberately left alone.**
+  - Other duplicate control ids in the resolved browse windows (`15599`, `18900`, `7700`, `23000`, `799` in MyFavourites; `8` in AddonBrowser; `531` in MyVideoNav) were there before the restyles, from Estuary's views and bars.
+  - The OSD hints still name the focused control (Estuary's help text) rather than the "<key> for <action>" wording. Rewording needs new strings and a live look at each control.
+- **Dead code found after the restyles** (follow-up for the dead-code pass). A name scan over `1080i`, `shortcuts`, `scripts`, `resources`, `tools`, `addons` and `extras` finds no reference outside the definition for these. Check each by hand before removing it, as the earlier pass did, since a name can be built at runtime.
+  - `Includes.xml`: `WeatherIconMyWeather`, `PicsInfoLine` (only a comment mentions it), `InfoDialogTopBarInfo`, `LeftRightArrows`, `MediaInfoListLayout`.
+  - `Includes_Animations.xml`: `Visible_Right`, `Animation_BottomSlide`.
+  - `Includes_Buttons.xml`: `OSDButton`, `DialogSettingButton`, `SettingsItemCommon`, `SettingsLabelCommon`, `PlaylistWindowButton`, `BottomMainMenuToggleItem`, `VideoInfoButtonsCommon`, `InfoDialogButton`, `InfoDialogToggleButton`.
+  - `Includes_MediaMenu.xml`: `PVRSideBar`.
+  - `Variables.xml`: `MusicInfoTextboxVar`, `PosterVar`, `PosterThumbVar`, `IconWallThumbVar`, `FanartImageVar`, `PlotTextBoxVar`, `ShiftLeftTextBoxVar`, `ShiftRightTextBoxVar`, `ListBoxInfoVar`, `NowPlayingInfoVar`, `NowPlayingBreadcrumbsVar`, `AddonLifecycleType`, `ListSubLabelVar`, `VideoInfoPlotVar`, `OSDSubLabelVar`, `OSDNextLabelVar`, `ListWatchedIconVar`, `ItemStatusIconVar`, `ItemTypeIconVar`, `BreadcrumbsPVR{Channels,Recordings,Timers,Providers,Search,ChannelsOSD,ChannelGuide}Var`, `PlayerLabel1`, `FlagLabel`, `FlagDashLabel`, `RecordingSizeLabel`, `RecordingDateSizeLabel`, `ExpirationDateTimeLabel`, `PVRNextProgrammeLabel`, `PVRInfoPanelDateDurationLabel`, `ChannelListEPGIconVar`, `PVRInstanceName`, `GameDiscEjectedTransparencyVar`.
+- **Live check.**
+  1. Reload and check the log for `Unknown include`, `Skin has invalid include`, `Error loading` and `$VAR` / `$EXP` warnings (the removed includes and variable, the new `Bald_PlaybackHelpHasDetail` expression and `Bald_PlaybackHelpLine` include).
+  2. Music playlist editor: bottom left shows the files list's "n / total", bottom right the playlist's; both follow focus in their lists; no cyan badges; the counters fade with the window; nothing else sits on the y 954 line on the left.
+  3. PVR timer select (Live TV, Timers, add a timer, pick a timer type) and any simple list that shows a timer item: the recording icon is accent, the bell ink; the bell turns full ink on the focused row.
+  4. Channel manager and group manager: moving focus from the list to the buttons halves the focus row, the same strength as the select dialog's.
+  5. Music OSD: focus Random, Repeat and Rating: the hint line reads "Random · On · <row hint>" with even 20 px dots, and "Repeat · <state>". Rating with no rating reads "Rating · <row hint>". Video OSD buttons without a state read "<control> · <row hint>" as before. PlayerControls: focus the transport slider (87): "Rewind · Fast forward" under the row, same dot spacing; other buttons show only their name.
+  6. TV guide: the scrollbar bar is 34% ink with the accent nib, unchanged from the foundations look. Type a channel number: the number shows large and centred in Bald's clock type over a dimmed guide, as in the channel list.
+  7. Settings, Bald, Appearance, Estuary windows: no "Choose rating to display" row; the rows around it keep their focus order.
+  8. Browse windows (video, music, programs, pictures, favourites, add-ons): a movie set without a plot still lists its movies in the preview.
+  9. Release: a repository build's skin zip contains `LICENSE-Estuary.txt` (the check does this).
 
 ## Shared foundations (2026-09-26, not yet run in Kodi)
 
