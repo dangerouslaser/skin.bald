@@ -14,6 +14,7 @@
 	<include file="Includes_Bald_InfoPages.xml" />
 	<include file="Includes_Bald_InfoTV.xml" />
 	<include file="Includes_Bald_ContextMenu.xml" />
+	<include file="Includes_Bald_Foundations.xml" />
 	<include file="Includes_Animations.xml" />
 	<include file="Includes_Games.xml" />
 	<include file="Includes_MediaMenu.xml" />
