@@ -183,11 +183,14 @@
 				<include>Bald_AnimMenuShows</include>
 				<include content="Bald_MenuNote"><param name="text">$VAR[Bald_MenuPreviewNote]</param></include>
 			</control>
-			<control type="group" id="9000">
+			<control type="grouplist" id="9000">
 				<left>1440</left>
 				<top>392</top>
 				<width>420</width>
-				<height>372</height>
+				<height>310</height>
+				<orientation>vertical</orientation>
+				<itemgap>0</itemgap>
+				<scrolltime tween="cubic" easing="out">320</scrolltime>
 				<visible allowhiddenfocus="true">$EXP[Bald_MenuOpen]</visible>
 				<include>Bald_AnimMenuShows</include>
 				<include content="Bald_HomeMenuButton"><param name="id">9001</param><param name="y">0</param><param name="label">Home</param><param name="preview">home</param><param name="widget">home</param><param name="enter1">SetProperty(Bald.Screen,home,home)</param><param name="enter2">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.home)],home)</param><param name="enter3">ClearProperty(Bald.Menu,home)</param><param name="enter4">SetFocus($INFO[Window(home).Property(Bald.Row.home)])</param><param name="down1">9002</param><param name="down_preview1">movies</param><param name="down_widget1">movies</param><param name="down_condition1">Skin.HasSetting(Bald.Screen.Movies)</param><param name="down2">9003</param><param name="down_preview2">tvshows</param><param name="down_widget2">tvshows</param><param name="down_condition2">!Skin.HasSetting(Bald.Screen.Movies) + Skin.HasSetting(Bald.Screen.TVShows)</param><param name="down3">9004</param><param name="down_preview3">livetv</param><param name="down_condition3">!Skin.HasSetting(Bald.Screen.Movies) + !Skin.HasSetting(Bald.Screen.TVShows) + !Skin.HasSetting(Bald.Screen.HideLiveTV)</param><param name="down4">9005</param><param name="down_preview4">search</param><param name="down_condition4">!Skin.HasSetting(Bald.Screen.Movies) + !Skin.HasSetting(Bald.Screen.TVShows) + Skin.HasSetting(Bald.Screen.HideLiveTV)</param></include>
