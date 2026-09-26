@@ -14,8 +14,9 @@
      drops), skin timers (they run every 500 ms) or Container.Scrolling (briefly true at the end of every scroll).
 
      State lives in Home window properties:
-       Bald.Row      id of the current row (Home 9101+, Movies 9201+, TV shows 9301+); art and caption follow it,
-                     not the focused control
+       Bald.Row      id of the current row (Home 9101+, Live TV 9051+, hub slots 1-8 9201+ to 9901+, 1080i/IDs); art
+                     and caption follow it, not the focused control
+       Bald.Screen   the screen whose rows show: home, livetv or hub1 to hub8 (shortcuts/generator/screens.xml)
        Bald.Menu     set while the menu is open
        Bald.NudgeL/R flips between a and b to replay the row edge nudge -->
 <includes>
@@ -106,14 +107,29 @@
 	<!-- The displayed screen's current row style, and the style of the screen the menu previews (empty, a full frame,
 	     for entries without rows). Bald_RowStyle_<screen> is generated: the style of the row Bald.Row.<screen> names. -->
 	<variable name="Bald_ScreenRowStyle">
-		<value condition="$EXP[Bald_Screen_movies]">$VAR[Bald_RowStyle_movies]</value>
-		<value condition="$EXP[Bald_Screen_tvshows]">$VAR[Bald_RowStyle_tvshows]</value>
+		<value condition="$EXP[Bald_Screen_livetv]">$VAR[Bald_RowStyle_livetv]</value>
+		<value condition="$EXP[Bald_Screen_hub1]">$VAR[Bald_RowStyle_hub1]</value>
+		<value condition="$EXP[Bald_Screen_hub2]">$VAR[Bald_RowStyle_hub2]</value>
+		<value condition="$EXP[Bald_Screen_hub3]">$VAR[Bald_RowStyle_hub3]</value>
+		<value condition="$EXP[Bald_Screen_hub4]">$VAR[Bald_RowStyle_hub4]</value>
+		<value condition="$EXP[Bald_Screen_hub5]">$VAR[Bald_RowStyle_hub5]</value>
+		<value condition="$EXP[Bald_Screen_hub6]">$VAR[Bald_RowStyle_hub6]</value>
+		<value condition="$EXP[Bald_Screen_hub7]">$VAR[Bald_RowStyle_hub7]</value>
+		<value condition="$EXP[Bald_Screen_hub8]">$VAR[Bald_RowStyle_hub8]</value>
 		<value>$VAR[Bald_RowStyle_home]</value>
 	</variable>
+	<!-- Live TV without a PVR add-on shows no rows, so its preview keeps the full frame. -->
 	<variable name="Bald_PreviewRowStyle">
 		<value condition="$EXP[Bald_MenuPreview_home]">$VAR[Bald_RowStyle_home]</value>
-		<value condition="$EXP[Bald_MenuPreview_movies]">$VAR[Bald_RowStyle_movies]</value>
-		<value condition="$EXP[Bald_MenuPreview_tvshows]">$VAR[Bald_RowStyle_tvshows]</value>
+		<value condition="$EXP[Bald_MenuPreview_livetv] + System.HasPVRAddon">$VAR[Bald_RowStyle_livetv]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub1]">$VAR[Bald_RowStyle_hub1]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub2]">$VAR[Bald_RowStyle_hub2]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub3]">$VAR[Bald_RowStyle_hub3]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub4]">$VAR[Bald_RowStyle_hub4]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub5]">$VAR[Bald_RowStyle_hub5]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub6]">$VAR[Bald_RowStyle_hub6]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub7]">$VAR[Bald_RowStyle_hub7]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub8]">$VAR[Bald_RowStyle_hub8]</value>
 	</variable>
 
 	<!-- ============ Background ============ -->
@@ -222,20 +238,21 @@
 	     and $VAR[Bald_Logo], and per screen the parity and logo expressions and the caption and clearlogo instances
 	     combined here. A row whose row field "logo" is off gets no clearlogo instances or logo branches, and an empty
 	     Bald_Logo value, so the frame shows no logo or logo scrim for it. -->
-	<expression name="Bald_ItemOdd">[$EXP[Bald_ItemOdd_home] | $EXP[Bald_ItemOdd_movies] | $EXP[Bald_ItemOdd_tvshows]]</expression>
-	<expression name="Bald_HasLogo">[$EXP[Bald_HasLogo_home] | $EXP[Bald_HasLogo_movies] | $EXP[Bald_HasLogo_tvshows]]</expression>
-	<expression name="Bald_PreviewItemOdd">[$EXP[Bald_PreviewItemOdd_home] | $EXP[Bald_PreviewItemOdd_movies] | $EXP[Bald_PreviewItemOdd_tvshows]]</expression>
-	<expression name="Bald_PreviewHasLogo">[$EXP[Bald_PreviewHasLogo_home] | $EXP[Bald_PreviewHasLogo_movies] | $EXP[Bald_PreviewHasLogo_tvshows]]</expression>
+	<expression name="Bald_ItemOdd">[$EXP[Bald_ItemOdd_home] | $EXP[Bald_ItemOdd_livetv] | $EXP[Bald_ItemOdd_hub1] | $EXP[Bald_ItemOdd_hub2] | $EXP[Bald_ItemOdd_hub3] | $EXP[Bald_ItemOdd_hub4] | $EXP[Bald_ItemOdd_hub5] | $EXP[Bald_ItemOdd_hub6] | $EXP[Bald_ItemOdd_hub7] | $EXP[Bald_ItemOdd_hub8]]</expression>
+	<expression name="Bald_HasLogo">[$EXP[Bald_HasLogo_home] | $EXP[Bald_HasLogo_livetv] | $EXP[Bald_HasLogo_hub1] | $EXP[Bald_HasLogo_hub2] | $EXP[Bald_HasLogo_hub3] | $EXP[Bald_HasLogo_hub4] | $EXP[Bald_HasLogo_hub5] | $EXP[Bald_HasLogo_hub6] | $EXP[Bald_HasLogo_hub7] | $EXP[Bald_HasLogo_hub8]]</expression>
+	<expression name="Bald_PreviewItemOdd">[$EXP[Bald_PreviewItemOdd_home] | $EXP[Bald_PreviewItemOdd_livetv] | $EXP[Bald_PreviewItemOdd_hub1] | $EXP[Bald_PreviewItemOdd_hub2] | $EXP[Bald_PreviewItemOdd_hub3] | $EXP[Bald_PreviewItemOdd_hub4] | $EXP[Bald_PreviewItemOdd_hub5] | $EXP[Bald_PreviewItemOdd_hub6] | $EXP[Bald_PreviewItemOdd_hub7] | $EXP[Bald_PreviewItemOdd_hub8]]</expression>
+	<expression name="Bald_PreviewHasLogo">[$EXP[Bald_PreviewHasLogo_home] | $EXP[Bald_PreviewHasLogo_livetv] | $EXP[Bald_PreviewHasLogo_hub1] | $EXP[Bald_PreviewHasLogo_hub2] | $EXP[Bald_PreviewHasLogo_hub3] | $EXP[Bald_PreviewHasLogo_hub4] | $EXP[Bald_PreviewHasLogo_hub5] | $EXP[Bald_PreviewHasLogo_hub6] | $EXP[Bald_PreviewHasLogo_hub7] | $EXP[Bald_PreviewHasLogo_hub8]]</expression>
 	<!-- Startup splash (docs/NOTES.md, Startup splash). Startup.xml sets Bald.Preload on Home when Kodi starts on Home
 	     with the Appearance setting on; Home draws the splash over itself and every configured row on every screen
 	     counts as visible while its list is still loading (Bald_Row), so all of them load behind it. It lifts once
 	     no row is loading (Timers.xml bald_preload reads the 9194 marker in Home.xml) or after a 10 s alarm.
 	     A row is loading until its provider has fetched: Container.IsUpdating holds from window load, when Kodi starts
 	     every list's job, until the visible list takes the result, so a row that loaded empty also counts as done.
-	     Rows of a screen that is turned off in Home Screens still preload but are not waited for. Under a modal dialog
-	     Container(...) here resolves against the dialog, so the splash waits for it to close. -->
+	     Rows of a hub or Live TV that is turned off in Home Screens still preload but are not waited for; Live TV rows
+	     need a PVR add-on (their Bald_Row enabled parameter), so without one they neither preload nor count. Under a
+	     modal dialog Container(...) here resolves against the dialog, so the splash waits for it to close. -->
 	<expression name="Bald_Preloading">[!String.IsEmpty(Window(home).Property(Bald.Preload))]</expression>
-	<expression name="Bald_RowsLoading">[$EXP[Bald_RowsLoading_home] | [Skin.HasSetting(Bald.Screen.Movies) + $EXP[Bald_RowsLoading_movies]] | [Skin.HasSetting(Bald.Screen.TVShows) + $EXP[Bald_RowsLoading_tvshows]]]</expression>
+	<expression name="Bald_RowsLoading">[$EXP[Bald_RowsLoading_home] | [System.HasPVRAddon + !Skin.HasSetting(Bald.Screen.HideLiveTV) + $EXP[Bald_RowsLoading_livetv]] | [$EXP[Bald_HubShown_hub1] + $EXP[Bald_RowsLoading_hub1]] | [$EXP[Bald_HubShown_hub2] + $EXP[Bald_RowsLoading_hub2]] | [$EXP[Bald_HubShown_hub3] + $EXP[Bald_RowsLoading_hub3]] | [$EXP[Bald_HubShown_hub4] + $EXP[Bald_RowsLoading_hub4]] | [$EXP[Bald_HubShown_hub5] + $EXP[Bald_RowsLoading_hub5]] | [$EXP[Bald_HubShown_hub6] + $EXP[Bald_RowsLoading_hub6]] | [$EXP[Bald_HubShown_hub7] + $EXP[Bald_RowsLoading_hub7]] | [$EXP[Bald_HubShown_hub8] + $EXP[Bald_RowsLoading_hub8]]]</expression>
 	<expression name="Bald_RowsLoaded">[!$EXP[Bald_DialogOver] + !$EXP[Bald_RowsLoading]]</expression>
 	<!-- The splash: random library fanart, darkened like Home's backdrop, crossfading (1000) every 4.5 s, with the
 	     wordmark centred. List 9180 drives it: random movies then random shows, ten each, auto-advancing. It sits inside
@@ -290,62 +307,145 @@
 	</include>
 	<include name="Bald_ConfiguredArtLogos">
 		<include>Bald_ConfiguredArtLogos_home</include>
-		<include>Bald_ConfiguredArtLogos_movies</include>
-		<include>Bald_ConfiguredArtLogos_tvshows</include>
+		<include>Bald_ConfiguredArtLogos_livetv</include>
+		<include>Bald_ConfiguredArtLogos_hub1</include>
+		<include>Bald_ConfiguredArtLogos_hub2</include>
+		<include>Bald_ConfiguredArtLogos_hub3</include>
+		<include>Bald_ConfiguredArtLogos_hub4</include>
+		<include>Bald_ConfiguredArtLogos_hub5</include>
+		<include>Bald_ConfiguredArtLogos_hub6</include>
+		<include>Bald_ConfiguredArtLogos_hub7</include>
+		<include>Bald_ConfiguredArtLogos_hub8</include>
 	</include>
 	<!-- Home onload: clear every configured row's row-start mark (see Bald_Row). -->
 	<include name="Bald_RowStartReset">
 		<include>Bald_RowStartReset_home</include>
-		<include>Bald_RowStartReset_movies</include>
-		<include>Bald_RowStartReset_tvshows</include>
+		<include>Bald_RowStartReset_livetv</include>
+		<include>Bald_RowStartReset_hub1</include>
+		<include>Bald_RowStartReset_hub2</include>
+		<include>Bald_RowStartReset_hub3</include>
+		<include>Bald_RowStartReset_hub4</include>
+		<include>Bald_RowStartReset_hub5</include>
+		<include>Bald_RowStartReset_hub6</include>
+		<include>Bald_RowStartReset_hub7</include>
+		<include>Bald_RowStartReset_hub8</include>
+	</include>
+	<!-- Every screen's configured rows: built per install by Skin Variables from the widget editor's lists; until the first
+	     build, Includes_Bald_HomeDefaults.xml supplies the shipped defaults (see Includes.xml). Empty hub slots build
+	     empty definitions. -->
+	<include name="Bald_GeneratedRows">
+		<include>Bald_Generated_HomeWidgets</include>
+		<include>Bald_Generated_LiveTVWidgets</include>
+		<include>Bald_Generated_Hub1Widgets</include>
+		<include>Bald_Generated_Hub2Widgets</include>
+		<include>Bald_Generated_Hub3Widgets</include>
+		<include>Bald_Generated_Hub4Widgets</include>
+		<include>Bald_Generated_Hub5Widgets</include>
+		<include>Bald_Generated_Hub6Widgets</include>
+		<include>Bald_Generated_Hub7Widgets</include>
+		<include>Bald_Generated_Hub8Widgets</include>
 	</include>
 	<include name="Bald_ConfiguredCaptions">
 		<include>Bald_ConfiguredCaptions_home</include>
-		<include>Bald_ConfiguredCaptions_movies</include>
-		<include>Bald_ConfiguredCaptions_tvshows</include>
+		<include>Bald_ConfiguredCaptions_livetv</include>
+		<include>Bald_ConfiguredCaptions_hub1</include>
+		<include>Bald_ConfiguredCaptions_hub2</include>
+		<include>Bald_ConfiguredCaptions_hub3</include>
+		<include>Bald_ConfiguredCaptions_hub4</include>
+		<include>Bald_ConfiguredCaptions_hub5</include>
+		<include>Bald_ConfiguredCaptions_hub6</include>
+		<include>Bald_ConfiguredCaptions_hub7</include>
+		<include>Bald_ConfiguredCaptions_hub8</include>
 	</include>
 	<expression name="Bald_MenuOpen">[!String.IsEmpty(Window(home).Property(Bald.Menu))]</expression>
 	<!-- The menu entry being previewed (Bald.MenuPreview), by screen; the Bald_Preview* names below also need the menu open. -->
 	<expression name="Bald_MenuPreview_home">[String.IsEqual(Window(home).Property(Bald.MenuPreview),home)]</expression>
-	<expression name="Bald_MenuPreview_movies">[String.IsEqual(Window(home).Property(Bald.MenuPreview),movies)]</expression>
-	<expression name="Bald_MenuPreview_tvshows">[String.IsEqual(Window(home).Property(Bald.MenuPreview),tvshows)]</expression>
+	<expression name="Bald_MenuPreview_hub1">[String.IsEqual(Window(home).Property(Bald.MenuPreview),hub1)]</expression>
+	<expression name="Bald_MenuPreview_hub2">[String.IsEqual(Window(home).Property(Bald.MenuPreview),hub2)]</expression>
+	<expression name="Bald_MenuPreview_hub3">[String.IsEqual(Window(home).Property(Bald.MenuPreview),hub3)]</expression>
+	<expression name="Bald_MenuPreview_hub4">[String.IsEqual(Window(home).Property(Bald.MenuPreview),hub4)]</expression>
+	<expression name="Bald_MenuPreview_hub5">[String.IsEqual(Window(home).Property(Bald.MenuPreview),hub5)]</expression>
+	<expression name="Bald_MenuPreview_hub6">[String.IsEqual(Window(home).Property(Bald.MenuPreview),hub6)]</expression>
+	<expression name="Bald_MenuPreview_hub7">[String.IsEqual(Window(home).Property(Bald.MenuPreview),hub7)]</expression>
+	<expression name="Bald_MenuPreview_hub8">[String.IsEqual(Window(home).Property(Bald.MenuPreview),hub8)]</expression>
 	<expression name="Bald_MenuPreview_livetv">[String.IsEqual(Window(home).Property(Bald.MenuPreview),livetv)]</expression>
 	<expression name="Bald_MenuPreview_search">[String.IsEqual(Window(home).Property(Bald.MenuPreview),search)]</expression>
 	<expression name="Bald_MenuPreview_settings">[String.IsEqual(Window(home).Property(Bald.MenuPreview),settings)]</expression>
 	<!-- The screen whose rows are showing (Bald.Screen), and whether a row is current (Bald.Row). -->
 	<expression name="Bald_Screen_home">[String.IsEqual(Window(home).Property(Bald.Screen),home)]</expression>
-	<expression name="Bald_Screen_movies">[String.IsEqual(Window(home).Property(Bald.Screen),movies)]</expression>
-	<expression name="Bald_Screen_tvshows">[String.IsEqual(Window(home).Property(Bald.Screen),tvshows)]</expression>
+	<expression name="Bald_Screen_livetv">[String.IsEqual(Window(home).Property(Bald.Screen),livetv)]</expression>
+	<expression name="Bald_Screen_hub1">[String.IsEqual(Window(home).Property(Bald.Screen),hub1)]</expression>
+	<expression name="Bald_Screen_hub2">[String.IsEqual(Window(home).Property(Bald.Screen),hub2)]</expression>
+	<expression name="Bald_Screen_hub3">[String.IsEqual(Window(home).Property(Bald.Screen),hub3)]</expression>
+	<expression name="Bald_Screen_hub4">[String.IsEqual(Window(home).Property(Bald.Screen),hub4)]</expression>
+	<expression name="Bald_Screen_hub5">[String.IsEqual(Window(home).Property(Bald.Screen),hub5)]</expression>
+	<expression name="Bald_Screen_hub6">[String.IsEqual(Window(home).Property(Bald.Screen),hub6)]</expression>
+	<expression name="Bald_Screen_hub7">[String.IsEqual(Window(home).Property(Bald.Screen),hub7)]</expression>
+	<expression name="Bald_Screen_hub8">[String.IsEqual(Window(home).Property(Bald.Screen),hub8)]</expression>
 	<expression name="Bald_HasRow">[!String.IsEmpty(Window(home).Property(Bald.Row))]</expression>
 	<expression name="Bald_PreviewHome">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_home]]</expression>
-	<expression name="Bald_PreviewMovies">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_movies]]</expression>
-	<expression name="Bald_PreviewTVShows">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_tvshows]]</expression>
-	<expression name="Bald_WidgetPreview">[$EXP[Bald_PreviewHome] | $EXP[Bald_PreviewMovies] | $EXP[Bald_PreviewTVShows]]</expression>
+	<!-- Live TV previews as a screen only with a PVR add-on; without one it keeps the current screen's art, as before. -->
+	<expression name="Bald_PreviewLiveTV">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_livetv] + System.HasPVRAddon]</expression>
+	<expression name="Bald_PreviewHub1">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub1]]</expression>
+	<expression name="Bald_PreviewHub2">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub2]]</expression>
+	<expression name="Bald_PreviewHub3">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub3]]</expression>
+	<expression name="Bald_PreviewHub4">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub4]]</expression>
+	<expression name="Bald_PreviewHub5">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub5]]</expression>
+	<expression name="Bald_PreviewHub6">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub6]]</expression>
+	<expression name="Bald_PreviewHub7">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub7]]</expression>
+	<expression name="Bald_PreviewHub8">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub8]]</expression>
+	<expression name="Bald_WidgetPreview">[$EXP[Bald_PreviewHome] | $EXP[Bald_PreviewLiveTV] | $EXP[Bald_PreviewHub1] | $EXP[Bald_PreviewHub2] | $EXP[Bald_PreviewHub3] | $EXP[Bald_PreviewHub4] | $EXP[Bald_PreviewHub5] | $EXP[Bald_PreviewHub6] | $EXP[Bald_PreviewHub7] | $EXP[Bald_PreviewHub8]]</expression>
 	<expression name="Bald_EffectiveItemOdd">[[$EXP[Bald_WidgetPreview] + $EXP[Bald_PreviewItemOdd]] | [!$EXP[Bald_WidgetPreview] + $EXP[Bald_ItemOdd]]]</expression>
 	<expression name="Bald_EffectiveHasLogo">[[$EXP[Bald_WidgetPreview] + $EXP[Bald_PreviewHasLogo]] | [!$EXP[Bald_WidgetPreview] + $EXP[Bald_HasLogo]]]</expression>
 	<!-- The main menu or the context menu (restyled as the same menu over Home) is open: the caption slides out,
 	     the section line hides, the rows dim. -->
 	<expression name="Bald_OverlayOpen">[$EXP[Bald_MenuOpen] | Window.IsVisible(contextmenu)]</expression>
-	<!-- Menu open with a screen other than Home focused: its (placeholder) rows preview instead of Home's. -->
-	<expression name="Bald_PreviewOther">[$EXP[Bald_MenuOpen] + !$EXP[Bald_MenuPreview_home] + !$EXP[Bald_MenuPreview_movies] + !$EXP[Bald_MenuPreview_tvshows]]</expression>
+	<!-- Menu open on an entry that previews no rows (Search, Settings, Live TV without rows or PVR, a hub without rows):
+	     its label and note show in the row area instead. Bald_PreviewRows_<screen> is generated: previewed, enabled
+	     (Live TV needs a PVR add-on) and with rows. -->
+	<expression name="Bald_PreviewOther">[$EXP[Bald_MenuOpen] + !$EXP[Bald_MenuPreview_home] + !$EXP[Bald_PreviewRows_livetv] + !$EXP[Bald_PreviewRows_hub1] + !$EXP[Bald_PreviewRows_hub2] + !$EXP[Bald_PreviewRows_hub3] + !$EXP[Bald_PreviewRows_hub4] + !$EXP[Bald_PreviewRows_hub5] + !$EXP[Bald_PreviewRows_hub6] + !$EXP[Bald_PreviewRows_hub7] + !$EXP[Bald_PreviewRows_hub8]]</expression>
 	<variable name="Bald_MenuPreviewLabel">
 		<value condition="$EXP[Bald_MenuPreview_livetv]">$LOCALIZE[31700]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub1]">$VAR[Bald_HubLabel_hub1]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub2]">$VAR[Bald_HubLabel_hub2]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub3]">$VAR[Bald_HubLabel_hub3]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub4]">$VAR[Bald_HubLabel_hub4]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub5]">$VAR[Bald_HubLabel_hub5]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub6]">$VAR[Bald_HubLabel_hub6]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub7]">$VAR[Bald_HubLabel_hub7]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub8]">$VAR[Bald_HubLabel_hub8]</value>
 		<value condition="$EXP[Bald_MenuPreview_search]">$LOCALIZE[137]</value>
 		<value condition="$EXP[Bald_MenuPreview_settings]">$LOCALIZE[5]</value>
 	</variable>
 	<variable name="Bald_MenuPreviewNote">
 		<!-- The Home rows' labels, comma separated (generated; empty with no rows). -->
 		<value condition="$EXP[Bald_MenuPreview_home]">$VAR[Bald_RowsNote_home]</value>
-		<value condition="$EXP[Bald_MenuPreview_movies]">$LOCALIZE[31703]</value>
-		<value condition="$EXP[Bald_MenuPreview_tvshows]">$LOCALIZE[31704]</value>
+		<!-- Live TV: its rows' labels while they show, else that Select opens the guide. -->
+		<value condition="$EXP[Bald_PreviewRows_livetv]">$VAR[Bald_RowsNote_livetv]</value>
 		<value condition="$EXP[Bald_MenuPreview_livetv]">$LOCALIZE[31705]</value>
+		<!-- A hub: its rows' labels, else what Select does without rows (generated, Bald_HubNote_<screen>). -->
+		<value condition="$EXP[Bald_MenuPreview_hub1]">$VAR[Bald_HubNote_hub1]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub2]">$VAR[Bald_HubNote_hub2]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub3]">$VAR[Bald_HubNote_hub3]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub4]">$VAR[Bald_HubNote_hub4]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub5]">$VAR[Bald_HubNote_hub5]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub6]">$VAR[Bald_HubNote_hub6]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub7]">$VAR[Bald_HubNote_hub7]</value>
+		<value condition="$EXP[Bald_MenuPreview_hub8]">$VAR[Bald_HubNote_hub8]</value>
 		<value condition="$EXP[Bald_MenuPreview_search]">$LOCALIZE[31706]</value>
 		<value condition="$EXP[Bald_MenuPreview_settings]">$LOCALIZE[31707]</value>
 	</variable>
 	<expression name="Bald_Idle">[System.IdleTime(60) + Window.IsActive(home)]</expression>
 	<variable name="Bald_ScreenLabel">
-		<value condition="$EXP[Bald_Screen_movies]">$LOCALIZE[342]</value>
-		<value condition="$EXP[Bald_Screen_tvshows]">$LOCALIZE[31701]</value>
+		<value condition="$EXP[Bald_Screen_livetv]">$LOCALIZE[31700]</value>
+		<value condition="$EXP[Bald_Screen_hub1]">$VAR[Bald_HubLabel_hub1]</value>
+		<value condition="$EXP[Bald_Screen_hub2]">$VAR[Bald_HubLabel_hub2]</value>
+		<value condition="$EXP[Bald_Screen_hub3]">$VAR[Bald_HubLabel_hub3]</value>
+		<value condition="$EXP[Bald_Screen_hub4]">$VAR[Bald_HubLabel_hub4]</value>
+		<value condition="$EXP[Bald_Screen_hub5]">$VAR[Bald_HubLabel_hub5]</value>
+		<value condition="$EXP[Bald_Screen_hub6]">$VAR[Bald_HubLabel_hub6]</value>
+		<value condition="$EXP[Bald_Screen_hub7]">$VAR[Bald_HubLabel_hub7]</value>
+		<value condition="$EXP[Bald_Screen_hub8]">$VAR[Bald_HubLabel_hub8]</value>
 		<value>$LOCALIZE[10000]</value>
 	</variable>
 
@@ -866,7 +966,9 @@
 	<!-- A home row: label line plus fixedlist. Pass <content> elements as children. style picks the tiles and the
 	     label line's position (Bald_RowTiles_<style>, Bald_RowLabelTop_<style>, see Row styles above). Focus travels
 	     to slot (2 landscape, 5 poster), then the row scrolls (440 move); start is the item a fresh fixedlist selects
-	     there (slot + 1). Only the current row is visible; the others keep focus reachable with allowhiddenfocus. -->
+	     there (slot + 1). Only the current row is visible; the others keep focus reachable with allowhiddenfocus.
+	     menu is the screen's main-menu entry (Up from the first row, Back); a row shows only while enabled holds (Live
+	     TV rows need a PVR add-on). -->
 	<include name="Bald_Row">
 		<param name="id" />
 		<param name="y" />
@@ -875,6 +977,8 @@
 		<param name="dots">Bald_RowDotsNone</param>
 		<param name="dots_width">0</param>
 		<param name="screen">home</param>
+		<param name="menu">9001</param>
+		<param name="enabled">true</param>
 		<param name="up" />
 		<param name="down">noop</param>
 		<param name="style">fanart</param>
@@ -882,7 +986,7 @@
 		<param name="start">3</param>
 		<definition>
 			<control type="group">
-				<visible>[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]</visible>
+				<visible>$PARAM[enabled] + [[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
 				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
@@ -942,7 +1046,7 @@
 				     dialog is up: <visible> has no window context then, and NumItems would read empty for every row.
 				     Behind the startup splash every row, on every screen, counts as visible until its list has fetched
 				     (Bald_Preloading, see Bald_RowsLoaded), so it hides again before the splash lifts. -->
-				<visible allowhiddenfocus="true">[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + [[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !$EXP[Bald_DialogOver]]]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])] | [$EXP[Bald_Preloading] + Container($PARAM[id]).IsUpdating]</visible>
+				<visible allowhiddenfocus="true">$PARAM[enabled] + [[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + [[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !$EXP[Bald_DialogOver]]]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])] | [$EXP[Bald_Preloading] + Container($PARAM[id]).IsUpdating]]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
 				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
@@ -969,15 +1073,13 @@
 				     Conditions are evaluated before any of these actions run (CGUIAction::ExecuteActions). -->
 				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$PARAM[id])) + String.IsEqual(Container($PARAM[id]).CurrentItem,$PARAM[start]) + String.IsEqual(Container($PARAM[id]).Position,$PARAM[slot])">Control.Move($PARAM[id],-$PARAM[slot])</onfocus>
 				<onfocus condition="Integer.IsGreater(Container($PARAM[id]).NumItems,0)">SetProperty(Bald.Start$PARAM[id],1,home)</onfocus>
-				<!-- Opening the menu is screen-relative: keep the active screen selected instead of
-				     resetting the navigation model to Home. TV moves up one slot when Movies is disabled. -->
+				<!-- Opening the menu is screen-relative: focus the active screen's own entry (menu) instead of
+				     resetting the navigation model to Home. -->
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.Menu,1,home)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.RowStyle,$PARAM[style],home)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onup>
-				<onup condition="Integer.IsEqual($PARAM[index],1) + $EXP[Bald_Screen_home]">SetFocus(9001)</onup>
-				<onup condition="Integer.IsEqual($PARAM[index],1) + $EXP[Bald_Screen_movies]">SetFocus(9002)</onup>
-				<onup condition="Integer.IsEqual($PARAM[index],1) + $EXP[Bald_Screen_tvshows]">SetFocus(9003)</onup>
+				<onup condition="Integer.IsEqual($PARAM[index],1)">SetFocus($PARAM[menu])</onup>
 				<onup condition="!Integer.IsEqual($PARAM[index],1)">$PARAM[up]</onup>
 				<ondown>$PARAM[down]</ondown>
 				<onleft>SetProperty(Bald.NudgeL,$VAR[Bald_NudgeLNext],home)</onleft>
@@ -986,9 +1088,7 @@
 				<onback>SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onback>
 				<onback>SetProperty(Bald.RowStyle,$PARAM[style],home)</onback>
 				<onback>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onback>
-				<onback condition="$EXP[Bald_Screen_home]">SetFocus(9001)</onback>
-				<onback condition="$EXP[Bald_Screen_movies]">SetFocus(9002)</onback>
-				<onback condition="$EXP[Bald_Screen_tvshows]">SetFocus(9003)</onback>
+				<onback>SetFocus($PARAM[menu])</onback>
 				<onclick>Action(Info)</onclick>
 				<nested />
 			</control>
@@ -999,7 +1099,9 @@
 	<!-- One entry of the Home menu (grouplist 9000). Pass what Select does as <onclick> children (nested), or
 	     Bald_HomeMenuScreen for a screen with rows. Up and Down are the grouplist's: CGUIControlGroupList::AddControl
 	     points each entry at its neighbours (replacing any onup/ondown here) and CGUIWindow::OnMove passes over hidden
-	     entries, so disabled screens drop out; each entry's onfocus sets the preview. Left does what Select does. -->
+	     entries, so disabled screens and empty hub slots drop out; each entry's onfocus sets the preview. Left does
+	     what Select does while left_if holds (nested <onleft> children cover the rest); Right navigates to control
+	     right while right_if holds (a conditional numeric onright, as Estuary's channel manager uses). -->
 	<include name="Bald_HomeMenuButton">
 		<param name="id" />
 		<param name="label" />
@@ -1007,6 +1109,8 @@
 		<param name="visible">true</param>
 		<param name="suffix" />
 		<param name="right">noop</param>
+		<param name="right_if">true</param>
+		<param name="left_if">true</param>
 		<definition>
 			<control type="button" id="$PARAM[id]">
 				<left>-6</left><width>426</width><height>62</height><visible>$PARAM[visible]</visible>
@@ -1024,13 +1128,13 @@
 				<!-- The previewed screen's remembered row sets the art frame's shape (empty, a full frame, without rows). -->
 				<onfocus>SetProperty(Bald.RowStyle,$VAR[Bald_PreviewRowStyle],home)</onfocus>
 				<nested />
-				<onleft>Action(Select)</onleft>
-				<onright>$PARAM[right]</onright>
+				<onleft condition="$PARAM[left_if]">Action(Select)</onleft>
+				<onright condition="$PARAM[right_if]">$PARAM[right]</onright>
 				<onback condition="$EXP[Bald_HasRow]">ClearProperty(Bald.Menu,home)</onback><onback condition="$EXP[Bald_HasRow]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
 			</control>
 		</definition>
 	</include>
-	<!-- A screen entry (Home, Movies, TV shows): TMDb Helper follows the screen's remembered row while it is previewed;
+	<!-- A screen entry (Home, a hub): TMDb Helper follows the screen's remembered row while it is previewed;
 	     Select enters the screen on that row. -->
 	<include name="Bald_HomeMenuScreen">
 		<param name="screen" />
@@ -1043,6 +1147,59 @@
 			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetFocus($INFO[Window(home).Property(Bald.Row.$PARAM[screen])])</onclick>
 		</definition>
 	</include>
+	<!-- Hub slot n (1-8) of the main menu: the hub at position n in the Home Screens list (generated names, see
+	     shortcuts/generator/screen.xml). Hidden, and so skipped by the grouplist, when the slot is empty or the hub is
+	     turned off. Select enters its rows. Right opens its target, if it has one, through bridge 902n, and so does
+	     Select while the hub has no rows. -->
+	<include name="Bald_HomeMenuHub">
+		<param name="n" />
+		<definition>
+			<include content="Bald_HomeMenuButton">
+				<param name="id">901$PARAM[n]</param>
+				<param name="label">$VAR[Bald_HubLabel_hub$PARAM[n]]</param>
+				<param name="suffix">$VAR[Bald_HubSuffix_hub$PARAM[n]]</param>
+				<param name="preview">hub$PARAM[n]</param>
+				<param name="visible">$EXP[Bald_HubShown_hub$PARAM[n]]</param>
+				<param name="right">902$PARAM[n]</param>
+				<param name="right_if">$EXP[Bald_HubHasOpen_hub$PARAM[n]]</param>
+				<include content="Bald_HomeMenuScreen"><param name="screen">hub$PARAM[n]</param></include>
+				<onclick condition="!$EXP[Bald_HasRows_hub$PARAM[n]] + $EXP[Bald_HubHasOpen_hub$PARAM[n]]">SetFocus(902$PARAM[n])</onclick>
+			</include>
+		</definition>
+	</include>
+	<!-- The invisible bridge behind a hub's Right (and Select without rows): focusing it opens the hub's target
+	     (generated Bald_HubOpen_hub<n>: ActivateWindow for a library node, playlist or add-on path, else the builtin). -->
+	<include name="Bald_HubBridge">
+		<param name="n" />
+		<definition>
+			<control type="button" id="902$PARAM[n]">
+				<width>1</width><height>1</height><texturefocus /><texturenofocus />
+				<include content="Bald_HubOpen_hub$PARAM[n]" />
+			</control>
+		</definition>
+	</include>
+	<!-- Live TV's entry, with its own rows (Home Screens, Live TV). Select and Right open the guide as before; Left
+	     enters the rows while there are rows and a PVR add-on, else Left does what Select does. -->
+	<include name="Bald_HomeMenuLiveTV">
+		<definition>
+			<include content="Bald_HomeMenuButton">
+				<param name="id">9004</param>
+				<param name="label">$LOCALIZE[31700]</param>
+				<param name="preview">livetv</param>
+				<param name="visible">!Skin.HasSetting(Bald.Screen.HideLiveTV)</param>
+				<param name="right">9029</param>
+				<param name="left_if">!$EXP[Bald_LiveTVRows]</param>
+				<onfocus condition="$EXP[Bald_LiveTVRows]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.livetv)],home)</onfocus>
+				<onclick>ActivateWindow(TVGuide)</onclick>
+				<onleft condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Screen,livetv,home)</onleft>
+				<onleft condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.livetv)],home)</onleft>
+				<onleft condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_livetv],home)</onleft>
+				<onleft condition="$EXP[Bald_LiveTVRows]">ClearProperty(Bald.Menu,home)</onleft>
+				<onleft condition="$EXP[Bald_LiveTVRows]">SetFocus($INFO[Window(home).Property(Bald.Row.livetv)])</onleft>
+			</include>
+		</definition>
+	</include>
+	<expression name="Bald_LiveTVRows">[System.HasPVRAddon + $EXP[Bald_HasRows_livetv]]</expression>
 	<include name="Bald_MenuRowUnfocused">
 		<definition>
 			<control type="label"><left>20</left><width>400</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><label>$INFO[ListItem.Label]</label></control>

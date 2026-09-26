@@ -33,3 +33,23 @@
 {row_styles}
     <value>fanart</value>
 </variable>
+
+<expression name="Bald_PreviewRows_{screen}">[$EXP[Bald_Preview{title}] + {enabled} + $EXP[Bald_HasRows_{screen}]]</expression>
+<expression name="Bald_HubShown_{screen}">[false]{hub_shown}</expression>
+<expression name="Bald_HubHasOpen_{screen}">[false]{hub_has_open}</expression>
+<variable name="Bald_HubLabel_{screen}">
+    <value>{hub_label}</value>
+</variable>
+<variable name="Bald_HubSuffix_{screen}">
+    <value condition="$EXP[Bald_HubHasOpen_{screen}]">  ›</value>
+</variable>
+<variable name="Bald_HubNote_{screen}">
+    <value condition="$EXP[Bald_HasRows_{screen}]">$VAR[Bald_RowsNote_{screen}]</value>
+    <value condition="$EXP[Bald_HubHasOpen_{screen}]">$LOCALIZE[31201]</value>
+    <value>$LOCALIZE[31202]</value>
+</variable>
+<include name="Bald_HubOpen_{screen}">
+    <definition>
+{hub_open}
+    </definition>
+</include>

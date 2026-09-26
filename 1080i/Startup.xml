@@ -8,6 +8,13 @@
 	     (Timers.xml bald_preload); alarms and Home's properties outlive the reload a Home row rebuild triggers. -->
 	<onload condition="!Skin.HasSetting(Bald.DisablePreload) + String.IsEqual(System.StartupWindow,10000)">SetProperty(Bald.Preload,1,home)</onload>
 	<onload condition="!Skin.HasSetting(Bald.DisablePreload) + String.IsEqual(System.StartupWindow,10000)">AlarmClock(bald_preload,noop,00:10,silent)</onload>
+	<!-- Home hubs (docs/NOTES.md, Home hubs): move the old Movies and TV shows screens, their row lists and their on/off
+	     switches (Bald.Screen.Movies, Bald.Screen.TVShows) into the hubs list, once. scripts/hubs.py sets
+	     Bald.HubsMigrated when done; Bald.HubsMigrating tells Home it is already running, and Home skips its row build
+	     until the marker is set. Home starts it itself after a live skin update or ReloadSkin, where Startup does not run.
+	     Both actions' conditions are evaluated before either runs. -->
+	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated))">SetProperty(Bald.HubsMigrating,1,home)</onload>
+	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(skin.bald,hubs)</onload>
 	<!-- Estuary's video OSD auto-close (OSDAutoClose, OSDAutoCloseTime, default 4 s) became Bald.OSD.AutoClose
 	     (Bald Settings, Playback). Carry an old choice over once, then clear the old settings. -->
 	<onload condition="Skin.HasSetting(OSDAutoClose) + String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.SetString(Bald.OSD.AutoClose,4)</onload>

@@ -137,7 +137,7 @@ Layout, all absolute at 1080:
 | Clock and date | 1440, 104, width 384 | |
 | ~~Callout~~ | Removed 2026-09-24 after a trial in Kodi: the Home screen reads better without the dot and hairline. | Was: dot 10 px at 1339, 505; hairline to 1440 at y 510, ink 50%; dot pops, line grows from the left |
 | Caption | 1440, 420, width 384 | Title, meta, flags (movies only), ratings (5.22), accent line, plot |
-| Menu (open) | 1440, 392, width 420 | Vertical list, 6 px gap; note paragraph below |
+| Menu (open) | 1440, 392, width 420 | Vertical list, 6 px gap; note paragraph below. Entries: Home, up to eight hubs in the user's order, Live TV, Search, Settings (2026-09-26; see Hubs below) |
 | Section line | left 1440, bottom 88 | Accent dot 8 px, current screen name, "Back for menu" hint |
 | Row label line | 96, 856 | Label, row dots (6 px, active 95%, others 28%), count |
 | Row | 96, 894, clip width 1248 | Landscape tiles 176 by 99, gap 16. ~~Poster tiles 66 by 99, gap 12.~~ Poster rows: see Row styles below. |
@@ -161,15 +161,17 @@ Title handling: caption title is always text. The clearlogo only ever appears on
 | Row | Select | Open info (movie or TV) |
 | Row | Context (C) | Kodi's context menu for the item (Play, Information, Mark as watched, add-on entries), drawn as the Home menu: caption slides out, items slide in at the menu position. Changed 2026-09-24 at the user's request; this replaces "Customize home, jumped to this row (0.2)", which stays reachable from the menu's last item. |
 | Menu | Up or Down | Move; preview that screen at its last active widget row and item |
-| Menu | Left or Select | Enter the screen (screens without rows stay in the menu) |
-| Menu | Right | Open the selected screen's full native library when a disclosure chevron is shown |
+| Menu | Left or Select | Enter the screen on its remembered row. A hub without rows opens its target instead (if it has one); Home without rows stays in the menu. Live TV: Select opens the guide, Left enters its rows (with rows and a PVR add-on) |
+| Menu | Right | Open the selected hub's target (library node, playlist, add-on folder or window) when a disclosure chevron is shown; on Live TV, open the guide |
 | Menu | Back | Close without switching |
 | Menu | Settings | Open Kodi's native Settings hub (alpha maintenance access) |
 | Menu | Last item | Customize home (0.2) |
 
 Menu state lives in a window property (for example `Window(Home).Property(MenuOpen)`), set in `onup`, `onback` and `onleft` handlers. Caption, menu and section line animate on that property with conditional animations.
 
-Settings separates Kodi's native categories from a dedicated **Bald Settings** tile and customization view. Customization uses Arctic Fuse 3's screen-first behavior as a reference: Home is mandatory and enabled by default; Movies and TV Shows are optional screens, each with its own independent widget node. Live TV is an optional menu destination, enabled by default, which opens the guide and has no widget editor. Enabling an optional screen adds it to the Home main menu; disabling it removes the menu entry rather than falling back to a different native-library action. Each widget screen supports up to 20 ordered rows. The editor regenerates the three Home-screen includes when it closes. CoreELEC and LibreELEC use their native service launch actions (`RunAddon(service.coreelec.settings)` and `RunAddon(service.libreelec.settings)`) and appear only when the corresponding service is enabled; unsupported platforms therefore show no dead entry.
+Settings separates Kodi's native categories from a dedicated **Bald Settings** tile and customization view. Customization uses Arctic Fuse 3's screen-first behavior as a reference: Home is mandatory and enabled by default.
+
+Hubs (2026-09-26, replaces the fixed Movies and TV Shows screens): between Home and Live TV the menu lists up to eight **hubs**, in the order the user sets in Home Screens (5.4). Each hub has a name, its own widget rows (styles and per-row clearlogo switch exactly as on Home) and an optional open target (library node, playlist, add-on folder or window action) that Right opens, and Select too while the hub has no rows; a hub with a target shows the disclosure chevron. A hub can be turned off (hidden from the menu, rows kept) or removed. A fresh install seeds two hubs, Movies (movie titles) and TV shows (TV show titles), with the rows the old screens shipped; an existing install's Movies and TV Shows screens become hubs 1 and 2 with their rows, targets and on/off state (docs/NOTES.md, Home hubs). Kodi cannot create controls at runtime, so Home has eight fixed hub slots; an empty slot builds nothing. Live TV is a fixed, hideable menu destination, enabled by default, with its own widget rows (defaults: recently played channels, recent recordings, upcoming recordings; shown only with a PVR add-on); Select and Right open the guide and Left enters its rows. Disabling a hub or Live TV removes the menu entry rather than falling back to a different native-library action. Each widget screen supports up to 20 ordered rows. Home rebuilds its menu and rows on its next load after the widget editor or Home Screens closes. CoreELEC and LibreELEC use their native service launch actions (`RunAddon(service.coreelec.settings)` and `RunAddon(service.libreelec.settings)`) and appear only when the corresponding service is enabled; unsupported platforms therefore show no dead entry.
 
 Context menu update (2026-09-25): show at most five actions, scrolling as focus moves beyond the visible entries, with no wrapping at either end. Keep the main menu's instant scroll and 56 px buttons / 6 px gaps. The selected action's tooltip uses the same note position (1466,714), 394 px width, font and opacity as Home. Native and known add-on actions have descriptions; unknown actions use a generic label-based hint.
 
@@ -235,6 +237,8 @@ Art dims to 70% field at rest on this screen because content runs the full heigh
 ### 5.4 Customize home (0.2, not in alpha 0.1)
 
 Three columns, fully D-pad driven: Screens (plus Add screen, Appearance), the screen's settings and rows, and the row's settings (Content, Style, Items, move, remove). Select cycles values. Build on script.skinvariables, as Arctic Fuse does, so menus and widgets are stored as JSON and rendered into includes.
+
+As built (2026-09-26): Home Screens (window 1117) lists Home, the user's hubs in menu order, Live TV and **Add hub**. For a hub: Show in the main menu, Configure widgets (the widget editor, 1116, on that hub's rows), Rename, Opens (browse a library node, Bald playlist or video add-on, or type a path or builtin), Clear target, Move up, Move down, Remove hub. Home has Configure widgets; Live TV has Show in the main menu and Configure widgets. Add hub picks the new hub's target from the same browser and names the hub after it; it is hidden once there are eight. The hubs are one Skin Variables menu (`hubs`), each entry holding its own rows, so moving or removing a hub carries its rows along.
 
 Appearance settings: Clearlogo on artwork (default on), blurred fanart backgrounds (default on), media flags (default on), Ambient when idle (default on), and an optional auto-hide for the Home navigation hint. The Estuary settings still worth keeping live in the same categories (section 5.21): fanart behind other library pages (default on), posters for music videos, genre background, weather background and weather icon packs (Artwork); titles in list views, profile name and temperature in page headers (Information); scroll long plots (Behavior). Bald Settings follows Arctic Fuse 3's launcher pattern: its Customization entry opens the screen-first widget editor, while Appearance opens a focused Bald-owned settings window instead of the inherited Estuary skin settings.
 
@@ -482,7 +486,7 @@ Not in the prototype. The ratings the user's library already holds, from NFO fil
 | Home | Recently added movies, Continue watching (movies and episodes), Next up |
 | Movies | In progress, In 4K (poster), Unwatched (poster) |
 | TV shows | Next up, All shows (poster) |
-| Live TV | None (select opens the guide) |
+| Live TV | None (select opens the guide). Since 2026-09-26: recently played channels, recent recordings, upcoming recordings, with a PVR add-on |
 | Search | None |
 
 Content sources to confirm for Kodi 22: recently added (`videodb://recentlyaddedmovies/`), smart playlists in `special://skin/playlists/` for in progress, unwatched and 4K. Next up and a mixed movies-plus-episodes Continue watching need either TMDb Helper or script.skinvariables; confirm which Kodi 22 compatible option provides them.

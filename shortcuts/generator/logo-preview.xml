@@ -3,7 +3,7 @@
 <contents>
     <items>
         <item>
-            <items menu="{menu}" mode="submenu">
+            <items menu="{menu}" item="{node}" mode="{mode}">
                 <item>
                     <condition>{item_logo}!=off</condition>
                     <template>generator/logo.xmltemplate</template>

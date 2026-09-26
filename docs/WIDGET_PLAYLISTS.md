@@ -10,19 +10,27 @@ defaults fast, predictable and usable without a metadata add-on.
 
 ## Fixed-layout defaults
 
-A fresh install starts with these rows. They come from `shortcuts/skinvariables-shortcut-*widgets.json`,
+A fresh install starts with these rows. They come from `shortcuts/skinvariables-shortcut-homewidgets.json`,
+`...-livetvwidgets.json` and the seeded hubs in `...-hubs.json` (each hub's rows are its `widgets`),
 which `tools/build_home_defaults.py` bakes into `1080i/Includes_Bald_HomeDefaults.xml`; keep this
-table in step with those files:
+table in step with those files. Movies and TV shows are ordinary hubs (slots 1 and 2), so the user can
+rename, reorder or remove them (docs/NOTES.md, Home hubs):
 
 | Screen | Widget | Source |
 | --- | --- | --- |
 | Home | Recently added movies | `videodb://recentlyaddedmovies/` |
 | Home | Continue watching | `special://skin/playlists/inprogress_movies.xsp` plus `special://skin/playlists/inprogress_episodes.xsp` |
 | Home | Next up | `videodb://inprogresstvshows/` |
-| Movies | Recently added movies | `videodb://recentlyaddedmovies/` |
-| Movies | Top rated movies | `special://skin/playlists/top_rated_movies.xsp` |
-| TV shows | Recently added episodes | `videodb://recentlyaddedepisodes/` |
-| TV shows | Top rated TV shows | `special://skin/playlists/top_rated_tvshows.xsp` |
+| Movies hub | Recently added movies | `videodb://recentlyaddedmovies/` |
+| Movies hub | Top rated movies | `special://skin/playlists/top_rated_movies.xsp` |
+| TV shows hub | Recently added episodes | `videodb://recentlyaddedepisodes/` |
+| TV shows hub | Top rated TV shows | `special://skin/playlists/top_rated_tvshows.xsp` |
+| Live TV | Recently played channels | `pvr://channels/tv/*?view=lastplayed`, sorted by last played, newest first |
+| Live TV | Recent recordings | `pvr://recordings/tv/active?view=flat`, sorted by date, newest first |
+| Live TV | Upcoming recordings | `pvr://timers/tv/timers/?view=hidedisabled`, sorted by date, soonest first |
+
+The Live TV paths, sorts and targets (`tvchannels`, `tvrecordings`, `tvtimers`) are the ones Kodi 22's
+bundled Estuary uses for its Home PVR widgets. Live TV rows show only with a PVR add-on.
 
 Kodi smart playlists cannot safely combine movies and episodes. Continue watching
 therefore remains two typed content sources in one widget. Kodi concatenates those

@@ -6,8 +6,15 @@ from pathlib import Path
 
 PO = Path(__file__).resolve().parents[1] / "language" / "resource.language.en_gb" / "strings.po"
 BALD_RANGE = range(31700, 32000)
-# Bald strings placed in the gap Estuary left (31178-31596): ratings (Includes_Bald_Ratings.xml).
+# Bald strings placed in the gap Estuary left (31178-31596): Home hubs and ratings (Includes_Bald_Ratings.xml).
 RATINGS_RANGE = range(31300, 31400)
+BALD_EXTRA_RANGES = (range(31200, 31300), RATINGS_RANGE)
+
+
+def is_bald(num):
+    return num in BALD_RANGE or any(num in extra for extra in BALD_EXTRA_RANGES)
+
+
 LOCALIZE = re.compile(r"\$LOCALIZE\[(\d+)\]")
 _ENTRY = re.compile(r'^msgctxt "#(\d+)"\nmsgid "((?:[^"\\]|\\.)*)"', re.M)
 
@@ -15,10 +22,6 @@ _ENTRY = re.compile(r'^msgctxt "#(\d+)"\nmsgid "((?:[^"\\]|\\.)*)"', re.M)
 def strings():
     """Every numbered skin string in en_gb, id -> msgid."""
     return {int(num): text for num, text in _ENTRY.findall(PO.read_text(encoding="utf-8"))}
-
-
-def is_bald(num):
-    return num in BALD_RANGE or num in RATINGS_RANGE
 
 
 def bald_strings():

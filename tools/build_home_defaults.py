@@ -8,8 +8,9 @@ file before this fallback, so the fallback only fills in until the first build h
 without a build).
 
 This script renders the same generator config from the shipped row defaults
-(shortcuts/skinvariables-shortcut-<menu>.json), following Skin Variables 2.2.4's template rules for the features
-Bald's generator files use: datafiles, <lists>, <items menu> loops, <value>, <rules>, <condition> with a==b / a!=b,
+(shortcuts/skinvariables-shortcut-<menu>.json: homewidgets, livetvwidgets, and hubs with each hub's rows in its
+"widgets" list), following Skin Variables 2.2.4's template rules for the features
+Bald's generator files use: datafiles, <lists>, <items menu item mode> loops (menu nodes as get_menunode walks them), <value>, <rules>, <condition> with a==b / a!=b,
 $MATH[] (space separated, evaluated left to right) and {name} fields. It also stamps "buildv" in the generator
 config with a digest of the generator inputs, so a skin update that changes them makes Skin Variables rebuild
 (its build hash covers the config file text, not the files it loads).
@@ -201,10 +202,28 @@ def render_lists(part, fields):
     return output
 
 
+def menu_node(menu, node, mode):
+    """The items <items menu item mode> loops over, as Skin Variables' get_menunode finds them: the menu itself when
+    node is empty, else the <mode> list ("submenu" or "widgets") of the item at that dotted position, walking
+    submenus on the way. A position past the end of a list is an empty item, so it loops over nothing."""
+    items = menu_items(menu)
+    path = [int(part) for part in node.split(".") if part]
+    if not path:
+        return items
+
+    def item_at(entries, index):
+        return entries[index] if 0 <= index < len(entries) else {}
+
+    for index in path[:-1]:
+        items = item_at(items, index).get("submenu") or []
+    return item_at(items, path[-1]).get(mode or "submenu") or []
+
+
 def render_menu(part, fields):
     menu = expand(part.get("menu", ""), fields)
+    node = expand(part.get("item", ""), fields)
     mode = expand(part.get("mode", ""), fields)
-    items = menu_items(menu)
+    items = menu_node(menu, node, mode)
     output = []
     for index, entry in enumerate(items):
         for action_index, action in enumerate(part["for_each"]):
@@ -212,7 +231,7 @@ def render_menu(part, fields):
             item_fields.update({f"parent_{k}": v for k, v in list(item_fields.items())})
             item_fields.update({f"item_{k}": v for k, v in entry.items() if k not in {"submenu", "widgets"}})
             item_fields.update({"item_x": index, "item_action_x": action_index, "item_length_x": len(items),
-                                "item_menu": menu, "item_node": "", "item_mode": mode})
+                                "item_menu": menu, "item_node": node, "item_mode": mode})
             output += render(action, item_fields)
     return output
 
@@ -229,7 +248,9 @@ def build_xml(config):
 
 def generator_digest():
     digest = hashlib.sha1()
-    inputs = sorted((SHORTCUTS / "generator").iterdir()) + sorted(SHORTCUTS.glob("skinvariables-shortcut-*widgets.json"))
+    inputs = sorted((SHORTCUTS / "generator").iterdir()) + sorted(
+        path for path in SHORTCUTS.glob("skinvariables-shortcut-*.json")
+        if path.name.endswith("widgets.json") or path.name == "skinvariables-shortcut-hubs.json")
     for path in inputs:
         digest.update(path.relative_to(SHORTCUTS).as_posix().encode())
         digest.update(b"\0")

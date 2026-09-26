@@ -4,11 +4,12 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from conditions import has_action, same_actions
+from home_screens import SCREENS as HOME_SCREENS, row_ids
 
 
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
-SCREENS = (("home", "Home", 9100), ("movies", "Movies", 9200), ("tvshows", "TVShows", 9300))
+SCREENS = tuple((screen, title, base) for screen, title, base, _ in HOME_SCREENS)
 PRISTINE = ("String.IsEmpty(Window(home).Property(Bald.Start{id})) + String.IsEqual(Container({id}).CurrentItem,{start})"
             " + String.IsEqual(Container({id}).Position,{slot})")
 
@@ -19,8 +20,7 @@ def pristine(row, slot):
 
 
 def configured(screen, base):
-    rows = json.loads((ROOT / "shortcuts" / f"skinvariables-shortcut-{screen}widgets.json").read_text())
-    return [base + index for index in range(1, len(rows) + 1)]
+    return row_ids(screen)
 
 
 class HomeRowStartTests(unittest.TestCase):
@@ -77,7 +77,8 @@ class HomeRowStartTests(unittest.TestCase):
     def test_rows_shown_before_focus_keep_their_timers(self):
         timers = ET.parse(XML / "Timers.xml").getroot()
         names = {timer.findtext("name") for timer in timers.findall("timer")}
-        for row in (9101, 9102, 9103, 9201, 9301):
+        # Home's first three rows, and the first row of Live TV and of every hub slot (each previews in the menu).
+        for row in (9101, 9102, 9103, 9051, 9201, 9301, 9401, 9501, 9601, 9701, 9801, 9901):
             self.assertIn(f"bald_rowstart_{row}", names)
             # The row may be a landscape (slot 2) or poster (slot 5) row; the timer moves it by its own slot.
             timer = next(node for node in timers.findall("timer") if node.findtext("name") == f"bald_rowstart_{row}")

@@ -10,6 +10,8 @@
                 <param name="label">Recently added movies</param>
                 <param name="index">1</param>
                 <param name="screen">home</param>
+                <param name="menu">9001</param>
+                <param name="enabled">true</param>
                 <param name="up">SetFocus(9000,0,absolute)</param>
                 <param name="down">9102</param>
                 <param name="dots">Bald_RowDots_9101</param>
@@ -25,6 +27,8 @@
                 <param name="label">Continue watching</param>
                 <param name="index">2</param>
                 <param name="screen">home</param>
+                <param name="menu">9001</param>
+                <param name="enabled">true</param>
                 <param name="up">9101</param>
                 <param name="down">9103</param>
                 <param name="dots">Bald_RowDots_9102</param>
@@ -41,6 +45,8 @@
                 <param name="label">Next up</param>
                 <param name="index">3</param>
                 <param name="screen">home</param>
+                <param name="menu">9001</param>
+                <param name="enabled">true</param>
                 <param name="up">9102</param>
                 <param name="down"/>
                 <param name="dots">Bald_RowDots_9103</param>
@@ -257,13 +263,310 @@
         <value condition="String.IsEqual(Window(home).Property(Bald.Row.home),9103)">fanart</value>
         <value>fanart</value>
     </variable>
-    <include name="Bald_Generated_MoviesWidgets">
+    <expression name="Bald_PreviewRows_home">[$EXP[Bald_PreviewHome] + true + $EXP[Bald_HasRows_home]]</expression>
+    <expression name="Bald_HubShown_home">[false]</expression>
+    <expression name="Bald_HubHasOpen_home">[false]</expression>
+    <variable name="Bald_HubLabel_home">
+        <value/>
+    </variable>
+    <variable name="Bald_HubSuffix_home">
+        <value condition="$EXP[Bald_HubHasOpen_home]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_home">
+        <value condition="$EXP[Bald_HasRows_home]">$VAR[Bald_RowsNote_home]</value>
+        <value condition="$EXP[Bald_HubHasOpen_home]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_home">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_Generated_LiveTVWidgets">
+        <definition>
+            <include content="Bald_Row">
+                <param name="id">9051</param>
+                <param name="label">Recently played channels</param>
+                <param name="index">1</param>
+                <param name="screen">livetv</param>
+                <param name="menu">9004</param>
+                <param name="enabled">System.HasPVRAddon</param>
+                <param name="up">SetFocus(9000,0,absolute)</param>
+                <param name="down">9052</param>
+                <param name="dots">Bald_RowDots_9051</param>
+                <param name="dots_width">30</param>
+                <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
+                <content target="tvchannels" limit="25" browse="never" sortby="lastplayed" sortorder="descending">pvr://channels/tv/*?view=lastplayed</content>
+                <include>Bald_RowStart_9052</include>
+            </include>
+            <include content="Bald_Row">
+                <param name="id">9052</param>
+                <param name="label">Recent recordings</param>
+                <param name="index">2</param>
+                <param name="screen">livetv</param>
+                <param name="menu">9004</param>
+                <param name="enabled">System.HasPVRAddon</param>
+                <param name="up">9051</param>
+                <param name="down">9053</param>
+                <param name="dots">Bald_RowDots_9052</param>
+                <param name="dots_width">30</param>
+                <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
+                <content target="tvrecordings" limit="25" browse="never" sortby="date" sortorder="descending">pvr://recordings/tv/active?view=flat</content>
+                <include>Bald_RowStart_9053</include>
+            </include>
+            <include content="Bald_Row">
+                <param name="id">9053</param>
+                <param name="label">Upcoming recordings</param>
+                <param name="index">3</param>
+                <param name="screen">livetv</param>
+                <param name="menu">9004</param>
+                <param name="enabled">System.HasPVRAddon</param>
+                <param name="up">9052</param>
+                <param name="down"/>
+                <param name="dots">Bald_RowDots_9053</param>
+                <param name="dots_width">30</param>
+                <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
+                <content target="tvtimers" limit="25" browse="never" sortby="date" sortorder="ascending">pvr://timers/tv/timers/?view=hidedisabled</content>
+            </include>
+        </definition>
+    </include>
+    <include name="Bald_RowDots_9051">
+        <definition>
+            <control type="image">
+                <left>0</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
+            </control>
+            <control type="image">
+                <left>12</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
+            </control>
+            <control type="image">
+                <left>24</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
+            </control>
+        </definition>
+    </include>
+    <variable name="Bald_RowsNote_livetv_1">
+        <value>Recently played channels, $VAR[Bald_RowsNote_livetv_2]</value>
+    </variable>
+    <include name="Bald_RowStart_9051">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9051)) + String.IsEqual(Container(9051).CurrentItem,3) + String.IsEqual(Container(9051).Position,2)">SetProperty(Bald.Start9051,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9051)) + String.IsEqual(Container(9051).CurrentItem,3) + String.IsEqual(Container(9051).Position,2)">Control.Move(9051,-2)</onfocus>
+        </definition>
+    </include>
+    <include name="Bald_RowDots_9052">
+        <definition>
+            <control type="image">
+                <left>0</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
+            </control>
+            <control type="image">
+                <left>12</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
+            </control>
+            <control type="image">
+                <left>24</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
+            </control>
+        </definition>
+    </include>
+    <variable name="Bald_RowsNote_livetv_2">
+        <value>Recent recordings, $VAR[Bald_RowsNote_livetv_3]</value>
+    </variable>
+    <include name="Bald_RowStart_9052">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9052)) + String.IsEqual(Container(9052).CurrentItem,3) + String.IsEqual(Container(9052).Position,2)">SetProperty(Bald.Start9052,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9052)) + String.IsEqual(Container(9052).CurrentItem,3) + String.IsEqual(Container(9052).Position,2)">Control.Move(9052,-2)</onfocus>
+        </definition>
+    </include>
+    <include name="Bald_RowDots_9053">
+        <definition>
+            <control type="image">
+                <left>0</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
+            </control>
+            <control type="image">
+                <left>12</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
+            </control>
+            <control type="image">
+                <left>24</left>
+                <top>10</top>
+                <width>6</width>
+                <height>6</height>
+                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
+            </control>
+        </definition>
+    </include>
+    <variable name="Bald_RowsNote_livetv_3">
+        <value>Upcoming recordings</value>
+    </variable>
+    <include name="Bald_RowStart_9053">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9053)) + String.IsEqual(Container(9053).CurrentItem,3) + String.IsEqual(Container(9053).Position,2)">SetProperty(Bald.Start9053,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9053)) + String.IsEqual(Container(9053).CurrentItem,3) + String.IsEqual(Container(9053).Position,2)">Control.Move(9053,-2)</onfocus>
+        </definition>
+    </include>
+    <include name="Bald_RowStartReset_livetv">
+        <definition>
+            <onload>ClearProperty(Bald.Start9051,home)</onload>
+            <onload>ClearProperty(Bald.Start9052,home)</onload>
+            <onload>ClearProperty(Bald.Start9053,home)</onload>
+        </definition>
+    </include>
+    <include name="Bald_ConfiguredArtLogos_livetv">
+        <definition>
+            <include content="Bald_ArtLogo">
+                <param name="c">9051</param>
+                <param name="p">Odd</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)</param>
+            </include>
+            <include content="Bald_ArtLogo">
+                <param name="c">9051</param>
+                <param name="p">Even</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)</param>
+            </include>
+            <include content="Bald_ArtLogo">
+                <param name="c">9052</param>
+                <param name="p">Odd</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)</param>
+            </include>
+            <include content="Bald_ArtLogo">
+                <param name="c">9052</param>
+                <param name="p">Even</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)</param>
+            </include>
+            <include content="Bald_ArtLogo">
+                <param name="c">9053</param>
+                <param name="p">Odd</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)</param>
+            </include>
+            <include content="Bald_ArtLogo">
+                <param name="c">9053</param>
+                <param name="p">Even</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)</param>
+            </include>
+        </definition>
+    </include>
+    <include name="Bald_ConfiguredCaptions_livetv">
+        <definition>
+            <include content="Bald_Caption">
+                <param name="c">9051</param>
+                <param name="p">Odd</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)</param>
+            </include>
+            <include content="Bald_Caption">
+                <param name="c">9051</param>
+                <param name="p">Even</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)</param>
+            </include>
+            <include content="Bald_Caption">
+                <param name="c">9052</param>
+                <param name="p">Odd</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)</param>
+            </include>
+            <include content="Bald_Caption">
+                <param name="c">9052</param>
+                <param name="p">Even</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)</param>
+            </include>
+            <include content="Bald_Caption">
+                <param name="c">9053</param>
+                <param name="p">Odd</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)</param>
+            </include>
+            <include content="Bald_Caption">
+                <param name="c">9053</param>
+                <param name="p">Even</param>
+                <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)</param>
+            </include>
+        </definition>
+    </include>
+    <expression name="Bald_HasRows_livetv">[false]| [true]
+| [true]
+| [true]</expression>
+    <expression name="Bald_RowsLoading_livetv">[false]| [Container(9051).IsUpdating]
+| [Container(9052).IsUpdating]
+| [Container(9053).IsUpdating]</expression>
+    <expression name="Bald_ItemOdd_livetv">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9051) + Integer.IsOdd(Container(9051).CurrentItem)]
+| [String.IsEqual(Window(home).Property(Bald.Row),9052) + Integer.IsOdd(Container(9052).CurrentItem)]
+| [String.IsEqual(Window(home).Property(Bald.Row),9053) + Integer.IsOdd(Container(9053).CurrentItem)]</expression>
+    <expression name="Bald_HasLogo_livetv">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9051) + [!String.IsEmpty(Container(9051).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9051).ListItem.Art(tvshow.clearlogo))]]
+| [String.IsEqual(Window(home).Property(Bald.Row),9052) + [!String.IsEmpty(Container(9052).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9052).ListItem.Art(tvshow.clearlogo))]]
+| [String.IsEqual(Window(home).Property(Bald.Row),9053) + [!String.IsEmpty(Container(9053).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9053).ListItem.Art(tvshow.clearlogo))]]</expression>
+    <expression name="Bald_PreviewItemOdd_livetv">[false]| [$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + Integer.IsOdd(Container(9051).CurrentItem)]
+| [$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + Integer.IsOdd(Container(9052).CurrentItem)]
+| [$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + Integer.IsOdd(Container(9053).CurrentItem)]</expression>
+    <expression name="Bald_PreviewHasLogo_livetv">[false]| [$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + [!String.IsEmpty(Container(9051).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9051).ListItem.Art(tvshow.clearlogo))]]
+| [$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + [!String.IsEmpty(Container(9052).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9052).ListItem.Art(tvshow.clearlogo))]]
+| [$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + [!String.IsEmpty(Container(9053).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9053).ListItem.Art(tvshow.clearlogo))]]</expression>
+    <variable name="Bald_RowsNote_livetv">
+        <value>$VAR[Bald_RowsNote_livetv_1]</value>
+        <value/>
+    </variable>
+    <variable name="Bald_RowStyle_livetv">
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)">fanart</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)">fanart</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)">fanart</value>
+        <value>fanart</value>
+    </variable>
+    <expression name="Bald_PreviewRows_livetv">[$EXP[Bald_PreviewLiveTV] + System.HasPVRAddon + $EXP[Bald_HasRows_livetv]]</expression>
+    <expression name="Bald_HubShown_livetv">[false]</expression>
+    <expression name="Bald_HubHasOpen_livetv">[false]</expression>
+    <variable name="Bald_HubLabel_livetv">
+        <value/>
+    </variable>
+    <variable name="Bald_HubSuffix_livetv">
+        <value condition="$EXP[Bald_HubHasOpen_livetv]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_livetv">
+        <value condition="$EXP[Bald_HasRows_livetv]">$VAR[Bald_RowsNote_livetv]</value>
+        <value condition="$EXP[Bald_HubHasOpen_livetv]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_livetv">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_Generated_Hub1Widgets">
         <definition>
             <include content="Bald_Row">
                 <param name="id">9201</param>
                 <param name="label">Recently added movies</param>
                 <param name="index">1</param>
-                <param name="screen">movies</param>
+                <param name="screen">hub1</param>
+                <param name="menu">9011</param>
+                <param name="enabled">true</param>
                 <param name="up">SetFocus(9000,0,absolute)</param>
                 <param name="down">9202</param>
                 <param name="dots">Bald_RowDots_9201</param>
@@ -278,7 +581,9 @@
                 <param name="id">9202</param>
                 <param name="label">Top rated movies</param>
                 <param name="index">2</param>
-                <param name="screen">movies</param>
+                <param name="screen">hub1</param>
+                <param name="menu">9011</param>
+                <param name="enabled">true</param>
                 <param name="up">9201</param>
                 <param name="down"/>
                 <param name="dots">Bald_RowDots_9202</param>
@@ -308,8 +613,8 @@
             </control>
         </definition>
     </include>
-    <variable name="Bald_RowsNote_movies_1">
-        <value>Recently added movies, $VAR[Bald_RowsNote_movies_2]</value>
+    <variable name="Bald_RowsNote_hub1_1">
+        <value>Recently added movies, $VAR[Bald_RowsNote_hub1_2]</value>
     </variable>
     <include name="Bald_RowStart_9201">
         <definition>
@@ -335,7 +640,7 @@
             </control>
         </definition>
     </include>
-    <variable name="Bald_RowsNote_movies_2">
+    <variable name="Bald_RowsNote_hub1_2">
         <value>Top rated movies</value>
     </variable>
     <include name="Bald_RowStart_9202">
@@ -344,88 +649,109 @@
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">Control.Move(9202,-2)</onfocus>
         </definition>
     </include>
-    <include name="Bald_RowStartReset_movies">
+    <include name="Bald_RowStartReset_hub1">
         <definition>
             <onload>ClearProperty(Bald.Start9201,home)</onload>
             <onload>ClearProperty(Bald.Start9202,home)</onload>
         </definition>
     </include>
-    <include name="Bald_ConfiguredArtLogos_movies">
+    <include name="Bald_ConfiguredArtLogos_hub1">
         <definition>
             <include content="Bald_ArtLogo">
                 <param name="c">9201</param>
                 <param name="p">Odd</param>
-                <param name="preview">$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201)</param>
+                <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9201</param>
                 <param name="p">Even</param>
-                <param name="preview">$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201)</param>
+                <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9202</param>
                 <param name="p">Odd</param>
-                <param name="preview">$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202)</param>
+                <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9202</param>
                 <param name="p">Even</param>
-                <param name="preview">$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202)</param>
+                <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)</param>
             </include>
         </definition>
     </include>
-    <include name="Bald_ConfiguredCaptions_movies">
+    <include name="Bald_ConfiguredCaptions_hub1">
         <definition>
             <include content="Bald_Caption">
                 <param name="c">9201</param>
                 <param name="p">Odd</param>
-                <param name="preview">$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201)</param>
+                <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)</param>
             </include>
             <include content="Bald_Caption">
                 <param name="c">9201</param>
                 <param name="p">Even</param>
-                <param name="preview">$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201)</param>
+                <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)</param>
             </include>
             <include content="Bald_Caption">
                 <param name="c">9202</param>
                 <param name="p">Odd</param>
-                <param name="preview">$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202)</param>
+                <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)</param>
             </include>
             <include content="Bald_Caption">
                 <param name="c">9202</param>
                 <param name="p">Even</param>
-                <param name="preview">$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202)</param>
+                <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)</param>
             </include>
         </definition>
     </include>
-    <expression name="Bald_HasRows_movies">[false]| [true]
+    <expression name="Bald_HasRows_hub1">[false]| [true]
 | [true]</expression>
-    <expression name="Bald_RowsLoading_movies">[false]| [Container(9201).IsUpdating]
+    <expression name="Bald_RowsLoading_hub1">[false]| [Container(9201).IsUpdating]
 | [Container(9202).IsUpdating]</expression>
-    <expression name="Bald_ItemOdd_movies">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9201) + Integer.IsOdd(Container(9201).CurrentItem)]
+    <expression name="Bald_ItemOdd_hub1">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9201) + Integer.IsOdd(Container(9201).CurrentItem)]
 | [String.IsEqual(Window(home).Property(Bald.Row),9202) + Integer.IsOdd(Container(9202).CurrentItem)]</expression>
-    <expression name="Bald_HasLogo_movies">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9201) + [!String.IsEmpty(Container(9201).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9201).ListItem.Art(tvshow.clearlogo))]]
+    <expression name="Bald_HasLogo_hub1">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9201) + [!String.IsEmpty(Container(9201).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9201).ListItem.Art(tvshow.clearlogo))]]
 | [String.IsEqual(Window(home).Property(Bald.Row),9202) + [!String.IsEmpty(Container(9202).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9202).ListItem.Art(tvshow.clearlogo))]]</expression>
-    <expression name="Bald_PreviewItemOdd_movies">[false]| [$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201) + Integer.IsOdd(Container(9201).CurrentItem)]
-| [$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202) + Integer.IsOdd(Container(9202).CurrentItem)]</expression>
-    <expression name="Bald_PreviewHasLogo_movies">[false]| [$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201) + [!String.IsEmpty(Container(9201).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9201).ListItem.Art(tvshow.clearlogo))]]
-| [$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202) + [!String.IsEmpty(Container(9202).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9202).ListItem.Art(tvshow.clearlogo))]]</expression>
-    <variable name="Bald_RowsNote_movies">
-        <value>$VAR[Bald_RowsNote_movies_1]</value>
+    <expression name="Bald_PreviewItemOdd_hub1">[false]| [$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + Integer.IsOdd(Container(9201).CurrentItem)]
+| [$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + Integer.IsOdd(Container(9202).CurrentItem)]</expression>
+    <expression name="Bald_PreviewHasLogo_hub1">[false]| [$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + [!String.IsEmpty(Container(9201).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9201).ListItem.Art(tvshow.clearlogo))]]
+| [$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + [!String.IsEmpty(Container(9202).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9202).ListItem.Art(tvshow.clearlogo))]]</expression>
+    <variable name="Bald_RowsNote_hub1">
+        <value>$VAR[Bald_RowsNote_hub1_1]</value>
         <value/>
     </variable>
-    <variable name="Bald_RowStyle_movies">
-        <value condition="String.IsEqual(Window(home).Property(Bald.Row.movies),9201)">fanart</value>
-        <value condition="String.IsEqual(Window(home).Property(Bald.Row.movies),9202)">fanart</value>
+    <variable name="Bald_RowStyle_hub1">
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)">fanart</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)">fanart</value>
         <value>fanart</value>
     </variable>
-    <include name="Bald_Generated_TVShowsWidgets">
+    <expression name="Bald_PreviewRows_hub1">[$EXP[Bald_PreviewHub1] + true + $EXP[Bald_HasRows_hub1]]</expression>
+    <expression name="Bald_HubShown_hub1">[false]| [true]</expression>
+    <expression name="Bald_HubHasOpen_hub1">[false]| [true]</expression>
+    <variable name="Bald_HubLabel_hub1">
+        <value>$LOCALIZE[342]</value>
+    </variable>
+    <variable name="Bald_HubSuffix_hub1">
+        <value condition="$EXP[Bald_HubHasOpen_hub1]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_hub1">
+        <value condition="$EXP[Bald_HasRows_hub1]">$VAR[Bald_RowsNote_hub1]</value>
+        <value condition="$EXP[Bald_HubHasOpen_hub1]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_hub1">
+        <definition>
+            <onfocus>ActivateWindow(videos,videodb://movies/titles/,return)</onfocus>
+        </definition>
+    </include>
+    <include name="Bald_Generated_Hub2Widgets">
         <definition>
             <include content="Bald_Row">
                 <param name="id">9301</param>
                 <param name="label">Recently added episodes</param>
                 <param name="index">1</param>
-                <param name="screen">tvshows</param>
+                <param name="screen">hub2</param>
+                <param name="menu">9012</param>
+                <param name="enabled">true</param>
                 <param name="up">SetFocus(9000,0,absolute)</param>
                 <param name="down">9302</param>
                 <param name="dots">Bald_RowDots_9301</param>
@@ -440,7 +766,9 @@
                 <param name="id">9302</param>
                 <param name="label">Top rated TV shows</param>
                 <param name="index">2</param>
-                <param name="screen">tvshows</param>
+                <param name="screen">hub2</param>
+                <param name="menu">9012</param>
+                <param name="enabled">true</param>
                 <param name="up">9301</param>
                 <param name="down"/>
                 <param name="dots">Bald_RowDots_9302</param>
@@ -470,8 +798,8 @@
             </control>
         </definition>
     </include>
-    <variable name="Bald_RowsNote_tvshows_1">
-        <value>Recently added episodes, $VAR[Bald_RowsNote_tvshows_2]</value>
+    <variable name="Bald_RowsNote_hub2_1">
+        <value>Recently added episodes, $VAR[Bald_RowsNote_hub2_2]</value>
     </variable>
     <include name="Bald_RowStart_9301">
         <definition>
@@ -497,7 +825,7 @@
             </control>
         </definition>
     </include>
-    <variable name="Bald_RowsNote_tvshows_2">
+    <variable name="Bald_RowsNote_hub2_2">
         <value>Top rated TV shows</value>
     </variable>
     <include name="Bald_RowStart_9302">
@@ -506,81 +834,376 @@
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">Control.Move(9302,-2)</onfocus>
         </definition>
     </include>
-    <include name="Bald_RowStartReset_tvshows">
+    <include name="Bald_RowStartReset_hub2">
         <definition>
             <onload>ClearProperty(Bald.Start9301,home)</onload>
             <onload>ClearProperty(Bald.Start9302,home)</onload>
         </definition>
     </include>
-    <include name="Bald_ConfiguredArtLogos_tvshows">
+    <include name="Bald_ConfiguredArtLogos_hub2">
         <definition>
             <include content="Bald_ArtLogo">
                 <param name="c">9301</param>
                 <param name="p">Odd</param>
-                <param name="preview">$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301)</param>
+                <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9301</param>
                 <param name="p">Even</param>
-                <param name="preview">$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301)</param>
+                <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9302</param>
                 <param name="p">Odd</param>
-                <param name="preview">$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302)</param>
+                <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9302</param>
                 <param name="p">Even</param>
-                <param name="preview">$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302)</param>
+                <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)</param>
             </include>
         </definition>
     </include>
-    <include name="Bald_ConfiguredCaptions_tvshows">
+    <include name="Bald_ConfiguredCaptions_hub2">
         <definition>
             <include content="Bald_Caption">
                 <param name="c">9301</param>
                 <param name="p">Odd</param>
-                <param name="preview">$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301)</param>
+                <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)</param>
             </include>
             <include content="Bald_Caption">
                 <param name="c">9301</param>
                 <param name="p">Even</param>
-                <param name="preview">$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301)</param>
+                <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)</param>
             </include>
             <include content="Bald_Caption">
                 <param name="c">9302</param>
                 <param name="p">Odd</param>
-                <param name="preview">$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302)</param>
+                <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)</param>
             </include>
             <include content="Bald_Caption">
                 <param name="c">9302</param>
                 <param name="p">Even</param>
-                <param name="preview">$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302)</param>
+                <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)</param>
             </include>
         </definition>
     </include>
-    <expression name="Bald_HasRows_tvshows">[false]| [true]
+    <expression name="Bald_HasRows_hub2">[false]| [true]
 | [true]</expression>
-    <expression name="Bald_RowsLoading_tvshows">[false]| [Container(9301).IsUpdating]
+    <expression name="Bald_RowsLoading_hub2">[false]| [Container(9301).IsUpdating]
 | [Container(9302).IsUpdating]</expression>
-    <expression name="Bald_ItemOdd_tvshows">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9301) + Integer.IsOdd(Container(9301).CurrentItem)]
+    <expression name="Bald_ItemOdd_hub2">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9301) + Integer.IsOdd(Container(9301).CurrentItem)]
 | [String.IsEqual(Window(home).Property(Bald.Row),9302) + Integer.IsOdd(Container(9302).CurrentItem)]</expression>
-    <expression name="Bald_HasLogo_tvshows">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9301) + [!String.IsEmpty(Container(9301).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9301).ListItem.Art(tvshow.clearlogo))]]
+    <expression name="Bald_HasLogo_hub2">[false]| [String.IsEqual(Window(home).Property(Bald.Row),9301) + [!String.IsEmpty(Container(9301).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9301).ListItem.Art(tvshow.clearlogo))]]
 | [String.IsEqual(Window(home).Property(Bald.Row),9302) + [!String.IsEmpty(Container(9302).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9302).ListItem.Art(tvshow.clearlogo))]]</expression>
-    <expression name="Bald_PreviewItemOdd_tvshows">[false]| [$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301) + Integer.IsOdd(Container(9301).CurrentItem)]
-| [$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302) + Integer.IsOdd(Container(9302).CurrentItem)]</expression>
-    <expression name="Bald_PreviewHasLogo_tvshows">[false]| [$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301) + [!String.IsEmpty(Container(9301).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9301).ListItem.Art(tvshow.clearlogo))]]
-| [$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302) + [!String.IsEmpty(Container(9302).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9302).ListItem.Art(tvshow.clearlogo))]]</expression>
-    <variable name="Bald_RowsNote_tvshows">
-        <value>$VAR[Bald_RowsNote_tvshows_1]</value>
+    <expression name="Bald_PreviewItemOdd_hub2">[false]| [$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + Integer.IsOdd(Container(9301).CurrentItem)]
+| [$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + Integer.IsOdd(Container(9302).CurrentItem)]</expression>
+    <expression name="Bald_PreviewHasLogo_hub2">[false]| [$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + [!String.IsEmpty(Container(9301).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9301).ListItem.Art(tvshow.clearlogo))]]
+| [$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + [!String.IsEmpty(Container(9302).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9302).ListItem.Art(tvshow.clearlogo))]]</expression>
+    <variable name="Bald_RowsNote_hub2">
+        <value>$VAR[Bald_RowsNote_hub2_1]</value>
         <value/>
     </variable>
-    <variable name="Bald_RowStyle_tvshows">
-        <value condition="String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301)">fanart</value>
-        <value condition="String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302)">fanart</value>
+    <variable name="Bald_RowStyle_hub2">
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)">fanart</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)">fanart</value>
         <value>fanart</value>
     </variable>
+    <expression name="Bald_PreviewRows_hub2">[$EXP[Bald_PreviewHub2] + true + $EXP[Bald_HasRows_hub2]]</expression>
+    <expression name="Bald_HubShown_hub2">[false]| [true]</expression>
+    <expression name="Bald_HubHasOpen_hub2">[false]| [true]</expression>
+    <variable name="Bald_HubLabel_hub2">
+        <value>$LOCALIZE[20343]</value>
+    </variable>
+    <variable name="Bald_HubSuffix_hub2">
+        <value condition="$EXP[Bald_HubHasOpen_hub2]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_hub2">
+        <value condition="$EXP[Bald_HasRows_hub2]">$VAR[Bald_RowsNote_hub2]</value>
+        <value condition="$EXP[Bald_HubHasOpen_hub2]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_hub2">
+        <definition>
+            <onfocus>ActivateWindow(videos,videodb://tvshows/titles/,return)</onfocus>
+        </definition>
+    </include>
+    <include name="Bald_Generated_Hub3Widgets">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_RowStartReset_hub3">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredArtLogos_hub3">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredCaptions_hub3">
+        <definition>
+    </definition>
+    </include>
+    <expression name="Bald_HasRows_hub3">[false]</expression>
+    <expression name="Bald_RowsLoading_hub3">[false]</expression>
+    <expression name="Bald_ItemOdd_hub3">[false]</expression>
+    <expression name="Bald_HasLogo_hub3">[false]</expression>
+    <expression name="Bald_PreviewItemOdd_hub3">[false]</expression>
+    <expression name="Bald_PreviewHasLogo_hub3">[false]</expression>
+    <variable name="Bald_RowsNote_hub3">
+        <value/>
+    </variable>
+    <variable name="Bald_RowStyle_hub3">
+        <value>fanart</value>
+    </variable>
+    <expression name="Bald_PreviewRows_hub3">[$EXP[Bald_PreviewHub3] + true + $EXP[Bald_HasRows_hub3]]</expression>
+    <expression name="Bald_HubShown_hub3">[false]</expression>
+    <expression name="Bald_HubHasOpen_hub3">[false]</expression>
+    <variable name="Bald_HubLabel_hub3">
+        <value/>
+    </variable>
+    <variable name="Bald_HubSuffix_hub3">
+        <value condition="$EXP[Bald_HubHasOpen_hub3]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_hub3">
+        <value condition="$EXP[Bald_HasRows_hub3]">$VAR[Bald_RowsNote_hub3]</value>
+        <value condition="$EXP[Bald_HubHasOpen_hub3]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_hub3">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_Generated_Hub4Widgets">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_RowStartReset_hub4">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredArtLogos_hub4">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredCaptions_hub4">
+        <definition>
+    </definition>
+    </include>
+    <expression name="Bald_HasRows_hub4">[false]</expression>
+    <expression name="Bald_RowsLoading_hub4">[false]</expression>
+    <expression name="Bald_ItemOdd_hub4">[false]</expression>
+    <expression name="Bald_HasLogo_hub4">[false]</expression>
+    <expression name="Bald_PreviewItemOdd_hub4">[false]</expression>
+    <expression name="Bald_PreviewHasLogo_hub4">[false]</expression>
+    <variable name="Bald_RowsNote_hub4">
+        <value/>
+    </variable>
+    <variable name="Bald_RowStyle_hub4">
+        <value>fanart</value>
+    </variable>
+    <expression name="Bald_PreviewRows_hub4">[$EXP[Bald_PreviewHub4] + true + $EXP[Bald_HasRows_hub4]]</expression>
+    <expression name="Bald_HubShown_hub4">[false]</expression>
+    <expression name="Bald_HubHasOpen_hub4">[false]</expression>
+    <variable name="Bald_HubLabel_hub4">
+        <value/>
+    </variable>
+    <variable name="Bald_HubSuffix_hub4">
+        <value condition="$EXP[Bald_HubHasOpen_hub4]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_hub4">
+        <value condition="$EXP[Bald_HasRows_hub4]">$VAR[Bald_RowsNote_hub4]</value>
+        <value condition="$EXP[Bald_HubHasOpen_hub4]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_hub4">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_Generated_Hub5Widgets">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_RowStartReset_hub5">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredArtLogos_hub5">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredCaptions_hub5">
+        <definition>
+    </definition>
+    </include>
+    <expression name="Bald_HasRows_hub5">[false]</expression>
+    <expression name="Bald_RowsLoading_hub5">[false]</expression>
+    <expression name="Bald_ItemOdd_hub5">[false]</expression>
+    <expression name="Bald_HasLogo_hub5">[false]</expression>
+    <expression name="Bald_PreviewItemOdd_hub5">[false]</expression>
+    <expression name="Bald_PreviewHasLogo_hub5">[false]</expression>
+    <variable name="Bald_RowsNote_hub5">
+        <value/>
+    </variable>
+    <variable name="Bald_RowStyle_hub5">
+        <value>fanart</value>
+    </variable>
+    <expression name="Bald_PreviewRows_hub5">[$EXP[Bald_PreviewHub5] + true + $EXP[Bald_HasRows_hub5]]</expression>
+    <expression name="Bald_HubShown_hub5">[false]</expression>
+    <expression name="Bald_HubHasOpen_hub5">[false]</expression>
+    <variable name="Bald_HubLabel_hub5">
+        <value/>
+    </variable>
+    <variable name="Bald_HubSuffix_hub5">
+        <value condition="$EXP[Bald_HubHasOpen_hub5]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_hub5">
+        <value condition="$EXP[Bald_HasRows_hub5]">$VAR[Bald_RowsNote_hub5]</value>
+        <value condition="$EXP[Bald_HubHasOpen_hub5]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_hub5">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_Generated_Hub6Widgets">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_RowStartReset_hub6">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredArtLogos_hub6">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredCaptions_hub6">
+        <definition>
+    </definition>
+    </include>
+    <expression name="Bald_HasRows_hub6">[false]</expression>
+    <expression name="Bald_RowsLoading_hub6">[false]</expression>
+    <expression name="Bald_ItemOdd_hub6">[false]</expression>
+    <expression name="Bald_HasLogo_hub6">[false]</expression>
+    <expression name="Bald_PreviewItemOdd_hub6">[false]</expression>
+    <expression name="Bald_PreviewHasLogo_hub6">[false]</expression>
+    <variable name="Bald_RowsNote_hub6">
+        <value/>
+    </variable>
+    <variable name="Bald_RowStyle_hub6">
+        <value>fanart</value>
+    </variable>
+    <expression name="Bald_PreviewRows_hub6">[$EXP[Bald_PreviewHub6] + true + $EXP[Bald_HasRows_hub6]]</expression>
+    <expression name="Bald_HubShown_hub6">[false]</expression>
+    <expression name="Bald_HubHasOpen_hub6">[false]</expression>
+    <variable name="Bald_HubLabel_hub6">
+        <value/>
+    </variable>
+    <variable name="Bald_HubSuffix_hub6">
+        <value condition="$EXP[Bald_HubHasOpen_hub6]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_hub6">
+        <value condition="$EXP[Bald_HasRows_hub6]">$VAR[Bald_RowsNote_hub6]</value>
+        <value condition="$EXP[Bald_HubHasOpen_hub6]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_hub6">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_Generated_Hub7Widgets">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_RowStartReset_hub7">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredArtLogos_hub7">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredCaptions_hub7">
+        <definition>
+    </definition>
+    </include>
+    <expression name="Bald_HasRows_hub7">[false]</expression>
+    <expression name="Bald_RowsLoading_hub7">[false]</expression>
+    <expression name="Bald_ItemOdd_hub7">[false]</expression>
+    <expression name="Bald_HasLogo_hub7">[false]</expression>
+    <expression name="Bald_PreviewItemOdd_hub7">[false]</expression>
+    <expression name="Bald_PreviewHasLogo_hub7">[false]</expression>
+    <variable name="Bald_RowsNote_hub7">
+        <value/>
+    </variable>
+    <variable name="Bald_RowStyle_hub7">
+        <value>fanart</value>
+    </variable>
+    <expression name="Bald_PreviewRows_hub7">[$EXP[Bald_PreviewHub7] + true + $EXP[Bald_HasRows_hub7]]</expression>
+    <expression name="Bald_HubShown_hub7">[false]</expression>
+    <expression name="Bald_HubHasOpen_hub7">[false]</expression>
+    <variable name="Bald_HubLabel_hub7">
+        <value/>
+    </variable>
+    <variable name="Bald_HubSuffix_hub7">
+        <value condition="$EXP[Bald_HubHasOpen_hub7]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_hub7">
+        <value condition="$EXP[Bald_HasRows_hub7]">$VAR[Bald_RowsNote_hub7]</value>
+        <value condition="$EXP[Bald_HubHasOpen_hub7]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_hub7">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_Generated_Hub8Widgets">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_RowStartReset_hub8">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredArtLogos_hub8">
+        <definition>
+    </definition>
+    </include>
+    <include name="Bald_ConfiguredCaptions_hub8">
+        <definition>
+    </definition>
+    </include>
+    <expression name="Bald_HasRows_hub8">[false]</expression>
+    <expression name="Bald_RowsLoading_hub8">[false]</expression>
+    <expression name="Bald_ItemOdd_hub8">[false]</expression>
+    <expression name="Bald_HasLogo_hub8">[false]</expression>
+    <expression name="Bald_PreviewItemOdd_hub8">[false]</expression>
+    <expression name="Bald_PreviewHasLogo_hub8">[false]</expression>
+    <variable name="Bald_RowsNote_hub8">
+        <value/>
+    </variable>
+    <variable name="Bald_RowStyle_hub8">
+        <value>fanart</value>
+    </variable>
+    <expression name="Bald_PreviewRows_hub8">[$EXP[Bald_PreviewHub8] + true + $EXP[Bald_HasRows_hub8]]</expression>
+    <expression name="Bald_HubShown_hub8">[false]</expression>
+    <expression name="Bald_HubHasOpen_hub8">[false]</expression>
+    <variable name="Bald_HubLabel_hub8">
+        <value/>
+    </variable>
+    <variable name="Bald_HubSuffix_hub8">
+        <value condition="$EXP[Bald_HubHasOpen_hub8]">  ›</value>
+    </variable>
+    <variable name="Bald_HubNote_hub8">
+        <value condition="$EXP[Bald_HasRows_hub8]">$VAR[Bald_RowsNote_hub8]</value>
+        <value condition="$EXP[Bald_HubHasOpen_hub8]">$LOCALIZE[31201]</value>
+        <value>$LOCALIZE[31202]</value>
+    </variable>
+    <include name="Bald_HubOpen_hub8">
+        <definition>
+    </definition>
+    </include>
     <variable name="Bald_Fanart">
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + !String.IsEmpty(Container(9101).ListItem.Art(fanart))">$INFO[Container(9101).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + !String.IsEmpty(Container(9101).ListItem.Art(tvshow.fanart))">$INFO[Container(9101).ListItem.Art(tvshow.fanart)]</value>
@@ -591,18 +1214,27 @@
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103) + !String.IsEmpty(Container(9103).ListItem.Art(fanart))">$INFO[Container(9103).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103) + !String.IsEmpty(Container(9103).ListItem.Art(tvshow.fanart))">$INFO[Container(9103).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103)">$INFO[Container(9103).ListItem.Art(thumb)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201) + !String.IsEmpty(Container(9201).ListItem.Art(fanart))">$INFO[Container(9201).ListItem.Art(fanart)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201) + !String.IsEmpty(Container(9201).ListItem.Art(tvshow.fanart))">$INFO[Container(9201).ListItem.Art(tvshow.fanart)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201)">$INFO[Container(9201).ListItem.Art(thumb)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202) + !String.IsEmpty(Container(9202).ListItem.Art(fanart))">$INFO[Container(9202).ListItem.Art(fanart)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202) + !String.IsEmpty(Container(9202).ListItem.Art(tvshow.fanart))">$INFO[Container(9202).ListItem.Art(tvshow.fanart)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202)">$INFO[Container(9202).ListItem.Art(thumb)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301) + !String.IsEmpty(Container(9301).ListItem.Art(fanart))">$INFO[Container(9301).ListItem.Art(fanart)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301) + !String.IsEmpty(Container(9301).ListItem.Art(tvshow.fanart))">$INFO[Container(9301).ListItem.Art(tvshow.fanart)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301)">$INFO[Container(9301).ListItem.Art(thumb)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302) + !String.IsEmpty(Container(9302).ListItem.Art(fanart))">$INFO[Container(9302).ListItem.Art(fanart)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302) + !String.IsEmpty(Container(9302).ListItem.Art(tvshow.fanart))">$INFO[Container(9302).ListItem.Art(tvshow.fanart)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302)">$INFO[Container(9302).ListItem.Art(thumb)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + !String.IsEmpty(Container(9051).ListItem.Art(fanart))">$INFO[Container(9051).ListItem.Art(fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + !String.IsEmpty(Container(9051).ListItem.Art(tvshow.fanart))">$INFO[Container(9051).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)">$INFO[Container(9051).ListItem.Art(thumb)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + !String.IsEmpty(Container(9052).ListItem.Art(fanart))">$INFO[Container(9052).ListItem.Art(fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + !String.IsEmpty(Container(9052).ListItem.Art(tvshow.fanart))">$INFO[Container(9052).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)">$INFO[Container(9052).ListItem.Art(thumb)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + !String.IsEmpty(Container(9053).ListItem.Art(fanart))">$INFO[Container(9053).ListItem.Art(fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + !String.IsEmpty(Container(9053).ListItem.Art(tvshow.fanart))">$INFO[Container(9053).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)">$INFO[Container(9053).ListItem.Art(thumb)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + !String.IsEmpty(Container(9201).ListItem.Art(fanart))">$INFO[Container(9201).ListItem.Art(fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + !String.IsEmpty(Container(9201).ListItem.Art(tvshow.fanart))">$INFO[Container(9201).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)">$INFO[Container(9201).ListItem.Art(thumb)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + !String.IsEmpty(Container(9202).ListItem.Art(fanart))">$INFO[Container(9202).ListItem.Art(fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + !String.IsEmpty(Container(9202).ListItem.Art(tvshow.fanart))">$INFO[Container(9202).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)">$INFO[Container(9202).ListItem.Art(thumb)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + !String.IsEmpty(Container(9301).ListItem.Art(fanart))">$INFO[Container(9301).ListItem.Art(fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + !String.IsEmpty(Container(9301).ListItem.Art(tvshow.fanart))">$INFO[Container(9301).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)">$INFO[Container(9301).ListItem.Art(thumb)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + !String.IsEmpty(Container(9302).ListItem.Art(fanart))">$INFO[Container(9302).ListItem.Art(fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + !String.IsEmpty(Container(9302).ListItem.Art(tvshow.fanart))">$INFO[Container(9302).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)">$INFO[Container(9302).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_WidgetPreview]"/>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101) + !String.IsEmpty(Container(9101).ListItem.Art(fanart))">$INFO[Container(9101).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101) + !String.IsEmpty(Container(9101).ListItem.Art(tvshow.fanart))">$INFO[Container(9101).ListItem.Art(tvshow.fanart)]</value>
@@ -613,6 +1245,15 @@
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103) + !String.IsEmpty(Container(9103).ListItem.Art(fanart))">$INFO[Container(9103).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103) + !String.IsEmpty(Container(9103).ListItem.Art(tvshow.fanart))">$INFO[Container(9103).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103)">$INFO[Container(9103).ListItem.Art(thumb)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051) + !String.IsEmpty(Container(9051).ListItem.Art(fanart))">$INFO[Container(9051).ListItem.Art(fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051) + !String.IsEmpty(Container(9051).ListItem.Art(tvshow.fanart))">$INFO[Container(9051).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051)">$INFO[Container(9051).ListItem.Art(thumb)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052) + !String.IsEmpty(Container(9052).ListItem.Art(fanart))">$INFO[Container(9052).ListItem.Art(fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052) + !String.IsEmpty(Container(9052).ListItem.Art(tvshow.fanart))">$INFO[Container(9052).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052)">$INFO[Container(9052).ListItem.Art(thumb)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053) + !String.IsEmpty(Container(9053).ListItem.Art(fanart))">$INFO[Container(9053).ListItem.Art(fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053) + !String.IsEmpty(Container(9053).ListItem.Art(tvshow.fanart))">$INFO[Container(9053).ListItem.Art(tvshow.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053)">$INFO[Container(9053).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201) + !String.IsEmpty(Container(9201).ListItem.Art(fanart))">$INFO[Container(9201).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201) + !String.IsEmpty(Container(9201).ListItem.Art(tvshow.fanart))">$INFO[Container(9201).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201)">$INFO[Container(9201).ListItem.Art(thumb)]</value>
@@ -634,14 +1275,20 @@
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102)">$INFO[Container(9102).ListItem.Art(tvshow.clearlogo)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103) + !String.IsEmpty(Container(9103).ListItem.Art(clearlogo))">$INFO[Container(9103).ListItem.Art(clearlogo)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103)">$INFO[Container(9103).ListItem.Art(tvshow.clearlogo)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201) + !String.IsEmpty(Container(9201).ListItem.Art(clearlogo))">$INFO[Container(9201).ListItem.Art(clearlogo)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201)">$INFO[Container(9201).ListItem.Art(tvshow.clearlogo)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202) + !String.IsEmpty(Container(9202).ListItem.Art(clearlogo))">$INFO[Container(9202).ListItem.Art(clearlogo)]</value>
-        <value condition="$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202)">$INFO[Container(9202).ListItem.Art(tvshow.clearlogo)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301) + !String.IsEmpty(Container(9301).ListItem.Art(clearlogo))">$INFO[Container(9301).ListItem.Art(clearlogo)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301)">$INFO[Container(9301).ListItem.Art(tvshow.clearlogo)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302) + !String.IsEmpty(Container(9302).ListItem.Art(clearlogo))">$INFO[Container(9302).ListItem.Art(clearlogo)]</value>
-        <value condition="$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302)">$INFO[Container(9302).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + !String.IsEmpty(Container(9051).ListItem.Art(clearlogo))">$INFO[Container(9051).ListItem.Art(clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)">$INFO[Container(9051).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + !String.IsEmpty(Container(9052).ListItem.Art(clearlogo))">$INFO[Container(9052).ListItem.Art(clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)">$INFO[Container(9052).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + !String.IsEmpty(Container(9053).ListItem.Art(clearlogo))">$INFO[Container(9053).ListItem.Art(clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)">$INFO[Container(9053).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + !String.IsEmpty(Container(9201).ListItem.Art(clearlogo))">$INFO[Container(9201).ListItem.Art(clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)">$INFO[Container(9201).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + !String.IsEmpty(Container(9202).ListItem.Art(clearlogo))">$INFO[Container(9202).ListItem.Art(clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)">$INFO[Container(9202).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + !String.IsEmpty(Container(9301).ListItem.Art(clearlogo))">$INFO[Container(9301).ListItem.Art(clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)">$INFO[Container(9301).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + !String.IsEmpty(Container(9302).ListItem.Art(clearlogo))">$INFO[Container(9302).ListItem.Art(clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)">$INFO[Container(9302).ListItem.Art(tvshow.clearlogo)]</value>
         <value condition="$EXP[Bald_WidgetPreview]"/>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101) + !String.IsEmpty(Container(9101).ListItem.Art(clearlogo))">$INFO[Container(9101).ListItem.Art(clearlogo)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101)">$INFO[Container(9101).ListItem.Art(tvshow.clearlogo)]</value>
@@ -649,6 +1296,12 @@
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9102)">$INFO[Container(9102).ListItem.Art(tvshow.clearlogo)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103) + !String.IsEmpty(Container(9103).ListItem.Art(clearlogo))">$INFO[Container(9103).ListItem.Art(clearlogo)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103)">$INFO[Container(9103).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051) + !String.IsEmpty(Container(9051).ListItem.Art(clearlogo))">$INFO[Container(9051).ListItem.Art(clearlogo)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051)">$INFO[Container(9051).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052) + !String.IsEmpty(Container(9052).ListItem.Art(clearlogo))">$INFO[Container(9052).ListItem.Art(clearlogo)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052)">$INFO[Container(9052).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053) + !String.IsEmpty(Container(9053).ListItem.Art(clearlogo))">$INFO[Container(9053).ListItem.Art(clearlogo)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053)">$INFO[Container(9053).ListItem.Art(tvshow.clearlogo)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201) + !String.IsEmpty(Container(9201).ListItem.Art(clearlogo))">$INFO[Container(9201).ListItem.Art(clearlogo)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201)">$INFO[Container(9201).ListItem.Art(tvshow.clearlogo)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9202) + !String.IsEmpty(Container(9202).ListItem.Art(clearlogo))">$INFO[Container(9202).ListItem.Art(clearlogo)]</value>

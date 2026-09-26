@@ -50,10 +50,11 @@ class TVLibraryTests(unittest.TestCase):
         self.assertIsNone(episodes.find('ondown'))
 
     def test_home_tv_item_opens_configured_screen(self):
-        item = home_menu.entry(preview='tvshows')
-        self.assertTrue(equivalent(item.findtext("param[@name='visible']"), 'Skin.HasSetting(Bald.Screen.TVShows)'))
+        # TV shows is the second seeded hub (slot 2).
+        item = home_menu.entry(preview='hub2')
+        self.assertTrue(equivalent(item.findtext("visible"), '$EXP[Bald_HubShown_hub2]'))
         self.assertIn(
-            'SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])',
+            'SetFocus($INFO[Window(home).Property(Bald.Row.hub2)])',
             [action for _, action in home_menu.select_actions(item)],
         )
 

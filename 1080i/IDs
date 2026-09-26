@@ -223,21 +223,34 @@ SmartPlaylistRule.xml	2 heading, 15 field, 16 operator, 17 value, 20 browse, 18 
 
 HOME (Home.xml, Includes_Bald_Home.xml)
 
-9000	Main menu grouplist
-9001-9006	Menu buttons: Home, Movies, TV shows, Live TV, Search, Settings
+9000	Main menu grouplist; its entries in order: Home, the hubs, Live TV, Search, Settings
+9001	Menu entry: Home
+9011-9018	Menu entries: hub slots 1-8 (Bald_HomeMenuHub; hidden while the slot is empty or the hub is turned off)
+9004	Menu entry: Live TV
+9005	Menu entry: Search
+9006	Menu entry: Settings
+		9002 and 9003 (the old Movies and TV shows entries) are retired; Movies and TV shows are hubs now.
+9021-9028	Invisible bridges: focus opens hub slot 1-8's target (Bald_HubBridge; Right, or Select without rows)
+9029	Invisible bridge: focus opens the TV guide (Live TV's Right)
+9050	Live TV row base; rows 9051-9070
 9100	Home screen row base; rows 9101-9120
-9200	Movies screen row base; rows 9201-9220
-9300	TV shows screen row base; rows 9301-9320
+9200, 9300, 9400, 9500, 9600, 9700, 9800, 9900
+		Hub slot 1-8 row bases; rows base + 1 to base + 20:
+		slot 1: 9201-9220, slot 2: 9301-9320, slot 3: 9401-9420, slot 4: 9501-9520,
+		slot 5: 9601-9620, slot 6: 9701-9720, slot 7: 9801-9820, slot 8: 9901-9920.
+		Slot n is the hub at position n in the Home Screens list, so ids follow the order, not the hub.
+		Migrated installs keep Movies in slot 1 (9201+) and TV shows in slot 2 (9301+), their old ids.
 		Rows are Bald_Row fixedlists, one per configured row (base + 1 onward, at most
 		twenty per screen: the widget editor hides Add widget at 20). Skin Variables
 		builds them and their bindings into script-skinvariables-generator-includes.xml
 		from shortcuts/generator/ (bases in screens.xml); Includes_Bald_HomeDefaults.xml
-		(tools/build_home_defaults.py) stands in until the first build.
+		(tools/build_home_defaults.py) stands in until the first build. An empty slot
+		builds no controls. None of these ranges meets another: 9001-9029 menu and
+		bridges, 9051-9070, 9101-9120, then x01-x20 per hundred up to 9920, and the fixed
+		9180 and 9194-9199 below sit above 9120.
 9180	Startup splash: hidden list of random fanart that drives the background
 9194	Startup splash: shows once every row has loaded (Timers.xml bald_preload reads it)
 9195	Startup splash: focus lifts the splash and moves on to row 1 (or the menu)
-9196	Invisible bridge: focus opens the TV shows library
-9197	Invisible bridge: focus opens the movie library
 9198	Startup splash: holds focus and ignores keys while the splash shows
 9199	Idle-wake button: the idle timer parks focus here, any key returns to the row
 0		Bald_MenuNote label default (no id)
@@ -358,8 +371,10 @@ Custom_1116_BaldHomeWidgets.xml (window 1116)
 9200	Action grouplist; 9201-9209 buttons
 
 Custom_1117_BaldHomeScreens.xml (window 1117)
-9300	List
-9400	Action grouplist; 9401-9402
+9300	Sidebar list; static items 1 Home, 10-17 hub positions 0-7 (Bald_HubCategory), 2 Live TV, 3 Add hub
+9390	Hidden 1 x 1 list of the hubs menu (Skin Variables); the sidebar reads its items
+9400	Action grouplist: 9401 show in the main menu, 9402 configure widgets, 9403 rename, 9404 open
+		target, 9405 clear target, 9406 move up, 9407 move down, 9408 remove hub, 9409 add hub
 
 Custom_1118_BaldAppearance.xml (window 1118)
 9500	Category list; static items 1, 2, 6, 3 and 5 (Artwork, Information, Ratings, Behavior, Typography;

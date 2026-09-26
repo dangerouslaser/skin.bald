@@ -1,0 +1,32 @@
+[
+    {
+        "label": "Recently played channels",
+        "path": "pvr://channels/tv/*?view=lastplayed",
+        "path2": "",
+        "secondary": "0",
+        "target": "tvchannels",
+        "limit": "25",
+        "sortby": "lastplayed",
+        "sortorder": "descending"
+    },
+    {
+        "label": "Recent recordings",
+        "path": "pvr://recordings/tv/active?view=flat",
+        "path2": "",
+        "secondary": "0",
+        "target": "tvrecordings",
+        "limit": "25",
+        "sortby": "date",
+        "sortorder": "descending"
+    },
+    {
+        "label": "Upcoming recordings",
+        "path": "pvr://timers/tv/timers/?view=hidedisabled",
+        "path2": "",
+        "secondary": "0",
+        "target": "tvtimers",
+        "limit": "25",
+        "sortby": "date",
+        "sortorder": "ascending"
+    }
+]
