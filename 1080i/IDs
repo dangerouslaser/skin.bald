@@ -32,6 +32,68 @@ TV guide (MyPVRGuide.xml)
 1, 2	Label 1 and image 2 inside the EPG grid's layouts, numbered as Estuary numbers them
 63		EPG grid group
 
+Live TV windows (MyPVRChannels, MyPVRRecordings, MyPVRTimers, MyPVRSearch, MyPVRProviders; CGUIWindowPVRBase,
+CGUIMediaWindow and each window's class). Bald chrome from Includes_Bald_PVR.xml.
+50		The window's list (view 50, Bald_PVRList)
+3, 4	Sort method and direction buttons (hidden; SendClick(3) and Container.SetSortDirection)
+28		Channel-groups button (hidden; SendClick(28) from the Channels options)
+29, 30	Header labels Kodi fills (group or search, provider or result count); off-screen
+6		Channels: show hidden channels toggle
+31		Channels: filter toggle (onclick "right" returns to the list, as in Estuary)
+5, 7	Recordings: group items, show deleted toggles
+10		Recordings: show-mode button (Kodi relabels it)
+8		Timers: hide disabled toggle
+		Bald chrome: 9000 options grouplist (menucontrol), 73 list scrollbar (page control only),
+		9010 channel-group option, 9020 sort by, 9021 order, 100-105 other Live TV windows
+		(Channels, Guide, Recordings, Timers, Timer rules, Search; Estuary's quick-navigation ids),
+		302 go to playlist (Recordings)
+
+Channel switcher and mini guide (DialogPVRChannelsOSD, DialogPVRChannelGuide; CGUIDialogPVRItemsViewBase)
+11		Channel list / programme list
+60		Its scrollbar (page control only)
+2		Estuary's header label, kept off-screen (Kodi does not write it)
+
+Programme and recording information (DialogPVRInfo; CGUIDialogPVRGuideInfo, CGUIDialogPVRRecordingInfo)
+4		Find similar
+5		Switch to channel
+6		Record / stop recording / delete timer (Kodi relabels it)
+8		Play recording
+9		Add timer
+10		Play programme
+11		Set reminder
+		Bald chrome: 5000 action grouplist, 138 plot button (opens the text viewer, 1102),
+		102 show fanart (1104)
+
+Guide controls (DialogPVRGuideControls; Kodi binds none, PVRGuideControlsHelpTextVar reads them)
+200		Bar group; 201, 202, 203 programme, channel and group pill rows
+600-605	First programme, 12 hours back, now, 12 hours forward, last programme, date
+70040-70042	First, playing and last channel
+70043-70045	Previous, next and choose channel group
+
+Radio RDS information (DialogPVRRadioRDSInfo)
+		No ids; Kodi's optional 10, 21, 22 and 70 are absent, as in Estuary.
+
+Channel manager (DialogPVRChannelManager; CGUIDialogPVRChannelManager)
+2		Heading
+4, 5, 6	OK, Apply, Cancel
+7, 8, 9	Active, name (edit), logo
+12, 13, 14	Use guide, guide source (spinner), parental lock
+20		Channel list
+30, 31, 34, 35	Group manager, new channel, TV/radio toggle, refresh logos
+		Bald chrome: 60 channel scrollbar, 9000 action grouplist, 9001 channel options heading,
+		9002 channel options grouplist, 9003 misc options grouplist
+
+Channel group manager (DialogPVRGroupManager; CGUIDialogPVRGroupManager)
+1		Heading
+11, 12, 13	Ungrouped channels, group members, groups
+20, 21, 22	Current group (hidden), ungrouped and in-group headings
+25		Hide group toggle
+26, 27, 28	New, rename, delete group
+29		OK
+34, 35	TV/radio toggle, regenerate thumbnail
+		Bald chrome: 71, 72, 73 list scrollbars (Estuary's focus route between columns),
+		9000 action grouplist
+
 Settings pages (SettingsCategory.xml; CGUIDialogSettingsBase and CGUIWindowSettingsCategory)
 2		Heading label (the sidebar title; Kodi writes the section name)
 3		Category grouplist; Kodi fills it with clones of 10, ids -200 upward
