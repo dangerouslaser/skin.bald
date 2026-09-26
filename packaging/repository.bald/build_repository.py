@@ -16,6 +16,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 REPOSITORY_SOURCE = Path(__file__).resolve().parent
 BUNDLED_ADDONS = ("addons/script.bald.xcsetup",)
+# Skin Variables writes the Home rows per install; releases ship 1080i/Includes_Bald_HomeDefaults.xml instead.
+PER_INSTALL_FILES = ("1080i/script-skinvariables-generator-includes",)
 
 
 def addon_identity(path: Path) -> tuple[str, str]:
@@ -43,7 +45,7 @@ def tracked_files(revision: str) -> list[str]:
     return [
         line
         for line in output.splitlines()
-        if line in files or line.startswith(directories)
+        if (line in files or line.startswith(directories)) and not line.startswith(PER_INSTALL_FILES)
     ]
 
 

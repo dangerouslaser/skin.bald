@@ -1,0 +1,10 @@
+<include content="{content}">
+    <param name="c">{row_id}</param>
+    <param name="p">Odd</param>
+    <param name="preview">$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id})</param>
+</include>
+<include content="{content}">
+    <param name="c">{row_id}</param>
+    <param name="p">Even</param>
+    <param name="preview">$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id})</param>
+</include>

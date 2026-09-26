@@ -1,0 +1,3 @@
+<value condition="{prefix} + !String.IsEmpty(Container({row_id}).ListItem.Art(fanart))">$INFO[Container({row_id}).ListItem.Art(fanart)]</value>
+<value condition="{prefix} + !String.IsEmpty(Container({row_id}).ListItem.Art(tvshow.fanart))">$INFO[Container({row_id}).ListItem.Art(tvshow.fanart)]</value>
+<value condition="{prefix}">$INFO[Container({row_id}).ListItem.Art(thumb)]</value>

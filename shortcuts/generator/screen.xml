@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Everything one screen needs, for its configured rows only (see generator/screen.xmltemplate).
+     Conditions use Skin Variables' own comparisons (a==b, a!=b) so the build does not depend on Kodi state
+     and tools/build_home_defaults.py can reproduce it. Row ids are {base} + 1 + {item_x}. -->
+<contents>
+    <items>
+        <item>
+            <template>generator/screen.xmltemplate</template>
+            <value name="rows">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>generator/row.xmltemplate</template>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                        <value name="row_index">$MATH[1 + {item_x}]</value>
+                        <rules name="row_up">
+                            <rule>
+                                <condition>{item_x}==0</condition>
+                                <value>SetFocus(9000,0,absolute)</value>
+                            </rule>
+                            <rule>
+                                <value>$MATH[{base} + {item_x}]</value>
+                            </rule>
+                        </rules>
+                        <rules name="row_down">
+                            <rule>
+                                <condition>{item_x}==$MATH[{item_length_x} - 1]</condition>
+                                <value></value>
+                            </rule>
+                            <rule>
+                                <value>$MATH[{base} + 2 + {item_x}]</value>
+                            </rule>
+                        </rules>
+                        <rules name="secondary_content">
+                            <rule>
+                                <condition>{item_secondary}==1</condition>
+                                <value>&lt;content target="{item_target_escaped}" limit="{item_limit_escaped}"&gt;{item_path2_escaped}&lt;/content&gt;</value>
+                            </rule>
+                            <rule>
+                                <value></value>
+                            </rule>
+                        </rules>
+                    </item>
+                </items>
+            </value>
+            <value name="art_logos">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>generator/row-binding.xmltemplate</template>
+                        <value name="content">Bald_ArtLogo</value>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    </item>
+                </items>
+            </value>
+            <value name="captions">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>generator/row-binding.xmltemplate</template>
+                        <value name="content">Bald_Caption</value>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    </item>
+                </items>
+            </value>
+            <value name="item_odd">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>| [String.IsEqual(Window(home).Property(Bald.Row),{row_id}) + Integer.IsOdd(Container({row_id}).CurrentItem)]</template>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    </item>
+                </items>
+            </value>
+            <value name="has_logo">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>| [String.IsEqual(Window(home).Property(Bald.Row),{row_id}) + [!String.IsEmpty(Container({row_id}).ListItem.Art(clearlogo)) | !String.IsEmpty(Container({row_id}).ListItem.Art(tvshow.clearlogo))]]</template>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    </item>
+                </items>
+            </value>
+            <value name="preview_item_odd">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>| [$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id}) + Integer.IsOdd(Container({row_id}).CurrentItem)]</template>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    </item>
+                </items>
+            </value>
+            <value name="preview_has_logo">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>| [$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id}) + [!String.IsEmpty(Container({row_id}).ListItem.Art(clearlogo)) | !String.IsEmpty(Container({row_id}).ListItem.Art(tvshow.clearlogo))]]</template>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    </item>
+                </items>
+            </value>
+        </item>
+    </items>
+</contents>

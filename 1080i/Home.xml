@@ -250,7 +250,8 @@
 				</control>
 			</control>
 
-			<!-- Configured rows. The shipped generated include reproduces the defaults exactly. -->
+			<!-- Configured rows: built per install by Skin Variables from the widget editor's lists; until the first
+			     build, Includes_Bald_HomeDefaults.xml supplies the shipped defaults (see Includes.xml). -->
 			<include>Bald_Generated_HomeWidgets</include>
 			<include>Bald_Generated_MoviesWidgets</include>
 			<include>Bald_Generated_TVShowsWidgets</include>

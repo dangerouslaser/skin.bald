@@ -1,0 +1,2 @@
+<value condition="{prefix} + !String.IsEmpty(Container({row_id}).ListItem.Art(clearlogo))">$INFO[Container({row_id}).ListItem.Art(clearlogo)]</value>
+<value condition="{prefix}">$INFO[Container({row_id}).ListItem.Art(tvshow.clearlogo)]</value>

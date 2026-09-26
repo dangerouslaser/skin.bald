@@ -14,7 +14,8 @@
      drops), skin timers (they run every 500 ms) or Container.Scrolling (briefly true at the end of every scroll).
 
      State lives in Home window properties:
-       Bald.Row      id of the current row (9101 to 9103); art and caption follow it, not the focused control
+       Bald.Row      id of the current row (Home 9101+, Movies 9201+, TV shows 9301+); art and caption follow it,
+                     not the focused control
        Bald.Menu     set while the menu is open
        Bald.NudgeL/R flips between a and b to replay the row edge nudge -->
 <includes>
@@ -143,7 +144,24 @@
 	</include>
 
 	<!-- ============ Current-row variables (art frame) ============ -->
-	<!-- Current-row artwork variables and parity are defined in Includes_Bald_HomeRows.xml for every supported configurable row. -->
+	<!-- Per-row bindings come from Skin Variables for the configured rows only (shortcuts/generator/, built into
+	     script-skinvariables-generator-includes.xml, defaults in Includes_Bald_HomeDefaults.xml): $VAR[Bald_Fanart]
+	     and $VAR[Bald_Logo], and per screen the parity and logo expressions and the caption and clearlogo instances
+	     combined here. -->
+	<expression name="Bald_ItemOdd">$EXP[Bald_ItemOdd_home] | $EXP[Bald_ItemOdd_movies] | $EXP[Bald_ItemOdd_tvshows]</expression>
+	<expression name="Bald_HasLogo">$EXP[Bald_HasLogo_home] | $EXP[Bald_HasLogo_movies] | $EXP[Bald_HasLogo_tvshows]</expression>
+	<expression name="Bald_PreviewItemOdd">$EXP[Bald_PreviewItemOdd_home] | $EXP[Bald_PreviewItemOdd_movies] | $EXP[Bald_PreviewItemOdd_tvshows]</expression>
+	<expression name="Bald_PreviewHasLogo">$EXP[Bald_PreviewHasLogo_home] | $EXP[Bald_PreviewHasLogo_movies] | $EXP[Bald_PreviewHasLogo_tvshows]</expression>
+	<include name="Bald_ConfiguredArtLogos">
+		<include>Bald_ConfiguredArtLogos_home</include>
+		<include>Bald_ConfiguredArtLogos_movies</include>
+		<include>Bald_ConfiguredArtLogos_tvshows</include>
+	</include>
+	<include name="Bald_ConfiguredCaptions">
+		<include>Bald_ConfiguredCaptions_home</include>
+		<include>Bald_ConfiguredCaptions_movies</include>
+		<include>Bald_ConfiguredCaptions_tvshows</include>
+	</include>
 	<expression name="Bald_MenuOpen">!String.IsEmpty(Window(home).Property(Bald.Menu))</expression>
 	<expression name="Bald_PreviewHome">$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),home)</expression>
 	<expression name="Bald_PreviewMovies">$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),movies)</expression>
