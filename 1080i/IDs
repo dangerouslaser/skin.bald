@@ -210,7 +210,7 @@ Views and their page controls
 502 (502600), 503 (503600), 504 (531; 50401 its detail label)
 20000		View 51's hidden animation helper
 15599		Now-playing text in view 503's column
-5000		Movie set contents list in the preview (InfoList)
+5000		InfoList's default id (MyGames' collection list); the browse preview's movie-set list has no id
 AddonBrowser.xml	5 settings, 7 hide foreign, 8 hide incompatible, 9 check for updates
 DialogAddonInfo.xml	6 install/uninstall, 7 enable/disable, 8 update, 9 settings, 10 dependencies, 12 open,
 		13 auto-update, 14 versions, 50 screenshots, 5000 description block, 9000 actions

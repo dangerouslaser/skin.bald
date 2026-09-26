@@ -123,5 +123,24 @@ class GuideScrollbarTests(unittest.TestCase):
                 self.assertIn(node.get("colordiffuse"), known)
 
 
+class PreviewInfoListTests(unittest.TestCase):
+    WINDOWS = ("AddonBrowser.xml", "MyPrograms.xml", "MyPics.xml", "MyMusicNav.xml", "MyFavourites.xml",
+               "MyGames.xml", "MyVideoNav.xml")
+
+    def test_preview_movie_set_list_does_not_repeat_an_id(self):
+        # Bald_BrowsePreview is included by several views per window; its InfoList must not define 5000 each time.
+        for name in self.WINDOWS:
+            root = Skin().window(name)
+            ids = [node.get("id") for node in root.iter("control") if node.get("id") == "5000"]
+            with self.subTest(window=name):
+                self.assertLessEqual(len(ids), 1)
+
+    def test_preview_still_lists_a_movie_set(self):
+        root = holder(expand_call("Bald_BrowsePreview"))
+        panels = [node for node in root.iter("control") if node.get("type") == "panel"]
+        self.assertEqual(len(panels), 1)
+        self.assertEqual(panels[0].findtext("content"), "$VAR[InfoListPathVar]")
+        self.assertFalse(panels[0].get("id"))
+
 if __name__ == "__main__":
     unittest.main()
