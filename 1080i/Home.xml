@@ -8,6 +8,8 @@
 	     config (with the generator's build version) and the current output, and returns at once when none changed;
 	     after writing it reloads the skin. So it builds on first run, after a skin update that changed the generator,
 	     and after the widget editor closes (Custom_1116 stamps Bald.WidgetsStamp). -->
+	<!-- Startup does not run on a skin switch or ReloadSkin, so Home also turns mouse input off. -->
+	<onload condition="System.GetBool(input.enablemouse)">RunScript(skin.bald,mouse)</onload>
 	<onload>RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
 	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load.
 	     Focus always starts on row 1 (defaultcontrol always). -->

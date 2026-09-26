@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+	<!-- Bald is remote-only; see RunScript(skin.bald,mouse) in scripts/info.py. -->
+	<onload condition="System.GetBool(input.enablemouse)">RunScript(skin.bald,mouse)</onload>
 	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
 	<controls />
 </window>
