@@ -7,9 +7,6 @@
      same preview serves every view and window that includes it. -->
 <includes>
 	<!-- ============ Layout ============ -->
-	<!-- Browse lists and walls: 1140 wide from the safe margin, 624 tall from the content top (13 rows of 48). -->
-	<constant name="Bald_BrowseListWidth">1140</constant>
-	<constant name="Bald_BrowseListHeight">624</constant>
 	<!-- Walls and poster rails: the 12 px focus-ring inset left of the safe margin and above the content top. -->
 	<constant name="Bald_BrowseWallLeft">84</constant>
 	<constant name="Bald_BrowseWallTop">210</constant>
