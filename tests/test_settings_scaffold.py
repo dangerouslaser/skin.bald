@@ -29,8 +29,6 @@ LIVE_ESTUARY_SETTINGS = {
     "OriginalTitleFormat_1st": "AddonBrowser.xml",
     "show_musicvideoposter": "MyMusicNav.xml",
     "no_fanart": "FileManager.xml",
-    "background_overlay": "FileManager.xml",
-    "HomeFanart": "MyWeather.xml",
     "WeatherFanart": "MyWeather.xml",
     "MovieGenreFanart": "FileManager.xml",
     "WeatherOutlookIcon": "MyWeather.xml",
@@ -57,6 +55,11 @@ DEAD_ESTUARY_SETTINGS = (
     # Slide animations: only four Estuary-structured windows read it (games, pictures, music and the playlist editor
     # side panels) and Bald's own windows never did; those windows keep the slide.
     "no_slide_animations",
+    # Estuary's background pattern: Bald's pages sit on the plain field (SPEC 5.19), and opening Appearance used to
+    # switch pattern 1 on. The pattern textures went with it.
+    "background_overlay",
+    # The skin fanart pack: Bald's Home never read it; its last reader was the weather page's fallback image.
+    "HomeFanart",
 )
 
 
@@ -205,8 +208,7 @@ class SettingsScaffoldTests(unittest.TestCase):
 
     def test_image_pack_buttons_run_install_or_enable_the_picker(self):
         picker = "script.image.resource.select"
-        for control_id, setting, kind in (("608", "HomeFanart", "skinbackgrounds"), ("609", "WeatherFanart", "weatherfanart"),
-                                          ("6066", "MovieGenreFanart", "moviegenrefanart"), ("6068", "WeatherOutlookIcon", "weathericons")):
+        for control_id, setting, kind in (("609", "WeatherFanart", "weatherfanart"), ("6066", "MovieGenreFanart", "moviegenrefanart"), ("6068", "WeatherOutlookIcon", "weathericons")):
             with self.subTest(control=control_id):
                 actions = [(node.get("condition"), node.text)
                            for node in self.control("Custom_1118_BaldAppearance.xml", control_id).findall("onclick")]

@@ -23,6 +23,10 @@
 	     settings folded into Bald"): clear what an old install left behind. -->
 	<onload condition="Skin.HasSetting(touchmode)">Skin.Reset(touchmode)</onload>
 	<onload condition="Skin.HasSetting(no_slide_animations)">Skin.Reset(no_slide_animations)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(background_overlay))">Skin.Reset(background_overlay)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(HomeFanart.path))">Skin.Reset(HomeFanart.name)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(HomeFanart.path))">Skin.Reset(HomeFanart.ext)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(HomeFanart.path))">Skin.Reset(HomeFanart.path)</onload>
 	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
 	<controls />
 </window>
