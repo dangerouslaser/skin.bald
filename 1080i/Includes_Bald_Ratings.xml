@@ -258,57 +258,185 @@
 	</map>
 
 	<!-- ============ One rating ============
-	     A quiet pill: the source mark in the accent, the value in ink, on a 10% ink fill with no outline, so it never
-	     reads as a media flag chip (outlined). Two buttons, with and without the vote count; a disabled button sizes to
-	     its label (width auto), as the flag chips do. -->
-	<include name="Bald_RatingItem">
-		<param name="mark" />
-		<param name="value" />
+	     A quiet pill: the source's glyph in the accent, then the value in ink, on a 10% ink fill with no outline, so it
+	     never reads as a media flag chip (outlined). Glyphs are white PNGs in media/bald/ratings (tools/rating_glyphs.py:
+	     Simple Icons marks, CC0, and Bald's own), tinted here; never brand colours.
+
+	     A pill is its own small horizontal grouplist, because a button cannot hold an image. Kodi sizes a horizontal
+	     grouplist to its visible children (CGUIControlGroupList::GetWidth clamps the total to <width>), so the pill is
+	     as wide as glyph plus value and the caller's grouplist still closes up around it. Inside (usecontrolcoords):
+	       - the pill's left end, 8 px plus the glyph, rounded on the left (bald/chip_fill_l.png);
+	       - the glyph, pulled back over that end by its own width (left -glyph, so it takes no space);
+	       - the value: a disabled button that sizes to its label (width auto, 8 px each side), square on the left and
+	         rounded on the right (bald/chip_fill_r.png), so the two fills meet edge to edge.
+	     Sizes follow the pill's height through the Bald_RatingGlyph<height> constants (26 caption, 30 info screens). -->
+	<include name="Bald_RatingFrame">
+		<param name="glyph" />
 		<param name="visible">true</param>
+		<param name="top">0</param>
+		<param name="height">26</param>
+		<definition>
+			<control type="grouplist">
+				<top>$PARAM[top]</top>
+				<width>600</width>
+				<height>$PARAM[height]</height>
+				<orientation>horizontal</orientation>
+				<itemgap>0</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<visible>$PARAM[visible]</visible>
+				<control type="image">
+					<width>Bald_RatingLead$PARAM[height]</width>
+					<height>$PARAM[height]</height>
+					<texture border="6,6,0,6" colordiffuse="bald_ink10">bald/chip_fill_l.png</texture>
+				</control>
+				<control type="image">
+					<left>Bald_RatingGlyphBack$PARAM[height]</left>
+					<top>Bald_RatingGlyphTop$PARAM[height]</top>
+					<width>Bald_RatingGlyph$PARAM[height]</width>
+					<height>Bald_RatingGlyph$PARAM[height]</height>
+					<aspectratio>keep</aspectratio>
+					<texture colordiffuse="bald_accent">$PARAM[glyph]</texture>
+				</control>
+				<nested />
+			</control>
+		</definition>
+	</include>
+	<!-- The value part of a pill: visible decides between the plain value and the one with a vote count. -->
+	<include name="Bald_RatingValue">
+		<param name="label" />
+		<param name="visible" />
+		<param name="height" />
+		<param name="font" />
+		<definition>
+			<control type="button">
+				<width>auto</width>
+				<height>$PARAM[height]</height>
+				<label>$PARAM[label]</label>
+				<font>$PARAM[font]</font>
+				<textoffsetx>8</textoffsetx>
+				<aligny>center</aligny>
+				<textcolor>bald_ink</textcolor>
+				<disabledcolor>bald_ink</disabledcolor>
+				<texturenofocus border="0,6,6,6" colordiffuse="bald_ink10">bald/chip_fill_r.png</texturenofocus>
+				<texturefocus border="0,6,6,6" colordiffuse="bald_ink10">bald/chip_fill_r.png</texturefocus>
+				<enable>false</enable>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- A value with and without its vote count. -->
+	<include name="Bald_RatingValues">
+		<param name="value" />
 		<!-- The vote count's infolabel and whether it has one; sources without votes leave has_votes false (the default
 		     infolabel only keeps the unused votes button's label valid). -->
+		<param name="votes">ListItem.Votes</param>
+		<param name="has_votes">false</param>
+		<!-- A further condition on both, for a pill with more than one value format (the default rating). -->
+		<param name="visible">true</param>
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
+		<definition>
+			<include content="Bald_RatingValue">
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+				<param name="label">$PARAM[value]</param>
+				<param name="visible">[$PARAM[visible]] + ![$EXP[Bald_RatingVotes] + [$PARAM[has_votes]]]</param>
+			</include>
+			<include content="Bald_RatingValue">
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+				<param name="label">$PARAM[value][COLOR bald_ink60] · $INFO[$PARAM[votes]][/COLOR]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingVotes] + [$PARAM[has_votes]]</param>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_RatingItem">
+		<param name="glyph" />
+		<param name="value" />
+		<param name="visible">true</param>
 		<param name="votes">ListItem.Votes</param>
 		<param name="has_votes">false</param>
 		<param name="top">0</param>
 		<param name="height">26</param>
 		<param name="font">Bald_Flag</param>
 		<definition>
-			<include content="Bald_RatingPill">
-				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
-				<param name="label">[COLOR bald_accent]$PARAM[mark][/COLOR] $PARAM[value]</param>
-				<param name="visible">[$PARAM[visible]] + ![$EXP[Bald_RatingVotes] + [$PARAM[has_votes]]]</param>
-			</include>
-			<include content="Bald_RatingPill">
-				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
-				<param name="label">[COLOR bald_accent]$PARAM[mark][/COLOR] $PARAM[value][COLOR bald_ink60] · $INFO[$PARAM[votes]][/COLOR]</param>
-				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingVotes] + [$PARAM[has_votes]]</param>
+			<include content="Bald_RatingFrame">
+				<param name="glyph">$PARAM[glyph]</param>
+				<param name="visible">$PARAM[visible]</param>
+				<param name="top">$PARAM[top]</param>
+				<param name="height">$PARAM[height]</param>
+				<include content="Bald_RatingValues">
+					<param name="value">$PARAM[value]</param>
+					<param name="votes">$PARAM[votes]</param>
+					<param name="has_votes">$PARAM[has_votes]</param>
+					<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+				</include>
 			</include>
 		</definition>
 	</include>
-	<include name="Bald_RatingPill">
-		<param name="label" />
+	<!-- Kodi's default rating. Kodi does not know its source when it has no name (a Jellyfin-synced library holds only
+	     "default": Jellyfin's CommunityRating, whatever the server's metadata took it from), so the user names it in
+	     Appearance > Ratings > Default rating source (Skin.String Bald.Ratings.DefaultSource; empty is Generic, the
+	     star). The glyph and the format follow the choice: IMDb, Jellyfin, Kodi and Generic as Kodi prints it ("8.0"),
+	     TMDb, Trakt and Rotten Tomatoes as a percentage ("80%"), Metacritic as a 0-100 score ("80"). -->
+	<include name="Bald_RatingDefaultItem">
+		<param name="rating" />
+		<param name="votes" />
+		<param name="has_votes" />
 		<param name="visible" />
 		<param name="top">0</param>
-		<param name="height" />
-		<param name="font" />
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
 		<definition>
-			<control type="button">
-				<top>$PARAM[top]</top>
-				<width>auto</width>
-				<height>$PARAM[height]</height>
-				<label>$PARAM[label]</label>
-				<font>$PARAM[font]</font>
-				<textoffsetx>10</textoffsetx>
-				<aligny>center</aligny>
-				<textcolor>bald_ink</textcolor>
-				<disabledcolor>bald_ink</disabledcolor>
-				<texturenofocus border="6" colordiffuse="bald_ink10">bald/chip_fill.png</texturenofocus>
-				<texturefocus border="6" colordiffuse="bald_ink10">bald/chip_fill.png</texturefocus>
-				<enable>false</enable>
-				<visible>$PARAM[visible]</visible>
-			</control>
+			<include content="Bald_RatingFrame">
+				<param name="glyph">$VAR[Bald_RatingDefaultGlyph]</param>
+				<param name="visible">$PARAM[visible]</param>
+				<param name="top">$PARAM[top]</param>
+				<param name="height">$PARAM[height]</param>
+				<include content="Bald_RatingValues">
+					<param name="value">$INFO[$PARAM[rating]]</param>
+					<param name="visible">!$EXP[Bald_RatingDefaultScore]</param>
+					<param name="votes">$PARAM[votes]</param>
+					<param name="has_votes">$PARAM[has_votes]</param>
+					<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+				</include>
+				<include content="Bald_RatingValues">
+					<param name="value">$MAP[Bald_RatingPercent, $PARAM[rating]]$VAR[Bald_RatingDefaultUnit]</param>
+					<param name="visible">$EXP[Bald_RatingDefaultScore]</param>
+					<param name="votes">$PARAM[votes]</param>
+					<param name="has_votes">$PARAM[has_votes]</param>
+					<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+				</include>
+			</include>
 		</definition>
 	</include>
+	<variable name="Bald_RatingDefaultGlyph">
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),imdb)">bald/ratings/imdb.png</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),tmdb)">bald/ratings/tmdb.png</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt)">bald/ratings/rt.png</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience)">bald/ratings/rt_audience.png</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic)">bald/ratings/metacritic.png</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt)">bald/ratings/trakt.png</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),jellyfin)">bald/ratings/jellyfin.png</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),kodi)">bald/ratings/kodi.png</value>
+		<value>bald/ratings/rating.png</value>
+	</variable>
+	<!-- Sources scored out of 100: the default rating goes back through Bald_RatingPercent, with a % except Metacritic. -->
+	<expression name="Bald_RatingDefaultScore">[String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),tmdb) | String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt) | String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience) | String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic) | String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt)]</expression>
+	<variable name="Bald_RatingDefaultUnit">
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic)"></value>
+		<value>%</value>
+	</variable>
+	<!-- The setting row's value (Custom_1118_BaldAppearance.xml, 9656). -->
+	<variable name="Bald_RatingDefaultSourceName">
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),imdb)">$LOCALIZE[31303]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),tmdb)">$LOCALIZE[31304]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt)">$LOCALIZE[31311]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience)">$LOCALIZE[31312]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic)">$LOCALIZE[31307]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt)">$LOCALIZE[31308]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),jellyfin)">$LOCALIZE[31321]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),kodi)">$LOCALIZE[31322]</value>
+		<value>$LOCALIZE[31320]</value>
+	</variable>
 
 	<!-- ============ A list item's ratings ============
 	     The items for one library or plugin item, as children of the caller's horizontal grouplist (hidden items take no
@@ -316,7 +444,12 @@
 	     own, then Kodi's default rating when none of the named sources has one.
 	     fallback: true fills Rotten Tomatoes, Metacritic and Trakt from TMDb Helper's ListItem monitor when the library
 	     has no value. Only the info dialog passes it: the monitor follows one item, the dialog's, while Home and the
-	     library draw a caption per row and parity and would show the previous item's scores for a moment. -->
+	     library draw a caption per row and parity and would show the previous item's scores for a moment.
+	     One pill per source: a named rating always hides the default one (the default pill needs every name empty; in
+	     an NFO library Kodi's default rating is one of the named ones anyway), and when Default rating source names
+	     Rotten Tomatoes, Metacritic or Trakt and the default pill shows, TMDb Helper's value for that source stays
+	     hidden, because the library has it. -->
+
 	<include name="Bald_Ratings">
 		<param name="container" />
 		<param name="fallback">false</param>
@@ -327,7 +460,7 @@
 		<param name="font">Bald_Flag</param>
 		<definition>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31303]</param>
+				<param name="glyph">bald/ratings/imdb.png</param>
 				<param name="value">$INFO[$PARAM[container]ListItem.Rating(imdb)]</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingIMDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(imdb))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(imdb)</param>
@@ -335,7 +468,7 @@
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31304]</param>
+				<param name="glyph">bald/ratings/tmdb.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(themoviedb)]%</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTMDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(themoviedb)</param>
@@ -344,7 +477,7 @@
 			</include>
 			<!-- The TV scraper names TMDb "tmdb"; shown only when there is no "themoviedb". -->
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31304]</param>
+				<param name="glyph">bald/ratings/tmdb.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(tmdb)]%</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTMDb] + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + !String.IsEmpty($PARAM[container]ListItem.Rating(tmdb))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(tmdb)</param>
@@ -352,7 +485,7 @@
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31305]</param>
+				<param name="glyph">bald/ratings/rt.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(tomatometerallcritics)]%</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingRTCritics] + !String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(tomatometerallcritics)</param>
@@ -360,13 +493,13 @@
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31305]</param>
+				<param name="glyph">bald/ratings/rt.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating)]%</param>
-				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTCritics] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating))</param>
+				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTCritics] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]] + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31306]</param>
+				<param name="glyph">bald/ratings/rt_audience.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(tomatometerallaudience)]%</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingRTAudience] + !String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(tomatometerallaudience)</param>
@@ -374,13 +507,13 @@
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31306]</param>
+				<param name="glyph">bald/ratings/rt_audience.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter)]%</param>
-				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTAudience] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter))</param>
+				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTAudience] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]] + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31307]</param>
+				<param name="glyph">bald/ratings/metacritic.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(metacritic)]</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingMetacritic] + !String.IsEmpty($PARAM[container]ListItem.Rating(metacritic))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(metacritic)</param>
@@ -388,13 +521,13 @@
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31307]</param>
+				<param name="glyph">bald/ratings/metacritic.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.metacritic_rating)]</param>
-				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingMetacritic] + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacritic_rating))</param>
+				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingMetacritic] + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacritic_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]] + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31308]</param>
+				<param name="glyph">bald/ratings/trakt.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(trakt)]%</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTrakt] + !String.IsEmpty($PARAM[container]ListItem.Rating(trakt))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(trakt)</param>
@@ -402,13 +535,13 @@
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31308]</param>
+				<param name="glyph">bald/ratings/trakt.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.ListItem.trakt_rating)]%</param>
-				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTrakt] + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.trakt_rating))</param>
+				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTrakt] + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.trakt_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]] + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31309]</param>
+				<param name="glyph">bald/ratings/tvdb.png</param>
 				<param name="value">$INFO[$PARAM[container]ListItem.Rating(tvdb)]</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTVDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(tvdb)</param>
@@ -416,16 +549,16 @@
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31310]</param>
+				<param name="glyph">bald/ratings/you.png</param>
 				<param name="value">$INFO[$PARAM[container]ListItem.UserRating]</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingUser] + !String.IsEmpty($PARAM[container]ListItem.UserRating)</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<!-- Kodi's default rating, only when no name above has a value: an NFO <rating> without a name, a single
-			     <rating> tag, or a source Bald does not name (Letterboxd, for example). -->
-			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[563]</param>
-				<param name="value">$INFO[$PARAM[container]ListItem.Rating]</param>
+			     <rating> tag, a Jellyfin-synced library (only "default"), or a source Bald does not name (Letterboxd, for
+			     example). Its glyph and format come from Default rating source. -->
+			<include content="Bald_RatingDefaultItem">
+				<param name="rating">$PARAM[container]ListItem.Rating</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes</param>
 				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes,0)</param>
@@ -478,50 +611,49 @@
 		<param name="font">Bald_Flag</param>
 		<definition>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31303]</param>
+				<param name="glyph">bald/ratings/imdb.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.imdb_rating)]</param>
 				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingIMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.imdb_rating))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31304]</param>
+				<param name="glyph">bald/ratings/tmdb.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.Player.tmdb_rating)]%</param>
 				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.tmdb_rating))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31305]</param>
+				<param name="glyph">bald/ratings/rt.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating)]%</param>
 				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTCritics] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31306]</param>
+				<param name="glyph">bald/ratings/rt_audience.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter)]%</param>
 				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTAudience] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31307]</param>
+				<param name="glyph">bald/ratings/metacritic.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.metacritic_rating)]</param>
 				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingMetacritic] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacritic_rating))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31308]</param>
+				<param name="glyph">bald/ratings/trakt.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.Player.trakt_rating)]%</param>
 				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTrakt] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.trakt_rating))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[31310]</param>
+				<param name="glyph">bald/ratings/you.png</param>
 				<param name="value">$INFO[VideoPlayer.UserRating]</param>
 				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingUser] + !String.IsEmpty(VideoPlayer.UserRating)</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
-			<include content="Bald_RatingItem">
-				<param name="mark">$LOCALIZE[563]</param>
-				<param name="value">$INFO[VideoPlayer.Rating]</param>
+			<include content="Bald_RatingDefaultItem">
+				<param name="rating">VideoPlayer.Rating</param>
 				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingDefault] + !String.IsEmpty(VideoPlayer.Rating) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.imdb_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.tmdb_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacritic_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.trakt_rating))</param>
 				<param name="votes">VideoPlayer.Votes</param>
 				<param name="has_votes">!String.IsEqual(VideoPlayer.Votes,0)</param>

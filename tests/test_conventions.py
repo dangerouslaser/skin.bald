@@ -67,7 +67,12 @@ class ConstantTests(unittest.TestCase):
                 if node.tag not in CONSTANT_TAGS or not text:
                     continue
                 with self.subTest(file=path.name, tag=node.tag, value=text):
-                    if text.startswith("Bald_"):
+                    if text.startswith("Bald_") and "$PARAM[" in text:
+                        # A constant chosen by a parameter (Bald_RatingGlyph$PARAM[height]): Kodi resolves constants
+                        # after the include's parameters, so the name only has to start a family of constants.
+                        prefix = text.split("$PARAM[")[0]
+                        self.assertTrue(any(name.startswith(prefix) for name in values), text)
+                    elif text.startswith("Bald_"):
                         self.assertIn(text, values)
                     self.assertNotIn((node.tag, text), LAYOUT)
 
