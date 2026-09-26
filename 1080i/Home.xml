@@ -60,11 +60,6 @@
 	<onload condition="$EXP[Bald_Preloading]">SetFocus(9198)</onload>
 	<include>Bald_RowStartReset</include>
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
-	<!-- The held art (see the art frame) covers the rows' refetch, then goes. -->
-	<onload>CancelAlarm(bald_holdart,true)</onload>
-	<onload condition="!String.IsEmpty(Window(home).Property(Bald.HoldArt))">AlarmClock(bald_holdart,ClearProperty(Bald.HoldArt,home),00:03,silent)</onload>
-	<onunload>CancelAlarm(bald_holdart,true)</onunload>
-	<onunload>SetProperty(Bald.HoldArt,$ESCVAR[Bald_Fanart],home)</onunload>
 	<controls>
 		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_Backdrop). -->
 		<control type="image">
@@ -96,19 +91,6 @@
 				<height>702</height>
 				<control type="image">
 					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
-				</control>
-				<!-- Held art: the fanart Home showed when it was left (Bald.HoldArt, set in onunload). Kodi empties Home's
-				     rows when it closes and fetches them again when it opens (CGUIBaseContainer::FreeResources and
-				     AllocResources), so for a few frames the art layers have no image and the placeholder showed as a
-				     dark box. The layers fade in over this instead; the onload clears it after 3 s. Loaded at once, not
-				     in the background, so it is there on the first frame. -->
-				<control type="image">
-					<aspectratio>scale</aspectratio>
-					<texture>$INFO[Window(home).Property(Bald.HoldArt)]</texture>
-					<visible>!String.IsEmpty(Window(home).Property(Bald.HoldArt))</visible>
-					<animation type="Hidden">
-						<effect type="fade" start="100" end="0" time="300" tween="sine" easing="inout" />
-					</animation>
 				</control>
 				<!-- Fanart: two parity layers (see Bald_ArtLayer). -->
 				<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param></include>
