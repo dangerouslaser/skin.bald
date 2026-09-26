@@ -77,6 +77,23 @@
                                 </item>
                             </items>
                         </value>
+                        <rules name="note_rest">
+                            <rule>
+                                <condition>{item_x}==$MATH[{item_length_x} - 1]</condition>
+                                <value></value>
+                            </rule>
+                            <rule>
+                                <value>, $VAR[Bald_RowsNote_{screen}_$MATH[2 + {item_x}]]</value>
+                            </rule>
+                        </rules>
+                    </item>
+                </items>
+            </value>
+            <value name="note_head">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <condition>{item_x}==0</condition>
+                        <template>&lt;value&gt;$VAR[Bald_RowsNote_{screen}_1]&lt;/value&gt;</template>
                     </item>
                 </items>
             </value>

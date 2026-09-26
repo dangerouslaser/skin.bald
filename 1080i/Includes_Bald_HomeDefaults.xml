@@ -70,6 +70,9 @@
             </control>
         </definition>
     </include>
+    <variable name="Bald_RowsNote_home_1">
+        <value>Recently added movies, $VAR[Bald_RowsNote_home_2]</value>
+    </variable>
     <include name="Bald_RowDots_9102">
         <definition>
             <control type="image">
@@ -95,6 +98,9 @@
             </control>
         </definition>
     </include>
+    <variable name="Bald_RowsNote_home_2">
+        <value>Continue watching, $VAR[Bald_RowsNote_home_3]</value>
+    </variable>
     <include name="Bald_RowDots_9103">
         <definition>
             <control type="image">
@@ -120,6 +126,9 @@
             </control>
         </definition>
     </include>
+    <variable name="Bald_RowsNote_home_3">
+        <value>Next up</value>
+    </variable>
     <include name="Bald_RowStartReset_home">
         <definition>
             <onload>ClearProperty(Bald.Start9101,home)</onload>
@@ -207,6 +216,10 @@
     <expression name="Bald_PreviewHasLogo_home">[false]| [$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + [!String.IsEmpty(Container(9101).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9101).ListItem.Art(tvshow.clearlogo))]]
 | [$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102) + [!String.IsEmpty(Container(9102).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9102).ListItem.Art(tvshow.clearlogo))]]
 | [$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103) + [!String.IsEmpty(Container(9103).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9103).ListItem.Art(tvshow.clearlogo))]]</expression>
+    <variable name="Bald_RowsNote_home">
+        <value>$VAR[Bald_RowsNote_home_1]</value>
+        <value/>
+    </variable>
     <include name="Bald_Generated_MoviesWidgets">
         <definition>
             <include content="Bald_Row">
@@ -253,6 +266,9 @@
             </control>
         </definition>
     </include>
+    <variable name="Bald_RowsNote_movies_1">
+        <value>Recently added movies, $VAR[Bald_RowsNote_movies_2]</value>
+    </variable>
     <include name="Bald_RowDots_9202">
         <definition>
             <control type="image">
@@ -271,6 +287,9 @@
             </control>
         </definition>
     </include>
+    <variable name="Bald_RowsNote_movies_2">
+        <value>Top rated movies</value>
+    </variable>
     <include name="Bald_RowStartReset_movies">
         <definition>
             <onload>ClearProperty(Bald.Start9201,home)</onload>
@@ -333,6 +352,10 @@
 | [$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202) + Integer.IsOdd(Container(9202).CurrentItem)]</expression>
     <expression name="Bald_PreviewHasLogo_movies">[false]| [$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9201) + [!String.IsEmpty(Container(9201).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9201).ListItem.Art(tvshow.clearlogo))]]
 | [$EXP[Bald_PreviewMovies] + String.IsEqual(Window(home).Property(Bald.Row.movies),9202) + [!String.IsEmpty(Container(9202).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9202).ListItem.Art(tvshow.clearlogo))]]</expression>
+    <variable name="Bald_RowsNote_movies">
+        <value>$VAR[Bald_RowsNote_movies_1]</value>
+        <value/>
+    </variable>
     <include name="Bald_Generated_TVShowsWidgets">
         <definition>
             <include content="Bald_Row">
@@ -379,6 +402,9 @@
             </control>
         </definition>
     </include>
+    <variable name="Bald_RowsNote_tvshows_1">
+        <value>Recently added episodes, $VAR[Bald_RowsNote_tvshows_2]</value>
+    </variable>
     <include name="Bald_RowDots_9302">
         <definition>
             <control type="image">
@@ -397,6 +423,9 @@
             </control>
         </definition>
     </include>
+    <variable name="Bald_RowsNote_tvshows_2">
+        <value>Top rated TV shows</value>
+    </variable>
     <include name="Bald_RowStartReset_tvshows">
         <definition>
             <onload>ClearProperty(Bald.Start9301,home)</onload>
@@ -459,6 +488,10 @@
 | [$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302) + Integer.IsOdd(Container(9302).CurrentItem)]</expression>
     <expression name="Bald_PreviewHasLogo_tvshows">[false]| [$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301) + [!String.IsEmpty(Container(9301).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9301).ListItem.Art(tvshow.clearlogo))]]
 | [$EXP[Bald_PreviewTVShows] + String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302) + [!String.IsEmpty(Container(9302).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(9302).ListItem.Art(tvshow.clearlogo))]]</expression>
+    <variable name="Bald_RowsNote_tvshows">
+        <value>$VAR[Bald_RowsNote_tvshows_1]</value>
+        <value/>
+    </variable>
     <variable name="Bald_Fanart">
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + !String.IsEmpty(Container(9101).ListItem.Art(fanart))">$INFO[Container(9101).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + !String.IsEmpty(Container(9101).ListItem.Art(tvshow.fanart))">$INFO[Container(9101).ListItem.Art(tvshow.fanart)]</value>

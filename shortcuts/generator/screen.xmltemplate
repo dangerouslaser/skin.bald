@@ -23,3 +23,7 @@
 <expression name="Bald_HasLogo_{screen}">[false]{has_logo}</expression>
 <expression name="Bald_PreviewItemOdd_{screen}">[false]{preview_item_odd}</expression>
 <expression name="Bald_PreviewHasLogo_{screen}">[false]{preview_has_logo}</expression>
+<variable name="Bald_RowsNote_{screen}">
+{note_head}
+    <value></value>
+</variable>

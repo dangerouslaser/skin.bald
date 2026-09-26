@@ -186,7 +186,8 @@
 		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),settings)">$LOCALIZE[5]</value>
 	</variable>
 	<variable name="Bald_MenuPreviewNote">
-		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),home)">Recently added movies, Continue watching, Next up</value>
+		<!-- The Home rows' labels, comma separated (generated; empty with no rows). -->
+		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),home)">$VAR[Bald_RowsNote_home]</value>
 		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),movies)">Browse your movie library with large posters and an artwork preview.</value>
 		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),tvshows)">Browse series, seasons and episodes in your TV library.</value>
 		<value condition="String.IsEqual(Window(home).Property(Bald.MenuPreview),livetv)">Select to open the guide.</value>
