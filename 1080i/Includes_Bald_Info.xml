@@ -78,10 +78,26 @@
 			</animation>
 		</definition>
 	</include>
+	<!-- Movie Overview opens on Resume or Play (the grouplist remembers its last child, so focus it explicitly). -->
+	<include name="Bald_InfoMovieOnLoad">
+		<onload condition="ListItem.IsResumable">SetFocus(5001)</onload>
+		<onload condition="!ListItem.IsResumable">SetFocus(5003)</onload>
+	</include>
+	<!-- Down to Cast & details: focus cast, or Details (5050) if cast is empty. Also the TV episode row's Down. -->
+	<include name="Bald_InfoActionToCast">
+		<ondown>SetProperty(Bald.InfoSec,1,home)</ondown>
+		<ondown>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
+		<ondown condition="Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</ondown>
+		<ondown condition="!Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</ondown>
+	</include>
+	<!-- Up to Overview restores the actions; TV returns to the lowest filled row (episodes, then seasons).
+	     Movies have no 5301/5302, so those conditions are false there. -->
 	<include name="Bald_InfoToOverview">
 		<onup>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onup>
 		<onup>SetProperty(Bald.InfoSec,0,home)</onup>
-		<onup>SetFocus(5000)</onup>
+		<onup condition="$EXP[Bald_InfoTVHasEpisodes]">SetFocus(5302)</onup>
+		<onup condition="!$EXP[Bald_InfoTVHasEpisodes] + $EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</onup>
+		<onup condition="!$EXP[Bald_InfoTVHasEpisodes] + !$EXP[Bald_InfoTVHasSeasons]">SetFocus(5000)</onup>
 	</include>
 	<include name="Bald_InfoToMore">
 		<ondown>SetProperty(Bald.InfoSec,2,home)</ondown>
@@ -118,6 +134,8 @@
 		<param name="label" />
 		<param name="onclick" />
 		<param name="visible">true</param>
+		<!-- Include holding the Down route: Cast & details for movies, the season tabs for TV. -->
+		<param name="down">Bald_InfoActionToCast</param>
 		<definition>
 			<control type="button" id="$PARAM[id]">
 				<width>auto</width>
@@ -131,11 +149,8 @@
 				<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
 				<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
 				<onclick>$PARAM[onclick]</onclick>
-				<!-- Navigation belongs to the focused button, not its grouplist. Details is the empty-cast fallback. -->
-				<ondown>SetProperty(Bald.InfoSec,1,home)</ondown>
-				<ondown>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
-				<ondown condition="Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</ondown>
-				<ondown condition="!Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</ondown>
+				<!-- Navigation belongs to the focused button, not its grouplist. -->
+				<include>$PARAM[down]</include>
 				<onup>noop</onup>
 				<onfocus>SetProperty(Bald.InfoSec,0,home)</onfocus>
 				<onfocus>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onfocus>
