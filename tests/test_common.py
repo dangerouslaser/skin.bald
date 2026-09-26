@@ -54,7 +54,7 @@ class MediaFlagsTest(unittest.TestCase):
         self.assertEqual({(c.findtext("height"), c.findtext("font")) for c in info}, {("30", "Bald_FlagL")})
         chip = caption[0]
         self.assertEqual(chip.findtext("enable"), "false")
-        self.assertEqual(chip.find("texturenofocus").get("colordiffuse"), "bald_ink50")
+        self.assertEqual(chip.find("texturenofocus").get("colordiffuse"), "bald_ink45")
 
     def test_every_flag_row_uses_the_shared_include(self):
         callers = {}

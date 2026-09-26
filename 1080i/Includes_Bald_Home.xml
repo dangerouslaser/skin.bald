@@ -498,13 +498,13 @@
 						<wrapmultiline>true</wrapmultiline>
 						<aligny>top</aligny>
 						<font>Bald_CaptionPlot</font>
-						<textcolor>bald_ink76</textcolor>
+						<textcolor>bald_ink80</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Plot]</label>
 						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [!String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | !String.IsEmpty(Container($PARAM[c]).ListItem.Plot)]</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
 					</control>
 					<control type="label">
-						<top>18</top><left>20</left><width>$PARAM[width]</width><height>116</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionPlot</font><textcolor>bald_ink76</textcolor>
+						<top>18</top><left>20</left><width>$PARAM[width]</width><height>116</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor>
 						<label>$INFO[Container.ShowPlot]</label>
 						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) + String.IsEmpty(Container($PARAM[c]).ListItem.Plot)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
@@ -647,7 +647,7 @@
 						<height>26</height>
 						<aligny>top</aligny>
 						<font>Bald_Hint</font>
-						<textcolor>bald_ink55</textcolor>
+						<textcolor>bald_ink60</textcolor>
 						<label>$INFO[Container($PARAM[id]).CurrentItem]$INFO[Container($PARAM[id]).NumItems, $LOCALIZE[31708] ,]</label>
 						<animation type="Conditional" condition="$EXP[Bald_Idle]">
 							<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />

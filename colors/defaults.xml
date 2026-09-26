@@ -19,29 +19,27 @@
 	<color name="disabled">40FFFFFF</color>
 	<color name="selected">FFFFB70F</color>
 	<color name="invalid">FFFF0000</color>
-	<!-- Bald tokens: neutral fallback palette (docs/SPEC.md section 3). Alpha variants of ink for text roles. -->
+	<!-- Bald tokens (docs/SPEC.md section 3). Ink opacity uses one fixed scale:
+	     100 / 95 / 80 / 70 / 60 / 45 / 34 / 28 / 10. Pick the nearest step; do not add in-between values.
+	     Image treatments (dimming, placeholders, backdrop brightness, scrims) have role names instead. -->
 	<color name="bald_field">FF0B0C10</color>
 	<color name="bald_accent">FF9FB0C6</color>
 	<color name="bald_ink">FFECEEF2</color>
 	<color name="bald_ink95">F2ECEEF2</color>
 	<color name="bald_ink80">CCECEEF2</color>
-	<color name="bald_ink76">C2ECEEF2</color>
 	<color name="bald_ink70">B3ECEEF2</color>
-	<color name="bald_ink66">A8ECEEF2</color>
 	<color name="bald_ink60">99ECEEF2</color>
-	<color name="bald_ink55">8CECEEF2</color>
-	<color name="bald_ink50">80ECEEF2</color>
+	<color name="bald_ink45">73ECEEF2</color>
 	<color name="bald_ink34">57ECEEF2</color>
 	<color name="bald_ink28">47ECEEF2</color>
+	<color name="bald_ink10">1AECEEF2</color>
 	<!-- Blurred fanart background brightness (multiplies the image): 30%. -->
 	<color name="bald_backdrop">FF4D4D4D</color>
-	<!-- Info dialog -->
+	<!-- Info dialog scrim layer. -->
 	<color name="bald_field60">990B0C10</color>
-	<color name="bald_ink84">D6ECEEF2</color>
-	<color name="bald_ink58">94ECEEF2</color>
-	<color name="bald_ink45">73ECEEF2</color>
-	<color name="bald_ink10">1AECEEF2</color>
+	<!-- Unfocused tiles and posters: 55% (SPEC 5.1 row behavior). -->
 	<color name="bald_tile_dim">8CFFFFFF</color>
+	<color name="bald_poster_dim">8CECEEF2</color>
 	<color name="bald_placeholder">14808080</color>
 	<color name="bald_tile_placeholder">26808080</color>
 </colors>

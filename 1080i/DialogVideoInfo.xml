@@ -62,7 +62,7 @@
 				<!-- The TV Overview runs to y964, so it has no page trail. -->
 				<control type="label">
 					<left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>1100</width><height>28</height>
-					<font>Bald_Hint</font><textcolor>bald_ink58</textcolor><label>$VAR[Bald_InfoPageTrail]</label>
+					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_InfoPageTrail]</label>
 					<visible>!$EXP[Bald_InfoOnMore] + ![$EXP[Bald_InfoIsTV] + $EXP[Bald_InfoOnOverview]]</visible>
 				</control>
 				<control type="label">

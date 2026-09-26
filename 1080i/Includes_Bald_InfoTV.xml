@@ -331,7 +331,7 @@
 				<wrapmultiline>true</wrapmultiline>
 				<aligny>top</aligny>
 				<font>Bald_InfoPlot</font>
-				<textcolor>bald_ink84</textcolor>
+				<textcolor>bald_ink80</textcolor>
 				<label>$VAR[Bald_InfoTVPlot]</label>
 				<include content="Bald_AnimInfoIn"><param name="delay">560</param></include>
 			</control>

@@ -28,7 +28,7 @@
 	</variable>
 	<variable name="Bald_InfoPageTrail">
 		<value condition="$EXP[Bald_InfoOnOverview]">[COLOR bald_ink]$LOCALIZE[31770][/COLOR]     ·     $LOCALIZE[31771]     ·     $LOCALIZE[31772]</value>
-		<value>[COLOR bald_ink58]$LOCALIZE[31770][/COLOR]     ·     [COLOR bald_ink]$LOCALIZE[31771][/COLOR]     ·     $LOCALIZE[31772]</value>
+		<value>[COLOR bald_ink60]$LOCALIZE[31770][/COLOR]     ·     [COLOR bald_ink]$LOCALIZE[31771][/COLOR]     ·     $LOCALIZE[31772]</value>
 	</variable>
 	<!-- ============ Variables (ListItem.* is the dialog's item) ============ -->
 	<variable name="Bald_InfoTitle">
@@ -239,7 +239,7 @@
 				<width>380</width>
 				<height>22</height>
 				<font>Bald_DetailLabel</font>
-				<textcolor>bald_ink58</textcolor>
+				<textcolor>bald_ink60</textcolor>
 				<label>$PARAM[label]</label>
 			</control>
 			<control type="label">

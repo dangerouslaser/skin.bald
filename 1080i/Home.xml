@@ -166,7 +166,7 @@
 					<top>144</top>
 					<height>30</height>
 					<font>Bald_Date</font>
-					<textcolor>bald_ink66</textcolor>
+					<textcolor>bald_ink70</textcolor>
 					<label>$INFO[System.Date(DDDD)], $INFO[System.Date(MMMM D)]</label>
 				</control>
 			</control>
@@ -266,7 +266,7 @@
 					<height>26</height>
 					<aligny>top</aligny>
 					<font>Bald_Hint</font>
-					<textcolor>bald_ink55</textcolor>
+					<textcolor>bald_ink60</textcolor>
 					<label>$LOCALIZE[31702]</label>
 					<visible>!Skin.HasSetting(Bald.AutoHideMenuHint) | !String.IsEqual(Skin.String(Bald.MenuOpens),3)</visible>
 					<animation type="Conditional" condition="$EXP[Bald_Idle]">
