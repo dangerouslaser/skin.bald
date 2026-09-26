@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald info overlay (docs/SPEC.md 5.16, "Video OSD"). Shown by its visibility condition (Bald_OSDInfoOverlay): the
+     Info key (fullscreeninfo), pause with "When paused" set to Show info once the pause delay has run, and a Live TV
+     channel change. It replaces the seek layer's bar (DialogSeekBar.xml hides its block while this window is visible)
+     and keeps the seek layer's gradient and clock. A modeless dialog with no controls to focus: keys still reach
+     fullscreeninfo or the player. The column is Bald_OSDInfoStack in Includes_Bald_OSD.xml. -->
+<window type="dialog" id="1127">
+	<zorder>1</zorder>
+	<visible>$EXP[Bald_OSDInfoOverlay]</visible>
+	<visible>Window.IsActive(fullscreenvideo) + !Window.IsVisible(videoosd) + !Window.IsVisible(subtitlesearch) + !Window.IsVisible(playerprocessinfo) + !Player.HasGame</visible>
+	<include>Bald_OSDAnimPanel</include>
+	<controls>
+		<include>Bald_OSDInfoScrim</include>
+		<include>Bald_OSDInfoStack</include>
+	</controls>
+</window>
