@@ -29,7 +29,7 @@ def tracked_files(revision: str) -> list[str]:
     output = subprocess.check_output(
         ["git", "ls-tree", "-r", "--name-only", revision], cwd=ROOT, text=True
     )
-    files = {"addon.xml", "LICENSE.txt"}
+    files = {"addon.xml", "LICENSE.txt", "LICENSE-Estuary.txt"}
     directories = (
         "1080i/",
         "colors/",
