@@ -260,7 +260,7 @@ VIDEO INFORMATION PAGES (DialogVideoInfo.xml, Includes_Bald_InfoPages.xml, Inclu
 5303-5999	Free for new info-page IDs; record them above.
 
 
-PLAYBACK (Includes_Bald_Playback.xml and the player windows that use it; docs/SPEC.md 5, "Playback (proposed)")
+PLAYBACK (Includes_Bald_Playback.xml and the player windows that use it; docs/SPEC.md 5.16)
 Kodi binds these by number (checked against xbmc master):
 DialogSeekBar.xml (CGUIDialogSeekBar)
 401		File progress slider: the seek-preview nib (Kodi selects the position, the seek target while seeking)

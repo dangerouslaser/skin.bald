@@ -8,7 +8,7 @@ shows it through `$LOCALIZE[id]`.
 | Range       | Owner                                                                                  |
 |-------------|----------------------------------------------------------------------------------------|
 | 31000-31699 | Estuary's strings, kept for the copied utility windows (currently up to 31615)          |
-| 31616-31649 | Bald playback windows restyled from Estuary (Includes_Bald_Playback.xml; tests/test_playback.py) |
+| 31616-31649 | Bald playback windows and the video OSD (Includes_Bald_Playback.xml, Includes_Bald_OSD.xml; tests/test_playback.py) |
 | 31650-31659 | Bald global overlays (Includes_Bald_Overlays.xml; tests/test_overlays.py)             |
 | 31660-31679 | Bald Live TV windows restyled from Estuary (Includes_Bald_PVR.xml; tests/test_pvr.py)  |
 | 31680-31684 | Reserved for the shared foundations pass (unused)                                      |
@@ -29,6 +29,7 @@ Within Bald's block, IDs are grouped by area with room to grow:
 | 31890-31899 | Global Search                                      |
 | 31900-31949 | Context menu notes                                 |
 | 31950-31969 | Kodi settings windows (hub, pages, profiles, info) |
+| 31970-31979 | Bald Settings, Playback (Custom_1119_BaldPlayback.xml)  |
 | 31980-31999 | Media utility windows (Includes_Bald_Media.xml)    |
 
 ## Rules

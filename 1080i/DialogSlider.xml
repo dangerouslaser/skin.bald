@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald slider popup (docs/SPEC.md 5, "Playback (proposed)"), used by the OSD settings' sliders (audio delay,
+<!-- Bald slider popup (docs/SPEC.md 5.16, "Other playback windows"), used by the OSD settings' sliders (audio delay,
      subtitle delay, zoom and so on): an opaque field panel at the top centre with the name, the value and the
      settings slider (4 px track, 16 px nib, accent on focus). Started from Kodi 22 Estuary's DialogSlider.xml
      (GPL-2.0-or-later, see LICENSE-Estuary.txt). Kodi (CGUIDialogSlider) binds 10 (heading), 11 (slider) and

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bald music OSD (docs/SPEC.md 5, "Playback (proposed)"): the video OSD's button row and seek row over the
+<!-- Bald music OSD (docs/SPEC.md 5.16, "Other playback windows"): the video OSD's button row and seek row over the
      visualisation; DialogSeekBar.xml draws the title, time and track. Started from Kodi 22 Estuary's MusicOSD.xml
      (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogMusicOSD binds 500 (visualisation) and 501 (lock), which
      Estuary does not draw either. Every button keeps Estuary's id, navigation and actions (200-202 rows, 600-608
@@ -8,6 +8,8 @@
 	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
 	<defaultcontrol always="true">602</defaultcontrol>
 	<depth>DepthOSD</depth>
+	<!-- Over the seek layer (DialogSeekBar.xml, zorder 0) and its gradient, whichever opened first. -->
+	<zorder>1</zorder>
 	<controls>
 		<control type="button">
 			<description>background close area</description>
