@@ -1029,7 +1029,7 @@ msgstr ""
 #: /1080i/Includes_Bald_Playback.xml
 #: /1080i/Includes_Bald_OSD.xml
 #: /1080i/VideoOSDBookmarks.xml
-#. OSD hint when there is no seek row, and the touch back button
+#. OSD hint when there is no seek row
 msgctxt "#31619"
 msgid "Back to close"
 msgstr ""

@@ -3,7 +3,7 @@
      visualisation; DialogSeekBar.xml draws the title, time and track. Started from Kodi 22 Estuary's MusicOSD.xml
      (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogMusicOSD binds 500 (visualisation) and 501 (lock), which
      Estuary does not draw either. Every button keeps Estuary's id, navigation and actions (200-202 rows, 600-608
-     transport, 70040-70055 and 70048 tools, 87 seek button, 799 touch back). -->
+     transport, 70040-70055 and 70048 tools, 87 seek button). -->
 <window>
 	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
 	<defaultcontrol always="true">602</defaultcontrol>
@@ -21,7 +21,6 @@
 			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
-		<include condition="Skin.HasSetting(touchmode)">Bald_PlaybackTouchBack</include>
 		<control type="group" id="200">
 			<include>Bald_PlaybackAnimWindow</include>
 			<visible>!Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(playerprocessinfo)</visible>

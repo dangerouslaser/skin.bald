@@ -5,7 +5,6 @@
      marker, which Estuary and Bald leave out. -->
 <window>
 	<controls>
-		<include condition="Skin.HasSetting(touchmode)">TouchBackSlideshowButton</include>
 		<control type="label" id="10">
 			<width>1</width>
 			<height>1</height>

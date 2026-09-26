@@ -11,9 +11,6 @@ WINDOWS = sorted(path.name for path in NATIVE if ET.parse(path).getroot().tag ==
 
 # Focus targets a window names without defining the control itself, and why that is right.
 NATIVE_TARGETS = {
-    # Estuary's TouchButtons (Includes.xml, touch mode only) points Right to 2000, which only some Estuary windows
-    # define; Kodi ignores a move to a missing control. Kept as Estuary ships it.
-    "MyVideoNav.xml": {"2000"},
     # The next item card's forward button closes the card first (Dialog.Close(1124,true)), so SetFocus(87) lands on
     # the video OSD's seek slider underneath (Includes_Bald_OSD.xml, Bald_OSDSlot_Panel_Forward).
     "Custom_1124_OSDNextItem.xml": {"87"},

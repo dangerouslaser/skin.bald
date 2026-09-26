@@ -287,7 +287,6 @@ MusicOSD.xml (the video OSD is in VIDEO OSD below)
 70040, 70041, 70048	Channels, guide, settings
 70050-70055	Music: RDS, playlist, rating, repeat, random, lyrics
 6000	Seek group; 87 hidden seek button (Up from the buttons)
-799		Touch-mode back button (Bald_PlaybackTouchBack)
 PlayerControls.xml
 201		Button grouplist; 600, 602, 603, 605, 607 buttons; 704 repeat button
 23		Progress; 87 hidden seek button (Bald_PlaybackFocusTrack)
