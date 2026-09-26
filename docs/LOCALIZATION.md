@@ -8,6 +8,7 @@ shows it through `$LOCALIZE[id]`.
 | Range       | Owner                                                                                  |
 |-------------|----------------------------------------------------------------------------------------|
 | 31000-31699 | Estuary's strings, kept for the copied utility windows (currently up to 31615)          |
+| 31300-31399 | Bald ratings (Includes_Bald_Ratings.xml, Appearance > Ratings; tests/test_ratings.py), in the gap Estuary leaves between 31177 and 31597 |
 | 31616-31649 | Bald playback windows and the video OSD (Includes_Bald_Playback.xml, Includes_Bald_OSD.xml; tests/test_playback.py) |
 | 31650-31659 | Bald global overlays (Includes_Bald_Overlays.xml; tests/test_overlays.py)             |
 | 31660-31679 | Bald Live TV windows restyled from Estuary (Includes_Bald_PVR.xml; tests/test_pvr.py)  |
