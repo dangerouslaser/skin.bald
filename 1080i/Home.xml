@@ -52,6 +52,7 @@
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetProperty(Bald.Menu,1,home)</onload>
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetFocus(9005)</onload>
 	<onload>ClearProperty(Bald.ReturnSearch,home)</onload>
+	<include>Bald_ReturnToMenu</include>
 	<!-- Startup splash (Bald_Splash). No current row until it lifts, so the first row, its art, clearlogo and caption
 	     come in with their usual motion as it fades; until then keys go to 9198, which ignores them. -->
 	<onload condition="$EXP[Bald_Preloading]">ClearProperty(Bald.Row,home)</onload>
@@ -255,6 +256,7 @@
 					<onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
 				</include>
 				<include content="Bald_HomeMenuButton"><param name="id">9006</param><param name="label">$LOCALIZE[5]</param><param name="preview">settings</param>
+					<onclick>SetProperty(Bald.ReturnMenu,9006,home)</onclick>
 					<onclick>ActivateWindow(settings)</onclick>
 				</include>
 			</control>
@@ -395,6 +397,7 @@
 		<include content="Bald_HubBridge"><param name="n">8</param></include>
 		<control type="button" id="9029">
 			<width>1</width><height>1</height><texturefocus /><texturenofocus />
+			<onfocus>SetProperty(Bald.ReturnMenu,9004,home)</onfocus>
 			<onfocus>ActivateWindow(TVGuide)</onfocus>
 		</control>
 		<!-- Startup splash: the top layer while Bald.Preload is set; fades out 600 as it lifts. -->

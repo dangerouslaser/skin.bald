@@ -155,7 +155,8 @@ class BaldSettingsTests(unittest.TestCase):
 
     def test_live_tv_select_opens_the_guide_and_left_enters_its_rows(self):
         livetv = home_menu.entry(preview="livetv")
-        self.assertEqual(home_menu.select_actions(livetv), [(None, "ActivateWindow(TVGuide)")])
+        self.assertEqual(home_menu.select_actions(livetv), [(None, "SetProperty(Bald.ReturnMenu,9004,home)"),
+                                                            (None, "ActivateWindow(TVGuide)")])
         left = home_menu.actions(livetv, "onleft")
         rows = "$EXP[Bald_LiveTVRows]"
         self.assertTrue(same_actions(left, [
@@ -167,7 +168,8 @@ class BaldSettingsTests(unittest.TestCase):
             (f"!{rows}", "Action(Select)"),
         ]), left)
         self.assertEqual(home_menu.actions(livetv, "onright"), [("true", "9029")])
-        self.assertEqual(home_menu.control(9029).findtext("onfocus"), "ActivateWindow(TVGuide)")
+        self.assertEqual([n.text for n in home_menu.control(9029).findall("onfocus")],
+                         ["SetProperty(Bald.ReturnMenu,9004,home)", "ActivateWindow(TVGuide)"])
         live_rows = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().findtext(
             "expression[@name='Bald_LiveTVRows']")
         self.assertTrue(equivalent(live_rows, "System.HasPVRAddon + $EXP[Bald_HasRows_livetv]"))
@@ -307,7 +309,9 @@ class BaldSettingsTests(unittest.TestCase):
                          "ActivateWindow(videos,videodb://movies/titles/,return)")
         self.assertEqual(fallback.findtext("include[@name='Bald_HubOpen_hub2']/definition/onfocus"),
                          "ActivateWindow(videos,videodb://tvshows/titles/,return)")
-        self.assertEqual(home_menu.control(9021).findtext("onfocus"), "ActivateWindow(videos,videodb://movies/titles/,return)")
+        # The bridge remembers its menu entry for the return to Home (Bald_ReturnToMenu), then opens the target.
+        self.assertEqual([n.text for n in home_menu.control(9021).findall("onfocus")],
+                         ["SetProperty(Bald.ReturnMenu,9011,home)", "ActivateWindow(videos,videodb://movies/titles/,return)"])
         self.assertIsNone(fallback.find("include[@name='Bald_HubOpen_hub3']/definition/onfocus"))
         suffix = fallback.find("variable[@name='Bald_HubSuffix_hub1']/value")
         self.assertEqual((suffix.get("condition"), suffix.text), ("$EXP[Bald_HubHasOpen_hub1]", "  ›"))

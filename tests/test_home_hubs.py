@@ -388,3 +388,28 @@ class RowSortTests(unittest.TestCase):
         self.assertEqual([c.text for c in content_sort[1].findall("condition")], ["{item_sortby}!="])
         self.assertEqual(content_sort[1].findtext("value"), ' sortby="{item_sortby}"')
         self.assertEqual(content_sort[-1].findall("condition"), [])
+
+
+class ReturnToMenuTests(unittest.TestCase):
+    """Leaving Home from a menu entry (a hub's target, Live TV's guide, Settings) returns to that entry with the menu
+    open: the entry sets Bald.ReturnMenu to its id, and Home's onload focuses it while it is still shown."""
+
+    ENTRIES = [f"901{n}" for n in range(1, 9)] + ["9004", "9006"]
+
+    def test_home_restores_each_entry_only_while_it_is_shown(self):
+        home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        entry = home.find("include[@name='Bald_ReturnToMenuEntry']/definition")
+        loads = [(n.get("condition"), n.text) for n in entry.findall("onload")]
+        condition = "String.IsEqual(Window(home).Property(Bald.ReturnMenu),$PARAM[id]) + Control.IsVisible($PARAM[id])"
+        self.assertEqual(loads, [(condition, "SetProperty(Bald.Menu,1,home)"), (condition, "SetFocus($PARAM[id])")])
+        restore = home.find("include[@name='Bald_ReturnToMenu']/definition")
+        ids = [i.findtext("param[@name='id']") for i in restore.findall("include")]
+        self.assertEqual(ids, self.ENTRIES)
+        self.assertEqual(restore.findall("onload")[-1].text, "ClearProperty(Bald.ReturnMenu,home)")
+        self.assertIn("<include>Bald_ReturnToMenu</include>", (XML / "Home.xml").read_text(encoding="utf-8"))
+
+    def test_each_leaving_entry_remembers_itself(self):
+        text = (XML / "Home.xml").read_text(encoding="utf-8") + (XML / "Includes_Bald_Home.xml").read_text(encoding="utf-8")
+        for entry in ("901$PARAM[n]", "9004", "9006"):
+            with self.subTest(entry=entry):
+                self.assertIn(f"SetProperty(Bald.ReturnMenu,{entry},home)", text)
