@@ -1,190 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bald video OSD (docs/SPEC.md 5, "Playback (proposed)"): one row of tinted icon buttons under the seek dialog's
-     track, transport on the left and tools on the right, with the accent dot under the focused icon; Up focuses the
-     track (hidden button 87: Left and Right skip), marked by an accent dot left of it. The title, time and track are
-     drawn by DialogSeekBar.xml, which shows with the OSD. Started from Kodi 22 Estuary's VideoOSD.xml
-     (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogVideoOSD binds no control ids; every button keeps
-     Estuary's id, navigation and actions (200-202 rows, 600-608 transport, 804 and 70040-70048
-     tools, 6000 seek group, 87 seek button, 799 touch back). -->
+<!-- Bald video OSD (docs/SPEC.md 5.16, "Video OSD"): one row of round icon buttons under the seek layer's lifted bar,
+     transport on the left and tools on the right, and an invisible seek slider over the bar (Up from the buttons).
+     Focusing a tool opens its companion panel above the row (1120-1123), focusing forward the next item card (1124);
+     Down opens the first panel of the down chain. The row fades while a chain panel is up. The bar, times and clock
+     are the seek layer's (DialogSeekBar.xml), which shows with the OSD. Everything is in Includes_Bald_OSD.xml.
+     Started from Kodi 22 Estuary's VideoOSD.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogVideoOSD binds
+     no control ids; the buttons keep Estuary's ids where the function is the same (602 play, 600 back, 607 forward,
+     603 stop, 804 disc menu, 70043 information, 70045 teletext, 70047 3D) and 87 is the seek slider. -->
 <window>
-	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
 	<defaultcontrol always="true">602</defaultcontrol>
+	<onload condition="!Player.PauseEnabled">SetFocus(600)</onload>
+	<onunload>CancelAlarm(bald_osd_close,true)</onunload>
+	<onunload>Dialog.Close(1120,true)</onunload>
+	<onunload>Dialog.Close(1121,true)</onunload>
+	<onunload>Dialog.Close(1122,true)</onunload>
+	<onunload>Dialog.Close(1123,true)</onunload>
+	<onunload>Dialog.Close(1124,true)</onunload>
 	<depth>DepthOSD</depth>
+	<zorder>1</zorder>
+	<include>Bald_PlaybackAnimWindow</include>
 	<controls>
-		<control type="button">
-			<description>background close area</description>
-			<left>0</left>
-			<top>0</top>
-			<width>1920</width>
-			<height>540</height>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>Action(close)</onclick>
-		</control>
-		<include condition="Skin.HasSetting(touchmode)">Bald_PlaybackTouchBack</include>
+		<!-- Hidden by a fade rather than <visible>: a group's visibility does not stop its buttons taking focus. The
+		     row fades under DialogSlider, process info and the chain panels, which hold the focus meanwhile. -->
 		<control type="group">
-			<include>Bald_PlaybackAnimWindow</include>
-			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(1110) | Window.IsVisible(osdaudiosettings) | Window.IsVisible(osdvideosettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(osdcmssettings) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(pvrchannelguide)]</visible>
-			<include>Bald_PlaybackAnimVisible</include>
-			<include>Bald_PlaybackHints</include>
-			<control type="group" id="200">
-				<control type="grouplist" id="201">
-					<left>Bald_SafeLeft</left>
-					<width>1000</width>
-					<include>Bald_PlaybackButtonRow</include>
-					<onup>87</onup>
-					<ondown>noop</ondown>
-					<onleft>70048</onleft>
-					<onright>804</onright>
-					<control type="radiobutton" id="600">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/previous.png</param></include>
-						<onclick>PlayerControl(Previous)</onclick>
-						<visible>Player.HasSceneMarkers | Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1) | [Player.SeekEnabled + VideoPlayer.Content(livetv)]</visible>
-					</control>
-					<control type="radiobutton" id="601">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/rewind.png</param></include>
-						<onclick condition="Player.Paused">PlayerControl(Play)</onclick>
-						<onclick condition="!Player.Paused">PlayerControl(Rewind)</onclick>
-						<visible>Player.SeekEnabled + !VideoPlayer.Content(livetv)</visible>
-					</control>
-					<!-- A direct child of the row that hides itself: a control hidden only through a parent group can still
-					     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
-					<control type="radiobutton" id="602">
-						<!-- Radio textures are static in Kodi: off shows play, on (playing) shows pause. -->
-						<include content="Bald_PlaybackToggle"><param name="icon">osd/fullscreen/buttons/play.png</param><param name="on">osd/fullscreen/buttons/pause.png</param></include>
-						<selected>Player.Playing</selected>
-						<onleft>601</onleft>
-						<onright>603</onright>
-						<onup>87</onup>
-						<ondown>noop</ondown>
-						<onclick>PlayerControl(Play)</onclick>
-						<visible>Player.PauseEnabled</visible>
-					</control>
-					<control type="radiobutton" id="603">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/stop.png</param></include>
-						<onclick>PlayerControl(Stop)</onclick>
-					</control>
-					<control type="radiobutton" id="606">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/forward.png</param></include>
-						<onclick condition="Player.Paused">PlayerControl(Play)</onclick>
-						<onclick condition="!Player.Paused">PlayerControl(Forward)</onclick>
-						<visible>Player.SeekEnabled + !VideoPlayer.Content(livetv)</visible>
-					</control>
-					<control type="radiobutton" id="607">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/next.png</param></include>
-						<onclick>PlayerControl(Next)</onclick>
-						<visible>Player.HasSceneMarkers | Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1) | PVR.IsTimeShift</visible>
-					</control>
-					<!-- Record: the icon turns accent while the channel is recording (not selected). -->
-					<control type="radiobutton" id="608">
-						<include content="Bald_PlaybackToggle">
-							<param name="icon">osd/fullscreen/buttons/record-white.png</param>
-							<param name="on">osd/fullscreen/buttons/record-white.png</param>
-							<param name="off_color">bald_accent</param>
-						</include>
-						<selected>!PVR.IsRecordingPlayingChannel</selected>
-						<onclick>PVR.ToggleRecordPlayingChannel</onclick>
-						<visible>PVR.CanRecordPlayingChannel</visible>
-						<visible>VideoPlayer.Content(livetv)</visible>
-					</control>
-				</control>
-				<control type="grouplist" id="202">
-					<left>824</left>
-					<width>1000</width>
-					<align>right</align>
-					<include>Bald_PlaybackButtonRow</include>
-					<onup>87</onup>
-					<onleft>608</onleft>
-					<onright>600</onright>
-					<control type="radiobutton" id="804">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/home.png</param></include>
-						<onclick>PlayerControl(ShowVideoMenu)</onclick>
-						<visible>VideoPlayer.HasMenu</visible>
-					</control>
-					<control type="radiobutton" id="70040">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/channels.png</param></include>
-						<onclick>Dialog.Close(VideoOSD)</onclick>
-						<onclick>ActivateWindow(PVROSDChannels)</onclick>
-						<visible>VideoPlayer.Content(livetv)</visible>
-					</control>
-					<control type="radiobutton" id="70041">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/guide.png</param></include>
-						<onclick>Dialog.Close(VideoOSD)</onclick>
-						<onclick>ActivateWindow(pvrchannelguide)</onclick>
-						<visible>VideoPlayer.Content(livetv) + VideoPlayer.HasEPG</visible>
-					</control>
-					<control type="radiobutton" id="70042">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/playlist.png</param></include>
-						<onclick>Dialog.Close(all, true)</onclick>
-						<onclick>ActivateWindow(videoplaylist)</onclick>
-						<visible>Integer.IsGreater(Playlist.Length(video),1)</visible>
-					</control>
-					<control type="radiobutton" id="70043">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/information.png</param></include>
-						<onclick>Info</onclick>
-					</control>
-					<control type="radiobutton" id="70044">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/bookmarks.png</param></include>
-						<onclick>ActivateWindow(videobookmarks)</onclick>
-						<visible>!VideoPlayer.Content(livetv)</visible>
-					</control>
-					<control type="radiobutton" id="70045">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/teletext.png</param></include>
-						<onclick>Dialog.Close(VideoOSD)</onclick>
-						<onclick>ActivateWindow(Teletext)</onclick>
-						<visible>VideoPlayer.HasTeletext</visible>
-					</control>
-					<control type="radiobutton" id="70046">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/streams.png</param></include>
-						<onclick>SetProperty(settingsdialog_content,streamselection,home)</onclick>
-						<onclick>SetProperty(settingsdialog_header,$LOCALIZE[13392],home)</onclick>
-						<onclick>ActivateWindow(1101)</onclick>
-					</control>
-					<control type="radiobutton" id="70047">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/stereoscopic.png</param></include>
-						<visible>VideoPlayer.IsStereoscopic</visible>
-						<onclick>SetProperty(settingsdialog_content,3d,home)</onclick>
-						<onclick>SetProperty(settingsdialog_header,$LOCALIZE[36501],home)</onclick>
-						<onclick>ActivateWindow(1101)</onclick>
-					</control>
-					<control type="radiobutton" id="70048">
-						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/settings.png</param></include>
-						<onclick>SetProperty(settingsdialog_content,videosettings,home)</onclick>
-						<onclick>SetProperty(settingsdialog_header,$LOCALIZE[5],home)</onclick>
-						<onclick>ActivateWindow(1101)</onclick>
-					</control>
-				</control>
-			</control>
-			<!-- Seek row: the hidden button 87 takes Up from the buttons; the sliders are mouse seek targets over the seek
-			     dialog's track, which draws the playhead. -->
-			<control type="group" id="6000">
-				<visible>Player.SeekEnabled</visible>
-				<control type="button" id="87">
-					<include>HiddenObject</include>
-					<onup>200</onup>
-					<ondown>200</ondown>
-					<onleft>StepBack</onleft>
-					<onright condition="!Player.Paused">StepForward</onright>
-					<onright condition="Player.Paused">PlayerControl(FrameAdvance(1))</onright>
-				</control>
-				<include>Bald_PlaybackSeekFocus</include>
-				<control type="slider">
-					<include>Bald_PlaybackSeekArea</include>
-					<info>Player.Progress</info>
-					<onup>200</onup>
-					<ondown>200</ondown>
-					<action>seek</action>
-					<visible>!VideoPlayer.Content(LiveTV)</visible>
-				</control>
-				<control type="slider">
-					<include>Bald_PlaybackSeekArea</include>
-					<info>PVR.TimeshiftProgressPlayPos</info>
-					<onup>200</onup>
-					<ondown>200</ondown>
-					<action>pvr.seek</action>
-					<visible>VideoPlayer.Content(LiveTV)</visible>
-				</control>
-			</control>
+			<animation type="Conditional" condition="Window.IsVisible(sliderdialog) | Window.IsVisible(playerprocessinfo) | $EXP[Bald_OSDPanelUp] | $EXP[Bald_OSDPVRPanelUp]">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			</animation>
+			<include>Bald_OSDRow</include>
+			<include>Bald_OSDSeekSliders</include>
+			<include>Bald_OSDHints</include>
 		</control>
 	</controls>
 </window>

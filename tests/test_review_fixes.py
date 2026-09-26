@@ -91,7 +91,8 @@ class PlaybackHintSeparatorTests(unittest.TestCase):
                     self.assertNotIn("·", value.text or "")
 
     def test_osd_hint_line_shows_the_state_as_its_own_part(self):
-        for name in ("VideoOSD.xml", "MusicOSD.xml"):
+        # The video OSD has its own hints (Bald_OSDHints, tests/test_osd.py).
+        for name in ("MusicOSD.xml",):
             root = Skin().window(name)
             labels = [node for node in root.iter("control") if node.get("type") == "label"
                       and "Bald_PlaybackHelp" in (node.findtext("label") or "")]

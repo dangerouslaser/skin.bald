@@ -52,6 +52,9 @@
 	<!-- A later playlist item exists. -->
 	<expression name="Bald_OSDPlaylistAhead">[Integer.IsGreater(Playlist.Length(video),1) + Integer.IsLess(Playlist.Position(video),Playlist.Length(video))]</expression>
 	<expression name="Bald_OSDPlaylistBehind">[Integer.IsGreater(Playlist.Length(video),1) + Integer.IsGreater(Playlist.Position(video),1)]</expression>
+	<!-- The next episode of the season (the next item card's hidden list 8140, window 1124) has loaded and the
+	     episode is in its last ten minutes: forward plays it. -->
+	<expression name="Bald_OSDNextEpisodeReady">[VideoPlayer.Content(episodes) + !Container(8140).IsUpdating + Integer.IsGreater(Container(8140).NumItems,0) + Integer.IsLess(Player.TimeRemaining(mins),10)]</expression>
 	<!-- TMDb Helper is an optional dependency: the cast panel only exists with it. -->
 	<expression name="Bald_OSDHasTMDbHelper">[System.HasAddon(plugin.video.themoviedb.helper) + System.AddonIsEnabled(plugin.video.themoviedb.helper)]</expression>
 	<!-- Script Skin Variables is a required dependency, but the inline stream lists still check for it. -->
@@ -375,6 +378,473 @@
 			<top>140</top>
 			<visible>Player.HasAudio + !Player.HasVideo</visible>
 			<include>Bald_PlaybackTitleBlock</include>
+		</control>
+	</include>
+	<!-- ============ Buttons ============
+	     The row: transport grouplist 201 from x 96 (play/pause 602, back 600, forward 607, stop 603) and tools grouplist
+	     202 ending at x 1824 (disc menu 804, teletext 70045 and 3D 70047 when they apply, then info 70043, audio 70060,
+	     subtitles 70061, video 70062). 80 x 96 buttons, 8 px apart, at y 836. Left from the first transport button
+	     wraps to the last tool, Right from the last tool to the first transport button. -->
+	<variable name="Bald_OSDBackIcon">
+		<value condition="VideoPlayer.Content(livetv)">osd/fullscreen/buttons/guide.png</value>
+		<value>osd/fullscreen/buttons/previous.png</value>
+	</variable>
+	<variable name="Bald_OSDForwardIcon">
+		<value condition="VideoPlayer.Content(livetv)">osd/fullscreen/buttons/record-white.png</value>
+		<value>osd/fullscreen/buttons/next.png</value>
+	</variable>
+	<!-- One OSD button: an 80 x 96 radiobutton, a direct child of its row with its own <visible> (a hidden parent group
+	     would leave it focusable: CGUIControl::CanFocus ignores the parent's visibility). The 48 px icon sits at 16,12,
+	     70% ink, and turns field on the 72 px accent disc when focused (bald/osd_disc.png), with the tile pop (1.05,
+	     280 POP). <on> is the icon while <selected> holds (pause while playing, record while recording, tinted
+	     <on_color>). <code> is the button's own label, centred under the disc (the audio and subtitle language). The
+	     caller's actions and navigation are nested into the radiobutton itself. -->
+	<include name="Bald_OSDButton">
+		<param name="id" />
+		<param name="icon" />
+		<param name="on">$PARAM[icon]</param>
+		<param name="selected">false</param>
+		<param name="on_color">bald_ink70</param>
+		<param name="code" />
+		<param name="visible">true</param>
+		<param name="enable">true</param>
+		<definition>
+			<control type="radiobutton" id="$PARAM[id]">
+				<width>80</width>
+				<height>96</height>
+				<label>$PARAM[code]</label>
+				<font>Bald_Flag</font>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsetx>0</textoffsetx>
+				<textoffsety>76</textoffsety>
+				<textcolor>bald_ink60</textcolor>
+				<focusedcolor>bald_ink</focusedcolor>
+				<disabledcolor>bald_ink28</disabledcolor>
+				<texturefocus colordiffuse="bald_accent">bald/osd_disc.png</texturefocus>
+				<texturenofocus />
+				<radioposx>16</radioposx>
+				<radioposy>12</radioposy>
+				<radiowidth>48</radiowidth>
+				<radioheight>48</radioheight>
+				<textureradioonfocus colordiffuse="bald_field">$PARAM[on]</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="$PARAM[on_color]">$PARAM[on]</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="bald_field">$PARAM[icon]</textureradioofffocus>
+				<textureradiooffnofocus colordiffuse="bald_ink70">$PARAM[icon]</textureradiooffnofocus>
+				<textureradioondisabled colordiffuse="bald_ink28">$PARAM[on]</textureradioondisabled>
+				<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradiooffdisabled>
+				<selected>$PARAM[selected]</selected>
+				<enable>$PARAM[enable]</enable>
+				<visible>$PARAM[visible]</visible>
+				<include>Bald_OSDAutoCloseArm</include>
+				<nested />
+				<animation type="Focus">
+					<effect type="zoom" start="100" end="105" center="40,36" time="280" tween="back" easing="out" />
+				</animation>
+				<animation type="Unfocus">
+					<effect type="zoom" start="105" end="100" center="40,36" time="220" tween="sine" easing="inout" />
+				</animation>
+			</control>
+		</definition>
+	</include>
+	<!-- A companion panel's stand-in for an OSD button: same size, id and visibility (its own), drawn by the OSD
+	     underneath. Focusing it closes the panel at once and focuses the OSD's own button with that id. -->
+	<include name="Bald_OSDFakeButton">
+		<param name="id" />
+		<param name="owner" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>80</width>
+				<height>96</height>
+				<label />
+				<font>Bald_Flag</font>
+				<texturefocus />
+				<texturenofocus />
+				<visible>$PARAM[visible]</visible>
+				<onfocus>Dialog.Close($PARAM[owner],true)</onfocus>
+				<onfocus>SetFocus($PARAM[id])</onfocus>
+			</control>
+		</definition>
+	</include>
+	<!-- Up from a transport button: the seek slider over the bar (88 for Live TV). -->
+	<include name="Bald_OSDUpToSeek">
+		<onup condition="Player.SeekEnabled + !VideoPlayer.Content(livetv)">87</onup>
+		<onup condition="Player.SeekEnabled + VideoPlayer.Content(livetv)">88</onup>
+	</include>
+
+	<!-- Slots. Bald_OSDRow picks Bald_OSDSlot_<Real|Fake|Panel>_<name> for each slot: Real in the OSD, Panel for the
+	     button that owns a companion panel (in that panel), Fake for every other button of a companion panel. -->
+	<include name="Bald_OSDSlot_Real_Play">
+		<include content="Bald_OSDButton">
+			<param name="id">602</param>
+			<param name="icon">osd/fullscreen/buttons/play.png</param>
+			<param name="on">osd/fullscreen/buttons/pause.png</param>
+			<param name="selected">!Player.Paused</param>
+			<param name="visible">Player.PauseEnabled</param>
+			<onclick>PlayerControl(Play)</onclick>
+			<onfocus condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onfocus>
+			<onunfocus condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onunfocus>
+			<include>Bald_OSDUpToSeek</include>
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Play">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">602</param><param name="owner">$PARAM[owner]</param><param name="visible">Player.PauseEnabled</param></include>
+		</definition>
+	</include>
+	<!-- Back: the previous chapter, else the previous playlist item, else a big step back. Live TV: the TV guide. -->
+	<include name="Bald_OSDSlot_Real_Back">
+		<include content="Bald_OSDButton">
+			<param name="id">600</param>
+			<param name="icon">$VAR[Bald_OSDBackIcon]</param>
+			<onclick condition="VideoPlayer.Content(livetv)">Dialog.Close(videoosd,true)</onclick>
+			<onclick condition="VideoPlayer.Content(livetv)">ActivateWindow(TVGuide)</onclick>
+			<onclick condition="!VideoPlayer.Content(livetv) + [$EXP[Bald_OSDChapterBehind] | !$EXP[Bald_OSDPlaylistBehind]]">ChapterOrBigStepBack</onclick>
+			<onclick condition="!VideoPlayer.Content(livetv) + !$EXP[Bald_OSDChapterBehind] + $EXP[Bald_OSDPlaylistBehind]">PlayerControl(Previous)</onclick>
+			<include>Bald_OSDUpToSeek</include>
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Back">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">600</param><param name="owner">$PARAM[owner]</param></include>
+		</definition>
+	</include>
+	<!-- Forward: the next chapter, else the next playlist item, else a big step. Focusing it opens the next item card
+	     (1124). Live TV: record the channel (accent while recording). -->
+	<include name="Bald_OSDForwardBody">
+		<param name="up" />
+		<param name="onfocus" />
+		<param name="click_next">$EXP[Bald_OSDPlaylistAhead]</param>
+		<definition>
+			<include content="Bald_OSDButton">
+				<param name="id">607</param>
+				<param name="icon">$VAR[Bald_OSDForwardIcon]</param>
+				<param name="selected">VideoPlayer.Content(livetv) + PVR.IsRecordingPlayingChannel</param>
+				<param name="on_color">bald_accent</param>
+				<param name="enable">!VideoPlayer.Content(livetv) | PVR.CanRecordPlayingChannel</param>
+				<onclick condition="VideoPlayer.Content(livetv)">PVR.ToggleRecordPlayingChannel</onclick>
+				<onclick condition="!VideoPlayer.Content(livetv) + [$EXP[Bald_OSDChapterAhead] | ![$PARAM[click_next]]]">ChapterOrBigStepForward</onclick>
+				<onclick condition="!VideoPlayer.Content(livetv) + !$EXP[Bald_OSDChapterAhead] + $EXP[Bald_OSDPlaylistAhead]">PlayerControl(Next)</onclick>
+				<nested />
+				<include>Bald_OSDChainFrom_0</include>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_OSDSlot_Real_Forward">
+		<include content="Bald_OSDForwardBody">
+			<onfocus condition="!VideoPlayer.Content(livetv)">ActivateWindow(1124)</onfocus>
+			<include>Bald_OSDUpToSeek</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Panel_Forward">
+		<include content="Bald_OSDForwardBody">
+			<param name="click_next">[$EXP[Bald_OSDPlaylistAhead] | $EXP[Bald_OSDNextEpisodeReady]]</param>
+			<onclick condition="!$EXP[Bald_OSDChapterAhead] + !$EXP[Bald_OSDPlaylistAhead] + $EXP[Bald_OSDNextEpisodeReady]">PlayMedia($ESCINFO[Container(8140).ListItem.FileNameAndPath])</onclick>
+			<onup condition="!VideoPlayer.Content(livetv)">Dialog.Close(1124,true)</onup>
+			<onup condition="Player.SeekEnabled + !VideoPlayer.Content(livetv)">SetFocus(87)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Forward">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">607</param><param name="owner">$PARAM[owner]</param></include>
+		</definition>
+	</include>
+	<include name="Bald_OSDSlot_Real_Stop">
+		<include content="Bald_OSDButton">
+			<param name="id">603</param>
+			<param name="icon">osd/fullscreen/buttons/stop.png</param>
+			<onclick>CancelAlarm(bald_osd_close,true)</onclick>
+			<onclick>PlayerControl(Stop)</onclick>
+			<include>Bald_OSDUpToSeek</include>
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Stop">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">603</param><param name="owner">$PARAM[owner]</param></include>
+		</definition>
+	</include>
+	<!-- Disc menu, teletext and 3D: tools that only show when the video has them. -->
+	<include name="Bald_OSDSlot_Real_Menu">
+		<include content="Bald_OSDButton">
+			<param name="id">804</param>
+			<param name="icon">osd/fullscreen/buttons/home.png</param>
+			<param name="visible">VideoPlayer.HasMenu</param>
+			<onclick>PlayerControl(ShowVideoMenu)</onclick>
+			<include>Bald_OSDUpToSeek</include>
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Menu">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">804</param><param name="owner">$PARAM[owner]</param><param name="visible">VideoPlayer.HasMenu</param></include>
+		</definition>
+	</include>
+	<include name="Bald_OSDSlot_Real_Teletext">
+		<include content="Bald_OSDButton">
+			<param name="id">70045</param>
+			<param name="icon">osd/fullscreen/buttons/teletext.png</param>
+			<param name="visible">VideoPlayer.HasTeletext</param>
+			<onclick>Dialog.Close(videoosd)</onclick>
+			<onclick>ActivateWindow(Teletext)</onclick>
+			<include>Bald_OSDUpToSeek</include>
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Teletext">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70045</param><param name="owner">$PARAM[owner]</param><param name="visible">VideoPlayer.HasTeletext</param></include>
+		</definition>
+	</include>
+	<include name="Bald_OSDSlot_Real_3D">
+		<include content="Bald_OSDButton">
+			<param name="id">70047</param>
+			<param name="icon">osd/fullscreen/buttons/stereoscopic.png</param>
+			<param name="visible">VideoPlayer.IsStereoscopic</param>
+			<onclick>SetProperty(settingsdialog_content,3d,home)</onclick>
+			<onclick>SetProperty(settingsdialog_header,$LOCALIZE[36501],home)</onclick>
+			<onclick>ActivateWindow(1101)</onclick>
+			<include>Bald_OSDUpToSeek</include>
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_3D">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70047</param><param name="owner">$PARAM[owner]</param><param name="visible">VideoPlayer.IsStereoscopic</param></include>
+		</definition>
+	</include>
+	<!-- Info: focusing it opens the details block (1120, with 1128); Select shows the info overlay. -->
+	<include name="Bald_OSDInfoBody">
+		<include content="Bald_OSDButton">
+			<param name="id">70043</param>
+			<param name="icon">osd/fullscreen/buttons/information.png</param>
+			<onclick>Dialog.Close(1120,true)</onclick>
+			<onclick>Dialog.Close(videoosd,true)</onclick>
+			<onclick>ActivateWindow(fullscreeninfo)</onclick>
+			<nested />
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Real_Info">
+		<include content="Bald_OSDInfoBody">
+			<onfocus>ActivateWindow(1120)</onfocus>
+			<onup>ActivateWindow(1120)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Panel_Info">
+		<include content="Bald_OSDInfoBody">
+			<onup>noop</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Info">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70043</param><param name="owner">$PARAM[owner]</param></include>
+		</definition>
+	</include>
+	<!-- Audio: the language code under it; focusing it opens the audio streams (1121); Select opens Kodi's audio
+	     settings. -->
+	<include name="Bald_OSDAudioBody">
+		<include content="Bald_OSDButton">
+			<param name="id">70060</param>
+			<param name="icon">osd/fullscreen/buttons/streams.png</param>
+			<param name="code">$VAR[Bald_OSDAudioCode]</param>
+			<onclick>ActivateWindow(osdaudiosettings)</onclick>
+			<nested />
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Real_Audio">
+		<include content="Bald_OSDAudioBody">
+			<onfocus>ActivateWindow(1121)</onfocus>
+			<onup>ActivateWindow(1121)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Panel_Audio">
+		<include content="Bald_OSDAudioBody">
+			<onup condition="Integer.IsGreater(Container(8110).NumItems,0)">SetFocus(8110)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Audio">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70060</param><param name="owner">$PARAM[owner]</param></include>
+		</definition>
+	</include>
+	<!-- Subtitles: the language code while subtitles are on; focusing opens the subtitle streams (1122); Select opens
+	     Kodi's subtitle settings. -->
+	<include name="Bald_OSDSubtitlesBody">
+		<include content="Bald_OSDButton">
+			<param name="id">70061</param>
+			<param name="icon">osd/fullscreen/buttons/settings-subtitle.png</param>
+			<param name="code">$VAR[Bald_OSDSubtitleCode]</param>
+			<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
+			<nested />
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Real_Subtitles">
+		<include content="Bald_OSDSubtitlesBody">
+			<onfocus>ActivateWindow(1122)</onfocus>
+			<onup>ActivateWindow(1122)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Panel_Subtitles">
+		<include content="Bald_OSDSubtitlesBody">
+			<onup condition="Integer.IsGreater(Container(8120).NumItems,0)">SetFocus(8120)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Subtitles">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70061</param><param name="owner">$PARAM[owner]</param></include>
+		</definition>
+	</include>
+	<!-- Video: focusing opens the video panel (1123); Select opens Kodi's video settings. -->
+	<include name="Bald_OSDVideoBody">
+		<include content="Bald_OSDButton">
+			<param name="id">70062</param>
+			<param name="icon">osd/fullscreen/buttons/settings.png</param>
+			<onclick>ActivateWindow(osdvideosettings)</onclick>
+			<nested />
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Real_Video">
+		<include content="Bald_OSDVideoBody">
+			<onfocus>ActivateWindow(1123)</onfocus>
+			<onup>ActivateWindow(1123)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Panel_Video">
+		<include content="Bald_OSDVideoBody">
+			<onup>SetFocus(8131)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Video">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70062</param><param name="owner">$PARAM[owner]</param></include>
+		</definition>
+	</include>
+
+	<!-- The button row. <owner> is the companion window (for its stand-ins); each slot param is Real, Fake or Panel. -->
+	<include name="Bald_OSDRow">
+		<param name="owner">videoosd</param>
+		<param name="play">Real</param>
+		<param name="back">Real</param>
+		<param name="forward">Real</param>
+		<param name="stop">Real</param>
+		<param name="menu">Real</param>
+		<param name="teletext">Real</param>
+		<param name="stereo">Real</param>
+		<param name="info">Real</param>
+		<param name="audio">Real</param>
+		<param name="subtitles">Real</param>
+		<param name="video">Real</param>
+		<definition>
+			<control type="grouplist" id="201">
+				<left>Bald_SafeLeft</left>
+				<top>836</top>
+				<width>760</width>
+				<height>96</height>
+				<orientation>horizontal</orientation>
+				<itemgap>8</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<onleft>70062</onleft>
+				<onright>202</onright>
+				<include content="Bald_OSDSlot_$PARAM[play]_Play"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[back]_Back"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[forward]_Forward"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[stop]_Stop"><param name="owner">$PARAM[owner]</param></include>
+			</control>
+			<control type="grouplist" id="202">
+				<left>1064</left>
+				<top>836</top>
+				<width>760</width>
+				<height>96</height>
+				<orientation>horizontal</orientation>
+				<align>right</align>
+				<itemgap>8</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<onleft>603</onleft>
+				<onright>201</onright>
+				<include content="Bald_OSDSlot_$PARAM[menu]_Menu"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[teletext]_Teletext"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[stereo]_3D"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[info]_Info"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[audio]_Audio"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[subtitles]_Subtitles"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[video]_Video"><param name="owner">$PARAM[owner]</param></include>
+			</control>
+		</definition>
+	</include>
+	<!-- The seek sliders over the lifted bar (x 264, 1392 wide, centre y 796): invisible but for an accent nib while
+	     focused. Left and Right seek (Kodi's slider "seek" and "pvr.seek" actions); Down returns to the buttons. -->
+	<include name="Bald_OSDSeekSliders">
+		<control type="slider" id="87">
+			<left>264</left>
+			<top>788</top>
+			<width>1392</width>
+			<height>16</height>
+			<texturesliderbar />
+			<texturesliderbardisabled />
+			<textureslidernib />
+			<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
+			<textureslidernibdisabled />
+			<info>Player.Progress</info>
+			<action>seek</action>
+			<ondown>201</ondown>
+			<onup>noop</onup>
+			<visible>Player.SeekEnabled + !VideoPlayer.Content(livetv)</visible>
+		</control>
+		<control type="slider" id="88">
+			<left>264</left>
+			<top>788</top>
+			<width>1392</width>
+			<height>16</height>
+			<texturesliderbar />
+			<texturesliderbardisabled />
+			<textureslidernib />
+			<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
+			<textureslidernibdisabled />
+			<info>PVR.TimeshiftProgressPlayPos</info>
+			<action>pvr.seek</action>
+			<ondown>201</ondown>
+			<onup>noop</onup>
+			<visible>Player.SeekEnabled + VideoPlayer.Content(livetv)</visible>
+		</control>
+		<!-- The accent dot left of the bar while a slider has focus (the settings rows' focus mark). -->
+		<control type="image">
+			<left>244</left>
+			<top>792</top>
+			<width>8</width>
+			<height>8</height>
+			<texture colordiffuse="bald_accent">bald/dot.png</texture>
+			<visible>Control.HasFocus(87) | Control.HasFocus(88)</visible>
+			<include>Bald_OSDAnimFade</include>
+		</control>
+	</include>
+	<!-- OSD hints on the y 954 line, right-aligned to x 1824. -->
+	<include name="Bald_OSDHints">
+		<control type="group">
+			<left>1224</left>
+			<top>Bald_HintTop</top>
+			<include content="Bald_InfoHintPair">
+				<param name="first">$VAR[Bald_OSDHelp]</param>
+				<param name="second">$VAR[Bald_OSDHint]</param>
+				<param name="width">600</param>
+			</include>
 		</control>
 	</include>
 </includes>

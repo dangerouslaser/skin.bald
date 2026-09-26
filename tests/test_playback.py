@@ -23,10 +23,10 @@ PLAYBACK_RANGE = range(31616, 31650)
 # CGUIDialogSubtitles). Windows whose class binds nothing list only their skin ids.
 WINDOWS = {
     "DialogSeekBar.xml": {"401": "slider", "402": "slider", "403": "slider", "40000": "label"},
-    "VideoOSD.xml": {"87": "button", "200": "group", "201": "grouplist", "202": "grouplist", "600": "radiobutton",
-                     "601": "radiobutton", "602": "radiobutton", "603": "radiobutton", "606": "radiobutton",
-                     "607": "radiobutton", "608": "radiobutton", "804": "radiobutton",
-                     "6000": "group", **{str(i): "radiobutton" for i in range(70040, 70049)}},
+    "VideoOSD.xml": {"87": "slider", "88": "slider", "201": "grouplist", "202": "grouplist", "600": "radiobutton",
+                     "602": "radiobutton", "603": "radiobutton", "607": "radiobutton", "804": "radiobutton",
+                     "70043": "radiobutton", "70045": "radiobutton", "70047": "radiobutton", "70060": "radiobutton",
+                     "70061": "radiobutton", "70062": "radiobutton"},
     "MusicOSD.xml": {"87": "button", "200": "group", "201": "grouplist", "202": "grouplist", "600": "radiobutton",
                      "601": "radiobutton", "602": "radiobutton", "603": "radiobutton", "606": "radiobutton",
                      "607": "radiobutton", "608": "radiobutton",
@@ -47,7 +47,7 @@ WINDOWS = {
 }
 # Windows the Bald video OSD redesigned (Includes_Bald_OSD.xml, tests/test_osd.py): their layout, navigation and
 # visibility are Bald's own, so only the ids Kodi binds are compared with Estuary.
-REDESIGNED = {"DialogSeekBar.xml"}
+REDESIGNED = {"DialogSeekBar.xml", "VideoOSD.xml"}
 # Files restyled by this pass: the windows plus their includes.
 FILES = list(WINDOWS) + ["Includes_Bald_Playback.xml", "Includes_SettingsDialog.xml"]
 # Estuary includes still called: they carry no Estuary colours or fonts (the popup surface and buttons are Bald).
@@ -102,16 +102,10 @@ class PlaybackContractTests(unittest.TestCase):
                     self.assertEqual(ids[control_id].get("type"), kind)
 
     def test_seek_controls_keep_their_actions(self):
-        osd = _ids(self.windows["VideoOSD.xml"])
-        seek = osd["87"]
-        self.assertEqual(_actions(seek, "onleft"), [(None, "StepBack")])
-        self.assertEqual(_actions(seek, "onright"), [("!Player.Paused", "StepForward"),
-                                                     ("Player.Paused", "PlayerControl(FrameAdvance(1))")])
-        self.assertEqual(_actions(seek, "onup"), [(None, "200")])
         mini = _ids(self.windows["PlayerControls.xml"])["87"]
         self.assertEqual(_actions(mini, "onright"), [("!Player.Forwarding32x", "PlayerControl(Forward)")])
         self.assertEqual(_actions(mini, "onup"), [(None, "201")])
-        sliders = [node for node in self.windows["VideoOSD.xml"].iter("control") if node.get("type") == "slider"]
+        sliders = [node for node in self.windows["MusicOSD.xml"].iter("control") if node.get("type") == "slider"]
         self.assertEqual(sorted(node.findtext("action") for node in sliders), ["pvr.seek", "seek"])
 
     @unittest.skipUnless(ESTUARY.is_dir(), "Kodi 22's bundled Estuary is not installed")
@@ -228,7 +222,7 @@ class PlaybackStyleTests(unittest.TestCase):
                     self.assertNotRegex(text, rf'[>"]{color}[<"]|COLOR {color}\]')
 
     def test_osd_buttons_use_the_icon_button(self):
-        for name in ("VideoOSD.xml", "MusicOSD.xml", "PlayerControls.xml"):
+        for name in ("MusicOSD.xml", "PlayerControls.xml"):
             root = resolve_window(name)
             for button in root.iter("control"):
                 if button.get("type") != "radiobutton" or button.get("id") is None:
