@@ -2,7 +2,7 @@
 <!-- Bald components for the media utility windows: music (info, visualisation), pictures (info, slideshow), games
      (OSD, controller dialogs), weather, the profile login screen and the colour picker, media source and video
      version popups. Those windows started as Kodi 22 Estuary copies; the components here restyle them in Bald's
-     language (docs/SPEC.md 5.15). Nothing here is used by Home or the info dialog. -->
+     language (docs/SPEC.md 5.20). Nothing here is used by Home or the info dialog. -->
 <includes>
 	<!-- ============ Surfaces and motion ============ -->
 	<!-- Full-screen window open and close: fade 380 in, 130 out (the info dialog's content timings). -->
