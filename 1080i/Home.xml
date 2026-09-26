@@ -25,6 +25,8 @@
 	<onload>ClearProperty(Bald.Start9101,home)</onload>
 	<onload>ClearProperty(Bald.Start9102,home)</onload>
 	<onload>ClearProperty(Bald.Start9103,home)</onload>
+	<onload>ClearProperty(Bald.Start9201,home)</onload>
+	<onload>ClearProperty(Bald.Start9301,home)</onload>
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<controls>
 		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_Backdrop). -->
