@@ -3,6 +3,9 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+import home_menu
+
+
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
 
 
@@ -47,12 +50,11 @@ class LibraryViewTests(unittest.TestCase):
 
     def test_no_redundant_details_button(self):
         self.assertIsNone(self.view.find(".//control[@id='6101']"))
-        home = ET.parse(ROOT / "Home.xml").getroot()
-        item = next(item for item in home.findall(".//control[@id='9000']/include") if item.findtext("param[@name='label']") == "Movies")
+        item = home_menu.entry(label="Movies")
         self.assertEqual(item.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)")
         self.assertIn(
             "SetFocus($INFO[Window(home).Property(Bald.Row.movies)])",
-            [item.findtext("param[@name='enter4']")],
+            [action for _, action in home_menu.select_actions(item)],
         )
 
     def test_frame_masks_are_outside_preview_menu_animations(self):

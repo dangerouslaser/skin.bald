@@ -772,24 +772,20 @@
 	</include>
 
 	<!-- ============ Menu ============ -->
+	<!-- One entry of the Home menu (grouplist 9000). Pass what Select does as <onclick> children (nested), or
+	     Bald_HomeMenuScreen for a screen with rows. Up and Down are the grouplist's: CGUIControlGroupList::AddControl
+	     points each entry at its neighbours (replacing any onup/ondown here) and CGUIWindow::OnMove passes over hidden
+	     entries, so disabled screens drop out; each entry's onfocus sets the preview. Left does what Select does. -->
 	<include name="Bald_HomeMenuButton">
 		<param name="id" />
 		<param name="label" />
 		<param name="preview" />
-		<param name="widget" />
 		<param name="visible">true</param>
-		<param name="library">false</param>
 		<param name="suffix" />
-		<param name="enter1">noop</param><param name="enter2">noop</param><param name="enter3">noop</param><param name="enter4">noop</param>
-		<param name="condition1">true</param><param name="condition2">true</param><param name="condition3">true</param><param name="condition4">true</param>
 		<param name="right">noop</param>
-		<param name="up1">noop</param><param name="up_condition1">true</param><param name="up2">noop</param><param name="up_condition2">false</param><param name="up3">noop</param><param name="up_condition3">false</param>
-		<param name="down1">noop</param><param name="down_condition1">true</param><param name="down2">noop</param><param name="down_condition2">false</param><param name="down3">noop</param><param name="down_condition3">false</param><param name="down4">noop</param><param name="down_condition4">false</param>
-		<param name="up_preview1" /><param name="up_widget1" /><param name="up_preview2" /><param name="up_widget2" /><param name="up_preview3" /><param name="up_widget3" />
-		<param name="down_preview1" /><param name="down_widget1" /><param name="down_preview2" /><param name="down_widget2" /><param name="down_preview3" /><param name="down_widget3" /><param name="down_preview4" /><param name="down_widget4" />
 		<definition>
 			<control type="button" id="$PARAM[id]">
-				<left>-6</left><top>$PARAM[y]</top><width>426</width><height>62</height><visible>$PARAM[visible]</visible>
+				<left>-6</left><width>426</width><height>62</height><visible>$PARAM[visible]</visible>
 				<texturefocus colordiffuse="bald_accent">bald/menu_dot.png</texturefocus><texturenofocus /><font>Bald_MenuItem</font><align>left</align><aligny>center</aligny><textoffsetx>26</textoffsetx>
 				<textcolor>bald_ink34</textcolor><focusedcolor>bald_ink</focusedcolor><label>$PARAM[label]$PARAM[suffix]</label>
 				<animation type="Focus"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" /></animation>
@@ -799,19 +795,23 @@
 				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Menu)) + String.IsEmpty(Skin.String(Bald.MenuOpens))">Skin.SetString(Bald.MenuOpens,1)</onfocus>
 				<onfocus>SetProperty(Bald.Menu,1,home)</onfocus>
 				<onfocus>SetProperty(Bald.MenuPreview,$PARAM[preview],home)</onfocus>
-				<onfocus condition="!String.IsEmpty($PARAM[widget])">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[widget])],home)</onfocus>
-				<onclick condition="$PARAM[condition1]">$PARAM[enter1]</onclick><onclick condition="$PARAM[condition2]">$PARAM[enter2]</onclick><onclick condition="$PARAM[condition3]">$PARAM[enter3]</onclick><onclick condition="$PARAM[condition4]">$PARAM[enter4]</onclick>
-				<onleft condition="$PARAM[condition1]">$PARAM[enter1]</onleft><onleft condition="$PARAM[condition2]">$PARAM[enter2]</onleft><onleft condition="$PARAM[condition3]">$PARAM[enter3]</onleft><onleft condition="$PARAM[condition4]">$PARAM[enter4]</onleft>
+				<nested />
+				<onleft>Action(Select)</onleft>
 				<onright>$PARAM[right]</onright>
-				<onup condition="$PARAM[up_condition1]">SetProperty(Bald.MenuPreview,$PARAM[up_preview1],home)</onup><onup condition="$PARAM[up_condition1]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[up_widget1])],home)</onup><onup condition="$PARAM[up_condition1]">$PARAM[up1]</onup>
-				<onup condition="$PARAM[up_condition2]">SetProperty(Bald.MenuPreview,$PARAM[up_preview2],home)</onup><onup condition="$PARAM[up_condition2]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[up_widget2])],home)</onup><onup condition="$PARAM[up_condition2]">$PARAM[up2]</onup>
-				<onup condition="$PARAM[up_condition3]">SetProperty(Bald.MenuPreview,$PARAM[up_preview3],home)</onup><onup condition="$PARAM[up_condition3]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[up_widget3])],home)</onup><onup condition="$PARAM[up_condition3]">$PARAM[up3]</onup>
-				<ondown condition="$PARAM[down_condition1]">SetProperty(Bald.MenuPreview,$PARAM[down_preview1],home)</ondown><ondown condition="$PARAM[down_condition1]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget1])],home)</ondown><ondown condition="$PARAM[down_condition1]">$PARAM[down1]</ondown>
-				<ondown condition="$PARAM[down_condition2]">SetProperty(Bald.MenuPreview,$PARAM[down_preview2],home)</ondown><ondown condition="$PARAM[down_condition2]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget2])],home)</ondown><ondown condition="$PARAM[down_condition2]">$PARAM[down2]</ondown>
-				<ondown condition="$PARAM[down_condition3]">SetProperty(Bald.MenuPreview,$PARAM[down_preview3],home)</ondown><ondown condition="$PARAM[down_condition3]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget3])],home)</ondown><ondown condition="$PARAM[down_condition3]">$PARAM[down3]</ondown>
-				<ondown condition="$PARAM[down_condition4]">SetProperty(Bald.MenuPreview,$PARAM[down_preview4],home)</ondown><ondown condition="$PARAM[down_condition4]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget4])],home)</ondown><ondown condition="$PARAM[down_condition4]">$PARAM[down4]</ondown>
 				<onback condition="!String.IsEmpty(Window(home).Property(Bald.Row))">ClearProperty(Bald.Menu,home)</onback><onback condition="!String.IsEmpty(Window(home).Property(Bald.Row))">SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
 			</control>
+		</definition>
+	</include>
+	<!-- A screen entry (Home, Movies, TV shows): TMDb Helper follows the screen's remembered row while it is previewed;
+	     Select enters the screen on that row. -->
+	<include name="Bald_HomeMenuScreen">
+		<param name="screen" />
+		<definition>
+			<onfocus>SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onfocus>
+			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.Screen,$PARAM[screen],home)</onclick>
+			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onclick>
+			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">ClearProperty(Bald.Menu,home)</onclick>
+			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetFocus($INFO[Window(home).Property(Bald.Row.$PARAM[screen])])</onclick>
 		</definition>
 	</include>
 	<include name="Bald_MenuRowUnfocused">

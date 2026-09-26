@@ -3,6 +3,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 import importlib.util
 
+import home_menu
+
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
 REPO = ROOT.parent
@@ -10,10 +12,8 @@ REPO = ROOT.parent
 
 class PVRGuideTests(unittest.TestCase):
     def test_home_live_tv_opens_native_guide(self):
-        home = ET.parse(ROOT / 'Home.xml').getroot()
-        item = next(node for node in home.findall(".//control[@id='9000']/include")
-                    if node.findtext("param[@name='preview']") == 'livetv')
-        self.assertEqual(item.findtext("param[@name='enter1']"), 'ActivateWindow(TVGuide)')
+        item = home_menu.entry(preview='livetv')
+        self.assertEqual(home_menu.select_actions(item), [(None, 'ActivateWindow(TVGuide)')])
         self.assertEqual(item.findtext("param[@name='visible']"),
                          '!Skin.HasSetting(Bald.Screen.HideLiveTV)')
 
