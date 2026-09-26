@@ -891,6 +891,54 @@ msgstr ""
 
 #empty strings from id 31178 to 31596
 
+#. Bald: Home hubs (docs/NOTES.md, Home hubs)
+
+#: /1080i/Includes_Bald_HomeDefaults.xml
+msgctxt "#31201"
+msgid "No rows yet. Select or Right opens it."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeDefaults.xml
+msgctxt "#31202"
+msgid "No rows yet. Add them in Home Screens."
+msgstr ""
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31203"
+msgid "Opens"
+msgstr ""
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31204"
+msgid "One of your hubs. Right in the main menu opens its target, and so does Select while it has no rows."
+msgstr ""
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31205"
+msgid "Show Live TV in the main menu. Select and Right open the guide; Left enters its rows."
+msgstr ""
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31206"
+msgid "Add a hub of your own: choose the library node, playlist or add-on it opens, then rename it and add rows."
+msgstr ""
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31207"
+msgid "Add hub"
+msgstr ""
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31208"
+msgid "Remove hub"
+msgstr ""
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31209"
+msgid "Clear target"
+msgstr ""
+
+
 #: /xml/Includes_SettingsDialog.xml
 #. Button to select Player Process Info window
 msgctxt "#31597"
@@ -1349,32 +1397,15 @@ msgstr ""
 # Bald strings: 31700-31999 (see docs/LOCALIZATION.md). Estuary keeps 31000-31699.
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
-#: /1080i/Home.xml
 #: /1080i/Includes_Bald_Home.xml
 #: /1080i/MyPVRGuide.xml
 msgctxt "#31700"
 msgid "Live TV"
 msgstr ""
 
-#: /1080i/Custom_1117_BaldHomeScreens.xml
-#: /1080i/Includes_Bald_Home.xml
-msgctxt "#31701"
-msgid "TV Shows"
-msgstr ""
-
 #: /1080i/Home.xml
 msgctxt "#31702"
 msgid "Back for menu"
-msgstr ""
-
-#: /1080i/Includes_Bald_Home.xml
-msgctxt "#31703"
-msgid "Browse your movie library with large posters and an artwork preview."
-msgstr ""
-
-#: /1080i/Includes_Bald_Home.xml
-msgctxt "#31704"
-msgid "Browse series, seasons and episodes in your TV library."
 msgstr ""
 
 #: /1080i/Includes_Bald_Home.xml
@@ -1594,21 +1625,6 @@ msgstr ""
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31741"
 msgid "The default screen. Home cannot be removed."
-msgstr ""
-
-#: /1080i/Custom_1117_BaldHomeScreens.xml
-msgctxt "#31742"
-msgid "Show an artwork-first Movies screen in the main menu."
-msgstr ""
-
-#: /1080i/Custom_1117_BaldHomeScreens.xml
-msgctxt "#31743"
-msgid "Show an artwork-first TV Shows screen in the main menu."
-msgstr ""
-
-#: /1080i/Custom_1117_BaldHomeScreens.xml
-msgctxt "#31744"
-msgid "Show Live TV in the main menu. Selecting it opens the guide."
 msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
