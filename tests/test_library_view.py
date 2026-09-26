@@ -4,7 +4,8 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import home_menu
-from kodi_includes import condition, expand, parse
+from conditions import equivalent, implies, shows_for_content
+from kodi_includes import parse
 from skin_strings import loc
 
 
@@ -22,7 +23,7 @@ class LibraryViewTests(unittest.TestCase):
         includes = ET.parse(ROOT / "Includes.xml").getroot()
         self.assertIn("View_510_Bald_Posters.xml", [n.get("file") for n in includes])
         control = self.view.find(".//control[@id='510']")
-        self.assertEqual(control.findtext("visible"), "Container.Content(movies)")
+        self.assertTrue(shows_for_content(control.findtext("visible"), "movies"))
         self.assertIsNone(control.find("content"))
         self.assertEqual(int(control.findtext("width")), 3 * int(control.find("itemlayout").get("width")))
         self.assertEqual(control.findtext("onup"), "9150")
@@ -52,7 +53,7 @@ class LibraryViewTests(unittest.TestCase):
     def test_no_redundant_details_button(self):
         self.assertIsNone(self.view.find(".//control[@id='6101']"))
         item = home_menu.entry(preview="movies")
-        self.assertEqual(item.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)")
+        self.assertTrue(equivalent(item.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)"))
         self.assertIn(
             "SetFocus($INFO[Window(home).Property(Bald.Row.movies)])",
             [action for _, action in home_menu.select_actions(item)],
@@ -88,7 +89,11 @@ class LibraryViewTests(unittest.TestCase):
         group = next(n for n in caption.iter("control") if n.find("include[@content='Bald_MediaFlags']") is not None)
         flags = group.find("include[@content='Bald_MediaFlags']")
         self.assertEqual(flags.findtext("param[@name='container']"), "Container($PARAM[c]).")
-        self.assertIn("!String.IsEmpty(Container($PARAM[c]).ListItem.AudioCodec)", group.findtext("visible"))
+        # A movie whose only flag is its audio codec still shows the row.
+        item = "Container($PARAM[c]).ListItem"
+        self.assertTrue(implies(f"$EXP[Bald_ShowMediaFlags] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)"
+                                f" + String.IsEqual({item}.DBType,movie) + !String.IsEmpty({item}.AudioCodec)",
+                                group.findtext("visible")))
 
     def test_options_have_five_rows_native_actions_and_return_routes(self):
         menu = self.view.find(".//control[@id='9150']")
@@ -108,7 +113,8 @@ class LibraryViewTests(unittest.TestCase):
         self.assertNotIn('Container.NextViewMode', actions)
         movie_view_actions = [
             item.find('onclick').text for item in menu.findall('content/item')
-            if (item.findtext('visible') or '') in {f'Control.IsVisible({view})' for view in (510, 511, 512, 513, 514, 515)}
+            if item.findtext('visible') and any(equivalent(item.findtext('visible'), f'Control.IsVisible({view})')
+                                                for view in (510, 511, 512, 513, 514, 515))
             and (item.findtext('onclick') or '').startswith('Container.SetViewMode')
         ]
         self.assertEqual(movie_view_actions, [f'Container.SetViewMode({view})' for view in (511, 512, 513, 514, 515, 510)])
@@ -121,7 +127,8 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(menu.findtext('focusedlayout/include'), '')
         focused = menu.find("focusedlayout/include[@content='Bald_MenuRowFocused']")
         self.assertEqual(focused.findtext("param[@name='always_dot']"), 'true')
-        footer = self.view.find("include[@name='View_510_Bald_Posters']//control[visible='$EXP[Bald_LibraryMenuOpen]']")
+        footer = next(node for node in self.view.find("include[@name='View_510_Bald_Posters']").iter('control')
+                      if node.findtext('visible') and equivalent(node.findtext('visible'), '$EXP[Bald_LibraryMenuOpen]'))
         self.assertEqual((footer.findtext('left'), footer.findtext("include/param[@name='width']")), ('1404', '420'))
 
     def test_home_and_library_share_menu_row_components(self):
@@ -136,24 +143,24 @@ class LibraryViewTests(unittest.TestCase):
     def test_movie_entry_rejects_legacy_estuary_view_modes(self):
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
         action = next(node for node in nav.findall('onload') if node.text == 'Container.SetViewMode(510)')
-        self.assertIn('Container.Content(movies)', action.get('condition'))
-        self.assertIn('!$EXP[Bald_LibraryMovieView]', action.get('condition'))
-        movie_views = expand('$EXP[Bald_LibraryMovieView]')
+        # Movies shown in any view that is not one of Bald's switch to the posters.
+        self.assertTrue(equivalent(action.get('condition'), 'Container.Content(movies) + !$EXP[Bald_LibraryMovieView]'))
         for view in range(510, 516):
-            self.assertIn(f'Control.IsVisible({view})', movie_views)
+            self.assertTrue(implies(f'Control.IsVisible({view})', '$EXP[Bald_LibraryMovieView]'), view)
 
     def test_letter_mode_uses_native_jumps_and_restores_its_focus(self):
         mode = self.view.find(".//control[@id='9160']")
         for direction, action in [('onleft', 'PrevLetter'), ('onright', 'NextLetter')]:
             actions = mode.findall(direction)
             self.assertEqual([n.text for n in actions], ['SetFocus(50)', f'Action({action})', 'SetFocus(9160)'])
-            self.assertTrue(all(n.get('condition') == '$EXP[Bald_LibraryTitleSorted]' for n in actions[:2]))
+            self.assertTrue(all(equivalent(n.get('condition'), '$EXP[Bald_LibraryTitleSorted]') for n in actions[:2]))
+            self.assertIsNone(actions[2].get('condition'))
         for direction in ('onup', 'onback'):
             self.assertEqual(mode.findtext(direction), '50')
         self.assertEqual(mode.findtext('onclick'), 'SetFocus(50)')
         self.assertEqual(mode.findtext('ondown'), 'noop')
         self.assertEqual(mode.findtext('onfocus'), 'SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(videos).Property(Bald.LibraryContainer)],videos)')
-        self.assertEqual(condition('$EXP[Bald_LibraryTitleSorted]'), 'String.IsEqual(Container.SortMethod,$LOCALIZE[556])')
+        self.assertTrue(equivalent('$EXP[Bald_LibraryTitleSorted]', 'String.IsEqual(Container.SortMethod,$LOCALIZE[556])'))
 
     def test_full_alphabet_fits_beneath_posters(self):
         cells = self.view.findall("include[@name='Bald_LibraryLetters']//include[@content='Bald_LibraryLetterCell']")

@@ -2,6 +2,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from conditions import equivalent
+
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
 
@@ -18,8 +20,7 @@ class SettingsAccessTests(unittest.TestCase):
         for label, addon_id in expected.items():
             item = items[label]
             self.assertEqual(item.findtext("onclick"), "RunAddon({})".format(addon_id))
-            self.assertEqual(item.findtext("visible"),
-                             "System.AddonIsEnabled({})".format(addon_id))
+            self.assertTrue(equivalent(item.findtext("visible"), "System.AddonIsEnabled({})".format(addon_id)))
 
 
 if __name__ == "__main__":

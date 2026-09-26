@@ -2,10 +2,9 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
-import re
-
 import home_menu
-from kodi_includes import expand, parse
+from conditions import equivalent, implies, same_actions
+from kodi_includes import parse
 
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
@@ -16,11 +15,11 @@ class SearchUITests(unittest.TestCase):
         item = home_menu.entry(preview='search')
         actions = home_menu.select_actions(item)
         self.assertEqual(actions[0], (None, 'SetProperty(Bald.SearchOrigin,home,home)'))
-        self.assertEqual(actions[1:], [
+        self.assertTrue(same_actions(actions[1:], [
             ('System.AddonIsEnabled(script.globalsearch)', 'RunScript(script.globalsearch)'),
             ('System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)', 'EnableAddon(script.globalsearch)'),
             ('!System.HasAddon(script.globalsearch)', 'InstallAddon(script.globalsearch)'),
-        ])
+        ]), actions)
 
     def test_library_search_launches_global_search_scoped_to_content(self):
         root = ET.parse(ROOT / 'View_510_Bald_Posters.xml').getroot()
@@ -28,9 +27,17 @@ class SearchUITests(unittest.TestCase):
         searches = [item for item in menu.findall('item')
                     if any(node.text.startswith('RunScript(script.globalsearch') for node in item.findall('onclick'))]
         self.assertTrue(all(item.findtext('label') == '$LOCALIZE[137]' for item in searches))  # Kodi's "Search"
+        views = [int(v) for v in ET.parse(ROOT / 'MyVideoNav.xml').getroot().findtext('views').split(',')]
+
+        def shown_for(visible):
+            # The views an entry shows for, checked to be exactly an OR of Control.IsVisible over them.
+            shown = [str(v) for v in sorted(views) if implies(f'Control.IsVisible({v})', visible)]
+            self.assertTrue(equivalent(visible, ' | '.join(f'Control.IsVisible({v})' for v in shown)), visible)
+            return shown
+
         self.assertEqual(
-            # Each entry shows for exactly its content level's Bald views (OR of Control.IsVisible).
-            [(re.findall(r'Control\.IsVisible\((\d+)\)', expand(item.findtext('visible'))), [node.text for node in item.findall('onclick')]) for item in searches],
+            # Each entry shows for exactly its content level's Bald views.
+            [(shown_for(item.findtext('visible')), [node.text for node in item.findall('onclick')]) for item in searches],
             [
                 (['510', '511', '512', '513', '514', '515'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,movies=true)']),
                 (['520', '521', '522', '523', '530', '531'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,tvshows=true)']),
@@ -64,8 +71,8 @@ class SearchUITests(unittest.TestCase):
                          [node.text for node in root.findall('onunload')])
         return_action = next(node for node in root.findall('onunload')
                              if node.text == 'SetProperty(Bald.ReturnSearch,true,home)')
-        self.assertEqual(return_action.get('condition'),
-                         'String.IsEqual(Window(home).Property(Bald.SearchOrigin),home)')
+        self.assertTrue(equivalent(return_action.get('condition'),
+                                   'String.IsEqual(Window(home).Property(Bald.SearchOrigin),home)'))
         loading = root.find(".//control[@id='991']")
         self.assertEqual(loading.findtext('left'), '96')
         self.assertEqual(loading.findtext('font'), 'Bald_Section')
@@ -77,7 +84,7 @@ class SearchUITests(unittest.TestCase):
         self.assertEqual(root.find(".//control[@id='50']").findtext('onleft'), '990')
         headers = next(group for group in root.findall('.//control[@type="group"]')
                        if group.findtext("control/label") == '$LOCALIZE[369]')  # Kodi's "Title"
-        self.assertEqual(headers.findtext('visible'), '!Control.IsVisible(991)')
+        self.assertTrue(equivalent(headers.findtext('visible'), '!Control.IsVisible(991)'))
 
     def test_keyboard_preserves_contract_ids_with_bald_character_style(self):
         keyboard = ET.parse(ROOT / 'DialogKeyboard.xml').getroot()
