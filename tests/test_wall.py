@@ -2,7 +2,7 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
-from kodi_includes import expand
+from conditions import has_action, implies, shows_for_content
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
 
@@ -14,7 +14,7 @@ class WallTests(unittest.TestCase):
     def test_native_eight_by_two_panel_registered_for_movies(self):
         panel = self.root.find(".//control[@id='511']")
         self.assertEqual(panel.get('type'), 'panel')
-        self.assertEqual(panel.findtext('visible'), 'Container.Content(movies)')
+        self.assertTrue(shows_for_content(panel.findtext('visible'), 'movies'))
         self.assertIsNone(panel.find('content'))
         self.assertEqual(int(panel.findtext('width')), 8 * int(panel.find('itemlayout').get('width')))
         self.assertEqual(int(panel.findtext('height')), 2 * int(panel.find('itemlayout').get('height')))
@@ -43,7 +43,7 @@ class WallTests(unittest.TestCase):
         root = ET.parse(ROOT / 'View_512_Bald_WallPreview.xml').getroot()
         panel = root.find(".//control[@id='512']")
         self.assertEqual(panel.get('type'), 'panel')
-        self.assertEqual(panel.findtext('visible'), 'Container.Content(movies)')
+        self.assertTrue(shows_for_content(panel.findtext('visible'), 'movies'))
         self.assertIsNone(panel.find('content'))
         self.assertEqual(int(panel.findtext('width')), 5 * int(panel.find('itemlayout').get('width')))
         self.assertEqual(int(panel.findtext('height')), 2 * int(panel.find('itemlayout').get('height')))
@@ -54,6 +54,8 @@ class WallTests(unittest.TestCase):
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
         self.assertIn('512', nav.findtext('views').split(','))
         self.assertIn('View_512_Bald_WallPreview', [n.text for n in nav.iter('include')])
-        self.assertTrue(all('Bald_LibraryViewActive' in n.get('condition') for n in nav.findall(".//control[@id='9151']/onfocus")))
-        active = expand('$EXP[Bald_LibraryViewActive]')
-        self.assertIn('Control.IsVisible(512)', active)
+        # The wall counts as a Bald view: 9151 hands focus to Bald's options menu rather than Estuary's.
+        routes = [(n.get('condition'), n.text) for n in nav.findall(".//control[@id='9151']/onfocus")]
+        self.assertTrue(has_action(routes, '$EXP[Bald_LibraryViewActive]', 'SetFocus(9150)'))
+        self.assertTrue(has_action(routes, '!$EXP[Bald_LibraryViewActive]', 'SetFocus(9000)'))
+        self.assertTrue(implies('Control.IsVisible(512)', '$EXP[Bald_LibraryViewActive]'))

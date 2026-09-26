@@ -2,6 +2,7 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
+from conditions import all_of, atoms, implies, same_actions
 from kodi_includes import SKIN, include_definitions, resolve_window
 from skin_strings import LOCALIZE, english, loc
 
@@ -130,10 +131,9 @@ class SettingsScaffoldTests(unittest.TestCase):
         self.assertEqual(ids, ["1", "2", "3", "4"])
         seen = set()
         for row in self.control("Custom_1118_BaldAppearance.xml", "9600").findall("control"):
-            conditions = [node.text for node in row.findall("visible")]
-            self.assertFalse(any("ListItem.Label" in condition for condition in conditions), row.get("id"))
-            owners = [re.fullmatch(r"Container\(9500\)\.HasFocus\((\d+)\)", condition) for condition in conditions]
-            owners = [match.group(1) for match in owners if match]
+            visible = all_of([node.text for node in row.findall("visible")])
+            self.assertFalse(any("ListItem.Label" in atom for atom in atoms(visible)), row.get("id"))
+            owners = [category for category in ids if implies(visible, f"Container(9500).HasFocus({category})")]
             self.assertEqual(len(owners), 1, f"row {row.get('id')} must belong to one category")
             self.assertIn(owners[0], ids)
             seen.add(owners[0])
@@ -161,11 +161,11 @@ class SettingsScaffoldTests(unittest.TestCase):
             with self.subTest(control=control_id):
                 actions = [(node.get("condition"), node.text)
                            for node in self.control("Custom_1118_BaldAppearance.xml", control_id).findall("onclick")]
-                self.assertEqual(actions, [
+                self.assertTrue(same_actions(actions, [
                     (f"System.AddonIsEnabled({picker})", f"RunScript({picker},property={setting}&type=resource.images.{kind})"),
                     (f"System.HasAddon({picker}) + !System.AddonIsEnabled({picker})", f"EnableAddon({picker})"),
                     (f"!System.HasAddon({picker})", f"InstallAddon({picker})"),
-                ])
+                ]), actions)
 
 if __name__ == "__main__":
     unittest.main()

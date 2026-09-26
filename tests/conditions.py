@@ -241,3 +241,9 @@ def find_value(values, condition, bodies=None):
 def has_action(actions, condition, action, bodies=None):
     """Some (condition, action) pair runs `action` under a condition that means `condition` (None: unconditional)."""
     return any(text == action and equivalent(cond or "true", condition or "true", bodies) for cond, text in actions)
+
+
+def shows_for_content(visible, content):
+    """A view container's <visible> means Container.Content(content) and stays literal: docs/NOTES.md ("Named
+    conditions") keeps view containers' own visibility out of $EXP."""
+    return "$EXP[" not in (visible or "") and equivalent(visible, f"Container.Content({content})")

@@ -2,9 +2,14 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from conditions import equivalent, implies, shows_for_content
 from kodi_includes import parse
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
+
+
+def shows_when(control, condition):
+    return bool(control.findtext('visible')) and equivalent(control.findtext('visible'), condition)
 
 
 class PosterLowTests(unittest.TestCase):
@@ -15,7 +20,7 @@ class PosterLowTests(unittest.TestCase):
         control = self.root.find(".//control[@id='515']")
         self.assertEqual(control.get('type'), 'list')
         self.assertEqual(control.findtext('orientation'), 'horizontal')
-        self.assertEqual(control.findtext('visible'), 'Container.Content(movies)')
+        self.assertTrue(shows_for_content(control.findtext('visible'), 'movies'))
         self.assertIsNone(control.find('content'))
         self.assertEqual(int(control.findtext('width')), 8 * int(control.find('itemlayout').get('width')))
         self.assertEqual((control.findtext('left'), control.findtext('width')), ('96', '1248'))
@@ -37,25 +42,25 @@ class PosterLowTests(unittest.TestCase):
         view = self.root.find("include[@name='View_515_Bald_PosterLow']/control")
         masks = view.findall("include[@content='Bald_BackdropWindow']")
         self.assertEqual(len(masks), 4)
-        letter_mask = next(group for group in view.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryLettersOpen]')
+        letter_mask = next(group for group in view.findall('control') if shows_when(group, '$EXP[Bald_LibraryLettersOpen]'))
         self.assertIsNotNone(letter_mask.find("include[@content='Bald_BackdropWindow']"))
         preview = next(group for group in view.findall('control') if 'ListItem.Title' in (group.findtext('visible') or ''))
         self.assertFalse(preview.findall(".//include[@content='Bald_BackdropWindow']"))
 
     def test_options_footer_avoids_menu_note_and_poster_rail(self):
         footer = self.root.find("include[@name='Bald_PosterLowFooter']/definition")
-        browse = next(node for node in footer.findall('control') if '!$EXP[Bald_LibraryMenuOpen]' in (node.findtext('visible') or ''))
+        browse = next(node for node in footer.findall('control') if node.findtext('visible') and implies(node.findtext('visible'), '!$EXP[Bald_LibraryMenuOpen]'))
         self.assertEqual(browse.findtext('top'), '954')
-        group = next(node for node in footer.findall('control') if node.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]')
+        group = next(node for node in footer.findall('control') if shows_when(node, '$EXP[Bald_LibraryMenuOpen]'))
         self.assertGreaterEqual(int(group.findtext('left')), 96 + 1248)
         self.assertGreaterEqual(int(group.findtext('top')), 936)
 
     def test_home_width_options_do_not_need_a_backdrop_panel(self):
         view = self.root.find("include[@name='View_515_Bald_PosterLow']/control")
-        menu_masks = [group for group in view.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]' and group.find("include[@content='Bald_BackdropWindow']") is not None]
+        menu_masks = [group for group in view.findall('control') if shows_when(group, '$EXP[Bald_LibraryMenuOpen]') and group.find("include[@content='Bald_BackdropWindow']") is not None]
         self.assertEqual(menu_masks, [])
         footer = self.root.find("include[@name='Bald_PosterLowFooter']/definition")
-        hint = next(group for group in footer.findall('control') if group.findtext('visible') == '$EXP[Bald_LibraryMenuOpen]')
+        hint = next(group for group in footer.findall('control') if shows_when(group, '$EXP[Bald_LibraryMenuOpen]'))
         self.assertEqual((hint.findtext('left'), hint.findtext("include/param[@name='width']")), ('1404', '420'))
 
     def test_focused_ring_fits_list_height(self):

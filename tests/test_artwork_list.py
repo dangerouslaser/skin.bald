@@ -2,6 +2,8 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from conditions import equivalent, shows_for_content
+
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
 
 
@@ -11,7 +13,7 @@ class ArtworkListTests(unittest.TestCase):
         control = root.find(".//control[@id='514']")
         self.assertEqual(control.get('type'), 'list')
         self.assertIsNone(control.find('content'))
-        self.assertEqual(control.findtext('visible'), 'Container.Content(movies)')
+        self.assertTrue(shows_for_content(control.findtext('visible'), 'movies'))
         self.assertEqual(int(control.findtext('height')), 7 * int(control.find('itemlayout').get('height')))
         self.assertEqual(control.findtext('onleft'), '9150')
         self.assertEqual([n.text for n in control.findall('onright')], ['SetFocus(9160)', 'RunScript(skin.bald,letters,514)'])
@@ -39,4 +41,4 @@ class ArtworkListTests(unittest.TestCase):
         caption = root.find("include[@name='Bald_ArtworkListCaption']/definition/control")
         self.assertIsNone(caption.find("animation[@type='Hidden']"))
         plot = caption.find("control[@type='textbox']")
-        self.assertEqual(plot.findtext('visible'), '!$EXP[Bald_LibraryLettersOpen]')
+        self.assertTrue(equivalent(plot.findtext('visible'), '!$EXP[Bald_LibraryLettersOpen]'))

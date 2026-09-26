@@ -1,9 +1,10 @@
 from pathlib import Path
+import re
 import unittest
 import xml.etree.ElementTree as ET
 
 import home_menu
-from kodi_includes import expand
+from conditions import atoms, equivalent, has_action, implies, shows_for_content
 
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
@@ -21,7 +22,7 @@ class TVLibraryTests(unittest.TestCase):
         for control_id, content in expected.items():
             control = self.root.find(f".//control[@id='{control_id}']")
             self.assertIsNotNone(control)
-            self.assertEqual(control.findtext('visible'), f'Container.Content({content})')
+            self.assertTrue(shows_for_content(control.findtext('visible'), content), control_id)
             self.assertIn(str(control_id), views)
 
     def test_series_and_seasons_use_native_poster_lists(self):
@@ -50,7 +51,7 @@ class TVLibraryTests(unittest.TestCase):
 
     def test_home_tv_item_opens_configured_screen(self):
         item = home_menu.entry(preview='tvshows')
-        self.assertEqual(item.findtext("param[@name='visible']"), 'Skin.HasSetting(Bald.Screen.TVShows)')
+        self.assertTrue(equivalent(item.findtext("param[@name='visible']"), 'Skin.HasSetting(Bald.Screen.TVShows)'))
         self.assertIn(
             'SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])',
             [action for _, action in home_menu.select_actions(item)],
@@ -58,10 +59,10 @@ class TVLibraryTests(unittest.TestCase):
 
     def test_legacy_chrome_is_hidden_for_every_bald_tv_level(self):
         custom = ('520', '530', '540')
-        visible_conditions = [n.text or '' for n in self.nav.findall('.//visible')]
-        self.assertIn('!$EXP[Bald_LibraryViewActive]', visible_conditions)
-        active = expand('$EXP[Bald_LibraryViewActive]')
-        self.assertTrue(all(f'Control.IsVisible({view})' in active for view in custom))
+        visible_conditions = [n.text for n in self.nav.findall('.//visible') if n.text]
+        self.assertTrue(any(equivalent(text, '!$EXP[Bald_LibraryViewActive]') for text in visible_conditions))
+        for view in custom:
+            self.assertTrue(implies(f'Control.IsVisible({view})', '$EXP[Bald_LibraryViewActive]'), view)
 
     def test_legacy_video_views_route_tv_levels_to_bald_views(self):
         files = ('View_50_List.xml', 'View_51_Poster.xml', 'View_52_IconWall.xml', 'View_53_Shift.xml', 'View_54_InfoWall.xml', 'View_55_WideList.xml', 'View_500_Wall.xml', 'View_501_Banner.xml', 'View_504_MediaList.xml')
@@ -72,9 +73,9 @@ class TVLibraryTests(unittest.TestCase):
         }
         for filename in files:
             root = ET.parse(ROOT / filename).getroot()
-            actions = {(node.get('condition'), node.text) for node in root.findall('.//onfocus')}
+            actions = [(node.get('condition'), node.text) for node in root.findall('.//onfocus')]
             for condition, action in expected.items():
-                self.assertIn((condition, action), actions, filename)
+                self.assertTrue(has_action(actions, condition, action), (filename, action))
 
     def test_shared_logo_has_container_tvshow_fallback(self):
         shared = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot()
@@ -88,7 +89,7 @@ class TVLibraryTests(unittest.TestCase):
         for control_id, content in expected.items():
             control = self.alternates.find(f".//control[@id='{control_id}']")
             self.assertIsNotNone(control, control_id)
-            self.assertEqual(control.findtext('visible'), f'Container.Content({content})')
+            self.assertTrue(shows_for_content(control.findtext('visible'), content), control_id)
             self.assertIn(str(control_id), registered)
 
     def test_alternate_view_cycles_stay_within_each_tv_level(self):
@@ -97,8 +98,12 @@ class TVLibraryTests(unittest.TestCase):
         for item in options.findall('.//content/item'):
             visible = item.findtext('visible')
             actions = [node.text for node in item.findall('onclick')]
-            if visible and visible.startswith('Control.IsVisible(') and actions and actions[0].startswith('Container.SetViewMode('):
-                transitions[int(visible.removeprefix('Control.IsVisible(').removesuffix(')'))] = int(actions[0].removeprefix('Container.SetViewMode(').removesuffix(')'))
+            if visible and actions and actions[0].startswith('Container.SetViewMode('):
+                # Each view item shows for exactly one view.
+                view, = atoms(visible)
+                self.assertTrue(equivalent(visible, view), visible)
+                transitions[int(re.fullmatch(r'Control\.IsVisible\((\d+)\)', view).group(1))] = int(
+                    re.fullmatch(r'Container\.SetViewMode\((\d+)\)', actions[0]).group(1))
                 self.assertEqual(actions[-1], 'SetFocus(9150)')
         self.assertEqual([transitions[n] for n in (520, 521, 522, 523)], [521, 522, 523, 520])
         self.assertEqual([transitions[n] for n in (530, 531)], [531, 530])
