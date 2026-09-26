@@ -15,6 +15,8 @@ class PVRGuideTests(unittest.TestCase):
                     if node.findtext("property[@name='id']") == 'livetv')
         self.assertEqual([node.text for node in item.findall('onclick')],
                          ['ActivateWindow(TVGuide)'])
+        self.assertEqual(item.findtext('visible'),
+                         '!Skin.HasSetting(Bald.Screen.HideLiveTV)')
 
     def test_primary_guide_preserves_native_contract(self):
         guide = ET.parse(ROOT / 'MyPVRGuide.xml').getroot()

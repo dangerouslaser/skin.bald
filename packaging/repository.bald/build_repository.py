@@ -28,7 +28,18 @@ def tracked_files(revision: str) -> list[str]:
         ["git", "ls-tree", "-r", "--name-only", revision], cwd=ROOT, text=True
     )
     files = {"addon.xml", "LICENSE.txt"}
-    directories = ("1080i/", "colors/", "extras/", "fonts/", "language/", "media/", "resources/", "scripts/")
+    directories = (
+        "1080i/",
+        "colors/",
+        "extras/",
+        "fonts/",
+        "language/",
+        "media/",
+        "playlists/",
+        "resources/",
+        "scripts/",
+        "shortcuts/",
+    )
     return [
         line
         for line in output.splitlines()

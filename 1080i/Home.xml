@@ -261,6 +261,7 @@
 						<label>Live TV</label>
 						<property name="id">livetv</property>
 						<property name="note">Select to open the guide.</property>
+						<visible>!Skin.HasSetting(Bald.Screen.HideLiveTV)</visible>
 						<onclick>ActivateWindow(TVGuide)</onclick>
 					</item>
 					<item>

@@ -34,10 +34,11 @@ class BaldSettingsTests(unittest.TestCase):
     def test_screen_editor_has_mandatory_home_and_optional_media_screens(self):
         root = ET.parse(ROOT / "1080i" / "Custom_1117_BaldHomeScreens.xml").getroot()
         items = root.findall(".//control[@id='9300']/content/item")
-        self.assertEqual([item.findtext("label") for item in items], ["Home", "Movies", "TV Shows"])
+        self.assertEqual([item.findtext("label") for item in items], ["Home", "Movies", "TV Shows", "Live TV"])
         self.assertEqual(items[0].find("property[@name='enabled']").text, "true")
         self.assertIn("Bald.Screen.Movies", ET.tostring(root, encoding="unicode"))
         self.assertIn("Bald.Screen.TVShows", ET.tostring(root, encoding="unicode"))
+        self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(root, encoding="unicode"))
 
     def test_optional_screens_control_main_menu_membership(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
@@ -48,6 +49,22 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertEqual(tvshows.findtext("visible"), "Skin.HasSetting(Bald.Screen.TVShows)")
         self.assertNotIn("!Skin.HasSetting", ET.tostring(movies, encoding="unicode"))
         self.assertNotIn("!Skin.HasSetting", ET.tostring(tvshows, encoding="unicode"))
+
+        livetv = next(item for item in items if item.findtext("label") == "Live TV")
+        self.assertEqual(
+            livetv.findtext("visible"),
+            "!Skin.HasSetting(Bald.Screen.HideLiveTV)",
+        )
+
+    def test_live_tv_screen_has_toggle_but_no_widget_editor(self):
+        root = ET.parse(ROOT / "1080i" / "Custom_1117_BaldHomeScreens.xml").getroot()
+        toggle = root.find(".//control[@id='9401']")
+        configure = root.find(".//control[@id='9402']")
+        self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(toggle, encoding="unicode"))
+        self.assertEqual(
+            configure.findtext("visible"),
+            "!String.IsEqual(Container(9300).ListItem.Property(node),livetv)",
+        )
 
     def test_optional_screens_restore_their_last_row_when_entered_from_menu(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
