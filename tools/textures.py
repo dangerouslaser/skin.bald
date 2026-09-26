@@ -106,6 +106,32 @@ def main():
     im = Image.new("RGBA", (4, 4), (0, 0, 0, 0))
     ImageDraw.Draw(im).line([(3, 0), (3, 3)], fill=(255, 255, 255, 255), width=1)
     save(im, "epg_now.png")
+    tv_info_textures()
+
+
+def tv_info_textures():
+    """TV info episode cards (docs/SPEC.md 5.3)."""
+    # Card scrim: black 72% at the bottom edge, 0 at 55% up (white; colorized with colordiffuse).
+    im = Image.new("RGBA", (4, 180))
+    for y in range(180):
+        t = (y + 0.5) / 180
+        a = 0.72 * max(0.0, 1 - t / 0.55)
+        for x in range(4):
+            im.putpixel((x, 179 - y), (255, 255, 255, round(a * 255)))
+    save(im, "scrim_card.png")
+    # Watched check: the prototype's 24-unit path (5,12.5 / 9.5,17 / 19,7.5), 2.6 stroke, round caps, drawn for 16 px.
+    size, scale = 48, 2
+    mark = Image.new("L", (size * SS, size * SS), 0)
+    d = ImageDraw.Draw(mark)
+    k = scale * SS
+    pts = [(5 * k, 12.5 * k), (9.5 * k, 17 * k), (19 * k, 7.5 * k)]
+    width = round(2.6 * k)
+    d.line(pts, fill=255, width=width, joint="curve")
+    for x, y in (pts[0], pts[-1]):
+        d.ellipse([x - width / 2, y - width / 2, x + width / 2, y + width / 2], fill=255)
+    im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
+    im.putalpha(mark.resize((size, size), Image.LANCZOS))
+    save(im, "check.png")
 
 
 if __name__ == "__main__":
