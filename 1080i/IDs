@@ -242,4 +242,30 @@ Custom_1118_BaldAppearance.xml (window 1118)
 605, 607-609, 623, 624, 701-708, 6066-6068
 		Estuary windows: Estuary's own SkinSettings control IDs, kept as Estuary numbers them
 
+GLOBAL OVERLAYS (Includes_Bald_Overlays.xml)
+
+DialogNotification.xml (CGUIDialogKaiToast)
+400		Icon image (Kodi sets the add-on or default icon)
+401		Caption label
+402		Message fadelabel (must stay a fadelabel: Kodi waits for it to finish scrolling)
+
+DialogExtendedProgressBar.xml (CGUIDialogExtendedProgressBar)
+30		Task title label
+31		Task step label (hidden when empty or already part of 30)
+32		Progress bar (Kodi makes it visible once a percentage is reported)
+
+DialogBusy.xml (CGUIDialogBusy, CGUIDialogBusyNoCancel)
+		Kodi 22 binds no ids.
+
+DialogVolumeBar.xml (CGUIDialogVolumeBar) and Custom_1103_VolumeSlider.xml (window 1103)
+29999	Hidden Player.Volume progress; its label is the volume percentage
+11		Volume slider (1103 only; its defaultcontrol)
+
+DialogTextViewer.xml (CGUIDialogTextViewer) and Custom_1102_TextViewer.xml (window 1102), Bald_TextViewerPanel
+1		Heading label (Kodi binds it in DialogTextViewer; 1102 fills it from a home property)
+5		Text box (DialogTextViewer; Kodi binds it)
+2000	Text box (1102; the skin fills it from a home property)
+3000	Hidden scrollbar, the text box's page control
+1000	Hidden button that holds remote focus: Select closes, Up and Down page
+
 Free custom window numbers start at 1119.

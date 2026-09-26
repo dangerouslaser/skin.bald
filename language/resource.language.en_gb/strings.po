@@ -1055,6 +1055,14 @@ msgctxt "#31623"
 msgid "Down for controls"
 msgstr ""
 
+# Bald global overlays: 31650-31659.
+
+#: /1080i/Includes_Bald_Overlays.xml
+#. Volume bar label while the sound is muted
+msgctxt "#31650"
+msgid "Muted"
+msgstr ""
+
 # Bald strings: 31700-31999 (see docs/LOCALIZATION.md). Estuary keeps 31000-31699.
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml

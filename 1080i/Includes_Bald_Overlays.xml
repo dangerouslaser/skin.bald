@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald global overlays: the busy indicator, toasts, background progress, the volume bar and slider, and the text
+     viewer body. Quiet chrome over whatever window is open: one field surface with a 10% ink wash, Instrument Sans at
+     caption sizes, ink for text and the accent only for progress. Motion is a short fade with a 14 px slide (docs/SPEC.md
+     section 4 curves: move = cubic out, fade = sine inout). Constants and ids: see 1080i/IDs, "Global overlays". -->
+<includes>
+	<!-- Overlay band above the page content (half the safe margin), used by background progress and the volume bar,
+	     which can stay up for minutes and must not cover titles or the Home clock. Toasts use the safe margin. -->
+	<constant name="Bald_OverlayBandTop">48</constant>
+	<constant name="Bald_ToastTop">96</constant>
+
+	<!-- Surface: opaque field with a 10% ink wash, so the chrome separates from dark backdrops and bright video
+	     alike. texture/border allow the pill capsule (bald/pill.png, 9-slice 27) as well as the plain panel. -->
+	<include name="Bald_OverlaySurface">
+		<param name="width" />
+		<param name="height" />
+		<param name="texture">bald/white.png</param>
+		<param name="border">0</param>
+		<definition>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
+				<texture border="$PARAM[border]" colordiffuse="bald_field">$PARAM[texture]</texture>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
+				<texture border="$PARAM[border]" colordiffuse="bald_ink10">$PARAM[texture]</texture>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Volume bar label: the percentage from DialogVolumeBar's hidden progress 29999, or "Muted". -->
+	<variable name="Bald_VolumeLabel">
+		<value condition="Player.Muted">$LOCALIZE[31650]</value>
+		<value>$INFO[Control.GetLabel(29999),,%]</value>
+	</variable>
+
+	<!-- Progress bar look (placed inside a progress control): a 4 px 10% ink track with an accent fill. -->
+	<include name="Bald_OverlayBarTextures">
+		<height>4</height>
+		<texturebg border="2" colordiffuse="bald_ink10">bald/bar.png</texturebg>
+		<lefttexture />
+		<midtexture border="2" colordiffuse="bald_accent">bald/bar.png</midtexture>
+		<righttexture />
+		<overlaytexture />
+	</include>
+
+	<!-- Open and close: fade 240 in, 160 out, with a short slide from offset (x,y). -->
+	<include name="Bald_OverlayOpenClose">
+		<param name="offset">0,-14</param>
+		<definition>
+			<animation type="WindowOpen" reversible="false">
+				<effect type="fade" start="0" end="100" time="240" tween="sine" easing="inout" />
+				<effect type="slide" start="$PARAM[offset]" end="0,0" time="360" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+				<effect type="slide" start="0,0" end="$PARAM[offset]" time="200" tween="cubic" easing="out" />
+			</animation>
+		</definition>
+	</include>
+
+	<!-- Busy indicator: three dots that brighten in turn (28% to full ink and back, 360 each way), 1200 ms per cycle.
+	     Only fades: Bald does not rotate. Each dot's cycle is padded to the same 1200 ms by a no-op fade, so the three
+	     loops stay in step. Kodi multiplies the effects' alpha, and an effect before its delay holds its start value. -->
+	<include name="Bald_BusyDot">
+		<param name="left" />
+		<param name="size" />
+		<param name="in" />
+		<param name="out" />
+		<param name="color">bald_ink</param>
+		<definition>
+			<control type="image">
+				<left>$PARAM[left]</left>
+				<top>0</top>
+				<width>$PARAM[size]</width>
+				<height>$PARAM[size]</height>
+				<texture colordiffuse="$PARAM[color]">bald/dot.png</texture>
+				<animation type="Conditional" condition="true" loop="true" reversible="false">
+					<effect type="fade" start="28" end="100" time="360" delay="$PARAM[in]" tween="sine" easing="inout" />
+					<effect type="fade" start="100" end="28" time="360" delay="$PARAM[out]" tween="sine" easing="inout" />
+					<effect type="fade" start="100" end="100" time="1" delay="1199" />
+				</animation>
+			</control>
+		</definition>
+	</include>
+	<!-- Three dots at size and pitch (left of the second and third dot); the group is 2 * pitch + size wide. -->
+	<include name="Bald_BusyDots">
+		<param name="size">12</param>
+		<param name="second">24</param>
+		<param name="third">48</param>
+		<param name="color">bald_ink</param>
+		<definition>
+			<include content="Bald_BusyDot"><param name="left" value="0" /><param name="size" value="$PARAM[size]" /><param name="in" value="0" /><param name="out" value="360" /><param name="color" value="$PARAM[color]" /></include>
+			<include content="Bald_BusyDot"><param name="left" value="$PARAM[second]" /><param name="size" value="$PARAM[size]" /><param name="in" value="180" /><param name="out" value="540" /><param name="color" value="$PARAM[color]" /></include>
+			<include content="Bald_BusyDot"><param name="left" value="$PARAM[third]" /><param name="size" value="$PARAM[size]" /><param name="in" value="360" /><param name="out" value="720" /><param name="color" value="$PARAM[color]" /></include>
+		</definition>
+	</include>
+
+	<!-- Volume slider look: settings' 4 px track and 16 px nib (Bald_SettingsSlider), nib accent when focused. -->
+	<include name="Bald_OverlaySliderTextures">
+		<texturesliderbar border="8,0,8,0" colordiffuse="bald_ink10">bald/slider_bar.png</texturesliderbar>
+		<textureslidernib colordiffuse="bald_ink60">bald/slider_nib.png</textureslidernib>
+		<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
+	</include>
+
+	<!-- Text viewer panel: the shared popup surface (header label 1), a 1440 x 770 centred panel, body text in the
+	     info plot face at 80% ink, the page count at the right of the header and scroll arrows for the mouse.
+	     textbox_id is the textbox Kodi (5) or the skin (2000, window 1102) fills; 3000 is its hidden page control. -->
+	<include name="Bald_TextViewerPanel">
+		<param name="header_label" />
+		<param name="textbox_id" />
+		<param name="text" />
+		<definition>
+			<control type="group">
+				<centerleft>50%</centerleft>
+				<width>1440</width>
+				<centertop>50%</centertop>
+				<height>770</height>
+				<include content="DialogBackgroundCommons">
+					<param name="width" value="1440" />
+					<param name="height" value="770" />
+					<param name="header_label" value="$PARAM[header_label]" />
+					<param name="header_id" value="1" />
+				</include>
+				<control type="label">
+					<right>80</right>
+					<top>0</top>
+					<width>240</width>
+					<height>70</height>
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink45</textcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>$INFO[Container($PARAM[textbox_id]).CurrentPage]$INFO[Container($PARAM[textbox_id]).NumPages, / ,]</label>
+					<visible>Integer.IsGreater(Container($PARAM[textbox_id]).NumPages,1)</visible>
+				</control>
+				<control type="textbox" id="$PARAM[textbox_id]">
+					<left>40</left>
+					<top>110</top>
+					<width>1360</width>
+					<height>620</height>
+					<font>Bald_InfoPlot</font>
+					<monofont>Bald_InfoPlot</monofont>
+					<textcolor>bald_ink80</textcolor>
+					<pagecontrol>3000</pagecontrol>
+					<label>$PARAM[text]</label>
+				</control>
+				<control type="scrollbar" id="3000">
+					<include>HiddenObject</include>
+					<ondown>3000</ondown>
+					<onup>3000</onup>
+				</control>
+				<include content="Bald_TextViewerArrow">
+					<param name="top" value="78" />
+					<param name="flipy" value="true" />
+					<param name="action" value="Up" />
+					<param name="visible" value="Integer.IsGreater(Container($PARAM[textbox_id]).CurrentPage,1)" />
+				</include>
+				<include content="Bald_TextViewerArrow">
+					<param name="top" value="738" />
+					<param name="flipy" value="false" />
+					<param name="action" value="Down" />
+					<param name="visible" value="!String.IsEqual(Container($PARAM[textbox_id]).CurrentPage,Container($PARAM[textbox_id]).NumPages)" />
+				</include>
+			</control>
+			<!-- Remote focus: Select closes, Up and Down page the text. -->
+			<control type="button" id="1000">
+				<include>HiddenObject</include>
+				<onclick>Action(Close)</onclick>
+				<onup>PageUp(3000)</onup>
+				<ondown>PageDown(3000)</ondown>
+			</control>
+		</definition>
+	</include>
+	<!-- Mouse scroll arrow: Estuary's arrow texture at 45% ink, full ink under the pointer. -->
+	<include name="Bald_TextViewerArrow">
+		<param name="top" />
+		<param name="flipy" />
+		<param name="action" />
+		<param name="visible" />
+		<definition>
+			<control type="button">
+				<centerleft>50%</centerleft>
+				<top>$PARAM[top]</top>
+				<width>36</width>
+				<height>16</height>
+				<texturefocus colordiffuse="bald_ink" flipy="$PARAM[flipy]">overlays/arrowdown.png</texturefocus>
+				<texturenofocus colordiffuse="bald_ink45" flipy="$PARAM[flipy]">overlays/arrowdown.png</texturenofocus>
+				<onclick>SetFocus(3000)</onclick>
+				<onclick>$PARAM[action]</onclick>
+				<visible>$PARAM[visible]</visible>
+				<animation effect="fade" time="200" tween="sine" easing="inout">VisibleChange</animation>
+			</control>
+		</definition>
+	</include>
+</includes>
