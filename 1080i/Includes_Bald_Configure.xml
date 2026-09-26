@@ -170,6 +170,43 @@
 		<value>$LOCALIZE[31724]</value>
 	</variable>
 
+	<!-- ============ Home Screens (1117): the hubs ============ -->
+	<!-- One sidebar entry per hub slot: the hub at position n (0-7) of the live hubs list 9390, shown while it exists.
+	     Its properties carry what the detail rows act on: the Skin Variables url of that entry, its open target path
+	     and its "disabled" field. The ids 10-17 keep hub entries apart from Home (1), Live TV (2) and Add hub (3). -->
+	<include name="Bald_HubCategory">
+		<param name="n" />
+		<definition>
+			<item id="1$PARAM[n]">
+				<label>$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Label]</label>
+				<property name="kind">hub</property>
+				<property name="slot">$PARAM[n]</property>
+				<property name="url">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(url)]</property>
+				<property name="path">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(path)]</property>
+				<property name="disabled">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(disabled)]</property>
+				<property name="note">$LOCALIZE[31204]</property>
+				<visible>Integer.IsGreater(Container(9390).NumItems,$PARAM[n]) + String.IsEmpty(Container(9390).ListItemAbsolute($PARAM[n]).Property(blank))</visible>
+			</item>
+		</definition>
+	</include>
+	<expression name="Bald_HubCategorySelected">[String.IsEqual(Container(9300).ListItem.Property(kind),hub)]</expression>
+	<!-- Eight hubs fill the eight Home slots (shortcuts/generator/screens.xml). -->
+	<expression name="Bald_HubsFull">[Integer.IsGreater(Container(9390).NumItems,7)]</expression>
+	<!-- The selected hub is not the last one (Move down). -->
+	<expression name="Bald_HubHasNext">[[String.IsEqual(Container(9300).ListItem.Property(slot),0) + Integer.IsGreater(Container(9390).NumItems,1)] | [String.IsEqual(Container(9300).ListItem.Property(slot),1) + Integer.IsGreater(Container(9390).NumItems,2)] | [String.IsEqual(Container(9300).ListItem.Property(slot),2) + Integer.IsGreater(Container(9390).NumItems,3)] | [String.IsEqual(Container(9300).ListItem.Property(slot),3) + Integer.IsGreater(Container(9390).NumItems,4)] | [String.IsEqual(Container(9300).ListItem.Property(slot),4) + Integer.IsGreater(Container(9390).NumItems,5)] | [String.IsEqual(Container(9300).ListItem.Property(slot),5) + Integer.IsGreater(Container(9390).NumItems,6)] | [String.IsEqual(Container(9300).ListItem.Property(slot),6) + Integer.IsGreater(Container(9390).NumItems,7)]]</expression>
+	<variable name="Bald_HubTargetLabel">
+		<value condition="!String.IsEmpty(Container(9300).ListItem.Property(path))">$INFO[Container(9300).ListItem.Property(path)]</value>
+		<value>$LOCALIZE[231]</value>
+	</variable>
+	<!-- Add hub: Skin Variables' browser picks what the hub opens (library node, Bald playlist or video add-on folder)
+	     and names the hub after it. With hubs, do_new appends after position 98 (Python's insert past the end appends);
+	     with none, the list holds only Skin Variables' placeholder, and do_choose on item 0 fills it rather than adding
+	     a second entry. -->
+	<include name="Bald_AddHubActions">
+		<onclick condition="!String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank))">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=0&amp;func=do_choose&amp;&amp;use_rawpath::True)</onclick>
+		<onclick condition="String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank)) + !$EXP[Bald_HubsFull]">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=98&amp;func=do_new&amp;&amp;use_rawpath::True)</onclick>
+	</include>
+
 	<!-- Appearance > Typography (1118): the current fontset (Skin.Font is lookandfeel.font, a Font.xml fontset id). -->
 	<!-- Appearance > Information: how list views name a title with a different original title (ListLabelVar). -->
 	<variable name="Bald_OriginalTitleLabel">

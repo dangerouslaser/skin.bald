@@ -3,7 +3,7 @@
 <contents>
     <items>
         <item>
-            <items menu="{menu}" mode="submenu">
+            <items menu="{menu}" item="{node}" mode="{mode}">
                 <item>
                     <template>generator/fanart.xmltemplate</template>
                     <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>

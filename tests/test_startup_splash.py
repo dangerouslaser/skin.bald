@@ -7,18 +7,18 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from conditions import atoms, equivalent, implies, parse, same_actions
+from home_screens import SCREENS as HOME_SCREENS, row_ids
 from skin_strings import english
 
 
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
-SCREENS = (("home", 9100), ("movies", 9200), ("tvshows", 9300))
+SCREENS = tuple((screen, base) for screen, _, base, _ in HOME_SCREENS)
 PRELOADING = "!String.IsEmpty(Window(home).Property(Bald.Preload))"
 
 
 def configured(screen, base):
-    rows = json.loads((ROOT / "shortcuts" / f"skinvariables-shortcut-{screen}widgets.json").read_text())
-    return [base + index for index in range(1, len(rows) + 1)]
+    return row_ids(screen)
 
 
 def load_builder():
@@ -57,7 +57,8 @@ class PreloadRowsTests(unittest.TestCase):
             "include[@name='Bald_Row']/definition/control[@type='fixedlist']")
         visible = row.findtext("visible")
         # Whatever screen, row or menu state: preloading and still loading is enough.
-        self.assertTrue(implies(f"{PRELOADING} + Container($PARAM[id]).IsUpdating", visible))
+        # (Live TV rows also need a PVR add-on: the enabled parameter, true on every other screen.)
+        self.assertTrue(implies(f"{PRELOADING} + Container($PARAM[id]).IsUpdating", visible, assume={"$PARAM[enabled]": True}))
         # Once its list has fetched, the preload no longer holds the row visible (it hides behind the splash).
         self.assertFalse(implies(PRELOADING, visible))
 
@@ -71,9 +72,12 @@ class PreloadRowsTests(unittest.TestCase):
         builder = load_builder()
         config = json.loads((ROOT / "shortcuts" / "skinvariables-generator.json").read_text())
         for count in (0, 1, 5):
-            builder.menu_items = lambda menu, count=count: [
-                {"label": f"Row {i}", "path": f"videodb://movies/titles/?r={i}", "target": "videos", "limit": "25",
-                 "secondary": "0"} for i in range(count)]
+            def items(menu, count=count):
+                rows = [{"label": f"Row {i}", "path": f"videodb://movies/titles/?r={i}", "target": "videos",
+                         "limit": "25", "secondary": "0"} for i in range(count)]
+                # Eight hubs, each with the same rows, so every slot has count rows too.
+                return [{"label": f"Hub {n}", "widgets": rows} for n in range(8)] if menu == "hubs" else rows
+            builder.menu_items = items
             root = ET.fromstring(builder.build_xml(config))
             for screen, base in SCREENS:
                 terms = loading_terms(root.findtext(f"expression[@name='Bald_RowsLoading_{screen}']"))

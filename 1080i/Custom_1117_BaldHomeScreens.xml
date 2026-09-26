@@ -1,24 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Home Screens: Home, the user's hubs (up to eight), Live TV, and Add hub (docs/SPEC.md 5.4, docs/NOTES.md Home hubs).
+     The hubs are the Skin Variables menu "hubs" (skinvariables-shortcut-hubs.json in its addon_data): list 9390 reads it
+     live, and each hub row of the sidebar shows the entry at its position. Every change goes through Skin Variables'
+     own plugin actions (do_edit, do_toggle, do_action, do_move, do_delete, do_new/do_choose), which write the list and
+     refresh 9390; closing this window stamps Bald.WidgetsStamp, so Home rebuilds its menu and rows on its next load. -->
 <window type="window" id="1117">
 	<defaultcontrol always="true">9300</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
+	<onunload>Skin.SetString(Bald.WidgetsStamp,$INFO[System.Date(yyyy-mm-dd)]_$INFO[System.Time(hh:mm:ss)])</onunload>
 	<controls>
 		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[31740]</param></include>
+		<!-- The hubs, as Skin Variables lists them (edit mode, so turned-off hubs are listed too; an empty list gets one
+		     placeholder item with the property blank). Kodi only fills a visible list, so it is 1 x 1 and draws nothing. -->
+		<control type="list" id="9390">
+			<width>1</width>
+			<height>1</height>
+			<orientation>vertical</orientation>
+			<itemlayout width="1" height="1" />
+			<focusedlayout width="1" height="1" />
+			<content>plugin://script.skinvariables/?info=get_shortcuts_node&amp;edit=true&amp;skin=skin.bald&amp;menu=hubs&amp;mode=submenu$INFO[Window(Home).Property(SkinVariables.ShortcutsNode.Reload),&amp;reload=,]</content>
+		</control>
 		<control type="list" id="9300">
 			<include content="Bald_SettingsCategories"><param name="id">9300</param><param name="right">9400</param></include>
 			<content>
-				<item><label>$LOCALIZE[10000]</label><property name="node">homewidgets</property><property name="enabled">true</property><property name="note">$LOCALIZE[31741]</property></item>
-				<item><label>$LOCALIZE[342]</label><property name="node">movieswidgets</property><property name="note">$LOCALIZE[31742]</property></item>
-				<item><label>$LOCALIZE[31701]</label><property name="node">tvshowswidgets</property><property name="note">$LOCALIZE[31743]</property></item>
-				<item><label>$LOCALIZE[31700]</label><property name="node">livetv</property><property name="note">$LOCALIZE[31744]</property></item>
+				<item id="1"><label>$LOCALIZE[10000]</label><property name="kind">home</property><property name="note">$LOCALIZE[31741]</property></item>
+				<include content="Bald_HubCategory"><param name="n">0</param></include>
+				<include content="Bald_HubCategory"><param name="n">1</param></include>
+				<include content="Bald_HubCategory"><param name="n">2</param></include>
+				<include content="Bald_HubCategory"><param name="n">3</param></include>
+				<include content="Bald_HubCategory"><param name="n">4</param></include>
+				<include content="Bald_HubCategory"><param name="n">5</param></include>
+				<include content="Bald_HubCategory"><param name="n">6</param></include>
+				<include content="Bald_HubCategory"><param name="n">7</param></include>
+				<item id="2"><label>$LOCALIZE[31700]</label><property name="kind">livetv</property><property name="note">$LOCALIZE[31205]</property></item>
+				<item id="3">
+					<label>$LOCALIZE[31207]</label>
+					<property name="kind">add</property>
+					<property name="note">$LOCALIZE[31206]</property>
+					<visible>!$EXP[Bald_HubsFull]</visible>
+					<include>Bald_AddHubActions</include>
+				</item>
 			</content>
 		</control>
 		<include content="Bald_SettingsDetail">
 			<param name="heading">$INFO[Container(9300).ListItem.Label]</param>
 			<param name="note">$INFO[Container(9300).ListItem.Property(note)]</param>
 			<control type="grouplist" id="9400"><include content="Bald_SettingsRows"><param name="left">9300</param></include>
-				<control type="radiobutton" id="9401"><include>Bald_ConfigureButton</include><label>$LOCALIZE[305]</label><selected>[String.IsEqual(Container(9300).ListItem.Property(node),movieswidgets) + Skin.HasSetting(Bald.Screen.Movies)] | [String.IsEqual(Container(9300).ListItem.Property(node),tvshowswidgets) + Skin.HasSetting(Bald.Screen.TVShows)] | [String.IsEqual(Container(9300).ListItem.Property(node),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)]</selected><visible>!String.IsEqual(Container(9300).ListItem.Property(node),homewidgets)</visible><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),movieswidgets)">Skin.ToggleSetting(Bald.Screen.Movies)</onclick><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),tvshowswidgets)">Skin.ToggleSetting(Bald.Screen.TVShows)</onclick><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),livetv)">Skin.ToggleSetting(Bald.Screen.HideLiveTV)</onclick></control>
-				<control type="button" id="9402"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31745]</label><visible>!String.IsEqual(Container(9300).ListItem.Property(node),livetv)</visible><onclick>SetProperty(Bald.ConfigureNode,$INFO[Container(9300).ListItem.Property(node)],home)</onclick><onclick>SetProperty(Bald.ConfigureLabel,$INFO[Container(9300).ListItem.Label],home)</onclick><onclick>ActivateWindow(1116)</onclick></control>
+				<!-- Show in the main menu: a hub's "disabled" field (Skin Variables do_toggle), Live TV's skin bool. -->
+				<control type="radiobutton" id="9401"><include>Bald_ConfigureButton</include><label>$LOCALIZE[305]</label>
+					<selected>[$EXP[Bald_HubCategorySelected] + String.IsEmpty(Container(9300).ListItem.Property(disabled))] | [String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)]</selected>
+					<visible>$EXP[Bald_HubCategorySelected] | String.IsEqual(Container(9300).ListItem.Property(kind),livetv)</visible>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_toggle&amp;&amp;disabled)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv)">Skin.ToggleSetting(Bald.Screen.HideLiveTV)</onclick>
+				</control>
+				<!-- Rows: the widget editor (1116) on Home's, Live TV's or this hub's row list. -->
+				<control type="button" id="9402"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31745]</label>
+					<visible>!String.IsEqual(Container(9300).ListItem.Property(kind),add)</visible>
+					<onclick>SetProperty(Bald.ConfigureLabel,$INFO[Container(9300).ListItem.Label],home)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">SetProperty(Bald.ConfigureNode,homewidgets,home)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv)">SetProperty(Bald.ConfigureNode,livetvwidgets,home)</onclick>
+					<onclick condition="!$EXP[Bald_HubCategorySelected]">ClearProperty(Bald.ConfigureItem,home)</onclick>
+					<onclick condition="!$EXP[Bald_HubCategorySelected]">SetProperty(Bald.ConfigureMode,submenu,home)</onclick>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.ConfigureNode,hubs,home)</onclick>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.ConfigureItem,$INFO[Container(9300).ListItem.Property(slot)],home)</onclick>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.ConfigureMode,widgets,home)</onclick>
+					<onclick>ActivateWindow(1116)</onclick>
+				</control>
+				<control type="button" id="9403"><include>Bald_ConfigureButton</include><label>$LOCALIZE[118]</label>
+					<visible>$EXP[Bald_HubCategorySelected]</visible>
+					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;label)</onclick>
+				</control>
+				<!-- What Right (and Select without rows) opens: Skin Variables' Browse (library nodes, Bald playlists, video
+				     add-ons) or Edit (a path or a builtin such as ActivateWindow(Weather)). -->
+				<control type="button" id="9404"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31203]</label><label2>$VAR[Bald_HubTargetLabel]</label2>
+					<visible>$EXP[Bald_HubCategorySelected]</visible>
+					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_action&amp;&amp;use_rawpath::True)</onclick>
+				</control>
+				<control type="button" id="9405"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31209]</label>
+					<visible>$EXP[Bald_HubCategorySelected] + !String.IsEmpty(Container(9300).ListItem.Property(path))</visible>
+					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;path&amp;&amp;null)</onclick>
+				</control>
+				<!-- Move: Skin Variables wraps at the ends, so the ends hide the button; the sidebar selection follows. -->
+				<control type="button" id="9406"><include>Bald_ConfigureButton</include><label>$LOCALIZE[13332]</label>
+					<visible>$EXP[Bald_HubCategorySelected] + !String.IsEqual(Container(9300).ListItem.Property(slot),0)</visible>
+					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_move&amp;&amp;-1)</onclick>
+					<onclick>Control.Move(9300,-1)</onclick>
+				</control>
+				<control type="button" id="9407"><include>Bald_ConfigureButton</include><label>$LOCALIZE[13333]</label>
+					<visible>$EXP[Bald_HubCategorySelected] + $EXP[Bald_HubHasNext]</visible>
+					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_move&amp;&amp;1)</onclick>
+					<onclick>Control.Move(9300,1)</onclick>
+				</control>
+				<control type="button" id="9408"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31208]</label>
+					<visible>$EXP[Bald_HubCategorySelected]</visible>
+					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_delete)</onclick>
+				</control>
+				<control type="button" id="9409"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31207]</label>
+					<visible>String.IsEqual(Container(9300).ListItem.Property(kind),add)</visible>
+					<include>Bald_AddHubActions</include>
+				</control>
 			</control>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>

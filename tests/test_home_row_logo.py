@@ -7,6 +7,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from home_screens import SCREENS as HOME_SCREENS, rows as shipped_rows
 from conditions import implies
 from kodi_includes import Skin
 from skin_strings import bald_strings
@@ -15,7 +16,7 @@ from skin_strings import bald_strings
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
 FALLBACK = XML / "Includes_Bald_HomeDefaults.xml"
-SCREENS = (("home", "Home", "homewidgets"), ("movies", "Movies", "movieswidgets"), ("tvshows", "TVShows", "tvshowswidgets"))
+SCREENS = tuple((screen, title) for screen, title, _, _ in HOME_SCREENS)
 
 
 def load_builder():
@@ -57,9 +58,9 @@ class GeneratedRowLogoTests(unittest.TestCase):
     def test_every_row_shows_its_logo_by_default(self):
         # The shipped rows have no logo field, so the fallback binds the frame logo for every row.
         root = ET.parse(FALLBACK).getroot()
-        for screen, title, _ in SCREENS:
+        for screen, title in SCREENS:
             ids = row_ids(root, title)
-            self.assertTrue(ids, title)
+            self.assertEqual(bool(ids), bool(shipped_rows(screen)), title)
             self.assertEqual(art_logo_rows(root, screen), [i for i in ids for _ in ("Odd", "Even")], screen)
             self.assertEqual(expression_rows(root, f"Bald_HasLogo_{screen}"), set(ids), screen)
             self.assertEqual(expression_rows(root, f"Bald_PreviewHasLogo_{screen}"), set(ids), screen)
@@ -68,7 +69,7 @@ class GeneratedRowLogoTests(unittest.TestCase):
 
     def test_a_row_with_logo_off_has_no_frame_logo_branches(self):
         rows = [row("a"), row("b", logo="off"), row("c", logo="on"), row("d", logo="")]
-        root = build({"homewidgets": rows, "movieswidgets": [row("m", logo="off")]})
+        root = build({"homewidgets": rows, "hubs": [{"label": "M", "widgets": [row("m", logo="off")]}]})
         home = row_ids(root, "Home")
         self.assertEqual(len(home), 4)
         off, shown = home[1], {home[0], home[2], home[3]}
@@ -76,9 +77,10 @@ class GeneratedRowLogoTests(unittest.TestCase):
         self.assertEqual(expression_rows(root, "Bald_HasLogo_home"), shown)
         self.assertEqual(expression_rows(root, "Bald_PreviewHasLogo_home"), shown)
         # A screen whose only row is off has no logo at all, and its expressions stay [false].
-        self.assertEqual(art_logo_rows(root, "movies"), [])
-        self.assertEqual(root.findtext("expression[@name='Bald_HasLogo_movies']"), "[false]")
-        self.assertEqual(root.findtext("expression[@name='Bald_PreviewHasLogo_movies']"), "[false]")
+        self.assertEqual(row_ids(root, "Hub1"), ["9201"])
+        self.assertEqual(art_logo_rows(root, "hub1"), [])
+        self.assertEqual(root.findtext("expression[@name='Bald_HasLogo_hub1']"), "[false]")
+        self.assertEqual(root.findtext("expression[@name='Bald_PreviewHasLogo_hub1']"), "[false]")
         # Bald_Logo (the dialog-over logo): the off row, current or previewed, resolves to an empty value.
         values = logo_values(root)
         for condition in (f"String.IsEqual(Window(home).Property(Bald.Row),{off})",

@@ -1,28 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- The three Home screens with rows. Every datafile in skinvariables-generator.json loads this first, so each
-     one loops over the screens in this order and then over that screen's rows ({menu} node).
-       screen  Bald.Screen / Bald.MenuPreview value and the Bald.Row.<screen> property suffix
-       title   include and expression name part (Bald_Generated_<title>Widgets, Bald_Preview<title>)
-       base    row ids are base + 1 onward (9101, 9201, 9301) -->
+<!-- The Home screens with rows: Home, Live TV and eight fixed hub slots (docs/NOTES.md, Home hubs). Every datafile in
+     skinvariables-generator.json loads this first, so each one loops over the screens in this order and then over
+     that screen's rows (<items menu="{menu}" item="{node}" mode="{mode}">).
+       screen   Bald.Screen / Bald.MenuPreview value and the Bald.Row.<screen> property suffix
+       menu     the Skin Variables menu holding the rows (skinvariables-shortcut-<menu>.json)
+       node     absent (empty) for a menu of rows; for a hub, its position in the hubs menu (slot n is hub n - 1), whose
+                "widgets" list holds its rows. A slot past the end of the hubs menu has no rows and builds nothing.
+       mode     submenu (the menu's own items) or widgets (the node's widgets)
+       title    include and expression name part (Bald_Generated_<title>Widgets, Bald_Preview<title>)
+       base     row ids are base + 1 onward (1080i/IDs)
+       button   the screen's main-menu entry (Home.xml grouplist 9000), where Up from its first row and Back go
+       enabled  a Kodi condition the screen's rows also need (Live TV rows need a PVR add-on)
+     Never write an empty <value>: Skin Variables reads it as None and formats the text "None". -->
 <contents>
     <lists>
         <list name="home">
             <value name="screen">home</value>
             <value name="menu">homewidgets</value>
+            <value name="mode">submenu</value>
             <value name="title">Home</value>
             <value name="base">9100</value>
+            <value name="button">9001</value>
+            <value name="enabled">true</value>
         </list>
-        <list name="movies">
-            <value name="screen">movies</value>
-            <value name="menu">movieswidgets</value>
-            <value name="title">Movies</value>
+        <list name="livetv">
+            <value name="screen">livetv</value>
+            <value name="menu">livetvwidgets</value>
+            <value name="mode">submenu</value>
+            <value name="title">LiveTV</value>
+            <value name="base">9050</value>
+            <value name="button">9004</value>
+            <value name="enabled">System.HasPVRAddon</value>
+        </list>
+        <list name="hub1">
+            <value name="screen">hub1</value>
+            <value name="menu">hubs</value>
+            <value name="node">0</value>
+            <value name="mode">widgets</value>
+            <value name="title">Hub1</value>
             <value name="base">9200</value>
+            <value name="button">9011</value>
+            <value name="enabled">true</value>
         </list>
-        <list name="tvshows">
-            <value name="screen">tvshows</value>
-            <value name="menu">tvshowswidgets</value>
-            <value name="title">TVShows</value>
+        <list name="hub2">
+            <value name="screen">hub2</value>
+            <value name="menu">hubs</value>
+            <value name="node">1</value>
+            <value name="mode">widgets</value>
+            <value name="title">Hub2</value>
             <value name="base">9300</value>
+            <value name="button">9012</value>
+            <value name="enabled">true</value>
+        </list>
+        <list name="hub3">
+            <value name="screen">hub3</value>
+            <value name="menu">hubs</value>
+            <value name="node">2</value>
+            <value name="mode">widgets</value>
+            <value name="title">Hub3</value>
+            <value name="base">9400</value>
+            <value name="button">9013</value>
+            <value name="enabled">true</value>
+        </list>
+        <list name="hub4">
+            <value name="screen">hub4</value>
+            <value name="menu">hubs</value>
+            <value name="node">3</value>
+            <value name="mode">widgets</value>
+            <value name="title">Hub4</value>
+            <value name="base">9500</value>
+            <value name="button">9014</value>
+            <value name="enabled">true</value>
+        </list>
+        <list name="hub5">
+            <value name="screen">hub5</value>
+            <value name="menu">hubs</value>
+            <value name="node">4</value>
+            <value name="mode">widgets</value>
+            <value name="title">Hub5</value>
+            <value name="base">9600</value>
+            <value name="button">9015</value>
+            <value name="enabled">true</value>
+        </list>
+        <list name="hub6">
+            <value name="screen">hub6</value>
+            <value name="menu">hubs</value>
+            <value name="node">5</value>
+            <value name="mode">widgets</value>
+            <value name="title">Hub6</value>
+            <value name="base">9700</value>
+            <value name="button">9016</value>
+            <value name="enabled">true</value>
+        </list>
+        <list name="hub7">
+            <value name="screen">hub7</value>
+            <value name="menu">hubs</value>
+            <value name="node">6</value>
+            <value name="mode">widgets</value>
+            <value name="title">Hub7</value>
+            <value name="base">9800</value>
+            <value name="button">9017</value>
+            <value name="enabled">true</value>
+        </list>
+        <list name="hub8">
+            <value name="screen">hub8</value>
+            <value name="menu">hubs</value>
+            <value name="node">7</value>
+            <value name="mode">widgets</value>
+            <value name="title">Hub8</value>
+            <value name="base">9900</value>
+            <value name="button">9018</value>
+            <value name="enabled">true</value>
         </list>
     </lists>
 </contents>
