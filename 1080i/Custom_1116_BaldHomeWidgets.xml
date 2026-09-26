@@ -2,7 +2,8 @@
 <window type="window" id="1116">
 	<defaultcontrol always="true">9100</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
-	<onunload>RunScript(script.skinvariables,action=buildtemplate,force)</onunload>
+	<!-- Home rebuilds its rows on its next load when this stamp changed (see Home.xml). -->
+	<onunload>Skin.SetString(Bald.WidgetsStamp,$INFO[System.Date(yyyy-mm-dd)]_$INFO[System.Time(hh:mm:ss)])</onunload>
 	<controls>
 		<include content="Bald_SettingsFrame"><param name="title">$INFO[Window(home).Property(Bald.ConfigureLabel)] Widgets</param></include>
 		<control type="list" id="9100">
