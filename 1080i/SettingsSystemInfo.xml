@@ -1,370 +1,182 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Kodi's System information (window systeminfo), drawn in Bald's settings scaffold (Includes_Bald_Configure.xml).
+     Started from Kodi 22 Estuary's SettingsSystemInfo.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt).
+     Kodi (CGUIWindowSystemInfo) binds: 94-101 section buttons (focus picks the section), 40 section heading, 2-13 text
+     lines, 30 privacy policy text, 102 thank-you group with QR multiimage 103, 104 memory and version group (hidden on
+     the thank-you page), 52 app name and version, 53 build date. -->
 <window>
 	<defaultcontrol always="true">95</defaultcontrol>
+	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>
-		<include>DefaultBackground</include>
-		<control type="multiimage">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<fadetime>600</fadetime>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
-			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
-			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
+		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[130]</param></include>
+		<control type="grouplist" id="9000">
+			<include content="Bald_SettingsCategoryGroup"><param name="height">496</param></include>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<onright>60</onright>
+			<control type="button" id="95">
+				<include>Bald_SettingsCategoryButton</include>
+				<label>$LOCALIZE[20037]</label>
+			</control>
+			<control type="button" id="94">
+				<include>Bald_SettingsCategoryButton</include>
+				<label>$LOCALIZE[13277]</label>
+			</control>
+			<control type="button" id="96">
+				<include>Bald_SettingsCategoryButton</include>
+				<label>$LOCALIZE[13279]</label>
+			</control>
+			<control type="button" id="97">
+				<include>Bald_SettingsCategoryButton</include>
+				<label>$LOCALIZE[13280]</label>
+			</control>
+			<control type="button" id="98">
+				<include>Bald_SettingsCategoryButton</include>
+				<label>$LOCALIZE[13281]</label>
+			</control>
+			<control type="button" id="99">
+				<include>Bald_SettingsCategoryButton</include>
+				<label>$LOCALIZE[19191]</label>
+			</control>
+			<control type="button" id="100">
+				<include>Bald_SettingsCategoryButton</include>
+				<label>$LOCALIZE[12389]</label>
+			</control>
+			<control type="button" id="101">
+				<include>Bald_SettingsCategoryButton</include>
+				<label>$LOCALIZE[12396]</label>
+			</control>
 		</control>
-		<control type="group">
-			<left>40</left>
-			<top>133</top>
-			<include>OpenClose_Right</include>
+		<!-- Memory, CPU and version, under the sections (hidden by Kodi on the thank-you page). -->
+		<control type="group" id="104">
+			<left>122</left>
+			<top>720</top>
+			<width>372</width>
+			<height>210</height>
 			<control type="grouplist">
-				<left>420</left>
-				<top>30</top>
-				<height>550</height>
+				<width>372</width>
+				<height>210</height>
 				<orientation>vertical</orientation>
-				<control type="label" id="2">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
+				<itemgap>8</itemgap>
+				<include content="Bald_SystemInfoMeter">
+					<param name="caption">$LOCALIZE[31030]</param>
+					<param name="value">$INFO[System.Memory(used)] / $INFO[System.Memory(total)]</param>
+					<param name="info">System.Memory(used)</param>
+				</include>
+				<include content="Bald_SystemInfoMeter">
+					<param name="caption">$LOCALIZE[13271]</param>
+					<param name="value">$INFO[System.CPUUsage]</param>
+					<param name="info">System.CPUUsage</param>
+					<param name="visible">System.SupportsCPUUsage</param>
+				</include>
+				<control type="label" id="52">
+					<width>372</width>
+					<height>26</height>
+					<aligny>center</aligny>
+					<font>Bald_DetailLabel</font>
+					<textcolor>bald_ink60</textcolor>
 				</control>
-				<control type="label" id="3">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
+				<control type="grouplist">
+					<width>372</width>
+					<height>26</height>
+					<orientation>horizontal</orientation>
+					<itemgap>6</itemgap>
+					<control type="label">
+						<width>auto</width>
+						<height>26</height>
+						<aligny>center</aligny>
+						<font>Bald_DetailLabel</font>
+						<textcolor>bald_ink45</textcolor>
+						<label>$LOCALIZE[174]</label>
+					</control>
+					<control type="label" id="53">
+						<width>auto</width>
+						<height>26</height>
+						<aligny>center</aligny>
+						<font>Bald_DetailLabel</font>
+						<textcolor>bald_ink45</textcolor>
+					</control>
 				</control>
-				<control type="label" id="4">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="5">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="6">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="7">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="8">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="9">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="10">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="11">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="12">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
-				</control>
-				<control type="label" id="13">
-					<height>47</height>
-					<width>1400</width>
-					<font>Mono26</font>
+				<control type="label">
+					<width>372</width>
+					<height>26</height>
+					<aligny>center</aligny>
+					<font>Bald_DetailLabel</font>
+					<textcolor>bald_ink45</textcolor>
+					<label>$INFO[System.BuildVersionGit]</label>
 				</control>
 			</control>
+		</control>
+		<include content="Bald_SettingsDetail">
+			<param name="heading_id">40</param>
+			<control type="grouplist">
+				<top>78</top>
+				<width>1138</width>
+				<height>550</height>
+				<orientation>vertical</orientation>
+				<itemgap>0</itemgap>
+				<include content="Bald_SystemInfoLine"><param name="id">2</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">3</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">4</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">5</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">6</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">7</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">8</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">9</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">10</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">11</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">12</param></include>
+				<include content="Bald_SystemInfoLine"><param name="id">13</param></include>
+			</control>
 			<control type="textbox" id="30">
-				<left>420</left>
-				<right>50</right>
-				<top>30</top>
-				<bottom>347</bottom>
+				<top>78</top>
+				<width>1106</width>
+				<height>550</height>
+				<font>Bald_InfoPlot</font>
+				<textcolor>bald_ink80</textcolor>
 				<pagecontrol>60</pagecontrol>
 				<autoscroll delay="5000" repeat="7500" time="5000">!Control.HasFocus(60)</autoscroll>
 			</control>
-			<control type="scrollbar" id="60">
-				<right>0</right>
-				<top>0</top>
-				<width>12</width>
-				<bottom>340</bottom>
-				<orientation>vertical</orientation>
-				<texturesliderbackground />
-				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
-				<onleft>9000</onleft>
-				<onright>9000</onright>
-				<visible>Control.IsVisible(30)</visible>
-				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
-			</control>
-			<control type="image">
-				<left>380</left>
-				<top>-3</top>
-				<right>0</right>
-				<height>3</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-			</control>
 			<control type="group" id="102">
-				<description>System Info page that shows a QR code linking to https://kodi.tv/donate/</description>
-				<left>420</left>
-				<right>50</right>
-				<top>30</top>
-				<bottom>30</bottom>
 				<control type="textbox">
-					<height>110</height>
+					<top>78</top>
+					<width>900</width>
+					<height>100</height>
+					<font>Bald_InfoPlot</font>
+					<textcolor>bald_ink80</textcolor>
 					<label>$LOCALIZE[12397]</label>
 				</control>
 				<control type="multiimage" id="103">
-					<top>110</top>
-					<height>620</height>
+					<top>200</top>
+					<width>400</width>
+					<height>400</height>
 					<imagepath>special://xbmc/media/qr/kodilove/</imagepath>
-					<aspectratio>keep</aspectratio>
+					<aspectratio align="left">keep</aspectratio>
 					<timeperimage>5000</timeperimage>
 					<fadetime>1000</fadetime>
 					<randomize>false</randomize>
 				</control>
 				<control type="label">
-					<top>748</top>
+					<top>620</top>
+					<width>400</width>
+					<height>40</height>
 					<align>center</align>
+					<aligny>center</aligny>
+					<font>Bald_Section</font>
+					<textcolor>bald_ink60</textcolor>
 					<label>$LOCALIZE[12398]</label>
 				</control>
 			</control>
-		</control>
-		<control type="group">
-			<left>0</left>
-			<top>0</top>
-			<depth>DepthContentPanel</depth>
-			<include>OpenClose_Left</include>
-			<include content="ContentPanel">
-				<param name="width" value="480" />
-			</include>
-			<control type="grouplist" id="9000">
-				<left>0</left>
-				<top>130</top>
-				<width>420</width>
-				<height>100%</height>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-				<onright>60</onright>
-				<control type="button" id="95">
-					<description>Button Summary Values</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="85" />
-					</include>
-					<width>420</width>
-					<label>$LOCALIZE[20037]</label>
-				</control>
-				<control type="button" id="94">
-					<description>Button Storage</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="85" />
-					</include>
-					<width>420</width>
-					<label>$LOCALIZE[13277]</label>
-				</control>
-				<control type="button" id="96">
-					<description>Button Network</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="85" />
-					</include>
-					<width>420</width>
-					<label>$LOCALIZE[13279]</label>
-				</control>
-				<control type="button" id="97">
-					<description>Button Video</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="85" />
-					</include>
-					<width>420</width>
-					<label>$LOCALIZE[13280]</label>
-				</control>
-				<control type="button" id="98">
-					<description>Button Hardware</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="85" />
-					</include>
-					<width>420</width>
-					<label>$LOCALIZE[13281]</label>
-				</control>
-				<control type="button" id="99">
-					<description>Button PVR</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="85" />
-					</include>
-					<width>420</width>
-					<label>$LOCALIZE[19191]</label>
-				</control>
-				<control type="button" id="100">
-					<description>Button Privacy policy</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="85" />
-					</include>
-					<width>420</width>
-					<label>$LOCALIZE[12389]</label>
-				</control>
-				<control type="button" id="101">
-					<description>Button "Thank you!"</description>
-					<include content="DefaultSettingButton">
-						<param name="height" value="85" />
-					</include>
-					<width>420</width>
-					<label>$LOCALIZE[12396]</label>
-				</control>
-			</control>
-		</control>
-		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[130]" />
 		</include>
-		<include>BottomBar</include>
-		<control type="group" id="104">
-			<bottom>0</bottom>
-			<left>40</left>
-			<height>370</height>
-			<include>OpenClose_Right</include>
-			<control type="image">
-				<left>380</left>
-				<top>30</top>
-				<right>0</right>
-				<height>3</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-			</control>
-			<control type="grouplist">
-				<left>420</left>
-				<orientation>vertical</orientation>
-				<control type="label">
-					<description>Memory Text</description>
-					<width>auto</width>
-					<height>80</height>
-					<label>$LOCALIZE[31030]: $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
-					<aligny>top</aligny>
-					<textoffsety>40</textoffsety>
-					<shadowcolor>black</shadowcolor>
-					<font>font12</font>
-				</control>
-				<control type="progress">
-					<description>Memory BAR</description>
-					<width>730</width>
-					<height>16</height>
-					<info>system.memory(used)</info>
-				</control>
-				<control type="label">
-					<description>CPU Text</description>
-					<width>auto</width>
-					<height>40</height>
-					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
-					<aligny>center</aligny>
-					<shadowcolor>black</shadowcolor>
-					<font>font12</font>
-					<visible>System.SupportsCPUUsage</visible>
-				</control>
-				<control type="progress">
-					<description>CPU BAR</description>
-					<width>730</width>
-					<height>16</height>
-					<info>System.CPUUsage</info>
-					<visible>System.SupportsCPUUsage</visible>
-				</control>
-			</control>
-			<control type="group">
-				<animation effect="slide" end="0,-55" time="0" condition="!System.SupportsCPUUsage">Conditional</animation>
-				<control type="label">
-					<top>155</top>
-					<left>420</left>
-					<width>auto</width>
-					<height>50</height>
-					<aligny>bottom</aligny>
-					<textoffsety>10</textoffsety>
-					<label>$LOCALIZE[31031]:</label>
-					<shadowcolor>black</shadowcolor>
-					<font>font25_title</font>
-				</control>
-				<control type="grouplist">
-					<description>Kodi build version</description>
-					<itemgap>10</itemgap>
-					<top>200</top>
-					<left>420</left>
-					<width>820</width>
-					<orientation>horizontal</orientation>
-					<control type="label">
-						<description>Build label</description>
-						<width>auto</width>
-						<height>40</height>
-						<font>font12</font>
-						<label>$LOCALIZE[144]</label>
-						<shadowcolor>black</shadowcolor>
-					</control>
-					<control type="label">
-						<description>Kodi Build Version</description>
-						<width>auto</width>
-						<height>40</height>
-						<font>font12</font>
-						<label>$INFO[System.BuildVersionShort]$INFO[System.BuildVersionCode, (,)]</label>
-						<textcolor>button_focus</textcolor>
-						<shadowcolor>black</shadowcolor>
-					</control>
-				</control>
-				<control type="grouplist">
-					<description>Git version</description>
-					<itemgap>10</itemgap>
-					<top>235</top>
-					<left>420</left>
-					<width>820</width>
-					<orientation>horizontal</orientation>
-					<control type="label">
-						<description>Git label</description>
-						<width>auto</width>
-						<height>40</height>
-						<font>font12</font>
-						<label>Git:</label>
-						<shadowcolor>black</shadowcolor>
-					</control>
-					<control type="label">
-						<description>Git version</description>
-						<width>auto</width>
-						<height>40</height>
-						<font>font12</font>
-						<label>$INFO[System.BuildVersionGit]</label>
-						<textcolor>button_focus</textcolor>
-						<shadowcolor>black</shadowcolor>
-					</control>
-				</control>
-				<control type="grouplist">
-					<description>Build date</description>
-					<itemgap>10</itemgap>
-					<top>270</top>
-					<left>420</left>
-					<width>820</width>
-					<orientation>horizontal</orientation>
-					<control type="label">
-						<description>kodi Compiled Text</description>
-						<width>auto</width>
-						<height>40</height>
-						<font>font12</font>
-						<label>$LOCALIZE[174]</label>
-						<shadowcolor>black</shadowcolor>
-					</control>
-					<control type="label" id="53">
-						<description>Kodi Build Date</description>
-						<width>auto</width>
-						<height>40</height>
-						<font>font12</font>
-						<textcolor>button_focus</textcolor>
-						<shadowcolor>black</shadowcolor>
-					</control>
-				</control>
-			</control>
+		<control type="scrollbar" id="60">
+			<include content="Bald_SettingsScrollbar">
+				<param name="top">270</param>
+				<param name="height">550</param>
+			</include>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<visible>Control.IsVisible(30)</visible>
 		</control>
+		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31738]</param><param name="second">$LOCALIZE[31947]</param></include>
 	</controls>
 </window>

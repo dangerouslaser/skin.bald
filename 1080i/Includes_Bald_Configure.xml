@@ -93,13 +93,15 @@
 	<include name="Bald_SettingsDetail">
 		<param name="heading" />
 		<param name="note" />
+		<!-- Kodi's System info window fills its heading label by id (40). -->
+		<param name="heading_id">0</param>
 		<definition>
 			<control type="group">
 				<left>686</left>
 				<top>192</top>
 				<width>1138</width>
 				<height>736</height>
-				<control type="label">
+				<control type="label" id="$PARAM[heading_id]">
 					<width>1138</width>
 					<height>62</height>
 					<aligny>center</aligny>
@@ -354,10 +356,11 @@
 
 	<!-- Thin page indicator for a settings grouplist (its pagecontrol), on the right safe edge. Not a focus target. -->
 	<include name="Bald_SettingsScrollbar">
+		<param name="top">192</param>
 		<param name="height">628</param>
 		<definition>
 			<left>1820</left>
-			<top>192</top>
+			<top>$PARAM[top]</top>
 			<width>4</width>
 			<height>$PARAM[height]</height>
 			<orientation>vertical</orientation>
@@ -472,6 +475,63 @@
 						<texture colordiffuse="bald_accent">bald/check.png</texture>
 						<visible>ListItem.IsSelected</visible>
 					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- One of System info's twelve text lines (ids 2-13), which Kodi fills every frame for the focused section. -->
+	<include name="Bald_SystemInfoLine">
+		<param name="id" />
+		<definition>
+			<control type="label" id="$PARAM[id]">
+				<width>1138</width>
+				<height>44</height>
+				<aligny>center</aligny>
+				<font>Bald_InfoPlot</font>
+				<textcolor>bald_ink80</textcolor>
+			</control>
+		</definition>
+	</include>
+
+	<!-- A System info meter in the sidebar: caption, value and a 4 px bar on one 372 px column. -->
+	<include name="Bald_SystemInfoMeter">
+		<param name="caption" />
+		<param name="value" />
+		<param name="info" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="group">
+				<width>372</width>
+				<height>48</height>
+				<visible>$PARAM[visible]</visible>
+				<control type="label">
+					<width>372</width>
+					<height>28</height>
+					<aligny>center</aligny>
+					<font>Bald_DetailLabel</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$PARAM[caption]</label>
+				</control>
+				<control type="label">
+					<width>372</width>
+					<height>28</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>Bald_DetailLabel</font>
+					<textcolor>bald_ink80</textcolor>
+					<label>$PARAM[value]</label>
+				</control>
+				<control type="progress">
+					<top>34</top>
+					<width>372</width>
+					<height>4</height>
+					<texturebg border="2" colordiffuse="bald_ink10">bald/bar.png</texturebg>
+					<lefttexture />
+					<midtexture border="2" colordiffuse="bald_ink60">bald/bar.png</midtexture>
+					<righttexture />
+					<overlaytexture />
+					<info>$PARAM[info]</info>
 				</control>
 			</control>
 		</definition>

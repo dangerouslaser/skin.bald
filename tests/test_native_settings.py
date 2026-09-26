@@ -33,7 +33,7 @@ ROW_TEMPLATES = ("7", "8", "9", "12", "13", "15")
 # Motion (CLAUDE.md): move = cubic out, fade = sine in-out, pop = back out. Only fade, slide and zoom.
 CURVES = {"fade": ("sine", "inout"), "slide": ("cubic", "out"), "zoom": ("back", "out")}
 
-WINDOWS = ("Settings.xml", "SettingsCategory.xml", "SettingsProfile.xml")
+WINDOWS = ("Settings.xml", "SettingsCategory.xml", "SettingsProfile.xml", "SettingsSystemInfo.xml")
 
 
 def tokens(path, tag):
@@ -192,6 +192,28 @@ class NativeSettingsTests(unittest.TestCase):
         for layout in (profiles.find("itemlayout"), focused):
             checks = [image for image in layout.iter("control") if image.findtext("texture") == "bald/check.png"]
             self.assertEqual([check.findtext("visible") for check in checks], ["ListItem.IsSelected"])
+
+    # ---- System information ----
+
+    def test_system_info_keeps_kodis_ids(self):
+        expected = {str(n): "label" for n in range(2, 14)}
+        expected.update({str(n): "button" for n in range(94, 102)})
+        expected.update({"30": "textbox", "40": "label", "52": "label", "53": "label", "60": "scrollbar",
+                         "102": "group", "103": "multiimage", "104": "group"})
+        for control_id, kind in expected.items():
+            self.assertEqual(self.control("SettingsSystemInfo.xml", control_id).get("type"), kind, control_id)
+        self.assertEqual(self.windows["SettingsSystemInfo.xml"].findtext("defaultcontrol"), "95")
+
+    def test_system_info_sections_are_sidebar_rows(self):
+        category = self.control("SettingsCategory.xml", "10")
+        for control_id in range(94, 102):
+            button = self.control("SettingsSystemInfo.xml", str(control_id))
+            for tag in ("font", "height", "textcolor", "focusedcolor", "texturefocus"):
+                self.assertEqual(button.findtext(tag), category.findtext(tag), f"{control_id} {tag}")
+
+    def test_system_info_heading_is_the_detail_heading(self):
+        heading = self.control("SettingsSystemInfo.xml", "40")
+        self.assertEqual(heading.findtext("font"), "Bald_CaptionTitle")
 
     # ---- Scaffold conventions ----
 
