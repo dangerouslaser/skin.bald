@@ -181,6 +181,18 @@
 		</definition>
 	</include>
 
+	<!-- Estuary's image-pack picker actions for an Appearance button: run script.image.resource.select for skin string
+	     <property> and resource type <type>, enabling or installing the script first when needed. -->
+	<include name="Bald_ImageResourceActions">
+		<param name="property" />
+		<param name="type" />
+		<definition>
+			<onclick condition="System.AddonIsEnabled(script.image.resource.select)">RunScript(script.image.resource.select,property=$PARAM[property]&amp;type=$PARAM[type])</onclick>
+			<onclick condition="System.HasAddon(script.image.resource.select) + !System.AddonIsEnabled(script.image.resource.select)">EnableAddon(script.image.resource.select)</onclick>
+			<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+		</definition>
+	</include>
+
 	<!-- Footer hints, sentence case, on the y 954 line and right-aligned to x 1824 (1224 + 600). -->
 	<include name="Bald_SettingsHints">
 		<param name="first" />

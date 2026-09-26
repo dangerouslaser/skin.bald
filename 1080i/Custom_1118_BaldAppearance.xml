@@ -56,24 +56,16 @@
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),0)">Skin.SetString(background_overlay,1)</onclick>
 				</control>
 				<control type="button" id="608"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31131]</label><label2>$INFO[Skin.String(HomeFanart.name)]</label2><enable>!Skin.HasSetting(no_fanart)</enable>
-					<onclick condition="System.AddonIsEnabled(script.image.resource.select)">RunScript(script.image.resource.select,property=HomeFanart&amp;type=resource.images.skinbackgrounds)</onclick>
-					<onclick condition="System.HasAddon(script.image.resource.select) + !System.AddonIsEnabled(script.image.resource.select)">EnableAddon(script.image.resource.select)</onclick>
-					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+					<include content="Bald_ImageResourceActions"><param name="property">HomeFanart</param><param name="type">resource.images.skinbackgrounds</param></include>
 				</control>
 				<control type="button" id="609"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31062]</label><label2>$INFO[Skin.String(WeatherFanart.name)]</label2><enable>!Skin.HasSetting(no_fanart)</enable>
-					<onclick condition="System.AddonIsEnabled(script.image.resource.select)">RunScript(script.image.resource.select,property=WeatherFanart&amp;type=resource.images.weatherfanart)</onclick>
-					<onclick condition="System.HasAddon(script.image.resource.select) + !System.AddonIsEnabled(script.image.resource.select)">EnableAddon(script.image.resource.select)</onclick>
-					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+					<include content="Bald_ImageResourceActions"><param name="property">WeatherFanart</param><param name="type">resource.images.weatherfanart</param></include>
 				</control>
 				<control type="button" id="6066"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31149]</label><label2>$INFO[Skin.String(MovieGenreFanart.Name)]</label2>
-					<onclick condition="System.AddonIsEnabled(script.image.resource.select)">RunScript(script.image.resource.select,property=MovieGenreFanart&amp;type=resource.images.moviegenrefanart)</onclick>
-					<onclick condition="System.HasAddon(script.image.resource.select) + !System.AddonIsEnabled(script.image.resource.select)">EnableAddon(script.image.resource.select)</onclick>
-					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+					<include content="Bald_ImageResourceActions"><param name="property">MovieGenreFanart</param><param name="type">resource.images.moviegenrefanart</param></include>
 				</control>
 				<control type="button" id="6068"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31177]</label><label2>$INFO[Skin.String(WeatherOutlookIcon.name)]</label2>
-					<onclick condition="System.AddonIsEnabled(script.image.resource.select)">RunScript(script.image.resource.select,property=WeatherOutlookIcon&amp;type=resource.images.weathericons)</onclick>
-					<onclick condition="System.HasAddon(script.image.resource.select) + !System.AddonIsEnabled(script.image.resource.select)">EnableAddon(script.image.resource.select)</onclick>
-					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+					<include content="Bald_ImageResourceActions"><param name="property">WeatherOutlookIcon</param><param name="type">resource.images.weathericons</param></include>
 				</control>
 			</control>
 		</include>

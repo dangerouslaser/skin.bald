@@ -152,5 +152,18 @@ class SettingsScaffoldTests(unittest.TestCase):
                 self.assertNotIn(setting, text, f"{name} still offers {setting}")
 
 
+    def test_image_pack_buttons_run_install_or_enable_the_picker(self):
+        picker = "script.image.resource.select"
+        for control_id, setting, kind in (("608", "HomeFanart", "skinbackgrounds"), ("609", "WeatherFanart", "weatherfanart"),
+                                          ("6066", "MovieGenreFanart", "moviegenrefanart"), ("6068", "WeatherOutlookIcon", "weathericons")):
+            with self.subTest(control=control_id):
+                actions = [(node.get("condition"), node.text)
+                           for node in self.control("Custom_1118_BaldAppearance.xml", control_id).findall("onclick")]
+                self.assertEqual(actions, [
+                    (f"System.AddonIsEnabled({picker})", f"RunScript({picker},property={setting}&type=resource.images.{kind})"),
+                    (f"System.HasAddon({picker}) + !System.AddonIsEnabled({picker})", f"EnableAddon({picker})"),
+                    (f"!System.HasAddon({picker})", f"InstallAddon({picker})"),
+                ])
+
 if __name__ == "__main__":
     unittest.main()
