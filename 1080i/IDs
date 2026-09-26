@@ -281,11 +281,10 @@ DialogSubtitles.xml (CGUIDialogSubtitles)
 MusicOSD.xml (CGUIDialogMusicOSD)
 500, 501	Visualisation and lock buttons (bound by Kodi, not drawn, as in Estuary)
 Skin ids, kept as Estuary numbers them (skin actions and navigation refer to them):
-VideoOSD.xml, MusicOSD.xml
+MusicOSD.xml (the video OSD is in VIDEO OSD below)
 200		Button rows group; 201 transport grouplist; 202 tools grouplist
 600-608	Previous, rewind, play/pause, stop, forward, next, record
-804		Disc menu
-70040-70048	Channels, guide, playlist, information, bookmarks, teletext, streams, 3D, settings
+70040, 70041, 70048	Channels, guide, settings
 70050-70055	Music: RDS, playlist, rating, repeat, random, lyrics
 6000	Seek group; 87 hidden seek button (Up from the buttons)
 799		Touch-mode back button (Bald_PlaybackTouchBack)
@@ -299,6 +298,45 @@ Custom_1110_TempoControl.xml (window 1110)
 DialogFullScreenInfo.xml
 999		Full-screen button (step, chapter or big step, OSD)
 
+
+VIDEO OSD (Includes_Bald_OSD.xml; docs/SPEC.md 5.16, "Video OSD")
+The seek layer is DialogSeekBar.xml (401, 402, 403 and 40000 under PLAYBACK above).
+VideoOSD.xml (CGUIDialogVideoOSD binds none) and the companion panels 1120-1124, which repeat the row
+201		Transport grouplist: 602 play/pause, 600 back (Live TV: guide), 607 forward (Live TV: record), 603 stop
+202		Tools grouplist: 804 disc menu, 70045 teletext, 70047 3D (when they apply), 70043 information,
+		70060 audio, 70061 subtitles, 70062 video
+87		Seek slider over the lifted bar (files; action seek); 88 the same for Live TV (action pvr.seek)
+		Estuary's 601, 606, 608, 698, 200, 6000, 799 and 70040-70042, 70044, 70046, 70048 are retired in the video
+		OSD: rewind and fast forward live in the video panel, record and guide moved onto 607 and 600, channels,
+		playlist and bookmarks into the down chain, streams and settings into the audio, subtitle and video buttons.
+Custom_1120_OSDInfoPanel.xml (window 1120): the information button's panel (the details are 1128)
+Custom_1121_OSDAudioStreams.xml (window 1121)
+8110	Audio stream list (script.skinvariables get_player_streams); 8111 its scrollbar
+Custom_1122_OSDSubtitleStreams.xml (window 1122)
+8120	Subtitle stream list; 8121 its scrollbar
+Custom_1123_OSDVideoPanel.xml (window 1123)
+8130	Panel grouplist; 8131 process-info button (codec flags); 8132 speed row (tempo or FF/RW scale)
+Custom_1124_OSDNextItem.xml (window 1124)
+8140	Hidden list: the next episode of the season (videodb, one item)
+Custom_1125_OSDPlaylist.xml (window 1125, down chain)
+8150	Playlist or season row; 8151 hidden button the focus timer uses
+Custom_1126_OSDCast.xml (window 1126, down chain; TMDb Helper)
+8160	Cast or crew row
+Custom_1127_OSDInfoOverlay.xml (window 1127) and Custom_1128_OSDDetails.xml (window 1128)
+		No controls with ids: art, logo, info line and plot.
+VideoOSDBookmarks.xml: 2, 3, 4, 11 as under PLAYBACK; 9001 action row
+script-upnext-upnext.xml, script-upnext-stillwatching.xml (service.upnext)
+3012	Play now / still watching (the add-on binds it)
+3013	Close or stop / cancel (the add-on binds it and relabels it)
+3014	Countdown progress (the add-on sets its percentage)
+8170	Button grouplist
+Custom_1119_BaldPlayback.xml (window 1119, Bald Settings, Playback)
+9700	Category list; static items 1-4 (Controls, Pause, Info overlay, Down from the controls)
+9800	Row grouplist
+9801-9803	Controls: close after, time display, details on the controls
+9811, 9812	Pause: when paused, pause delay
+9821, 9822	Info overlay: artwork, plot
+9831-9835	Down from the controls: guide, channels, playlist and episodes, bookmarks, cast and crew
 
 DIALOGS AND CUSTOM WINDOWS
 
