@@ -48,6 +48,16 @@ def main() -> None:
         assert "script.bald.xcsetup/resources/language/resource.language.en_gb/strings.po" in names
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
 
+    skin_version = addons["skin.bald"].attrib["version"]
+    skin_zip = root / "skin.bald" / f"skin.bald-{skin_version}.zip"
+    with zipfile.ZipFile(skin_zip) as zipped:
+        names = set(zipped.namelist())
+        assert "skin.bald/shortcuts/skinvariables-generator.json" in names
+        assert "skin.bald/shortcuts/generator/home-widgets.xml" in names
+        assert "skin.bald/shortcuts/skinvariables-shortcut-homewidgets.json" in names
+        assert "skin.bald/playlists/inprogress_movies.xsp" in names
+        assert "skin.bald/playlists/inprogress_episodes.xsp" in names
+
     assert (root / "skin.bald" / "resources" / "icon.png").is_file()
     assert (root / "skin.bald" / "resources" / "fanart.jpg").is_file()
 

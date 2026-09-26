@@ -10,6 +10,8 @@ Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was t
 
 ## Configurable widget playlist catalog (2026-09-25)
 
+- Release `0.1.1` exposed a package-manifest omission: the repository ZIP included the generated Home XML but not the `shortcuts/` Skin Variables definitions or `playlists/` content sources. CoreELEC consequently reported Skin Variables errors after installation. The package builder now ships both directories, and repository validation asserts the generator, default node and representative smart playlists are present.
+
 - Bundled video playlists are independently authored for Bald and split into movie, TV-show and episode catalogs. Arctic Fuse 3 was used only to understand useful content-picker categories; no playlist files were copied.
 - Native Kodi library routes remain the source for unfiltered content such as Recently added movies, All TV shows and in-progress TV shows. Filtered choices live under `special://skin/playlists/`; the complete mapping is in `docs/WIDGET_PLAYLISTS.md`.
 - Continue watching remains the two existing typed sources, `inprogress_movies.xsp` and `inprogress_episodes.xsp`. Kodi smart playlists cannot combine those video media types, and multiple content sources concatenate rather than interleave.
