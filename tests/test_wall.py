@@ -26,8 +26,8 @@ class WallTests(unittest.TestCase):
         self.assertEqual(poster.findtext("param[@name='width']"), '192')
         self.assertEqual(poster.findtext("param[@name='height']"), '288')
         self.assertEqual(poster.findtext("param[@name='show_label']"), 'false')
-        flags = self.root.find(".//include[@content='Bald_MediaFlagItems']")
-        self.assertEqual(flags.findtext("param[@name='c']"), '511')
+        flags = self.root.find(".//include[@content='Bald_MediaFlags']")
+        self.assertEqual(flags.findtext("param[@name='container']"), 'Container(511).')
 
     def test_shared_controls_exist_once_in_video_window(self):
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()

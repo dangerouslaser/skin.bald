@@ -36,7 +36,7 @@ class TVLibraryTests(unittest.TestCase):
         self.assertEqual(control.get('type'), 'list')
         self.assertEqual(int(control.findtext('height')), 7 * int(control.find('itemlayout').get('height')))
         self.assertEqual(control.findtext('itemlayout/include'), 'Bald_TVEpisodeRow')
-        self.assertIsNotNone(self.root.find(".//include[@content='Bald_MediaFlagItems']"))
+        self.assertIsNotNone(self.root.find(".//include[@content='Bald_MediaFlags']"))
         self.assertEqual(len(self.root.findall("include[@name='View_540_Bald_Episodes']//include[@content='Bald_BackdropWindow']")), 4)
 
     def test_series_only_exposes_alphabet_navigation(self):
@@ -110,7 +110,7 @@ class TVLibraryTests(unittest.TestCase):
 
     def test_alternate_episode_preview_keeps_metadata_flags_and_art_fallbacks(self):
         caption = self.alternates.find("include[@name='Bald_TVEpisodeSmallCaption']")
-        self.assertIsNotNone(caption.find(".//include[@content='Bald_MediaFlagItems']"))
+        self.assertIsNotNone(caption.find(".//include[@content='Bald_MediaFlags']"))
         labels = [node.text or '' for node in caption.findall('.//label')]
         self.assertTrue(any('ListItem.Premiered' in label and 'ListItem.Duration' in label for label in labels))
         for container in (541, 542):

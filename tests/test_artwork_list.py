@@ -30,7 +30,7 @@ class ArtworkListTests(unittest.TestCase):
 
     def test_preview_reuses_home_art_logo_and_flags(self):
         root = ET.parse(ROOT / 'View_514_Bald_ArtworkList.xml').getroot()
-        for name in ('Bald_ArtLayer', 'Bald_ArtLogo', 'Bald_MediaFlagItems', 'Bald_AnimCaptionIn'):
+        for name in ('Bald_ArtLayer', 'Bald_ArtLogo', 'Bald_MediaFlags', 'Bald_AnimCaptionIn'):
             self.assertIsNotNone(root.find(f".//include[@content='{name}']"))
         self.assertEqual(len(root.findall(".//include[@content='Bald_BackdropWindow']")), 4)
 

@@ -164,27 +164,6 @@
 			</control>
 		</definition>
 	</include>
-	<!-- Info media flag: 16 px, outlined. -->
-	<include name="Bald_InfoFlag">
-		<param name="label" />
-		<param name="visible">true</param>
-		<definition>
-			<control type="button">
-				<width>auto</width>
-				<height>30</height>
-				<label>$PARAM[label]</label>
-				<font>Bald_FlagL</font>
-				<textoffsetx>10</textoffsetx>
-				<aligny>center</aligny>
-				<textcolor>bald_ink</textcolor>
-				<disabledcolor>bald_ink</disabledcolor>
-				<texturenofocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturenofocus>
-				<texturefocus border="6" colordiffuse="bald_ink50">bald/chip.png</texturefocus>
-				<enable>false</enable>
-				<visible>$PARAM[visible]</visible>
-			</control>
-		</definition>
-	</include>
 	<!-- Cast member: 240 px slot: 112 px circle, two-line name and role. Focused: 3 px ink ring, pop to 1.06. -->
 	<include name="Bald_CastItem">
 		<param name="focused">false</param>
