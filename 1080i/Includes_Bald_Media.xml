@@ -421,4 +421,125 @@
 			</control>
 		</definition>
 	</include>
+	<!-- ============ Games ============ -->
+	<!-- One game OSD menu row (GameOSD.xml list 1103, 80 px): Estuary's OSD icon tinted to the row's ink, the action,
+	     and its controller shortcut at the right. -->
+	<include name="Bald_GameOSDRow">
+		<param name="ink">bald_ink70</param>
+		<param name="meta">bald_ink45</param>
+		<definition>
+			<include content="Bald_MediaIcon">
+				<param name="left">36</param>
+				<param name="top">20</param>
+				<param name="ink">$PARAM[ink]</param>
+			</include>
+			<control type="label">
+				<left>100</left><right>28</right><height>80</height>
+				<aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<right>36</right><width>320</width><height>80</height>
+				<align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- Row layouts for list 1103; the rows narrow by 12 px while the list's scrollbar shows. -->
+	<include name="Bald_GameOSDLayout">
+		<param name="scrollbar" />
+		<definition>
+			<itemlayout condition="!Control.IsVisible($PARAM[scrollbar])" width="700" height="80">
+				<include content="Bald_GameOSDRow" />
+			</itemlayout>
+			<itemlayout condition="Control.IsVisible($PARAM[scrollbar])" width="688" height="80">
+				<include content="Bald_GameOSDRow" />
+			</itemlayout>
+			<focusedlayout condition="!Control.IsVisible($PARAM[scrollbar])" width="700" height="80">
+				<control type="image">
+					<texture colordiffuse="bald_ink10">bald/white.png</texture>
+					<visible>Control.HasFocus(1103)</visible>
+				</control>
+				<include content="Bald_GameOSDRow">
+					<param name="ink">bald_ink</param>
+					<param name="meta">bald_ink70</param>
+				</include>
+			</focusedlayout>
+			<focusedlayout condition="Control.IsVisible($PARAM[scrollbar])" width="688" height="80">
+				<control type="image">
+					<texture colordiffuse="bald_ink10">bald/white.png</texture>
+					<visible>Control.HasFocus(1103)</visible>
+				</control>
+				<include content="Bald_GameOSDRow">
+					<param name="ink">bald_ink</param>
+					<param name="meta">bald_ink70</param>
+				</include>
+			</focusedlayout>
+		</definition>
+	</include>
+	<!-- Row look for the controller and feature button templates Kodi clones (grouplists 3 and 5). -->
+	<include name="Bald_GameRowButtonLook">
+		<align>center</align>
+		<aligny>center</aligny>
+		<font>Bald_Section</font>
+		<textcolor>bald_ink70</textcolor>
+		<focusedcolor>bald_ink</focusedcolor>
+		<disabledcolor>bald_ink28</disabledcolor>
+		<texturefocus colordiffuse="bald_ink10">bald/white.png</texturefocus>
+		<texturenofocus />
+	</include>
+	<!-- A port row (ports dialog list 3): port name, the connected controller's name and its accent picture. -->
+	<include name="Bald_GamePortRow">
+		<param name="ink">bald_ink70</param>
+		<definition>
+			<control type="label">
+				<left>24</left><width>620</width><height>100</height>
+				<aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<right>136</right><width>600</width><height>100</height>
+				<align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+			<control type="gamecontroller">
+				<right>16</right><top>2</top><width>96</width><height>96</height>
+				<texture>$INFO[ListItem.Icon]</texture>
+				<portaddress>$INFO[ListItem.FilenameAndPath]</portaddress>
+				<controllerdiffuse>bald_accent</controllerdiffuse>
+			</control>
+		</definition>
+	</include>
+	<!-- A controller picture in the agents dialog's port strips, tinted with the accent. The caller adds the address
+	     element Kodi reads (controlleraddress or peripherallocation). -->
+	<include name="Bald_GameController">
+		<control type="gamecontroller">
+			<texture>$INFO[ListItem.Icon]</texture>
+			<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
+			<nested />
+			<controllerdiffuse>bald_accent</controllerdiffuse>
+		</control>
+	</include>
+	<!-- Disc manager menu row: Estuary's icon at 48 px, the action and its state, all in one ink. -->
+	<include name="Bald_GameDiscRow">
+		<param name="ink" />
+		<definition>
+			<include content="Bald_MediaIcon">
+				<param name="left">26</param>
+				<param name="top">26</param>
+				<param name="size">48</param>
+				<param name="ink">$PARAM[ink]</param>
+			</include>
+			<control type="label">
+				<left>100</left><width>560</width><height>100</height>
+				<aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>680</left><right>26</right><height>100</height>
+				<align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+		</definition>
+	</include>
 </includes>

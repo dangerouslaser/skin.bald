@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
+	<!-- From Kodi 22 Estuary's GameOSD.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt), restyled for Bald
+	     (docs/NOTES.md, "Media windows restyle"). Kodi binds 1103 (the menu) and 1101 (help text, CDialogGameOSDHelp);
+	     2001 (a background Kodi would size to the menu) was never in Estuary and is not added. The popup surface is the
+	     shared Bald one; rows are Bald_GameOSDLayout. -->
 	<defaultcontrol always="true">1103</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD</depth>
@@ -15,7 +19,7 @@
 				!Window.IsActive(GameAgents) +
 				!Window.IsActive(GameDiscManager)
 			</visible>
-			<include>Visible_Fade</include>
+			<include>Bald_MediaVisibleRise</include>
 			<control type="group" id="10">
 				<visible>System.GetBool(gamesgeneral.showosdhelp)</visible>
 				<defaultcontrol always="true">1103</defaultcontrol>
@@ -23,7 +27,7 @@
 				<height>1040</height>
 				<centertop>50%</centertop>
 				<width>700</width>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation effect="fade" time="200" tween="sine" easing="inout">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
 					<param name="height" value="1040" />
@@ -36,10 +40,11 @@
 						<control type="textbox" id="1101">
 							<description>Help text</description>
 							<top>30</top>
-							<left>30</left>
-							<right>30</right>
+							<left>40</left>
+							<right>40</right>
 							<height>130</height>
-							<font>font13</font>
+							<font>Bald_InfoPlot</font>
+							<textcolor>bald_ink80</textcolor>
 						</control>
 						<control type="gamecontroller">
 							<top>160</top>
@@ -51,10 +56,11 @@
 						<control type="textbox">
 							<description>Additional help text. This will be removed in future versions.</description>
 							<bottom>30</bottom>
-							<left>30</left>
-							<right>30</right>
+							<left>40</left>
+							<right>40</right>
 							<height>130</height>
-							<font>font13</font>
+							<font>Bald_CaptionPlot</font>
+							<textcolor>bald_ink60</textcolor>
 							<label>$LOCALIZE[35236]</label>
 						</control>
 						<control type="button">
@@ -76,7 +82,7 @@
 				<height>560</height>
 				<centertop>50%</centertop>
 				<width>700</width>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation effect="fade" time="200" tween="sine" easing="inout">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
 					<param name="height" value="560" />
@@ -88,126 +94,9 @@
 					<control type="list" id="1103">
 						<height>560</height>
 						<orientation>vertical</orientation>
-						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">
-							<control type="image">
-								<left>8</left>
-								<top>8</top>
-								<width>64</width>
-								<height>64</height>
-								<info>ListItem.Icon</info>
-							</control>
-							<control type="label">
-								<left>80</left>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label</info>
-								<font>font13</font>
-								<align>left</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<right>20</right>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label2</info>
-								<font>font13</font>
-								<align>right</align>
-								<aligny>center</aligny>
-								<textcolor>grey</textcolor>
-							</control>
-						</itemlayout>
-						<itemlayout condition="Control.IsVisible(2200)" width="688" height="80">
-							<control type="image">
-								<left>8</left>
-								<top>8</top>
-								<width>64</width>
-								<height>64</height>
-								<info>ListItem.Icon</info>
-							</control>
-							<control type="label">
-								<left>80</left>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label</info>
-								<font>font13</font>
-								<align>left</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<right>20</right>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label2</info>
-								<font>font13</font>
-								<align>right</align>
-								<aligny>center</aligny>
-								<textcolor>grey</textcolor>
-							</control>
-						</itemlayout>
-						<focusedlayout condition="!Control.IsVisible(2200)" width="700" height="80">
-							<control type="image">
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<visible>Control.HasFocus(1103)</visible>
-							</control>
-							<control type="image">
-								<left>8</left>
-								<top>8</top>
-								<width>64</width>
-								<height>64</height>
-								<info>ListItem.Icon</info>
-							</control>
-							<control type="label">
-								<left>80</left>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label</info>
-								<font>font13</font>
-								<align>left</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<right>20</right>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label2</info>
-								<font>font13</font>
-								<align>right</align>
-								<aligny>center</aligny>
-								<textcolor>grey</textcolor>
-							</control>
-						</focusedlayout>
-						<focusedlayout condition="Control.IsVisible(2200)" width="688" height="80">
-							<control type="image">
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<visible>Control.HasFocus(1103)</visible>
-							</control>
-							<control type="image">
-								<left>8</left>
-								<top>8</top>
-								<width>64</width>
-								<height>64</height>
-								<info>ListItem.Icon</info>
-							</control>
-							<control type="label">
-								<left>80</left>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label</info>
-								<font>font13</font>
-								<align>left</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<right>20</right>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label2</info>
-								<font>font13</font>
-								<align>right</align>
-								<aligny>center</aligny>
-								<textcolor>grey</textcolor>
-							</control>
-						</focusedlayout>
+						<include content="Bald_GameOSDLayout">
+							<param name="scrollbar">2200</param>
+						</include>
 						<content>
 							<item>
 								<description>Pause / Resume button</description>
@@ -253,10 +142,9 @@
 						<pagecontrol>2200</pagecontrol>
 					</control>
 					<control type="scrollbar" id="2200">
-						<top>-10</top>
-						<right>0</right>
-						<width>12</width>
-						<orientation>vertical</orientation>
+						<top>0</top>
+						<right>8</right>
+						<include>Bald_MediaScrollbarLook</include>
 					</control>
 				</control>
 			</control>
@@ -266,7 +154,7 @@
 				<height>640</height>
 				<centertop>50%</centertop>
 				<width>700</width>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation effect="fade" time="200" tween="sine" easing="inout">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
 					<param name="height" value="640" />
@@ -278,126 +166,9 @@
 					<control type="list" id="1103">
 						<height>640</height>
 						<orientation>vertical</orientation>
-						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">
-							<control type="image">
-								<left>8</left>
-								<top>8</top>
-								<width>64</width>
-								<height>64</height>
-								<info>ListItem.Icon</info>
-							</control>
-							<control type="label">
-								<left>80</left>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label</info>
-								<font>font13</font>
-								<align>left</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<right>20</right>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label2</info>
-								<font>font13</font>
-								<align>right</align>
-								<aligny>center</aligny>
-								<textcolor>grey</textcolor>
-							</control>
-						</itemlayout>
-						<itemlayout condition="Control.IsVisible(2200)" width="688" height="80">
-							<control type="image">
-								<left>8</left>
-								<top>8</top>
-								<width>64</width>
-								<height>64</height>
-								<info>ListItem.Icon</info>
-							</control>
-							<control type="label">
-								<left>80</left>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label</info>
-								<font>font13</font>
-								<align>left</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<right>20</right>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label2</info>
-								<font>font13</font>
-								<align>right</align>
-								<aligny>center</aligny>
-								<textcolor>grey</textcolor>
-							</control>
-						</itemlayout>
-						<focusedlayout condition="!Control.IsVisible(2200)" width="700" height="80">
-							<control type="image">
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<visible>Control.HasFocus(1103)</visible>
-							</control>
-							<control type="image">
-								<left>8</left>
-								<top>8</top>
-								<width>64</width>
-								<height>64</height>
-								<info>ListItem.Icon</info>
-							</control>
-							<control type="label">
-								<left>80</left>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label</info>
-								<font>font13</font>
-								<align>left</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<right>20</right>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label2</info>
-								<font>font13</font>
-								<align>right</align>
-								<aligny>center</aligny>
-								<textcolor>grey</textcolor>
-							</control>
-						</focusedlayout>
-						<focusedlayout condition="Control.IsVisible(2200)" width="688" height="80">
-							<control type="image">
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<visible>Control.HasFocus(1103)</visible>
-							</control>
-							<control type="image">
-								<left>8</left>
-								<top>8</top>
-								<width>64</width>
-								<height>64</height>
-								<info>ListItem.Icon</info>
-							</control>
-							<control type="label">
-								<left>80</left>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label</info>
-								<font>font13</font>
-								<align>left</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<right>20</right>
-								<width>600</width>
-								<height>80</height>
-								<info>ListItem.Label2</info>
-								<font>font13</font>
-								<align>right</align>
-								<aligny>center</aligny>
-								<textcolor>grey</textcolor>
-							</control>
-						</focusedlayout>
+						<include content="Bald_GameOSDLayout">
+							<param name="scrollbar">2201</param>
+						</include>
 						<content>
 							<item>
 								<description>Pause / Resume button</description>
@@ -449,10 +220,9 @@
 						<pagecontrol>2201</pagecontrol>
 					</control>
 					<control type="scrollbar" id="2201">
-						<top>-10</top>
-						<right>0</right>
-						<width>12</width>
-						<orientation>vertical</orientation>
+						<top>0</top>
+						<right>8</right>
+						<include>Bald_MediaScrollbarLook</include>
 					</control>
 				</control>
 			</control>
