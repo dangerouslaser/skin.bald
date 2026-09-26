@@ -16,7 +16,7 @@ GENERATED = {"script-skinvariables-generator-includes.xml", "Includes_Bald_HomeD
 BALD_FILES = sorted(
     path for path in XML.glob("*.xml")
     if path.name not in GENERATED and (
-        path.name.startswith(("Includes_Bald_", "View_51", "View_52", "Custom_111"))
+        path.name.startswith(("Includes_Bald_", "View_51", "View_52", "Custom_111", "Custom_112", "script-upnext"))
         or path.name in {"Home.xml", "DialogVideoInfo.xml", "MyPVRGuide.xml", "script-globalsearch.xml",
                          "Settings.xml", "SettingsCategory.xml", "SettingsProfile.xml",
                          "SettingsSystemInfo.xml"}

@@ -397,12 +397,12 @@
 	     would leave it focusable: CGUIControl::CanFocus ignores the parent's visibility). The 48 px icon sits at 16,12,
 	     70% ink, and turns field on the 72 px accent disc when focused (bald/osd_disc.png), with the tile pop (1.05,
 	     280 POP). <on> is the icon while <selected> holds (pause while playing, record while recording, tinted
-	     <on_color>). <code> is the button's own label, centred under the disc (the audio and subtitle language). The
+	     <on_color>); callers pass it even when it is the same icon (a param default cannot name another param). <code> is the button's own label, centred under the disc (the audio and subtitle language). The
 	     caller's actions and navigation are nested into the radiobutton itself. -->
 	<include name="Bald_OSDButton">
 		<param name="id" />
 		<param name="icon" />
-		<param name="on">$PARAM[icon]</param>
+		<param name="on" />
 		<param name="selected">false</param>
 		<param name="on_color">bald_ink70</param>
 		<param name="code" />
@@ -500,6 +500,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">600</param>
 			<param name="icon">$VAR[Bald_OSDBackIcon]</param>
+			<param name="on">$VAR[Bald_OSDBackIcon]</param>
 			<onclick condition="VideoPlayer.Content(livetv)">Dialog.Close(videoosd,true)</onclick>
 			<onclick condition="VideoPlayer.Content(livetv)">ActivateWindow(TVGuide)</onclick>
 			<onclick condition="!VideoPlayer.Content(livetv) + [$EXP[Bald_OSDChapterBehind] | !$EXP[Bald_OSDPlaylistBehind]]">ChapterOrBigStepBack</onclick>
@@ -524,6 +525,7 @@
 			<include content="Bald_OSDButton">
 				<param name="id">607</param>
 				<param name="icon">$VAR[Bald_OSDForwardIcon]</param>
+				<param name="on">$VAR[Bald_OSDForwardIcon]</param>
 				<param name="selected">VideoPlayer.Content(livetv) + PVR.IsRecordingPlayingChannel</param>
 				<param name="on_color">bald_accent</param>
 				<param name="enable">!VideoPlayer.Content(livetv) | PVR.CanRecordPlayingChannel</param>
@@ -559,6 +561,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">603</param>
 			<param name="icon">osd/fullscreen/buttons/stop.png</param>
+			<param name="on">osd/fullscreen/buttons/stop.png</param>
 			<onclick>CancelAlarm(bald_osd_close,true)</onclick>
 			<onclick>PlayerControl(Stop)</onclick>
 			<include>Bald_OSDUpToSeek</include>
@@ -576,6 +579,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">804</param>
 			<param name="icon">osd/fullscreen/buttons/home.png</param>
+			<param name="on">osd/fullscreen/buttons/home.png</param>
 			<param name="visible">VideoPlayer.HasMenu</param>
 			<onclick>PlayerControl(ShowVideoMenu)</onclick>
 			<include>Bald_OSDUpToSeek</include>
@@ -592,6 +596,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">70045</param>
 			<param name="icon">osd/fullscreen/buttons/teletext.png</param>
+			<param name="on">osd/fullscreen/buttons/teletext.png</param>
 			<param name="visible">VideoPlayer.HasTeletext</param>
 			<onclick>Dialog.Close(videoosd)</onclick>
 			<onclick>ActivateWindow(Teletext)</onclick>
@@ -609,6 +614,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">70047</param>
 			<param name="icon">osd/fullscreen/buttons/stereoscopic.png</param>
+			<param name="on">osd/fullscreen/buttons/stereoscopic.png</param>
 			<param name="visible">VideoPlayer.IsStereoscopic</param>
 			<onclick>SetProperty(settingsdialog_content,3d,home)</onclick>
 			<onclick>SetProperty(settingsdialog_header,$LOCALIZE[36501],home)</onclick>
@@ -628,6 +634,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">70043</param>
 			<param name="icon">osd/fullscreen/buttons/information.png</param>
+			<param name="on">osd/fullscreen/buttons/information.png</param>
 			<onclick>Dialog.Close(1120,true)</onclick>
 			<onclick>Dialog.Close(videoosd,true)</onclick>
 			<onclick>ActivateWindow(fullscreeninfo)</onclick>
@@ -658,6 +665,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">70060</param>
 			<param name="icon">osd/fullscreen/buttons/streams.png</param>
+			<param name="on">osd/fullscreen/buttons/streams.png</param>
 			<param name="code">$VAR[Bald_OSDAudioCode]</param>
 			<onclick>ActivateWindow(osdaudiosettings)</onclick>
 			<nested />
@@ -687,6 +695,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">70061</param>
 			<param name="icon">osd/fullscreen/buttons/settings-subtitle.png</param>
+			<param name="on">osd/fullscreen/buttons/settings-subtitle.png</param>
 			<param name="code">$VAR[Bald_OSDSubtitleCode]</param>
 			<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
 			<nested />
@@ -715,6 +724,7 @@
 		<include content="Bald_OSDButton">
 			<param name="id">70062</param>
 			<param name="icon">osd/fullscreen/buttons/settings.png</param>
+			<param name="on">osd/fullscreen/buttons/settings.png</param>
 			<onclick>ActivateWindow(osdvideosettings)</onclick>
 			<nested />
 			<include>Bald_OSDChainFrom_0</include>
@@ -845,6 +855,153 @@
 				<param name="second">$VAR[Bald_OSDHint]</param>
 				<param name="width">600</param>
 			</include>
+		</control>
+	</include>
+	<!-- ============ Info overlay and details (1127, 1128) ============ -->
+	<!-- Under the plot: where playback is and when it ends. -->
+	<variable name="Bald_OSDInfoEnds">
+		<value condition="VideoPlayer.HasEpg">$INFO[PVR.EpgEventElapsedTime]$INFO[PVR.EpgEventDuration, / ]$INFO[PVR.EpgEventFinishTime, · $LOCALIZE[31080] ]</value>
+		<value condition="!String.IsEmpty(Player.Duration)">$INFO[Player.Time]$INFO[Player.Duration, / ]$INFO[Player.FinishTime, · $LOCALIZE[31080] ]</value>
+	</variable>
+	<!-- The playing item's details as a bottom-aligned column at the left margin: landscape art with a progress line,
+	     the clearlogo (or the title), the info line with the media flags, the plot, and the time with "Ends at".
+	     <art> and <ends> switch those parts; the plot follows Bald.OSD.HideInfoPlot through Bald_OSDInfoText. -->
+	<include name="Bald_OSDInfoStack">
+		<param name="top">96</param>
+		<param name="height">834</param>
+		<param name="art">true</param>
+		<param name="ends">true</param>
+		<definition>
+			<control type="grouplist">
+				<left>Bald_SafeLeft</left>
+				<top>$PARAM[top]</top>
+				<width>1100</width>
+				<height>$PARAM[height]</height>
+				<orientation>vertical</orientation>
+				<align>bottom</align>
+				<itemgap>0</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<!-- Landscape art, 432 x 243, with the progress along its bottom edge. -->
+				<control type="group">
+					<width>432</width>
+					<height>271</height>
+					<visible>$PARAM[art] + !Skin.HasSetting(Bald.OSD.HideInfoArt) + [!String.IsEmpty(Player.Art(fanart)) | !String.IsEmpty(Player.Art(thumb)) | !String.IsEmpty(Player.Art(landscape)) | !String.IsEmpty(Player.Art(tvshow.fanart))]</visible>
+					<control type="image">
+						<width>432</width>
+						<height>243</height>
+						<texture colordiffuse="bald_tile_placeholder">bald/tile.png</texture>
+					</control>
+					<control type="image">
+						<width>432</width>
+						<height>243</height>
+						<aspectratio scalediffuse="false">scale</aspectratio>
+						<fadetime>200</fadetime>
+						<texture diffuse="bald/tile.png" background="true">$VAR[Bald_OSDLandscape]</texture>
+					</control>
+					<control type="image">
+						<left>12</left>
+						<top>227</top>
+						<width>408</width>
+						<height>4</height>
+						<texture border="2" colordiffuse="bald_ink28">bald/bar.png</texture>
+					</control>
+					<include content="Bald_PlaybackTrackFill">
+						<param name="left">12</param>
+						<param name="width">408</param>
+						<param name="top">225</param>
+						<param name="color">bald_accent</param>
+						<param name="visible">!VideoPlayer.Content(livetv)</param>
+						<info>Player.Progress</info>
+					</include>
+					<include content="Bald_PlaybackTrackFill">
+						<param name="left">12</param>
+						<param name="width">408</param>
+						<param name="top">225</param>
+						<param name="color">bald_accent</param>
+						<param name="visible">VideoPlayer.Content(livetv)</param>
+						<info>PVR.EpgEventProgress</info>
+					</include>
+				</control>
+				<control type="image">
+					<width>480</width>
+					<height>120</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<fadetime>200</fadetime>
+					<texture>$VAR[PlayerClearLogoVar]</texture>
+					<visible>$EXP[Bald_PlaybackHasLogo]</visible>
+				</control>
+				<control type="label">
+					<width>1100</width>
+					<height>56</height>
+					<aligny>center</aligny>
+					<font>Bald_CaptionTitle</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$VAR[Bald_PlaybackTitle]</label>
+					<visible>!$EXP[Bald_PlaybackHasLogo]</visible>
+				</control>
+				<control type="group">
+					<height>14</height>
+				</control>
+				<!-- Info line: resolution, HDR and audio chips, then rating, certificate, year and duration. -->
+				<control type="grouplist">
+					<width>1100</width>
+					<height>28</height>
+					<orientation>horizontal</orientation>
+					<itemgap>8</itemgap>
+					<usecontrolcoords>true</usecontrolcoords>
+					<include content="Bald_FlagChip"><param name="label">4K</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.VideoResolution,4K)</param></include>
+					<include content="Bald_FlagChip"><param name="label">1080p</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.VideoResolution,1080)</param></include>
+					<include content="Bald_FlagChip"><param name="label">Dolby Vision</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.HdrType,dolbyvision)</param></include>
+					<include content="Bald_FlagChip"><param name="label">HDR10</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
+					<include content="Bald_FlagChip"><param name="label">HDR10+</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.StartsWith(VideoPlayer.HdrType,hdr10) + !String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
+					<include content="Bald_FlagChip"><param name="label">HLG</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.HdrType,hlg)</param></include>
+					<include content="Bald_FlagChip"><param name="label">$MAP[DefaultCodecMap, VideoPlayer.AudioCodec]</param><param name="visible">$EXP[Bald_ShowMediaFlags] + !String.IsEmpty(VideoPlayer.AudioCodec)</param></include>
+					<control type="label">
+						<left>6</left>
+						<width>auto</width>
+						<height>28</height>
+						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink80</textcolor>
+						<label>$VAR[Bald_OSDInfoMeta]</label>
+					</control>
+				</control>
+				<control type="group">
+					<height>16</height>
+				</control>
+				<control type="textbox">
+					<width>1000</width>
+					<height>120</height>
+					<font>Bald_CaptionPlot</font>
+					<textcolor>bald_ink80</textcolor>
+					<label>$VAR[Bald_OSDInfoText]</label>
+					<autoscroll delay="6000" repeat="8000" time="4000">true</autoscroll>
+					<visible>!String.IsEmpty(VideoPlayer.Plot) | Skin.HasSetting(Bald.OSD.HideInfoPlot)</visible>
+				</control>
+				<control type="group">
+					<height>12</height>
+					<visible>$PARAM[ends]</visible>
+				</control>
+				<control type="label">
+					<width>1100</width>
+					<height>28</height>
+					<aligny>center</aligny>
+					<font>Bald_CaptionMeta</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$VAR[Bald_OSDInfoEnds]</label>
+					<visible>$PARAM[ends]</visible>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- The left scrim behind the info column: the info dialog's horizontal scrim in field. -->
+	<include name="Bald_OSDInfoScrim">
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="bald_field">bald/scrim_info_h.png</texture>
 		</control>
 	</include>
 </includes>
