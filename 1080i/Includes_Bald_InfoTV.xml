@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald TV info (docs/SPEC.md 5.3): the Overview page for shows, seasons and episodes. Cast & details and
+     More like this are shared with movies. DialogVideoInfo.xml picks this page with include conditions on
+     ListItem.DBType, so movie info never loads these controls; Kodi reloads the window when those conditions change.
+
+     Layout follows the prototype's TV screen, one column at x96 from y150:
+       header (logo, meta, genres, two-line plot), actions y522, season tabs y620,
+       episode cards y682 (320 x 180, gap 24, focus travels to slot 2), episode detail y894, synopsis y934.
+     Native sources only: tabs list videodb://tvshows/titles/<id>/, and the episode row follows the selected tab's
+     own folder path. scripts/info.py (tvinfo) publishes the show header for seasons and episodes and the next-episode
+     action, then selects the opening season and episode once the lists have loaded.
+
+     Window properties (movieinformation), all cleared on load:
+       Bald.InfoTV        set while this page is loaded (conditions below have no ListItem context under dialogs)
+       Bald.TV.*          Title, Years, Meta, Genre, Plot, ShowID, NextLabel, NextID from the script
+       Bald.TV.RowFor     the tab (CurrentItem) the episode row was last positioned for -->
+<includes>
+	<!-- Structural switch, for include conditions only: evaluated when the dialog loads its item. -->
+	<expression name="Bald_InfoTVItem">String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)</expression>
+	<expression name="Bald_InfoIsTV">!String.IsEmpty(Window(movieinformation).Property(Bald.InfoTV))</expression>
+	<expression name="Bald_InfoTVHasSeasons">Integer.IsGreater(Container(5301).NumItems,0)</expression>
+	<expression name="Bald_InfoTVHasEpisodes">Integer.IsGreater(Container(5302).NumItems,0)</expression>
+	<expression name="Bald_InfoTVIsShow">String.IsEqual(ListItem.DBType,tvshow)</expression>
+	<expression name="Bald_InfoTVIsEpisode">String.IsEqual(ListItem.DBType,episode)</expression>
+
+	<!-- ============ Variables (ListItem.* is the dialog's item) ============ -->
+	<!-- An empty id must give an empty path: videodb://tvshows/titles// would list every show. -->
+	<variable name="Bald_InfoTVSeasonsPath">
+		<value condition="$EXP[Bald_InfoTVIsShow] + !String.IsEmpty(ListItem.DBID)">videodb://tvshows/titles/$INFO[ListItem.DBID]/</value>
+		<value condition="!$EXP[Bald_InfoTVIsShow] + !String.IsEmpty(ListItem.TVShowDBID)">videodb://tvshows/titles/$INFO[ListItem.TVShowDBID]/</value>
+		<value condition="!String.IsEmpty(Window(movieinformation).Property(Bald.TV.ShowID))">videodb://tvshows/titles/$INFO[Window(movieinformation).Property(Bald.TV.ShowID)]/</value>
+	</variable>
+	<!-- Shows read their own labels at once; seasons and episodes wait for the script's show-level values. -->
+	<variable name="Bald_InfoTVTitle">
+		<value condition="$EXP[Bald_InfoTVIsShow]">$INFO[ListItem.Title]</value>
+		<value condition="!String.IsEmpty(ListItem.TVShowTitle)">$INFO[ListItem.TVShowTitle]</value>
+		<value>$INFO[Window(movieinformation).Property(Bald.TV.Title)]</value>
+	</variable>
+	<variable name="Bald_InfoTVMeta">
+		<value condition="!String.IsEmpty(Window(movieinformation).Property(Bald.TV.Meta))">$INFO[Window(movieinformation).Property(Bald.TV.Meta)]</value>
+		<value condition="$EXP[Bald_InfoTVIsShow] + String.IsEqual(ListItem.Property(TotalSeasons),1)">$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , season]$INFO[ListItem.MPAA,$COMMA ,]</value>
+		<value condition="$EXP[Bald_InfoTVIsShow]">$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , seasons]$INFO[ListItem.MPAA,$COMMA ,]</value>
+	</variable>
+	<variable name="Bald_InfoTVGenre">
+		<value condition="$EXP[Bald_InfoTVIsShow]">$INFO[ListItem.Genre]</value>
+		<value>$INFO[Window(movieinformation).Property(Bald.TV.Genre)]</value>
+	</variable>
+	<variable name="Bald_InfoTVPlot">
+		<value condition="$EXP[Bald_InfoTVIsShow]">$INFO[ListItem.Plot]</value>
+		<value>$INFO[Window(movieinformation).Property(Bald.TV.Plot)]</value>
+	</variable>
+	<variable name="Bald_InfoTVNextLabel">
+		<value condition="!String.IsEmpty(Window(movieinformation).Property(Bald.TV.NextLabel))">$INFO[Window(movieinformation).Property(Bald.TV.NextLabel)]</value>
+		<value>Play</value>
+	</variable>
+	<!-- Tab labels are built here (English, like the actions) so the underline widths below are known. -->
+	<variable name="Bald_InfoTVSeasonLabel">
+		<value condition="String.IsEmpty(ListItem.Season)">All seasons</value>
+		<value condition="String.IsEqual(ListItem.Season,0)">Specials</value>
+		<value>Season $INFO[ListItem.Season]</value>
+	</variable>
+	<variable name="Bald_InfoTVEpisodeArt">
+		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value>$INFO[ListItem.Art(tvshow.fanart)]</value>
+	</variable>
+	<variable name="Bald_InfoTVEpisodeState">
+		<value condition="Container(5302).ListItem.IsResumable">, in progress</value>
+		<value condition="Integer.IsGreater(Container(5302).ListItem.PlayCount,0)">, watched</value>
+	</variable>
+	<!-- "52 min, aired 3 March 2024, watched" (prototype), dropping missing parts. -->
+	<variable name="Bald_InfoTVEpisodeMeta">
+		<value condition="!String.IsEmpty(Container(5302).ListItem.Duration(mins))">$INFO[Container(5302).ListItem.Duration(mins),, min]$INFO[Container(5302).ListItem.Premiered,$COMMA aired ,]$VAR[Bald_InfoTVEpisodeState]</value>
+		<value condition="!String.IsEmpty(Container(5302).ListItem.Premiered)">$INFO[Container(5302).ListItem.Premiered,aired ,]$VAR[Bald_InfoTVEpisodeState]</value>
+		<value condition="Container(5302).ListItem.IsResumable">In progress</value>
+		<value condition="Integer.IsGreater(Container(5302).ListItem.PlayCount,0)">Watched</value>
+	</variable>
+
+	<!-- ============ Window load ============ -->
+	<!-- Opening from a show or season focuses the primary action; from an episode, the action first and then,
+	     once the script has selected it, the episode card itself (docs/SPEC.md 5.3). -->
+	<include name="Bald_InfoTVOnLoad">
+		<onload>SetProperty(Bald.InfoTV,1,movieinformation)</onload>
+		<onload>RunScript(skin.bald,tvinfo,$INFO[ListItem.DBType],$INFO[ListItem.DBID])</onload>
+		<onload condition="$EXP[Bald_InfoTVIsEpisode] + ListItem.IsResumable">SetFocus(5001)</onload>
+		<onload condition="$EXP[Bald_InfoTVIsEpisode] + !ListItem.IsResumable">SetFocus(5002)</onload>
+		<onload condition="!$EXP[Bald_InfoTVIsEpisode]">SetFocus(5003)</onload>
+	</include>
+	<include name="Bald_InfoTVClear">
+		<onload>ClearProperty(Bald.InfoTV,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.ShowID,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.Title,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.Years,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.Meta,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.Genre,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.Plot,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.NextLabel,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.NextID,movieinformation)</onload>
+		<onload>ClearProperty(Bald.TV.RowFor,movieinformation)</onload>
+	</include>
+
+	<!-- ============ Navigation ============ -->
+	<!-- Actions: Down to the season tabs; with no seasons (not in the library), on to Cast & details. -->
+	<include name="Bald_InfoTVActionDown">
+		<ondown condition="$EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating">SetProperty(Bald.InfoSec,1,home)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating">ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating + Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating + !Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</ondown>
+	</include>
+	<!-- Tabs: Down enters the episode row. After a season change it starts at the first episode (prototype);
+	     returning to the same season keeps the episode. Conditions are evaluated before any action runs. -->
+	<include name="Bald_InfoTVSeasonsDown">
+		<ondown condition="$EXP[Bald_InfoTVHasEpisodes] + String.IsEqual(Window(movieinformation).Property(Bald.TV.RowFor),Container(5301).CurrentItem)">SetFocus(5302)</ondown>
+		<ondown condition="$EXP[Bald_InfoTVHasEpisodes] + !String.IsEqual(Window(movieinformation).Property(Bald.TV.RowFor),Container(5301).CurrentItem)">SetFocus(5302,0,absolute)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating">SetProperty(Bald.InfoSec,1,home)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating">ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating + Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating + !Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</ondown>
+	</include>
+	<include name="Bald_InfoTVOnOverview">
+		<onfocus>SetProperty(Bald.InfoSec,0,home)</onfocus>
+		<onfocus>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onfocus>
+	</include>
+
+	<!-- ============ Controls ============ -->
+	<!-- The art dims at rest because content runs the full height: the prototype's 60% field layer at 70%. -->
+	<include name="Bald_InfoTVDim">
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="bald_field60">bald/white.png</texture>
+			<animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+
+	<!-- Season tab: 24 px label; the selected tab is full ink, the rest 45%. The focused tab grows a 2 px accent
+	     underline from the left (300 MOVE) under exactly its label; Kodi list slots have one width, so the widths are
+	     measured from Instrument Sans Medium at 24 px for each label shape. -->
+	<include name="Bald_InfoTVSeasonTab">
+		<param name="selected">false</param>
+		<definition>
+			<control type="label">
+				<width>131</width>
+				<height>30</height>
+				<aligny>top</aligny>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink45</textcolor>
+				<label>$VAR[Bald_InfoTVSeasonLabel]</label>
+				<visible>!$PARAM[selected]</visible>
+			</control>
+			<control type="label">
+				<width>131</width>
+				<height>30</height>
+				<aligny>top</aligny>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$VAR[Bald_InfoTVSeasonLabel]</label>
+				<visible>$PARAM[selected]</visible>
+			</control>
+			<control type="group">
+				<visible>$PARAM[selected] + Control.HasFocus(5301)</visible>
+				<animation type="Focus">
+					<effect type="zoom" start="1,100" end="100,100" center="0,37" time="300" tween="cubic" easing="out" />
+				</animation>
+				<animation type="Hidden">
+					<effect type="zoom" start="100,100" end="1,100" center="0,37" time="300" tween="cubic" easing="out" />
+				</animation>
+				<include content="Bald_InfoTVUnderline"><param name="w">96</param><param name="visible">String.IsEqual(ListItem.Season,1)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">101</param><param name="visible">Integer.IsGreater(ListItem.Season,1) + Integer.IsLess(ListItem.Season,10)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">110</param><param name="visible">Integer.IsGreater(ListItem.Season,9) + Integer.IsLess(ListItem.Season,20)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">114</param><param name="visible">Integer.IsGreater(ListItem.Season,19)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">93</param><param name="visible">String.IsEqual(ListItem.Season,0)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">124</param><param name="visible">String.IsEmpty(ListItem.Season)</param></include>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_InfoTVUnderline">
+		<param name="w" />
+		<param name="visible" />
+		<definition>
+			<control type="image">
+				<top>36</top>
+				<width>$PARAM[w]</width>
+				<height>2</height>
+				<texture colordiffuse="bald_accent">bald/white.png</texture>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Episode card: 320 x 180 in a 344 px slot, drawn 12 px in so the 1.05 pop (280 POP) and ring are not
+	     clipped. Home's landscape tile with the episode still; number and title over a bottom scrim, a watched check,
+	     and a progress bar while in progress. Cards sit at 78% while the row is unfocused; with focus the others
+	     drop to 60% (focus_fade) and the focused card is full. -->
+	<include name="Bald_InfoTVEpisodeCard">
+		<param name="ring">false</param>
+		<param name="focus_fade">60</param>
+		<definition>
+			<control type="group">
+				<animation type="Conditional" condition="!Control.HasFocus(5302)">
+					<effect type="fade" start="100" end="78" time="300" tween="sine" easing="inout" />
+				</animation>
+				<animation type="Conditional" condition="Control.HasFocus(5302)">
+					<effect type="fade" start="100" end="$PARAM[focus_fade]" time="300" tween="sine" easing="inout" />
+				</animation>
+				<animation type="Focus">
+					<effect type="zoom" start="100" end="105" center="172,102" time="280" tween="back" easing="out" />
+				</animation>
+				<animation type="Unfocus">
+					<effect type="zoom" start="105" end="100" center="172,102" time="220" tween="sine" easing="inout" />
+				</animation>
+				<include content="Bald_LandscapeTile">
+					<param name="diffuse">FFFFFFFF</param>
+					<param name="ring">$PARAM[ring]</param>
+					<param name="art">$VAR[Bald_InfoTVEpisodeArt]</param>
+					<param name="x">12</param>
+					<param name="y">12</param>
+					<param name="w">320</param>
+					<param name="h">180</param>
+					<param name="ring_x">9</param>
+					<param name="ring_y">9</param>
+					<param name="ring_w">326</param>
+					<param name="ring_h">186</param>
+				</include>
+				<control type="image">
+					<left>12</left>
+					<top>12</top>
+					<width>320</width>
+					<height>180</height>
+					<texture diffuse="bald/tile.png" colordiffuse="bald_field">bald/scrim_card.png</texture>
+				</control>
+				<control type="label">
+					<left>28</left>
+					<top>154</top>
+					<width>288</width>
+					<height>22</height>
+					<font>Bald_CastName</font>
+					<textcolor>bald_ink</textcolor>
+					<label>[COLOR bald_ink70]$INFO[ListItem.Episode][/COLOR]  $INFO[ListItem.Title]</label>
+				</control>
+				<control type="group">
+					<left>292</left>
+					<top>24</top>
+					<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+					<control type="image">
+						<width>28</width>
+						<height>28</height>
+						<texture colordiffuse="bald_field60">bald/dot.png</texture>
+					</control>
+					<control type="image">
+						<left>6</left>
+						<top>6</top>
+						<width>16</width>
+						<height>16</height>
+						<texture colordiffuse="bald_ink">bald/check.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<left>28</left>
+					<top>180</top>
+					<visible>ListItem.IsResumable</visible>
+					<control type="image">
+						<width>288</width>
+						<height>4</height>
+						<texture border="2" colordiffuse="bald_ink28">bald/bar.png</texture>
+					</control>
+					<control type="progress">
+						<width>288</width>
+						<height>4</height>
+						<texturebg />
+						<lefttexture />
+						<midtexture border="2" colordiffuse="bald_ink">bald/bar.png</midtexture>
+						<righttexture />
+						<info>ListItem.PercentPlayed</info>
+					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Page ============ -->
+	<include name="Bald_InfoTVOverview">
+		<control type="group">
+			<include content="Bald_InfoPage"><param name="page">0</param></include>
+			<!-- Header: stagger 0, 60, 100, 180 after the 380 base (the prototype's i0, i1, i2, i4). -->
+			<control type="group">
+				<left>96</left>
+				<top>150</top>
+				<height>170</height>
+				<include content="Bald_AnimInfoIn"><param name="delay">380</param></include>
+				<control type="image">
+					<width>700</width>
+					<height>170</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<texture background="true">$VAR[Bald_InfoLogo]</texture>
+					<visible>!Skin.HasSetting(Bald.HideClearlogo)</visible>
+				</control>
+				<control type="label">
+					<top>80</top>
+					<width>1400</width>
+					<height>90</height>
+					<font>Bald_InfoTitle</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$VAR[Bald_InfoTVTitle]</label>
+					<visible>Skin.HasSetting(Bald.HideClearlogo) | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
+				</control>
+			</control>
+			<control type="label">
+				<left>96</left>
+				<top>346</top>
+				<width>1400</width>
+				<height>30</height>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$VAR[Bald_InfoTVMeta]</label>
+				<include content="Bald_AnimInfoIn"><param name="delay">440</param></include>
+			</control>
+			<control type="label">
+				<left>96</left>
+				<top>384</top>
+				<width>1400</width>
+				<height>26</height>
+				<font>Bald_InfoGenre</font>
+				<textcolor>bald_accent</textcolor>
+				<label>$VAR[Bald_InfoTVGenre]</label>
+				<include content="Bald_AnimInfoIn"><param name="delay">480</param></include>
+			</control>
+			<!-- Plot: 2 lines of 34 px (Kodi draws ceil(height / line height) lines). -->
+			<control type="label">
+				<left>96</left>
+				<top>424</top>
+				<width>780</width>
+				<height>68</height>
+				<wrapmultiline>true</wrapmultiline>
+				<aligny>top</aligny>
+				<font>Bald_InfoPlot</font>
+				<textcolor>bald_ink84</textcolor>
+				<label>$VAR[Bald_InfoTVPlot]</label>
+				<include content="Bald_AnimInfoIn"><param name="delay">560</param></include>
+			</control>
+			<!-- Actions (i5). An opened episode plays itself natively (8, or 9 to resume); a show or season plays
+			     the script's next episode. -->
+			<control type="grouplist" id="5000">
+				<left>96</left>
+				<top>522</top>
+				<width>1400</width>
+				<height>70</height>
+				<orientation>horizontal</orientation>
+				<itemgap>14</itemgap>
+				<include content="Bald_AnimInfoIn"><param name="delay">600</param></include>
+				<include content="Bald_InfoAction">
+					<param name="id">5001</param>
+					<param name="label">Resume S$INFO[ListItem.Season] E$INFO[ListItem.Episode]</param>
+					<param name="onclick">SendClick(9)</param>
+					<param name="visible">$EXP[Bald_InfoTVIsEpisode] + ListItem.IsResumable</param>
+					<param name="down">Bald_InfoTVActionDown</param>
+				</include>
+				<include content="Bald_InfoAction">
+					<param name="id">5002</param>
+					<param name="label">Play S$INFO[ListItem.Season] E$INFO[ListItem.Episode]</param>
+					<param name="onclick">SendClick(8)</param>
+					<param name="visible">$EXP[Bald_InfoTVIsEpisode] + !ListItem.IsResumable</param>
+					<param name="down">Bald_InfoTVActionDown</param>
+				</include>
+				<include content="Bald_InfoAction">
+					<param name="id">5003</param>
+					<param name="label">$VAR[Bald_InfoTVNextLabel]</param>
+					<param name="onclick">RunScript(skin.bald,play,episode,$INFO[Window(movieinformation).Property(Bald.TV.NextID)])</param>
+					<param name="visible">!$EXP[Bald_InfoTVIsEpisode]</param>
+					<param name="down">Bald_InfoTVActionDown</param>
+				</include>
+				<include content="Bald_InfoAction">
+					<param name="id">5004</param>
+					<param name="label">Trailer</param>
+					<param name="onclick">SendClick(11)</param>
+					<param name="visible">!String.IsEmpty(ListItem.Trailer)</param>
+					<param name="down">Bald_InfoTVActionDown</param>
+				</include>
+			</control>
+			<!-- Season tabs (i6): 34 px between labels. -->
+			<control type="list" id="5301">
+				<left>96</left>
+				<top>620</top>
+				<width>1728</width>
+				<height>40</height>
+				<orientation>horizontal</orientation>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<include content="Bald_AnimInfoIn"><param name="delay">650</param></include>
+				<include>Bald_InfoTVOnOverview</include>
+				<onup>SetFocus(5000)</onup>
+				<include>Bald_InfoTVSeasonsDown</include>
+				<onleft>noop</onleft>
+				<onright>noop</onright>
+				<itemlayout width="135" height="40"><include>Bald_InfoTVSeasonTab</include></itemlayout>
+				<focusedlayout width="135" height="40"><include content="Bald_InfoTVSeasonTab"><param name="selected">true</param></include></focusedlayout>
+				<content target="videos" browse="never">$VAR[Bald_InfoTVSeasonsPath]</content>
+			</control>
+			<!-- Episodes (i7) and the focused episode's detail. A season change reloads the row: out 140 while it
+			     updates, in 340 fade / 420 rise once loaded (docs/SPEC.md 4). Conditional animations, not <visible>,
+			     because Kodi does not process a hidden list, so it would never finish loading. -->
+			<control type="group">
+				<include content="Bald_AnimInfoIn"><param name="delay">690</param></include>
+				<animation type="Conditional" condition="Container(5302).IsUpdating" reversible="false">
+					<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
+					<effect type="slide" start="0,0" end="0,14" time="140" tween="sine" easing="inout" />
+				</animation>
+				<animation type="Conditional" condition="!Container(5302).IsUpdating" reversible="false">
+					<effect type="fade" start="0" end="100" time="340" tween="sine" easing="inout" />
+					<effect type="slide" start="0,14" end="0,0" time="420" tween="cubic" easing="out" />
+				</animation>
+				<control type="fixedlist" id="5302">
+					<left>84</left>
+					<top>670</top>
+					<width>1740</width>
+					<height>204</height>
+					<orientation>horizontal</orientation>
+					<focusposition>2</focusposition>
+					<movement>2</movement>
+					<scrolltime tween="cubic" easing="out">440</scrolltime>
+					<include>Bald_InfoTVOnOverview</include>
+					<onfocus>SetProperty(Bald.TV.RowFor,$INFO[Container(5301).CurrentItem],movieinformation)</onfocus>
+					<onup condition="$EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</onup>
+					<onup condition="!$EXP[Bald_InfoTVHasSeasons]">SetFocus(5000)</onup>
+					<include>Bald_InfoActionToCast</include>
+					<onleft>noop</onleft>
+					<onright>noop</onright>
+					<onclick>RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])</onclick>
+					<itemlayout width="344" height="204"><include>Bald_InfoTVEpisodeCard</include></itemlayout>
+					<focusedlayout width="344" height="204">
+						<include content="Bald_InfoTVEpisodeCard"><param name="ring">Control.HasFocus(5302)</param><param name="focus_fade">100</param></include>
+					</focusedlayout>
+					<content target="videos" browse="never">$INFO[Container(5301).ListItem.FolderPath]</content>
+				</control>
+				<!-- Detail: code and title 24, then runtime / air date / state 18 at 70% and the episode's media flags,
+				     baselines aligned; one-line synopsis (a single-line label ends with an ellipsis). -->
+				<control type="grouplist">
+					<left>96</left>
+					<top>894</top>
+					<width>1300</width>
+					<height>30</height>
+					<orientation>horizontal</orientation>
+					<itemgap>18</itemgap>
+					<usecontrolcoords>true</usecontrolcoords>
+					<visible>$EXP[Bald_InfoTVHasEpisodes]</visible>
+					<control type="label">
+						<width>auto</width>
+						<height>30</height>
+						<aligny>top</aligny>
+						<font>Bald_InfoMeta</font>
+						<textcolor>bald_ink</textcolor>
+						<label>S$INFO[Container(5302).ListItem.Season] E$INFO[Container(5302).ListItem.Episode]  $INFO[Container(5302).ListItem.Title]</label>
+					</control>
+					<control type="label">
+						<top>6</top>
+						<width>auto</width>
+						<height>24</height>
+						<aligny>top</aligny>
+						<font>Bald_Progress</font>
+						<textcolor>bald_ink70</textcolor>
+						<label>$VAR[Bald_InfoTVEpisodeMeta]</label>
+					</control>
+					<control type="grouplist">
+						<top>2</top>
+						<width>600</width>
+						<height>26</height>
+						<orientation>horizontal</orientation>
+						<itemgap>8</itemgap>
+						<include content="Bald_MediaFlagItems"><param name="c">5302</param></include>
+					</control>
+				</control>
+				<control type="label">
+					<left>96</left>
+					<top>934</top>
+					<width>1100</width>
+					<height>30</height>
+					<font>Bald_CaptionPlot</font>
+					<textcolor>bald_ink80</textcolor>
+					<label>$INFO[Container(5302).ListItem.Plot]</label>
+					<visible>$EXP[Bald_InfoTVHasEpisodes]</visible>
+				</control>
+			</control>
+		</control>
+	</include>
+
+	<!-- Right-hand hints on the TV Overview. They switch immediately, outside the animated page. -->
+	<include name="Bald_InfoTVHints">
+		<control type="group">
+			<left>1440</left>
+			<top>954</top>
+			<visible>String.IsEqual(Window(home).Property(Bald.InfoSec),0) + Control.HasFocus(5302)</visible>
+			<include content="Bald_InfoHintPair"><param name="first">Select to play</param><param name="second">Down for cast &amp; details</param></include>
+		</control>
+	</include>
+</includes>

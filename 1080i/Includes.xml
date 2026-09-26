@@ -9,6 +9,7 @@
 	<include file="Includes_Bald_HomeRows.xml" />
 	<include file="Includes_Bald_Info.xml" />
 	<include file="Includes_Bald_InfoPages.xml" />
+	<include file="Includes_Bald_InfoTV.xml" />
 	<include file="Includes_Bald_ContextMenu.xml" />
 	<include file="Includes_Animations.xml" />
 	<include file="Includes_Games.xml" />

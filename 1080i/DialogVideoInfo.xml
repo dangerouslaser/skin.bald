@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald paged info: Overview, Cast & details, More like this. Home still owns the opening frame zoom. -->
+<!-- Bald paged info: Overview, Cast & details, More like this. Home still owns the opening frame zoom.
+     Shows, seasons and episodes get the TV Overview (Includes_Bald_InfoTV.xml); include conditions on the item's
+     DBType choose it, and Kodi reloads this window when they change. -->
 <window>
 	<defaultcontrol always="true">5000</defaultcontrol>
 	<onload>SetProperty(Bald.InfoSec,0,home)</onload>
@@ -8,10 +10,11 @@
 	<onload>ClearProperty(Bald.MoreFor,movieinformation)</onload>
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<onload>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onload>
+	<include>Bald_InfoTVClear</include>
 	<onload condition="System.HasAddon(plugin.video.themoviedb.helper)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<onload>RunScript(skin.bald,recommendations,$INFO[ListItem.DBType],$INFO[ListItem.DBID])</onload>
-	<onload condition="ListItem.IsResumable">SetFocus(5001)</onload>
-	<onload condition="!ListItem.IsResumable">SetFocus(5003)</onload>
+	<include condition="!$EXP[Bald_InfoTVItem]">Bald_InfoMovieOnLoad</include>
+	<include condition="$EXP[Bald_InfoTVItem]">Bald_InfoTVOnLoad</include>
 	<onunload>ClearProperty(Bald.InfoSec,home)</onunload>
 	<onunload>ClearProperty(Bald.Identity,movieinformation)</onunload>
 	<onunload>ClearProperty(Bald.MorePath,movieinformation)</onunload>
@@ -41,6 +44,7 @@
 				<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_h.png</texture></control>
 				<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_b.png</texture></control>
 			</control>
+			<include condition="$EXP[Bald_InfoTVItem]">Bald_InfoTVDim</include>
 			<!-- Crossfade to the SAME cached blur, field and multiplier used by Home.
 			     TMDb Helper follows the native item until the recommendation page sets its local container. -->
 			<control type="group" id="5200">
@@ -50,20 +54,23 @@
 				<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
 				<include>Bald_BackdropImage</include>
 			</control>
-			<include>Bald_InfoOverview</include>
+			<include condition="!$EXP[Bald_InfoTVItem]">Bald_InfoOverview</include>
+			<include condition="$EXP[Bald_InfoTVItem]">Bald_InfoTVOverview</include>
 			<include>Bald_InfoCastPage</include>
 			<include>Bald_InfoRecommendationsPage</include>
 			<control type="group">
+				<!-- The TV Overview runs to y964, so it has no page trail. -->
 				<control type="label">
 					<left>96</left><top>954</top><width>1100</width><height>28</height>
 					<font>Bald_Hint</font><textcolor>bald_ink58</textcolor><label>$VAR[Bald_InfoPageTrail]</label>
-					<visible>!String.IsEqual(Window(home).Property(Bald.InfoSec),2)</visible>
+					<visible>!String.IsEqual(Window(home).Property(Bald.InfoSec),2) + ![$EXP[Bald_InfoIsTV] + String.IsEqual(Window(home).Property(Bald.InfoSec),0)]</visible>
 				</control>
 				<control type="label">
 					<left>1440</left><top>954</top><width>384</width><height>24</height><align>right</align><aligny>center</aligny>
 					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
-					<label>Down for cast &amp; details</label><visible>String.IsEqual(Window(home).Property(Bald.InfoSec),0)</visible>
+					<label>Down for cast &amp; details</label><visible>String.IsEqual(Window(home).Property(Bald.InfoSec),0) + !$EXP[Bald_InfoIsTV]</visible>
 				</control>
+				<include condition="$EXP[Bald_InfoTVItem]">Bald_InfoTVHints</include>
 				<control type="group">
 					<left>1440</left><top>954</top>
 					<visible>String.IsEqual(Window(home).Property(Bald.InfoSec),1)</visible>
