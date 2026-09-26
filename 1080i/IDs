@@ -96,8 +96,11 @@ VIDEO INFORMATION PAGES (DialogVideoInfo.xml, Includes_Bald_InfoPages.xml)
 5150	Recommendations fallback focus target (keeps the page escapable while empty)
 5200	Recommendations backdrop group
 5201, 5202, 5204, 5205	Cast / recommendations page groups and image
-5300-5999	Reserved for TV information rows (in progress on another branch);
-		take new info-page IDs from here and record them above.
+		TV Overview (Includes_Bald_InfoTV.xml) reuses 5000 and 5001-5004:
+		Resume S E, Play S E, next episode (script), Trailer
+5301	TV season tabs list
+5302	TV episode row (fixedlist)
+5303-5999	Free for new info-page IDs; record them above.
 
 
 DIALOGS AND CUSTOM WINDOWS
