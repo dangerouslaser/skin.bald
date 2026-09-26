@@ -164,6 +164,24 @@
 		<value condition="String.IsEqual(Container(9100).ListItem.Property(style),poster)">$LOCALIZE[31723]</value>
 		<value>$LOCALIZE[31720]</value>
 	</variable>
+	<!-- The widget editor's Sort by and Order values (1116): the selected row's sortby / sortorder, empty meaning the
+	     path's own order and Kodi's ascending. -->
+	<variable name="Bald_WidgetSortLabel">
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortby),title)">$LOCALIZE[556]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortby),year)">$LOCALIZE[562]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortby),rating)">$LOCALIZE[563]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortby),dateadded)">$LOCALIZE[570]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortby),lastplayed)">$LOCALIZE[568]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortby),playcount)">$LOCALIZE[567]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortby),time)">$LOCALIZE[180]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortby),random)">$LOCALIZE[590]</value>
+		<value condition="!String.IsEmpty(Container(9100).ListItem.Property(sortby))">$INFO[Container(9100).ListItem.Property(sortby)]</value>
+		<value>$LOCALIZE[571]</value>
+	</variable>
+	<variable name="Bald_WidgetOrderLabel">
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortorder),descending)">$LOCALIZE[585]</value>
+		<value>$LOCALIZE[584]</value>
+	</variable>
 	<!-- The widget editor's Clearlogo on artwork value (1116): the selected row's logo field, empty meaning on. -->
 	<variable name="Bald_WidgetLogoLabel">
 		<value condition="String.IsEqual(Container(9100).ListItem.Property(logo),off)">$LOCALIZE[31725]</value>

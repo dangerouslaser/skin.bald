@@ -368,7 +368,7 @@ Custom_1115_BaldSettings.xml (window 1115) and SkinSettings.xml (Kodi's "Configu
 
 Custom_1116_BaldHomeWidgets.xml (window 1116)
 9100	List
-9200	Action grouplist; 9201-9209 buttons
+9200	Action grouplist; 9201-9211 buttons (9210 sort by, 9211 order)
 
 Custom_1117_BaldHomeScreens.xml (window 1117)
 9300	Sidebar list; static items 1 Home, 10-17 hub positions 0-7 (Bald_HubCategory), 2 Live TV, 3 Add hub
