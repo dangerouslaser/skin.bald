@@ -20,13 +20,16 @@
        Bald.OSD.PauseMode       string: empty = none, hide, info
        Bald.OSD.PauseDelay      string: 0, 1, 2; empty = 3 s
        Bald.OSD.TimeDisplay     string: empty = elapsed/total, remaining = remaining/total, combined = elapsed/remaining
-       Bald.OSD.DetailsOnControls  bool (off by default)
+       Bald.OSD.DetailsLogo, DetailsFlags, DetailsPlot  bools (off by default): clearlogo, media flags and plot
+                                on the controls (1128), each on its own
        Bald.OSD.HideInfoArt, Bald.OSD.HideInfoPlot  bools
        Bald.OSD.NoGuidePanel, NoChannelsPanel, NoPlaylistPanel, NoBookmarksPanel, NoCastPanel  bools
 
      Only fade, slide and zoom; move = cubic out, fade = sine in-out, pop = back out (docs/SPEC.md 4). -->
 <includes>
 	<!-- ============ States ============ -->
+	<!-- At least one of the clearlogo, media flags or plot is set to show on the controls. -->
+	<expression name="Bald_OSDDetailsOnControls">[Skin.HasSetting(Bald.OSD.DetailsLogo) | Skin.HasSetting(Bald.OSD.DetailsFlags) | Skin.HasSetting(Bald.OSD.DetailsPlot)]</expression>
 	<!-- The OSD's button row is up: the OSD itself or one of its companion panels. -->
 	<expression name="Bald_OSDControlsUp">[Window.IsVisible(videoosd) | Window.IsVisible(musicosd) | Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124)]</expression>
 	<!-- A bottom panel that sits under the lifted bar: a down-chain row or Up Next. -->
@@ -893,6 +896,10 @@
 		<param name="height">834</param>
 		<param name="art">true</param>
 		<param name="ends">true</param>
+		<!-- Conditions for the three parts "on the controls" can switch individually (1128). -->
+		<param name="logo">true</param>
+		<param name="flags">true</param>
+		<param name="plot">true</param>
 		<definition>
 			<control type="grouplist">
 				<left>Bald_SafeLeft</left>
@@ -950,7 +957,7 @@
 					<aspectratio align="left" aligny="bottom">keep</aspectratio>
 					<fadetime>200</fadetime>
 					<texture>$VAR[PlayerClearLogoVar]</texture>
-					<visible>$EXP[Bald_PlaybackHasLogo]</visible>
+					<visible>$EXP[Bald_PlaybackHasLogo] + [$PARAM[logo]]</visible>
 				</control>
 				<control type="label">
 					<width>1100</width>
@@ -959,7 +966,7 @@
 					<font>Bald_CaptionTitle</font>
 					<textcolor>bald_ink</textcolor>
 					<label>$VAR[Bald_PlaybackTitle]</label>
-					<visible>!$EXP[Bald_PlaybackHasLogo]</visible>
+					<visible>!$EXP[Bald_PlaybackHasLogo] + [$PARAM[logo]]</visible>
 				</control>
 				<control type="group">
 					<height>14</height>
@@ -968,6 +975,7 @@
 				<control type="grouplist">
 					<width>1100</width>
 					<height>28</height>
+					<visible>$PARAM[flags]</visible>
 					<orientation>horizontal</orientation>
 					<itemgap>8</itemgap>
 					<usecontrolcoords>true</usecontrolcoords>
@@ -998,7 +1006,7 @@
 					<textcolor>bald_ink80</textcolor>
 					<label>$VAR[Bald_OSDInfoText]</label>
 					<autoscroll delay="6000" repeat="8000" time="4000">true</autoscroll>
-					<visible>!String.IsEmpty(VideoPlayer.Plot) | Skin.HasSetting(Bald.OSD.HideInfoPlot)</visible>
+					<visible>[!String.IsEmpty(VideoPlayer.Plot) | Skin.HasSetting(Bald.OSD.HideInfoPlot)] + [$PARAM[plot]]</visible>
 				</control>
 				<control type="group">
 					<height>12</height>

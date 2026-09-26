@@ -13,6 +13,11 @@
 	<onload condition="Skin.HasSetting(OSDAutoClose) + String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.SetString(Bald.OSD.AutoClose,4)</onload>
 	<onload condition="Skin.HasSetting(OSDAutoClose) + String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + !String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.SetString(Bald.OSD.AutoClose,$INFO[Skin.String(OSDAutoCloseTime)])</onload>
 	<onload condition="Skin.HasSetting(OSDAutoClose)">Skin.Reset(OSDAutoClose)</onload>
+	<!-- 0.2 "Details on the controls" became three switches (clearlogo, media flags, plot): carry it over once. -->
+	<onload condition="Skin.HasSetting(Bald.OSD.DetailsOnControls)">Skin.SetBool(Bald.OSD.DetailsLogo)</onload>
+	<onload condition="Skin.HasSetting(Bald.OSD.DetailsOnControls)">Skin.SetBool(Bald.OSD.DetailsFlags)</onload>
+	<onload condition="Skin.HasSetting(Bald.OSD.DetailsOnControls)">Skin.SetBool(Bald.OSD.DetailsPlot)</onload>
+	<onload condition="Skin.HasSetting(Bald.OSD.DetailsOnControls)">Skin.Reset(Bald.OSD.DetailsOnControls)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.Reset(OSDAutoCloseTime)</onload>
 	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
 	<controls />

@@ -1209,9 +1209,18 @@ msgid "Time display"
 msgstr ""
 
 #: /1080i/Custom_1119_BaldPlayback.xml
-#. Playback settings: title, info line and plot at the top while the OSD is up
-msgctxt "#31647"
-msgid "Details on the controls"
+msgctxt "#31880"
+msgid "Clearlogo on the controls"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31881"
+msgid "Media flags on the controls"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31882"
+msgid "Plot on the controls"
 msgstr ""
 
 #: /1080i/Custom_1119_BaldPlayback.xml
