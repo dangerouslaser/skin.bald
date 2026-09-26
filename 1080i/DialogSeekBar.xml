@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald seek bar (docs/SPEC.md 5, "Playback (proposed)"): the bottom block shown with the OSD, the info overlay and
-     the time display. Title or clearlogo, meta and flags on the left, the time on the right, a thin track with the
-     accent playhead, all over the bottom scrim. Started from Kodi 22 Estuary's DialogSeekBar.xml (GPL-2.0-or-later,
-     see LICENSE-Estuary.txt); the window's visibility conditions are Estuary's.
-     Kodi (CGUIDialogSeekBar) selects the position of 401 (file progress) and 403 (timeshift progress); 402 (EPG event
-     progress) is optional and not drawn. 40000 is Estuary's seek-state label, kept. Includes_Bald_Playback.xml holds
-     the shared pieces. -->
+<!-- Bald seek layer (docs/SPEC.md 5.16, "Video OSD"): the persistent bottom of the player. A field gradient, Home's
+     clock at the top right, a status line and the times either side of a thin accent bar with the cache line, chapter
+     and cut ticks and a seek-preview nib. The layer rests low and lifts when the OSD or a panel opens
+     (Bald_OSDLift); the info overlay (window 1127) takes its place. Shared pieces: Includes_Bald_OSD.xml and
+     Includes_Bald_Playback.xml. Started from Kodi 22 Estuary's DialogSeekBar.xml (GPL-2.0-or-later, see
+     LICENSE-Estuary.txt); the layout and visibility rules are Bald's.
+     Kodi (CGUIDialogSeekBar) selects the position of 401 (file progress, or the seek target while seeking), 402 (EPG
+     event progress with the seek offset) and 403 (timeshift progress). 40000 is Estuary's seek-state label, kept. -->
 <window>
 	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
-	<visible>![Window.IsActive(sliderdialog) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) | Window.IsActive(pvrguideinfo) | Window.IsActive(1110)]</visible>
-	<visible>Player.Seeking | Player.HasPerformedSeek(3) | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
+	<visible>!Window.IsActive(sliderdialog) + !Window.IsVisible(playerprocessinfo) + !Player.HasGame</visible>
+	<visible>$EXP[Bald_OSDSeekLayer]</visible>
 	<include>Bald_PlaybackAnimWindow</include>
 	<depth>DepthOSD</depth>
 	<zorder>0</zorder>
@@ -27,118 +28,25 @@
 			<label>$INFO[PVR.ChannelNumberInput]</label>
 			<visible>!String.IsEmpty(PVR.ChannelNumberInput)</visible>
 		</control>
-		<!-- Bottom block. -->
+		<include>Bald_OSDScrims</include>
+		<!-- Clock, top right as on Home, with the finish time under it. -->
 		<control type="group">
-			<visible>$EXP[Bald_PlaybackBottomBlock]</visible>
-			<visible>!Player.HasGame</visible>
-			<include>Bald_PlaybackAnimVisible</include>
-			<include>Bald_PlaybackScrim</include>
-			<!-- The info overlay's plot sits higher, so the scrim reaches further up while it shows. -->
-			<control type="group">
-				<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Window.IsVisible(playerprocessinfo)</visible>
-				<include>Bald_PlaybackAnimFade</include>
-				<include content="Bald_PlaybackScrim">
-					<param name="top">-560</param>
-					<param name="height">1640</param>
-				</include>
-			</control>
-			<include>Bald_PlaybackTitleBlock</include>
-			<include>Bald_PlaybackTimes</include>
-			<!-- Recording mark, right column: accent dot and "Currently recording", while the OSD is closed. -->
-			<control type="grouplist">
-				<left>Bald_PreviewLeft</left>
-				<top>568</top>
-				<width>528</width>
-				<height>24</height>
-				<orientation>horizontal</orientation>
-				<align>right</align>
-				<itemgap>10</itemgap>
-				<usecontrolcoords>true</usecontrolcoords>
-				<visible>!Window.IsVisible(videoosd) + !Window.IsVisible(musicosd)</visible>
-				<visible>[PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive] | PVR.IsPlayingActiveRecording</visible>
-				<include>Bald_PlaybackAnimFade</include>
-				<control type="image">
-					<top>8</top>
-					<width>8</width>
-					<height>8</height>
-					<texture colordiffuse="bald_accent">bald/dot.png</texture>
-				</control>
-				<control type="label">
-					<width>auto</width>
-					<height>24</height>
-					<aligny>center</aligny>
-					<font>Bald_Accent</font>
-					<textcolor>bald_accent</textcolor>
-					<label>$LOCALIZE[19158]</label>
-				</control>
-			</control>
-			<control type="label" id="40000">
-				<left>Bald_PreviewLeft</left>
-				<top>604</top>
-				<width>528</width>
-				<height>28</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>Bald_Accent</font>
-				<textcolor>bald_accent</textcolor>
-				<label>$VAR[Bald_PlaybackState]</label>
-			</control>
-			<!-- Live TV: timeshift buffer and programme progress, their times, and the timeshift playhead. -->
-			<control type="group">
-				<visible>VideoPlayer.Content(LiveTV)</visible>
-				<include>Bald_PlaybackPVRTrack</include>
-				<include>Bald_PlaybackTrackMarks</include>
-				<include>Bald_PlaybackPVRTimes</include>
-				<control type="slider" id="403">
-					<left>Bald_SafeLeft</left>
-					<top>762</top>
-					<width>1728</width>
-					<include>Bald_PlaybackNib</include>
-					<visible>Player.SeekEnabled + !Player.ChannelPreviewActive</visible>
-				</control>
-			</control>
-			<!-- Files: cached and played parts, markers and the playhead. -->
-			<control type="group">
-				<visible>!VideoPlayer.Content(LiveTV)</visible>
-				<include>Bald_PlaybackTrack</include>
-				<control type="slider" id="401">
-					<left>Bald_SafeLeft</left>
-					<top>762</top>
-					<width>1728</width>
-					<include>Bald_PlaybackNib</include>
-					<visible>Player.SeekEnabled</visible>
-				</control>
-			</control>
+			<visible>!$EXP[infodialog_active]</visible>
+			<include>Bald_OSDAnimFade</include>
+			<include>Bald_PlaybackScrimTop</include>
+			<include>Bald_PlaybackClock</include>
 		</control>
-		<!-- Info overlay (Info in full screen): tagline and plot above the title, and what plays next on the hint line.
-		     Estuary's LiveTV and video panels, merged; their visibility conditions are kept. -->
+		<!-- The lifting block: music title, status line, times and bar. The info overlay replaces it; the Live TV lists
+		     push it aside. -->
 		<control type="group">
-			<visible>!Window.IsVisible(playerprocessinfo)</visible>
-			<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + [VideoPlayer.Content(LiveTV) | Window.IsActive(fullscreenvideo)]</visible>
-			<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | !Player.Seeking | !Player.HasPerformedSeek(3) | !Player.Forwarding | !Player.Rewinding | !Player.Paused</visible>
-			<include content="Bald_PlaybackAnimVisible">
-				<param name="delay">250</param>
-			</include>
-			<control type="textbox">
-				<left>Bald_SafeLeft</left>
-				<top>386</top>
-				<width>1000</width>
-				<height>150</height>
-				<font>Bald_CaptionPlot</font>
-				<textcolor>bald_ink80</textcolor>
-				<label fallback="19055">$INFO[VideoPlayer.Tagline,,[CR]]$INFO[VideoPlayer.Plot]</label>
-				<autoscroll delay="5000" repeat="7500" time="5000">true</autoscroll>
-			</control>
-			<control type="label">
-				<left>Bald_SafeLeft</left>
-				<top>Bald_HintTop</top>
-				<width>1100</width>
-				<height>24</height>
-				<aligny>center</aligny>
-				<font>Bald_Hint</font>
-				<textcolor>bald_ink60</textcolor>
-				<label>$VAR[Bald_PlaybackNext]</label>
-				<visible>[VideoPlayer.Content(LiveTV) + [VideoPlayer.HasEpg | RDS.HasRadioText]] | [!VideoPlayer.Content(LiveTV) + Integer.IsLess(Playlist.Position(video), Playlist.Length(video))]</visible>
+			<visible>!Window.IsVisible(1127) + !$EXP[Bald_OSDPVRPanelUp]</visible>
+			<include>Bald_OSDAnimFade</include>
+			<include>Bald_OSDLift</include>
+			<include>Bald_OSDMusicTitle</include>
+			<include>Bald_OSDSeekBlock</include>
+			<!-- Estuary's seek-state label, kept for anything that reads it by id; not drawn. -->
+			<control type="label" id="40000">
+				<include>HiddenObject</include>
 			</control>
 		</control>
 	</controls>

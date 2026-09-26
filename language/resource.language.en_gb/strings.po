@@ -1020,39 +1020,74 @@ msgid "Right for the next frame"
 msgstr ""
 
 #: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
 #. OSD hint: the seek row is above the buttons
 msgctxt "#31618"
 msgid "Up to seek"
 msgstr ""
 
 #: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
 #. OSD hint when there is no seek row, and the touch back button
 msgctxt "#31619"
 msgid "Back to close"
 msgstr ""
 
 #: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
 #. OSD stop button
 msgctxt "#31620"
 msgid "Stop"
 msgstr ""
 
 #: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
 #. OSD play/pause button while playing
 msgctxt "#31621"
 msgid "Pause"
 msgstr ""
 
-#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
 #. Prefix of the next item on the info overlay
 msgctxt "#31622"
 msgid "Up next"
 msgstr ""
 
 #: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
 #. Seek row hint: the buttons are below
 msgctxt "#31623"
 msgid "Down for controls"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD status line: playing normally
+msgctxt "#31624"
+msgid "Playing"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD back button with an earlier chapter
+msgctxt "#31625"
+msgid "Previous chapter"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD forward button with a later chapter
+msgctxt "#31626"
+msgid "Next chapter"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD hint: Down opens the panels under the controls
+msgctxt "#31627"
+msgid "Down for more"
+msgstr ""
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD: the seek slider over the bar
+msgctxt "#31628"
+msgid "Seek"
 msgstr ""
 
 # Bald global overlays: 31650-31659.
@@ -1226,6 +1261,7 @@ msgstr ""
 #: /1080i/View_521_Bald_TV_Alternates.xml
 #: /1080i/script-globalsearch.xml
 #: /1080i/Includes_Bald_Browse.xml
+#: /1080i/Includes_Bald_OSD.xml
 #. Runtime unit after a number of minutes, "52 min"
 msgctxt "#31710"
 msgid "min"
@@ -1293,9 +1329,9 @@ msgctxt "#31719"
 msgid "to"
 msgstr ""
 
-#. Home row style names (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
 #: /1080i/Custom_1116_BaldHomeWidgets.xml
 #: /1080i/Includes_Bald_Configure.xml
+#. Home row style names (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
 msgctxt "#31720"
 msgid "Fanart"
 msgstr ""
@@ -1318,9 +1354,9 @@ msgctxt "#31723"
 msgid "Poster"
 msgstr ""
 
-#. Row clearlogo on the art frame (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
 #: /1080i/Custom_1116_BaldHomeWidgets.xml
 #: /1080i/Includes_Bald_Configure.xml
+#. Row clearlogo on the art frame (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
 msgctxt "#31724"
 msgid "On"
 msgstr ""
@@ -1331,14 +1367,14 @@ msgctxt "#31725"
 msgid "Off"
 msgstr ""
 
-#. Bald Appearance, Behavior: hold a splash at startup until every Home row has loaded.
 #: /1080i/Custom_1118_BaldAppearance.xml
+#. Bald Appearance, Behavior: hold a splash at startup until every Home row has loaded.
 msgctxt "#31726"
 msgid "Preload Home at startup"
 msgstr ""
 
-#. The skin's name as the startup splash wordmark, with its full stop; keep as is.
 #: /1080i/Includes_Bald_Home.xml
+#. The skin's name as the startup splash wordmark, with its full stop; keep as is.
 msgctxt "#31727"
 msgid "Bald."
 msgstr ""
@@ -1554,8 +1590,8 @@ msgctxt "#31767"
 msgid "Style"
 msgstr ""
 
-#. The row's own clearlogo on the Home art frame, not the tile logo of the Fanart with logo style.
 #: /1080i/Custom_1116_BaldHomeWidgets.xml
+#. The row's own clearlogo on the Home art frame, not the tile logo of the Fanart with logo style.
 msgctxt "#31768"
 msgid "Clearlogo on artwork"
 msgstr ""
@@ -2191,9 +2227,9 @@ msgctxt "#31930"
 msgid "Select an action for this item."
 msgstr ""
 
-#. Font set names: Kodi's Interface > Skin > Fonts list and Bald Settings > Appearance > Typography
 #: /1080i/Font.xml
 #: /1080i/Includes_Bald_Configure.xml
+#. Font set names: Kodi's Interface > Skin > Fonts list and Bald Settings > Appearance > Typography
 msgctxt "#31940"
 msgid "Instrument Sans"
 msgstr ""

@@ -1,34 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald playback chrome (docs/SPEC.md 5, "Playback (proposed)"), shared by the player windows that started from Kodi 22
-     Estuary: DialogSeekBar, VideoOSD, MusicOSD, PlayerControls, VideoOSDBookmarks, Custom_1109 (pause and seek header),
-     Custom_1110 (tempo), Custom_1101 (OSD settings), DialogSlider, DialogSubtitles and VideoFullScreen.
+<!-- Bald playback chrome (docs/SPEC.md 5.16), shared by the player windows that started from Kodi 22 Estuary: MusicOSD,
+     PlayerControls, VideoOSDBookmarks, Custom_1110 (tempo), Custom_1101 (OSD settings), DialogSlider, DialogSubtitles
+     and VideoFullScreen, and the pieces the video OSD reuses (Includes_Bald_OSD.xml holds the video OSD itself: the seek
+     layer, the buttons and the panels).
 
      Layout, 1080i, 96 px safe margin:
-       bottom block (seek bar dialog): logo box 96,556 480 x 120, or the title at y 628; meta y 688; flags y 728;
-         the right column (x 1296 to 1824) holds the recording mark y 568, the seek state y 604, the time y 640 and
-         "Ends at" y 688; the track is a 4 px line at y 768 across 96 to 1824 with a 16 px accent playhead.
-       OSD buttons (VideoOSD, MusicOSD): 64 x 84 icon buttons at y 818, the 56 px icon at the top and an 8 px accent
-         dot under the focused one; transport on the left from x 96, tools on the right ending at x 1824.
+       track pieces: a 4 px line with fills and markers, positioned by the caller (the seek layer draws it from x 264,
+         1392 px wide, at y 930, lifted to y 794 while an OSD is up).
+       music OSD buttons: 64 x 84 icon buttons at y 818 with an 8 px accent dot under the focused one; transport on the
+         left from x 96, tools on the right ending at x 1824. Its title block sits over the seek layer's status line.
        hints: y 954, sentence case, right-aligned to x 1824 with the dot separator (Bald_InfoHintPair).
-       pause and seek header (Custom_1109): state and time at 96,108 and 96,146, a 1200 px track at y 206, and Home's
-         clock at 1440,104 with the finish time under it at y 248.
      Only fade, slide and zoom; move = cubic out, fade = sine in-out, pop = back out (docs/SPEC.md 4). -->
 <includes>
 	<!-- ============ Conditions ============ -->
-	<!-- One of the player's "info" states: the OSD, the info overlay, the time display or a PVR overlay is up. -->
 	<!-- The focused OSD control has a state after its name (Bald_PlaybackHelpDetail). -->
 	<expression name="Bald_PlaybackHelpHasDetail">[[Control.HasFocus(87) + Window.IsActive(playercontrols)] | [Control.HasFocus(70052) + !String.IsEmpty(MusicPlayer.UserRating)] | [Control.HasFocus(70053) + !String.IsEmpty(Playlist.Repeat)] | Control.HasFocus(70054)]</expression>
-	<expression name="Bald_PlaybackInfoState">[Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)]</expression>
-	<!-- Seeking, paused, fast forward or rewind, or typing a seek time. -->
-	<expression name="Bald_PlaybackSeekState">[!String.IsEmpty(Player.SeekNumeric) | Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused]</expression>
-	<!-- The seek bar dialog's bottom block (Estuary's condition, unchanged). -->
-	<expression name="Bald_PlaybackBottomBlock">[$EXP[Bald_PlaybackInfoState] | !$EXP[Bald_PlaybackSeekState] | !String.IsEmpty(PVR.ChannelNumberInput)]</expression>
-	<!-- Custom_1109's pause and seek header: seeking or paused with no info state (Estuary's condition, unchanged). -->
-	<expression name="Bald_PlaybackPauseHeader">[[!$EXP[Bald_PlaybackInfoState] + $EXP[Bald_PlaybackSeekState]] | !String.IsEmpty(PVR.ChannelNumberInput)]</expression>
-	<!-- Custom_1109's top chrome in the info states (Estuary's condition, including its precedence, unchanged). -->
-	<expression name="Bald_PlaybackTopChrome">[Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) + ![Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused] | !String.IsEmpty(PVR.ChannelNumberInput)]</expression>
-	<!-- The header has been paused on screen for 5 s: it leaves, as Estuary's top bar did. -->
-	<expression name="Bald_PlaybackPauseSettled">[Player.Paused + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1109_topbaroverlay),5)]</expression>
 	<expression name="Bald_PlaybackHasLogo">[$EXP[Bald_ShowClearlogo] + [!String.IsEmpty(Player.Art(clearlogo)) | !String.IsEmpty(Player.Art(tvshow.clearlogo))]]</expression>
 
 	<!-- ============ Labels ============ -->
@@ -50,37 +36,12 @@
 	<variable name="Bald_PlaybackChapter">
 		<value condition="Player.ChapterCount">$INFO[Player.Chapter, · $LOCALIZE[21396] ]$INFO[Player.ChapterCount,/]</value>
 	</variable>
-	<!-- Elapsed and total time; a typed seek time wins. Estuary's SeekTimeLabelVar without the bold. -->
-	<variable name="Bald_PlaybackTime">
-		<value condition="!String.IsEmpty(Player.SeekNumeric)">$INFO[Player.SeekNumeric(hh:mm:ss)]</value>
-		<value condition="Player.Seeking + VideoPlayer.HasEPG">$INFO[PVR.EpgEventSeekTime]$INFO[PVR.EpgEventDuration, / ]</value>
-		<value condition="Player.Seeking">$INFO[Player.SeekTime]$INFO[Player.Duration, / ]</value>
-		<value condition="VideoPlayer.HasEpg">$INFO[PVR.EpgEventElapsedTime]$INFO[PVR.EpgEventDuration, / ]</value>
-		<value>$INFO[Player.Time]$INFO[Player.Duration, / ]</value>
-	</variable>
-	<!-- What the player is doing: seek step, paused, fast forward, rewind or play speed. Estuary's SeekLabel, uncoloured. -->
-	<variable name="Bald_PlaybackState">
-		<value condition="!String.IsEmpty(Player.SeekStepSize)">$LOCALIZE[773] $INFO[Player.SeekStepSize]</value>
-		<value condition="!String.IsEmpty(Player.SeekOffset) + Player.HasPerformedSeek(3)">$LOCALIZE[773] $INFO[Player.SeekOffset]</value>
-		<value condition="Player.Paused">$LOCALIZE[112]</value>
-		<value condition="Player.Forwarding">$LOCALIZE[31039] $VAR[VideoPlayerForwardRewindVar]</value>
-		<value condition="Player.Rewinding">$LOCALIZE[31038] $VAR[VideoPlayerForwardRewindVar]</value>
-		<value condition="Player.IsTempo">$LOCALIZE[31142] $INFO[Player.PlaySpeed]</value>
-	</variable>
 	<!-- Under the time: timeshift position, "Live", or when the programme or video ends. -->
 	<variable name="Bald_PlaybackEnds">
 		<value condition="VideoPlayer.Content(LiveTV) + PVR.IsTimeShift">$LOCALIZE[31026] $INFO[PVR.TimeshiftCur] (-$INFO[PVR.TimeshiftOffset])</value>
 		<value condition="Player.IsLive">$LOCALIZE[31081]</value>
 		<value condition="VideoPlayer.HasEpg">$INFO[PVR.EpgEventFinishTime,$LOCALIZE[31080] ]</value>
 		<value condition="Player.HasVideo + !Player.HasGame + !String.IsEmpty(Player.Duration)">$INFO[Player.FinishTime,$LOCALIZE[31080] ]</value>
-	</variable>
-	<!-- Next item on the info overlay's hint line. -->
-	<variable name="Bald_PlaybackNext">
-		<value condition="RDS.HasRadioText">$LOCALIZE[14304] · $INFO[RDS.GetLine(0)]</value>
-		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.NextStartTime,$LOCALIZE[31622] · ]$INFO[VideoPlayer.NextTitle, ]</value>
-		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.offset(1).TVShowTitle,$LOCALIZE[31622] · ]$INFO[VideoPlayer.offset(1).Season, · S]$INFO[VideoPlayer.offset(1).Episode, E]$INFO[VideoPlayer.offset(1).Title, · ]</value>
-		<value condition="Window.IsActive(visualisation)">$INFO[MusicPlayer.offset(1).Title,$LOCALIZE[31622] · ]$INFO[MusicPlayer.offset(1).Artist, · ]</value>
-		<value>$INFO[VideoPlayer.offset(1).Title,$LOCALIZE[31622] · ]$INFO[VideoPlayer.offset(1).Year, · ]</value>
 	</variable>
 	<!-- First hint: what the focused OSD control does (Estuary's OSDHelpTextVar, plus the transport buttons). Where
 	     Estuary added a state ("Random · On"), the state is Bald_PlaybackHelpDetail, shown after the hint line's own
@@ -334,86 +295,6 @@
 			</control>
 		</definition>
 	</include>
-	<!-- The whole seek track for files: line, cached part (45%), played part (full ink) and markers. -->
-	<include name="Bald_PlaybackTrack">
-		<param name="left">96</param>
-		<param name="width">1728</param>
-		<param name="top">768</param>
-		<param name="fill_top">766</param>
-		<definition>
-			<include content="Bald_PlaybackTrackLine"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[top]</param></include>
-			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><param name="color">bald_ink45</param><info>Player.ProgressCache</info></include>
-			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><info>Player.Progress</info></include>
-			<include content="Bald_PlaybackTrackMarks"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param></include>
-		</definition>
-	</include>
-	<!-- The seek track for live TV: the timeshift buffer (45%) and the programme played so far (full ink); on a channel
-	     preview, the programme's progress. Replaces Estuary's PVRProgress bars; its time labels are Bald_PlaybackPVRTimes. -->
-	<include name="Bald_PlaybackPVRTrack">
-		<param name="left">96</param>
-		<param name="width">1728</param>
-		<param name="top">768</param>
-		<param name="fill_top">766</param>
-		<definition>
-			<include content="Bald_PlaybackTrackLine"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[top]</param></include>
-			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><param name="color">bald_ink45</param><param name="visible">Player.SeekEnabled + !Player.ChannelPreviewActive</param><info>PVR.TimeshiftProgressBufferEnd</info><info2>PVR.TimeshiftProgressBufferStart</info2></include>
-			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><param name="visible">VideoPlayer.HasEPG + !Player.ChannelPreviewActive</param><info>PVR.TimeshiftProgressPlayPos</info><info2>PVR.TimeshiftProgressEpgStart</info2></include>
-			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><param name="visible">Player.ChannelPreviewActive</param><info>PVR.EpgEventProgress</info></include>
-		</definition>
-	</include>
-	<!-- Programme start and end under the live track's ends (Estuary's PVRProgress labels). -->
-	<include name="Bald_PlaybackPVRTimes">
-		<param name="left">96</param>
-		<param name="width">1728</param>
-		<param name="top">784</param>
-		<definition>
-			<control type="group">
-				<left>$PARAM[left]</left>
-				<top>$PARAM[top]</top>
-				<width>$PARAM[width]</width>
-				<include>Bald_PlaybackAnimFade</include>
-				<visible>[[Player.SeekEnabled | VideoPlayer.HasEPG] + !Player.ChannelPreviewActive] | Player.ChannelPreviewActive</visible>
-				<control type="label">
-					<left>0</left>
-					<width>400</width>
-					<height>24</height>
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$INFO[PVR.TimeshiftProgressStartTime]</label>
-					<visible>!Player.ChannelPreviewActive</visible>
-				</control>
-				<control type="label">
-					<right>0</right>
-					<width>400</width>
-					<height>24</height>
-					<align>right</align>
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$INFO[PVR.TimeshiftProgressEndTime]</label>
-					<visible>!Player.ChannelPreviewActive</visible>
-				</control>
-				<control type="label">
-					<left>0</left>
-					<width>400</width>
-					<height>24</height>
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$INFO[VideoPlayer.StartTime]</label>
-					<visible>Player.ChannelPreviewActive</visible>
-				</control>
-				<control type="label">
-					<right>0</right>
-					<width>400</width>
-					<height>24</height>
-					<align>right</align>
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$INFO[VideoPlayer.EndTime]</label>
-					<visible>Player.ChannelPreviewActive</visible>
-				</control>
-			</control>
-		</definition>
-	</include>
 	<!-- Body of a seek slider: no bar (the track is drawn underneath) and the 16 px playhead in the accent. With no bar
 	     texture Kodi draws the nib at its own 16 px, from the control's top: <top> is the track's top minus 6. -->
 	<include name="Bald_PlaybackNib">
@@ -430,12 +311,13 @@
 			<textureslidernibdisabled />
 		</definition>
 	</include>
-	<!-- Body of an OSD mouse-seek slider laid over the seek dialog's track: invisible, since the seek dialog already
+	<!-- Body of an OSD mouse-seek slider laid over the seek layer's lifted bar (Includes_Bald_OSD.xml, x 264 to 1656,
+	     y 796): invisible, since the seek dialog already
 	     draws the playhead, but still a seek target for the mouse (Estuary's sliders with <action>seek</action>). -->
 	<include name="Bald_PlaybackSeekArea">
-		<left>Bald_SafeLeft</left>
-		<top>762</top>
-		<width>1728</width>
+		<left>264</left>
+		<top>788</top>
+		<width>1392</width>
 		<height>16</height>
 		<!-- Transparent, nib-sized bar for the same reason as Bald_PlaybackNib; the nibs stay empty (invisible). -->
 		<texturesliderbar>bald/slider_clear.png</texturesliderbar>
@@ -444,13 +326,13 @@
 		<textureslidernibfocus />
 		<textureslidernibdisabled />
 	</include>
-	<!-- Focus mark for the seek row: the menu's accent dot, 12 px left of the track, while the hidden seek button (87)
-	     has focus. -->
+	<!-- Focus mark for the seek row: the menu's accent dot, 12 px left of the seek layer's lifted bar (x 264, y 796),
+	     while the hidden seek button (87) has focus. -->
 	<include name="Bald_PlaybackSeekFocus">
-		<param name="top">766</param>
+		<param name="top">792</param>
 		<definition>
 			<control type="image">
-				<left>76</left>
+				<left>244</left>
 				<top>$PARAM[top]</top>
 				<width>8</width>
 				<height>8</height>
@@ -517,32 +399,6 @@
 		<include content="Bald_FlagChip"><param name="label">$MAP[DefaultCodecMap, VideoPlayer.AudioCodec]</param><param name="visible">!String.IsEmpty(VideoPlayer.AudioCodec)</param></include>
 		<include content="Bald_FlagChip"><param name="label">7.1</param><param name="visible">String.IsEqual(VideoPlayer.AudioChannels,8)</param></include>
 		<include content="Bald_FlagChip"><param name="label">5.1</param><param name="visible">String.IsEqual(VideoPlayer.AudioChannels,6)</param></include>
-	</include>
-	<!-- Right column: elapsed and total time, and what comes at the end. -->
-	<include name="Bald_PlaybackTimes">
-		<control type="label">
-			<left>Bald_PreviewLeft</left>
-			<top>640</top>
-			<width>528</width>
-			<height>36</height>
-			<align>right</align>
-			<aligny>center</aligny>
-			<font>Bald_InfoTagline</font>
-			<textcolor>bald_ink</textcolor>
-			<label>$VAR[Bald_PlaybackTime]</label>
-			<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
-		</control>
-		<control type="label">
-			<left>Bald_PreviewLeft</left>
-			<top>688</top>
-			<width>528</width>
-			<height>28</height>
-			<align>right</align>
-			<aligny>center</aligny>
-			<font>Bald_CaptionMeta</font>
-			<textcolor>bald_ink60</textcolor>
-			<label>$VAR[Bald_PlaybackEnds]</label>
-		</control>
 	</include>
 
 	<!-- ============ Buttons ============ -->
@@ -651,7 +507,7 @@
 		</control>
 	</include>
 
-	<!-- ============ Pause and seek header (Custom_1109) ============ -->
+	<!-- ============ Clock (the seek layer, DialogSeekBar) ============ -->
 	<!-- Home's clock and date position: the time at 1440,104 in Bald_Clock and the finish time where the date is, with
 	     the mute mark after it. -->
 	<include name="Bald_PlaybackClock">

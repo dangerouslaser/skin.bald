@@ -22,7 +22,7 @@ PLAYBACK_RANGE = range(31616, 31650)
 # xbmc master: CGUIDialogSeekBar, CGUIWindowFullScreen, CGUIDialogSlider, CGUIDialogVideoBookmarks,
 # CGUIDialogSubtitles). Windows whose class binds nothing list only their skin ids.
 WINDOWS = {
-    "DialogSeekBar.xml": {"401": "slider", "403": "slider", "40000": "label"},
+    "DialogSeekBar.xml": {"401": "slider", "402": "slider", "403": "slider", "40000": "label"},
     "VideoOSD.xml": {"87": "button", "200": "group", "201": "grouplist", "202": "grouplist", "600": "radiobutton",
                      "601": "radiobutton", "602": "radiobutton", "603": "radiobutton", "606": "radiobutton",
                      "607": "radiobutton", "608": "radiobutton", "804": "radiobutton",
@@ -37,7 +37,6 @@ WINDOWS = {
                            "602": "radiobutton", "603": "radiobutton", "605": "radiobutton", "607": "radiobutton",
                            "704": "radiobutton"},
     "VideoOSDBookmarks.xml": {"2": "button", "3": "button", "4": "button", "11": "panel", "9001": "grouplist"},
-    "Custom_1109_TopBarOverlay.xml": {},
     "Custom_1110_TempoControl.xml": {"11": "button", "12": "button"},
     "DialogFullScreenInfo.xml": {"999": "button"},
     "VideoFullScreen.xml": {"0": "group", "1": "group", "10": "label", "11": "label", "12": "label"},
@@ -46,6 +45,9 @@ WINDOWS = {
     "DialogSubtitles.xml": {"73": "scrollbar", "100": "label", "110": "image", "120": "list", "130": "grouplist",
                             "140": "label", "150": "list", "160": "button", "250": "group"},
 }
+# Windows the Bald video OSD redesigned (Includes_Bald_OSD.xml, tests/test_osd.py): their layout, navigation and
+# visibility are Bald's own, so only the ids Kodi binds are compared with Estuary.
+REDESIGNED = {"DialogSeekBar.xml"}
 # Files restyled by this pass: the windows plus their includes.
 FILES = list(WINDOWS) + ["Includes_Bald_Playback.xml", "Includes_SettingsDialog.xml"]
 # Estuary includes still called: they carry no Estuary colours or fonts (the popup surface and buttons are Bald).
@@ -115,7 +117,7 @@ class PlaybackContractTests(unittest.TestCase):
     @unittest.skipUnless(ESTUARY.is_dir(), "Kodi 22's bundled Estuary is not installed")
     def test_every_estuary_id_keeps_its_actions_and_visibility(self):
         bodies = expressions()
-        for name in WINDOWS:
+        for name in sorted(set(WINDOWS) - REDESIGNED):
             estuary_root = _estuary_window(name)
             estuary = _ids(estuary_root)
             parents = {child: node for node in estuary_root.iter() for child in node}
@@ -146,21 +148,11 @@ class PlaybackContractTests(unittest.TestCase):
     @unittest.skipUnless(ESTUARY.is_dir(), "Kodi 22's bundled Estuary is not installed")
     def test_window_visibility_is_estuarys(self):
         bodies = expressions()
-        for name in ("DialogSeekBar.xml", "Custom_1109_TopBarOverlay.xml", "PlayerControls.xml"):
+        for name in ("PlayerControls.xml",):
             old = [v.text for v in ET.parse(ESTUARY / name).getroot().findall("visible")]
             new = [v.text for v in ET.parse(SKIN / name).getroot().findall("visible")]
             with self.subTest(window=name):
                 self.assertTrue(equivalent(all_of(new), all_of(old), bodies))
-
-    @unittest.skipUnless(ESTUARY.is_dir(), "Kodi 22's bundled Estuary is not installed")
-    def test_overlay_states_match_estuarys_conditions(self):
-        bodies = expressions()
-        seekbar = ET.parse(ESTUARY / "DialogSeekBar.xml").getroot()
-        bottom = seekbar.find("controls/control[@type='group']/visible").text
-        self.assertTrue(equivalent("$EXP[Bald_PlaybackBottomBlock]", bottom, bodies))
-        top = ET.parse(ESTUARY / "Custom_1109_TopBarOverlay.xml").getroot().findall("controls/control")
-        self.assertTrue(equivalent("$EXP[Bald_PlaybackPauseHeader]", top[0].findtext("visible"), bodies))
-        self.assertTrue(equivalent("$EXP[Bald_PlaybackTopChrome]", top[1].findtext("visible"), bodies))
 
     def test_no_window_adds_an_onback_previousmenu(self):
         for name in FILES:
@@ -251,7 +243,7 @@ class PlaybackStyleTests(unittest.TestCase):
     def test_seek_track_is_thin_ink_with_an_accent_playhead(self):
         root = resolve_window("DialogSeekBar.xml")
         ids = _ids(root)
-        for control_id in ("401", "403"):
+        for control_id in ("401", "402", "403"):
             slider = ids[control_id]
             self.assertEqual(slider.findtext("textureslidernib"), "bald/slider_nib.png")
             self.assertEqual(slider.find("textureslidernib").get("colordiffuse"), "bald_accent")
@@ -263,7 +255,7 @@ class PlaybackStyleTests(unittest.TestCase):
         self.assertIn("bald_ink28", {node.find("texture").get("colordiffuse") for node in lines})
         played = [node for node in root.iter("control")
                   if node.get("type") == "progress" and node.findtext("info") == "Player.Progress"]
-        self.assertEqual([node.find("midtexture").get("colordiffuse") for node in played], ["bald_ink"])
+        self.assertEqual([node.find("midtexture").get("colordiffuse") for node in played], ["bald_accent"])
 
     def test_osd_sits_on_the_bottom_scrim_with_hints_on_the_hint_line(self):
         scrim, = expand_call("Bald_PlaybackScrim")
@@ -277,9 +269,10 @@ class PlaybackStyleTests(unittest.TestCase):
             with self.subTest(window=name):
                 self.assertEqual(len(groups), 1)
 
-    def test_pause_header_has_homes_clock(self):
-        root = resolve_window("Custom_1109_TopBarOverlay.xml")
-        clocks = [node for node in root.iter("control") if node.findtext("font") == "Bald_Clock"]
+    def test_seek_layer_has_homes_clock(self):
+        root = resolve_window("DialogSeekBar.xml")
+        clocks = [node for node in root.iter("control")
+                  if node.findtext("font") == "Bald_Clock" and "System.Time" in (node.findtext("label") or "")]
         self.assertEqual(len(clocks), 1)
         self.assertEqual(clocks[0].findtext("label"), "$INFO[System.Time(hh:mm)]")
 

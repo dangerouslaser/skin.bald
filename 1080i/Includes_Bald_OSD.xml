@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald video OSD (docs/SPEC.md 5.16, "Video OSD"). Composition and behaviour follow Arctic Fuse 3's OSD, rewritten in
+     Bald's own layout, fonts, palette and motion; no Arctic Fuse code or text is used.
+
+     Layers, bottom to top:
+       seek layer (DialogSeekBar, zorder 0): bottom field gradient, clock, status line, times either side of a thin
+         accent bar with the cache line, chapter and cut ticks and the 401/402/403 seek-preview nib. It rests low (bar
+         at y 932) and lifts 136 px while the OSD or a companion panel is up, and 496 px while a down-chain panel is up.
+       VideoOSD (zorder 1): transport buttons on the left (play/pause, back, forward, stop), tools on the right (info,
+         audio, subtitles, video), an invisible seek slider over the lifted bar. 80 x 96 buttons at y 836.
+       companion panels (1120-1124, zorder 1): opened by focusing a tool (or the forward button). Each repeats the
+         button row: the focused button for real, the others as invisible buttons with the same ids that close the
+         panel and hand focus back to the OSD (the "fake button" pattern).
+       down-chain panels (PVR guide, PVR channels, 1125 playlist or episodes, videobookmarks, 1126 cast): Down from the
+         buttons opens the first one that is enabled and applies; Down in each opens the next.
+       info overlay (1127) and details on controls (1128): auto-shown dialogs with the playing item's details.
+
+     Settings (Bald Settings, Playback, window 1119) are skin settings named so that unset means the default:
+       Bald.OSD.AutoClose       string, seconds; empty = never
+       Bald.OSD.PauseMode       string: empty = none, hide, info
+       Bald.OSD.PauseDelay      string: 0, 1, 2; empty = 3 s
+       Bald.OSD.TimeDisplay     string: empty = elapsed/total, remaining = remaining/total, combined = elapsed/remaining
+       Bald.OSD.DetailsOnControls  bool (off by default)
+       Bald.OSD.HideInfoArt, Bald.OSD.HideInfoPlot  bools
+       Bald.OSD.NoGuidePanel, NoChannelsPanel, NoPlaylistPanel, NoBookmarksPanel, NoCastPanel  bools
+
+     Only fade, slide and zoom; move = cubic out, fade = sine in-out, pop = back out (docs/SPEC.md 4). -->
+<includes>
+	<!-- ============ States ============ -->
+	<!-- The OSD's button row is up: the OSD itself or one of its companion panels. -->
+	<expression name="Bald_OSDControlsUp">[Window.IsVisible(videoosd) | Window.IsVisible(musicosd) | Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124)]</expression>
+	<!-- A bottom panel that sits under the lifted bar: a down-chain row or Up Next. -->
+	<expression name="Bald_OSDPanelUp">[Window.IsVisible(1125) | Window.IsVisible(1126) | Window.IsVisible(videobookmarks) | Window.IsVisible(script-upnext-upnext.xml) | Window.IsVisible(script-upnext-stillwatching.xml) | Window.IsVisible(script-upnext-upnext-simple.xml) | Window.IsVisible(script-upnext-stillwatching-simple.xml)]</expression>
+	<!-- The Live TV lists, which fill the left of the screen: the bar steps aside. -->
+	<expression name="Bald_OSDPVRPanelUp">[Window.IsVisible(pvrosdchannels) | Window.IsVisible(pvrchannelguide)]</expression>
+	<!-- The pause delay has run: System.IdleTime counts from the last key, so from the pause itself. -->
+	<expression name="Bald_OSDPauseDelayDone">[System.IdleTime(3) | [System.IdleTime(2) + Skin.String(Bald.OSD.PauseDelay,2)] | [System.IdleTime(1) + Skin.String(Bald.OSD.PauseDelay,1)] | Skin.String(Bald.OSD.PauseDelay,0)]</expression>
+	<!-- Pause behaviour "Hide": the seek layer leaves once the delay has run. -->
+	<expression name="Bald_OSDPauseHidden">[Player.Paused + Skin.String(Bald.OSD.PauseMode,hide) + $EXP[Bald_OSDPauseDelayDone]]</expression>
+	<!-- Pause behaviour "Info": the info overlay replaces the bar once the delay has run. -->
+	<expression name="Bald_OSDPauseInfo">[Player.Paused + Skin.String(Bald.OSD.PauseMode,info) + $EXP[Bald_OSDPauseDelayDone] + !$EXP[infodialog_active]]</expression>
+	<!-- The info overlay (1127): the Info key (fullscreeninfo), pause in Info mode, or a Live TV channel change. -->
+	<expression name="Bald_OSDInfoOverlay">[Window.IsActive(fullscreeninfo) | $EXP[Bald_OSDPauseInfo] | [VideoPlayer.Content(livetv) + [!String.IsEmpty(PVR.ChannelNumberInput) | Player.ShowInfo]]]</expression>
+	<!-- The seek dialog's own reasons to show (window visibility, DialogSeekBar.xml). -->
+	<expression name="Bald_OSDSeekLayer">[[Player.Paused + !$EXP[Bald_OSDPauseHidden]] | Player.Caching | Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput) | Player.ShowTime | Player.ShowInfo | Window.IsVisible(1127) | $EXP[Bald_OSDInfoOverlay] | $EXP[Bald_OSDControlsUp] | $EXP[Bald_OSDPanelUp] | $EXP[Bald_OSDPVRPanelUp]]</expression>
+	<!-- Tall gradient: anything more than the bar alone. -->
+	<expression name="Bald_OSDTallScrim">[$EXP[Bald_OSDControlsUp] | $EXP[Bald_OSDPanelUp] | Window.IsVisible(1127)]</expression>
+	<!-- The next chapter exists: forward skips a chapter rather than an item. -->
+	<expression name="Bald_OSDChapterAhead">[Player.ChapterCount + !String.IsEqual(Player.Chapter,Player.ChapterCount)]</expression>
+	<!-- The previous chapter exists. -->
+	<expression name="Bald_OSDChapterBehind">[Player.ChapterCount + Integer.IsGreater(Player.Chapter,1)]</expression>
+	<!-- A later playlist item exists. -->
+	<expression name="Bald_OSDPlaylistAhead">[Integer.IsGreater(Playlist.Length(video),1) + Integer.IsLess(Playlist.Position(video),Playlist.Length(video))]</expression>
+	<expression name="Bald_OSDPlaylistBehind">[Integer.IsGreater(Playlist.Length(video),1) + Integer.IsGreater(Playlist.Position(video),1)]</expression>
+	<!-- TMDb Helper is an optional dependency: the cast panel only exists with it. -->
+	<expression name="Bald_OSDHasTMDbHelper">[System.HasAddon(plugin.video.themoviedb.helper) + System.AddonIsEnabled(plugin.video.themoviedb.helper)]</expression>
+	<!-- Script Skin Variables is a required dependency, but the inline stream lists still check for it. -->
+	<expression name="Bald_OSDHasSkinVariables">[System.HasAddon(script.skinvariables) + System.AddonIsEnabled(script.skinvariables)]</expression>
+	<!-- Auto-close: the setting holds seconds; empty means never. -->
+	<expression name="Bald_OSDAutoCloses">[!String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + !String.IsEqual(Skin.String(Bald.OSD.AutoClose),0)]</expression>
+
+	<!-- ============ Down chain ============
+	     Order: PVR guide, PVR channels, playlist or episodes (1125), bookmarks, cast (1126). A panel is in the chain
+	     when its setting allows it and it applies to what is playing. Bald_OSDChainFrom_<n> sends Down to the first
+	     panel after stage n (0 = the OSD buttons). -->
+	<expression name="Bald_OSDChainGuide">[VideoPlayer.Content(livetv) + VideoPlayer.HasEpg + !Skin.HasSetting(Bald.OSD.NoGuidePanel)]</expression>
+	<expression name="Bald_OSDChainChannels">[VideoPlayer.Content(livetv) + !Skin.HasSetting(Bald.OSD.NoChannelsPanel)]</expression>
+	<expression name="Bald_OSDChainPlaylist">[!VideoPlayer.Content(livetv) + [Integer.IsGreater(Playlist.Length(video),1) | [VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TvShowDBID) + !String.IsEmpty(VideoPlayer.Season)]] + !Skin.HasSetting(Bald.OSD.NoPlaylistPanel)]</expression>
+	<expression name="Bald_OSDChainBookmarks">[!VideoPlayer.Content(livetv) + !Skin.HasSetting(Bald.OSD.NoBookmarksPanel)]</expression>
+	<expression name="Bald_OSDChainCast">[$EXP[Bald_OSDHasTMDbHelper] + [VideoPlayer.Content(movies) | VideoPlayer.Content(episodes)] + !Skin.HasSetting(Bald.OSD.NoCastPanel)]</expression>
+	<include name="Bald_OSDChainFrom_0">
+		<ondown condition="$EXP[Bald_OSDChainGuide]">ActivateWindow(pvrchannelguide)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainGuide] + $EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainGuide] + !$EXP[Bald_OSDChainChannels] + $EXP[Bald_OSDChainPlaylist]">ActivateWindow(1125)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainGuide] + !$EXP[Bald_OSDChainChannels] + !$EXP[Bald_OSDChainPlaylist] + $EXP[Bald_OSDChainBookmarks]">ActivateWindow(videobookmarks)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainGuide] + !$EXP[Bald_OSDChainChannels] + !$EXP[Bald_OSDChainPlaylist] + !$EXP[Bald_OSDChainBookmarks] + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
+	</include>
+	<include name="Bald_OSDChainFrom_1">
+		<ondown condition="$EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainChannels] + $EXP[Bald_OSDChainPlaylist]">ActivateWindow(1125)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainChannels] + !$EXP[Bald_OSDChainPlaylist] + $EXP[Bald_OSDChainBookmarks]">ActivateWindow(videobookmarks)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainChannels] + !$EXP[Bald_OSDChainPlaylist] + !$EXP[Bald_OSDChainBookmarks] + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
+	</include>
+	<include name="Bald_OSDChainFrom_2">
+		<ondown condition="$EXP[Bald_OSDChainPlaylist]">ActivateWindow(1125)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainPlaylist] + $EXP[Bald_OSDChainBookmarks]">ActivateWindow(videobookmarks)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainPlaylist] + !$EXP[Bald_OSDChainBookmarks] + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
+	</include>
+	<include name="Bald_OSDChainFrom_3">
+		<ondown condition="$EXP[Bald_OSDChainBookmarks]">ActivateWindow(videobookmarks)</ondown>
+		<ondown condition="!$EXP[Bald_OSDChainBookmarks] + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
+	</include>
+	<include name="Bald_OSDChainFrom_4">
+		<ondown condition="$EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
+	</include>
+	<!-- There is somewhere to go Down to from the OSD buttons (for the hint). -->
+	<expression name="Bald_OSDHasChain">[$EXP[Bald_OSDChainGuide] | $EXP[Bald_OSDChainChannels] | $EXP[Bald_OSDChainPlaylist] | $EXP[Bald_OSDChainBookmarks] | $EXP[Bald_OSDChainCast]]</expression>
+
+	<!-- ============ Auto-close ============
+	     One mechanism (it replaces Estuary's autoclosevideoosd timer): each real OSD button arms the alarm
+	     bald_osd_close on focus and click and cancels it on unfocus. When it fires it only sets a Home property;
+	     the bald_osd_close timer (Timers.xml) then closes the companion panels and the OSD. Dialogs opened from the OSD
+	     (osd*settings via DialogSettings.xml, DialogSlider, DialogSubtitles) suspend it with Bald_OSDSuspendAutoClose.
+	     The chain panels cancel it: they are browsed, not glanced at. -->
+	<include name="Bald_OSDAutoCloseArm">
+		<onfocus>CancelAlarm(bald_osd_close,true)</onfocus>
+		<onfocus condition="$EXP[Bald_OSDAutoCloses]">AlarmClock(bald_osd_close,SetProperty(Bald.OSD.Close,1,home),$INFO[Skin.String(Bald.OSD.AutoClose),00:,],silent)</onfocus>
+		<onunfocus>CancelAlarm(bald_osd_close,true)</onunfocus>
+		<onclick>CancelAlarm(bald_osd_close,true)</onclick>
+		<onclick condition="$EXP[Bald_OSDAutoCloses]">AlarmClock(bald_osd_close,SetProperty(Bald.OSD.Close,1,home),$INFO[Skin.String(Bald.OSD.AutoClose),00:,],silent)</onclick>
+	</include>
+	<!-- For a dialog opened over the OSD: park a running alarm while it is open and re-arm it when it closes. -->
+	<include name="Bald_OSDSuspendAutoClose">
+		<onload condition="System.HasAlarm(bald_osd_close)">SetProperty(Bald.OSD.Suspended,1,home)</onload>
+		<onload condition="System.HasAlarm(bald_osd_close)">CancelAlarm(bald_osd_close,true)</onload>
+		<onunload condition="!String.IsEmpty(Window(home).Property(Bald.OSD.Suspended)) + $EXP[Bald_OSDAutoCloses]">AlarmClock(bald_osd_close,SetProperty(Bald.OSD.Close,1,home),$INFO[Skin.String(Bald.OSD.AutoClose),00:,],silent)</onunload>
+		<onunload>ClearProperty(Bald.OSD.Suspended,home)</onunload>
+	</include>
+
+	<!-- ============ Labels ============ -->
+	<!-- Status line over the bar: what the player is doing. -->
+	<variable name="Bald_OSDStatus">
+		<value condition="!String.IsEmpty(PVR.ChannelNumberInput)">$LOCALIZE[19029] $INFO[PVR.ChannelNumberInput]</value>
+		<value condition="!String.IsEmpty(Player.SeekNumeric)">$LOCALIZE[773] $INFO[Player.SeekNumeric(hh:mm:ss)]</value>
+		<value condition="Player.Forwarding">$LOCALIZE[31039] $VAR[VideoPlayerForwardRewindVar]</value>
+		<value condition="Player.Rewinding">$LOCALIZE[31038] $VAR[VideoPlayerForwardRewindVar]</value>
+		<value condition="[Player.Seeking | Player.HasPerformedSeek(3)] + !String.IsEmpty(Player.SeekOffset)">$LOCALIZE[773] $INFO[Player.SeekOffset]</value>
+		<value condition="Player.Seeking + !String.IsEmpty(Player.SeekStepSize)">$LOCALIZE[773] $INFO[Player.SeekStepSize]</value>
+		<value condition="Player.Seeking">$LOCALIZE[773]</value>
+		<value condition="Player.Caching">$LOCALIZE[439] $INFO[Player.CacheLevel]%</value>
+		<value condition="Player.Paused">$LOCALIZE[112]</value>
+		<value condition="Player.IsTempo">$LOCALIZE[31142] $INFO[Player.PlaySpeed]x</value>
+		<value>$LOCALIZE[31624]</value>
+	</variable>
+	<!-- Right of the status line: the chapter, or the channel and programme times for Live TV, or recording. -->
+	<variable name="Bald_OSDStatusRight">
+		<value condition="[PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive] | PVR.IsPlayingActiveRecording">$LOCALIZE[19158]</value>
+		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.ChannelNumberLabel,, ]$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.StartTime, · ]$INFO[VideoPlayer.EndTime, – ]</value>
+		<value condition="Player.ChapterCount">$LOCALIZE[21396] $INFO[Player.Chapter]$INFO[Player.ChapterCount, / ]$INFO[Player.ChapterName, · ]</value>
+	</variable>
+	<!-- The time left of the bar. A seek target wins; "remaining" modes show the time left with a minus. -->
+	<variable name="Bald_OSDTimeLeft">
+		<value condition="Player.Seeking + VideoPlayer.HasEpg">$INFO[PVR.EpgEventSeekTime]</value>
+		<value condition="Player.Seeking">$INFO[Player.SeekTime]</value>
+		<value condition="Skin.String(Bald.OSD.TimeDisplay,remaining) + VideoPlayer.HasEpg">$INFO[PVR.EpgEventRemainingTime,-,]</value>
+		<value condition="Skin.String(Bald.OSD.TimeDisplay,remaining)">$INFO[Player.TimeRemaining,-,]</value>
+		<value condition="VideoPlayer.HasEpg">$INFO[PVR.EpgEventElapsedTime]</value>
+		<value>$INFO[Player.Time]</value>
+	</variable>
+	<!-- The time right of the bar: the total, or the time left in "combined" mode. -->
+	<variable name="Bald_OSDTimeRight">
+		<value condition="Skin.String(Bald.OSD.TimeDisplay,combined) + VideoPlayer.HasEpg">$INFO[PVR.EpgEventRemainingTime,-,]</value>
+		<value condition="Skin.String(Bald.OSD.TimeDisplay,combined)">$INFO[Player.TimeRemaining,-,]</value>
+		<value condition="VideoPlayer.HasEpg">$INFO[PVR.EpgEventDuration]</value>
+		<value>$INFO[Player.Duration]</value>
+	</variable>
+	<!-- Language codes under the audio and subtitle buttons. -->
+	<variable name="Bald_OSDAudioCode">
+		<value>$INFO[VideoPlayer.AudioLanguage,[UPPERCASE],[/UPPERCASE]]</value>
+	</variable>
+	<variable name="Bald_OSDSubtitleCode">
+		<value condition="VideoPlayer.SubtitlesEnabled">$INFO[VideoPlayer.SubtitlesLanguage,[UPPERCASE],[/UPPERCASE]]</value>
+	</variable>
+	<!-- Info line for the info overlay and details: rating, certificate, year and duration. -->
+	<variable name="Bald_OSDInfoMeta">
+		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.StartTime, · ]$INFO[VideoPlayer.EndTime, – ]$INFO[VideoPlayer.Genre, · ]</value>
+		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode, E]$INFO[VideoPlayer.Title, · ]$INFO[VideoPlayer.Rating, · ★ ]$INFO[VideoPlayer.mpaa, · ]$INFO[Player.Duration(mins), · , $LOCALIZE[31710]]</value>
+		<value>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Rating, · ★ ]$INFO[VideoPlayer.mpaa, · ]$INFO[Player.Duration(mins), · , $LOCALIZE[31710]]</value>
+	</variable>
+	<!-- The text under the info line: the plot, or with plots off, the episode title or the tagline. -->
+	<variable name="Bald_OSDInfoText">
+		<value condition="!Skin.HasSetting(Bald.OSD.HideInfoPlot)">$INFO[VideoPlayer.Plot]</value>
+		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode, E]$INFO[VideoPlayer.Title, · ]</value>
+		<value>$INFO[VideoPlayer.Tagline]</value>
+	</variable>
+	<!-- The playing item's wide art: landscape or fanart, the episode still for episodes. -->
+	<variable name="Bald_OSDLandscape">
+		<value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(Player.Art(thumb))">$INFO[Player.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(Player.Art(landscape))">$INFO[Player.Art(landscape)]</value>
+		<value condition="!String.IsEmpty(Player.Art(tvshow.landscape))">$INFO[Player.Art(tvshow.landscape)]</value>
+		<value condition="!String.IsEmpty(Player.Art(fanart))">$INFO[Player.Art(fanart)]</value>
+		<value>$INFO[Player.Art(tvshow.fanart)]</value>
+	</variable>
+	<!-- The next item card's heading (1124): "Up next", then the playlist position for a playlist. -->
+	<variable name="Bald_OSDNextHeading">
+		<value condition="$EXP[Bald_OSDPlaylistAhead]">$LOCALIZE[31622]$INFO[Playlist.Position(video), · ]$INFO[Playlist.Length(video), / ]</value>
+		<value>$LOCALIZE[31622]</value>
+	</variable>
+	<!-- First hint on the OSD: the focused button's name. -->
+	<variable name="Bald_OSDHelp">
+		<value condition="Control.HasFocus(87) | Control.HasFocus(88)">$LOCALIZE[31628]</value>
+		<value condition="Control.HasFocus(602) + Player.Playing">$LOCALIZE[31621]</value>
+		<value condition="Control.HasFocus(602)">$LOCALIZE[208]</value>
+		<value condition="Control.HasFocus(600) + VideoPlayer.Content(livetv)">$LOCALIZE[19069]</value>
+		<value condition="Control.HasFocus(600) + $EXP[Bald_OSDChapterBehind]">$LOCALIZE[31625]</value>
+		<value condition="Control.HasFocus(600)">$LOCALIZE[210]</value>
+		<value condition="Control.HasFocus(607) + VideoPlayer.Content(livetv) + PVR.IsRecordingPlayingChannel">$LOCALIZE[19059]</value>
+		<value condition="Control.HasFocus(607) + VideoPlayer.Content(livetv)">$LOCALIZE[264]</value>
+		<value condition="Control.HasFocus(607) + $EXP[Bald_OSDChapterAhead]">$LOCALIZE[31626]</value>
+		<value condition="Control.HasFocus(607)">$LOCALIZE[209]</value>
+		<value condition="Control.HasFocus(603)">$LOCALIZE[31620]</value>
+		<value condition="Control.HasFocus(804)">$LOCALIZE[33061]</value>
+		<value condition="Control.HasFocus(70045)">$LOCALIZE[31106]</value>
+		<value condition="Control.HasFocus(70047)">$LOCALIZE[36501]</value>
+		<value condition="Control.HasFocus(70043)">$LOCALIZE[19033]</value>
+		<value condition="Control.HasFocus(70060)">$LOCALIZE[292]</value>
+		<value condition="Control.HasFocus(70061)">$LOCALIZE[287]</value>
+		<value condition="Control.HasFocus(70062)">$LOCALIZE[157]</value>
+	</variable>
+	<!-- Second hint: where Up and Down lead from the buttons. -->
+	<variable name="Bald_OSDHint">
+		<value condition="Control.HasFocus(87) | Control.HasFocus(88)">$LOCALIZE[31623]</value>
+		<value condition="$EXP[Bald_OSDHasChain]">$LOCALIZE[31627]</value>
+		<value condition="Player.SeekEnabled">$LOCALIZE[31618]</value>
+		<value>$LOCALIZE[31619]</value>
+	</variable>
+
+	<!-- ============ Motion ============ -->
+	<!-- Seek layer lift: 136 px while the buttons are up, 496 px under a bottom panel (480 MOVE either way). -->
+	<include name="Bald_OSDLift">
+		<animation type="Conditional" condition="$EXP[Bald_OSDControlsUp] + !$EXP[Bald_OSDPanelUp]">
+			<effect type="slide" start="0,0" end="0,-136" time="480" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="$EXP[Bald_OSDPanelUp]">
+			<effect type="slide" start="0,0" end="0,-496" time="480" tween="cubic" easing="out" />
+		</animation>
+	</include>
+	<!-- A panel or overlay window: in 380 FADE and a 40 px rise over 480 MOVE, out 160 FADE. -->
+	<include name="Bald_OSDAnimPanel">
+		<animation type="WindowOpen" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+			<effect type="slide" start="0,40" end="0,0" time="480" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose" reversible="false">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<!-- A companion panel's content (the stream list, the video panel, the next card) above the button row. -->
+	<include name="Bald_OSDAnimCompanion">
+		<animation type="WindowOpen" reversible="false">
+			<effect type="fade" start="0" end="100" time="300" delay="80" tween="sine" easing="inout" />
+			<effect type="slide" start="0,24" end="0,0" time="420" delay="80" tween="cubic" easing="out" />
+		</animation>
+	</include>
+	<include name="Bald_OSDAnimFade">
+		<animation type="Visible" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Hidden" reversible="false">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+		</animation>
+	</include>
+
+	<!-- ============ Seek layer (DialogSeekBar) ============ -->
+	<!-- Bottom gradients: short with the bar alone, tall with the buttons, a panel or the info overlay, and a field dim
+	     under a bottom panel. The scrim is the info dialog's scrim_info_b in field, stretched. -->
+	<include name="Bald_OSDScrims">
+		<control type="group">
+			<visible>!$EXP[Bald_OSDPVRPanelUp]</visible>
+			<include>Bald_OSDAnimFade</include>
+			<include content="Bald_PlaybackScrim">
+				<param name="top">420</param>
+				<param name="height">660</param>
+			</include>
+		</control>
+		<control type="group">
+			<visible>$EXP[Bald_OSDTallScrim]</visible>
+			<include>Bald_OSDAnimFade</include>
+			<include>Bald_PlaybackScrim</include>
+		</control>
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="bald_field60">bald/white.png</texture>
+			<visible>$EXP[Bald_OSDPanelUp]</visible>
+			<include>Bald_OSDAnimFade</include>
+		</control>
+	</include>
+	<!-- The bar's fills, 1392 px from x 264 on a 4 px track (top 930; fills 2 px higher, see Bald_PlaybackTrackFill):
+	     the cache line in 45% ink and the played part in the accent. -->
+	<include name="Bald_OSDBar">
+		<include content="Bald_PlaybackTrackLine"><param name="left">264</param><param name="width">1392</param><param name="top">930</param></include>
+		<control type="group">
+			<visible>!VideoPlayer.Content(livetv)</visible>
+			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_ink45</param><param name="visible">!Player.Seeking</param><info>Player.ProgressCache</info></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_accent</param><info>Player.Progress</info></include>
+		</control>
+		<control type="group">
+			<visible>VideoPlayer.Content(livetv)</visible>
+			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_ink45</param><param name="visible">Player.SeekEnabled + !Player.ChannelPreviewActive</param><info>PVR.TimeshiftProgressBufferEnd</info><info2>PVR.TimeshiftProgressBufferStart</info2></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_accent</param><param name="visible">!Player.ChannelPreviewActive</param><info>PVR.EpgEventProgress</info></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_accent</param><param name="visible">Player.ChannelPreviewActive</param><info>PVR.EpgEventProgress</info></include>
+		</control>
+		<!-- Chapter, scene and cut ticks, edit-list ranges and bookmarks. -->
+		<include content="Bald_PlaybackTrackMarks"><param name="left">264</param><param name="width">1392</param><param name="top">928</param></include>
+	</include>
+	<!-- Seek-preview nib: shown while seeking and for 300 ms after (the Hidden animation's delay). Kodi selects the
+	     position of 401 (file, following the seek target), 402 (EPG event, with the seek offset) and 403
+	     (timeshift) itself (CGUIDialogSeekBar). -->
+	<include name="Bald_OSDSeekNib">
+		<param name="id" />
+		<param name="visible" />
+		<definition>
+			<control type="slider" id="$PARAM[id]">
+				<left>264</left>
+				<top>924</top>
+				<width>1392</width>
+				<include>Bald_PlaybackNib</include>
+				<visible>$PARAM[visible]</visible>
+				<animation type="Visible" reversible="false">
+					<effect type="fade" start="0" end="100" time="120" tween="sine" easing="inout" />
+				</animation>
+				<animation type="Hidden" reversible="false">
+					<effect type="fade" start="100" end="0" delay="300" time="160" tween="sine" easing="inout" />
+				</animation>
+			</control>
+		</definition>
+	</include>
+	<!-- Status line, times and bar: the part that lifts. -->
+	<include name="Bald_OSDSeekBlock">
+		<control type="label">
+			<left>Bald_SafeLeft</left>
+			<top>864</top>
+			<width>1000</width>
+			<height>32</height>
+			<aligny>center</aligny>
+			<font>Bald_InfoMeta</font>
+			<textcolor>bald_ink</textcolor>
+			<label>$VAR[Bald_OSDStatus]</label>
+		</control>
+		<control type="label">
+			<left>1124</left>
+			<top>864</top>
+			<width>700</width>
+			<height>32</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>Bald_CaptionMeta</font>
+			<textcolor>bald_ink70</textcolor>
+			<label>$VAR[Bald_OSDStatusRight]</label>
+		</control>
+		<control type="label">
+			<left>Bald_SafeLeft</left>
+			<top>918</top>
+			<width>152</width>
+			<height>28</height>
+			<aligny>center</aligny>
+			<font>Bald_CaptionMeta</font>
+			<textcolor>bald_ink</textcolor>
+			<label>$VAR[Bald_OSDTimeLeft]</label>
+			<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
+		</control>
+		<control type="label">
+			<left>1672</left>
+			<top>918</top>
+			<width>152</width>
+			<height>28</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>Bald_CaptionMeta</font>
+			<textcolor>bald_ink70</textcolor>
+			<label>$VAR[Bald_OSDTimeRight]</label>
+			<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
+		</control>
+		<include>Bald_OSDBar</include>
+		<include content="Bald_OSDSeekNib"><param name="id">401</param><param name="visible">Player.Seeking + Player.SeekEnabled + !VideoPlayer.Content(livetv)</param></include>
+		<include content="Bald_OSDSeekNib"><param name="id">402</param><param name="visible">Player.Seeking + VideoPlayer.Content(livetv) + VideoPlayer.HasEpg + !Player.ChannelPreviewActive</param></include>
+		<include content="Bald_OSDSeekNib"><param name="id">403</param><param name="visible">Player.Seeking + Player.SeekEnabled + VideoPlayer.Content(livetv) + !VideoPlayer.HasEpg + !Player.ChannelPreviewActive</param></include>
+	</include>
+	<!-- Music keeps its title block (song, artist and album) over the status line. -->
+	<include name="Bald_OSDMusicTitle">
+		<control type="group">
+			<top>140</top>
+			<visible>Player.HasAudio + !Player.HasVideo</visible>
+			<include>Bald_PlaybackTitleBlock</include>
+		</control>
+	</include>
+</includes>
