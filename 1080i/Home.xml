@@ -37,6 +37,11 @@
 	<onload condition="Skin.HasSetting(TMDbHelper.EnableColors)">Skin.Reset(TMDbHelper.EnableColors)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<!-- Online ratings (Appearance > Ratings): TMDb Helper's ListItem monitor, which publishes the followed item's
+	     ratings, runs only while the skin sets TMDbHelper.Service. On with the setting, off without it
+	     (Includes_Bald_Ratings.xml, Bald_RatingsOnline). -->
+	<onload condition="$EXP[Bald_RatingsOnline] + !Skin.HasSetting(TMDbHelper.Service)">Skin.SetBool(TMDbHelper.Service)</onload>
+	<onload condition="!$EXP[Bald_RatingsOnline] + Skin.HasSetting(TMDbHelper.Service)">Skin.Reset(TMDbHelper.Service)</onload>
 	<onload>SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
 	<onload>SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
 	<onload>ClearProperty(Bald.Menu,home)</onload>
