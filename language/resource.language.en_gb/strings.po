@@ -1154,11 +1154,13 @@ msgid "Artwork, media information, motion, navigation hints, and the settings of
 msgstr ""
 
 #: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
 msgctxt "#31734"
 msgid "Open CoreELEC service and hardware settings."
 msgstr ""
 
 #: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
 msgctxt "#31735"
 msgid "Open LibreELEC service and hardware settings."
 msgstr ""
@@ -1169,6 +1171,7 @@ msgid "Services & Helpers"
 msgstr ""
 
 #: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
 msgctxt "#31737"
 msgid "Manage installed add-ons and their settings."
 msgstr ""
@@ -1181,6 +1184,7 @@ msgstr ""
 
 #: /1080i/DialogVideoInfo.xml
 #: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31739"
@@ -1956,4 +1960,69 @@ msgstr ""
 #: /1080i/SettingsCategory.xml
 msgctxt "#31931"
 msgid "Settings level"
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31932"
+msgid "Home screens, widgets, and Bald's appearance."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31933"
+msgid "Playback of videos, music, discs, and pictures, with language and subtitle choices."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31934"
+msgid "Library, media sources, and how media is shown and browsed."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31935"
+msgid "Live TV clients, the guide, channels, and recordings."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31936"
+msgid "Remote control, UPnP, AirPlay, file sharing, and weather."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31937"
+msgid "Game add-ons, controllers, and emulation."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31938"
+msgid "Skin, language and region, screensaver, and master lock."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31939"
+msgid "User profiles and the login screen."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31940"
+msgid "Display, audio, input, internet access, power saving, and add-on updates."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31941"
+msgid "Browse, copy, and delete files on your sources."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31942"
+msgid "Hardware, storage, network, and version details."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31943"
+msgid "Recent notifications and events from Kodi and its add-ons."
+msgstr ""
+
+#: /1080i/Settings.xml
+msgctxt "#31944"
+msgid "Back to return"
 msgstr ""
