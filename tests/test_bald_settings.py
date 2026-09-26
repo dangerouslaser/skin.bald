@@ -35,10 +35,21 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertIn("info=get_shortcuts_node", content)
         self.assertIn("Bald.ConfigureNode", content)
         self.assertIn("skin=skin.bald", content)
-        self.assertEqual(
-            root.findtext("onunload"),
-            "RunScript(script.skinvariables,action=buildtemplate,force)",
-        )
+        # Closing the editor stamps the rows; Home rebuilds when the stamp it passes to Skin Variables changes.
+        stamp = root.findtext("onunload")
+        self.assertTrue(stamp.startswith("Skin.SetString(Bald.WidgetsStamp,"))
+        self.assertIn("System.Time(hh:mm:ss)", stamp)
+        self.assertNotIn("buildtemplate", ET.tostring(root, encoding="unicode"))
+
+    def test_home_builds_its_rows_on_load_only_when_inputs_change(self):
+        home = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
+        builds = [node for node in home.findall("onload") if "buildtemplate" in node.text]
+        self.assertEqual(len(builds), 1)
+        action = builds[0].text
+        self.assertTrue(action.startswith("RunScript(script.skinvariables,action=buildtemplate,"))
+        self.assertIn("lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)]", action)
+        self.assertNotIn("force", action)
+        self.assertIsNone(builds[0].get("condition"))
 
     def test_screen_editor_has_mandatory_home_and_optional_media_screens(self):
         root = ET.parse(ROOT / "1080i" / "Custom_1117_BaldHomeScreens.xml").getroot()
