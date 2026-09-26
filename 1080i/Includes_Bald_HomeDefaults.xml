@@ -13,6 +13,8 @@
                 <param name="up">SetFocus(9000,0,absolute)</param>
                 <param name="down">9102</param>
                 <content target="videos" limit="25">videodb://recentlyaddedmovies/</content>
+                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">SetProperty(Bald.Start9102,1,home)</onfocus>
+                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">Control.Move(9102,-2)</onfocus>
             </include>
             <include content="Bald_Row">
                 <param name="id">9102</param>
@@ -23,6 +25,8 @@
                 <param name="down">9103</param>
                 <content target="videos" limit="15">special://skin/playlists/inprogress_movies.xsp</content>
                 <content target="videos" limit="15">special://skin/playlists/inprogress_episodes.xsp</content>
+                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">SetProperty(Bald.Start9103,1,home)</onfocus>
+                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">Control.Move(9103,-2)</onfocus>
             </include>
             <include content="Bald_Row">
                 <param name="id">9103</param>
@@ -33,6 +37,13 @@
                 <param name="down"/>
                 <content target="videos" limit="25">videodb://inprogresstvshows/</content>
             </include>
+        </definition>
+    </include>
+    <include name="Bald_RowStartReset_home">
+        <definition>
+            <onload>ClearProperty(Bald.Start9101,home)</onload>
+            <onload>ClearProperty(Bald.Start9102,home)</onload>
+            <onload>ClearProperty(Bald.Start9103,home)</onload>
         </definition>
     </include>
     <include name="Bald_ConfiguredArtLogos_home">
@@ -125,6 +136,8 @@
                 <param name="up">SetFocus(9000,0,absolute)</param>
                 <param name="down">9202</param>
                 <content target="videos" limit="25">videodb://recentlyaddedmovies/</content>
+                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">SetProperty(Bald.Start9202,1,home)</onfocus>
+                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">Control.Move(9202,-2)</onfocus>
             </include>
             <include content="Bald_Row">
                 <param name="id">9202</param>
@@ -135,6 +148,12 @@
                 <param name="down"/>
                 <content target="videos" limit="25">special://skin/playlists/top_rated_movies.xsp</content>
             </include>
+        </definition>
+    </include>
+    <include name="Bald_RowStartReset_movies">
+        <definition>
+            <onload>ClearProperty(Bald.Start9201,home)</onload>
+            <onload>ClearProperty(Bald.Start9202,home)</onload>
         </definition>
     </include>
     <include name="Bald_ConfiguredArtLogos_movies">
@@ -203,6 +222,8 @@
                 <param name="up">SetFocus(9000,0,absolute)</param>
                 <param name="down">9302</param>
                 <content target="videos" limit="25">videodb://recentlyaddedepisodes/</content>
+                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">SetProperty(Bald.Start9302,1,home)</onfocus>
+                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">Control.Move(9302,-2)</onfocus>
             </include>
             <include content="Bald_Row">
                 <param name="id">9302</param>
@@ -213,6 +234,12 @@
                 <param name="down"/>
                 <content target="videos" limit="25">special://skin/playlists/top_rated_tvshows.xsp</content>
             </include>
+        </definition>
+    </include>
+    <include name="Bald_RowStartReset_tvshows">
+        <definition>
+            <onload>ClearProperty(Bald.Start9301,home)</onload>
+            <onload>ClearProperty(Bald.Start9302,home)</onload>
         </definition>
     </include>
     <include name="Bald_ConfiguredArtLogos_tvshows">

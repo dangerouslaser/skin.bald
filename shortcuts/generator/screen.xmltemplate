@@ -3,6 +3,11 @@
 {rows}
     </definition>
 </include>
+<include name="Bald_RowStartReset_{screen}">
+    <definition>
+{start_reset}
+    </definition>
+</include>
 <include name="Bald_ConfiguredArtLogos_{screen}">
     <definition>
 {art_logos}

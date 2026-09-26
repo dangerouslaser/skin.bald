@@ -25,7 +25,9 @@
     <!-- Bald skin timers run in CApplication::ProcessSlow, every 500 ms: fine for row start and idle, too coarse
          for anything that must follow item changes. -->
     <!-- Bald Home. Row start: a fixedlist first selects the item at its focus position (slot 2);
-         once a row's items have loaded, move it back to the first item. One shot per window load; Home clears the flags in onload. -->
+         once a row's items have loaded, move it back to the first item. One shot per window load; Home clears the flags in onload.
+         Timers only for rows that can show before they are focused (the first rows, and each screen's first row in the menu
+         preview) and the next two Home rows; every other row is moved by the row above it or on its own focus (Bald_Row). -->
     <timer>
         <name>bald_rowstart_9101</name>
         <start>Window.IsActive(home) + !Container(9101).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9101)) + String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)</start>
