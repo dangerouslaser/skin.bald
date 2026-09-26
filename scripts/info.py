@@ -2,6 +2,8 @@
 
 RunScript(skin.bald,recommendations,movie,123)
 RunScript(skin.bald,open,movie,456)
+RunScript(skin.bald,tvinfo,episode,789)
+RunScript(skin.bald,play,episode,789)
 No network requests, library writes, or long-running service.
 """
 import json
@@ -15,6 +17,10 @@ MEDIA = {
     "movie": ("VideoLibrary.GetMovieDetails", "movieid", "moviedetails", "movies"),
     "tvshow": ("VideoLibrary.GetTVShowDetails", "tvshowid", "tvshowdetails", "tvshows"),
 }
+TV_TYPES = ("tvshow", "season", "episode")
+# Native lists in Includes_Bald_InfoTV.xml, and the primary actions shown for an opened episode.
+SEASONS, EPISODES = 5301, 5302
+EPISODE_ACTIONS = "Control.HasFocus(5001) | Control.HasFocus(5002)"
 
 
 def recommendation_path(media_type, title, genres):
@@ -62,6 +68,188 @@ def recommendation_subject(xbmc, media_type, dbid):
     if not isinstance(tvshowid, int) or tvshowid <= 0:
         return "", {}
     return "tvshow", get_details(xbmc, "tvshow", tvshowid, ["title", "genre"])
+
+
+def rpc(xbmc, method, params):
+    response = json.loads(xbmc.executeJSONRPC(json.dumps({
+        "jsonrpc": "2.0", "id": 1, "method": method, "params": params,
+    })))
+    if "error" in response:
+        raise RuntimeError("{} failed: {}".format(method, response["error"]))
+    return response["result"]
+
+
+def episode_order(episode):
+    return episode.get("season", 0), episode.get("episode", 0)
+
+
+def is_resumable(episode):
+    return episode.get("resume", {}).get("position", 0) > 0
+
+
+def next_episode(episodes):
+    """The episode the show's primary action plays, and whether it resumes.
+
+    The most recently played episode resumes if it is in progress; otherwise the next unwatched episode after it,
+    then the first unwatched one, then the first episode (a finished show starts again). Specials only count when
+    a show has nothing else."""
+    regular = sorted((e for e in episodes if e.get("season", 0) > 0), key=episode_order)
+    regular = regular or sorted(episodes, key=episode_order)
+    if not regular:
+        return None, False
+    unwatched = [e for e in regular if not e.get("playcount")]
+    played = [e for e in regular if e.get("lastplayed")]
+    candidate = None
+    if played:
+        latest = max(played, key=lambda e: e["lastplayed"])
+        if is_resumable(latest):
+            return latest, True
+        candidate = next((e for e in unwatched if episode_order(e) > episode_order(latest)), None)
+    candidate = candidate or (unwatched[0] if unwatched else regular[0])
+    return candidate, is_resumable(candidate)
+
+
+def action_label(episode, resume):
+    return "{} S{} E{}".format("Resume" if resume else "Play", episode.get("season", 0), episode.get("episode", 0))
+
+
+def years_label(first_year, episodes):
+    aired = [int(e["firstaired"][:4]) for e in episodes if str(e.get("firstaired", ""))[:4].isdigit()]
+    start = first_year or (min(aired) if aired else 0)
+    if not start:
+        return ""
+    end = max(aired) if aired else start
+    return str(start) if end <= start else "{} to {}".format(start, end)
+
+
+def tv_meta(years, seasons, rating):
+    """The "years, N seasons, rating" header line (docs/SPEC.md 5.3), skipping what the library lacks."""
+    parts = [years] if years else []
+    if seasons > 0:
+        parts.append("1 season" if seasons == 1 else "{} seasons".format(seasons))
+    if rating:
+        parts.append(rating)
+    return ", ".join(parts)
+
+
+def tv_subject(xbmc, media_type, dbid):
+    """Return (tvshowid, season, episodeid) for a TV info item; season is None for a show."""
+    if media_type == "tvshow":
+        return dbid, None, 0
+    if media_type == "season":
+        details = rpc(xbmc, "VideoLibrary.GetSeasonDetails", {
+            "seasonid": dbid, "properties": ["tvshowid", "season"]})["seasondetails"]
+        episodeid = 0
+    else:
+        details = rpc(xbmc, "VideoLibrary.GetEpisodeDetails", {
+            "episodeid": dbid, "properties": ["tvshowid", "season"]})["episodedetails"]
+        episodeid = dbid
+    tvshowid, season = details.get("tvshowid", 0), details.get("season")
+    if not isinstance(tvshowid, int) or tvshowid <= 0 or not isinstance(season, int):
+        return 0, None, 0
+    return tvshowid, season, episodeid
+
+
+def tv_publish(xbmc, window, identity, media_type, dbid):
+    """Publish the show header and next-episode action; return (season, episodeid) to open the rows on."""
+    tvshowid, season, episodeid = tv_subject(xbmc, media_type, dbid)
+    if tvshowid <= 0:
+        return None
+    show = rpc(xbmc, "VideoLibrary.GetTVShowDetails", {
+        "tvshowid": tvshowid, "properties": ["title", "year", "genre", "plot", "mpaa", "season"]})["tvshowdetails"]
+    episodes = rpc(xbmc, "VideoLibrary.GetEpisodes", {
+        "tvshowid": tvshowid,
+        "properties": ["season", "episode", "playcount", "resume", "lastplayed", "firstaired"]}).get("episodes", [])
+    upcoming, resume = next_episode(episodes)
+    # The dialog may have been replaced while the library answered.
+    if window.getProperty("Bald.Identity") != identity:
+        return None
+    years = years_label(show.get("year", 0), episodes)
+    window.setProperty("Bald.TV.ShowID", str(tvshowid))
+    window.setProperty("Bald.TV.Title", show.get("title", ""))
+    window.setProperty("Bald.TV.Years", years)
+    window.setProperty("Bald.TV.Meta", tv_meta(years, show.get("season", 0), show.get("mpaa", "")))
+    window.setProperty("Bald.TV.Genre", " / ".join(show.get("genre", [])))
+    window.setProperty("Bald.TV.Plot", show.get("plot", ""))
+    if upcoming:
+        window.setProperty("Bald.TV.NextLabel", action_label(upcoming, resume))
+        window.setProperty("Bald.TV.NextID", str(upcoming["episodeid"]))
+    # A show opens on the next episode's season at its first episode (prototype); a season or episode on itself.
+    if season is None:
+        season = upcoming["season"] if upcoming else None
+    return None if season is None else (season, episodeid)
+
+
+def tv_position(xbmc, window, identity, season, episodeid, focus_episode, timeout=5.0):
+    """Select the season tab and episode once the native lists have loaded; optionally focus the episode.
+
+    One bounded wait per dialog open that reads the lists' own items (no library query), and gives up quietly if
+    the dialog is replaced or closed. A fresh fixedlist starts on its focus position (docs/NOTES.md milestone 2),
+    so the episode row is always moved explicitly."""
+    monitor = xbmc.Monitor()
+    deadline = time.monotonic() + timeout
+    label = xbmc.getInfoLabel
+
+    def alive():
+        return (window.getProperty("Bald.Identity") == identity
+                and xbmc.getCondVisibility("Window.IsVisible(movieinformation)"))
+
+    def settle(ready):
+        while not ready():
+            if not alive() or time.monotonic() >= deadline or monitor.waitForAbort(0.02):
+                return False
+        return alive()
+
+    def count(c):
+        value = label("Container({}).NumItems".format(c))
+        return int(value) if value.isdecimal() else 0
+
+    def loaded(c):
+        return count(c) > 0 and not xbmc.getCondVisibility("Container({}).IsUpdating".format(c))
+
+    def item(c, index, field):
+        return label("Container({}).ListItemAbsolute({}).{}".format(c, index, field))
+
+    def find(c, field, value):
+        return next((i for i in range(count(c)) if item(c, i, field) == value), None)
+
+    def select(c, index):
+        current = label("Container({}).CurrentItem".format(c))
+        current = int(current) - 1 if current.isdecimal() else 0
+        if index != current:
+            xbmc.executebuiltin("Control.Move({},{})".format(c, index - current))
+        return settle(lambda: label("Container({}).CurrentItem".format(c)) == str(index + 1))
+
+    target = str(season)
+    if not settle(lambda: loaded(SEASONS)):
+        return False
+    tab = find(SEASONS, "Season", target)
+    if tab is None or not select(SEASONS, tab):
+        return False
+    # The episode row follows the selected tab; wait until it holds only that season (not stale or All seasons).
+    if not settle(lambda: loaded(EPISODES) and item(EPISODES, 0, "Season") == target
+                  and item(EPISODES, count(EPISODES) - 1, "Season") == target):
+        return False
+    index = find(EPISODES, "DBID", str(episodeid)) if episodeid else None
+    if not select(EPISODES, index or 0):
+        return False
+    # Down from the tabs keeps this selection until the season changes (Includes_Bald_InfoTV.xml).
+    window.setProperty("Bald.TV.RowFor", str(tab + 1))
+    if focus_episode and xbmc.getCondVisibility(EPISODE_ACTIONS):
+        xbmc.executebuiltin("SetFocus({})".format(EPISODES))
+    return True
+
+
+def play_episode(xbmc, episodeid):
+    """Close info as Kodi's own Play does, then play (resuming) through the local player API."""
+    if xbmc.getCondVisibility("Window.IsVisible(movieinformation)"):
+        xbmc.executebuiltin("Dialog.Close(movieinformation)", wait=True)
+        monitor = xbmc.Monitor()
+        deadline = time.monotonic() + 3
+        while xbmc.getCondVisibility("Window.IsVisible(movieinformation)"):
+            if time.monotonic() >= deadline or monitor.waitForAbort(0.02):
+                return
+    rpc(xbmc, "Player.Open", {"item": {"episodeid": episodeid}, "options": {"resume": True}})
 
 
 def make_item(xbmc, xbmcgui, media_type, dbid, details):
@@ -121,6 +309,18 @@ def run(action="", media_type="", dbid=""):
 
     identity = "{}:{}".format(media_type, dbid)
     window = xbmcgui.Window(12003)
+    valid_id = dbid.isdecimal() and int(dbid) > 0
+    if action == "tvinfo":
+        if media_type not in TV_TYPES or not valid_id or window.getProperty("Bald.Identity") != identity:
+            return
+        target = tv_publish(xbmc, window, identity, media_type, int(dbid))
+        if target:
+            tv_position(xbmc, window, identity, target[0], target[1], media_type == "episode")
+        return
+    if action == "play":
+        if media_type == "episode" and valid_id and xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
+            play_episode(xbmc, int(dbid))
+        return
     if action == "recommendations":
         if window.getProperty("Bald.Identity") != identity:
             return
