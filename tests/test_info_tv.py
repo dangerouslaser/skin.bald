@@ -107,11 +107,17 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual((grow.get("type"), grow.get("start"), grow.get("time"), grow.get("tween"), grow.get("easing")),
                          ("zoom", "1,100", "300", "cubic", "out"))
         self.assertTrue(grow.get("center").startswith("0,"))
-        widths = [params(n)["w"] for n in underline.findall("include[@content='Bald_InfoTVUnderline']")]
-        self.assertEqual(len(widths), 6)
+        calls = underline.findall("include[@content='Bald_InfoTVUnderline']")
+        widths = [params(n)[key] for n in calls for key in ("w", "w_dm")]
+        self.assertEqual(len(widths), 12)
         slot = int(seasons.find("itemlayout").get("width"))
         self.assertTrue(all(int(w) < slot for w in widths))
         self.assertEqual(self.tv.find("include[@name='Bald_InfoTVUnderline']//texture").get("colordiffuse"), "bald_accent")
+        # One underline per typeface: Instrument Sans unless DM Sans is the selected fontset.
+        images = self.tv.findall("include[@name='Bald_InfoTVUnderline']/definition/control")
+        self.assertEqual([(i.findtext("width"), i.findtext("visible")) for i in images],
+                         [("$PARAM[w]", "$PARAM[visible] + !String.IsEqual(Skin.Font,DMSans)"),
+                          ("$PARAM[w_dm]", "$PARAM[visible] + String.IsEqual(Skin.Font,DMSans)")])
 
     def test_episode_row_follows_the_focused_season(self):
         row = self.control("5302")
