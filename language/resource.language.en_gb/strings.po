@@ -1050,6 +1050,8 @@ msgid "Pause"
 msgstr ""
 
 #: /1080i/Includes_Bald_OSD.xml
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
 #. Prefix of the next item on the info overlay
 msgctxt "#31622"
 msgid "Up next"
@@ -1128,7 +1130,25 @@ msgctxt "#31634"
 msgid "Now playing"
 msgstr ""
 
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
+#. Up Next add-on window: play the next episode now
+msgctxt "#31635"
+msgid "Watch now"
+msgstr ""
+
+#: /1080i/script-upnext-stillwatching-simple.xml
+#: /1080i/script-upnext-stillwatching.xml
+#. Up Next add-on window heading
+msgctxt "#31636"
+msgid "Still watching?"
+msgstr ""
+
 #: /1080i/Includes_Bald_OSD.xml
+#: /1080i/script-upnext-stillwatching-simple.xml
+#: /1080i/script-upnext-stillwatching.xml
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
 #. Unit after a number of seconds, for example '5 seconds'. Shown inside $INFO, so no comma
 msgctxt "#31637"
 msgid "seconds"

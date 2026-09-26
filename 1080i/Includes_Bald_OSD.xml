@@ -1680,4 +1680,99 @@
 			</control>
 		</control>
 	</include>
+	<!-- ============ Up Next (service.upnext) ============
+	     The add-on's windows (script-upnext-upnext.xml, script-upnext-stillwatching.xml and their -simple variants)
+	     sit as a bottom panel under the lifted bar. The add-on binds 3012 (play now or still watching), 3013 (close or
+	     stop, which it relabels) and 3014 (the countdown, which it sets), and fills window properties: title,
+	     tvshowtitle, seasonepisode, plot, thumb, landscape, fanart, remaining, endtime. Only used when the user installs
+	     the add-on. -->
+	<variable name="Bald_OSDUpNextArt">
+		<value condition="!String.IsEmpty(Window.Property(thumb))">$INFO[Window.Property(thumb)]</value>
+		<value condition="!String.IsEmpty(Window.Property(landscape))">$INFO[Window.Property(landscape)]</value>
+		<value>$INFO[Window.Property(fanart)]</value>
+	</variable>
+	<include name="Bald_OSDUpNext">
+		<param name="heading" />
+		<param name="play" />
+		<definition>
+			<control type="group">
+				<include content="Bald_OSDPanelHeading"><param name="label">$PARAM[heading]</param></include>
+				<control type="image">
+					<left>Bald_SafeLeft</left>
+					<top>528</top>
+					<width>384</width>
+					<height>216</height>
+					<texture colordiffuse="bald_tile_placeholder">bald/tile.png</texture>
+				</control>
+				<control type="image">
+					<left>Bald_SafeLeft</left>
+					<top>528</top>
+					<width>384</width>
+					<height>216</height>
+					<aspectratio scalediffuse="false">scale</aspectratio>
+					<texture diffuse="bald/tile.png" background="true">$VAR[Bald_OSDUpNextArt]</texture>
+				</control>
+				<control type="progress" id="3014">
+					<left>Bald_SafeLeft</left>
+					<top>760</top>
+					<width>384</width>
+					<height>4</height>
+					<texturebg border="2" colordiffuse="bald_ink28">bald/bar.png</texturebg>
+					<lefttexture />
+					<midtexture border="2" colordiffuse="bald_accent">bald/bar.png</midtexture>
+					<righttexture />
+					<overlaytexture />
+				</control>
+				<control type="label">
+					<left>512</left>
+					<top>528</top>
+					<width>1312</width>
+					<height>34</height>
+					<aligny>center</aligny>
+					<font>Bald_InfoMeta</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$INFO[Window.Property(tvshowtitle)]</label>
+				</control>
+				<control type="label">
+					<left>512</left>
+					<top>566</top>
+					<width>1312</width>
+					<height>28</height>
+					<aligny>center</aligny>
+					<font>Bald_CaptionMeta</font>
+					<textcolor>bald_ink80</textcolor>
+					<label>$INFO[Window.Property(seasonepisode),, ]$INFO[Window.Property(title)]$INFO[Window.Property(endtime), · $LOCALIZE[31080] ]</label>
+				</control>
+				<control type="textbox">
+					<left>512</left>
+					<top>606</top>
+					<width>1000</width>
+					<height>90</height>
+					<font>Bald_CaptionPlot</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[Window.Property(plot)]</label>
+				</control>
+				<control type="grouplist" id="8170">
+					<left>512</left>
+					<top>696</top>
+					<width>1312</width>
+					<height>72</height>
+					<orientation>horizontal</orientation>
+					<itemgap>8</itemgap>
+					<onup>noop</onup>
+					<ondown>noop</ondown>
+					<include content="DefaultDialogButton">
+						<param name="id" value="3012" />
+						<param name="label" value="$PARAM[play]" />
+						<param name="width" value="320" />
+					</include>
+					<include content="DefaultDialogButton">
+						<param name="id" value="3013" />
+						<param name="label" value="$LOCALIZE[15067]" />
+						<param name="width" value="320" />
+					</include>
+				</control>
+			</control>
+		</definition>
+	</include>
 </includes>
