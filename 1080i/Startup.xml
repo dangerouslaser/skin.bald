@@ -19,6 +19,9 @@
 	<onload condition="Skin.HasSetting(Bald.OSD.DetailsOnControls)">Skin.SetBool(Bald.OSD.DetailsPlot)</onload>
 	<onload condition="Skin.HasSetting(Bald.OSD.DetailsOnControls)">Skin.Reset(Bald.OSD.DetailsOnControls)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.Reset(OSDAutoCloseTime)</onload>
+	<!-- Estuary settings retired with Appearance's "Estuary windows" category (docs/NOTES.md, "Estuary windows
+	     settings folded into Bald"): clear what an old install left behind. -->
+	<onload condition="Skin.HasSetting(touchmode)">Skin.Reset(touchmode)</onload>
 	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
 	<controls />
 </window>

@@ -91,6 +91,5 @@
 				<param name="second">$LOCALIZE[31982]</param>
 			</include>
 		</control>
-		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>

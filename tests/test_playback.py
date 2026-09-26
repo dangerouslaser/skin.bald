@@ -86,6 +86,8 @@ def _estuary_window(filename):
 
 # Estuary wrapper groups whose buttons Bald hoists into the row (play/pause 602 in 698, repeat in 699).
 HOISTED_GROUPS = {"698", "699"}
+# Estuary ids retired on purpose: 799 is touch mode's back button, and Bald is remote-only (touch mode retired).
+RETIRED_IDS = {"799"}
 
 
 class PlaybackContractTests(unittest.TestCase):
@@ -117,6 +119,9 @@ class PlaybackContractTests(unittest.TestCase):
             parents = {child: node for node in estuary_root.iter() for child in node}
             bald = _ids(self.windows[name])
             for control_id, old in estuary.items():
+                if control_id in RETIRED_IDS:
+                    self.assertNotIn(control_id, bald)
+                    continue
                 if control_id in HOISTED_GROUPS:
                     # Estuary hid these buttons through a wrapper group; Bald's buttons hide themselves instead
                     # (see HiddenParentFocusTests), so the group id is gone and its visibility moves to the button.

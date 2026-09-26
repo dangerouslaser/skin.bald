@@ -24,7 +24,6 @@ WINDOWS = {
 LIVE_ESTUARY_SETTINGS = {
     "no_slide_animations": "MyMusicPlaylistEditor.xml",
     "autoscroll": "AddonBrowser.xml",
-    "touchmode": "AddonBrowser.xml",
     "show_weatherinfo": "AddonBrowser.xml",
     "hide_mediaflags": "AddonBrowser.xml",
     "show_profilename": "AddonBrowser.xml",
@@ -53,6 +52,9 @@ DEAD_ESTUARY_SETTINGS = (
     "circle_none",
     # Estuary's video OSD auto-close: Bald Settings, Playback (Bald.OSD.AutoClose) replaces it; Startup.xml migrates it.
     "OSDAutoClose",
+    # Touch mode: Bald is remote-only (Startup.xml turns mouse input off), so the touch buttons and the footer it hid
+    # were retired with it.
+    "touchmode",
 )
 
 

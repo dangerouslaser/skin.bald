@@ -78,7 +78,6 @@
 		<value condition="Control.HasFocus(70053)">$LOCALIZE[486]</value>
 		<value condition="Control.HasFocus(70054)">$LOCALIZE[590]</value>
 		<value condition="Control.HasFocus(70055)">$LOCALIZE[24013]</value>
-		<value condition="Control.HasFocus(799)">$LOCALIZE[31619]</value>
 	</variable>
 	<variable name="Bald_PlaybackHelpDetail">
 		<value condition="Control.HasFocus(87) + Window.IsActive(playercontrols)">$LOCALIZE[31039]</value>
@@ -467,16 +466,6 @@
 			<orientation>horizontal</orientation>
 			<scrolltime tween="cubic" easing="out">320</scrolltime>
 		</definition>
-	</include>
-	<!-- Touch mode's back button (Estuary's TouchBackOSDButton, id 799), top left. -->
-	<include name="Bald_PlaybackTouchBack">
-		<control type="radiobutton" id="799">
-			<left>Bald_SafeLeft</left>
-			<top>72</top>
-			<include content="Bald_PlaybackButton"><param name="icon">icons/back.png</param></include>
-			<onclick>Dialog.Close(all,true)</onclick>
-			<onclick>Action(FullScreen)</onclick>
-		</control>
 	</include>
 	<!-- Hints on the y 954 line, right-aligned to x 1824. -->
 	<include name="Bald_PlaybackHints">
