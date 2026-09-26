@@ -816,7 +816,7 @@
 				<animation type="Conditional" condition="$EXP[Bald_Idle]">
 					<effect type="fade" start="100" end="40" time="900" tween="sine" easing="inout" />
 				</animation>
-				<!-- Row label line: label, row dots, count -->
+				<!-- Row label line: label, row dots, count (Bald.ShowRowCount) -->
 				<control type="grouplist">
 					<left>Bald_SafeLeft</left>
 					<include content="Bald_RowLabelTop_$PARAM[style]" />
@@ -851,6 +851,8 @@
 						<font>Bald_Hint</font>
 						<textcolor>bald_ink60</textcolor>
 						<label>$INFO[Container($PARAM[id]).CurrentItem]$INFO[Container($PARAM[id]).NumItems, $LOCALIZE[31708] ,]</label>
+						<!-- Off unless Appearance turns it on; hidden, the grouplist closes up and the dots end the line. -->
+						<visible>Skin.HasSetting(Bald.ShowRowCount)</visible>
 						<animation type="Conditional" condition="$EXP[Bald_Idle]">
 							<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
 						</animation>

@@ -184,7 +184,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		pick the rows (Bald_SettingRow)
 9600	Row grouplist
 9601, 9602	Artwork: clearlogos, blurred backgrounds
-9611	Information: media flags
+9611, 9612	Information: media flags, row item count
 9621-9623	Behavior: ambient movement, navigation hints, reset hint
 605, 607-609, 623, 624, 701-708, 6066-6068
 		Estuary windows: Estuary's own SkinSettings control IDs, kept as Estuary numbers them
