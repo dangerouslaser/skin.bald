@@ -401,10 +401,16 @@ class ReturnToMenuTests(unittest.TestCase):
         entry = home.find("include[@name='Bald_ReturnToMenuEntry']/definition")
         loads = [(n.get("condition"), n.text) for n in entry.findall("onload")]
         condition = "String.IsEqual(Window(home).Property(Bald.ReturnMenu),$PARAM[id]) + Control.IsVisible($PARAM[id])"
-        self.assertEqual(loads, [(condition, "SetProperty(Bald.Menu,1,home)"), (condition, "SetFocus($PARAM[id])")])
+        # The preview and frame shape are set before the first frame, so the frame does not resize on return.
+        self.assertEqual(loads, [(condition, "SetProperty(Bald.Menu,1,home)"),
+                                 (condition, "SetProperty(Bald.MenuPreview,$PARAM[preview],home)"),
+                                 (condition, "SetProperty(Bald.RowStyle,$VAR[Bald_PreviewRowStyle],home)"),
+                                 (condition, "SetFocus($PARAM[id])")])
         restore = home.find("include[@name='Bald_ReturnToMenu']/definition")
         ids = [i.findtext("param[@name='id']") for i in restore.findall("include")]
         self.assertEqual(ids, self.ENTRIES)
+        previews = [i.findtext("param[@name='preview']") for i in restore.findall("include")]
+        self.assertEqual(previews, [f"hub{n}" for n in range(1, 9)] + ["livetv", "settings"])
         self.assertEqual(restore.findall("onload")[-1].text, "ClearProperty(Bald.ReturnMenu,home)")
         self.assertIn("<include>Bald_ReturnToMenu</include>", (XML / "Home.xml").read_text(encoding="utf-8"))
 

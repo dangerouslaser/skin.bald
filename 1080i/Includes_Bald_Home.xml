@@ -1138,26 +1138,31 @@
 	     Bald.ReturnMenu to its own id as it leaves, and Home's onload opens the menu on it again, as Search does with
 	     Bald.ReturnSearch. Only while that entry is still shown (a hub turned off meanwhile is skipped), so focus never
 	     goes to a hidden button with the menu open; otherwise Home starts on its row as usual. One line per entry,
-	     because a condition cannot read the id from the property. -->
+	     because a condition cannot read the id from the property. The entry's preview and the art frame's shape are set
+	     here too, not left to the entry's onfocus: that runs after Home's first frame, which would draw the Home row's
+	     shape and then resize the frame to the entry's (a poster hub). -->
 	<include name="Bald_ReturnToMenuEntry">
 		<param name="id" />
+		<param name="preview" />
 		<definition>
 			<onload condition="String.IsEqual(Window(home).Property(Bald.ReturnMenu),$PARAM[id]) + Control.IsVisible($PARAM[id])">SetProperty(Bald.Menu,1,home)</onload>
+			<onload condition="String.IsEqual(Window(home).Property(Bald.ReturnMenu),$PARAM[id]) + Control.IsVisible($PARAM[id])">SetProperty(Bald.MenuPreview,$PARAM[preview],home)</onload>
+			<onload condition="String.IsEqual(Window(home).Property(Bald.ReturnMenu),$PARAM[id]) + Control.IsVisible($PARAM[id])">SetProperty(Bald.RowStyle,$VAR[Bald_PreviewRowStyle],home)</onload>
 			<onload condition="String.IsEqual(Window(home).Property(Bald.ReturnMenu),$PARAM[id]) + Control.IsVisible($PARAM[id])">SetFocus($PARAM[id])</onload>
 		</definition>
 	</include>
 	<include name="Bald_ReturnToMenu">
 		<definition>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9011</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9012</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9013</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9014</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9015</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9016</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9017</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9018</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9004</param></include>
-			<include content="Bald_ReturnToMenuEntry"><param name="id">9006</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9011</param><param name="preview">hub1</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9012</param><param name="preview">hub2</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9013</param><param name="preview">hub3</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9014</param><param name="preview">hub4</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9015</param><param name="preview">hub5</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9016</param><param name="preview">hub6</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9017</param><param name="preview">hub7</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9018</param><param name="preview">hub8</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9004</param><param name="preview">livetv</param></include>
+			<include content="Bald_ReturnToMenuEntry"><param name="id">9006</param><param name="preview">settings</param></include>
 			<onload>ClearProperty(Bald.ReturnMenu,home)</onload>
 		</definition>
 	</include>
