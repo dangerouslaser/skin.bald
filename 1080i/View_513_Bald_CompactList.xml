@@ -16,7 +16,7 @@
 				<left>96</left><top>222</top><width>1140</width><height>624</height><orientation>vertical</orientation>
 				<viewtype label="Bald compact list">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,513,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,513,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
-				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright>RunScript(skin.bald,letters)</onright><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters)</ondown>
+				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright>RunScript(skin.bald,letters,513)</onright><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,513)</ondown>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
 				<itemlayout width="1140" height="48"><include>Bald_CompactMovieRow</include></itemlayout>
 				<focusedlayout width="1140" height="48">

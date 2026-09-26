@@ -19,10 +19,22 @@ def available_letters(count, read):
     return ';' + ';'.join(sorted(found)) + ';'
 
 
-def publish(xbmc, xbmcgui):
-    container = next((c for c in (523, 522, 521, 520, 515, 514, 513, 512, 511, 510)
-                      if xbmc.getCondVisibility(f'Control.IsVisible({c})')), None)
-    if container is None:
+# Library view containers live in 500-599 (see 1080i/IDs); anything else is a bad call site.
+VIEW_IDS = range(500, 600)
+
+
+def view_container(value):
+    """Return the call site's container id as an int, or None when it is not a view id."""
+    value = str(value or '').strip()
+    if not value.isdecimal() or int(value) not in VIEW_IDS:
+        return None
+    return int(value)
+
+
+def publish(xbmc, xbmcgui, container=''):
+    # Each view passes its own id: RunScript(skin.bald,letters,<id>).
+    container = view_container(container)
+    if container is None or not xbmc.getCondVisibility(f'Control.IsVisible({container})'):
         return
     window = xbmcgui.Window(10025)
     token = uuid.uuid4().hex

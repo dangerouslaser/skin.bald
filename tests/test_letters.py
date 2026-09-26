@@ -1,6 +1,27 @@
+from pathlib import Path
 import unittest
-from unittest.mock import Mock
-from scripts.letters import available_letters, bucket, publish
+from unittest.mock import Mock, patch
+import xml.etree.ElementTree as ET
+from scripts.letters import available_letters, bucket, publish, view_container
+
+ROOT = Path(__file__).resolve().parents[1] / '1080i'
+LETTERS = 'RunScript(skin.bald,letters'
+
+
+def fake_kodi(container, letter, visible=True, folder='movies'):
+    """Mocks for one view: its container holds one item sorted under `letter`."""
+    xbmc, gui, window = Mock(), Mock(), Mock()
+    gui.Window.return_value = window
+    props = {}
+    window.setProperty.side_effect = props.__setitem__
+    window.getProperty.side_effect = lambda key: props.get(key, '')
+    xbmc.getCondVisibility.side_effect = lambda condition: visible and (
+        condition == f'Control.IsVisible({container})' or condition.startswith('Window.IsActive'))
+    xbmc.getInfoLabel.side_effect = lambda key: {
+        f'Container({container}).NumAllItems': '1', 'Container.FolderPath': folder,
+        f'Container({container}).ListItemAbsolute(0).SortLetter': letter,
+    }.get(key, '')
+    return xbmc, gui, props
 
 
 class LetterAvailabilityTests(unittest.TestCase):
@@ -23,111 +44,79 @@ class LetterAvailabilityTests(unittest.TestCase):
         self.assertEqual(read.call_count, 27)
 
     def test_publish_does_not_replace_results_after_leaving_mode(self):
-        xbmc, gui, window = Mock(), Mock(), Mock()
-        gui.Window.return_value = window
-        props = {}
-        window.setProperty.side_effect = props.__setitem__
-        window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getInfoLabel.side_effect = lambda key: {
-            'Container(510).NumAllItems': '1', 'Container.FolderPath': 'movies',
-            'Container(510).ListItemAbsolute(0).SortLetter': 'A',
-        }.get(key, '')
-        xbmc.getCondVisibility.return_value = False
-        publish(xbmc, gui)
+        xbmc, gui, props = fake_kodi(510, 'A', visible=False)
+        publish(xbmc, gui, '510')
         self.assertNotIn('Bald.AvailableLetters', props)
-        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(510)' or condition.startswith('Window.IsActive')
-        publish(xbmc, gui)
+        xbmc, gui, props = fake_kodi(510, 'A')
+        publish(xbmc, gui, '510')
         self.assertEqual(props['Bald.AvailableLetters'], ';A;')
 
-    def test_wall_container_is_scanned_when_active(self):
-        xbmc, gui, window = Mock(), Mock(), Mock()
-        gui.Window.return_value = window
-        props = {}
-        window.setProperty.side_effect = props.__setitem__
-        window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(511)' or condition.startswith('Window.IsActive')
-        xbmc.getInfoLabel.side_effect = lambda key: {
-            'Container(511).NumAllItems': '1', 'Container.FolderPath': 'movies',
-            'Container(511).ListItemAbsolute(0).SortLetter': 'B',
-        }.get(key, '')
-        publish(xbmc, gui)
-        self.assertEqual(props['Bald.AvailableLetters'], ';B;')
+    def test_passed_view_container_is_scanned(self):
+        for container in (510, 511, 512, 513, 514, 515, 520, 521, 522, 523):
+            with self.subTest(container=container):
+                xbmc, gui, props = fake_kodi(container, 'G')
+                publish(xbmc, gui, str(container))
+                self.assertEqual(props['Bald.AvailableLetters'], ';G;')
 
-    def test_preview_wall_container_is_scanned_when_active(self):
-        xbmc, gui, window = Mock(), Mock(), Mock()
-        gui.Window.return_value = window
-        props = {}
-        window.setProperty.side_effect = props.__setitem__
-        window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(512)' or condition.startswith('Window.IsActive')
-        xbmc.getInfoLabel.side_effect = lambda key: {
-            'Container(512).NumAllItems': '1', 'Container.FolderPath': 'movies',
-            'Container(512).ListItemAbsolute(0).SortLetter': 'C',
-        }.get(key, '')
-        publish(xbmc, gui)
-        self.assertEqual(props['Bald.AvailableLetters'], ';C;')
-
-    def test_no_scan_outside_bald_views(self):
-        xbmc, gui = Mock(), Mock()
-        xbmc.getCondVisibility.return_value = False
-        publish(xbmc, gui)
+    def test_only_the_passed_container_is_read(self):
+        # 511 is visible but the call site named 510: nothing is scanned.
+        xbmc, gui, props = fake_kodi(511, 'B')
+        publish(xbmc, gui, '510')
         xbmc.getInfoLabel.assert_not_called()
         gui.Window.assert_not_called()
 
-    def test_compact_list_is_scanned_when_active(self):
-        xbmc, gui, window = Mock(), Mock(), Mock()
-        gui.Window.return_value = window
-        props = {}
-        window.setProperty.side_effect = props.__setitem__
-        window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(513)' or condition.startswith('Window.IsActive')
-        xbmc.getInfoLabel.side_effect = lambda key: {
-            'Container(513).NumAllItems': '1', 'Container.FolderPath': 'movies',
-            'Container(513).ListItemAbsolute(0).SortLetter': 'D',
-        }.get(key, '')
-        publish(xbmc, gui)
-        self.assertEqual(props['Bald.AvailableLetters'], ';D;')
+    def test_invalid_container_argument_does_nothing(self):
+        for value in ('', None, 'abc', '510)', '-510', '50', '9160', '5100', '51 0'):
+            with self.subTest(value=value):
+                xbmc, gui, _ = fake_kodi(510, 'A')
+                publish(xbmc, gui, value)
+                xbmc.getCondVisibility.assert_not_called()
+                xbmc.getInfoLabel.assert_not_called()
+                gui.Window.assert_not_called()
 
-    def test_artwork_list_is_scanned_when_active(self):
-        xbmc, gui, window = Mock(), Mock(), Mock()
-        gui.Window.return_value = window
-        props = {}
-        window.setProperty.side_effect = props.__setitem__
-        window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(514)' or condition.startswith('Window.IsActive')
-        xbmc.getInfoLabel.side_effect = lambda key: {
-            'Container(514).NumAllItems': '1', 'Container.FolderPath': 'movies',
-            'Container(514).ListItemAbsolute(0).SortLetter': 'E',
-        }.get(key, '')
-        publish(xbmc, gui)
-        self.assertEqual(props['Bald.AvailableLetters'], ';E;')
+    def test_view_container_accepts_only_view_range(self):
+        self.assertEqual(view_container('523'), 523)
+        self.assertEqual(view_container(' 510 '), 510)
+        self.assertIsNone(view_container('499'))
+        self.assertIsNone(view_container('600'))
 
-    def test_poster_low_is_scanned_when_active(self):
-        xbmc, gui, window = Mock(), Mock(), Mock()
-        gui.Window.return_value = window
-        props = {}
-        window.setProperty.side_effect = props.__setitem__
-        window.getProperty.side_effect = lambda key: props.get(key, '')
-        xbmc.getCondVisibility.side_effect = lambda condition: condition == 'Control.IsVisible(515)' or condition.startswith('Window.IsActive')
-        xbmc.getInfoLabel.side_effect = lambda key: {
-            'Container(515).NumAllItems': '1', 'Container.FolderPath': 'movies',
-            'Container(515).ListItemAbsolute(0).SortLetter': 'F',
-        }.get(key, '')
-        publish(xbmc, gui)
-        self.assertEqual(props['Bald.AvailableLetters'], ';F;')
+    def test_no_scan_when_container_is_hidden(self):
+        xbmc, gui, _ = fake_kodi(510, 'A', visible=False)
+        publish(xbmc, gui, '510')
+        xbmc.getInfoLabel.assert_not_called()
+        gui.Window.assert_not_called()
 
-    def test_series_views_are_scanned_when_active(self):
-        for container in (520, 521, 522, 523):
-            with self.subTest(container=container):
-                xbmc, gui, window = Mock(), Mock(), Mock()
-                gui.Window.return_value = window
-                props = {}
-                window.setProperty.side_effect = props.__setitem__
-                window.getProperty.side_effect = lambda key: props.get(key, '')
-                xbmc.getCondVisibility.side_effect = lambda condition, c=container: condition == f'Control.IsVisible({c})' or condition.startswith('Window.IsActive')
-                xbmc.getInfoLabel.side_effect = lambda key, c=container: {
-                    f'Container({c}).NumAllItems': '1', 'Container.FolderPath': 'tvshows',
-                    f'Container({c}).ListItemAbsolute(0).SortLetter': 'G',
-                }.get(key, '')
-                publish(xbmc, gui)
-                self.assertEqual(props['Bald.AvailableLetters'], ';G;')
+
+class LetterDispatchTests(unittest.TestCase):
+    def test_info_script_forwards_the_container_argument(self):
+        from scripts import info
+        xbmc, gui, letters = Mock(), Mock(), Mock()
+        with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': gui, 'letters': letters}):
+            info.run('letters', '521')
+        letters.publish.assert_called_once_with(xbmc, gui, '521')
+
+
+class LetterCallSiteTests(unittest.TestCase):
+    def test_every_call_site_passes_its_own_container(self):
+        sites = []
+        for path in sorted(ROOT.glob('View_5*.xml')):
+            for control in ET.parse(path).getroot().iter('control'):
+                for action in control:
+                    text = (action.text or '').strip()
+                    if text.startswith(LETTERS):
+                        sites.append((path.name, control.get('id'), text))
+        self.assertTrue(sites)
+        for name, control_id, text in sites:
+            with self.subTest(file=name, control=control_id):
+                self.assertIsNotNone(view_container(control_id))
+                self.assertEqual(text, f'{LETTERS},{control_id})')
+
+    def test_every_letters_view_calls_the_script(self):
+        called = {int(site.get('id')) for path in ROOT.glob('View_5*.xml')
+                  for site in ET.parse(path).getroot().iter('control')
+                  if any((a.text or '').startswith(LETTERS) for a in site)}
+        self.assertEqual(called, {510, 511, 512, 513, 514, 515, 520, 521, 522, 523})
+
+
+if __name__ == '__main__':
+    unittest.main()

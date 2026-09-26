@@ -14,7 +14,7 @@ class CompactListTests(unittest.TestCase):
         self.assertEqual(control.findtext('visible'), 'Container.Content(movies)')
         self.assertEqual(int(control.findtext('height')), 13 * int(control.find('itemlayout').get('height')))
         self.assertEqual(control.findtext('onleft'), '9150')
-        self.assertEqual([n.text for n in control.findall('onright')], ['SetFocus(9160)', 'RunScript(skin.bald,letters)'])
+        self.assertEqual([n.text for n in control.findall('onright')], ['SetFocus(9160)', 'RunScript(skin.bald,letters,513)'])
         self.assertEqual(root.findtext(".//include[@content='Bald_LibraryPreview']/param[@name='c']"), '513')
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
         self.assertIn('513', nav.findtext('views').split(','))

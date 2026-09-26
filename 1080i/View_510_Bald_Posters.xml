@@ -208,7 +208,7 @@
 				<viewtype label="Bald posters">icon</viewtype><visible>Container.Content(movies)</visible>
 				<onfocus>SetProperty(Bald.LibraryContainer,510,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,510,videos)</onfocus>
 				<onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
-				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters)</ondown><onleft>noop</onleft><onright>noop</onright>
+				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,510)</ondown><onleft>noop</onleft><onright>noop</onright>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
 				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
 				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
