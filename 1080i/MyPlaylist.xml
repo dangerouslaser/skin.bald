@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: the video and music play queues in the browse language (list 55, or 503 with now playing, beside the
+     preview column) with the right-hand options menu. Kodi binds 20 (shuffle), 21 (save), 22 (clear) and 26 (repeat,
+     whose label Kodi sets), plus the media window's 2-4 and 12. -->
 <window>
 	<defaultcontrol always="true">55</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
@@ -7,35 +11,26 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" easing="inout" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_55_WideList</include>
 			<include condition="Window.IsActive(musicplaylist)">View_503_NowPlaying</include>
 			<include>CommonScrollbars</include>
-			<control type="group">
-				<include>OpenClose_Left</include>
-				<include>Visible_Left</include>
-				<include>ListThumbInfoPanel</include>
-			</control>
+			<include content="ListThumbInfoPanel">
+				<param name="visible">Control.IsVisible(55)</param>
+			</include>
 			<include content="TopBar" condition="Window.IsActive(videoplaylist)">
 				<param name="breadcrumbs_label" value="$LOCALIZE[31065]" />
-				<param name="sublabel">$LOCALIZE[31073] - $INFO[Container.TotalTime,,  •  ]$INFO[Container.CurrentItem,,/]$INFO[Container.NumItems]</param>
+				<param name="sublabel">$LOCALIZE[31073]$INFO[Container.TotalTime, · ,]</param>
+				<param name="top" value="108" />
 			</include>
 			<include content="TopBar" condition="Window.IsActive(musicplaylist)">
 				<param name="breadcrumbs_label" value="$LOCALIZE[31066]" />
-				<param name="sublabel">$LOCALIZE[31074] - $INFO[Container.TotalTime]</param>
+				<param name="sublabel">$LOCALIZE[31074]$INFO[Container.TotalTime, · ,]</param>
+				<param name="top" value="108" />
 			</include>
 			<include content="BottomBar">
 				<param name="info_visible" value="true" />
 			</include>
-			<control type="group">
-				<visible>!Container.Content(songs)</visible>
-				<depth>DepthBars</depth>
-				<bottom>10</bottom>
-				<height>40</height>
-				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-				<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
-			</control>
 			<include>MediaMenuMouseOverlay</include>
 			<control type="group">
 				<include>MediaMenuCommon</include>
@@ -48,40 +43,23 @@
 						<label>$LOCALIZE[31020]</label>
 					</control>
 					<control type="radiobutton" id="20">
-						<height>80</height>
-						<align>left</align>
-						<aligny>center</aligny>
-						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-						<texturenofocus />
-						<radioposx>280</radioposx>
-						<textoffsetx>20</textoffsetx>
+						<description>Shuffle</description>
+						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[191]</label>
 					</control>
 					<control type="button" id="26">
-						<height>80</height>
-						<align>left</align>
-						<aligny>center</aligny>
-						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-						<texturenofocus />
-						<textoffsetx>20</textoffsetx>
+						<description>Repeat (Kodi sets the label)</description>
+						<include>MediaMenuItemsCommon</include>
 						<label></label>
 					</control>
 					<control type="button" id="21">
-						<height>80</height>
-						<align>left</align>
-						<aligny>center</aligny>
-						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-						<texturenofocus />
-						<textoffsetx>20</textoffsetx>
+						<description>Save</description>
+						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[190]</label>
 					</control>
 					<control type="button" id="22">
-						<height>80</height>
-						<align>left</align>
-						<aligny>center</aligny>
-						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-						<texturenofocus />
-						<textoffsetx>20</textoffsetx>
+						<description>Clear</description>
+						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[192]</label>
 					</control>
 					<include>MediaMenuNowPlaying</include>
