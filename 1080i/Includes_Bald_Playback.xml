@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald playback chrome (docs/SPEC.md 5, "Playback (proposed)"), shared by the player windows that started from Kodi 22
+     Estuary: DialogSeekBar, VideoOSD, MusicOSD, PlayerControls, VideoOSDBookmarks, Custom_1109 (pause and seek header),
+     Custom_1110 (tempo), Custom_1101 (OSD settings), DialogSlider, DialogSubtitles and VideoFullScreen.
+
+     Layout, 1080i, 96 px safe margin:
+       bottom block (seek bar dialog): logo box 96,556 480 x 120, or the title at y 628; meta y 688; flags y 728;
+         the right column (x 1296 to 1824) holds the recording mark y 568, the seek state y 604, the time y 640 and
+         "Ends at" y 688; the track is a 4 px line at y 768 across 96 to 1824 with a 16 px accent playhead.
+       OSD buttons (VideoOSD, MusicOSD): 64 x 84 icon buttons at y 818, the 56 px icon at the top and an 8 px accent
+         dot under the focused one; transport on the left from x 96, tools on the right ending at x 1824.
+       hints: y 954, sentence case, right-aligned to x 1824 with the dot separator (Bald_InfoHintPair).
+       pause and seek header (Custom_1109): state and time at 96,108 and 96,146, a 1200 px track at y 206, and Home's
+         clock at 1440,104 with the finish time under it at y 248.
+     Only fade, slide and zoom; move = cubic out, fade = sine in-out, pop = back out (docs/SPEC.md 4). -->
+<includes>
+	<!-- ============ Conditions ============ -->
+	<!-- One of the player's "info" states: the OSD, the info overlay, the time display or a PVR overlay is up. -->
+	<expression name="Bald_PlaybackInfoState">[Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)]</expression>
+	<!-- Seeking, paused, fast forward or rewind, or typing a seek time. -->
+	<expression name="Bald_PlaybackSeekState">[!String.IsEmpty(Player.SeekNumeric) | Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused]</expression>
+	<!-- The seek bar dialog's bottom block (Estuary's condition, unchanged). -->
+	<expression name="Bald_PlaybackBottomBlock">[$EXP[Bald_PlaybackInfoState] | !$EXP[Bald_PlaybackSeekState] | !String.IsEmpty(PVR.ChannelNumberInput)]</expression>
+	<!-- Custom_1109's pause and seek header: seeking or paused with no info state (Estuary's condition, unchanged). -->
+	<expression name="Bald_PlaybackPauseHeader">[[!$EXP[Bald_PlaybackInfoState] + $EXP[Bald_PlaybackSeekState]] | !String.IsEmpty(PVR.ChannelNumberInput)]</expression>
+	<!-- Custom_1109's top chrome in the info states (Estuary's condition, including its precedence, unchanged). -->
+	<expression name="Bald_PlaybackTopChrome">[Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) + ![Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused] | !String.IsEmpty(PVR.ChannelNumberInput)]</expression>
+	<!-- The header has been paused on screen for 5 s: it leaves, as Estuary's top bar did. -->
+	<expression name="Bald_PlaybackPauseSettled">[Player.Paused + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1109_topbaroverlay),5)]</expression>
+	<expression name="Bald_PlaybackHasLogo">[$EXP[Bald_ShowClearlogo] + [!String.IsEmpty(Player.Art(clearlogo)) | !String.IsEmpty(Player.Art(tvshow.clearlogo))]]</expression>
+
+	<!-- ============ Labels ============ -->
+	<!-- Title: the show for episodes, the programme for live TV, the song for music, else the video title. -->
+	<variable name="Bald_PlaybackTitle">
+		<value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TVShowTitle)">$INFO[VideoPlayer.TVShowTitle]</value>
+		<value condition="VideoPlayer.Content(livetv) + String.IsEmpty(VideoPlayer.Title)">$INFO[VideoPlayer.ChannelName]</value>
+		<value condition="Player.HasAudio + !Player.HasVideo">$INFO[MusicPlayer.Title]</value>
+		<value>$INFO[VideoPlayer.Title]</value>
+	</variable>
+	<!-- Meta line: "S1 E2 · Title", "12 BBC One · 20:00 – 21:00", "2019 · Drama", "Artist · Album", then the chapter. -->
+	<variable name="Bald_PlaybackMeta">
+		<value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.Season)">S$INFO[VideoPlayer.Season] E$INFO[VideoPlayer.Episode]$INFO[VideoPlayer.Title, · ]$VAR[Bald_PlaybackChapter]</value>
+		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.ChannelNumberLabel,, ]$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.StartTime, · ]$INFO[VideoPlayer.EndTime, – ]</value>
+		<value condition="Player.HasAudio + !Player.HasVideo">$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, · ]</value>
+		<value condition="VideoPlayer.Content(musicvideos)">$INFO[VideoPlayer.Artist]$INFO[VideoPlayer.Album, · ]$VAR[Bald_PlaybackChapter]</value>
+		<value>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Genre, · ]$VAR[Bald_PlaybackChapter]</value>
+	</variable>
+	<variable name="Bald_PlaybackChapter">
+		<value condition="Player.ChapterCount">$INFO[Player.Chapter, · $LOCALIZE[21396] ]$INFO[Player.ChapterCount,/]</value>
+	</variable>
+	<!-- Elapsed and total time; a typed seek time wins. Estuary's SeekTimeLabelVar without the bold. -->
+	<variable name="Bald_PlaybackTime">
+		<value condition="!String.IsEmpty(Player.SeekNumeric)">$INFO[Player.SeekNumeric(hh:mm:ss)]</value>
+		<value condition="Player.Seeking + VideoPlayer.HasEPG">$INFO[PVR.EpgEventSeekTime]$INFO[PVR.EpgEventDuration, / ]</value>
+		<value condition="Player.Seeking">$INFO[Player.SeekTime]$INFO[Player.Duration, / ]</value>
+		<value condition="VideoPlayer.HasEpg">$INFO[PVR.EpgEventElapsedTime]$INFO[PVR.EpgEventDuration, / ]</value>
+		<value>$INFO[Player.Time]$INFO[Player.Duration, / ]</value>
+	</variable>
+	<!-- What the player is doing: seek step, paused, fast forward, rewind or play speed. Estuary's SeekLabel, uncoloured. -->
+	<variable name="Bald_PlaybackState">
+		<value condition="!String.IsEmpty(Player.SeekStepSize)">$LOCALIZE[773] $INFO[Player.SeekStepSize]</value>
+		<value condition="!String.IsEmpty(Player.SeekOffset) + Player.HasPerformedSeek(3)">$LOCALIZE[773] $INFO[Player.SeekOffset]</value>
+		<value condition="Player.Paused">$LOCALIZE[112]</value>
+		<value condition="Player.Forwarding">$LOCALIZE[31039] $VAR[VideoPlayerForwardRewindVar]</value>
+		<value condition="Player.Rewinding">$LOCALIZE[31038] $VAR[VideoPlayerForwardRewindVar]</value>
+		<value condition="Player.IsTempo">$LOCALIZE[31142] $INFO[Player.PlaySpeed]</value>
+	</variable>
+	<!-- Under the time: timeshift position, "Live", or when the programme or video ends. -->
+	<variable name="Bald_PlaybackEnds">
+		<value condition="VideoPlayer.Content(LiveTV) + PVR.IsTimeShift">$LOCALIZE[31026] $INFO[PVR.TimeshiftCur] (-$INFO[PVR.TimeshiftOffset])</value>
+		<value condition="Player.IsLive">$LOCALIZE[31081]</value>
+		<value condition="VideoPlayer.HasEpg">$INFO[PVR.EpgEventFinishTime,$LOCALIZE[31080] ]</value>
+		<value condition="Player.HasVideo + !Player.HasGame + !String.IsEmpty(Player.Duration)">$INFO[Player.FinishTime,$LOCALIZE[31080] ]</value>
+	</variable>
+	<!-- Next item on the info overlay's hint line. -->
+	<variable name="Bald_PlaybackNext">
+		<value condition="RDS.HasRadioText">$LOCALIZE[14304] · $INFO[RDS.GetLine(0)]</value>
+		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.NextStartTime,$LOCALIZE[31622] · ]$INFO[VideoPlayer.NextTitle, ]</value>
+		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.offset(1).TVShowTitle,$LOCALIZE[31622] · ]$INFO[VideoPlayer.offset(1).Season, · S]$INFO[VideoPlayer.offset(1).Episode, E]$INFO[VideoPlayer.offset(1).Title, · ]</value>
+		<value condition="Window.IsActive(visualisation)">$INFO[MusicPlayer.offset(1).Title,$LOCALIZE[31622] · ]$INFO[MusicPlayer.offset(1).Artist, · ]</value>
+		<value>$INFO[VideoPlayer.offset(1).Title,$LOCALIZE[31622] · ]$INFO[VideoPlayer.offset(1).Year, · ]</value>
+	</variable>
+	<!-- First hint: what the focused OSD control does (Estuary's OSDHelpTextVar, plus the transport buttons). -->
+	<variable name="Bald_PlaybackHelp">
+		<value condition="Control.HasFocus(87) + Window.IsActive(playercontrols)">$LOCALIZE[31038] · $LOCALIZE[31039]</value>
+		<value condition="Control.HasFocus(87) + !Player.Paused">$LOCALIZE[31616]</value>
+		<value condition="Control.HasFocus(87)">$LOCALIZE[31617]</value>
+		<value condition="Control.HasFocus(600)">$LOCALIZE[210]</value>
+		<value condition="Control.HasFocus(601)">$LOCALIZE[31038]</value>
+		<value condition="Control.HasFocus(602) + Player.Playing">$LOCALIZE[31621]</value>
+		<value condition="Control.HasFocus(602)">$LOCALIZE[208]</value>
+		<value condition="Control.HasFocus(603)">$LOCALIZE[31620]</value>
+		<value condition="Control.HasFocus(605)">$LOCALIZE[209]</value>
+		<value condition="Control.HasFocus(606)">$LOCALIZE[31039]</value>
+		<value condition="Control.HasFocus(607) + Window.IsActive(playercontrols)">$LOCALIZE[590]</value>
+		<value condition="Control.HasFocus(607)">$LOCALIZE[209]</value>
+		<value condition="Control.HasFocus(608) + PVR.IsRecordingPlayingChannel">$LOCALIZE[19059]</value>
+		<value condition="Control.HasFocus(608)">$LOCALIZE[264]</value>
+		<value condition="Control.HasFocus(704)">$LOCALIZE[486]</value>
+		<value condition="Control.HasFocus(804)">$LOCALIZE[33061]</value>
+		<value condition="Control.HasFocus(70040)">$LOCALIZE[19019]</value>
+		<value condition="Control.HasFocus(70041)">$LOCALIZE[19069]</value>
+		<value condition="Control.HasFocus(70042)">$LOCALIZE[31065]</value>
+		<value condition="Control.HasFocus(70043)">$LOCALIZE[19033]</value>
+		<value condition="Control.HasFocus(70044)">$LOCALIZE[298]</value>
+		<value condition="Control.HasFocus(70045)">$LOCALIZE[31106]</value>
+		<value condition="Control.HasFocus(70046)">$LOCALIZE[13392]</value>
+		<value condition="Control.HasFocus(70047)">$LOCALIZE[36501]</value>
+		<value condition="Control.HasFocus(70048)">$LOCALIZE[5]</value>
+		<value condition="Control.HasFocus(70050)">$LOCALIZE[29900]</value>
+		<value condition="Control.HasFocus(70051)">$LOCALIZE[31066]</value>
+		<value condition="Control.HasFocus(70052)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, · ]</value>
+		<value condition="Control.HasFocus(70053)">$LOCALIZE[486]$INFO[Playlist.Repeat, · ]</value>
+		<value condition="Control.HasFocus(70054) + Playlist.IsRandom">$LOCALIZE[590] · $LOCALIZE[16041]</value>
+		<value condition="Control.HasFocus(70054)">$LOCALIZE[590] · $LOCALIZE[16039]</value>
+		<value condition="Control.HasFocus(70055)">$LOCALIZE[24013]</value>
+		<value condition="Control.HasFocus(799)">$LOCALIZE[31619]</value>
+	</variable>
+	<!-- Second hint: where the other row is. -->
+	<variable name="Bald_PlaybackHint">
+		<value condition="Control.HasFocus(87)">$LOCALIZE[31623]</value>
+		<value condition="Player.SeekEnabled">$LOCALIZE[31618]</value>
+		<value>$LOCALIZE[31619]</value>
+	</variable>
+	<!-- PlayerControls' second and third lines: Estuary's PlayerLabel2 and PlayerLabel3 without their colours. -->
+	<variable name="Bald_PlaybackMiniMeta">
+		<value condition="VideoPlayer.Content(episodes)">S$INFO[VideoPlayer.Season] E$INFO[VideoPlayer.Episode]$INFO[VideoPlayer.TvShowTitle, · ]</value>
+		<value condition="VideoPlayer.Content(movies)">$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Genre, · ]</value>
+		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.Genre, · ]</value>
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.Album]$INFO[MusicPlayer.Year, · ]</value>
+	</variable>
+	<variable name="Bald_PlaybackMiniTitle">
+		<value condition="Player.HasVideo">$INFO[VideoPlayer.Title]</value>
+		<value condition="Player.HasAudio">$INFO[MusicPlayer.TrackNumber,,  ]$INFO[Player.Title]</value>
+	</variable>
+	<variable name="Bald_PlaybackMiniArtist">
+		<value condition="Player.HasAudio + !Player.HasVideo">$INFO[MusicPlayer.Artist]</value>
+	</variable>
+
+	<!-- ============ Motion ============ -->
+	<!-- Bottom chrome windows: in 380 FADE and a 40 px rise over 480 MOVE; out 160 FADE and a 40 px drop over 180. -->
+	<include name="Bald_PlaybackAnimWindow">
+		<param name="y">40</param>
+		<definition>
+			<animation type="WindowOpen" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+				<effect type="slide" start="0,$PARAM[y]" end="0,0" time="480" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+				<effect type="slide" start="0,0" end="0,$PARAM[y]" time="180" tween="cubic" easing="out" />
+			</animation>
+		</definition>
+	</include>
+	<!-- The same motion on a group's visibility; y -40 for the top header. -->
+	<include name="Bald_PlaybackAnimVisible">
+		<param name="y">40</param>
+		<param name="delay">0</param>
+		<definition>
+			<animation type="Visible" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" delay="$PARAM[delay]" tween="sine" easing="inout" />
+				<effect type="slide" start="0,$PARAM[y]" end="0,0" time="480" delay="$PARAM[delay]" tween="cubic" easing="out" />
+			</animation>
+			<animation type="Hidden" reversible="false">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			</animation>
+		</definition>
+	</include>
+	<include name="Bald_PlaybackAnimFade">
+		<animation type="Visible" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Hidden" reversible="false">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<!-- The OSD settings drawer: the Home menu's open (fade 380, 40 px slide over 480, after 120) and close (160). -->
+	<include name="Bald_PlaybackAnimDrawer">
+		<animation type="WindowOpen" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
+			<effect type="slide" start="40,0" end="0,0" time="480" delay="120" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose" reversible="false">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
+		</animation>
+	</include>
+
+	<!-- ============ Surfaces ============ -->
+	<!-- Bottom scrim: the info dialog's scrim_info_b (field 85% at the bottom edge to 0), stretched so it reaches up to
+	     y 542 at the default size. -->
+	<include name="Bald_PlaybackScrim">
+		<param name="top">-200</param>
+		<param name="height">1280</param>
+		<definition>
+			<control type="image">
+				<left>0</left>
+				<top>$PARAM[top]</top>
+				<width>1920</width>
+				<height>$PARAM[height]</height>
+				<texture colordiffuse="bald_field">bald/scrim_info_b.png</texture>
+			</control>
+		</definition>
+	</include>
+	<!-- Top scrim: the same texture flipped, 85% at the top edge to 0 at y 269. -->
+	<include name="Bald_PlaybackScrimTop">
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>640</height>
+			<texture flipy="true" colordiffuse="bald_field">bald/scrim_info_b.png</texture>
+		</control>
+	</include>
+	<!-- Opaque popup panel for the one-row player dialogs (DialogSlider, Custom_1110), centred at the top. -->
+	<include name="Bald_PlaybackPanel">
+		<param name="height">136</param>
+		<definition>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>840</width>
+				<height>$PARAM[height]</height>
+				<texture colordiffuse="bald_field">bald/white.png</texture>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Seek track ============ -->
+	<!-- Track line: 4 px, 28% ink, rounded. -->
+	<include name="Bald_PlaybackTrackLine">
+		<param name="left">96</param>
+		<param name="width">1728</param>
+		<param name="top">768</param>
+		<param name="color">bald_ink28</param>
+		<definition>
+			<control type="image">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<height>4</height>
+				<texture border="2" colordiffuse="$PARAM[color]">bald/bar.png</texture>
+			</control>
+		</definition>
+	</include>
+	<!-- A 4 px fill over the track; the caller nests its <info> (and <info2>, where the fill starts). Kodi offsets a
+	     fill whose control has no background texture by half the fill's height, so <top> is the track's top minus 2
+	     (GUIProgressControl, GUIRangesControl). -->
+	<include name="Bald_PlaybackTrackFill">
+		<param name="left">96</param>
+		<param name="width">1728</param>
+		<param name="top">766</param>
+		<param name="color">bald_ink</param>
+		<param name="visible">true</param>
+		<definition>
+			<control type="progress">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<height>4</height>
+				<nested />
+				<texturebg />
+				<midtexture border="2" colordiffuse="$PARAM[color]">bald/bar.png</midtexture>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- Markers on the track: edit-list ranges as a 60% band, cut points and bookmarks as 8 px dashes (60% ink and the
+	     accent), chapters and scene markers as field-coloured gaps in the line. -->
+	<include name="Bald_PlaybackTrackMarks">
+		<param name="left">96</param>
+		<param name="width">1728</param>
+		<param name="top">766</param>
+		<definition>
+			<control type="ranges">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<height>4</height>
+				<texturebg />
+				<midtexture border="2" colordiffuse="bald_ink60">bald/bar.png</midtexture>
+				<info>Player.Editlist</info>
+			</control>
+			<control type="ranges">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<height>4</height>
+				<texturebg />
+				<righttexture colordiffuse="bald_ink60">bald/bar.png</righttexture>
+				<info>Player.Cuts</info>
+			</control>
+			<control type="ranges">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<height>4</height>
+				<texturebg />
+				<righttexture colordiffuse="bald_field">bald/bar.png</righttexture>
+				<info>Player.SceneMarkers</info>
+			</control>
+			<control type="ranges">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<height>4</height>
+				<texturebg />
+				<righttexture colordiffuse="bald_field">bald/bar.png</righttexture>
+				<info>Player.Chapters</info>
+			</control>
+			<control type="ranges">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<height>4</height>
+				<texturebg />
+				<righttexture colordiffuse="bald_accent">bald/bar.png</righttexture>
+				<info>Player.Bookmarks</info>
+			</control>
+		</definition>
+	</include>
+	<!-- The whole seek track for files: line, cached part (45%), played part (full ink) and markers. -->
+	<include name="Bald_PlaybackTrack">
+		<param name="left">96</param>
+		<param name="width">1728</param>
+		<param name="top">768</param>
+		<param name="fill_top">766</param>
+		<definition>
+			<include content="Bald_PlaybackTrackLine"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[top]</param></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><param name="color">bald_ink45</param><info>Player.ProgressCache</info></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><info>Player.Progress</info></include>
+			<include content="Bald_PlaybackTrackMarks"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param></include>
+		</definition>
+	</include>
+	<!-- The seek track for live TV: the timeshift buffer (45%) and the programme played so far (full ink); on a channel
+	     preview, the programme's progress. Replaces Estuary's PVRProgress bars; its time labels are Bald_PlaybackPVRTimes. -->
+	<include name="Bald_PlaybackPVRTrack">
+		<param name="left">96</param>
+		<param name="width">1728</param>
+		<param name="top">768</param>
+		<param name="fill_top">766</param>
+		<definition>
+			<include content="Bald_PlaybackTrackLine"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[top]</param></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><param name="color">bald_ink45</param><param name="visible">Player.SeekEnabled + !Player.ChannelPreviewActive</param><info>PVR.TimeshiftProgressBufferEnd</info><info2>PVR.TimeshiftProgressBufferStart</info2></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><param name="visible">VideoPlayer.HasEPG + !Player.ChannelPreviewActive</param><info>PVR.TimeshiftProgressPlayPos</info><info2>PVR.TimeshiftProgressEpgStart</info2></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">$PARAM[left]</param><param name="width">$PARAM[width]</param><param name="top">$PARAM[fill_top]</param><param name="visible">Player.ChannelPreviewActive</param><info>PVR.EpgEventProgress</info></include>
+		</definition>
+	</include>
+	<!-- Programme start and end under the live track's ends (Estuary's PVRProgress labels). -->
+	<include name="Bald_PlaybackPVRTimes">
+		<param name="left">96</param>
+		<param name="width">1728</param>
+		<param name="top">784</param>
+		<definition>
+			<control type="group">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<include>Bald_PlaybackAnimFade</include>
+				<visible>[[Player.SeekEnabled | VideoPlayer.HasEPG] + !Player.ChannelPreviewActive] | Player.ChannelPreviewActive</visible>
+				<control type="label">
+					<left>0</left>
+					<width>400</width>
+					<height>24</height>
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[PVR.TimeshiftProgressStartTime]</label>
+					<visible>!Player.ChannelPreviewActive</visible>
+				</control>
+				<control type="label">
+					<right>0</right>
+					<width>400</width>
+					<height>24</height>
+					<align>right</align>
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[PVR.TimeshiftProgressEndTime]</label>
+					<visible>!Player.ChannelPreviewActive</visible>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<width>400</width>
+					<height>24</height>
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[VideoPlayer.StartTime]</label>
+					<visible>Player.ChannelPreviewActive</visible>
+				</control>
+				<control type="label">
+					<right>0</right>
+					<width>400</width>
+					<height>24</height>
+					<align>right</align>
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[VideoPlayer.EndTime]</label>
+					<visible>Player.ChannelPreviewActive</visible>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- Body of a seek slider: no bar (the track is drawn underneath) and the 16 px playhead in the accent. With no bar
+	     texture Kodi draws the nib at its own 16 px, from the control's top: <top> is the track's top minus 6. -->
+	<include name="Bald_PlaybackNib">
+		<param name="nib">bald_accent</param>
+		<definition>
+			<height>16</height>
+			<texturesliderbar />
+			<texturesliderbardisabled />
+			<textureslidernib colordiffuse="$PARAM[nib]">bald/slider_nib.png</textureslidernib>
+			<textureslidernibfocus colordiffuse="$PARAM[nib]">bald/slider_nib.png</textureslidernibfocus>
+			<textureslidernibdisabled />
+		</definition>
+	</include>
+	<!-- Body of an OSD mouse-seek slider laid over the seek dialog's track: invisible, since the seek dialog already
+	     draws the playhead, but still a seek target for the mouse (Estuary's sliders with <action>seek</action>). -->
+	<include name="Bald_PlaybackSeekArea">
+		<left>Bald_SafeLeft</left>
+		<top>762</top>
+		<width>1728</width>
+		<height>16</height>
+		<texturesliderbar />
+		<texturesliderbardisabled />
+		<textureslidernib />
+		<textureslidernibfocus />
+		<textureslidernibdisabled />
+	</include>
+	<!-- Focus mark for the seek row: the menu's accent dot, 12 px left of the track, while the hidden seek button (87)
+	     has focus. -->
+	<include name="Bald_PlaybackSeekFocus">
+		<param name="top">766</param>
+		<definition>
+			<control type="image">
+				<left>76</left>
+				<top>$PARAM[top]</top>
+				<width>8</width>
+				<height>8</height>
+				<texture colordiffuse="bald_accent">bald/dot.png</texture>
+				<visible>Control.HasFocus(87)</visible>
+				<include>Bald_PlaybackAnimFade</include>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Title block ============ -->
+	<!-- Clearlogo (or the title), meta line and media flags at the left of the seek dialog's bottom block. -->
+	<include name="Bald_PlaybackTitleBlock">
+		<control type="image">
+			<left>Bald_SafeLeft</left>
+			<top>556</top>
+			<width>480</width>
+			<height>120</height>
+			<aspectratio align="left" aligny="bottom">keep</aspectratio>
+			<fadetime>200</fadetime>
+			<texture>$VAR[PlayerClearLogoVar]</texture>
+			<visible>$EXP[Bald_PlaybackHasLogo]</visible>
+		</control>
+		<control type="label">
+			<left>Bald_SafeLeft</left>
+			<top>628</top>
+			<width>1100</width>
+			<height>48</height>
+			<aligny>center</aligny>
+			<font>Bald_CaptionTitle</font>
+			<textcolor>bald_ink</textcolor>
+			<label>$VAR[Bald_PlaybackTitle]</label>
+			<visible>!$EXP[Bald_PlaybackHasLogo]</visible>
+		</control>
+		<control type="label">
+			<left>Bald_SafeLeft</left>
+			<top>688</top>
+			<width>1100</width>
+			<height>28</height>
+			<aligny>center</aligny>
+			<font>Bald_CaptionMeta</font>
+			<textcolor>bald_ink80</textcolor>
+			<label>$VAR[Bald_PlaybackMeta]</label>
+		</control>
+		<control type="grouplist">
+			<left>Bald_SafeLeft</left>
+			<top>728</top>
+			<width>1100</width>
+			<height>26</height>
+			<orientation>horizontal</orientation>
+			<itemgap>8</itemgap>
+			<include>Bald_PlaybackFlags</include>
+		</control>
+	</include>
+	<!-- The playing video's flag chips (Bald_MediaFlags reads list items; the player has its own infolabels). -->
+	<include name="Bald_PlaybackFlags">
+		<visible>$EXP[Bald_ShowMediaFlags] + Player.HasVideo + !VideoPlayer.Content(livetv)</visible>
+		<include content="Bald_FlagChip"><param name="label">4K</param><param name="visible">String.IsEqual(VideoPlayer.VideoResolution,4K)</param></include>
+		<include content="Bald_FlagChip"><param name="label">1080p</param><param name="visible">String.IsEqual(VideoPlayer.VideoResolution,1080)</param></include>
+		<include content="Bald_FlagChip"><param name="label">Dolby Vision</param><param name="visible">String.IsEqual(VideoPlayer.HdrType,dolbyvision)</param></include>
+		<include content="Bald_FlagChip"><param name="label">HDR10</param><param name="visible">String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
+		<include content="Bald_FlagChip"><param name="label">HDR10+</param><param name="visible">String.StartsWith(VideoPlayer.HdrType,hdr10) + !String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
+		<include content="Bald_FlagChip"><param name="label">HLG</param><param name="visible">String.IsEqual(VideoPlayer.HdrType,hlg)</param></include>
+		<include content="Bald_FlagChip"><param name="label">$MAP[DefaultCodecMap, VideoPlayer.AudioCodec]</param><param name="visible">!String.IsEmpty(VideoPlayer.AudioCodec)</param></include>
+		<include content="Bald_FlagChip"><param name="label">7.1</param><param name="visible">String.IsEqual(VideoPlayer.AudioChannels,8)</param></include>
+		<include content="Bald_FlagChip"><param name="label">5.1</param><param name="visible">String.IsEqual(VideoPlayer.AudioChannels,6)</param></include>
+	</include>
+	<!-- Right column: elapsed and total time, and what comes at the end. -->
+	<include name="Bald_PlaybackTimes">
+		<control type="label">
+			<left>Bald_PreviewLeft</left>
+			<top>640</top>
+			<width>528</width>
+			<height>36</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>Bald_InfoTagline</font>
+			<textcolor>bald_ink</textcolor>
+			<label>$VAR[Bald_PlaybackTime]</label>
+			<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
+		</control>
+		<control type="label">
+			<left>Bald_PreviewLeft</left>
+			<top>688</top>
+			<width>528</width>
+			<height>28</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>Bald_CaptionMeta</font>
+			<textcolor>bald_ink60</textcolor>
+			<label>$VAR[Bald_PlaybackEnds]</label>
+		</control>
+	</include>
+
+	<!-- ============ Buttons ============ -->
+	<!-- Body of an OSD icon button (radiobutton) with one icon in both radio states. -->
+	<include name="Bald_PlaybackButton">
+		<param name="icon" />
+		<definition>
+			<include content="Bald_PlaybackToggle">
+				<param name="icon">$PARAM[icon]</param>
+				<param name="on">$PARAM[icon]</param>
+			</include>
+		</definition>
+	</include>
+	<!-- Body of an OSD toggle (radiobutton): 64 x 84 with the 56 px icon at the top, 60% ink, full ink on focus with
+	     the accent dot under it (bald/osd_focus.png) and the tile pop (1.05, 280 POP). <icon> is the off state, <on>
+	     the selected state (play and pause, record, random); <on_color> and <off_color> tint them while unfocused. -->
+	<include name="Bald_PlaybackToggle">
+		<param name="icon" />
+		<param name="on" />
+		<param name="on_color">bald_ink60</param>
+		<param name="off_color">bald_ink60</param>
+		<definition>
+			<width>64</width>
+			<height>84</height>
+			<label />
+			<font>Bald_Hint</font>
+			<textcolor>bald_ink</textcolor>
+			<texturefocus colordiffuse="bald_accent">bald/osd_focus.png</texturefocus>
+			<texturenofocus />
+			<radioposx>4</radioposx>
+			<radioposy>4</radioposy>
+			<radiowidth>56</radiowidth>
+			<radioheight>56</radioheight>
+			<textureradioonfocus colordiffuse="bald_ink">$PARAM[on]</textureradioonfocus>
+			<textureradioonnofocus colordiffuse="$PARAM[on_color]">$PARAM[on]</textureradioonnofocus>
+			<textureradioofffocus colordiffuse="bald_ink">$PARAM[icon]</textureradioofffocus>
+			<textureradiooffnofocus colordiffuse="$PARAM[off_color]">$PARAM[icon]</textureradiooffnofocus>
+			<textureradioondisabled colordiffuse="bald_ink28">$PARAM[on]</textureradioondisabled>
+			<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradiooffdisabled>
+			<animation type="Focus">
+				<effect type="zoom" start="100" end="105" center="32,32" time="280" tween="back" easing="out" />
+			</animation>
+			<animation type="Unfocus">
+				<effect type="zoom" start="105" end="100" center="32,32" time="220" tween="sine" easing="inout" />
+			</animation>
+		</definition>
+	</include>
+	<!-- An icon button whose icon is a variable (play or pause, repeat): Estuary's group of a plain button and an image,
+	     kept so the ids stay where Kodi and the skin expect them. The caller's navigation and actions are nested into
+	     the button. -->
+	<include name="Bald_PlaybackIconGroup">
+		<param name="group_id" />
+		<param name="id" />
+		<param name="icon" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="group" id="$PARAM[group_id]">
+				<width>64</width>
+				<height>84</height>
+				<visible>$PARAM[visible]</visible>
+				<control type="button" id="$PARAM[id]">
+					<left>0</left>
+					<top>0</top>
+					<width>64</width>
+					<height>84</height>
+					<label />
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink</textcolor>
+					<texturefocus colordiffuse="bald_accent">bald/osd_focus.png</texturefocus>
+					<texturenofocus />
+					<nested />
+				</control>
+				<control type="image">
+					<left>4</left>
+					<top>4</top>
+					<width>56</width>
+					<height>56</height>
+					<aspectratio>keep</aspectratio>
+					<texture colordiffuse="bald_ink60">$PARAM[icon]</texture>
+					<visible>!Control.HasFocus($PARAM[id])</visible>
+				</control>
+				<control type="image">
+					<left>4</left>
+					<top>4</top>
+					<width>56</width>
+					<height>56</height>
+					<aspectratio>keep</aspectratio>
+					<texture colordiffuse="bald_ink">$PARAM[icon]</texture>
+					<visible>Control.HasFocus($PARAM[id])</visible>
+					<animation type="Visible" reversible="false">
+						<effect type="zoom" start="100" end="105" center="32,32" time="280" tween="back" easing="out" />
+					</animation>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- Body of an OSD button grouplist: one row of 64 px buttons, 8 px apart. -->
+	<include name="Bald_PlaybackButtonRow">
+		<param name="top">818</param>
+		<definition>
+			<top>$PARAM[top]</top>
+			<height>84</height>
+			<itemgap>8</itemgap>
+			<orientation>horizontal</orientation>
+			<scrolltime tween="cubic" easing="out">320</scrolltime>
+		</definition>
+	</include>
+	<!-- Touch mode's back button (Estuary's TouchBackOSDButton, id 799), top left. -->
+	<include name="Bald_PlaybackTouchBack">
+		<control type="radiobutton" id="799">
+			<left>Bald_SafeLeft</left>
+			<top>72</top>
+			<include content="Bald_PlaybackButton"><param name="icon">icons/back.png</param></include>
+			<onclick>Dialog.Close(all,true)</onclick>
+			<onclick>Action(FullScreen)</onclick>
+		</control>
+	</include>
+	<!-- Hints on the y 954 line, right-aligned to x 1824. -->
+	<include name="Bald_PlaybackHints">
+		<param name="first">$VAR[Bald_PlaybackHelp]</param>
+		<param name="second">$VAR[Bald_PlaybackHint]</param>
+		<definition>
+			<control type="group">
+				<left>1224</left>
+				<top>Bald_HintTop</top>
+				<include content="Bald_InfoHintPair">
+					<param name="first">$PARAM[first]</param>
+					<param name="second">$PARAM[second]</param>
+					<param name="width">600</param>
+				</include>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Pause and seek header (Custom_1109) ============ -->
+	<!-- Home's clock and date position: the time at 1440,104 in Bald_Clock and the finish time where the date is, with
+	     the mute mark after it. -->
+	<include name="Bald_PlaybackClock">
+		<control type="group">
+			<left>Bald_RightColumn</left>
+			<top>104</top>
+			<width>384</width>
+			<control type="label">
+				<height>132</height>
+				<font>Bald_Clock</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[System.Time(hh:mm)]</label>
+			</control>
+			<control type="grouplist">
+				<top>144</top>
+				<width>384</width>
+				<height>30</height>
+				<orientation>horizontal</orientation>
+				<itemgap>12</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<control type="label">
+					<width>auto</width>
+					<height>30</height>
+					<aligny>center</aligny>
+					<font>Bald_Date</font>
+					<textcolor>bald_ink70</textcolor>
+					<label>$VAR[Bald_PlaybackEnds]</label>
+				</control>
+				<control type="image">
+					<top>3</top>
+					<width>24</width>
+					<height>24</height>
+					<aspectratio>keep</aspectratio>
+					<texture colordiffuse="bald_ink60">dialogs/volume/mute.png</texture>
+					<visible>Player.Muted</visible>
+				</control>
+			</control>
+		</control>
+	</include>
+
+	<!-- ============ PlayerControls ============ -->
+	<!-- Estuary's FocusableProgressBar in Bald's track: progress 23 and the hidden seek button 87 with its actions
+	     (Left and Right rewind and fast forward; Select or leaving it resumes play), and the mouse seek sliders. -->
+	<include name="Bald_PlaybackFocusTrack">
+		<param name="width">800</param>
+		<param name="onunfocus_id">200</param>
+		<definition>
+			<include content="Bald_PlaybackTrackLine"><param name="left">0</param><param name="width">$PARAM[width]</param><param name="top">6</param></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">0</param><param name="width">$PARAM[width]</param><param name="top">4</param><param name="color">bald_ink45</param><info>Player.ProgressCache</info></include>
+			<control type="progress" id="23">
+				<left>0</left>
+				<top>4</top>
+				<width>$PARAM[width]</width>
+				<height>4</height>
+				<info>Player.Progress</info>
+				<texturebg />
+				<midtexture border="2" colordiffuse="bald_ink">bald/bar.png</midtexture>
+			</control>
+			<control type="button" id="87">
+				<include>HiddenObject</include>
+				<onup>$PARAM[onunfocus_id]</onup>
+				<onunfocus condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onunfocus>
+				<ondown>$PARAM[onunfocus_id]</ondown>
+				<onright condition="!Player.Forwarding32x">PlayerControl(Forward)</onright>
+				<onleft condition="!Player.Rewinding32x">PlayerControl(Rewind)</onleft>
+				<visible>Player.SeekEnabled</visible>
+				<onclick condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onclick>
+			</control>
+			<control type="slider">
+				<left>0</left>
+				<top>0</top>
+				<width>$PARAM[width]</width>
+				<include>Bald_PlaybackNib</include>
+				<info>Player.Progress</info>
+				<action>seek</action>
+				<visible>Player.SeekEnabled</visible>
+			</control>
+			<control type="image">
+				<left>-20</left>
+				<top>4</top>
+				<width>8</width>
+				<height>8</height>
+				<texture colordiffuse="bald_accent">bald/dot.png</texture>
+				<visible>Control.HasFocus(87)</visible>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ OSD settings drawer (Custom_1101) ============ -->
+	<!-- A row: the settings scaffold's row (Bald_ConfigureButton) at the drawer's width; label2 carries the value. -->
+	<include name="Bald_PlaybackSettingRow">
+		<include content="Bald_ConfigureButton"><param name="width">672</param></include>
+	</include>
+
+	<!-- ============ Subtitle search (DialogSubtitles) ============ -->
+	<!-- One result, 920 x 84: the language code in a flag chip, the release name over the language, and the rating,
+	     hearing-impaired and sync marks at the right in 60% ink (Estuary's icons, tinted). -->
+	<include name="Bald_PlaybackSubtitleRow">
+		<param name="name_color">bald_ink70</param>
+		<definition>
+			<control type="image">
+				<left>18</left>
+				<top>28</top>
+				<width>56</width>
+				<height>28</height>
+				<texture border="6" colordiffuse="bald_ink45">bald/chip.png</texture>
+			</control>
+			<control type="label">
+				<left>18</left>
+				<top>28</top>
+				<width>56</width>
+				<height>28</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>Bald_Flag</font>
+				<textcolor>bald_ink80</textcolor>
+				<label>[UPPERCASE]$INFO[ListItem.Thumb][/UPPERCASE]</label>
+			</control>
+			<control type="label">
+				<left>92</left>
+				<top>12</top>
+				<width>660</width>
+				<height>30</height>
+				<aligny>center</aligny>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>$PARAM[name_color]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+			<control type="label">
+				<left>92</left>
+				<top>44</top>
+				<width>660</width>
+				<height>24</height>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="image">
+				<left>780</left>
+				<top>14</top>
+				<width>110</width>
+				<height>28</height>
+				<aspectratio align="right">keep</aspectratio>
+				<texture colordiffuse="bald_ink60" fallback="flags/starrating/rating0.png">$INFO[ListItem.ActualIcon,flags/starrating/rating,.png]</texture>
+			</control>
+			<control type="image">
+				<left>790</left>
+				<top>50</top>
+				<width>30</width>
+				<height>20</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_ink60">windows/subtitles/icon_close_caption.png</texture>
+				<visible>ListItem.property(hearing_imp)</visible>
+			</control>
+			<control type="image">
+				<left>830</left>
+				<top>50</top>
+				<width>60</width>
+				<height>20</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_ink60">windows/subtitles/icon_sync.png</texture>
+				<visible>ListItem.property(sync)</visible>
+			</control>
+		</definition>
+	</include>
+</includes>
