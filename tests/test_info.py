@@ -327,6 +327,17 @@ class TvInfoLifecycleTests(unittest.TestCase):
         self.assertEqual((request['method'], request['params']),
                          ('Player.Open', {'item': {'episodeid': 22}, 'options': {'resume': True}}))
 
+    def test_repeat_play_is_ignored_and_the_guard_is_released(self):
+        self.properties[10000]['Bald.InfoPlay'] = 'first press'
+        info.run('play', 'episode', '22')
+        self.xbmc.executeJSONRPC.assert_not_called()
+        self.properties[10000].clear()
+        with patch.object(info, 'play_episode', side_effect=RuntimeError('player failed')) as play:
+            with self.assertRaises(RuntimeError):
+                info.run('play', 'episode', '22')
+        play.assert_called_once_with(self.xbmc, 22)
+        self.assertNotIn('Bald.InfoPlay', self.properties[10000])
+
     def test_play_ignores_other_media_and_invalid_ids(self):
         for args in (('play', 'movie', '22'), ('play', 'episode', 'x'), ('play', 'episode', '')):
             info.run(*args)
