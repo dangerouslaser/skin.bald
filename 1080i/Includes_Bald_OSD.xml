@@ -1232,9 +1232,10 @@
 	     owning button real and the rest as stand-ins (Bald_OSDRow). The panel surface is a field panel ending at the
 	     right safe edge, bottom at y 712 (over the lifted status line), with ink rows and the accent-dot focus of the
 	     settings rows. Closing is instant (no WindowClose animation) so a stand-in can hand focus straight back. -->
-	<!-- Content that hides under DialogSlider and process info (a fade: focus may be in it). -->
+	<!-- Companion content that steps aside for DialogSlider, process info, Kodi's settings dialogs and a down-chain
+	     panel opened from the panel's button (a fade, not <visible>: focus may be in it). -->
 	<include name="Bald_OSDCompanionHide">
-		<animation type="Conditional" condition="Window.IsVisible(sliderdialog) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(DialogSettings.xml)">
+		<animation type="Conditional" condition="Window.IsVisible(sliderdialog) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(DialogSettings.xml) | $EXP[Bald_OSDPanelUp] | $EXP[Bald_OSDPVRPanelUp]">
 			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 		</animation>
 	</include>

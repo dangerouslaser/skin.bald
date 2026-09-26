@@ -10,29 +10,32 @@
 	<zorder>1</zorder>
 	<depth>DepthOSD</depth>
 	<controls>
-		<include content="Bald_OSDStreamPanel">
-			<param name="id">8120</param>
-			<param name="button">70061</param>
-			<param name="type">subtitle</param>
-			<param name="method">set_player_subtitle</param>
-			<param name="heading">$LOCALIZE[287]</param>
-			<param name="current">!String.IsEmpty(ListItem.Property(iscurrent)) + VideoPlayer.SubtitlesEnabled</param>
-			<param name="toggle">true</param>
-		</include>
-		<include content="Bald_OSDRow">
-			<param name="owner">1122</param>
-			<param name="play">Fake</param>
-			<param name="back">Fake</param>
-			<param name="forward">Fake</param>
-			<param name="stop">Fake</param>
-			<param name="menu">Fake</param>
-			<param name="teletext">Fake</param>
-			<param name="stereo">Fake</param>
-			<param name="info">Fake</param>
-			<param name="audio">Fake</param>
-			<param name="subtitles">Panel</param>
-			<param name="video">Fake</param>
-		</include>
-		<include>Bald_OSDHints</include>
+		<control type="group">
+			<include>Bald_OSDCompanionHide</include>
+			<include content="Bald_OSDStreamPanel">
+				<param name="id">8120</param>
+				<param name="button">70061</param>
+				<param name="type">subtitle</param>
+				<param name="method">set_player_subtitle</param>
+				<param name="heading">$LOCALIZE[287]</param>
+				<param name="current">!String.IsEmpty(ListItem.Property(iscurrent)) + VideoPlayer.SubtitlesEnabled</param>
+				<param name="toggle">true</param>
+			</include>
+			<include content="Bald_OSDRow">
+				<param name="owner">1122</param>
+				<param name="play">Fake</param>
+				<param name="back">Fake</param>
+				<param name="forward">Fake</param>
+				<param name="stop">Fake</param>
+				<param name="menu">Fake</param>
+				<param name="teletext">Fake</param>
+				<param name="stereo">Fake</param>
+				<param name="info">Fake</param>
+				<param name="audio">Fake</param>
+				<param name="subtitles">Panel</param>
+				<param name="video">Fake</param>
+			</include>
+			<include>Bald_OSDHints</include>
+		</control>
 	</controls>
 </window>
