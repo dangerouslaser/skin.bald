@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald components for the media utility windows: music (info, visualisation), pictures (info, slideshow), games
+     (OSD, controller dialogs), weather, the profile login screen and the colour picker, media source and video
+     version popups. Those windows started as Kodi 22 Estuary copies; the components here restyle them in Bald's
+     language (docs/SPEC.md 5.15). Nothing here is used by Home or the info dialog. -->
+<includes>
+	<!-- ============ Surfaces and motion ============ -->
+	<!-- Full-screen window open and close: fade 380 in, 130 out (the info dialog's content timings). -->
+	<include name="Bald_MediaOpenClose">
+		<animation type="WindowOpen" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+		</animation>
+		<animation type="WindowClose" reversible="false">
+			<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<!-- A group that fades and rises 18 px into view whenever its visibility turns on, and fades out in 130. -->
+	<include name="Bald_MediaVisibleRise">
+		<animation type="Visible" reversible="false">
+			<effect type="fade" start="0" end="100" time="360" tween="sine" easing="inout" />
+			<effect type="slide" start="0,18" end="0,0" time="560" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Hidden" reversible="false">
+			<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<!-- Opaque field with optional sharp art and the info dialog's two scrims (left and bottom, diffused field). -->
+	<include name="Bald_MediaBackdrop">
+		<param name="art" />
+		<param name="art_visible">!String.IsEmpty($PARAM[art])</param>
+		<param name="scrims">true</param>
+		<definition>
+			<control type="group">
+				<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+				<control type="image">
+					<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>400</fadetime>
+					<texture background="true">$PARAM[art]</texture>
+					<visible>$PARAM[art_visible]</visible>
+				</control>
+				<control type="group">
+					<visible>$PARAM[scrims]</visible>
+					<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_h.png</texture></control>
+					<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_b.png</texture></control>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- Page title at the library's title position. -->
+	<include name="Bald_MediaPageTitle">
+		<param name="id">0</param>
+		<param name="label" />
+		<param name="width">1200</param>
+		<definition>
+			<control type="label" id="$PARAM[id]">
+				<left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>$PARAM[width]</width><height>52</height>
+				<aligny>center</aligny><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor>
+				<label>$PARAM[label]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- Left footer note on the hint line (counters, provider, next track). -->
+	<include name="Bald_MediaFooter">
+		<param name="id">0</param>
+		<param name="label" />
+		<param name="width">1100</param>
+		<definition>
+			<control type="label" id="$PARAM[id]">
+				<left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>$PARAM[width]</width><height>24</height>
+				<aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
+				<label>$PARAM[label]</label>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Controls ============ -->
+	<!-- Scrollbar look: a 4 px track at 10% ink, the bar at 34% and full ink while focused (Bald settings). -->
+	<include name="Bald_MediaScrollbarLook">
+		<width>4</width>
+		<orientation>vertical</orientation>
+		<showonepage>false</showonepage>
+		<texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground>
+		<texturesliderbar colordiffuse="bald_ink34">bald/white.png</texturesliderbar>
+		<texturesliderbarfocus colordiffuse="bald_ink">bald/white.png</texturesliderbarfocus>
+		<textureslidernib />
+		<textureslidernibfocus />
+	</include>
+	<!-- Action pill, as Bald_InfoAction draws it (54 px, 28 px padding, filled ink on focus, pop to 1.04) but without
+	     the info dialog's page routing. Extra children of the call (more onclick steps) go after the onclick. -->
+	<include name="Bald_MediaAction">
+		<param name="id" />
+		<param name="label" />
+		<param name="onclick">noop</param>
+		<param name="visible">true</param>
+		<param name="enable">true</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>auto</width>
+				<label>$PARAM[label]</label>
+				<onclick>$PARAM[onclick]</onclick>
+				<nested />
+				<visible>$PARAM[visible]</visible>
+				<enable>$PARAM[enable]</enable>
+				<include>Bald_MediaPillLook</include>
+			</control>
+		</definition>
+	</include>
+	<!-- The pill's look, for buttons that carry their own size and navigation. -->
+	<include name="Bald_MediaPillLook">
+		<height>54</height>
+		<font>Bald_Section</font>
+		<textoffsetx>28</textoffsetx>
+		<aligny>center</aligny>
+		<textcolor>bald_ink</textcolor>
+		<focusedcolor>bald_field</focusedcolor>
+		<disabledcolor>bald_ink28</disabledcolor>
+		<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
+		<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
+		<animation type="Focus">
+			<effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" />
+		</animation>
+		<animation type="Unfocus">
+			<effect type="zoom" start="104" end="100" center="auto" time="220" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<!-- Focus row behind a list item: 10% ink, half strength while the list is not focused (popup lists). -->
+	<include name="Bald_MediaFocusRow">
+		<control type="image">
+			<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+			<texture colordiffuse="bald_ink10">bald/white.png</texture>
+			<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
+		</control>
+	</include>
+	<!-- One-line list rows: label left, optional label2 right (46% of the row). Unfocused 70% ink; focused full ink on
+	     the focus row. For a list's <itemlayout>/<focusedlayout> pair. -->
+	<include name="Bald_MediaListLayout">
+		<param name="width" />
+		<param name="height">64</param>
+		<param name="label">$INFO[ListItem.Label]</param>
+		<param name="label2" />
+		<param name="left">20</param>
+		<param name="label_right">20</param>
+		<param name="label2_width">360</param>
+		<definition>
+			<itemlayout width="$PARAM[width]" height="$PARAM[height]">
+				<control type="label">
+					<left>$PARAM[left]</left><right>$PARAM[label_right]</right><height>$PARAM[height]</height>
+					<aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink70</textcolor>
+					<label>$PARAM[label]</label>
+				</control>
+				<control type="label">
+					<right>20</right><width>$PARAM[label2_width]</width><height>$PARAM[height]</height>
+					<align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink45</textcolor>
+					<label>$PARAM[label2]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout width="$PARAM[width]" height="$PARAM[height]">
+				<include>Bald_MediaFocusRow</include>
+				<control type="label">
+					<left>$PARAM[left]</left><right>$PARAM[label_right]</right><height>$PARAM[height]</height>
+					<aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink</textcolor><scroll>true</scroll>
+					<label>$PARAM[label]</label>
+				</control>
+				<control type="label">
+					<right>20</right><width>$PARAM[label2_width]</width><height>$PARAM[height]</height>
+					<align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor>
+					<label>$PARAM[label2]</label>
+				</control>
+			</focusedlayout>
+		</definition>
+	</include>
+	<!-- Detail rows (label above value, as Bald_Detail draws them) for Kodi's label/label2 lists: picture EXIF lines
+	     and the music detail list. -->
+	<include name="Bald_MediaDetailLayout">
+		<param name="width" />
+		<param name="height">68</param>
+		<param name="label_top">8</param>
+		<param name="value_top">32</param>
+		<definition>
+			<itemlayout width="$PARAM[width]" height="$PARAM[height]">
+				<control type="label">
+					<left>20</left><top>$PARAM[label_top]</top><right>20</right><height>22</height>
+					<font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<left>20</left><top>$PARAM[value_top]</top><right>20</right><height>28</height>
+					<font>Bald_DetailValue</font><textcolor>bald_ink80</textcolor><label>$INFO[ListItem.Label2]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout width="$PARAM[width]" height="$PARAM[height]">
+				<include>Bald_MediaFocusRow</include>
+				<control type="label">
+					<left>20</left><top>$PARAM[label_top]</top><right>20</right><height>22</height>
+					<font>Bald_DetailLabel</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<left>20</left><top>$PARAM[value_top]</top><right>20</right><height>28</height>
+					<font>Bald_DetailValue</font><textcolor>bald_ink</textcolor><scroll>true</scroll><label>$INFO[ListItem.Label2]</label>
+				</control>
+			</focusedlayout>
+		</definition>
+	</include>
+	<!-- Estuary icon, tinted and sized in Bald: 70% ink, full ink when the caller's focus condition holds. -->
+	<include name="Bald_MediaIcon">
+		<param name="texture">$INFO[ListItem.Icon]</param>
+		<param name="left">20</param>
+		<param name="top">12</param>
+		<param name="size">40</param>
+		<param name="ink">bald_ink70</param>
+		<definition>
+			<control type="image">
+				<left>$PARAM[left]</left><top>$PARAM[top]</top><width>$PARAM[size]</width><height>$PARAM[size]</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="$PARAM[ink]">$PARAM[texture]</texture>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Popup interiors ============ -->
+	<!-- Counter under a popup list: "12 items · 1/2", replacing Estuary's coloured SelectLabel. -->
+	<variable name="Bald_MediaCount">
+		<value condition="Control.IsVisible(50)">$INFO[Container(50).NumItems] $LOCALIZE[31036] · $INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages]</value>
+		<value condition="Control.IsVisible(3)">$INFO[Container(3).NumItems] $LOCALIZE[31036] · $INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages]</value>
+		<value>$INFO[Container(6).NumItems] $LOCALIZE[31036] · $INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages]</value>
+	</variable>
+	<!-- Section caption inside a popup: 60% ink row label. -->
+	<include name="Bald_MediaCaption">
+		<param name="label" />
+		<param name="left">40</param>
+		<param name="top">0</param>
+		<param name="width">800</param>
+		<param name="align">left</param>
+		<definition>
+			<control type="label">
+				<left>$PARAM[left]</left><top>$PARAM[top]</top><width>$PARAM[width]</width><height>28</height>
+				<align>$PARAM[align]</align><aligny>center</aligny>
+				<font>Bald_RowLabel</font><textcolor>bald_ink60</textcolor>
+				<label>$PARAM[label]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- Text field inside a popup: the keyboard's outline pill, filled with 10% ink while focused. -->
+	<include name="Bald_MediaEditLook">
+		<font>Bald_InfoMeta</font>
+		<textcolor>bald_ink</textcolor>
+		<disabledcolor>bald_ink28</disabledcolor>
+		<invalidcolor>bald_accent</invalidcolor>
+		<textoffsetx>28</textoffsetx>
+		<aligny>center</aligny>
+		<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
+		<texturefocus border="27" colordiffuse="bald_ink">bald/pill_outline.png</texturefocus>
+		<pulseonselect>no</pulseonselect>
+	</include>
+	<!-- One colour picker swatch (DialogColorPicker.xml panel 6): Estuary's checkerboard under the colour in Label2,
+	     both masked to a rounded tile, 130 x 64 in a 146 x 88 cell. -->
+	<include name="Bald_ColorSwatch">
+		<control type="image">
+			<left>8</left><top>12</top><width>130</width><height>64</height>
+			<texture diffuse="bald/tile.png">buttons/color-back.png</texture>
+		</control>
+		<control type="image">
+			<left>8</left><top>12</top><width>130</width><height>64</height>
+			<aspectratio>stretch</aspectratio>
+			<texture diffuse="bald/tile.png">bald/white.png</texture>
+			<colordiffuse>$INFO[ListItem.Label2]</colordiffuse>
+		</control>
+	</include>
+	<!-- Video version / extra rows (DialogVideoManager.xml list 50): landscape thumb, title, then duration and stream
+	     details. -->
+	<include name="Bald_MediaAssetRow">
+		<param name="ink">bald_ink70</param>
+		<param name="meta">bald_ink45</param>
+		<param name="scroll">false</param>
+		<definition>
+			<control type="image">
+				<left>20</left><top>15</top><width>160</width><height>90</height>
+				<texture colordiffuse="bald_tile_placeholder">bald/white.png</texture>
+			</control>
+			<control type="image">
+				<left>20</left><top>15</top><width>160</width><height>90</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$VAR[VideoListThumbVar]</texture>
+			</control>
+			<control type="label">
+				<left>204</left><top>14</top><right>20</right><height>34</height>
+				<aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>204</left><top>52</top><right>20</right><height>56</height>
+				<wrapmultiline>true</wrapmultiline><aligny>top</aligny>
+				<font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor>
+				<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[MediaInfoListLabel2Var]</label>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_MediaAssetLayout">
+		<param name="width" />
+		<definition>
+			<itemlayout width="$PARAM[width]" height="120">
+				<include content="Bald_MediaAssetRow" />
+			</itemlayout>
+			<focusedlayout width="$PARAM[width]" height="120">
+				<include>Bald_MediaFocusRow</include>
+				<include content="Bald_MediaAssetRow">
+					<param name="ink">bald_ink</param>
+					<param name="meta">bald_ink70</param>
+					<param name="scroll">true</param>
+				</include>
+			</focusedlayout>
+		</definition>
+	</include>
+	<!-- ============ Login screen ============ -->
+	<!-- One profile in LoginScreen.xml's list 52 (384 x 400 cell): a 200 px round avatar over a 10% ink disc, the
+	     name below. Unfocused avatars dim to the tile level; the focused one pops to 1.06 inside a 212 px ink ring. -->
+	<include name="Bald_ProfileItem">
+		<param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<animation effect="zoom" start="100" end="106" center="192,140" time="280" tween="back" easing="out" condition="$PARAM[focused]">Conditional</animation>
+				<control type="image">
+					<left>92</left><top>40</top><width>200</width><height>200</height>
+					<texture colordiffuse="bald_ink10">bald/circle_112.png</texture>
+				</control>
+				<control type="image">
+					<left>92</left><top>40</top><width>200</width><height>200</height>
+					<aspectratio scalediffuse="false">scale</aspectratio>
+					<texture diffuse="bald/circle_112.png" background="true">$INFO[ListItem.Icon]</texture>
+					<animation effect="fade" start="100" end="55" time="0" condition="![$PARAM[focused]]">Conditional</animation>
+				</control>
+				<control type="image">
+					<left>86</left><top>34</top><width>212</width><height>212</height>
+					<texture colordiffuse="bald_ink">bald/ring_118.png</texture>
+					<visible>$PARAM[focused]</visible>
+				</control>
+			</control>
+			<control type="label">
+				<left>20</left><top>276</top><width>344</width><height>40</height>
+				<align>center</align><aligny>center</aligny>
+				<font>Bald_InfoTagline</font><textcolor>bald_ink60</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+				<visible>![$PARAM[focused]]</visible>
+			</control>
+			<control type="label">
+				<left>20</left><top>276</top><width>344</width><height>40</height>
+				<align>center</align><aligny>center</aligny>
+				<font>Bald_InfoTagline</font><textcolor>bald_ink</textcolor><scroll>true</scroll>
+				<label>$INFO[ListItem.Label]</label>
+				<visible>$PARAM[focused]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- ============ Music ============ -->
+	<!-- Now playing lines (MusicVisualisation.xml). Album, with the disc on multi-disc releases. -->
+	<variable name="Bald_MusicAlbumLine">
+		<value condition="MusicPlayer.IsMultiDisc">$INFO[MusicPlayer.Album]$INFO[MusicPlayer.DiscNumber, · $LOCALIZE[427] ,]$INFO[MusicPlayer.DiscTitle, · ,]</value>
+		<value>$INFO[MusicPlayer.Album]</value>
+	</variable>
+	<!-- "1997 · Rock · 8/10": year, genre and the user's rating, whichever are set. -->
+	<variable name="Bald_MusicMetaLine">
+		<value condition="!String.IsEmpty(MusicPlayer.Year)">$INFO[MusicPlayer.Year]$INFO[MusicPlayer.Genre, · ,]$INFO[MusicPlayer.UserRating, · ,/10]</value>
+		<value condition="!String.IsEmpty(MusicPlayer.Genre)">$INFO[MusicPlayer.Genre]$INFO[MusicPlayer.UserRating, · ,/10]</value>
+		<value>$INFO[MusicPlayer.UserRating,,/10]</value>
+	</variable>
+	<!-- "Next: Title · Artist" while the playlist has more than one song. -->
+	<variable name="Bald_MusicNextLine">
+		<value condition="Integer.IsGreater(Playlist.Length(music),1)">$INFO[MusicPlayer.offset(1).Title,$LOCALIZE[19031]: ,]$INFO[MusicPlayer.offset(1).Artist, · ,]</value>
+		<value></value>
+	</variable>
+	<!-- Music information (DialogMusicInfo.xml). -->
+	<variable name="Bald_MusicInfoTitle">
+		<value condition="String.IsEqual(ListItem.DBType,song)">$INFO[ListItem.Title]</value>
+		<value condition="String.IsEqual(ListItem.DBType,album)">$INFO[ListItem.Album]</value>
+		<value condition="String.IsEqual(ListItem.DBType,artist)">$INFO[ListItem.Artist]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<!-- Song: "Artist · Album · 1997"; album: "Artist · 1997 · 48:12"; artist: the years active. -->
+	<variable name="Bald_MusicInfoMeta">
+		<value condition="String.IsEqual(ListItem.DBType,song)">$INFO[ListItem.Artist]$INFO[ListItem.Album, · ,]$INFO[ListItem.Year, · ,]</value>
+		<value condition="String.IsEqual(ListItem.DBType,album)">$INFO[ListItem.Artist]$INFO[ListItem.Year, · ,]$INFO[ListItem.Property(Album_Duration), · ,]</value>
+		<value condition="String.IsEqual(ListItem.DBType,artist)">$INFO[ListItem.Property(Artist_YearsActive)]</value>
+	</variable>
+	<!-- The description, without Estuary's colour and bold tags. -->
+	<variable name="Bald_MusicInfoText">
+		<value condition="String.IsEqual(ListItem.DBType,song)">$INFO[ListItem.Comment]</value>
+		<value condition="String.IsEqual(ListItem.DBType,album)">$INFO[ListItem.Property(Album_Description)]</value>
+		<value condition="String.IsEqual(ListItem.DBType,artist)">$INFO[ListItem.Property(Artist_Description)]</value>
+	</variable>
+	<!-- Caption over list 50: Kodi's own words for what it holds. -->
+	<variable name="Bald_MusicListCaption">
+		<value condition="Container.Content(songs)">$LOCALIZE[134]</value>
+		<value condition="Container.Content(albums)">$LOCALIZE[132]</value>
+		<value condition="Container.Content(artists)">$LOCALIZE[133]</value>
+	</variable>
+	<!-- A song or album in list 50 (594 x 59): track number or cover, title, then duration or year at the right. -->
+	<include name="Bald_MusicInfoRow">
+		<param name="ink">bald_ink70</param>
+		<param name="meta">bald_ink45</param>
+		<param name="scroll">false</param>
+		<definition>
+			<control type="label">
+				<left>20</left><width>44</width><height>59</height>
+				<aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor>
+				<label>$INFO[ListItem.TrackNumber]</label>
+				<visible>Container.Content(songs)</visible>
+			</control>
+			<control type="image">
+				<left>20</left><top>8</top><width>43</width><height>43</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<visible>!Container.Content(songs)</visible>
+			</control>
+			<control type="label">
+				<left>76</left><width>398</width><height>59</height>
+				<aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>474</left><width>100</width><height>59</height>
+				<align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+		</definition>
+	</include>
+</includes>

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- From Kodi 22 Estuary's DialogVideoManager.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt), with a Bald interior
+     (docs/NOTES.md, "Media windows restyle"). Serves managevideoversions and managevideoextras. Kodi binds 2 (title,
+     in DialogBackgroundCommons), 50 (asset list), 21 Play, 26 Remove, 27 Choose art, and per mode 22 Add version,
+     24 Rename version, 25 Set default (versions) or 23 Add extra, 28 Rename extra (extras); 29 Ungroup is not shown,
+     as in Estuary. 60, 100 and 101 are layout. -->
 <window>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
@@ -13,116 +18,128 @@
 				<param name="height" value="780" />
 				<param name="header_id" value="2" />
 			</include>
+			<!-- Poster of the focused asset, over the Bald tile placeholder. -->
 			<control type="image">
-				<left>20</left>
-				<width>400</width>
-				<height>630</height>
+				<left>40</left>
 				<top>100</top>
-				<texture>$VAR[VideoListPosterVar]</texture>
+				<width>360</width>
+				<height>540</height>
+				<texture colordiffuse="bald_tile_placeholder">bald/white.png</texture>
+			</control>
+			<control type="image">
+				<left>40</left>
+				<top>100</top>
+				<width>360</width>
+				<height>540</height>
 				<aspectratio aligny="top">keep</aspectratio>
-			</control>
-			<control type="label">
-				<description>Path label</description>
-				<left>20</left>
-				<bottom>10</bottom>
-				<width>1420</width>
-				<height>30</height>
-				<font>font12</font>
-				<align>right</align>
-				<aligny>bottom</aligny>
-				<textcolor>grey</textcolor>
-				<scroll>true</scroll>
-				<label>$INFO[Container(50).ListItem.DecodedFileNameAndPath]</label>
-			</control>
-			<control type="label">
-				<right>20</right>
-				<bottom>10</bottom>
-				<width>275</width>
-				<height>30</height>
-				<font>font12</font>
-				<align>right</align>
-				<aligny>bottom</aligny>
-				<textcolor>grey</textcolor>
-				<label>$VAR[SelectLabel]</label>
+				<fadetime>200</fadetime>
+				<texture background="true">$VAR[VideoListPosterVar]</texture>
 			</control>
 			<control type="group" id="100">
-				<top>80</top>
-				<left>420</left>
-				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>1040</width>
-					<height>665</height>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
-				</control>
+				<top>100</top>
+				<left>440</left>
 				<control type="list" id="50">
 					<description>version list</description>
-					<top>20</top>
-					<left>20</left>
-					<height>625</height>
+					<left>0</left>
+					<top>0</top>
+					<width>980</width>
+					<height>600</height>
 					<onup>50</onup>
 					<ondown>50</ondown>
 					<onleft>9001</onleft>
 					<onright>60</onright>
 					<pagecontrol>60</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<include>MediaInfoListLayout</include>
+					<scrolltime tween="cubic" easing="out">200</scrolltime>
+					<include content="Bald_MediaAssetLayout">
+						<param name="width">980</param>
+					</include>
 				</control>
 				<control type="scrollbar" id="60">
-					<left>1020</left>
-					<top>20</top>
-					<width>12</width>
-					<height>625</height>
+					<left>992</left>
+					<top>0</top>
+					<height>600</height>
 					<onleft>50</onleft>
 					<onright>101</onright>
-					<orientation>vertical</orientation>
+					<include>Bald_MediaScrollbarLook</include>
 				</control>
 			</control>
 			<control type="grouplist" id="101">
 				<left>1460</left>
-				<top>80</top>
-				<width>300</width>
-				<height>565</height>
+				<top>100</top>
+				<width>260</width>
+				<height>600</height>
 				<onleft condition="Integer.IsGreater(Container(50).NumItems,0)">100</onleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
-				<scrolltime tween="quadratic">200</scrolltime>
+				<scrolltime tween="cubic" easing="out">200</scrolltime>
 				<include content="DefaultDialogButton">
 					<param name="id" value="21" />
+					<param name="width" value="260" />
 					<param name="label" value="$LOCALIZE[208]" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="22" />
+					<param name="width" value="260" />
 					<param name="label" value="$LOCALIZE[40014]" />
 					<param name="visible">Window.IsVisible(managevideoversions)</param>
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="23" />
+					<param name="width" value="260" />
 					<param name="label" value="$LOCALIZE[40015]" />
 					<param name="visible">Window.IsVisible(managevideoextras)</param>
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="27" />
+					<param name="width" value="260" />
 					<param name="label" value="$LOCALIZE[13511]" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="24" />
+					<param name="width" value="260" />
 					<param name="label" value="$LOCALIZE[40004]" />
 					<param name="visible">Window.IsVisible(managevideoversions)</param>
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="28" />
+					<param name="width" value="260" />
 					<param name="label" value="$LOCALIZE[118]" />
 					<param name="visible">Window.IsVisible(managevideoextras)</param>
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="26" />
+					<param name="width" value="260" />
 					<param name="label" value="$LOCALIZE[15015]" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="25" />
+					<param name="width" value="260" />
 					<param name="label" value="$LOCALIZE[40023]" />
 					<param name="visible">Window.IsVisible(managevideoversions)</param>
 				</include>
+			</control>
+			<!-- Footer: the focused file's path and the list counter. -->
+			<control type="label">
+				<description>Path label</description>
+				<left>40</left>
+				<bottom>28</bottom>
+				<width>1300</width>
+				<height>28</height>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink60</textcolor>
+				<scroll>true</scroll>
+				<label>$INFO[Container(50).ListItem.DecodedFileNameAndPath]</label>
+			</control>
+			<control type="label">
+				<right>40</right>
+				<bottom>28</bottom>
+				<width>300</width>
+				<height>28</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$VAR[Bald_MediaCount]</label>
 			</control>
 		</control>
 	</controls>
