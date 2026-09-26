@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Full-screen info (Info while a video plays). It draws nothing itself: the info overlay is the seek bar dialog's
+     bottom block and plot (DialogSeekBar.xml) and the clock (Custom_1109_TopBarOverlay.xml), which show while this
+     window is active. The invisible full-screen button 999 keeps Estuary's actions: Left and Right step, Up and Down
+     skip chapters or big steps, Select opens the OSD. Started from Kodi 22 Estuary's DialogFullScreenInfo.xml
+     (GPL-2.0-or-later, see LICENSE-Estuary.txt), unchanged apart from this note. -->
 <window>
 	<defaultcontrol always="true">999</defaultcontrol>
 	<controls>
