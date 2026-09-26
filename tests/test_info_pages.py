@@ -44,7 +44,7 @@ class InfoPagesTests(unittest.TestCase):
         self.assertEqual({node.findtext("param[@name='visible']") for node in layers}, {
             "Integer.IsOdd(Container(5100).CurrentItem)", "Integer.IsEven(Container(5100).CurrentItem)"})
         for node in layers:
-            self.assertEqual(node.findtext("param[@name='texture']"), "$VAR[Bald_MorePreviewArt]")
+            self.assertEqual(node.findtext("param[@name='texture']"), "$VAR[Bald_ItemFanart5100]")
         home = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         layer = home.find("include[@name='Bald_ArtLayer']")
         masks = home.findall("include[@name='Bald_ArtFrameMasks']/include")
@@ -105,7 +105,7 @@ class InfoPagesTests(unittest.TestCase):
         self.assertIsNotNone(caption.find(".//include[@content='Bald_MediaFlags']"))
         delays = {node.findtext("param[@name='delay']") for node in caption.findall(".//include[@content='Bald_AnimCaptionIn']")}
         self.assertEqual(delays, {"180", "275", "300", "350"})
-        art = self.shared.find("variable[@name='Bald_MorePreviewArt']")
+        art = self.shared.find("variable[@name='Bald_ItemFanart5100']")
         self.assertTrue(all("Container(5100).ListItem.Art" in node.text for node in art))
         self.assertEqual(self.pages.findtext(".//control[@id='5204']/texture"), "$VAR[Bald_InfoPoster]")
 

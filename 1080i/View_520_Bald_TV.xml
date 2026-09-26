@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald TV library: Series, Seasons and Episodes each keep an independent native view mode. -->
 <includes>
-	<variable name="Bald_TVEpisodeThumb">
+	<!-- Bald_EpisodeThumb (Includes_Bald_Common.xml) for the episode list, ending on the show folder's fanart. -->
+	<variable name="Bald_EpisodeThumb540">
 		<value condition="!String.IsEmpty(Container(540).ListItem.Art(thumb))">$INFO[Container(540).ListItem.Art(thumb)]</value>
 		<value condition="!String.IsEmpty(Container(540).ListItem.Art(fanart))">$INFO[Container(540).ListItem.Art(fanart)]</value>
 		<value>$INFO[Container.Art(tvshow.fanart)]</value>
@@ -27,7 +28,7 @@
 	</include>
 	<include name="Bald_TVEpisodeArt">
 		<param name="p" />
-		<definition><include content="Bald_ArtLayer"><param name="texture">$VAR[Bald_TVEpisodeThumb]</param><param name="width">1008</param><param name="height">567</param><param name="center">504,283.5</param><param name="visible">Integer.Is$PARAM[p](Container(540).CurrentItem)</param></include></definition>
+		<definition><include content="Bald_ArtLayer"><param name="texture">$VAR[Bald_EpisodeThumb540]</param><param name="width">1008</param><param name="height">567</param><param name="center">504,283.5</param><param name="visible">Integer.Is$PARAM[p](Container(540).CurrentItem)</param></include></definition>
 	</include>
 	<include name="Bald_TVEpisodeCaption">
 		<param name="p" />

@@ -5,6 +5,28 @@
      window's or layout's own item (ListItem.*), or "Container(511)." for a list's focused item
      (Container(511).ListItem.*). -->
 <includes>
+	<!-- ============ Artwork fallbacks ============ -->
+	<!-- Named by what they pick, suffixed with the container id when they read Container(id).ListItem.* (Kodi variables
+	     take no params); the plain names read ListItem.*, so they follow the list layout or window that uses them. -->
+	<!-- Landscape art: fanart, else the show's, else the thumb. Home row tiles and the info dialog's own backdrop. -->
+	<variable name="Bald_ItemFanart">
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+	<!-- Clearlogo, else the show's. -->
+	<variable name="Bald_ItemLogo">
+		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value>$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+	</variable>
+	<!-- Episode still: thumb, else fanart, else the show's fanart. The library's Bald_EpisodeThumb540/541/542 end on the
+	     folder's Container.Art(tvshow.fanart) instead, which the TV info episode list does not have. -->
+	<variable name="Bald_EpisodeThumb">
+		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value>$INFO[ListItem.Art(tvshow.fanart)]</value>
+	</variable>
+
 	<!-- ============ Media flags ============ -->
 	<!-- One outlined media flag chip. Defaults are the caption chip (26 px, Bald_Flag); the info Overview passes
 	     30 px and Bald_FlagL. -->

@@ -114,7 +114,7 @@ class TVLibraryTests(unittest.TestCase):
         labels = [node.text or '' for node in caption.findall('.//label')]
         self.assertTrue(any('ListItem.Premiered' in label and 'ListItem.Duration' in label for label in labels))
         for container in (541, 542):
-            variable = self.alternates.find(f"variable[@name='Bald_TVEpisodeSmallThumb{container}']")
+            variable = self.alternates.find(f"variable[@name='Bald_EpisodeThumb{container}']")
             values = [node.text or '' for node in variable.findall('value')]
             self.assertTrue(any('Art(thumb)' in value for value in values))
             self.assertTrue(any('Art(fanart)' in value for value in values))
