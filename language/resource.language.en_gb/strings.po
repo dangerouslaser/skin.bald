@@ -1157,6 +1157,19 @@ msgctxt "#31723"
 msgid "Poster"
 msgstr ""
 
+#. Row clearlogo on the art frame (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31724"
+msgid "On"
+msgstr ""
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31725"
+msgid "Off"
+msgstr ""
+
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Settings.xml
 msgctxt "#31730"
@@ -1365,6 +1378,12 @@ msgstr ""
 #: /1080i/Custom_1116_BaldHomeWidgets.xml
 msgctxt "#31767"
 msgid "Style"
+msgstr ""
+
+#. The row's own clearlogo on the Home art frame, not the tile logo of the Fanart with logo style.
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31768"
+msgid "Clearlogo on artwork"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml

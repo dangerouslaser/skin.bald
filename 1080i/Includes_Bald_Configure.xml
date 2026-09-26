@@ -176,6 +176,11 @@
 		<value condition="String.IsEqual(Container(9100).ListItem.Property(style),poster)">$LOCALIZE[31723]</value>
 		<value>$LOCALIZE[31720]</value>
 	</variable>
+	<!-- The widget editor's Clearlogo on artwork value (1116): the selected row's logo field, empty meaning on. -->
+	<variable name="Bald_WidgetLogoLabel">
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(logo),off)">$LOCALIZE[31725]</value>
+		<value>$LOCALIZE[31724]</value>
+	</variable>
 
 	<!-- One settings row (button or radiobutton), in the Home menu's focus language: unfocused at 50%, focused full ink
 	     with the accent dot, sliding 6 px right. A radiobutton's state is a dot at the right: accent on, dim off. -->
