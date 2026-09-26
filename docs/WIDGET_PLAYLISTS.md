@@ -10,19 +10,19 @@ defaults fast, predictable and usable without a metadata add-on.
 
 ## Fixed-layout defaults
 
-These sources preserve the current layouts and content while the widget settings
-become configurable:
+A fresh install starts with these rows. They come from `shortcuts/skinvariables-shortcut-*widgets.json`,
+which `tools/build_home_defaults.py` bakes into `1080i/Includes_Bald_HomeDefaults.xml`; keep this
+table in step with those files:
 
 | Screen | Widget | Source |
 | --- | --- | --- |
 | Home | Recently added movies | `videodb://recentlyaddedmovies/` |
 | Home | Continue watching | `special://skin/playlists/inprogress_movies.xsp` plus `special://skin/playlists/inprogress_episodes.xsp` |
 | Home | Next up | `videodb://inprogresstvshows/` |
-| Movies | In progress | `special://skin/playlists/inprogress_movies.xsp` |
-| Movies | In 4K | `special://skin/playlists/movies_4k.xsp` |
-| Movies | Unwatched | `special://skin/playlists/unwatched_movies.xsp` |
-| TV shows | Next up | `videodb://inprogresstvshows/` |
-| TV shows | All shows | `videodb://tvshows/titles/` |
+| Movies | Recently added movies | `videodb://recentlyaddedmovies/` |
+| Movies | Top rated movies | `special://skin/playlists/top_rated_movies.xsp` |
+| TV shows | Recently added episodes | `videodb://recentlyaddedepisodes/` |
+| TV shows | Top rated TV shows | `special://skin/playlists/top_rated_tvshows.xsp` |
 
 Kodi smart playlists cannot safely combine movies and episodes. Continue watching
 therefore remains two typed content sources in one widget. Kodi concatenates those
