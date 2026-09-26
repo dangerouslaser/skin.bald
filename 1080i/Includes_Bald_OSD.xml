@@ -860,7 +860,7 @@
 				<left>1224</left>
 				<top>Bald_HintTop</top>
 				<animation type="Conditional" condition="$PARAM[hidden]">
-					<effect type="fade" start="100" end="0" time="0" />
+					<effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" />
 				</animation>
 				<include content="Bald_InfoHintPair">
 					<param name="first">$VAR[Bald_OSDHelp]</param>
@@ -1378,11 +1378,11 @@
 				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,0)">
 					<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				</animation>
-				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,5)"><effect type="slide" start="0,0" end="0,64" time="0" /></animation>
-				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,4)"><effect type="slide" start="0,0" end="0,128" time="0" /></animation>
-				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,3)"><effect type="slide" start="0,0" end="0,192" time="0" /></animation>
-				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,2)"><effect type="slide" start="0,0" end="0,256" time="0" /></animation>
-				<animation type="Conditional" condition="Integer.IsLess(Container($PARAM[id]).NumItems,2)"><effect type="slide" start="0,0" end="0,320" time="0" /></animation>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,5)"><effect type="slide" start="0,0" end="0,64" time="0" tween="cubic" easing="out" /></animation>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,4)"><effect type="slide" start="0,0" end="0,128" time="0" tween="cubic" easing="out" /></animation>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,3)"><effect type="slide" start="0,0" end="0,192" time="0" tween="cubic" easing="out" /></animation>
+				<animation type="Conditional" condition="Integer.IsEqual(Container($PARAM[id]).NumItems,2)"><effect type="slide" start="0,0" end="0,256" time="0" tween="cubic" easing="out" /></animation>
+				<animation type="Conditional" condition="Integer.IsLess(Container($PARAM[id]).NumItems,2)"><effect type="slide" start="0,0" end="0,320" time="0" tween="cubic" easing="out" /></animation>
 				<control type="group"><visible>Integer.IsGreaterOrEqual(Container($PARAM[id]).NumItems,6)</visible><include content="Bald_OSDPanelSurface"><param name="height">472</param><param name="heading">$PARAM[heading]</param></include></control>
 				<control type="group"><visible>Integer.IsEqual(Container($PARAM[id]).NumItems,5)</visible><include content="Bald_OSDPanelSurface"><param name="height">408</param><param name="heading">$PARAM[heading]</param></include></control>
 				<control type="group"><visible>Integer.IsEqual(Container($PARAM[id]).NumItems,4)</visible><include content="Bald_OSDPanelSurface"><param name="height">344</param><param name="heading">$PARAM[heading]</param></include></control>

@@ -6,7 +6,7 @@
 <window type="dialog" id="1128">
 	<zorder>0</zorder>
 	<visible>Window.IsVisible(1120) | [Window.IsVisible(videoosd) + Skin.HasSetting(Bald.OSD.DetailsOnControls)]</visible>
-	<visible>!$EXP[Bald_OSDPanelUp] + !$EXP[Bald_OSDPVRPanelUp] + !Window.IsVisible(sliderdialog) + !Window.IsVisible(playerprocessinfo)</visible>
+	<visible>!$EXP[Bald_OSDPanelUp] + !$EXP[Bald_OSDPVRPanelUp] + !Window.IsVisible(sliderdialog) + !Window.IsVisible(playerprocessinfo) + !Window.IsVisible(1124)</visible>
 	<include>Bald_OSDAnimPanel</include>
 	<controls>
 		<include>Bald_OSDInfoScrim</include>
