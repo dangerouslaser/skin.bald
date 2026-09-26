@@ -16,6 +16,8 @@
 <includes>
 	<!-- ============ Conditions ============ -->
 	<!-- One of the player's "info" states: the OSD, the info overlay, the time display or a PVR overlay is up. -->
+	<!-- The focused OSD control has a state after its name (Bald_PlaybackHelpDetail). -->
+	<expression name="Bald_PlaybackHelpHasDetail">[[Control.HasFocus(87) + Window.IsActive(playercontrols)] | [Control.HasFocus(70052) + !String.IsEmpty(MusicPlayer.UserRating)] | [Control.HasFocus(70053) + !String.IsEmpty(Playlist.Repeat)] | Control.HasFocus(70054)]</expression>
 	<expression name="Bald_PlaybackInfoState">[Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)]</expression>
 	<!-- Seeking, paused, fast forward or rewind, or typing a seek time. -->
 	<expression name="Bald_PlaybackSeekState">[!String.IsEmpty(Player.SeekNumeric) | Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused]</expression>
@@ -80,9 +82,11 @@
 		<value condition="Window.IsActive(visualisation)">$INFO[MusicPlayer.offset(1).Title,$LOCALIZE[31622] · ]$INFO[MusicPlayer.offset(1).Artist, · ]</value>
 		<value>$INFO[VideoPlayer.offset(1).Title,$LOCALIZE[31622] · ]$INFO[VideoPlayer.offset(1).Year, · ]</value>
 	</variable>
-	<!-- First hint: what the focused OSD control does (Estuary's OSDHelpTextVar, plus the transport buttons). -->
+	<!-- First hint: what the focused OSD control does (Estuary's OSDHelpTextVar, plus the transport buttons). Where
+	     Estuary added a state ("Random · On"), the state is Bald_PlaybackHelpDetail, shown after the hint line's own
+	     20 px dot separator when Bald_PlaybackHelpHasDetail holds, so the line never mixes two kinds of separator. -->
 	<variable name="Bald_PlaybackHelp">
-		<value condition="Control.HasFocus(87) + Window.IsActive(playercontrols)">$LOCALIZE[31038] · $LOCALIZE[31039]</value>
+		<value condition="Control.HasFocus(87) + Window.IsActive(playercontrols)">$LOCALIZE[31038]</value>
 		<value condition="Control.HasFocus(87) + !Player.Paused">$LOCALIZE[31616]</value>
 		<value condition="Control.HasFocus(87)">$LOCALIZE[31617]</value>
 		<value condition="Control.HasFocus(600)">$LOCALIZE[210]</value>
@@ -109,12 +113,23 @@
 		<value condition="Control.HasFocus(70048)">$LOCALIZE[5]</value>
 		<value condition="Control.HasFocus(70050)">$LOCALIZE[29900]</value>
 		<value condition="Control.HasFocus(70051)">$LOCALIZE[31066]</value>
-		<value condition="Control.HasFocus(70052)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, · ]</value>
-		<value condition="Control.HasFocus(70053)">$LOCALIZE[486]$INFO[Playlist.Repeat, · ]</value>
-		<value condition="Control.HasFocus(70054) + Playlist.IsRandom">$LOCALIZE[590] · $LOCALIZE[16041]</value>
-		<value condition="Control.HasFocus(70054)">$LOCALIZE[590] · $LOCALIZE[16039]</value>
+		<value condition="Control.HasFocus(70052)">$LOCALIZE[31033]</value>
+		<value condition="Control.HasFocus(70053)">$LOCALIZE[486]</value>
+		<value condition="Control.HasFocus(70054)">$LOCALIZE[590]</value>
 		<value condition="Control.HasFocus(70055)">$LOCALIZE[24013]</value>
 		<value condition="Control.HasFocus(799)">$LOCALIZE[31619]</value>
+	</variable>
+	<variable name="Bald_PlaybackHelpDetail">
+		<value condition="Control.HasFocus(87) + Window.IsActive(playercontrols)">$LOCALIZE[31039]</value>
+		<value condition="Control.HasFocus(70052)">$INFO[MusicPlayer.UserRating]</value>
+		<value condition="Control.HasFocus(70053)">$INFO[Playlist.Repeat]</value>
+		<value condition="Control.HasFocus(70054) + Playlist.IsRandom">$LOCALIZE[16041]</value>
+		<value condition="Control.HasFocus(70054)">$LOCALIZE[16039]</value>
+	</variable>
+	<!-- The OSD hint line's second part: the focused control's state when it has one, otherwise the row hint. -->
+	<variable name="Bald_PlaybackHintAfterHelp">
+		<value condition="$EXP[Bald_PlaybackHelpHasDetail]">$VAR[Bald_PlaybackHelpDetail]</value>
+		<value>$VAR[Bald_PlaybackHint]</value>
 	</variable>
 	<!-- Second hint: where the other row is. -->
 	<variable name="Bald_PlaybackHint">
@@ -643,19 +658,31 @@
 	</include>
 	<!-- Hints on the y 954 line, right-aligned to x 1824. -->
 	<include name="Bald_PlaybackHints">
-		<param name="first">$VAR[Bald_PlaybackHelp]</param>
-		<param name="second">$VAR[Bald_PlaybackHint]</param>
 		<definition>
 			<control type="group">
 				<left>1224</left>
 				<top>Bald_HintTop</top>
 				<include content="Bald_InfoHintPair">
-					<param name="first">$PARAM[first]</param>
-					<param name="second">$PARAM[second]</param>
+					<param name="first">$VAR[Bald_PlaybackHelp]</param>
+					<param name="second">$VAR[Bald_PlaybackHintAfterHelp]</param>
+					<param name="third">$VAR[Bald_PlaybackHint]</param>
+					<param name="third_visible">$EXP[Bald_PlaybackHelpHasDetail]</param>
 					<param name="width">600</param>
 				</include>
 			</control>
 		</definition>
+	</include>
+	<!-- PlayerControls' caption: the focused button's name and, when it has one, its state after the 20 px dot. -->
+	<include name="Bald_PlaybackHelpLine">
+		<control type="grouplist">
+			<width>760</width>
+			<height>20</height>
+			<orientation>horizontal</orientation>
+			<itemgap>0</itemgap>
+			<control type="label"><width>auto</width><height>20</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_PlaybackHelp]</label></control>
+			<control type="label"><width>20</width><height>20</height><align>center</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label><visible>$EXP[Bald_PlaybackHelpHasDetail]</visible></control>
+			<control type="label"><width>auto</width><height>20</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_PlaybackHelpDetail]</label><visible>$EXP[Bald_PlaybackHelpHasDetail]</visible></control>
+		</control>
 	</include>
 
 	<!-- ============ Pause and seek header (Custom_1109) ============ -->

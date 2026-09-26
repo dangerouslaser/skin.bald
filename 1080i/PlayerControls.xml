@@ -135,15 +135,11 @@
 				</control>
 			</control>
 			<!-- The focused button's name under the row. -->
-			<control type="label">
+			<control type="group">
 				<left>40</left>
 				<top>384</top>
 				<width>760</width>
-				<height>20</height>
-				<aligny>center</aligny>
-				<font>Bald_Hint</font>
-				<textcolor>bald_ink60</textcolor>
-				<label>$VAR[Bald_PlaybackHelp]</label>
+				<include>Bald_PlaybackHelpLine</include>
 			</control>
 		</control>
 	</controls>
