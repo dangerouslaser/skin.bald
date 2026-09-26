@@ -544,39 +544,50 @@
 		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
 		<value>$INFO[ListItem.Art(tvshow.clearlogo)]</value>
 	</variable>
-	<!-- A landscape tile: 176 x 99, 3 px corners, drawn 10 px inside its 192 px slot so the pop and ring are not clipped. -->
+	<!-- A landscape tile: 176 x 99, 3 px corners, drawn 10 px inside its 192 px slot so the pop and ring are not clipped.
+	     Geometry and art are parameters so the TV info episode cards (320 x 180) reuse it; the defaults are Home's row tile.
+	     The ring sits 3 px outside the tile. -->
 	<include name="Bald_LandscapeTile">
 		<param name="diffuse">bald_tile_dim</param>
 		<param name="ring">false</param>
+		<param name="art">$VAR[Bald_TileArt]</param>
+		<param name="x">10</param>
+		<param name="y">10</param>
+		<param name="w">176</param>
+		<param name="h">99</param>
+		<param name="ring_x">7</param>
+		<param name="ring_y">7</param>
+		<param name="ring_w">182</param>
+		<param name="ring_h">105</param>
 		<definition>
 			<control type="image">
-				<left>10</left>
-				<top>10</top>
-				<width>176</width>
-				<height>99</height>
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
+				<width>$PARAM[w]</width>
+				<height>$PARAM[h]</height>
 				<texture colordiffuse="bald_tile_placeholder">bald/tile.png</texture>
 			</control>
 			<control type="image">
-				<left>10</left>
-				<top>10</top>
-				<width>176</width>
-				<height>99</height>
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
+				<width>$PARAM[w]</width>
+				<height>$PARAM[h]</height>
 				<aspectratio scalediffuse="false">scale</aspectratio>
-				<texture diffuse="bald/tile.png" colordiffuse="$PARAM[diffuse]" background="true">$VAR[Bald_TileArt]</texture>
+				<texture diffuse="bald/tile.png" colordiffuse="$PARAM[diffuse]" background="true">$PARAM[art]</texture>
 			</control>
 			<control type="image">
-				<left>7</left>
-				<top>7</top>
-				<width>182</width>
-				<height>105</height>
+				<left>$PARAM[ring_x]</left>
+				<top>$PARAM[ring_y]</top>
+				<width>$PARAM[ring_w]</width>
+				<height>$PARAM[ring_h]</height>
 				<texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture>
 				<visible>$PARAM[ring]</visible>
 			</control>
 			<!-- Invisible clearlogo: loads each visible tile's logo into Kodi's texture cache before it is focused,
 			     so the art-frame logo is ready when its fade-in starts (a fadetime on the logo ghosted old logos). -->
 			<control type="image">
-				<left>10</left>
-				<top>10</top>
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
 				<width>56</width>
 				<height>17</height>
 				<aspectratio>keep</aspectratio>
