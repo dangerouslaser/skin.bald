@@ -13,9 +13,9 @@
 	<expression name="Bald_LibraryLettersOpen">[Control.HasFocus(9160)]</expression>
 	<expression name="Bald_LibraryTitleSorted">[String.IsEqual(Container.SortMethod,$LOCALIZE[556])]</expression>
 	<variable name="Bald_LibraryLetterLabel">
-		<value condition="!$EXP[Bald_LibraryTitleSorted]">Choose Title sort in options</value>
-		<value condition="$EXP[Bald_LibraryEmpty]">No movies to browse</value>
-		<value>Browse by letter</value>
+		<value condition="!$EXP[Bald_LibraryTitleSorted]">$LOCALIZE[31822]</value>
+		<value condition="$EXP[Bald_LibraryEmpty]">$LOCALIZE[31823]</value>
+		<value>$LOCALIZE[31824]</value>
 	</variable>
 	<expression name="Bald_LibraryLatinLetter">[String.IsEqual(Container(0).ListItem.SortLetter,A) | String.IsEqual(Container(0).ListItem.SortLetter,B) | String.IsEqual(Container(0).ListItem.SortLetter,C) | String.IsEqual(Container(0).ListItem.SortLetter,D) | String.IsEqual(Container(0).ListItem.SortLetter,E) | String.IsEqual(Container(0).ListItem.SortLetter,F) | String.IsEqual(Container(0).ListItem.SortLetter,G) | String.IsEqual(Container(0).ListItem.SortLetter,H) | String.IsEqual(Container(0).ListItem.SortLetter,I) | String.IsEqual(Container(0).ListItem.SortLetter,J) | String.IsEqual(Container(0).ListItem.SortLetter,K) | String.IsEqual(Container(0).ListItem.SortLetter,L) | String.IsEqual(Container(0).ListItem.SortLetter,M) | String.IsEqual(Container(0).ListItem.SortLetter,N) | String.IsEqual(Container(0).ListItem.SortLetter,O) | String.IsEqual(Container(0).ListItem.SortLetter,P) | String.IsEqual(Container(0).ListItem.SortLetter,Q) | String.IsEqual(Container(0).ListItem.SortLetter,R) | String.IsEqual(Container(0).ListItem.SortLetter,S) | String.IsEqual(Container(0).ListItem.SortLetter,T) | String.IsEqual(Container(0).ListItem.SortLetter,U) | String.IsEqual(Container(0).ListItem.SortLetter,V) | String.IsEqual(Container(0).ListItem.SortLetter,W) | String.IsEqual(Container(0).ListItem.SortLetter,X) | String.IsEqual(Container(0).ListItem.SortLetter,Y) | String.IsEqual(Container(0).ListItem.SortLetter,Z)]</expression>
 	<include name="Bald_LibraryLetterCell">
@@ -80,16 +80,18 @@
 	</include>
 	<expression name="Bald_LibraryMenuOpen">[Control.HasFocus(9150)]</expression>
 	<variable name="Bald_LibraryMenuNote">
-		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),view)">$INFO[Container.Viewmode,Current view: ,. Select to switch to the next library layout.]</value>
-		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),sort)">$INFO[Container.SortMethod,Currently sorted by ,. Choose how items are arranged.]</value>
-		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),order)">$INFO[Container.SortOrder,Current order: ,. Select to reverse it.]</value>
-		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),watched)">$INFO[Control.GetLabel(10),Showing: ,. Cycle all movies, unwatched and watched.]</value>
+		<!-- Sentences stay whole strings around the live value; the IsEmpty guards keep the old $INFO rule that an
+		     empty value shows no note (the fallback below is empty for these option items). -->
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),view) + !String.IsEmpty(Container.Viewmode)">$LOCALIZE[31814] $INFO[Container.Viewmode]. $LOCALIZE[31815]</value>
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),sort) + !String.IsEmpty(Container.SortMethod)">$LOCALIZE[31816] $INFO[Container.SortMethod]. $LOCALIZE[31817]</value>
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),order) + !String.IsEmpty(Container.SortOrder)">$LOCALIZE[31818] $INFO[Container.SortOrder]. $LOCALIZE[31819]</value>
+		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),watched) + !String.IsEmpty(Control.GetLabel(10))">$LOCALIZE[31820] $INFO[Control.GetLabel(10)]. $LOCALIZE[31821]</value>
 		<value>$INFO[Container(9150).ListItem.Property(note)]</value>
 	</variable>
 	<include name="Bald_LibraryOptions">
 		<control type="group">
 			<visible>$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
-			<control type="label"><left>1466</left><top>292</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>Library options</label></control>
+			<control type="label"><left>1466</left><top>292</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31800]</label></control>
 			<include content="Bald_MenuNote"><param name="text">$VAR[Bald_LibraryMenuNote]</param></include>
 		</control>
 		<control type="list" id="9150">
@@ -100,31 +102,31 @@
 			<focusedlayout width="420" height="62"><include content="Bald_MenuRowFocused"><param name="always_dot">true</param></include></focusedlayout>
 			<content>
 				<!-- Keep the options list open and constrain movie browsing to Bald's native layouts. -->
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(511)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(510)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(512)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(511)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(513)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(512)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(514)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(513)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(515)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(514)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(510)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(515)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(521)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(520)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(522)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(521)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(523)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(522)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(520)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(523)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(531)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(530)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(530)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(531)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(541)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(540)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(542)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(541)</visible></item>
-				<item><label>View</label><property name="option">view</property><onclick>Container.SetViewMode(540)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(542)</visible></item>
-				<item><label>Sort by</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
-				<item><label>Order</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
-				<item><label>Search</label><property name="note">Search your movie library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,movies=true)</onclick><visible>$EXP[Bald_LibraryMovieView]</visible></item>
-				<item><label>Search</label><property name="note">Search your TV-show library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,tvshows=true)</onclick><visible>$EXP[Bald_LibrarySeriesView] | $EXP[Bald_LibrarySeasonView]</visible></item>
-				<item><label>Search</label><property name="note">Search your episode library.</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,episodes=true)</onclick><visible>$EXP[Bald_LibraryEpisodeView]</visible></item>
-				<item><label>Filter</label><property name="note">Narrow the items shown by genre, year, rating and other library details.</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
-				<item><label>Filter</label><property name="note">Narrow the items shown by matching their titles.</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
-				<item><label>Watched status</label><property name="option">watched</property><onclick>SendClick(10)</onclick></item>
-				<item><label>Update library</label><property name="note">Scan your configured video sources for new or changed items.</property><onclick>UpdateLibrary(video)</onclick><visible>!Library.IsScanningVideo</visible></item>
-				<item><label>Stop update</label><property name="note">Stop the current video-library scan.</property><onclick>UpdateLibrary(video)</onclick><visible>Library.IsScanningVideo</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(511)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(510)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(512)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(511)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(513)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(512)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(514)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(513)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(515)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(514)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(510)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(515)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(521)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(520)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(522)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(521)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(523)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(522)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(520)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(523)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(531)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(530)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(530)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(531)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(541)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(540)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(542)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(541)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(540)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(542)</visible></item>
+				<item><label>$LOCALIZE[31802]</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
+				<item><label>$LOCALIZE[31803]</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
+				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31805]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,movies=true)</onclick><visible>$EXP[Bald_LibraryMovieView]</visible></item>
+				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31806]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,tvshows=true)</onclick><visible>$EXP[Bald_LibrarySeriesView] | $EXP[Bald_LibrarySeasonView]</visible></item>
+				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31807]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,episodes=true)</onclick><visible>$EXP[Bald_LibraryEpisodeView]</visible></item>
+				<item><label>$LOCALIZE[587]</label><property name="note">$LOCALIZE[31808]</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
+				<item><label>$LOCALIZE[587]</label><property name="note">$LOCALIZE[31809]</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
+				<item><label>$LOCALIZE[31804]</label><property name="option">watched</property><onclick>SendClick(10)</onclick></item>
+				<item><label>$LOCALIZE[31810]</label><property name="note">$LOCALIZE[31811]</property><onclick>UpdateLibrary(video)</onclick><visible>!Library.IsScanningVideo</visible></item>
+				<item><label>$LOCALIZE[31812]</label><property name="note">$LOCALIZE[31813]</property><onclick>UpdateLibrary(video)</onclick><visible>Library.IsScanningVideo</visible></item>
 			</content>
 		</control>
 	</include>
@@ -209,12 +211,12 @@
 			<visible>Control.IsVisible(510)</visible>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
 			<include>Bald_BackdropImage</include>
-			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>Movies</label></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[342]</label></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="list" id="510">
 				<left>84</left><top>210</top><width>1152</width><height>648</height>
 				<orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems>
-				<viewtype label="Bald posters">icon</viewtype><visible>Container.Content(movies)</visible>
+				<viewtype label="31850">icon</viewtype><visible>Container.Content(movies)</visible>
 				<onfocus>SetProperty(Bald.LibraryContainer,510,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,510,videos)</onfocus>
 				<onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
 				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,510)</ondown><onleft>noop</onleft><onright>noop</onright>
@@ -226,13 +228,13 @@
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>
 			<control type="group"><left>800</left><top>Bald_HintTop</top>
 				<visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible>
-				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Down for letters</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include>
+				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$LOCALIZE[31826]</param><param name="second">$LOCALIZE[31827]</param><param name="third">$LOCALIZE[31828]</param><param name="third_visible">true</param></include>
 			</control>
 			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible>
-				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include>
+				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$LOCALIZE[31830]</param><param name="second">$LOCALIZE[31831]</param></include>
 			</control>
 			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
-				<include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include>
+				<include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">$LOCALIZE[31832]</param><param name="second">$LOCALIZE[31747]</param></include>
 			</control>
 		</control>
 	</include>

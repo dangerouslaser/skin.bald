@@ -94,25 +94,25 @@
 					<include content="Bald_AnimInfoIn"><param name="delay">650</param></include>
 					<include content="Bald_InfoAction">
 						<param name="id">5001</param>
-						<param name="label">Resume</param>
+						<param name="label">$LOCALIZE[13404]</param>
 						<param name="onclick">SendClick(9)</param>
 						<param name="visible">ListItem.IsResumable</param>
 					</include>
 					<include content="Bald_InfoAction">
 						<param name="id">5002</param>
-						<param name="label">Start over</param>
+						<param name="label">$LOCALIZE[31773]</param>
 						<param name="onclick">SendClick(8)</param>
 						<param name="visible">ListItem.IsResumable</param>
 					</include>
 					<include content="Bald_InfoAction">
 						<param name="id">5003</param>
-						<param name="label">Play</param>
+						<param name="label">$LOCALIZE[208]</param>
 						<param name="onclick">SendClick(8)</param>
 						<param name="visible">!ListItem.IsResumable</param>
 					</include>
 					<include content="Bald_InfoAction">
 						<param name="id">5004</param>
-						<param name="label">Trailer</param>
+						<param name="label">$LOCALIZE[20410]</param>
 						<param name="onclick">SendClick(11)</param>
 						<param name="visible">!String.IsEmpty(ListItem.Trailer)</param>
 					</include>
@@ -146,7 +146,7 @@
 						<aligny>center</aligny>
 						<font>Bald_Progress</font>
 						<textcolor>bald_ink70</textcolor>
-						<label>$INFO[ListItem.PercentPlayed,,% watched]</label>
+						<label>$INFO[ListItem.PercentPlayed,,% $LOCALIZE[31715]]</label>
 					</control>
 				</control>
 			</control>
@@ -167,11 +167,11 @@
 			<control type="grouplist">
 				<left>624</left><top>156</top><width>1200</width><height>174</height>
 				<orientation>vertical</orientation><itemgap>10</itemgap>
-				<control type="label"><height>26</height><font>Bald_InfoGenre</font><textcolor>bald_accent</textcolor><label>Cast &amp; details</label></control>
+				<control type="label"><height>26</height><font>Bald_InfoGenre</font><textcolor>bald_accent</textcolor><label>$LOCALIZE[31771]</label></control>
 				<control type="textbox"><height max="88">auto</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_InfoTitle]</label></control>
 				<control type="label"><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[Bald_InfoMeta]$INFO[ListItem.Genre, · ,]</label></control>
 			</control>
-			<control type="label"><left>624</left><top>340</top><width>1000</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>Cast</label></control>
+			<control type="label"><left>624</left><top>340</top><width>1000</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[206]</label></control>
 			<control type="label"><left>1624</left><top>340</top><width>200</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(50).CurrentItem] / $INFO[Container(50).NumItems]</label><visible>$EXP[Bald_InfoHasCast]</visible></control>
 			<control type="list" id="50">
 				<left>624</left><top>378</top><width>1200</width><height>234</height>
@@ -185,25 +185,25 @@
 			</control>
 			<control type="label">
 				<left>624</left><top>400</top><width>1200</width><height>42</height>
-				<font>Bald_DetailValue</font><textcolor>bald_ink60</textcolor><label>No cast information available.</label>
+				<font>Bald_DetailValue</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31774]</label>
 				<visible>!$EXP[Bald_InfoHasCast]</visible>
 			</control>
 			<control type="button" id="5050">
 				<left>624</left><top>650</top><width>180</width><height>28</height>
 				<font>Bald_Section</font><textcolor>bald_ink</textcolor><focusedcolor>bald_accent</focusedcolor>
-				<textoffsetx>0</textoffsetx><texturefocus /><texturenofocus /><label>Details</label>
+				<textoffsetx>0</textoffsetx><texturefocus /><texturenofocus /><label>$LOCALIZE[33029]</label>
 				<onfocus>SetProperty(Bald.InfoSec,1,home)</onfocus><onfocus>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onfocus>
 				<include>Bald_InfoToOverview</include><include>Bald_InfoToMore</include>
 				<onleft>noop</onleft><onright>noop</onright><onclick>noop</onclick>
 			</control>
 			<control type="group">
 				<left>624</left><top>696</top>
-				<include content="Bald_Detail"><param name="x">0</param><param name="y">0</param><param name="vy">26</param><param name="label">Directed by</param><param name="value">$INFO[ListItem.Director]</param></include>
-				<include content="Bald_Detail"><param name="x">410</param><param name="y">0</param><param name="vy">26</param><param name="label">Written by</param><param name="value">$INFO[ListItem.Writer]</param></include>
-				<include content="Bald_Detail"><param name="x">820</param><param name="y">0</param><param name="vy">26</param><param name="label">Genres</param><param name="value">$INFO[ListItem.Genre]</param></include>
-				<include content="Bald_Detail"><param name="x">0</param><param name="y">100</param><param name="vy">126</param><param name="label">Video</param><param name="value">$VAR[Bald_InfoVideo]</param></include>
-				<include content="Bald_Detail"><param name="x">410</param><param name="y">100</param><param name="vy">126</param><param name="label">Audio</param><param name="value">$VAR[Bald_InfoAudio]</param></include>
-				<include content="Bald_Detail"><param name="x">820</param><param name="y">100</param><param name="vy">126</param><param name="label">Subtitles</param><param name="value">$INFO[ListItem.SubtitleLanguage]</param></include>
+				<include content="Bald_Detail"><param name="x">0</param><param name="y">0</param><param name="vy">26</param><param name="label">$LOCALIZE[31775]</param><param name="value">$INFO[ListItem.Director]</param></include>
+				<include content="Bald_Detail"><param name="x">410</param><param name="y">0</param><param name="vy">26</param><param name="label">$LOCALIZE[31776]</param><param name="value">$INFO[ListItem.Writer]</param></include>
+				<include content="Bald_Detail"><param name="x">820</param><param name="y">0</param><param name="vy">26</param><param name="label">$LOCALIZE[135]</param><param name="value">$INFO[ListItem.Genre]</param></include>
+				<include content="Bald_Detail"><param name="x">0</param><param name="y">100</param><param name="vy">126</param><param name="label">$LOCALIZE[291]</param><param name="value">$VAR[Bald_InfoVideo]</param></include>
+				<include content="Bald_Detail"><param name="x">410</param><param name="y">100</param><param name="vy">126</param><param name="label">$LOCALIZE[292]</param><param name="value">$VAR[Bald_InfoAudio]</param></include>
+				<include content="Bald_Detail"><param name="x">820</param><param name="y">100</param><param name="vy">126</param><param name="label">$LOCALIZE[287]</param><param name="value">$INFO[ListItem.SubtitleLanguage]</param></include>
 			</control>
 		</control>
 	</include>
@@ -235,15 +235,15 @@
 				<include content="Bald_ArtLogo"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param></include>
 				<include content="Bald_ArtLogo"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param></include>
 			</control>
-			<control type="label"><left>Bald_RightColumn</left><top>120</top><width>384</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
-			<control type="label"><left>Bald_RightColumn</left><top>166</top><width>384</width><height>84</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Window(movieinformation).Property(Bald.MoreFor),For ,]</label></control>
+			<control type="label"><left>Bald_RightColumn</left><top>120</top><width>384</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[31772]</label></control>
+			<control type="label"><left>Bald_RightColumn</left><top>166</top><width>384</width><height>84</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Window(movieinformation).Property(Bald.MoreFor),$LOCALIZE[31785] ,]</label></control>
 			<!-- Home's exact caption layout, flags and staggered transitions, scoped to recommendations. -->
 			<control type="group">
 				<visible>$EXP[Bald_HasRecommendations]</visible>
 				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param></include>
 				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param></include>
 			</control>
-			<control type="label"><left>Bald_SafeLeft</left><top>856</top><width>850</width><height>26</height><font>Bald_RowLabel</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>856</top><width>850</width><height>26</height><font>Bald_RowLabel</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[31772]</label></control>
 			<control type="label"><left>1144</left><top>856</top><width>200</width><height>26</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(5100).CurrentItem] / $INFO[Container(5100).NumItems]</label><visible>$EXP[Bald_HasRecommendations]</visible></control>
 			<control type="list" id="5100">
 				<left>86</left><top>884</top><width>1268</width><height>119</height><orientation>horizontal</orientation>

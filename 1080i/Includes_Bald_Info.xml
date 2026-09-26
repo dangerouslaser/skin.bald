@@ -23,12 +23,12 @@
 		<value>$INFO[Container(5100).ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="Bald_MoreStatus">
-		<value condition="$EXP[Bald_InfoHasMorePath] + Container(5100).IsUpdating">Loading recommendations…</value>
-		<value>No related titles in your library.</value>
+		<value condition="$EXP[Bald_InfoHasMorePath] + Container(5100).IsUpdating">$LOCALIZE[31777]</value>
+		<value>$LOCALIZE[31778]</value>
 	</variable>
 	<variable name="Bald_InfoPageTrail">
-		<value condition="$EXP[Bald_InfoOnOverview]">[COLOR bald_ink]Overview[/COLOR]     ·     Cast &amp; details     ·     More like this</value>
-		<value>[COLOR bald_ink58]Overview[/COLOR]     ·     [COLOR bald_ink]Cast &amp; details[/COLOR]     ·     More like this</value>
+		<value condition="$EXP[Bald_InfoOnOverview]">[COLOR bald_ink]$LOCALIZE[31770][/COLOR]     ·     $LOCALIZE[31771]     ·     $LOCALIZE[31772]</value>
+		<value>[COLOR bald_ink58]$LOCALIZE[31770][/COLOR]     ·     [COLOR bald_ink]$LOCALIZE[31771][/COLOR]     ·     $LOCALIZE[31772]</value>
 	</variable>
 	<!-- ============ Variables (ListItem.* is the dialog's item) ============ -->
 	<variable name="Bald_InfoTitle">
@@ -36,15 +36,15 @@
 		<value>$INFO[ListItem.Title]</value>
 	</variable>
 	<variable name="Bald_InfoMeta">
-		<value condition="$EXP[Bald_InfoTVIsEpisode]">$INFO[ListItem.TVShowTitle] · S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Duration(mins), · , min]</value>
+		<value condition="$EXP[Bald_InfoTVIsEpisode]">$INFO[ListItem.TVShowTitle] · S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
 		<value condition="$EXP[Bald_InfoTVIsShow]">$VAR[Bald_InfoSeasons]</value>
 		<value condition="Integer.IsGreaterOrEqual(ListItem.Duration(mins),60)">$INFO[ListItem.Year,,$COMMA ]$INFO[ListItem.Duration(h),,h ]$INFO[ListItem.Duration(mm),,m]</value>
-		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins),$COMMA , min]</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins),$COMMA , $LOCALIZE[31710]]</value>
 	</variable>
 	<!-- A show's year and season count, shared by Cast & details and the TV Overview (which adds the rating). -->
 	<variable name="Bald_InfoSeasons">
-		<value condition="String.IsEqual(ListItem.Property(TotalSeasons),1)">$INFO[ListItem.Year,,$COMMA ]1 season</value>
-		<value>$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , seasons]</value>
+		<value condition="String.IsEqual(ListItem.Property(TotalSeasons),1)">$INFO[ListItem.Year,,$COMMA ]$LOCALIZE[31711]</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , $LOCALIZE[31712]]</value>
 	</variable>
 	<variable name="Bald_InfoResolution">
 		<value condition="String.IsEqual(ListItem.VideoResolution,4K)">4K</value>
@@ -54,7 +54,7 @@
 		<value>$VAR[Bald_InfoResolution]$INFO[ListItem.VideoCodec,$COMMA ,]$INFO[ListItem.HdrType,$COMMA ,]</value>
 	</variable>
 	<variable name="Bald_InfoAudio">
-		<value>$INFO[ListItem.AudioCodec]$INFO[ListItem.AudioChannels,$COMMA , channels]$INFO[ListItem.AudioLanguage,$COMMA ,]</value>
+		<value>$INFO[ListItem.AudioCodec]$INFO[ListItem.AudioChannels,$COMMA , $LOCALIZE[31714]]$INFO[ListItem.AudioLanguage,$COMMA ,]</value>
 	</variable>
 
 	<!-- ============ Animations ============ -->

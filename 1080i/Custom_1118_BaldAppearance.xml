@@ -8,14 +8,14 @@
 	<!-- Estuary's default pattern; its cycle below steps from a set value. -->
 	<onload condition="String.IsEmpty(Skin.String(background_overlay))">Skin.SetString(background_overlay,1)</onload>
 	<controls>
-		<include content="Bald_SettingsFrame"><param name="title">Appearance</param></include>
+		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[480]</param></include>
 		<control type="list" id="9500">
 			<include content="Bald_SettingsCategories"><param name="id">9500</param><param name="right">9600</param></include>
 			<content>
-				<item id="1"><label>Artwork</label><property name="note">Choose how artwork and its background treatment appear throughout Bald.</property></item>
-				<item id="2"><label>Information</label><property name="note">Choose which technical details are displayed with movies and episodes.</property></item>
-				<item id="3"><label>Behavior</label><property name="note">Configure idle motion and persistent navigation help.</property></item>
-				<item id="4"><label>Estuary windows</label><property name="note">Library, dialog and player windows that still use Estuary's design, until Bald redesigns them.</property></item>
+				<item id="1"><label>$LOCALIZE[39123]</label><property name="note">$LOCALIZE[31755]</property></item>
+				<item id="2"><label>$LOCALIZE[19033]</label><property name="note">$LOCALIZE[31756]</property></item>
+				<item id="3"><label>$LOCALIZE[31757]</label><property name="note">$LOCALIZE[31758]</property></item>
+				<item id="4"><label>$LOCALIZE[31759]</label><property name="note">$LOCALIZE[31760]</property></item>
 			</content>
 		</control>
 		<include content="Bald_SettingsDetail">
@@ -24,14 +24,14 @@
 			<control type="grouplist" id="9600">
 				<include content="Bald_SettingsRows"><param name="left">9500</param></include>
 				<!-- Artwork -->
-				<control type="radiobutton" id="9601"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>Clearlogos on artwork</label><selected>!Skin.HasSetting(Bald.HideClearlogo)</selected><onclick>Skin.ToggleSetting(Bald.HideClearlogo)</onclick></control>
-				<control type="radiobutton" id="9602"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>Blurred fanart backgrounds</label><selected>!Skin.HasSetting(Bald.DisableBlur)</selected><onclick>Skin.ToggleSetting(Bald.DisableBlur)</onclick></control>
+				<control type="radiobutton" id="9601"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31761]</label><selected>!Skin.HasSetting(Bald.HideClearlogo)</selected><onclick>Skin.ToggleSetting(Bald.HideClearlogo)</onclick></control>
+				<control type="radiobutton" id="9602"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31762]</label><selected>!Skin.HasSetting(Bald.DisableBlur)</selected><onclick>Skin.ToggleSetting(Bald.DisableBlur)</onclick></control>
 				<!-- Information -->
-				<control type="radiobutton" id="9611"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>Media flags</label><selected>!Skin.HasSetting(Bald.HideMediaFlags)</selected><onclick>Skin.ToggleSetting(Bald.HideMediaFlags)</onclick></control>
+				<control type="radiobutton" id="9611"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31763]</label><selected>!Skin.HasSetting(Bald.HideMediaFlags)</selected><onclick>Skin.ToggleSetting(Bald.HideMediaFlags)</onclick></control>
 				<!-- Behavior -->
-				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>Ambient movement when idle</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
-				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>Always show navigation hints</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>
-				<control type="button" id="9623"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>Reset navigation hint</label><onclick>Skin.Reset(Bald.MenuOpens)</onclick><visible>Skin.HasSetting(Bald.AutoHideMenuHint)</visible></control>
+				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
+				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>
+				<control type="button" id="9623"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31766]</label><onclick>Skin.Reset(Bald.MenuOpens)</onclick><visible>Skin.HasSetting(Bald.AutoHideMenuHint)</visible></control>
 				<!-- Estuary windows: Estuary's own settings, labels and control IDs. -->
 				<control type="radiobutton" id="701"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31095]</label><selected>!Skin.HasSetting(no_slide_animations)</selected><onclick>Skin.ToggleSetting(no_slide_animations)</onclick></control>
 				<control type="radiobutton" id="702"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[20189]</label><selected>Skin.HasSetting(autoscroll)</selected><onclick>Skin.ToggleSetting(autoscroll)</onclick></control>
@@ -69,6 +69,6 @@
 				</control>
 			</control>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">Back for Bald settings</param><param name="second">Select to change</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>
 	</controls>
 </window>

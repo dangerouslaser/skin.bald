@@ -5,6 +5,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from kodi_includes import SKIN, _expand_in_place, condition, include_definitions
+from skin_strings import loc
 
 
 FLAG_LABELS = ["4K", "1080p", "Dolby Vision", "HDR10", "HDR10+", "HLG", "codec", "7.1", "5.1"]
@@ -172,8 +173,8 @@ class MetaLineTest(unittest.TestCase):
         tv = ET.parse(SKIN / "Includes_Bald_InfoTV.xml").getroot()
         seasons = info.find("variable[@name='Bald_InfoSeasons']").findall("value")
         self.assertEqual(seasons[0].get("condition"), "String.IsEqual(ListItem.Property(TotalSeasons),1)")
-        self.assertTrue(seasons[0].text.endswith("1 season"))
-        self.assertTrue(seasons[1].text.endswith(" seasons]"))
+        self.assertTrue(seasons[0].text.endswith(loc("1 season")))
+        self.assertTrue(seasons[1].text.endswith(f" {loc('seasons')}]"))
         meta = {condition(v.get("condition")): v.text for v in info.find("variable[@name='Bald_InfoMeta']").findall("value")}
         self.assertEqual(meta["String.IsEqual(ListItem.DBType,tvshow)"], "$VAR[Bald_InfoSeasons]")
         tv_meta = [v.text for v in tv.find("variable[@name='Bald_InfoTVMeta']").findall("value")]

@@ -193,24 +193,24 @@
 	<!-- Menu open with a screen other than Home focused: its (placeholder) rows preview instead of Home's. -->
 	<expression name="Bald_PreviewOther">[$EXP[Bald_MenuOpen] + !$EXP[Bald_MenuPreview_home] + !$EXP[Bald_MenuPreview_movies] + !$EXP[Bald_MenuPreview_tvshows]]</expression>
 	<variable name="Bald_MenuPreviewLabel">
-		<value condition="$EXP[Bald_MenuPreview_livetv]">Live TV</value>
-		<value condition="$EXP[Bald_MenuPreview_search]">Search</value>
+		<value condition="$EXP[Bald_MenuPreview_livetv]">$LOCALIZE[31700]</value>
+		<value condition="$EXP[Bald_MenuPreview_search]">$LOCALIZE[137]</value>
 		<value condition="$EXP[Bald_MenuPreview_settings]">$LOCALIZE[5]</value>
 	</variable>
 	<variable name="Bald_MenuPreviewNote">
 		<!-- The Home rows' labels, comma separated (generated; empty with no rows). -->
 		<value condition="$EXP[Bald_MenuPreview_home]">$VAR[Bald_RowsNote_home]</value>
-		<value condition="$EXP[Bald_MenuPreview_movies]">Browse your movie library with large posters and an artwork preview.</value>
-		<value condition="$EXP[Bald_MenuPreview_tvshows]">Browse series, seasons and episodes in your TV library.</value>
-		<value condition="$EXP[Bald_MenuPreview_livetv]">Select to open the guide.</value>
-		<value condition="$EXP[Bald_MenuPreview_search]">Select to search your library.</value>
-		<value condition="$EXP[Bald_MenuPreview_settings]">Configure Kodi, manage media sources, or change the skin.</value>
+		<value condition="$EXP[Bald_MenuPreview_movies]">$LOCALIZE[31703]</value>
+		<value condition="$EXP[Bald_MenuPreview_tvshows]">$LOCALIZE[31704]</value>
+		<value condition="$EXP[Bald_MenuPreview_livetv]">$LOCALIZE[31705]</value>
+		<value condition="$EXP[Bald_MenuPreview_search]">$LOCALIZE[31706]</value>
+		<value condition="$EXP[Bald_MenuPreview_settings]">$LOCALIZE[31707]</value>
 	</variable>
 	<expression name="Bald_Idle">[System.IdleTime(60) + Window.IsActive(home)]</expression>
 	<variable name="Bald_ScreenLabel">
-		<value condition="$EXP[Bald_Screen_movies]">Movies</value>
-		<value condition="$EXP[Bald_Screen_tvshows]">TV Shows</value>
-		<value>Home</value>
+		<value condition="$EXP[Bald_Screen_movies]">$LOCALIZE[342]</value>
+		<value condition="$EXP[Bald_Screen_tvshows]">$LOCALIZE[31701]</value>
+		<value>$LOCALIZE[10000]</value>
 	</variable>
 
 	<!-- Where focus goes back to the rows (idle wake): the current row, or with no Home rows the menu's Home entry. -->
@@ -435,20 +435,20 @@
 						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
-						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year,,$COMMA ]1 season</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year,,$COMMA ]$LOCALIZE[31711]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow) + String.IsEqual(Container($PARAM[c]).ListItem.Property(TotalSeasons),1)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
 						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
-						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Property(TotalSeasons),$COMMA , seasons]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Property(TotalSeasons),$COMMA , $LOCALIZE[31712]]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow) + !String.IsEqual(Container($PARAM[c]).ListItem.Property(TotalSeasons),1)</param>
 					</include>
 					<!-- Seasons show only this line; shows show it under the year and season count. -->
 					<include content="Bald_CaptionMeta">
 						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
-						<param name="label">$INFO[Container($PARAM[c]).ListItem.Property(WatchedEpisodes)]$INFO[Container($PARAM[c]).ListItem.Property(TotalEpisodes), / , episodes watched]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Property(WatchedEpisodes)]$INFO[Container($PARAM[c]).ListItem.Property(TotalEpisodes), / , $LOCALIZE[31713]]</param>
 						<param name="visible">[String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | String.IsEqual(Container($PARAM[c]).ListItem.DBType,tvshow)]</param>
 					</include>
 					<include content="Bald_CaptionMeta">
@@ -462,7 +462,7 @@
 						<param name="width">$PARAM[width]</param>
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
-						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Duration(mins),$COMMA , min]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Duration(mins),$COMMA , $LOCALIZE[31710]]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + !Integer.IsGreaterOrEqual(Container($PARAM[c]).ListItem.Duration(mins),60)</param>
 					</include>
 					<!-- Media flags: movies only -->
@@ -648,7 +648,7 @@
 						<aligny>top</aligny>
 						<font>Bald_Hint</font>
 						<textcolor>bald_ink55</textcolor>
-						<label>$INFO[Container($PARAM[id]).CurrentItem]$INFO[Container($PARAM[id]).NumItems, of ,]</label>
+						<label>$INFO[Container($PARAM[id]).CurrentItem]$INFO[Container($PARAM[id]).NumItems, $LOCALIZE[31708] ,]</label>
 						<animation type="Conditional" condition="$EXP[Bald_Idle]">
 							<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
 						</animation>

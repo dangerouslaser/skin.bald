@@ -51,24 +51,25 @@
 	</variable>
 	<variable name="Bald_InfoTVNextLabel">
 		<value condition="!String.IsEmpty(Window(movieinformation).Property(Bald.TV.NextLabel))">$INFO[Window(movieinformation).Property(Bald.TV.NextLabel)]</value>
-		<value>Play</value>
+		<value>$LOCALIZE[208]</value>
 	</variable>
-	<!-- Tab labels are built here (English, like the actions) so the underline widths below are known. -->
+	<!-- Tab labels are built here so the underline widths below are known; those widths are measured for the
+	     English strings, so a translation keeps the label but not an exact-fit underline. -->
 	<variable name="Bald_InfoTVSeasonLabel">
-		<value condition="String.IsEmpty(ListItem.Season)">All seasons</value>
-		<value condition="String.IsEqual(ListItem.Season,0)">Specials</value>
-		<value>Season $INFO[ListItem.Season]</value>
+		<value condition="String.IsEmpty(ListItem.Season)">$LOCALIZE[31783]</value>
+		<value condition="String.IsEqual(ListItem.Season,0)">$LOCALIZE[20381]</value>
+		<value>$LOCALIZE[20373] $INFO[ListItem.Season]</value>
 	</variable>
 	<variable name="Bald_InfoTVEpisodeState">
-		<value condition="Container(5302).ListItem.IsResumable">, in progress</value>
-		<value condition="Integer.IsGreater(Container(5302).ListItem.PlayCount,0)">, watched</value>
+		<value condition="Container(5302).ListItem.IsResumable">, $LOCALIZE[31716]</value>
+		<value condition="Integer.IsGreater(Container(5302).ListItem.PlayCount,0)">, $LOCALIZE[31715]</value>
 	</variable>
 	<!-- "52 min, aired 3 March 2024, watched" (prototype), dropping missing parts. -->
 	<variable name="Bald_InfoTVEpisodeMeta">
-		<value condition="!String.IsEmpty(Container(5302).ListItem.Duration(mins))">$INFO[Container(5302).ListItem.Duration(mins),, min]$INFO[Container(5302).ListItem.Premiered,$COMMA aired ,]$VAR[Bald_InfoTVEpisodeState]</value>
-		<value condition="!String.IsEmpty(Container(5302).ListItem.Premiered)">$INFO[Container(5302).ListItem.Premiered,aired ,]$VAR[Bald_InfoTVEpisodeState]</value>
-		<value condition="Container(5302).ListItem.IsResumable">In progress</value>
-		<value condition="Integer.IsGreater(Container(5302).ListItem.PlayCount,0)">Watched</value>
+		<value condition="!String.IsEmpty(Container(5302).ListItem.Duration(mins))">$INFO[Container(5302).ListItem.Duration(mins),, $LOCALIZE[31710]]$INFO[Container(5302).ListItem.Premiered,$COMMA $LOCALIZE[31717] ,]$VAR[Bald_InfoTVEpisodeState]</value>
+		<value condition="!String.IsEmpty(Container(5302).ListItem.Premiered)">$INFO[Container(5302).ListItem.Premiered,$LOCALIZE[31717] ,]$VAR[Bald_InfoTVEpisodeState]</value>
+		<value condition="Container(5302).ListItem.IsResumable">$LOCALIZE[575]</value>
+		<value condition="Integer.IsGreater(Container(5302).ListItem.PlayCount,0)">$LOCALIZE[16102]</value>
 	</variable>
 
 	<!-- ============ Window load ============ -->
@@ -346,14 +347,14 @@
 				<include content="Bald_AnimInfoIn"><param name="delay">600</param></include>
 				<include content="Bald_InfoAction">
 					<param name="id">5001</param>
-					<param name="label">Resume S$INFO[ListItem.Season] E$INFO[ListItem.Episode]</param>
+					<param name="label">$LOCALIZE[13404] S$INFO[ListItem.Season] E$INFO[ListItem.Episode]</param>
 					<param name="onclick">SendClick(9)</param>
 					<param name="visible">$EXP[Bald_InfoTVIsEpisode] + ListItem.IsResumable</param>
 					<param name="down">Bald_InfoTVActionDown</param>
 				</include>
 				<include content="Bald_InfoAction">
 					<param name="id">5002</param>
-					<param name="label">Play S$INFO[ListItem.Season] E$INFO[ListItem.Episode]</param>
+					<param name="label">$LOCALIZE[208] S$INFO[ListItem.Season] E$INFO[ListItem.Episode]</param>
 					<param name="onclick">SendClick(8)</param>
 					<param name="visible">$EXP[Bald_InfoTVIsEpisode] + !ListItem.IsResumable</param>
 					<param name="down">Bald_InfoTVActionDown</param>
@@ -367,7 +368,7 @@
 				</include>
 				<include content="Bald_InfoAction">
 					<param name="id">5004</param>
-					<param name="label">Trailer</param>
+					<param name="label">$LOCALIZE[20410]</param>
 					<param name="onclick">SendClick(11)</param>
 					<param name="visible">!String.IsEmpty(ListItem.Trailer)</param>
 					<param name="down">Bald_InfoTVActionDown</param>
@@ -484,7 +485,7 @@
 			<left>Bald_RightColumn</left>
 			<top>Bald_HintTop</top>
 			<visible>$EXP[Bald_InfoOnOverview] + $EXP[Bald_InfoTVEpisodesFocused]</visible>
-			<include content="Bald_InfoHintPair"><param name="first">Select to play</param><param name="second">Down for cast &amp; details</param></include>
+			<include content="Bald_InfoHintPair"><param name="first">$LOCALIZE[31784]</param><param name="second">$LOCALIZE[31779]</param></include>
 		</control>
 	</include>
 </includes>

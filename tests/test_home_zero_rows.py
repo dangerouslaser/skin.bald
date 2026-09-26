@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from kodi_includes import condition
+from skin_strings import loc
 
 
 XML = Path(__file__).resolve().parents[1] / "1080i"
@@ -46,7 +47,7 @@ class HomeZeroRowsTests(unittest.TestCase):
     def test_widget_editor_keeps_at_least_one_row(self):
         editor = ET.parse(XML / "Custom_1116_BaldHomeWidgets.xml").getroot()
         remove = editor.find(".//control[@id='9207']")
-        self.assertEqual(remove.findtext("label"), "Remove widget")
+        self.assertEqual(remove.findtext("label"), loc("Remove widget"))
         self.assertEqual(remove.findtext("visible"), "Integer.IsGreater(Container(9100).NumItems,1)")
 
 

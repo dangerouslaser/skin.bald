@@ -4,23 +4,25 @@ from pathlib import Path
 
 import home_menu
 from kodi_includes import condition, expand, resolve_window
+from skin_strings import loc
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def home_menu_button(root, label):
+def home_menu_button(root, preview):
+    """A main-menu entry by its preview screen, which stays fixed while its label is localized."""
     return next(
         include for include in root.findall(".//control[@id='9000']/include[@content='Bald_HomeMenuButton']")
-        if include.findtext("param[@name='label']") == label
+        if include.findtext("param[@name='preview']") == preview
     )
 
 
 class BaldSettingsTests(unittest.TestCase):
     def test_settings_has_dedicated_bald_tile(self):
         root = ET.parse(ROOT / "1080i" / "Settings.xml").getroot()
-        item = next(i for i in root.findall(".//item") if i.findtext("label") == "Bald Settings")
-        self.assertEqual(item.findtext("onclick"), "ActivateWindow(1115)")
+        item = next(i for i in root.findall(".//item") if i.findtext("onclick") == "ActivateWindow(1115)")
+        self.assertEqual(item.findtext("label"), loc("Bald Settings"))
 
     def test_bald_settings_exposes_home_and_platform_settings(self):
         root = resolve_window("Custom_1115_BaldSettings.xml")
@@ -55,7 +57,10 @@ class BaldSettingsTests(unittest.TestCase):
     def test_screen_editor_has_mandatory_home_and_optional_media_screens(self):
         root = ET.parse(ROOT / "1080i" / "Custom_1117_BaldHomeScreens.xml").getroot()
         items = root.findall(".//control[@id='9300']/content/item")
-        self.assertEqual([item.findtext("label") for item in items], ["Home", "Movies", "TV Shows", "Live TV"])
+        self.assertEqual([item.findtext("property[@name='node']") for item in items],
+                         ["homewidgets", "movieswidgets", "tvshowswidgets", "livetv"])
+        self.assertEqual([item.findtext("label") for item in items],
+                         ["$LOCALIZE[10000]", "$LOCALIZE[342]", loc("TV Shows"), loc("Live TV")])
         self.assertEqual(items[0].find("property[@name='enabled']").text, "true")
         self.assertIn("Bald.Screen.Movies", ET.tostring(root, encoding="unicode"))
         self.assertIn("Bald.Screen.TVShows", ET.tostring(root, encoding="unicode"))
@@ -63,14 +68,14 @@ class BaldSettingsTests(unittest.TestCase):
 
     def test_optional_screens_control_main_menu_membership(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
-        movies = home_menu_button(root, "Movies")
-        tvshows = home_menu_button(root, "TV shows")
+        movies = home_menu_button(root, "movies")
+        tvshows = home_menu_button(root, "tvshows")
         self.assertEqual(movies.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)")
         self.assertEqual(tvshows.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.TVShows)")
         self.assertNotIn("!Skin.HasSetting", movies.findtext("param[@name='visible']"))
         self.assertNotIn("!Skin.HasSetting", tvshows.findtext("param[@name='visible']"))
 
-        livetv = home_menu_button(root, "Live TV")
+        livetv = home_menu_button(root, "livetv")
         self.assertEqual(
             livetv.findtext("param[@name='visible']"),
             "!Skin.HasSetting(Bald.Screen.HideLiveTV)",
@@ -87,8 +92,8 @@ class BaldSettingsTests(unittest.TestCase):
         )
 
     def test_optional_screens_restore_their_last_row_when_entered_from_menu(self):
-        for screen, label in (("home", "Home"), ("movies", "Movies"), ("tvshows", "TV shows")):
-            actions = home_menu.select_actions(home_menu.entry(label=label))
+        for screen in ("home", "movies", "tvshows"):
+            actions = home_menu.select_actions(home_menu.entry(preview=screen))
             has_rows = f"$EXP[Bald_HasRows_{screen}]"
             self.assertEqual(actions, [
                 (has_rows, f"SetProperty(Bald.Screen,{screen},home)"),
@@ -98,7 +103,7 @@ class BaldSettingsTests(unittest.TestCase):
             ])
             self.assertIn(
                 (None, f"SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.{screen})],home)"),
-                home_menu.actions(home_menu.entry(label=label), "onfocus"),
+                home_menu.actions(home_menu.entry(preview=screen), "onfocus"),
             )
 
     def test_menu_entries_leave_up_and_down_to_the_grouplist(self):
@@ -231,8 +236,8 @@ class BaldSettingsTests(unittest.TestCase):
 
     def test_media_screens_disclose_and_open_their_full_libraries_with_right(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
-        movies = home_menu_button(root, "Movies")
-        tvshows = home_menu_button(root, "TV shows")
+        movies = home_menu_button(root, "movies")
+        tvshows = home_menu_button(root, "tvshows")
         self.assertEqual(movies.findtext("param[@name='suffix']"), "  ›")
         self.assertEqual(tvshows.findtext("param[@name='suffix']"), "  ›")
         self.assertEqual(movies.findtext("param[@name='right']"), "9197")

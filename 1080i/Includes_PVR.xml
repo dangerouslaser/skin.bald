@@ -839,17 +839,17 @@
 				<left>1920</left><width>480</width><height>1080</height>
 				<animation type="Conditional" condition="$EXP[sidebar_visible]" reversible="true"><effect type="slide" start="0,0" end="-480,0" time="480" tween="cubic" easing="out" /><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
 				<control type="image"><width>480</width><height>1080</height><texture colordiffuse="F20B0C10">bald/white.png</texture></control>
-				<control type="label"><left>56</left><top>104</top><width>368</width><height>34</height><font>Bald_RowLabel</font><textcolor>bald_ink60</textcolor><label>GUIDE TOOLS</label></control>
+				<control type="label"><left>56</left><top>104</top><width>368</width><height>34</height><font>Bald_RowLabel</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31870]</label></control>
 				<control type="label"><left>56</left><top>150</top><width>368</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Control.GetLabel(30)]</label><scroll>true</scroll></control>
 				<control type="grouplist" id="9000"><left>30</left><top>264</top><width>420</width><height>392</height><orientation>vertical</orientation><itemgap>6</itemgap><onleft>9000</onleft><onright>50</onright><onback>50</onback>
-					<include content="Bald_PVRGuideToolButton"><param name="id">9009</param><param name="label">Return to guide</param><param name="action">SetFocus(50)</param></include>
-					<include content="Bald_PVRGuideToolButton"><param name="id">9010</param><param name="label">Jump to now</param><param name="action">PVR.EpgGridControl(CurrentProgramme)</param></include>
-					<include content="Bald_PVRGuideToolButton"><param name="id">9011</param><param name="label">Choose channel group</param><param name="label2">$INFO[Control.GetLabel(30)]</param><param name="action">PVR.EpgGridControl(SelectGroup)</param></include>
-					<include content="Bald_PVRGuideToolButton"><param name="id">9014</param><param name="label">Choose date</param><param name="action">PVR.EpgGridControl(SelectDate)</param></include>
-					<include content="Bald_PVRGuideToolButton"><param name="id">9015</param><param name="label">Search guide</param><param name="action">ActivateWindow(TVSearch)</param></include>
-					<include content="Bald_PVRGuideToolButton"><param name="id">9016</param><param name="label">Exit Live TV</param><param name="action">PreviousMenu</param><param name="restore_focus">false</param></include>
+					<include content="Bald_PVRGuideToolButton"><param name="id">9009</param><param name="label">$LOCALIZE[31872]</param><param name="action">SetFocus(50)</param></include>
+					<include content="Bald_PVRGuideToolButton"><param name="id">9010</param><param name="label">$LOCALIZE[31873]</param><param name="action">PVR.EpgGridControl(CurrentProgramme)</param></include>
+					<include content="Bald_PVRGuideToolButton"><param name="id">9011</param><param name="label">$LOCALIZE[31874]</param><param name="label2">$INFO[Control.GetLabel(30)]</param><param name="action">PVR.EpgGridControl(SelectGroup)</param></include>
+					<include content="Bald_PVRGuideToolButton"><param name="id">9014</param><param name="label">$LOCALIZE[31875]</param><param name="action">PVR.EpgGridControl(SelectDate)</param></include>
+					<include content="Bald_PVRGuideToolButton"><param name="id">9015</param><param name="label">$LOCALIZE[19142]</param><param name="action">ActivateWindow(TVSearch)</param></include>
+					<include content="Bald_PVRGuideToolButton"><param name="id">9016</param><param name="label">$LOCALIZE[31876]</param><param name="action">PreviousMenu</param><param name="restore_focus">false</param></include>
 				</control>
-				<control type="label"><left>56</left><top>714</top><width>368</width><height>120</height><wrapmultiline>true</wrapmultiline><font>Bald_MenuNote</font><textcolor>bald_ink60</textcolor><label>Jump to live programming, change group or date, search the guide, or return to Home.</label></control>
+				<control type="label"><left>56</left><top>714</top><width>368</width><height>120</height><wrapmultiline>true</wrapmultiline><font>Bald_MenuNote</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31871]</label></control>
 			</control>
 			<control type="button" id="28"><include>HiddenObject</include></control>
 		</definition>

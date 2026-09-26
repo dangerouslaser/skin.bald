@@ -49,7 +49,7 @@ class TVLibraryTests(unittest.TestCase):
         self.assertIsNone(episodes.find('ondown'))
 
     def test_home_tv_item_opens_configured_screen(self):
-        item = home_menu.entry(label='TV shows')
+        item = home_menu.entry(preview='tvshows')
         self.assertEqual(item.findtext("param[@name='visible']"), 'Skin.HasSetting(Bald.Screen.TVShows)')
         self.assertIn(
             'SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])',

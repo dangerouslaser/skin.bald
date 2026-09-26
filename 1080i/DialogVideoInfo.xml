@@ -68,19 +68,19 @@
 				<control type="label">
 					<left>Bald_RightColumn</left><top>Bald_HintTop</top><width>384</width><height>24</height><align>right</align><aligny>center</aligny>
 					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
-					<label>Down for cast &amp; details</label><visible>$EXP[Bald_InfoOnOverview] + !$EXP[Bald_InfoIsTV]</visible>
+					<label>$LOCALIZE[31779]</label><visible>$EXP[Bald_InfoOnOverview] + !$EXP[Bald_InfoIsTV]</visible>
 				</control>
 				<include condition="$EXP[Bald_InfoTVItem]">Bald_InfoTVHints</include>
 				<control type="group">
 					<left>Bald_RightColumn</left><top>Bald_HintTop</top>
 					<visible>$EXP[Bald_InfoOnCast]</visible>
-					<include content="Bald_InfoHintPair"><param name="first">Up for overview</param><param name="second">Down for more like this</param></include>
+					<include content="Bald_InfoHintPair"><param name="first">$LOCALIZE[31780]</param><param name="second">$LOCALIZE[31781]</param></include>
 				</control>
 				<!-- Page hints switch immediately; they are not children of the animated page content. -->
 				<control type="group">
 					<left>Bald_RightColumn</left><top>Bald_HintTop</top>
 					<visible>$EXP[Bald_InfoOnMore]</visible>
-					<include content="Bald_InfoHintPair"><param name="first">Up for cast &amp; details</param><param name="second">Select to open</param></include>
+					<include content="Bald_InfoHintPair"><param name="first">$LOCALIZE[31782]</param><param name="second">$LOCALIZE[31739]</param></include>
 				</control>
 			</control>
 		</control>

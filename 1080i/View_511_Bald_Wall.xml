@@ -21,12 +21,12 @@
 		</definition>
 	</include>
 	<include name="Bald_WallFooter">
-		<param name="c" /><param name="letters_hint">Right edge for letters</param>
+		<param name="c" /><param name="letters_hint">$LOCALIZE[31833]</param>
 		<definition>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>600</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[c]).CurrentItem] / $INFO[Container($PARAM[c]).NumItems]</label></control>
-			<control type="group"><left>700</left><top>Bald_HintTop</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">$PARAM[letters_hint]</param><param name="second">Info for details</param><param name="third">Menu for options</param><param name="third_visible">true</param></include></control>
-			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
-			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
+			<control type="group"><left>700</left><top>Bald_HintTop</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">$PARAM[letters_hint]</param><param name="second">$LOCALIZE[31827]</param><param name="third">$LOCALIZE[31829]</param><param name="third_visible">true</param></include></control>
+			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$LOCALIZE[31830]</param><param name="second">$LOCALIZE[31831]</param></include></control>
+			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">$LOCALIZE[31832]</param><param name="second">$LOCALIZE[31747]</param></include></control>
 		</definition>
 	</include>
 	<include name="View_511_Bald_Wall">
@@ -39,7 +39,7 @@
 			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="panel" id="511">
 				<left>84</left><top>210</top><width>1728</width><height>624</height><orientation>vertical</orientation>
-				<viewtype label="Bald poster wall">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<viewtype label="31851">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,511,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,511,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
 				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright>RunScript(skin.bald,letters,511)</onright><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,511)</ondown>
 				<animation effect="fade" start="100" end="35" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>

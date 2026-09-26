@@ -3,24 +3,24 @@
 	<defaultcontrol always="true">9300</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>
-		<include content="Bald_SettingsFrame"><param name="title">Home Screens</param></include>
+		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[31740]</param></include>
 		<control type="list" id="9300">
 			<include content="Bald_SettingsCategories"><param name="id">9300</param><param name="right">9400</param></include>
 			<content>
-				<item><label>Home</label><property name="node">homewidgets</property><property name="enabled">true</property><property name="note">The default screen. Home cannot be removed.</property></item>
-				<item><label>Movies</label><property name="node">movieswidgets</property><property name="note">Show an artwork-first Movies screen in the main menu.</property></item>
-				<item><label>TV Shows</label><property name="node">tvshowswidgets</property><property name="note">Show an artwork-first TV Shows screen in the main menu.</property></item>
-				<item><label>Live TV</label><property name="node">livetv</property><property name="note">Show Live TV in the main menu. Selecting it opens the guide.</property></item>
+				<item><label>$LOCALIZE[10000]</label><property name="node">homewidgets</property><property name="enabled">true</property><property name="note">$LOCALIZE[31741]</property></item>
+				<item><label>$LOCALIZE[342]</label><property name="node">movieswidgets</property><property name="note">$LOCALIZE[31742]</property></item>
+				<item><label>$LOCALIZE[31701]</label><property name="node">tvshowswidgets</property><property name="note">$LOCALIZE[31743]</property></item>
+				<item><label>$LOCALIZE[31700]</label><property name="node">livetv</property><property name="note">$LOCALIZE[31744]</property></item>
 			</content>
 		</control>
 		<include content="Bald_SettingsDetail">
 			<param name="heading">$INFO[Container(9300).ListItem.Label]</param>
 			<param name="note">$INFO[Container(9300).ListItem.Property(note)]</param>
 			<control type="grouplist" id="9400"><include content="Bald_SettingsRows"><param name="left">9300</param></include>
-				<control type="radiobutton" id="9401"><include>Bald_ConfigureButton</include><label>Enabled</label><selected>[String.IsEqual(Container(9300).ListItem.Property(node),movieswidgets) + Skin.HasSetting(Bald.Screen.Movies)] | [String.IsEqual(Container(9300).ListItem.Property(node),tvshowswidgets) + Skin.HasSetting(Bald.Screen.TVShows)] | [String.IsEqual(Container(9300).ListItem.Property(node),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)]</selected><visible>!String.IsEqual(Container(9300).ListItem.Property(node),homewidgets)</visible><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),movieswidgets)">Skin.ToggleSetting(Bald.Screen.Movies)</onclick><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),tvshowswidgets)">Skin.ToggleSetting(Bald.Screen.TVShows)</onclick><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),livetv)">Skin.ToggleSetting(Bald.Screen.HideLiveTV)</onclick></control>
-				<control type="button" id="9402"><include>Bald_ConfigureButton</include><label>Configure widgets</label><visible>!String.IsEqual(Container(9300).ListItem.Property(node),livetv)</visible><onclick>SetProperty(Bald.ConfigureNode,$INFO[Container(9300).ListItem.Property(node)],home)</onclick><onclick>SetProperty(Bald.ConfigureLabel,$INFO[Container(9300).ListItem.Label],home)</onclick><onclick>ActivateWindow(1116)</onclick></control>
+				<control type="radiobutton" id="9401"><include>Bald_ConfigureButton</include><label>$LOCALIZE[305]</label><selected>[String.IsEqual(Container(9300).ListItem.Property(node),movieswidgets) + Skin.HasSetting(Bald.Screen.Movies)] | [String.IsEqual(Container(9300).ListItem.Property(node),tvshowswidgets) + Skin.HasSetting(Bald.Screen.TVShows)] | [String.IsEqual(Container(9300).ListItem.Property(node),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)]</selected><visible>!String.IsEqual(Container(9300).ListItem.Property(node),homewidgets)</visible><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),movieswidgets)">Skin.ToggleSetting(Bald.Screen.Movies)</onclick><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),tvshowswidgets)">Skin.ToggleSetting(Bald.Screen.TVShows)</onclick><onclick condition="String.IsEqual(Container(9300).ListItem.Property(node),livetv)">Skin.ToggleSetting(Bald.Screen.HideLiveTV)</onclick></control>
+				<control type="button" id="9402"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31745]</label><visible>!String.IsEqual(Container(9300).ListItem.Property(node),livetv)</visible><onclick>SetProperty(Bald.ConfigureNode,$INFO[Container(9300).ListItem.Property(node)],home)</onclick><onclick>SetProperty(Bald.ConfigureLabel,$INFO[Container(9300).ListItem.Label],home)</onclick><onclick>ActivateWindow(1116)</onclick></control>
 			</control>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">Back for Bald settings</param><param name="second">Select to change</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>
 	</controls>
 </window>

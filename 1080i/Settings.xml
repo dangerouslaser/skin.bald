@@ -41,7 +41,7 @@
 				<include>SettingsPanel</include>
 				<content>
 					<item>
-						<label>Bald Settings</label>
+						<label>$LOCALIZE[31730]</label>
 						<onclick>ActivateWindow(1115)</onclick>
 						<icon>icons/settings/interface.png</icon>
 					</item>

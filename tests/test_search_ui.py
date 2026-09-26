@@ -25,7 +25,9 @@ class SearchUITests(unittest.TestCase):
     def test_library_search_launches_global_search_scoped_to_content(self):
         root = ET.parse(ROOT / 'View_510_Bald_Posters.xml').getroot()
         menu = root.find("include[@name='Bald_LibraryOptions']//control[@id='9150']/content")
-        searches = [item for item in menu.findall('item') if item.findtext('label') == 'Search']
+        searches = [item for item in menu.findall('item')
+                    if any(node.text.startswith('RunScript(script.globalsearch') for node in item.findall('onclick'))]
+        self.assertTrue(all(item.findtext('label') == '$LOCALIZE[137]' for item in searches))  # Kodi's "Search"
         self.assertEqual(
             # Each entry shows for exactly its content level's Bald views (OR of Control.IsVisible).
             [(re.findall(r'Control\.IsVisible\((\d+)\)', expand(item.findtext('visible'))), [node.text for node in item.findall('onclick')]) for item in searches],
@@ -74,7 +76,7 @@ class SearchUITests(unittest.TestCase):
                                  ['ClearProperty(Bald.SearchMenu)', '50'])
         self.assertEqual(root.find(".//control[@id='50']").findtext('onleft'), '990')
         headers = next(group for group in root.findall('.//control[@type="group"]')
-                       if group.findtext("control/label") == 'Title')
+                       if group.findtext("control/label") == '$LOCALIZE[369]')  # Kodi's "Title"
         self.assertEqual(headers.findtext('visible'), '!Control.IsVisible(991)')
 
     def test_keyboard_preserves_contract_ids_with_bald_character_style(self):

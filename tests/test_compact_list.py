@@ -24,8 +24,8 @@ class CompactListTests(unittest.TestCase):
         root = ET.parse(ROOT / 'Includes_Bald_LibraryList.xml').getroot()
         values = root.findall("variable[@name='Bald_ListWatchState']/value")
         self.assertEqual(values[0].get('condition'), 'ListItem.IsResumable')
-        self.assertEqual(values[0].text, 'Resume')
-        self.assertEqual(values[1].text, 'Watched')
+        self.assertEqual(values[0].text, '$LOCALIZE[13404]')  # Kodi's "Resume"
+        self.assertEqual(values[1].text, '$LOCALIZE[16102]')  # Kodi's "Watched"
         self.assertFalse(values[2].text)
         for label in root.findall("include/definition/control"):
             self.assertLessEqual(int(label.findtext('left')) + int(label.findtext('width')), 1140)

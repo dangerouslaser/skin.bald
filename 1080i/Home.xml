@@ -203,19 +203,19 @@
 				<ondown>noop</ondown>
 				<visible allowhiddenfocus="true">$EXP[Bald_MenuOpen]</visible>
 				<include>Bald_AnimMenuShows</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9001</param><param name="label">Home</param><param name="preview">home</param>
+				<include content="Bald_HomeMenuButton"><param name="id">9001</param><param name="label">$LOCALIZE[10000]</param><param name="preview">home</param>
 					<include content="Bald_HomeMenuScreen"><param name="screen">home</param></include>
 				</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9002</param><param name="label">Movies</param><param name="suffix">  ›</param><param name="preview">movies</param><param name="visible">Skin.HasSetting(Bald.Screen.Movies)</param><param name="right">9197</param>
+				<include content="Bald_HomeMenuButton"><param name="id">9002</param><param name="label">$LOCALIZE[342]</param><param name="suffix">  ›</param><param name="preview">movies</param><param name="visible">Skin.HasSetting(Bald.Screen.Movies)</param><param name="right">9197</param>
 					<include content="Bald_HomeMenuScreen"><param name="screen">movies</param></include>
 				</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9003</param><param name="label">TV shows</param><param name="suffix">  ›</param><param name="preview">tvshows</param><param name="visible">Skin.HasSetting(Bald.Screen.TVShows)</param><param name="right">9196</param>
+				<include content="Bald_HomeMenuButton"><param name="id">9003</param><param name="label">$LOCALIZE[20343]</param><param name="suffix">  ›</param><param name="preview">tvshows</param><param name="visible">Skin.HasSetting(Bald.Screen.TVShows)</param><param name="right">9196</param>
 					<include content="Bald_HomeMenuScreen"><param name="screen">tvshows</param></include>
 				</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9004</param><param name="label">Live TV</param><param name="preview">livetv</param><param name="visible">!Skin.HasSetting(Bald.Screen.HideLiveTV)</param>
+				<include content="Bald_HomeMenuButton"><param name="id">9004</param><param name="label">$LOCALIZE[31700]</param><param name="preview">livetv</param><param name="visible">!Skin.HasSetting(Bald.Screen.HideLiveTV)</param>
 					<onclick>ActivateWindow(TVGuide)</onclick>
 				</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="label">Search</param><param name="preview">search</param>
+				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="label">$LOCALIZE[137]</param><param name="preview">search</param>
 					<onclick>SetProperty(Bald.SearchOrigin,home,home)</onclick>
 					<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
 					<onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick>
@@ -265,7 +265,7 @@
 					<aligny>top</aligny>
 					<font>Bald_Hint</font>
 					<textcolor>bald_ink55</textcolor>
-					<label>Back for menu</label>
+					<label>$LOCALIZE[31702]</label>
 					<visible>!Skin.HasSetting(Bald.AutoHideMenuHint) | !String.IsEqual(Skin.String(Bald.MenuOpens),3)</visible>
 					<animation type="Conditional" condition="$EXP[Bald_Idle]">
 						<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />

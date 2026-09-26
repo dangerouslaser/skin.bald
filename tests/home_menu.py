@@ -17,13 +17,12 @@ def entries():
     return [node for node in home.findall(".//control[@id='9000']/include") if node.get("content") == "Bald_HomeMenuButton"]
 
 
-def entry(label=None, preview=None):
+def entry(preview):
+    """A menu entry by its preview screen; labels are localized, so they are not a stable key."""
     for node in entries():
-        if label is not None and node.findtext("param[@name='label']") == label:
+        if node.findtext("param[@name='preview']") == preview:
             return node
-        if preview is not None and node.findtext("param[@name='preview']") == preview:
-            return node
-    raise AssertionError(f"no menu entry {label or preview}")
+    raise AssertionError(f"no menu entry {preview}")
 
 
 def _expand(call, includes):
