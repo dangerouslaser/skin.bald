@@ -34,7 +34,7 @@
 			<aligny>center</aligny>
 			<font>Bald_Hint</font>
 			<textcolor>bald_ink45</textcolor>
-			<label>$LOCALIZE[31931]</label>
+			<label>$LOCALIZE[31950]</label>
 		</control>
 		<control type="radiobutton" id="20">
 			<description>settings level</description>

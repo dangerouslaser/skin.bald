@@ -13,12 +13,12 @@
 			<content>
 				<item id="1">
 					<label>$LOCALIZE[128]</label>
-					<property name="note">$LOCALIZE[31945]</property>
+					<property name="note">$LOCALIZE[31964]</property>
 					<onclick>noop</onclick>
 				</item>
 				<item id="2">
 					<label>$LOCALIZE[13200]</label>
-					<property name="note">$LOCALIZE[31946]</property>
+					<property name="note">$LOCALIZE[31965]</property>
 					<onclick>noop</onclick>
 				</item>
 			</content>

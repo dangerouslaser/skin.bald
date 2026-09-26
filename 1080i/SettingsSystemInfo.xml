@@ -177,6 +177,6 @@
 			<onright>9000</onright>
 			<visible>Control.IsVisible(30)</visible>
 		</control>
-		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31738]</param><param name="second">$LOCALIZE[31947]</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31738]</param><param name="second">$LOCALIZE[31966]</param></include>
 	</controls>
 </window>
