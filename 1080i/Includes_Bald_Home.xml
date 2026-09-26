@@ -616,7 +616,7 @@
 				</animation>
 				<!-- Row label line: label, row dots, count -->
 				<control type="grouplist">
-					<left>96</left>
+					<left>Bald_SafeLeft</left>
 					<top>856</top>
 					<width>1248</width>
 					<height>26</height>

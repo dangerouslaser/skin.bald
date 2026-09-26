@@ -49,6 +49,38 @@ def _substitute(element, params):
             node.attrib[key] = replace(value)
 
 
+# Tags whose whole text Kodi replaces with a <constant>'s value (CGUIIncludes::m_constantNodes, positions and sizes).
+CONSTANT_TAGS = {"left", "top", "right", "bottom", "width", "height", "posx", "posy", "centerleft", "centerright",
+                 "centertop", "centerbottom", "textoffsetx", "textoffsety", "textwidth", "itemgap"}
+
+
+def constants(folder=SKIN):
+    """Every <constant> in the include files by name, first definition kept, at 1080 (Constants_720.xml skipped)."""
+    values = {}
+    for path in sorted(folder.glob("*.xml")):
+        if path.name in (GENERATED, "Constants_720.xml"):
+            continue
+        root = ET.parse(path).getroot()
+        if root.tag == "includes":
+            for node in root.findall("constant"):
+                values.setdefault(node.get("name"), node.text or "")
+    return values
+
+
+def resolve_constants(root, values=None):
+    """Replace constant names in position and size tags with their values, in place, as Kodi does on load."""
+    values = values if values is not None else constants()
+    for node in root.iter():
+        if node.tag in CONSTANT_TAGS and node.text and node.text.strip() in values:
+            node.text = values[node.text.strip()]
+    return root
+
+
+def parse(path):
+    """A skin file's root with constants resolved."""
+    return resolve_constants(ET.parse(path).getroot())
+
+
 EXP = re.compile(r"\$EXP\[([^\]]+)\]")
 _ATOM = re.compile(r"(?<![A-Z])\[([^\[\]|+]*)\]")
 
@@ -151,7 +183,7 @@ def resolve_window(filename, definitions=None):
     definitions = definitions if definitions is not None else include_definitions()
     root = ET.parse(SKIN / filename).getroot()
     _expand_in_place(root, definitions)
-    return root
+    return resolve_constants(root)
 
 
 class Skin:
@@ -181,7 +213,7 @@ class Skin:
     def window(self, name):
         root = ET.parse(XML / name).getroot()
         self._resolve(root)
-        return root
+        return resolve_constants(root)
 
     def _resolve(self, node):
         while True:

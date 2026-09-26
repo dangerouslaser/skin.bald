@@ -4,7 +4,7 @@
 	<include name="Bald_InfoOverview">
 		<!-- Overview retains the original identity, actions and window-open choreography. -->
 		<control type="group">
-			<left>96</left>
+			<left>Bald_SafeLeft</left>
 			<top>150</top>
 			<include content="Bald_InfoPage"><param name="page">0</param></include>
 			<control type="grouplist">
@@ -157,11 +157,11 @@
 		<control type="group" id="5201">
 			<include content="Bald_InfoPage"><param name="page">1</param></include>
 			<control type="image">
-				<left>96</left><top>156</top><width>432</width><height>648</height>
+				<left>Bald_SafeLeft</left><top>156</top><width>432</width><height>648</height>
 				<texture colordiffuse="bald_placeholder">bald/white.png</texture>
 			</control>
 			<control type="image" id="5204">
-				<left>96</left><top>156</top><width>432</width><height>648</height>
+				<left>Bald_SafeLeft</left><top>156</top><width>432</width><height>648</height>
 				<aspectratio>scale</aspectratio><texture background="true">$VAR[Bald_InfoPoster]</texture>
 			</control>
 			<control type="grouplist">
@@ -210,10 +210,10 @@
 	<include name="Bald_InfoRecommendationsPage">
 		<control type="group" id="5202">
 			<include content="Bald_InfoPage"><param name="page">2</param></include>
-			<control type="image"><left>96</left><top>120</top><width>1248</width><height>702</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+			<control type="image"><left>Bald_SafeLeft</left><top>120</top><width>1248</width><height>702</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 			<!-- Home's fixed masks below contain the zoom; a grouplist alone does not clip animated overflow. -->
 			<control type="group" id="5205">
-				<left>96</left><top>120</top><width>1248</width><height>702</height>
+				<left>Bald_SafeLeft</left><top>120</top><width>1248</width><height>702</height>
 				<visible>$EXP[Bald_HasRecommendations]</visible>
 				<control type="group">
 					<width>1248</width><height>702</height>
@@ -224,7 +224,7 @@
 			<!-- Reuse Home's logo placement, fallback and parity-driven transitions for the highlighted recommendation. -->
 			<include>Bald_ArtFrameMasks</include>
 			<control type="group">
-				<left>96</left><top>120</top><width>1248</width><height>702</height>
+				<left>Bald_SafeLeft</left><top>120</top><width>1248</width><height>702</height>
 				<visible>$EXP[Bald_HasRecommendations]</visible>
 				<control type="image">
 					<width>1248</width><height>702</height><texture>bald/scrim_logo.png</texture>
@@ -235,15 +235,15 @@
 				<include content="Bald_ArtLogo"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param></include>
 				<include content="Bald_ArtLogo"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param></include>
 			</control>
-			<control type="label"><left>1440</left><top>120</top><width>384</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
-			<control type="label"><left>1440</left><top>166</top><width>384</width><height>84</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Window(movieinformation).Property(Bald.MoreFor),For ,]</label></control>
+			<control type="label"><left>Bald_RightColumn</left><top>120</top><width>384</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
+			<control type="label"><left>Bald_RightColumn</left><top>166</top><width>384</width><height>84</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Window(movieinformation).Property(Bald.MoreFor),For ,]</label></control>
 			<!-- Home's exact caption layout, flags and staggered transitions, scoped to recommendations. -->
 			<control type="group">
 				<visible>$EXP[Bald_HasRecommendations]</visible>
 				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param></include>
 				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param></include>
 			</control>
-			<control type="label"><left>96</left><top>856</top><width>850</width><height>26</height><font>Bald_RowLabel</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>856</top><width>850</width><height>26</height><font>Bald_RowLabel</font><textcolor>bald_ink</textcolor><label>More like this</label></control>
 			<control type="label"><left>1144</left><top>856</top><width>200</width><height>26</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(5100).CurrentItem] / $INFO[Container(5100).NumItems]</label><visible>$EXP[Bald_HasRecommendations]</visible></control>
 			<control type="list" id="5100">
 				<left>86</left><top>884</top><width>1268</width><height>119</height><orientation>horizontal</orientation>
@@ -260,7 +260,7 @@
 			</control>
 			<!-- A real focus target keeps the page escapable while empty or loading. The ready timer yields to 5100. -->
 			<control type="button" id="5150">
-				<left>96</left><top>460</top><width>1248</width><height>60</height><font>Bald_Section</font>
+				<left>Bald_SafeLeft</left><top>460</top><width>1248</width><height>60</height><font>Bald_Section</font>
 				<align>center</align><textcolor>bald_ink60</textcolor><focusedcolor>bald_ink</focusedcolor>
 				<texturefocus /><texturenofocus /><label>$VAR[Bald_MoreStatus]</label>
 				<visible allowhiddenfocus="true">!$EXP[Bald_HasRecommendations]</visible>

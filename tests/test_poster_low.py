@@ -2,12 +2,14 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from kodi_includes import parse
+
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
 
 
 class PosterLowTests(unittest.TestCase):
     def setUp(self):
-        self.root = ET.parse(ROOT / 'View_515_Bald_PosterLow.xml').getroot()
+        self.root = parse(ROOT / 'View_515_Bald_PosterLow.xml')
 
     def test_native_horizontal_list_has_eight_visible_posters(self):
         control = self.root.find(".//control[@id='515']")

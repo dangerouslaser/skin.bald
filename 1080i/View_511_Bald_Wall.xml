@@ -14,19 +14,19 @@
 			<control type="group">
 				<visible>Integer.Is$PARAM[p](Container(511).CurrentItem)</visible>
 				<include content="Bald_AnimCaptionIn"><param name="c">511</param><param name="delay">180</param></include>
-				<control type="label"><left>96</left><top>108</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container(511).ListItem.Title]</label></control>
-				<control type="label"><left>96</left><top>168</top><width>1100</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><include content="Bald_MetaLibraryMovie"><param name="container">Container(511).</param></include></control>
-				<control type="grouplist"><left>1296</left><top>168</top><width>528</width><height>26</height><orientation>horizontal</orientation><align>right</align><itemgap>8</itemgap><include content="Bald_MediaFlags"><param name="container">Container(511).</param></include></control>
+				<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container(511).ListItem.Title]</label></control>
+				<control type="label"><left>Bald_SafeLeft</left><top>168</top><width>1100</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><include content="Bald_MetaLibraryMovie"><param name="container">Container(511).</param></include></control>
+				<control type="grouplist"><left>Bald_PreviewLeft</left><top>168</top><width>528</width><height>26</height><orientation>horizontal</orientation><align>right</align><itemgap>8</itemgap><include content="Bald_MediaFlags"><param name="container">Container(511).</param></include></control>
 			</control>
 		</definition>
 	</include>
 	<include name="Bald_WallFooter">
 		<param name="c" /><param name="letters_hint">Right edge for letters</param>
 		<definition>
-			<control type="label"><left>96</left><top>954</top><width>600</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[c]).CurrentItem] / $INFO[Container($PARAM[c]).NumItems]</label></control>
-			<control type="group"><left>700</left><top>954</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">$PARAM[letters_hint]</param><param name="second">Info for details</param><param name="third">Menu for options</param><param name="third_visible">true</param></include></control>
-			<control type="group"><left>800</left><top>954</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
-			<control type="group"><left>1404</left><top>954</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>600</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[c]).CurrentItem] / $INFO[Container($PARAM[c]).NumItems]</label></control>
+			<control type="group"><left>700</left><top>Bald_HintTop</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">$PARAM[letters_hint]</param><param name="second">Info for details</param><param name="third">Menu for options</param><param name="third_visible">true</param></include></control>
+			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
+			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
 		</definition>
 	</include>
 	<include name="View_511_Bald_Wall">
@@ -36,7 +36,7 @@
 			<include>Bald_BackdropImage</include>
 			<include content="Bald_WallHeader"><param name="p">Odd</param></include>
 			<include content="Bald_WallHeader"><param name="p">Even</param></include>
-			<control type="label"><left>1296</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="panel" id="511">
 				<left>84</left><top>210</top><width>1728</width><height>624</height><orientation>vertical</orientation>
 				<viewtype label="Bald poster wall">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>

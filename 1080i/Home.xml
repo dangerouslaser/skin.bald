@@ -54,7 +54,7 @@
 			<!-- Art frame -->
 			<control type="group">
 				<include>Bald_AnimInfoFrame</include>
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>120</top>
 				<width>1248</width>
 				<height>702</height>
@@ -103,7 +103,7 @@
 			<control type="group">
 				<include>Bald_AnimInfoFrame</include>
 				<include>Bald_AnimInfoArtOverlay</include>
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>120</top>
 				<width>1248</width>
 				<height>702</height>
@@ -151,7 +151,7 @@
 			<!-- Clock and date -->
 			<control type="group">
 				<include>Bald_AnimInfoChrome</include>
-				<left>1440</left>
+				<left>Bald_RightColumn</left>
 				<top>104</top>
 				<width>384</width>
 				<control type="label">
@@ -191,7 +191,7 @@
 				<include content="Bald_MenuNote"><param name="text">$VAR[Bald_MenuPreviewNote]</param></include>
 			</control>
 			<control type="grouplist" id="9000">
-				<left>1440</left>
+				<left>Bald_RightColumn</left>
 				<top>392</top>
 				<width>420</width>
 				<height>310</height>
@@ -229,7 +229,7 @@
 			<!-- Section line: accent dot, screen name, "Back for menu" hint. -->
 			<control type="grouplist">
 				<include>Bald_AnimInfoChrome</include>
-				<left>1440</left>
+				<left>Bald_RightColumn</left>
 				<top>966</top>
 				<width>480</width>
 				<height>26</height>
@@ -285,7 +285,7 @@
 				<visible>$EXP[Bald_PreviewOther]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<control type="label">
-					<left>96</left>
+					<left>Bald_SafeLeft</left>
 					<top>856</top>
 					<width>1248</width>
 					<height>26</height>
@@ -295,7 +295,7 @@
 					<label>$VAR[Bald_MenuPreviewLabel]</label>
 				</control>
 				<control type="label">
-					<left>96</left>
+					<left>Bald_SafeLeft</left>
 					<top>898</top>
 					<width>1248</width>
 					<height>30</height>

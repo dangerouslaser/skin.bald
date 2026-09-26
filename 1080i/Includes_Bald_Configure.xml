@@ -21,7 +21,7 @@
 				<texture colordiffuse="bald_field60">bald/white.png</texture>
 			</control>
 			<control type="label">
-				<left>96</left>
+				<left>Bald_SafeLeft</left>
 				<top>96</top>
 				<width>494</width>
 				<height>48</height>
@@ -40,7 +40,7 @@
 		<param name="right" />
 		<param name="font">Bald_MenuItem</param>
 		<definition>
-			<left>96</left>
+			<left>Bald_SafeLeft</left>
 			<top>192</top>
 			<width>494</width>
 			<height>682</height>
@@ -200,7 +200,7 @@
 		<definition>
 			<control type="group">
 				<left>1224</left>
-				<top>954</top>
+				<top>Bald_HintTop</top>
 				<include content="Bald_InfoHintPair">
 					<param name="first">$PARAM[first]</param>
 					<param name="second">$PARAM[second]</param>

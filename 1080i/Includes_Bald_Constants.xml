@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald layout constants: 1080i coordinates with a 96 px safe margin (CLAUDE.md). Loaded for every screen height,
+     since Bald lays out in 1080i only, unlike Estuary's Constants_720/1080 pair. Kodi substitutes a constant only
+     when it is the whole value of a position or size tag and cannot do arithmetic, so offsets from these (a 12 px
+     focus-ring inset, a width that ends on the right safe edge at x 1824) stay literal, and $PARAM values that an
+     include negates (Bald_BackdropWindow's x and y) must stay numbers. -->
+<includes>
+	<!-- Left safe margin: page titles, lists, footers and hints start here. -->
+	<constant name="Bald_SafeLeft">96</constant>
+	<!-- Footer line: counters, page trail and navigation hints. -->
+	<constant name="Bald_HintTop">954</constant>
+	<!-- Right column: the Home menu, the options menus and the right-hand hints. -->
+	<constant name="Bald_RightColumn">1440</constant>
+	<!-- Library and Search preview column (528 wide, ending on the right safe edge) and the header meta above it. -->
+	<constant name="Bald_PreviewLeft">1296</constant>
+	<!-- Library and Search page title. -->
+	<constant name="Bald_PageTitleTop">108</constant>
+	<!-- Library and Search content: lists and the preview column. -->
+	<constant name="Bald_ContentTop">222</constant>
+</includes>
