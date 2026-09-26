@@ -7,13 +7,14 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from conditions import equivalent, find_value, implies, parse
+from home_screens import SCREENS as HOME_SCREENS, rows as shipped_rows
 from kodi_includes import _expand_in_place, include_definitions
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SHORTCUTS = ROOT / "shortcuts"
 FALLBACK = ROOT / "1080i" / "Includes_Bald_HomeDefaults.xml"
-SCREENS = (("home", "Home", 9100), ("movies", "Movies", 9200), ("tvshows", "TVShows", 9300))
+SCREENS = tuple((screen, title, base) for screen, title, base, _ in HOME_SCREENS)
 
 
 def load_builder():
@@ -24,7 +25,7 @@ def load_builder():
 
 
 def defaults(screen):
-    return json.loads((SHORTCUTS / f"skinvariables-shortcut-{screen}widgets.json").read_text())
+    return shipped_rows(screen)
 
 
 def fallback():
@@ -97,15 +98,27 @@ class WidgetGeneratorTests(unittest.TestCase):
 
         lists = ET.parse(SHORTCUTS / "generator" / "screens.xml").getroot().findall("lists/list")
         self.assertEqual(
-            [(node.get("name"), node.findtext("value[@name='menu']"), node.findtext("value[@name='title']"),
-              int(node.findtext("value[@name='base']"))) for node in lists],
-            [(screen, f"{screen}widgets", title, base) for screen, title, base in SCREENS],
+            [(node.get("name"), node.findtext("value[@name='title']"), int(node.findtext("value[@name='base']")),
+              int(node.findtext("value[@name='button']"))) for node in lists],
+            list(HOME_SCREENS),
         )
+        # Home and Live TV loop over their own row menus; hub slot n over the "widgets" of hub n - 1 in the hubs menu.
+        menus = {node.get("name"): (node.findtext("value[@name='menu']"), node.findtext("value[@name='node']"),
+                                    node.findtext("value[@name='mode']")) for node in lists}
+        self.assertEqual(menus["home"], ("homewidgets", None, "submenu"))
+        self.assertEqual(menus["livetv"], ("livetvwidgets", None, "submenu"))
+        for n in range(1, 9):
+            self.assertEqual(menus[f"hub{n}"], ("hubs", str(n - 1), "widgets"))
+        # Skin Variables reads an empty <value> as None (formatted "None"), so no list value may be empty.
+        self.assertFalse([node for node in lists for node in node.findall("value") if not (node.text or "").strip()])
         for path in (SHORTCUTS / "generator").glob("*.xml"):
             for items in ET.parse(path).getroot().iter("items"):
-                if items.get("menu"):
-                    self.assertEqual(items.get("menu"), "{menu}", path.name)
-                    self.assertEqual(items.get("mode"), "submenu", path.name)
+                if items.get("menu") == "hubs":
+                    # The hub lookups: the hubs menu itself, matched to the slot by position.
+                    self.assertEqual((items.get("item"), items.get("mode")), (None, "submenu"), path.name)
+                elif items.get("menu"):
+                    self.assertEqual((items.get("menu"), items.get("item"), items.get("mode")),
+                                     ("{menu}", "{node}", "{mode}"), path.name)
 
     def test_generator_conditions_do_not_need_kodi(self):
         # Skin Variables compares a==b and a!=b itself; anything else is a Kodi condition, which the fallback
@@ -147,10 +160,10 @@ class WidgetGeneratorTests(unittest.TestCase):
         # Kodi appends a "Browse" item to a limited <content> unless browse="never"; ambient advance would land on it,
         # and Continue watching would get one between its two sources.
         root = fallback()
-        for _, title, _ in SCREENS:
+        for screen, title, _ in SCREENS:
             contents = [node for row in definition(root, f"Bald_Generated_{title}Widgets").findall("include")
                         for node in row.findall("content")]
-            self.assertTrue(contents)
+            self.assertEqual(bool(contents), bool(defaults(screen)), title)
             self.assertTrue(all(node.get("browse") == "never" for node in contents), title)
 
     def test_bindings_exist_only_for_configured_rows(self):
@@ -168,13 +181,17 @@ class WidgetGeneratorTests(unittest.TestCase):
                     ), param(node, "c"))
             for name in ("ItemOdd", "HasLogo", "PreviewItemOdd", "PreviewHasLogo"):
                 self.assertEqual(sorted(set(expression_rows(root, f"Bald_{name}_{screen}"))), ids)
-                # An "or" seeded with false, so the expression stays valid with no rows.
-                kind, terms = parse(root.findtext(f"expression[@name='Bald_{name}_{screen}']"))
+                # An "or" seeded with false, so the expression stays valid with no rows (an empty slot: just false).
+                tree = parse(root.findtext(f"expression[@name='Bald_{name}_{screen}']"))
+                if not ids:
+                    self.assertIs(tree, False, screen)
+                    continue
+                kind, terms = tree
                 self.assertEqual((kind, terms[0]), ("or", False))
 
     def test_art_variables_prefer_the_previewed_screen_then_the_current_row(self):
         root = fallback()
-        configured = [base + index for screen, _, base in SCREENS for index in range(1, len(defaults(screen)) + 1)]
+        configured = sorted(base + index for screen, _, base in SCREENS for index in range(1, len(defaults(screen)) + 1))
         for name, per_row in (("Bald_Fanart", 3), ("Bald_Logo", 2)):
             values = root.findall(f"variable[@name='{name}']/value")
             conditions = [value.get("condition") for value in values]
