@@ -182,6 +182,13 @@
 		<value>$LOCALIZE[31724]</value>
 	</variable>
 
+	<!-- Appearance > Typography (1118): the current fontset (Skin.Font is lookandfeel.font, a Font.xml fontset id). -->
+	<variable name="Bald_FontName">
+		<value condition="String.IsEqual(Skin.Font,DMSans)">$LOCALIZE[31941]</value>
+		<value condition="String.IsEqual(Skin.Font,Arial)">$LOCALIZE[31053]</value>
+		<value>$LOCALIZE[31940]</value>
+	</variable>
+
 	<!-- One settings row (button or radiobutton), in the Home menu's focus language: unfocused at 50%, focused full ink
 	     with the accent dot, sliding 6 px right. A radiobutton's state is a dot at the right: accent on, dim off. -->
 	<include name="Bald_ConfigureButton">

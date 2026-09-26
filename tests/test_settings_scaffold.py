@@ -170,7 +170,7 @@ class SettingsScaffoldTests(unittest.TestCase):
     def test_appearance_rows_follow_category_ids_not_labels(self):
         root = self.windows["Custom_1118_BaldAppearance.xml"]
         ids = [item.get("id") for item in root.findall(".//control[@id='9500']/content/item")]
-        self.assertEqual(ids, ["1", "2", "3", "4"])
+        self.assertEqual(ids, ["1", "2", "3", "5", "4"])
         seen = set()
         for row in self.control("Custom_1118_BaldAppearance.xml", "9600").findall("control"):
             visible = all_of([node.text for node in row.findall("visible")])

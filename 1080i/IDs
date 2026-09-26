@@ -322,12 +322,14 @@ Custom_1117_BaldHomeScreens.xml (window 1117)
 9400	Action grouplist; 9401-9402
 
 Custom_1118_BaldAppearance.xml (window 1118)
-9500	Category list; static items 1-4 (Artwork, Information, Behavior, Estuary windows)
+9500	Category list; static items 1-5 (Artwork, Information, Behavior, Typography
+		as item 5, Estuary windows as item 4)
 		pick the rows (Bald_SettingRow)
 9600	Row grouplist
 9601, 9602	Artwork: clearlogos, blurred backgrounds
 9611, 9612	Information: media flags, row item count
 9621-9623	Behavior: ambient movement, navigation hints, reset hint
+9631	Typography: font (fontset)
 605, 607-609, 623, 624, 701-708, 6066-6068
 		Estuary windows: Estuary's own SkinSettings control IDs, kept as Estuary numbers them
 

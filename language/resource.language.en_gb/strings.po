@@ -2181,13 +2181,30 @@ msgstr ""
 
 #. Font set names: Kodi's Interface > Skin > Fonts list and Bald Settings > Appearance > Typography
 #: /1080i/Font.xml
+#: /1080i/Includes_Bald_Configure.xml
 msgctxt "#31940"
 msgid "Instrument Sans"
 msgstr ""
 
 #: /1080i/Font.xml
+#: /1080i/Includes_Bald_Configure.xml
 msgctxt "#31941"
 msgid "DM Sans"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31942"
+msgid "Typography"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31943"
+msgid "Choose the typeface Bald uses on every screen. Changing it reloads the skin."
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31944"
+msgid "Font"
 msgstr ""
 
 #: /1080i/SettingsCategory.xml
