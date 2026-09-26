@@ -62,6 +62,16 @@
 					<include content="Bald_AnimInfoIn"><param name="delay">520</param></include>
 					<include content="Bald_MediaFlags"><param name="height">30</param><param name="font">Bald_FlagL</param></include>
 				</control>
+				<!-- Ratings, with TMDb Helper's scores for sources the library lacks (the dialog's own item). -->
+				<include content="Bald_RatingsRow">
+					<param name="visible">$EXP[Bald_RatingsInfo]</param>
+					<param name="fallback">true</param>
+					<param name="top">12</param>
+					<param name="width">1400</param>
+					<param name="height">30</param>
+					<param name="font">Bald_FlagL</param>
+					<include content="Bald_AnimInfoIn"><param name="delay">540</param></include>
+				</include>
 				<control type="label">
 					<top>28</top>
 					<width>1400</width>
@@ -240,8 +250,8 @@
 			<!-- Home's exact caption layout, flags and staggered transitions, scoped to recommendations. -->
 			<control type="group">
 				<visible>$EXP[Bald_HasRecommendations]</visible>
-				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param></include>
-				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param></include>
+				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param><param name="ratings">$EXP[Bald_RatingsInfo]</param></include>
+				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param><param name="ratings">$EXP[Bald_RatingsInfo]</param></include>
 			</control>
 			<control type="label"><left>Bald_SafeLeft</left><top>856</top><width>850</width><height>26</height><font>Bald_RowLabel</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[31772]</label></control>
 			<control type="label"><left>1144</left><top>856</top><width>200</width><height>26</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(5100).CurrentItem] / $INFO[Container(5100).NumItems]</label><visible>$EXP[Bald_HasRecommendations]</visible></control>

@@ -2,6 +2,45 @@
 
 Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was tried and what was done instead.
 
+## Ratings in media views (2026-09-26, not yet run in Kodi)
+
+SPEC 5.22. `1080i/Includes_Bald_Ratings.xml` holds everything: the settings expressions, the percent map, one pill (`Bald_RatingItem`), a list item's pills (`Bald_Ratings`, `container` prefix as for `Bald_MediaFlags`), a row that closes up when empty (`Bald_RatingsRow`, animations nested) and the player's pills (`Bald_RatingsPlayer`). Static checks only (`tools/kodi_dev.py validate`, the unit tests); nothing was reloaded or sent to Kodi.
+
+**Verified in Kodi's source** (xbmc master, 2026-09-26):
+- `ListItem.Rating(name)`, `ListItem.Votes(name)` and `ListItem.RatingAndVotes(name)` take a rating name (`CGUIInfoManager::TranslateListItem` keeps the parameter as data3 for `rating`, `votes`, `ratingandvotes`); the `Container(id).ListItem...` forms are the same infolabels. `VideoGUIInfo.cpp`: `Rating(name)` returns nothing when the item has no rating by that name or it is 0; without a name it is the default rating (`CVideoInfoTag::GetRating("")` uses `m_strDefaultRating`). The value is `StringUtils::FormatNumber`: fixed, one decimal, in the system's original locale, so "7.8" or "7,8". `Votes(name)` always returns a value, "0" without votes (with the locale's thousands separator otherwise). `RatingAndVotes` formats core string 20350 "{0} ({1} votes)". `ListItem.UserRating` is the integer 1-10, empty at 0. There is no `ListItem.DefaultRating` infolabel.
+- NFO import (`CVideoInfoTag::Load`): each `<ratings><rating name="..." max="..." default="true">` is stored under its name exactly as written (a `std::map`, so case matters); a rating without a name is stored as "default"; `max` rescales to 0-10 (`value / max * 10`), and `SetRating` drops anything not in (0, 10]. A bare `<rating>` (no `<ratings>`) is stored as "default". So a Rotten Tomatoes 91 with max="100" reads back as "9.1": `Bald_RatingPercent` maps "9.1" (and "9,1") to "91". FormatNumber's one decimal means a TMDb 7.85 shows as 79%.
+- `VideoPlayer.Rating` takes no name: the videoplayer branch of `TranslateSingleString` only keeps parameters for content, uniqueid, art, cast, castandrole, writer, director, genre, nextgenre and audiochannels, so `VideoPlayer.Rating(imdb)` is the default rating. The OSD therefore shows the default and user ratings natively and named sources only through TMDb Helper.
+- `$MAP[map, infolabel]` (Kodi 22 skin maps, `CSkinMapManager::Lookup`) returns the mapped text, or the raw value unchanged when the key is missing; maps load from any includes file. `String.IsEqual` accepts a second infolabel (not used here).
+
+**Rating names real sources write** (read from their code):
+- Kodi's movie scraper (metadata.themoviedb.org.python): `themoviedb`, `imdb`, `trakt`.
+- Kodi's TV scraper (metadata.tvshows.themoviedb.org.python, piers branch): `tmdb`, `imdb`, `trakt` (shows and episodes).
+- Radarr's Kodi NFO: `imdb` (default), `themoviedb`, `tomatometerallcritics` with max="100".
+- script.metadata.editor (OMDb): `tomatometerallcritics`, `tomatometerallaudience`, `tomatometeravgcritics`, `tomatometeravgaudience`, `metacritic`, `imdb`, `themoviedb`. tinyMediaManager maps OMDb's Rotten Tomatoes and Metacritic to `tomatometerallcritics` and `metacritic` (from its documentation and forum; its code was not read).
+- The old TheTVDB scraper wrote `tvdb` (not re-read; kept because it is the name Kodi's NFO documentation uses).
+- Bald reads `imdb`, `themoviedb` then `tmdb` (one TMDb pill), `tomatometerallcritics`, `tomatometerallaudience`, `metacritic`, `trakt` and `tvdb`. The "avg" variants and names Bald does not know (Letterboxd, a tinyMediaManager `rottenTomatoes`, "default") show only as Kodi's default rating, and only when none of the named ones exists.
+
+**TMDb Helper.** Its ListItem monitor writes `Window(Home).Property(TMDbHelper.ListItem.<key>)` and its player monitor `TMDbHelper.Player.<key>`, with keys `imdb_rating`, `tmdb_rating`, `trakt_rating` ("7.8"), `rottentomatoes_rating`, `rottentomatoes_usermeter`, `metacritic_rating` (0-100), `letterboxd_rating`, when the user has turned on its online ratings (`use_online_ratings`) and the skin has not set `TMDbHelper.DisableRatings`. Bald already relies on the ListItem monitor for the blurred backdrop. The fallback is used only on the info screens (the monitor follows the dialog's own item) for RT critics, RT audience, Metacritic and Trakt, and on the player for every named source. Home and the library draw a caption per row and per parity, and the monitor follows only the current one, so a fallback there could show the previous title's score during a change; they use the library's values only. Letterboxd is not offered (no switch was asked for).
+
+**Marks.** No third-party logos: IMDb, Rotten Tomatoes, Metacritic, TMDb, Trakt and TVDb marks are trademarks whose usage terms do not clearly allow redistribution in a GPL skin. The marks are Bald's own text (strings 31303-31310, so they can be translated) in the accent, on a filled 10% ink pill generated by `tools/textures.py` (`chip_fill.png`, the flag chip's shape filled).
+
+**Settings.** Appearance › Ratings (category item 6, rows 9641-9655, strings 31300-31318 and core 563 "Rating", 38018 "My rating"). Each row is a radiobutton through `Bald_RatingsSettingRow`, whose dot shows the current value like every other boolean row; the rows under Show ratings grey out while it is off. Strings live in 31300-31399, inside the gap Estuary leaves (31178-31596); `tests/skin_strings.py` counts that block as Bald's.
+
+**Layout changes that came with it.** The browse preview's body grouplist grows from 300 to 312 px (it now ends at y 948, above the hint line) so a five-line plot still fits under a rating row. The TV Overview meta line is a horizontal grouplist (auto-width label plus pills). The OSD info line drops its "★ 7.8" text for the pills.
+
+### To check in Kodi (ratings)
+
+1. Reload and check the log for `Skin map`, `$MAP[] requires`, `Unknown include`, `invalid include` and condition parse errors. The map should log "Skin map 'Bald_RatingPercent' loaded 202 entries" at debug level.
+2. A movie scraped with the default movie scraper and IMDb plus Trakt ratings turned on: Home caption shows "IMDb 7.8", "TMDb 78%", "Trakt 76%" between the flags and the genre line, fading in with the caption. The pills are the flag chips' height, filled, not outlined.
+3. An NFO movie with `<rating name="tomatometerallcritics" max="100"><value>91</value>` and `<rating name="metacritic" max="100"><value>81</value>`: "RT 91%" and "Metacritic 81". Repeat once with the system locale set to one with a decimal comma (for example German) and check the percent pills still read "91%", not "9,1%".
+4. A TV show from the TV scraper (name `tmdb`): TV info header reads "2019 to 2024, 3 seasons, TV-14" then the pills on the same line, vertically centred with the text. Focus an episode: its pills sit between the meta and the flags on the episode line, and the flags still fit.
+5. Movie info Overview: the rating row sits under the flags, and with a long tagline and a resumable movie the progress line still ends above the page trail (y 954).
+6. With TMDb Helper installed and its online ratings on, a library movie without RT scores: the info Overview shows RT, RT audience and Metacritic from TMDb Helper after a moment; Home and the library views do not. Open info on another title: no stale score from the previous one.
+7. Play a movie: the info overlay (Info key) shows the pills between the flag chips and "2019 · PG-13 · 132 min"; without TMDb Helper only "Rating 7.8" and, if set, "You 8".
+8. Appearance › Ratings: 15 rows; the grouplist scrolls; turning off Show ratings greys the other rows and hides every pill; each source switch hides only its pill; each surface switch hides only that surface; Vote counts adds " · 1,234" in dimmer ink and never " · 0".
+9. Library: the three-poster view, wall with preview, compact list, poster-low, artwork list (right of the flags line), TV series/season/episode views and a plugin folder in Estuary's list view with the preview column. Items with no ratings show no empty gap.
+10. More like this: the highlighted recommendation's pills follow the info surface switch, not Home's.
+
 ## Estuary windows settings folded into Bald (2026-09-26, not yet run in Kodi)
 
 Bald Settings > Appearance no longer has the "Estuary windows" category (list 9500, item 4). Each of its 14 settings was traced from its `Skin.HasSetting`/`Skin.String` readers through `$VAR`/`$EXP` chains, conditional includes and `$PARAM`-built names to a window Bald ships (a scratch reach script like the dead-code pass's, plus `window_reach` in `tests/test_settings_scaffold.py`; skin setting names are case-insensitive, so `Skin.HasSetting(AutoScroll)` counts, and Kodi's `<autoscroll>` tag does not). Then each was retired, merged into a Bald setting, or moved into a Bald category. Static checks only (`tools/kodi_dev.py validate`, the unit tests); nothing was reloaded or sent to Kodi.

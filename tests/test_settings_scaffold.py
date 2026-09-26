@@ -13,7 +13,9 @@ WINDOWS = {
     "SkinSettings.xml": ("9000", ["9001"]),
     "Custom_1116_BaldHomeWidgets.xml": ("9100", ["9200", "9201", "9202", "9203", "9204", "9205", "9206", "9207", "9208", "9209"]),
     "Custom_1117_BaldHomeScreens.xml": ("9300", ["9400", "9401", "9402"]),
-    "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9603", "9604", "9605", "9606", "9607", "9611", "9612", "9613", "9614", "9615", "9621", "9622", "9623", "9624", "9625"]),
+    "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9603", "9604", "9605", "9606", "9607", "9611", "9612", "9613", "9614", "9615", "9621", "9622", "9623", "9624", "9625",
+                                                 "9641", "9642", "9643", "9644", "9645", "9646", "9647", "9648", "9649", "9650",
+                                                 "9651", "9652", "9653", "9654", "9655"]),
     "Custom_1119_BaldPlayback.xml": ("9700", ["9800", "9801", "9802", "9803", "9811", "9812", "9821", "9822", "9831",
                                               "9832", "9833", "9834", "9835"]),
 }
@@ -183,7 +185,7 @@ class SettingsScaffoldTests(unittest.TestCase):
     def test_appearance_rows_follow_category_ids_not_labels(self):
         root = self.windows["Custom_1118_BaldAppearance.xml"]
         ids = [item.get("id") for item in root.findall(".//control[@id='9500']/content/item")]
-        self.assertEqual(ids, ["1", "2", "3", "5"])
+        self.assertEqual(ids, ["1", "2", "6", "3", "5"])
         seen = set()
         for row in self.control("Custom_1118_BaldAppearance.xml", "9600").findall("control"):
             visible = all_of([node.text for node in row.findall("visible")])

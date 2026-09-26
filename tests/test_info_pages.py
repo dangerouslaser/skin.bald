@@ -114,7 +114,8 @@ class InfoPagesTests(unittest.TestCase):
             self.assertIn(f"$INFO[Container($PARAM[c]).ListItem.{field}]", labels)
         self.assertIsNotNone(caption.find(".//include[@content='Bald_MediaFlags']"))
         delays = {node.findtext("param[@name='delay']") for node in caption.findall(".//include[@content='Bald_AnimCaptionIn']")}
-        self.assertEqual(delays, {"180", "275", "300", "350"})
+        # 288: the rating row, between the flags (275) and the accent line (300).
+        self.assertEqual(delays, {"180", "275", "288", "300", "350"})
         art = self.shared.find("variable[@name='Bald_ItemFanart5100']")
         self.assertTrue(all("Container(5100).ListItem.Art" in node.text for node in art))
         self.assertEqual(self.pages.findtext(".//control[@id='5204']/texture"), "$VAR[Bald_InfoPoster]")

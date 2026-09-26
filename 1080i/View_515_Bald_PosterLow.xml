@@ -32,7 +32,7 @@
 		<param name="p" />
 		<definition>
 			<include content="Bald_Caption">
-				<param name="c">515</param><param name="p">$PARAM[p]</param><param name="ignore_home_row">true</param>
+				<param name="c">515</param><param name="p">$PARAM[p]</param><param name="ignore_home_row">true</param><param name="ratings">$EXP[Bald_RatingsLibrary]</param>
 				<param name="x">1420</param><param name="title_y">270</param><param name="title_height">132</param><param name="body_y">402</param><param name="width">384</param><param name="clip_width">440</param>
 			</include>
 		</definition>

@@ -42,6 +42,8 @@ def main():
     save(rounded(24, 24, 6, stroke=3), "focus_ring.png")
     # Media flag chip outline: 1.5 px, radius 5. 9-slice, border 6.
     save(rounded(16, 16, 5, stroke=1.5, inset=0.25), "chip.png")
+    # Rating pill: the chip's shape filled, drawn at 10% ink (Includes_Bald_Ratings.xml). 9-slice, border 6.
+    save(rounded(16, 16, 5, inset=0.25), "chip_fill.png")
     # Logo scrim: CSS linear-gradient(32deg, black 60% at 0, 26% at 30%, 0 at 54%) at half size.
     w, h = 624, 351
     a = math.radians(32)

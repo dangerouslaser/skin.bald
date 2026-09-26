@@ -330,7 +330,7 @@
 				</control>
 			</control>
 			<control type="grouplist">
-				<left>Bald_BrowseCaptionLeft</left><top>636</top><width>568</width><height>300</height>
+				<left>Bald_BrowseCaptionLeft</left><top>636</top><width>568</width><height>312</height>
 				<orientation>vertical</orientation><itemgap>0</itemgap><usecontrolcoords>true</usecontrolcoords>
 				<control type="label">
 					<left>20</left><top>14</top><width>528</width><height>26</height>
@@ -344,6 +344,14 @@
 					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">275</param></include>
 					<include content="Bald_MediaFlags" />
 				</control>
+				<!-- Ratings for video items (library folders, plugins): closes up when there are none. -->
+				<include content="Bald_RatingsRow">
+					<param name="visible">$EXP[Bald_RatingsLibrary] + Integer.Is$PARAM[p](Container.CurrentItem) + $EXP[Bald_BrowseVideoItem]</param>
+					<param name="left">20</param>
+					<param name="top">10</param>
+					<param name="width">528</param>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">288</param></include>
+				</include>
 				<control type="label">
 					<left>20</left><top>8</top><width>528</width><height>24</height>
 					<font>Bald_Accent</font><textcolor>bald_accent</textcolor><label>$INFO[ListItem.Genre]</label>

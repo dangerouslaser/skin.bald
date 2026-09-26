@@ -136,7 +136,7 @@ Layout, all absolute at 1080:
 | Clearlogo | inside frame, left 52, bottom 46 | Max 560 by 170, keep aspect, bottom-left aligned, soft drop shadow. Original colors. |
 | Clock and date | 1440, 104, width 384 | |
 | ~~Callout~~ | Removed 2026-09-24 after a trial in Kodi: the Home screen reads better without the dot and hairline. | Was: dot 10 px at 1339, 505; hairline to 1440 at y 510, ink 50%; dot pops, line grows from the left |
-| Caption | 1440, 420, width 384 | Title, meta, flags (movies only), accent line, plot |
+| Caption | 1440, 420, width 384 | Title, meta, flags (movies only), ratings (5.22), accent line, plot |
 | Menu (open) | 1440, 392, width 420 | Vertical list, 6 px gap; note paragraph below |
 | Section line | left 1440, bottom 88 | Accent dot 8 px, current screen name, "Back for menu" hint |
 | Row label line | 96, 856 | Label, row dots (6 px, active 95%, others 28%), count |
@@ -196,7 +196,7 @@ Approved paged revision (2026-09-25): three fixed pages replace the long scrolli
 
 | Page | Layout | Contents |
 | --- | --- | --- |
-| Overview | Content x96, y150 | Existing logo/title, meta, genres, flags, tagline, plot, actions and progress |
+| Overview | Content x96, y150 | Existing logo/title, meta, genres, flags, ratings (5.22), tagline, plot, actions and progress |
 | Cast & details | Poster 96,156,432,648; right column x624, width1200 | Title/meta above five 240 px cast slots at y378; 112 px portraits with name/role; Details heading y650, three 380 px columns at y696 and y796 |
 | More like this | Home-sized frame 96,120,1248,702; shared Home caption x1440, title ending at y464, width384; row y884 | Highlighted recommendation's fanart, title, year/runtime, movie media flags, genres and plot; Home's staggered caption transitions and landscape tiles, 440 MOVE scrolling |
 
@@ -222,11 +222,11 @@ Actions: in progress gives Resume, Start over, Trailer, Mark watched. Otherwise 
 
 | Element | Notes |
 | --- | --- |
-| Header | Logo, "years, N seasons, rating", genres, 2-line show plot |
+| Header | Logo, "years, N seasons, certificate" followed on the same line by the show's rating pills (5.22), genres, 2-line show plot |
 | Actions | Resume or Play the next episode (for example "Resume S3 E2"), Trailer |
 | Seasons | Horizontal tabs with an accent underline on focus. Content: `videodb://tvshows/titles/<dbid>/` |
 | Episodes | 320 by 180 cards, gap 24, focus travels to slot 2 then scrolls. Content path depends on the focused season. Watched check, progress bar. |
-| Episode detail | Code and title, runtime, air date, per-episode flags, one-line synopsis |
+| Episode detail | Code and title, runtime, air date, the episode's rating pills, per-episode flags, one-line synopsis |
 
 Opening from an episode (Next up, Continue watching) focuses that episode in its season. Opening from a show focuses the primary action.
 
@@ -383,7 +383,7 @@ Not in the prototype. Composition and behaviour follow Arctic Fuse 3's OSD (the 
 
 **Details on the controls** (1128). Off by default. While the OSD is up (and always with the information panel), the clearlogo or title, the info line and the plot at the top left, bottom-aligned above y 700, over the info dialog's horizontal scrim. Steps aside for the next item card and bottom panels.
 
-**Pause behaviour and info overlay.** When paused: None (default: the seek layer stays), Hide the bar (the seek layer leaves), Show info (the info overlay replaces the bar), after a delay of 0-3 s (default 3) counted with `System.IdleTime`, so any key brings the bar back. The info overlay (1127) also shows for the Info key (`fullscreeninfo`) and a Live TV channel change: a bottom-aligned column at x 96 up to y 930 over the horizontal scrim: 432 x 243 landscape art (the episode still, landscape or fanart) with an `accent` progress line along its bottom edge (switchable), the clearlogo or title (Caption title 40), the info line (media flag chips, then rating, certificate, year and duration, Caption meta 80%), the plot (four lines, switchable; off, it shows the episode title or the tagline) and "0:42:10 / 1:54:13 · Ends at 21:43" (60%). It fades in (380) with a 40 px rise.
+**Pause behaviour and info overlay.** When paused: None (default: the seek layer stays), Hide the bar (the seek layer leaves), Show info (the info overlay replaces the bar), after a delay of 0-3 s (default 3) counted with `System.IdleTime`, so any key brings the bar back. The info overlay (1127) also shows for the Info key (`fullscreeninfo`) and a Live TV channel change: a bottom-aligned column at x 96 up to y 930 over the horizontal scrim: 432 x 243 landscape art (the episode still, landscape or fanart) with an `accent` progress line along its bottom edge (switchable), the clearlogo or title (Caption title 40), the info line (media flag chips, then the rating pills of 5.22, then certificate, year and duration, Caption meta 80%), the plot (four lines, switchable; off, it shows the episode title or the tagline) and "0:42:10 / 1:54:13 · Ends at 21:43" (60%). It fades in (380) with a 40 px rise.
 
 **Down chain.** Down from any button opens the first panel that is enabled and applies; each panel's Down opens the next, Up (or Back) returns to the previous one. Order: PVR guide (Live TV with EPG), PVR channels (Live TV), playlist or episodes (a playlist of more than one item, else a library episode's season), bookmarks and chapters (files), cast and crew (movies and episodes, with TMDb Helper). A bottom panel: heading at y 484 (Row label 20, `ink`), the row from y 528, a tray from y 800 (Section 22 title, Caption meta 70% meta, two plot lines at 60%), hints on y 954; it fades in with a 40 px rise. The panels stop the auto-close.
 - Playlist or episodes (1125): 320 x 180 tiles (poster dim until focused, the focus ring on focus), title and "S1 E2 · 42 min" under each; an `accent` dot on the playing item; the row opens on what plays next. Select plays the item.
@@ -459,8 +459,19 @@ Small decisions made while fixing the merged restyles' review findings. Please r
 - **PVR timer icons in popup lists.** Estuary's recording icon is tinted `accent`, its reminder bell the row's `ink` step (70% unfocused, full on the focused row), in both the select dialog's detailed rows and the simple list.
 - **Popup list focus row.** Every popup list's 10% `ink` focus row halves while its list is not focused; the PVR managers' row now does the same (it dimmed to 40%).
 - **OSD help with a state.** Where Estuary's OSD help named a control and its state in one label ("Random · On", "Rewind · Fast forward"), the state is a separate hint part after the hint line's own 20 px dot. The PlayerControls caption under its row uses the same dot. The hints still name the focused control rather than "<key> for <action>", as Estuary's help did.
-- **Rating circle setting dropped.** Appearance no longer offers Estuary's "Choose rating to display for media items": nothing drew the circle after the library views and music information became Bald. If a rating mark is wanted, it belongs in the Bald preview caption as a new design.
+- **Rating circle setting dropped.** Appearance no longer offers Estuary's "Choose rating to display for media items": nothing drew the circle after the library views and music information became Bald. If a rating mark is wanted, it belongs in the Bald preview caption as a new design. (Done: section 5.22.)
 - **"Estuary windows" folded into Bald.** Appearance has no Estuary category any more. Slide animations, touch mode (Bald is remote-only), the background pattern and the skin fanart pack are retired. Estuary's media flags switch is merged into Bald's. The rest moved into Artwork, Information and Behavior with Bald names and labels, and old values carry over once at startup (docs/NOTES.md, "Estuary windows settings folded into Bald").
+
+
+### 5.22 Ratings in media views (2026-09-26, proposed; not yet seen in Kodi)
+
+Not in the prototype. The ratings the user's library already holds, from NFO files or scrapers, as quiet pills. Kodi facts, rating names and the live checklist are in docs/NOTES.md ("Ratings in media views").
+
+- **Item.** One pill per source: the source mark in `accent`, a space, the value in `ink`, and with vote counts on " · 12,345" in 60% `ink`. The pill is the media flag chip's shape filled with 10% `ink` and no outline (`bald/chip_fill.png`), so ratings never read as flags; same heights and fonts as the flag chips beside them (26 px `Bald_Flag`, 30 px `Bald_FlagL` on the info screens). 8 px apart, sources without a value take no space, and a row with none closes up.
+- **Marks and formats.** Bald-drawn text marks, no third-party logos: IMDb 7.8, TMDb 78%, RT 91% (critics), RT audience 85%, Metacritic 81, Trakt 78%, TVDb 7.8, You 8 (the user's rating), Rating 7.8 (Kodi's default rating, only when none of the named sources has a value). Order is fixed as listed.
+- **Where.** Home's caption (and every view that shares it: library 510, 512, 513, 515, 520-523, 530, 531, and More like this): a row between the flags and the accent line, 288 ms in the caption stagger. Movie Overview: a row under the flags (stagger 540). TV Overview: the show's pills after the "years, N seasons" line; the episode detail line: the focused episode's pills before its flags. Artwork list 514 and the episode views 540-542: right-aligned on the flags line. Browse preview (Estuary-restyled views): a row for video items. Player info overlay and details on the controls: pills between the flag chips and the certificate/year/duration text. The full-width wall (511) has no room in its header and shows none.
+- **Settings.** Bald Settings › Appearance › Ratings: Show ratings; one switch per source (IMDb, TMDb, Rotten Tomatoes critics, Rotten Tomatoes audience, Metacritic, Trakt, TVDb, My rating, Default rating when no source is named); where (information screens, Home, library views, player info overlay); vote counts (off by default). Names `Bald.Ratings.Hide`, `NoIMDb`, `NoTMDb`, `NoRTCritics`, `NoRTAudience`, `NoMetacritic`, `NoTrakt`, `NoTVDb`, `NoUser`, `NoDefault`, `NoInfo`, `NoHome`, `NoLibrary`, `NoOSD`, `ShowVotes`; unset is the default.
+- **TMDb Helper.** Optional. On the info screens only, it fills Rotten Tomatoes, Metacritic and Trakt when the library has no value; on the player it supplies the named sources Kodi's player cannot. Nowhere else.
 
 ---
 

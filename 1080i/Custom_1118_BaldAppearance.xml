@@ -12,6 +12,7 @@
 			<content>
 				<item id="1"><label>$LOCALIZE[39123]</label><property name="note">$LOCALIZE[31755]</property></item>
 				<item id="2"><label>$LOCALIZE[19033]</label><property name="note">$LOCALIZE[31756]</property></item>
+				<item id="6"><label>$LOCALIZE[31300]</label><property name="note">$LOCALIZE[31301]</property></item>
 				<item id="3"><label>$LOCALIZE[31757]</label><property name="note">$LOCALIZE[31758]</property></item>
 				<item id="5"><label>$LOCALIZE[31942]</label><property name="note">$LOCALIZE[31943]</property></item>
 			</content>
@@ -52,6 +53,24 @@
 				     and the temperature. Without a weather service, Select opens Kodi's weather settings instead. -->
 				<control type="radiobutton" id="9614"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31991]</label><selected>Skin.HasSetting(Bald.HeaderProfile)</selected><onclick>Skin.ToggleSetting(Bald.HeaderProfile)</onclick></control>
 				<control type="radiobutton" id="9615"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31992]</label><selected>Skin.HasSetting(Bald.HeaderWeather) + !String.IsEmpty(Weather.Plugin)</selected><onclick condition="!String.IsEmpty(Weather.Plugin)">Skin.ToggleSetting(Bald.HeaderWeather)</onclick><onclick condition="String.IsEmpty(Weather.Plugin)">ActivateWindow(servicesettings,weather)</onclick></control>
+				<!-- Ratings (Includes_Bald_Ratings.xml): the master switch, one row per source, where they show, vote counts.
+				     Every name is negative so unset means shown, except vote counts (off by default). The rows under the
+				     master switch grey out while it is off. -->
+				<include content="Bald_RatingsSettingRow"><param name="id">9641</param><param name="label">$LOCALIZE[31302]</param><param name="setting">Bald.Ratings.Hide</param><param name="enable">true</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9642</param><param name="label">$LOCALIZE[31303]</param><param name="setting">Bald.Ratings.NoIMDb</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9643</param><param name="label">$LOCALIZE[31304]</param><param name="setting">Bald.Ratings.NoTMDb</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9644</param><param name="label">$LOCALIZE[31311]</param><param name="setting">Bald.Ratings.NoRTCritics</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9645</param><param name="label">$LOCALIZE[31312]</param><param name="setting">Bald.Ratings.NoRTAudience</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9646</param><param name="label">$LOCALIZE[31307]</param><param name="setting">Bald.Ratings.NoMetacritic</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9647</param><param name="label">$LOCALIZE[31308]</param><param name="setting">Bald.Ratings.NoTrakt</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9648</param><param name="label">$LOCALIZE[31309]</param><param name="setting">Bald.Ratings.NoTVDb</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9649</param><param name="label">$LOCALIZE[38018]</param><param name="setting">Bald.Ratings.NoUser</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9650</param><param name="label">$LOCALIZE[31313]</param><param name="setting">Bald.Ratings.NoDefault</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9651</param><param name="label">$LOCALIZE[31314]</param><param name="setting">Bald.Ratings.NoInfo</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9652</param><param name="label">$LOCALIZE[31315]</param><param name="setting">Bald.Ratings.NoHome</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9653</param><param name="label">$LOCALIZE[31316]</param><param name="setting">Bald.Ratings.NoLibrary</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9654</param><param name="label">$LOCALIZE[31317]</param><param name="setting">Bald.Ratings.NoOSD</param></include>
+				<control type="radiobutton" id="9655"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31318]</label><selected>Skin.HasSetting(Bald.Ratings.ShowVotes)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowVotes)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide)</enable></control>
 				<!-- Behavior -->
 				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
 				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>

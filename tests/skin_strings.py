@@ -6,6 +6,8 @@ from pathlib import Path
 
 PO = Path(__file__).resolve().parents[1] / "language" / "resource.language.en_gb" / "strings.po"
 BALD_RANGE = range(31700, 32000)
+# Bald strings placed in the gap Estuary left (31178-31596): ratings (Includes_Bald_Ratings.xml).
+RATINGS_RANGE = range(31300, 31400)
 LOCALIZE = re.compile(r"\$LOCALIZE\[(\d+)\]")
 _ENTRY = re.compile(r'^msgctxt "#(\d+)"\nmsgid "((?:[^"\\]|\\.)*)"', re.M)
 
@@ -15,8 +17,12 @@ def strings():
     return {int(num): text for num, text in _ENTRY.findall(PO.read_text(encoding="utf-8"))}
 
 
+def is_bald(num):
+    return num in BALD_RANGE or num in RATINGS_RANGE
+
+
 def bald_strings():
-    return {num: text for num, text in strings().items() if num in BALD_RANGE}
+    return {num: text for num, text in strings().items() if is_bald(num)}
 
 
 def loc(msgid):

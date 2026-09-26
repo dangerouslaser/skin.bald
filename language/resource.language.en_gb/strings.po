@@ -891,6 +891,127 @@ msgstr ""
 
 #empty strings from id 31178 to 31596
 
+# Bald ratings strings: 31300-31399 (Includes_Bald_Ratings.xml, Appearance > Ratings).
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance category: ratings in media views
+msgctxt "#31300"
+msgid "Ratings"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: category description
+msgctxt "#31301"
+msgid "Choose which of your library's ratings Bald shows and where. They come from your NFO files or scrapers; sources without a value stay hidden."
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: master switch
+msgctxt "#31302"
+msgid "Show ratings"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source mark and setting (proper name)
+msgctxt "#31303"
+msgid "IMDb"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source mark and setting (proper name)
+msgctxt "#31304"
+msgid "TMDb"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source mark: Rotten Tomatoes critics score (short)
+msgctxt "#31305"
+msgid "RT"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source mark: Rotten Tomatoes audience score (short)
+msgctxt "#31306"
+msgid "RT audience"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source mark and setting (proper name)
+msgctxt "#31307"
+msgid "Metacritic"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source mark and setting (proper name)
+msgctxt "#31308"
+msgid "Trakt"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source mark and setting (proper name)
+msgctxt "#31309"
+msgid "TVDb"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source mark: the user's own rating (short)
+msgctxt "#31310"
+msgid "You"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: source setting
+msgctxt "#31311"
+msgid "Rotten Tomatoes critics"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: source setting
+msgctxt "#31312"
+msgid "Rotten Tomatoes audience"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: Kodi's default rating, shown only when no named source has one
+msgctxt "#31313"
+msgid "Default rating when no source is named"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31314"
+msgid "On information screens"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31315"
+msgid "On Home"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31316"
+msgid "In library views"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31317"
+msgid "On the player's info overlay"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: show the number of votes after each rating
+msgctxt "#31318"
+msgid "Vote counts"
+msgstr ""
+
 #: /xml/Includes_SettingsDialog.xml
 #. Button to select Player Process Info window
 msgctxt "#31597"
