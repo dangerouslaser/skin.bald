@@ -22,12 +22,12 @@
 	<!-- Rating pill glyphs (Bald_RatingFrame), by pill height: 26 (captions, player) and 30 (information screens).
 	     Glyph: its square size; Top: centred in the pill; Lead: the pill's left end, 8 px plus the glyph; Back: the
 	     glyph's left, pulled back over that end. -->
-	<constant name="Bald_RatingGlyph26">18</constant>
-	<constant name="Bald_RatingGlyphTop26">4</constant>
-	<constant name="Bald_RatingLead26">26</constant>
-	<constant name="Bald_RatingGlyphBack26">-18</constant>
-	<constant name="Bald_RatingGlyph30">20</constant>
-	<constant name="Bald_RatingGlyphTop30">5</constant>
-	<constant name="Bald_RatingLead30">28</constant>
-	<constant name="Bald_RatingGlyphBack30">-20</constant>
+	<constant name="Bald_RatingGlyph26">16</constant>
+	<constant name="Bald_RatingGlyphTop26">5</constant>
+	<constant name="Bald_RatingLead26">24</constant>
+	<constant name="Bald_RatingGlyphBack26">-16</constant>
+	<constant name="Bald_RatingGlyph30">18</constant>
+	<constant name="Bald_RatingGlyphTop30">6</constant>
+	<constant name="Bald_RatingLead30">26</constant>
+	<constant name="Bald_RatingGlyphBack30">-18</constant>
 </includes>
