@@ -2,6 +2,15 @@
 
 Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was tried and what was done instead.
 
+## Restyle streams merged (2026-09-26, not yet run in Kodi)
+
+The six restyle streams (shared foundations, playback, global overlays, Live TV windows, browse, media windows) were merged onto main in that order. Only registrations in `Includes.xml`, blocks in `strings.po` and `1080i/IDs`, and these docs overlapped; no window file was edited by two streams, and no string or control id collides. Static checks only.
+
+- **SPEC numbering.** Each stream proposed its own 5.15; they are now 5.15 Shared foundations, 5.16 Playback, 5.17 Global overlays, 5.18 Live TV windows and dialogs, 5.19 Browsing outside the Bald views, 5.20 Media utility windows, and the file headers and notes that cite them were updated.
+- **Still open between streams.** `MyGames.xml` and `MyPics.xml` (media stream) still wrap Estuary's left `ContentPanel` (views 50 and 54) and, in MyGames, `ListThumbInfoPanel` in `OpenClose_Left` groups; with the browse stream's views on the left and its preview at x 1296, those panels overlap the list and the preview slides in from the wrong side. They need a layout decision and a live look. `PVRSideBar` in `Includes_MediaMenu.xml` has no callers any more (the Live TV windows use their own options column), so the browse note about the PVR side menu opening on the right no longer applies; it can go in a dead-code pass.
+- **Duplicate English text under different ids.** "Back to close" (31619, 31669), "Left for options" (31661, 31685), and PVR's 31663, 31664 and 31666, which repeat 31784, 31827 and 31739. Harmless, but they could be merged later, together with each stream's string tests.
+- **Live check.** Run the six stream checklists below; in addition, open a Live TV window, the video OSD, the music library and a game list one after another and check the log once for include or variable errors across all the new `Includes_Bald_*.xml` files together.
+
 ## Shared foundations (2026-09-26, not yet run in Kodi)
 
 Static checks only (`tools/kodi_dev.py validate`, the unit tests including `tests/test_foundations.py`); nothing was reloaded.
