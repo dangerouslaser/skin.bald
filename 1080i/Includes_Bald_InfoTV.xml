@@ -38,8 +38,7 @@
 	</variable>
 	<variable name="Bald_InfoTVMeta">
 		<value condition="!String.IsEmpty(Window(movieinformation).Property(Bald.TV.Meta))">$INFO[Window(movieinformation).Property(Bald.TV.Meta)]</value>
-		<value condition="$EXP[Bald_InfoTVIsShow] + String.IsEqual(ListItem.Property(TotalSeasons),1)">$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , season]$INFO[ListItem.MPAA,$COMMA ,]</value>
-		<value condition="$EXP[Bald_InfoTVIsShow]">$INFO[ListItem.Year]$INFO[ListItem.Property(TotalSeasons),$COMMA , seasons]$INFO[ListItem.MPAA,$COMMA ,]</value>
+		<value condition="$EXP[Bald_InfoTVIsShow]">$VAR[Bald_InfoSeasons]$INFO[ListItem.MPAA,$COMMA ,]</value>
 	</variable>
 	<variable name="Bald_InfoTVGenre">
 		<value condition="$EXP[Bald_InfoTVIsShow]">$INFO[ListItem.Genre]</value>

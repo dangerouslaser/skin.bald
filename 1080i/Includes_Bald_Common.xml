@@ -27,6 +27,24 @@
 		<value>$INFO[ListItem.Art(tvshow.fanart)]</value>
 	</variable>
 
+	<!-- ============ Meta lines ============ -->
+	<!-- One-line captions for the library views, as the <label> of the caller's label control. Home's caption and the
+	     info dialog format their own lines (hours and minutes, season counts, the show title), see docs/NOTES.md. -->
+	<!-- Movie: "2019 · 132 min · Drama". -->
+	<include name="Bald_MetaLibraryMovie">
+		<param name="container" />
+		<definition>
+			<label>$INFO[$PARAM[container]ListItem.Year]$INFO[$PARAM[container]ListItem.Duration(mins), · , min]$INFO[$PARAM[container]ListItem.Genre, · ,]</label>
+		</definition>
+	</include>
+	<!-- Episode: "S1 E2 · 2024-03-03 · 52 min". -->
+	<include name="Bald_MetaLibraryEpisode">
+		<param name="container" />
+		<definition>
+			<label>S$INFO[$PARAM[container]ListItem.Season] E$INFO[$PARAM[container]ListItem.Episode] · $INFO[$PARAM[container]ListItem.Premiered]$INFO[$PARAM[container]ListItem.Duration(mins), · , min]</label>
+		</definition>
+	</include>
+
 	<!-- ============ Media flags ============ -->
 	<!-- One outlined media flag chip. Defaults are the caption chip (26 px, Bald_Flag); the info Overview passes
 	     30 px and Bald_FlagL. -->

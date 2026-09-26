@@ -111,8 +111,9 @@ class TVLibraryTests(unittest.TestCase):
     def test_alternate_episode_preview_keeps_metadata_flags_and_art_fallbacks(self):
         caption = self.alternates.find("include[@name='Bald_TVEpisodeSmallCaption']")
         self.assertIsNotNone(caption.find(".//include[@content='Bald_MediaFlags']"))
-        labels = [node.text or '' for node in caption.findall('.//label')]
-        self.assertTrue(any('ListItem.Premiered' in label and 'ListItem.Duration' in label for label in labels))
+        # The episode line (air date and runtime) is the shared library episode meta, read from this caption's list.
+        meta = caption.find(".//include[@content='Bald_MetaLibraryEpisode']")
+        self.assertEqual(meta.findtext("param[@name='container']"), 'Container($PARAM[c]).')
         for container in (541, 542):
             variable = self.alternates.find(f"variable[@name='Bald_EpisodeThumb{container}']")
             values = [node.text or '' for node in variable.findall('value')]
