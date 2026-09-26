@@ -511,6 +511,9 @@
 		<param name="preview">false</param>
 		<param name="x">1420</param><param name="title_y">332</param><param name="body_y">464</param>
 		<param name="width">384</param><param name="clip_width">440</param><param name="title_height">132</param>
+		<!-- The surface setting that shows the rating row (Includes_Bald_Ratings.xml): Home by default; the library
+		     views pass $EXP[Bald_RatingsLibrary] and More like this $EXP[Bald_RatingsInfo]. -->
+		<param name="ratings">$EXP[Bald_RatingsHome]</param>
 		<definition>
 			<control type="group">
 				<visible>$PARAM[ignore_home_row] | $PARAM[preview] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
@@ -613,6 +616,15 @@
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">275</param></include>
 						<include content="Bald_MediaFlags"><param name="container">Container($PARAM[c]).</param></include>
 					</control>
+					<!-- Ratings: every item type; closes up when the item has none to show. -->
+					<include content="Bald_RatingsRow">
+						<param name="container">Container($PARAM[c]).</param>
+						<param name="visible">$PARAM[ratings] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</param>
+						<param name="left">20</param>
+						<param name="top">10</param>
+						<param name="width">$PARAM[width]</param>
+						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">288</param></include>
+					</include>
 					<!-- Accent line -->
 					<control type="label">
 						<top>8</top>
