@@ -1115,55 +1115,38 @@
 		</definition>
 	</include>
 	<include name="BottomBarTwoListInfo">
-		<control type="group">
-			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<control type="grouplist">
-				<orientation>horizontal</orientation>
-				<align>right</align>
-				<bottom>0</bottom>
-				<height>65</height>
-				<itemgap>10</itemgap>
-				<right>24</right>
-				<width>1200</width>
+		<!-- Bald: two item counters on the y 954 hint line, the left list's at the left safe margin and the right
+		     list's flush with the right one (Bald_Hint at 60% ink, "n / total"). The caller passes BottomBar an empty
+		     count so the lines do not overlap. -->
+		<param name="left_container_id" />
+		<param name="right_container_id" />
+		<definition>
+			<control type="group">
+				<depth>DepthBars</depth>
+				<visible>!Skin.HasSetting(touchmode)</visible>
+				<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>
 				<control type="label">
-					<width>auto</width>
-					<height>48</height>
-					<aligny>center</aligny>
-					<align>right</align>
-					<shadowcolor>text_shadow</shadowcolor>
-					<label>$INFO[Container($PARAM[right_container_id]).CurrentItem,, / ]$INFO[Container($PARAM[right_container_id]).NumItems]</label>
-				</control>
-				<control type="image">
-					<width>54</width>
-					<height>44</height>
-					<aspectratio>keep</aspectratio>
-					<texture colordiffuse="button_focus">frame/item-count.png</texture>
-				</control>
-			</control>
-			<control type="grouplist">
-				<orientation>horizontal</orientation>
-				<bottom>0</bottom>
-				<height>65</height>
-				<left>24</left>
-				<width>1200</width>
-				<itemgap>10</itemgap>
-				<control type="image">
-					<width>54</width>
-					<height>44</height>
-					<aspectratio>keep</aspectratio>
-					<texture colordiffuse="button_focus">frame/item-count.png</texture>
+					<left>Bald_SafeLeft</left>
+					<top>Bald_HintTop</top>
+					<width>600</width>
+					<height>24</height>
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[Container($PARAM[left_container_id]).CurrentItem]$INFO[Container($PARAM[left_container_id]).NumItems, / ,]</label>
 				</control>
 				<control type="label">
-					<width>auto</width>
-					<height>48</height>
-					<aligny>center</aligny>
+					<left>1224</left>
+					<top>Bald_HintTop</top>
+					<width>600</width>
+					<height>24</height>
 					<align>right</align>
-					<shadowcolor>text_shadow</shadowcolor>
-					<label>$INFO[Container($PARAM[left_container_id]).CurrentItem,, / ]$INFO[Container($PARAM[left_container_id]).NumItems]</label>
+					<font>Bald_Hint</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$INFO[Container($PARAM[right_container_id]).CurrentItem]$INFO[Container($PARAM[right_container_id]).NumItems, / ,]</label>
 				</control>
 			</control>
-		</control>
+		</definition>
 	</include>
 	<include name="FullScreenDimensions">
 		<left>0</left>

@@ -2,7 +2,7 @@
 <window>
 	<!-- From Kodi 22 Estuary's MyMusicPlaylistEditor.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Its load, save
 	     and clear actions are Bald pills and its scrollbars Bald tracks (docs/NOTES.md, "Media windows restyle"); the
-	     file panels, bars and background are Estuary's shared includes and stay theirs. Kodi binds 6 (load), 7 (save),
+	     file panels and background are Estuary's shared includes and stay theirs; the footer is two Bald item counters. Kodi binds 6 (load), 7 (save),
 	     8 (clear), 50 (files) and 100 (playlist). -->
 	<defaultcontrol always="true">6</defaultcontrol>
 	<views>50</views>
@@ -85,12 +85,12 @@
 		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[10503]" />
 		</include>
-		<include>BottomBar</include>
+		<include content="BottomBar">
+			<param name="count" />
+		</include>
 		<include content="BottomBarTwoListInfo">
 			<param name="left_container_id">50</param>
-			<param name="left_scrollbar_id">60</param>
 			<param name="right_container_id">100</param>
-			<param name="right_scrollbar_id">61</param>
 		</include>
 	</controls>
 </window>
