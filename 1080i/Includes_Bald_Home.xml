@@ -1061,11 +1061,15 @@
 				<focusposition>$PARAM[slot]</focusposition>
 				<movement>$PARAM[slot]</movement>
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
-				<onfocus>SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
-				<onfocus>SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
-				<onfocus>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onfocus>
+				<!-- Not while Home loads back onto a menu entry: Kodi focuses the default control (row 1) before it sets the
+				     controls' initial animation states and before the onload runs (CGUIWindow::OnInitWindow), so this focus
+				     would make row 1's state the frame's starting shape, and the return to a hub of another style would
+				     then resize it. -->
+				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onfocus>
 				<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
-				<onfocus>SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
 				<!-- Row start: a fixedlist first selects item slot + 1 (start) at its focus slot. The row above moves this one back while
 				     it is hidden (generated onfocus, see shortcuts/generator/screen.xml) and Timers.xml covers the rows shown
 				     before they are focused; if the row is still pristine when it gains focus, move it here. Loaded rows are

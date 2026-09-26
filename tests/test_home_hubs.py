@@ -436,3 +436,17 @@ class ReturnKeepsStateTests(unittest.TestCase):
         for entry in ReturnToMenuTests.ENTRIES:
             with self.subTest(entry=entry):
                 self.assertIn(f"[String.IsEqual(Window(home).Property(Bald.ReturnMenu),{entry}) + Control.IsVisible({entry})]", expr)
+
+
+class ReturnDefaultFocusTests(unittest.TestCase):
+    """Kodi focuses Home's default row before the controls' initial states and the onload (OnInitWindow), so the row's
+    onfocus must not set the frame's state while Home loads back onto a menu entry."""
+
+    def test_row_onfocus_leaves_the_state_alone_on_return(self):
+        home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        row = next(c for c in home.iter("control") if c.get("type") == "fixedlist" and c.get("id") == "$PARAM[id]")
+        guarded = {n.text: n.get("condition") for n in row.findall("onfocus")}
+        for action in ("SetProperty(Bald.Row,$PARAM[id],home)", "SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)",
+                       "SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)", "SetProperty(Bald.RowStyle,$PARAM[style],home)"):
+            with self.subTest(action=action):
+                self.assertEqual(guarded[action], "!$EXP[Bald_ReturningToMenu]")
