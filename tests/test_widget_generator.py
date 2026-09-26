@@ -6,7 +6,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from kodi_includes import _expand_in_place, condition, include_definitions
+from conditions import equivalent, find_value, implies, parse
+from kodi_includes import _expand_in_place, include_definitions
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -151,13 +152,15 @@ class WidgetGeneratorTests(unittest.TestCase):
                 self.assertEqual([(int(param(node, "c")), param(node, "p")) for node in instances],
                                  [(row, parity) for row in ids for parity in ("Odd", "Even")])
                 for node in instances:
-                    self.assertEqual(
+                    self.assertTrue(equivalent(
                         param(node, "preview"),
                         f"$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{param(node, 'c')})",
-                    )
+                    ), param(node, "c"))
             for name in ("ItemOdd", "HasLogo", "PreviewItemOdd", "PreviewHasLogo"):
                 self.assertEqual(sorted(set(expression_rows(root, f"Bald_{name}_{screen}"))), ids)
-                self.assertTrue(root.findtext(f"expression[@name='Bald_{name}_{screen}']").startswith("[false]"))
+                # An "or" seeded with false, so the expression stays valid with no rows.
+                kind, terms = parse(root.findtext(f"expression[@name='Bald_{name}_{screen}']"))
+                self.assertEqual((kind, terms[0]), ("or", False))
 
     def test_art_variables_prefer_the_previewed_screen_then_the_current_row(self):
         root = fallback()
@@ -165,10 +168,12 @@ class WidgetGeneratorTests(unittest.TestCase):
         for name, per_row in (("Bald_Fanart", 3), ("Bald_Logo", 2)):
             values = root.findall(f"variable[@name='{name}']/value")
             conditions = [value.get("condition") for value in values]
-            catch_all = conditions.index("$EXP[Bald_WidgetPreview]")
+            catch_all = next(i for i, c in enumerate(conditions) if c and equivalent(c, "$EXP[Bald_WidgetPreview]"))
             self.assertEqual(catch_all, per_row * len(configured))
-            self.assertTrue(all("$EXP[Bald_Preview" in c for c in conditions[:catch_all]))
-            self.assertTrue(all(c.startswith("String.IsEqual(Window(home).Property(Bald.Row),") for c in conditions[catch_all + 1:-1]))
+            # First the previewed screen's rows, then the widget preview's catch-all, then the current row's.
+            self.assertTrue(all(implies(c, "$EXP[Bald_WidgetPreview]") for c in conditions[:catch_all]))
+            self.assertTrue(all(any(implies(c, f"String.IsEqual(Window(home).Property(Bald.Row),{row})") for row in configured)
+                                for c in conditions[catch_all + 1:-1]))
             self.assertIsNone(conditions[-1])
             rows = [int(row) for row in re.findall(r"Container\((\d+)\)", " ".join(value.text or "" for value in values))]
             self.assertEqual(sorted(set(rows)), configured)
@@ -219,11 +224,10 @@ class WidgetGeneratorTests(unittest.TestCase):
                              ", ".join(item["label"] for item in defaults(screen)))
         self.assertEqual(resolve("$VAR[Bald_RowsNote_home]"), "Recently added movies, Continue watching, Next up")
 
-        note = next(
-            value for value in ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().findall("variable[@name='Bald_MenuPreviewNote']/value")
-            if condition(value.get("condition")) == "String.IsEqual(Window(home).Property(Bald.MenuPreview),home)"
-        )
-        self.assertEqual(note.text, "$VAR[Bald_RowsNote_home]")
+        notes = [(value.get("condition"), value.text) for value in
+                 ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().findall("variable[@name='Bald_MenuPreviewNote']/value")]
+        self.assertEqual(find_value(notes, "String.IsEqual(Window(home).Property(Bald.MenuPreview),home)"),
+                         "$VAR[Bald_RowsNote_home]")
 
     def test_generated_output_is_not_tracked(self):
         patterns = [line.strip() for line in (ROOT / ".gitignore").read_text().splitlines() if line.strip() and not line.startswith("#")]

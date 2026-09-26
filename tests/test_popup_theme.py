@@ -10,7 +10,6 @@ ROOT = Path(__file__).resolve().parents[1] / "1080i"
 
 class PopupThemeTests(unittest.TestCase):
     def test_dialog_buttons_use_bald_pills_without_overlap(self):
-        includes = ET.parse(ROOT / "Includes_Buttons.xml").getroot()
         # A dialog button as dialogs call it (id and label only): a 72 px Bald pill.
         button, = expand_call("DefaultDialogButton", {"id": "10", "label": "$LOCALIZE[186]"})
         self.assertEqual(button.findtext("height"), "72")
