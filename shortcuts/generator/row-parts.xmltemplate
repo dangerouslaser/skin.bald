@@ -3,3 +3,6 @@
 {dots}
     </definition>
 </include>
+<variable name="Bald_RowsNote_{screen}_{row_index}">
+    <value>{item_label_escaped}{note_rest}</value>
+</variable>

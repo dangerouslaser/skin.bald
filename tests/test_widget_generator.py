@@ -193,6 +193,29 @@ class WidgetGeneratorTests(unittest.TestCase):
         self.assertEqual(group.findtext("width"), "$PARAM[dots_width]")
         self.assertEqual(group.find("include").get("content"), "$PARAM[dots]")
 
+    def test_menu_note_lists_the_configured_row_labels(self):
+        root = fallback()
+
+        def resolve(text):
+            match = re.search(r"\$VAR\[([^\]]+)\]", text)
+            if not match:
+                return text
+            values = root.findall(f"variable[@name='{match.group(1)}']/value")
+            return resolve(text.replace(match.group(0), values[0].text or ""))
+
+        for screen, _, _ in SCREENS:
+            head = root.findall(f"variable[@name='Bald_RowsNote_{screen}']/value")
+            self.assertIsNone(head[-1].text)
+            self.assertIsNone(head[-1].get("condition"))
+            self.assertEqual(resolve(f"$VAR[Bald_RowsNote_{screen}]"),
+                             ", ".join(item["label"] for item in defaults(screen)))
+        self.assertEqual(resolve("$VAR[Bald_RowsNote_home]"), "Recently added movies, Continue watching, Next up")
+
+        note = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
+            "variable[@name='Bald_MenuPreviewNote']/value[@condition='String.IsEqual(Window(home).Property(Bald.MenuPreview),home)']"
+        )
+        self.assertEqual(note.text, "$VAR[Bald_RowsNote_home]")
+
     def test_generated_output_is_not_tracked(self):
         patterns = [line.strip() for line in (ROOT / ".gitignore").read_text().splitlines() if line.strip() and not line.startswith("#")]
         self.assertTrue(any(fnmatch.fnmatch("1080i/script-skinvariables-generator-includes.xml", pattern) for pattern in patterns))
