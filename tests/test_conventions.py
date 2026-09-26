@@ -79,5 +79,25 @@ class ConstantTests(unittest.TestCase):
                         self.assertIn(text, values)
                     self.assertNotIn((node.tag, text), LAYOUT)
 
+
+class IdMapTests(unittest.TestCase):
+    def test_every_native_control_id_is_in_the_id_map(self):
+        # 1080i/IDs lists IDs as numbers and ranges (5303-5999); a number anywhere in it counts as listed.
+        text = (SKIN / "IDs").read_text()
+        ranges = [(int(low), int(high)) for low, high in re.findall(r"\b(\d+)-(\d+)\b", text)]
+        listed = {int(number) for number in re.findall(r"\b\d+\b", text)}
+
+        def covered(number):
+            return number in listed or any(low <= number <= high for low, high in ranges)
+
+        for path in NATIVE:
+            root = ET.parse(path).getroot()
+            ids = {node.get("id") for node in root.iter("control") if node.get("id")}
+            ids |= {node.get("value", node.text) for node in root.iter("param")
+                    if node.get("name") in ("id", "control_id")}
+            for value in sorted(i for i in ids if i and i.isdigit()):
+                with self.subTest(file=path.name, id=value):
+                    self.assertTrue(covered(int(value)))
+
 if __name__ == "__main__":
     unittest.main()
