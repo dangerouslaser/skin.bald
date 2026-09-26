@@ -960,65 +960,48 @@ msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/Includes_Bald_Ratings.xml
-#. Rating source mark and setting (proper name)
+#. Rating source: setting row and Default rating source value (proper name)
 msgctxt "#31303"
 msgid "IMDb"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/Includes_Bald_Ratings.xml
-#. Rating source mark and setting (proper name)
+#. Rating source: setting row and Default rating source value (proper name)
 msgctxt "#31304"
 msgid "TMDb"
 msgstr ""
 
-#: /1080i/Includes_Bald_Ratings.xml
-#. Rating source mark: Rotten Tomatoes critics score (short)
-msgctxt "#31305"
-msgid "RT"
-msgstr ""
-
-#: /1080i/Includes_Bald_Ratings.xml
-#. Rating source mark: Rotten Tomatoes audience score (short)
-msgctxt "#31306"
-msgid "RT audience"
-msgstr ""
-
 #: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/Includes_Bald_Ratings.xml
-#. Rating source mark and setting (proper name)
+#. Rating source: setting row and Default rating source value (proper name)
 msgctxt "#31307"
 msgid "Metacritic"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/Includes_Bald_Ratings.xml
-#. Rating source mark and setting (proper name)
+#. Rating source: setting row and Default rating source value (proper name)
 msgctxt "#31308"
 msgid "Trakt"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
-#: /1080i/Includes_Bald_Ratings.xml
-#. Rating source mark and setting (proper name)
+#. Rating source: setting row (proper name)
 msgctxt "#31309"
 msgid "TVDb"
 msgstr ""
 
-#: /1080i/Includes_Bald_Ratings.xml
-#. Rating source mark: the user's own rating (short)
-msgctxt "#31310"
-msgid "You"
-msgstr ""
-
 #: /1080i/Custom_1118_BaldAppearance.xml
-#. Appearance > Ratings: source setting
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: source setting, and a Default rating source value
 msgctxt "#31311"
 msgid "Rotten Tomatoes critics"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
-#. Appearance > Ratings: source setting
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: source setting, and a Default rating source value
 msgctxt "#31312"
 msgid "Rotten Tomatoes audience"
 msgstr ""
@@ -1057,6 +1040,30 @@ msgstr ""
 #. Appearance > Ratings: show the number of votes after each rating
 msgctxt "#31318"
 msgid "Vote counts"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: which service the library's unnamed default rating came from (sets its icon and format)
+msgctxt "#31319"
+msgid "Default rating source"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: no particular service (a star icon)
+msgctxt "#31320"
+msgid "Generic"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: the Jellyfin media server (brand name)
+msgctxt "#31321"
+msgid "Jellyfin"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: Kodi itself (brand name)
+msgctxt "#31322"
+msgid "Kodi"
 msgstr ""
 
 #: /xml/Includes_SettingsDialog.xml
