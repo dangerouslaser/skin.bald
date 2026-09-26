@@ -1174,6 +1174,7 @@ msgid "Manage installed add-ons and their settings."
 msgstr ""
 
 #: /1080i/Includes_Bald_Configure.xml
+#: /1080i/SettingsCategory.xml
 msgctxt "#31738"
 msgid "Back for settings"
 msgstr ""
@@ -1224,6 +1225,7 @@ msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 #: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/SettingsCategory.xml
 #: /1080i/View_510_Bald_Posters.xml
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
@@ -1949,4 +1951,9 @@ msgstr ""
 #: /1080i/Includes_Bald_ContextMenu.xml
 msgctxt "#31930"
 msgid "Select an action for this item."
+msgstr ""
+
+#: /1080i/SettingsCategory.xml
+msgctxt "#31931"
+msgid "Settings level"
 msgstr ""
