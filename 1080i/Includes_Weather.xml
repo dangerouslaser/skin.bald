@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+	<!-- Weather includes for MyWeather.xml, from Kodi 22 Estuary's Includes_Home.xml (GPL-2.0-or-later, see
+	     LICENSE-Estuary.txt). Estuary's Home widget includes that shared the file were removed with Estuary's Home. -->
 	<include name="CategoryLabel">
 		<param name="visible">true</param>
 		<param name="item_treshold">0</param>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include file="Defaults.xml" />
-	<include file="Includes_Home.xml" />
+	<include file="Includes_Weather.xml" />
 	<include file="Includes_Bald_Constants.xml" />
 	<include file="Includes_Bald_Common.xml" />
 	<include file="Includes_Bald_Home.xml" />
