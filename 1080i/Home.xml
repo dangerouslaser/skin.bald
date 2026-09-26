@@ -7,16 +7,28 @@
 	<!-- Build the Home rows (Skin Variables, shortcuts/skinvariables-generator.json). It hashes these arguments, its
 	     config (with the generator's build version) and the current output, and returns at once when none changed;
 	     after writing it reloads the skin. So it builds on first run, after a skin update that changed the generator,
-	     and after the widget editor closes (Custom_1116 stamps Bald.WidgetsStamp). -->
+	     and after the widget editor or Home Screens closes (Custom_1116 and 1117 stamp Bald.WidgetsStamp).
+	     Not before the hubs migration has run (docs/NOTES.md, Home hubs): until Bald.HubsMigrated is set, Home starts
+	     it instead (unless Startup.xml already has, Bald.HubsMigrating), and the script builds when it has written the
+	     hubs list. Startup does not run on a live skin update or ReloadSkin, so Home must be able to start it too. -->
 	<!-- Startup does not run on a skin switch or ReloadSkin, so Home also turns mouse input off. -->
 	<onload condition="System.GetBool(input.enablemouse)">RunScript(skin.bald,mouse)</onload>
-	<onload>RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
+	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">SetProperty(Bald.HubsMigrating,1,home)</onload>
+	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">RunScript(skin.bald,hubs)</onload>
+	<onload condition="!String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
 	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load.
 	     Focus always starts on row 1 (defaultcontrol always). -->
 	<onload>SetProperty(Bald.Row,9101,home)</onload>
 	<onload>SetProperty(Bald.Row.home,9101,home)</onload>
-	<onload>SetProperty(Bald.Row.movies,9201,home)</onload>
-	<onload>SetProperty(Bald.Row.tvshows,9301,home)</onload>
+	<onload>SetProperty(Bald.Row.livetv,9051,home)</onload>
+	<onload>SetProperty(Bald.Row.hub1,9201,home)</onload>
+	<onload>SetProperty(Bald.Row.hub2,9301,home)</onload>
+	<onload>SetProperty(Bald.Row.hub3,9401,home)</onload>
+	<onload>SetProperty(Bald.Row.hub4,9501,home)</onload>
+	<onload>SetProperty(Bald.Row.hub5,9601,home)</onload>
+	<onload>SetProperty(Bald.Row.hub6,9701,home)</onload>
+	<onload>SetProperty(Bald.Row.hub7,9801,home)</onload>
+	<onload>SetProperty(Bald.Row.hub8,9901,home)</onload>
 	<onload>SetProperty(Bald.Screen,home,home)</onload>
 	<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
 	<onload>SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)</onload>
@@ -221,15 +233,16 @@
 				<include content="Bald_HomeMenuButton"><param name="id">9001</param><param name="label">$LOCALIZE[10000]</param><param name="preview">home</param>
 					<include content="Bald_HomeMenuScreen"><param name="screen">home</param></include>
 				</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9002</param><param name="label">$LOCALIZE[342]</param><param name="suffix">  ›</param><param name="preview">movies</param><param name="visible">Skin.HasSetting(Bald.Screen.Movies)</param><param name="right">9197</param>
-					<include content="Bald_HomeMenuScreen"><param name="screen">movies</param></include>
-				</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9003</param><param name="label">$LOCALIZE[20343]</param><param name="suffix">  ›</param><param name="preview">tvshows</param><param name="visible">Skin.HasSetting(Bald.Screen.TVShows)</param><param name="right">9196</param>
-					<include content="Bald_HomeMenuScreen"><param name="screen">tvshows</param></include>
-				</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9004</param><param name="label">$LOCALIZE[31700]</param><param name="preview">livetv</param><param name="visible">!Skin.HasSetting(Bald.Screen.HideLiveTV)</param>
-					<onclick>ActivateWindow(TVGuide)</onclick>
-				</include>
+				<!-- The user's hubs, in their Home Screens order (Movies and TV shows by default); empty slots are hidden. -->
+				<include content="Bald_HomeMenuHub"><param name="n">1</param></include>
+				<include content="Bald_HomeMenuHub"><param name="n">2</param></include>
+				<include content="Bald_HomeMenuHub"><param name="n">3</param></include>
+				<include content="Bald_HomeMenuHub"><param name="n">4</param></include>
+				<include content="Bald_HomeMenuHub"><param name="n">5</param></include>
+				<include content="Bald_HomeMenuHub"><param name="n">6</param></include>
+				<include content="Bald_HomeMenuHub"><param name="n">7</param></include>
+				<include content="Bald_HomeMenuHub"><param name="n">8</param></include>
+				<include>Bald_HomeMenuLiveTV</include>
 				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="label">$LOCALIZE[137]</param><param name="preview">search</param>
 					<onclick>SetProperty(Bald.SearchOrigin,home,home)</onclick>
 					<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
@@ -288,11 +301,8 @@
 				</control>
 			</control>
 
-			<!-- Configured rows: built per install by Skin Variables from the widget editor's lists; until the first
-			     build, Includes_Bald_HomeDefaults.xml supplies the shipped defaults (see Includes.xml). -->
-			<include>Bald_Generated_HomeWidgets</include>
-			<include>Bald_Generated_MoviesWidgets</include>
-			<include>Bald_Generated_TVShowsWidgets</include>
+			<!-- Configured rows of Home, Live TV and every hub (Bald_GeneratedRows). -->
+			<include>Bald_GeneratedRows</include>
 
 			<!-- Menu preview for screens without rows yet -->
 			<control type="group">
@@ -368,14 +378,19 @@
 			<onfocus condition="!$EXP[Bald_HasRows_home]">SetFocus(9001)</onfocus>
 		</control>
 		<!-- Directional navigation accepts a control target more reliably than an ActivateWindow
-		     built-in on Kodi's list edge. These invisible bridges own the secondary library routes. -->
-		<control type="button" id="9197">
+		     built-in on Kodi's list edge. These invisible bridges own the secondary routes: each hub's open target
+		     (9021-9028) and Live TV's guide (9029). -->
+		<include content="Bald_HubBridge"><param name="n">1</param></include>
+		<include content="Bald_HubBridge"><param name="n">2</param></include>
+		<include content="Bald_HubBridge"><param name="n">3</param></include>
+		<include content="Bald_HubBridge"><param name="n">4</param></include>
+		<include content="Bald_HubBridge"><param name="n">5</param></include>
+		<include content="Bald_HubBridge"><param name="n">6</param></include>
+		<include content="Bald_HubBridge"><param name="n">7</param></include>
+		<include content="Bald_HubBridge"><param name="n">8</param></include>
+		<control type="button" id="9029">
 			<width>1</width><height>1</height><texturefocus /><texturenofocus />
-			<onfocus>ActivateWindow(Videos,videodb://movies/titles/,return)</onfocus>
-		</control>
-		<control type="button" id="9196">
-			<width>1</width><height>1</height><texturefocus /><texturenofocus />
-			<onfocus>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onfocus>
+			<onfocus>ActivateWindow(TVGuide)</onfocus>
 		</control>
 		<!-- Startup splash: the top layer while Bald.Preload is set; fades out 600 as it lifts. -->
 		<include>Bald_Splash</include>
