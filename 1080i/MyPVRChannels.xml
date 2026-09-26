@@ -1,213 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald Live TV Channels (TVChannels, RadioChannels). Started from Kodi 22 Estuary's MyPVRChannels.xml
+     (Team Kodi, GPL-2.0-or-later); Kodi's ids are kept: view 50, show hidden 6, filter 31, channel groups 28,
+     sort 3 and 4, header labels 29 and 30, menucontrol 9000. -->
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
-	<backgroundcolor>background</backgroundcolor>
-	<views>50,51</views>
+	<backgroundcolor>bald_field</backgroundcolor>
+	<views>50</views>
 	<menucontrol>9000</menucontrol>
+	<include>Bald_PVRAnimWindow</include>
 	<controls>
-		<include>DefaultBackground</include>
+		<include>Bald_PVRBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
-			<control type="group">
-				<include>OpenClose_Left</include>
-				<control type="fixedlist" id="50">
-					<left>0</left>
-					<top>list_top_offset</top>
-					<right>918</right>
-					<bottom>list_bottom_offset</bottom>
-					<onleft>9000</onleft>
-					<onright>73</onright>
-					<onup>50</onup>
-					<ondown>50</ondown>
-					<movement>4</movement>
-					<focusposition>4</focusposition>
-					<pagecontrol>73</pagecontrol>
-					<scrolltime tween="cubic" easing="out">500</scrolltime>
-					<viewtype label="535">list</viewtype>
-					<include content="PVRListItemLayouts">
-						<param name="list_id" value="50" />
-						<param name="label1" value="$INFO[ListItem.Label]" />
-						<param name="has_status_icon" value="true" />
-						<param name="info_update" value="5000" />
-					</include>
-				</control>
-				<control type="fixedlist" id="51">
-					<left>0</left>
-					<top>list_top_offset</top>
-					<right>920</right>
-					<bottom>list_bottom_offset</bottom>
-					<movement>4</movement>
-					<focusposition>4</focusposition>
-					<scrolltime tween="cubic" easing="out">500</scrolltime>
-					<onleft>9000</onleft>
-					<onright>73</onright>
-					<onup>51</onup>
-					<ondown>51</ondown>
-					<viewtype label="535">list</viewtype>
-					<pagecontrol>73</pagecontrol>
-					<itemlayout height="70" infoupdate="5000">
-						<control type="progress">
-							<right>10</right>
-							<top>30</top>
-							<width>50</width>
-							<height>12</height>
-							<colordiffuse>88FFFFFF</colordiffuse>
-							<visible>ListItem.HasEpg + !ListItem.IsRecording</visible>
-							<info>ListItem.Progress</info>
-						</control>
-						<control type="image">
-							<right>15</right>
-							<top>9</top>
-							<width>40</width>
-							<height>40</height>
-							<texture>$VAR[PVRStatusImageVar]</texture>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<top>0</top>
-							<bottom>0</bottom>
-							<right>90</right>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label">
-							<left>320</left>
-							<top>0</top>
-							<bottom>0</bottom>
-							<right>90</right>
-							<aligny>center</aligny>
-							<align>right</align>
-							<label>$INFO[ListItem.Title]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-							<textcolor>grey</textcolor>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>0</top>
-							<bottom>0</bottom>
-							<width>82</width>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font32_title</font>
-							<label>$INFO[ListItem.ChannelNumberLabel]</label>
-							<textcolor>grey</textcolor>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</itemlayout>
-					<focusedlayout height="70" infoupdate="5000">
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<right>0</right>
-							<height>70</height>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
-							<visible>Control.HasFocus(51)</visible>
-						</control>
-						<control type="progress">
-							<right>10</right>
-							<top>30</top>
-							<width>50</width>
-							<height>12</height>
-							<colordiffuse>88FFFFFF</colordiffuse>
-							<midtexture border="3">progress/texturebg_white.png</midtexture>
-							<visible>ListItem.HasEpg + !ListItem.IsRecording</visible>
-							<info>ListItem.Progress</info>
-						</control>
-						<control type="image">
-							<right>15</right>
-							<top>9</top>
-							<width>40</width>
-							<height>40</height>
-							<texture>$VAR[PVRStatusImageVar]</texture>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<top>0</top>
-							<bottom>0</bottom>
-							<right>90</right>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-						<control type="label">
-							<left>320</left>
-							<top>0</top>
-							<bottom>0</bottom>
-							<right>90</right>
-							<aligny>center</aligny>
-							<align>right</align>
-							<label>$INFO[ListItem.Title]</label>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>0</top>
-							<bottom>0</bottom>
-							<width>82</width>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font32_title</font>
-							<label>$INFO[ListItem.ChannelNumberLabel]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</focusedlayout>
-				</control>
-			</control>
-			<control type="group">
-				<depth>DepthContentPanel</depth>
-				<include>OpenClose_Right</include>
-				<width>870</width>
-				<right>0</right>
-				<include content="ContentPanel">
-					<param name="left" value="-72" />
-					<param name="width" value="970" />
-					<param name="top" value="-20" />
-					<param name="flipx" value="true" />
-				</include>
-				<control type="scrollbar" id="73">
-					<left>-50</left>
-					<top>list_top_offset</top>
-					<width>12</width>
-					<bottom>list_bottom_offset</bottom>
-					<onleft>50</onleft>
-					<onright>50</onright>
-					<orientation>vertical</orientation>
-					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
-				</control>
-				<include>PVRInfoPanel</include>
-			</control>
-			<include content="TopBar">
-				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRChannelsVar]" />
+			<include>Bald_PVRInfoDim</include>
+			<include content="Bald_PVRWindowChrome">
+				<param name="title">$LOCALIZE[19019]</param>
+				<param name="section">$VAR[Bald_PVRArea]$INFO[Control.GetLabel(29), · ]$INFO[Control.GetLabel(30), · ]</param>
+				<param name="next">true</param>
+				<param name="hint">$LOCALIZE[31662]</param>
 			</include>
-			<include content="BottomBar">
-				<param name="info_visible" value="true" />
+			<include content="Bald_PVRList">
+				<itemlayout width="1140" height="84" infoupdate="5000"><include content="Bald_PVRChannelRow"><param name="list_id">50</param></include></itemlayout>
+				<focusedlayout width="1140" height="84" infoupdate="5000"><include content="Bald_PVRChannelRow"><param name="list_id">50</param><param name="focused">true</param><param name="c1">bald_ink</param><param name="c2">bald_ink70</param></include></focusedlayout>
 			</include>
-			<control type="label">
-				<right>20</right>
-				<include>OpenClose_Right</include>
-				<bottom>10</bottom>
-				<width>850</width>
-				<height>60</height>
-				<label>$VAR[PVRNextProgrammeLabel]</label>
-				<shadowcolor>black</shadowcolor>
-				<align>right</align>
-				<aligny>center</aligny>
-				<wrapmultiline>true</wrapmultiline>
-				<font>font27</font>
-			</control>
-			<include>PVRChannelNumberInput</include>
-			<include>MediaMenuMouseOverlay</include>
-			<control type="group">
-				<include>MediaMenuCommon</include>
-				<include>PVRSideBar</include>
-			</control>
+			<include content="Bald_PVROptions">
+				<include content="Bald_PVROption"><param name="id">9010</param><param name="label">$LOCALIZE[19141]</param><param name="label2">$INFO[Control.GetLabel(29)]</param><param name="onclick">SendClick(28)</param></include>
+				<include content="Bald_PVROptionToggle"><param name="id">6</param><param name="label">$LOCALIZE[19051]</param></include>
+				<control type="radiobutton" id="31">
+					<include content="Bald_ConfigureButton"><param name="width">420</param></include>
+					<label>$LOCALIZE[587]</label>
+					<selected>Container.Filtered</selected>
+					<onclick>right</onclick>
+				</control>
+				<include>Bald_PVRSortOptions</include>
+				<include>Bald_PVRAreaOptions</include>
+			</include>
+			<include>Bald_PVRChannelNumberInput</include>
 		</control>
-		<control type="label" id="29">
-			<font></font>
-			<include>HiddenObject</include>
-		</control>
-		<control type="label" id="30">
-			<font></font>
-			<include>HiddenObject</include>
-		</control>
+		<include>Bald_PVRNativeLabels</include>
 	</controls>
 </window>
