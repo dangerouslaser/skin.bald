@@ -2,6 +2,57 @@
 
 Things from docs/SPEC.md that did not map directly onto Kodi 22, with what was tried and what was done instead.
 
+## Shared foundations (2026-09-26, not yet run in Kodi)
+
+Static checks only (`tools/kodi_dev.py validate`, the unit tests including `tests/test_foundations.py`); nothing was reloaded.
+
+- **What changed.**
+  - `Defaults.xml` now uses Bald fonts, tokens and textures for every control type (see SPEC 5.15 for the look). Before changing it, every Bald-native window was resolved and checked for controls that take a value from the defaults. They set their own font, text colour and textures, with these exceptions, all kept:
+    - hidden or label-less buttons (Home 9196-9199, DialogVideoInfo 8/9/11, the context menu's click-outside button, the popup overlay 22002);
+    - DialogKeyboard's label 314 (white to `ink` is the same look) and its keys' text offset, now pinned to 7 in `Bald_KeyboardButton` because the button default moved to 27;
+    - SettingsCategory's spinner direction (`reverse` stays `yes`);
+    - the TV guide's scrollbar 60, which takes its bar from the default: grey `AAAAAA` and Estuary blue on focus before, 34% and full `ink` now.
+  - No default `focusedcolor` on labels, fadelabels, textboxes, buttons or togglebuttons (`CGUILabel::GetColor` falls back to `textcolor`, and list labels in a focused layout use `focusedcolor`). About 200 Estuary buttons bring their own focus texture without a focused colour.
+  - `Includes_DialogSelect.xml` is restyled. The shared pieces are in the new `Includes_Bald_Foundations.xml`: divider, simple list, scrollbar, count, action column, focus row, detailed row, stream list, save tile, game sheet and video tile. Dialog sizes, list geometry, ids and routes are Estuary's. Ids are checked against xbmc master: `GUIDialogSelect.cpp` (1, 2, 3, 5, 6, 7, 8) and `games/dialogs/DialogGameDefines.h` (10810-10812, 10820-10828). Estuary never shipped 2, 10810 or 10827, which Kodi only writes labels to; they are still absent.
+  - `Includes_Buttons.xml`: every Estuary include is on Bald tokens and fonts with its geometry kept. Affected: OSD, icon and menu toggle buttons, the info dialog button trio, metadata toggles, setting buttons and labels, the smart playlist and PVR manager items, and the playlist button. DialogNumeric's `KeyboardButton` now is `Bald_KeyboardButton`.
+  - `Variables.xml`: label markup `[COLOR button_focus]` is now `bald_accent`, `grey` is `bald_ink60` and `white` is `bald_ink`. Label text and conditions are unchanged.
+  - `colors/`: Estuary's 14 themes are removed, since nothing referenced them. `defaults.xml` keeps every Estuary colour name the remaining XML uses; a test checks this.
+- **Deliberately left alone.**
+  - Estuary colour names in `defaults.xml` keep their Estuary values. Aliasing `button_focus` to a Bald value would put white text on light fills in windows other streams have not restyled.
+  - `Animation_DialogPopupOpenClose` (`Includes_Animations.xml`) and `DialogBackgroundCommons` (`Includes.xml`) belong to other streams.
+  - PVR timer icons in select rows stay untinted, as in `DefaultSimpleListLayout`.
+  - `GameDiscEjectedTransparencyVar` is an alpha, not a colour.
+- **Unverified assumptions.**
+  - `flipx` on spin textures and `border="8,0,8,0"` slider tracks work in `<default>`. The settings templates use both in includes.
+  - Nested children in `Bald_GameVideoTile` (the `<gamewindow>`) expand at `<nested />` inside list layouts.
+
+### To check in Kodi (shared foundations)
+
+1. Reload; `kodi.log` has no XML, include, font or texture errors. Textures to watch: `bald/pill.png`, `bald/pill_outline.png`, `bald/chevron.png`, `bald/slider_bar.png`, `bald/slider_nib.png`, `bald/bar.png`, `bald/check.png`, `bald/focus_ring.png`.
+2. Settings, Interface, Skin, "Colours": only "Default" is offered, and choosing it changes nothing.
+3. Bald windows look unchanged:
+   - Home menu and rows;
+   - movie and TV info, including the actions, the More like this status button and the flags chips;
+   - Bald Settings and Appearance;
+   - Settings pages, especially the spinner direction: Left and Right still step the value the way the chevrons point;
+   - the context menu;
+   - the keyboard: key glyphs are centred and not cut off; Shift, Caps and Symbols states are unchanged;
+   - the TV guide: its scrollbar bar is now grey-ink, and the accent nib is unchanged.
+4. Select dialog, simple list (for example Home, Power, or any "Choose" setting): unchanged rows. A hairline sits between the list and the buttons. The 4 px page indicator is on long lists. The count reads "N items - page/pages" in hint type bottom right.
+5. Select dialog, detailed list (for example Add-on browser, Install from repository, pick a repository; or PVR, Timers, a timer type select): 110 px thumbs, title in Section type, two-line description. The focus row is 10% ink and halves when focus moves to the buttons.
+6. Stream pickers during playback (OSD, Audio, Subtitles, Video streams if the file has several):
+   - the stream in use shows an accent check;
+   - the default stream shows a dim star;
+   - names and details read at 70% and 45% ink, full and 60% ink when focused;
+   - the extra buttons 5 and 8 appear with Kodi's labels where used ("Browse for subtitle...", "Disable"), and Cancel (7) closes.
+7. Game dialogs (with a game running): In-game saves and the video filter, stretch and rotation pickers are opaque field sheets from the bottom with a hairline. Live previews render in the tiles, the focused tile has the ink ring, and clicking above the sheet closes it. In Saves (Games, a game, Saves): the tiles, the "New save" and Cancel pills, the emulator name, version and icon, the caption, and the count.
+8. Estuary windows that use the shared buttons:
+   - OSD transport buttons are ink discs on focus with field-coloured icons, 70% ink otherwise, and still pop on focus;
+   - add-on and music info buttons are quiet tiles with ink icons;
+   - DialogNumeric keys match the keyboard's;
+   - smart playlist editor and PVR channel manager fields are pills.
+9. Any window still using control defaults, for example DialogPVRChannelManager's plain buttons and DialogPlayerProcessInfo: a quiet pill on focus and an outline otherwise, with readable ink text; radio buttons show an accent dot when on.
+
 ## Kodi's settings windows in the Bald scaffold (2026-09-26, not yet run in Kodi)
 
 Static checks only (`tools/kodi_dev.py validate`, the unit tests); nothing here has been reloaded or driven in Kodi.

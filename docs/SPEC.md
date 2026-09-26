@@ -341,6 +341,17 @@ The first redesigned library view replaces Estuary for movie browsing only; othe
 - Dialog action buttons are 72 px high with an 8 px gap, retaining Estuary's 80 px stacking rhythm without intersecting outlines. Focus fills the pill with `ink`; unfocused actions use the 45% `ink` outline.
 - Standard popup lists use 70% `ink` labels and a 10% `ink` focus row. The native backdrop dims behind the panel and uses the standard dialog fade rather than introducing a separate motion language.
 
+### 5.15 Shared foundations (2026-09-26, for review)
+
+Decisions the spec does not cover, made while moving Kodi's control defaults, the select dialog layouts and the shared Estuary buttons onto Bald tokens. Nothing here is seen in Kodi yet.
+
+- **Control defaults.** A control that sets nothing reads as Bald: labels and fadelabels in `Bald_InfoPlot` at full `ink`, textboxes in `Bald_InfoPlot` at 70% `ink`, disabled text 28%, selected and invalid text in `accent`.
+- **Default button focus is a quiet pill, not the action pill.** Kodi draws focused text in the text colour when a control has no focused colour, and many buttons bring their own focus texture and rely on that. A default focused colour of `field` (needed on an `ink`-filled pill) would put dark text on those buttons, so the default button is a pill filled with 28% `ink` when focused and a 45% `ink` outline otherwise, with full `ink` `Bald_Section` text. Real actions keep using `DefaultDialogButton` (the `ink`-filled pill).
+- **Default setting rows** (radio button, spinner, slider, edit, colour button) use the TV guide tool row's surface: 10% `ink` on focus, 60% `ink` text turning full `ink`, no dot (the dot texture only stays round at the scaffold's 56 px row height). Their state marks are the settings scaffold's: `accent` and dim dots for radios, chevrons for spinners, the 4 px track and 16 px nib for sliders, a 20 px dot for colours. Progress bars are a full `ink` bar on a 10% track; scrollbars are 10% / 34% / full `ink`.
+- **Select dialogs.** The stream pickers (video, audio, subtitles) mark the stream in use with the `accent` check the profile list uses, and the default stream with Estuary's star tinted with the row's secondary ink. The list and the action column are separated by a 10% `ink` hairline instead of Estuary's inset panel; the page indicator is 4 px. The item count is `Bald_Hint` at 60% `ink`.
+- **Game pickers.** The filter, stretch, rotation and in-game save pickers are bottom sheets of opaque `field` with a 10% `ink` hairline on top (fade 300 FADE), tiles on a `placeholder` well, and the Home tile focus ring on the focused preview. Game saves tiles use the 10% `ink` focus surface.
+- **Colour themes.** Kodi's "Skin colours" setting now offers only Bald's palette (`colors/defaults.xml`); Estuary's 14 themes are gone.
+
 ---
 
 ## 6. Default rows (alpha uses a fixed configuration)
