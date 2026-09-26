@@ -3,7 +3,7 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
-from kodi_includes import CONSTANT_TAGS, EXP, NATIVE, SKIN, constants, expressions
+from kodi_includes import CONSTANT_TAGS, EXP, GENERATED, NATIVE, SKIN, constants, expressions
 
 
 def wraps_whole(body):
@@ -81,13 +81,18 @@ class IdMapTests(unittest.TestCase):
         def covered(number):
             return number in listed or any(low <= number <= high for low, high in ranges)
 
-        for path in NATIVE:
-            root = ET.parse(path).getroot()
+        # Bald_* includes that live in Estuary's include files (the TV guide's grid and tools drawer) are Bald's
+        # own too; the generated Skin Variables output is per install and left out.
+        sources = [(path.name, ET.parse(path).getroot()) for path in NATIVE]
+        for path in sorted(set(SKIN.glob("Includes*.xml")) - set(NATIVE) - {SKIN / GENERATED}):
+            sources += [(f"{path.name}:{node.get('name')}", node) for node in ET.parse(path).getroot().findall("include")
+                        if (node.get("name") or "").startswith("Bald_")]
+        for name, root in sources:
             ids = {node.get("id") for node in root.iter("control") if node.get("id")}
             ids |= {node.get("value", node.text) for node in root.iter("param")
                     if node.get("name") in ("id", "control_id")}
             for value in sorted(i for i in ids if i and i.isdigit()):
-                with self.subTest(file=path.name, id=value):
+                with self.subTest(file=name, id=value):
                     self.assertTrue(covered(int(value)))
 
 if __name__ == "__main__":
