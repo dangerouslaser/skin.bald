@@ -369,6 +369,14 @@ Not in the prototype; proposed for review in Kodi. Shared pieces live in `Includ
 - **Buffering** (`VideoFullScreen.xml`): a 110 px `field` disc at 60% with Estuary's cache ring in `accent` and the percentage. The view-mode lines sit at the top left over the top scrim.
 - **Icons.** Bald has no icon set: the OSD uses Estuary's `osd/fullscreen/buttons` icons, tinted with Bald tokens.
 
+### 5.17 Global overlays (added 2026-09-26, for review)
+
+- Busy, toasts, background progress, volume and the text viewer are quiet chrome over any window: an opaque `field` surface with a 10% `ink` wash (a pill capsule for the busy and volume indicators, a plain panel for toasts, the volume slider and the text viewer), Instrument Sans at caption sizes, `ink` text, and the `accent` only for progress fills and the focused slider nib.
+- Placement: an overlay band at y 48 (half the safe margin) holds the long-lived indicators so they never cover titles or the Home clock. Background progress ends on the right safe edge: one line of dots, title at 80% and step at 45% joined by the 20 px dot separator, with a 360 px, 4 px accent bar beneath. The volume capsule (420 x 54) is centred in the band. Toasts are a 560 x 104 card at the safe top (y 96) on the right safe edge. The busy capsule (108 x 54) is centred over a 60% `field` scrim, with no scrim over fullscreen video or games. The volume slider is a 640 x 96 panel centred above the hint baseline (y 834). The text viewer is a 1440 x 770 centred popup with the page count ("2 / 5") at the right of its header.
+- Background progress shows one status line: the step is dropped when empty or already part of the title, and the percentage is shown by the bar alone. It fades out over fullscreen video and games.
+- Busy is three 12 px dots that brighten in turn (28% to full `ink`, 360 each way, 180 apart, 1200 ms cycle) instead of a spinner, since Bald's motion is fade, slide and zoom only.
+- Motion: overlays fade in over 240 and out over 160 (FADE) with a 14 px slide (24 px from the right for toasts) over 360 in and 200 out (MOVE). The text viewer keeps the shared popup open and close.
+
 ---
 
 ## 6. Default rows (alpha uses a fixed configuration)
