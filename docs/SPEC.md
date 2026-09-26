@@ -236,7 +236,7 @@ Art dims to 70% field at rest on this screen because content runs the full heigh
 
 Three columns, fully D-pad driven: Screens (plus Add screen, Appearance), the screen's settings and rows, and the row's settings (Content, Style, Items, move, remove). Select cycles values. Build on script.skinvariables, as Arctic Fuse does, so menus and widgets are stored as JSON and rendered into includes.
 
-Appearance settings: Clearlogo on artwork (default on), blurred fanart backgrounds (default on), media flags (default on), Ambient when idle (default on), and an optional auto-hide for the Home navigation hint. Bald Settings follows Arctic Fuse 3's launcher pattern: its Customization entry opens the screen-first widget editor, while Appearance opens a focused Bald-owned settings window instead of the inherited Estuary skin settings.
+Appearance settings: Clearlogo on artwork (default on), blurred fanart backgrounds (default on), media flags (default on), Ambient when idle (default on), and an optional auto-hide for the Home navigation hint. The Estuary settings still worth keeping live in the same categories (section 5.21): fanart behind other library pages (default on), posters for music videos, genre background, weather background and weather icon packs (Artwork); titles in list views, profile name and temperature in page headers (Information); scroll long plots (Behavior). Bald Settings follows Arctic Fuse 3's launcher pattern: its Customization entry opens the screen-first widget editor, while Appearance opens a focused Bald-owned settings window instead of the inherited Estuary skin settings.
 
 ---
 
@@ -460,6 +460,7 @@ Small decisions made while fixing the merged restyles' review findings. Please r
 - **Popup list focus row.** Every popup list's 10% `ink` focus row halves while its list is not focused; the PVR managers' row now does the same (it dimmed to 40%).
 - **OSD help with a state.** Where Estuary's OSD help named a control and its state in one label ("Random · On", "Rewind · Fast forward"), the state is a separate hint part after the hint line's own 20 px dot. The PlayerControls caption under its row uses the same dot. The hints still name the focused control rather than "<key> for <action>", as Estuary's help did.
 - **Rating circle setting dropped.** Appearance no longer offers Estuary's "Choose rating to display for media items": nothing drew the circle after the library views and music information became Bald. If a rating mark is wanted, it belongs in the Bald preview caption as a new design.
+- **"Estuary windows" folded into Bald.** Appearance has no Estuary category any more. Slide animations, touch mode (Bald is remote-only), the background pattern and the skin fanart pack are retired. Estuary's media flags switch is merged into Bald's. The rest moved into Artwork, Information and Behavior with Bald names and labels, and old values carry over once at startup (docs/NOTES.md, "Estuary windows settings folded into Bald").
 
 ---
 
