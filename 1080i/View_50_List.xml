@@ -1,136 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: the compact list (SPEC 5.8 geometry: 48 px rows at the safe margin, accent dot and full ink on the focused
+     row) with the shared right-hand preview (Bald_BrowsePreview). View ids, viewtype labels, visibility, page control
+     50600 and the redirects of TV levels to the Bald TV views are Estuary's. -->
 <includes>
 	<include name="View_50_List">
 		<control type="group">
-			<include>OpenClose_Right</include>
-			<left>596</left>
 			<visible>Control.IsVisible(50)</visible>
-			<include>Visible_Right</include>
+			<include>Bald_BrowseViewIn</include>
 			<include content="ListContainer">
 				<param name="list_id" value="50" />
-				<param name="right" value="594" />
 				<param name="viewtype_label" value="$LOCALIZE[535]" />
 			</include>
-			<control type="group">
-				<depth>DepthContentPanel</depth>
-				<control type="group">
-					<right>-20</right>
-					<width>634</width>
-					<include content="ContentPanel">
-						<param name="left" value="0" />
-						<param name="top" value="-20" />
-						<param name="width" value="656" />
-						<param name="flipx" value="true" />
-					</include>
-					<include content="RightListPanel">
-						<param name="list_id" value="50" />
-					</include>
-					<control type="scrollbar" id="50600">
-						<left>20</left>
-						<top>list_top_offset</top>
-						<width>12</width>
-						<bottom>list_bottom_offset</bottom>
-						<onleft>50</onleft>
-						<onright>50</onright>
-						<orientation>vertical</orientation>
-						<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(50600)">conditional</animation>
-					</control>
-				</control>
+			<control type="scrollbar" id="50600">
+				<left>1252</left>
+				<top>Bald_ContentTop</top>
+				<width>4</width>
+				<height>624</height>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<include content="Bald_BrowseScrollbarStyle" />
 			</control>
+			<include>RightListPanel</include>
 		</control>
 	</include>
+	<!-- The right-hand column of the list views: the shared preview, or now playing for the music playlist view. -->
 	<include name="RightListPanel">
+		<include content="Bald_BrowsePreview">
+			<param name="visible">!Container.Content(songs) + !Control.IsVisible(503)</param>
+		</include>
 		<control type="group">
-			<depth>DepthContentPanel</depth>
+			<visible>Control.IsVisible(503) + Window.IsActive(musicplaylist) + !$EXP[Bald_BrowseMenuOpen]</visible>
+			<include>Bald_BrowseFade</include>
 			<control type="group">
-				<right>-32</right>
-				<include content="ContentPanel">
-					<param name="left" value="0" />
-					<param name="top" value="-20" />
-					<param name="width" value="656" />
-					<param name="flipx" value="true" />
-				</include>
-				<control type="group">
-					<visible>!Container.Content(songs)</visible>
-					<control type="image">
-						<depth>DepthContentPopout</depth>
-						<left>48</left>
-						<top>120</top>
-						<width>540</width>
-						<height>850</height>
-						<bottom>124</bottom>
-						<fadetime>200</fadetime>
-						<aspectratio aligny="bottom">keep</aspectratio>
-						<texture fallback="DefaultVideo.png" background="true">$VAR[InfoWallThumbVar]</texture>
-					</control>
-					<control type="group">
-						<left>291</left>
-						<top>950</top>
-						<include content="RatingCircle">
-							<param name="animation" value="True" />
-						</include>
-					</control>
+				<left>Bald_PreviewLeft</left>
+				<top>Bald_ContentTop</top>
+				<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+				<control type="image">
+					<left>24</left><top>24</top><width>480</width><height>249</height><aspectratio>keep</aspectratio><fadetime>400</fadetime>
+					<texture fallback="DefaultAudio.png" background="true">$INFO[Player.Icon]</texture>
 				</control>
-				<control type="group">
-					<visible>Control.IsVisible(503) + Window.IsActive(musicplaylist)</visible>
-					<control type="image">
-						<left>58</left>
-						<top>110</top>
-						<width>540</width>
-						<height>470</height>
-						<aspectratio aligny="bottom">keep</aspectratio>
-						<fadetime>300</fadetime>
-						<texture fallback="DefaultAudio.png" background="true">$INFO[Player.Icon]</texture>
-					</control>
-					<control type="group">
-						<left>301</left>
-						<top>560</top>
-						<control type="group">
-							<animation effect="fade" time="0" condition="$PARAM[animation]">VisibleChange</animation>
-							<include content="UserRatingContent" condition="Skin.HasSetting(circle_userrating)">
-								<param name="infolabel" value="MusicPlayer.UserRating" />
-							</include>
-							<include content="UserRatingContent" condition="Skin.HasSetting(circle_rating)">
-								<param name="infolabel" value="MusicPlayer.Rating" />
-							</include>
-						</control>
-					</control>
-					<control type="textbox" id="15599">
-						<visible>Player.HasAudio + Window.IsActive(musicplaylist)</visible>
-						<left>58</left>
-						<top>600</top>
-						<width>540</width>
-						<bottom>70</bottom>
-						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
-						<label>[COLOR button_focus][B]$LOCALIZE[31000]: [/COLOR]$INFO[musicplayer.Playlistposition,]$INFO[musicplayer.Playlistlength,/][/B][CR]$VAR[NowPlayingInfoVar]</label>
-					</control>
-					<control type="textbox" id="15599">
-						<visible>!Player.HasAudio + Window.IsActive(musicplaylist)</visible>
-						<left>58</left>
-						<top>640</top>
-						<width>540</width>
-						<bottom>70</bottom>
-						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
-						<label>[COLOR button_focus][B]$LOCALIZE[31000]: [/COLOR]$LOCALIZE[36623][/B]</label>
-					</control>
-				</control>
+			</control>
+			<control type="label">
+				<left>Bald_PreviewLeft</left><top>548</top><width>528</width><height>52</height>
+				<font>Bald_Hint</font><textcolor>bald_accent</textcolor>
+				<label>$LOCALIZE[31000]$INFO[MusicPlayer.Playlistposition, · ,]$INFO[MusicPlayer.Playlistlength, / ,]</label>
+			</control>
+			<control type="textbox" id="15599">
+				<left>Bald_PreviewLeft</left><top>584</top><width>528</width><height>300</height>
+				<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor>
+				<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+				<label>$INFO[MusicPlayer.Title,[COLOR bald_ink],[/COLOR][CR]]$INFO[MusicPlayer.Artist,,[CR]]$INFO[MusicPlayer.Album]</label>
+				<visible>Player.HasAudio</visible>
+			</control>
+			<control type="label">
+				<left>Bald_PreviewLeft</left><top>584</top><width>528</width><height>28</height>
+				<font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor>
+				<label>$LOCALIZE[36623]</label>
+				<visible>!Player.HasAudio</visible>
 			</control>
 		</control>
 	</include>
+	<!-- The list container of views 50, 502 and 503: 13 rows of 48 at the safe margin. -->
 	<include name="ListContainer">
-		<param name="left">0</param>
-		<param name="right">0</param>
+		<param name="left">Bald_SafeLeft</param>
+		<param name="width">1140</param>
+		<param name="label_width">820</param>
+		<param name="label2_left">860</param>
+		<param name="state_left">1020</param>
 		<definition>
-			<control type="fixedlist" id="$PARAM[list_id]">
+			<control type="list" id="$PARAM[list_id]">
 				<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
 				<left>$PARAM[left]</left>
-				<right>$PARAM[right]</right>
-				<top>list_top_offset</top>
-				<bottom>list_bottom_offset</bottom>
-				<movement>6</movement>
-				<focusposition>5</focusposition>
-				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<top>Bald_ContentTop</top>
+				<width>$PARAM[width]</width>
+				<height>624</height>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<orientation>vertical</orientation>
+				<preloaditems>2</preloaditems>
 				<pagecontrol>$PARAM[list_id]600</pagecontrol>
 				<onleft>9000</onleft>
 				<onright>$PARAM[list_id]600</onright>
@@ -138,218 +85,27 @@
 				<ondown>$PARAM[list_id]</ondown>
 				<viewtype label="$PARAM[viewtype_label]">list</viewtype>
 				<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(games) | Window.IsActive(videoplaylist) | Window.IsActive(musicplaylist) | $EXP[videoasset_true]</visible>
-				<focusedlayout height="list_item_height">
-					<control type="image">
-						<left>0</left>
-						<right>0</right>
-						<top>0</top>
-						<bottom>0</bottom>
-						<texture colordiffuse="button_focus">lists/focus.png</texture>
-						<visible>Control.HasFocus($PARAM[list_id])</visible>
-					</control>
-					<control type="label">
-						<left>70</left>
-						<right>70</right>
-						<top>0</top>
-						<bottom>0</bottom>
-						<aligny>center</aligny>
-						<scroll>true</scroll>
-						<font>font27</font>
-						<label>$VAR[ListLabelVar]</label>
-						<shadowcolor>text_shadow</shadowcolor>
-					</control>
-					<control type="label">
-						<top>0</top>
-						<bottom>0</bottom>
-						<left>100</left>
-						<right>20</right>
-						<align>right</align>
-						<aligny>center</aligny>
-						<font>font12</font>
-						<label>$VAR[ListLabel2Var]</label>
-						<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
-						<shadowcolor>text_shadow</shadowcolor>
-					</control>
-					<control type="image">
-						<left>21</left>
-						<centertop>50%</centertop>
-						<width>32</width>
-						<height>32</height>
-						<texture>$VAR[ListWatchedIconVar]</texture>
-						<animation effect="fade" start="30" end="100" time="300" reversible="false">Focus</animation>
-					</control>
-					<control type="image">
-						<left>21</left>
-						<centertop>50%</centertop>
-						<width>32</width>
-						<height>32</height>
-						<texture colordiffuse="button_focus">$VAR[ListWatchedIconVar]</texture>
-						<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
-						<animation effect="fade" time="150">VisibleChange</animation>
-						<visible>!Control.HasFocus($PARAM[list_id])</visible>
-					</control>
-				</focusedlayout>
-				<itemlayout height="list_item_height">
-					<control type="label">
-						<left>70</left>
-						<right>70</right>
-						<top>0</top>
-						<bottom>0</bottom>
-						<aligny>center</aligny>
-						<font>font27</font>
-						<label>$VAR[ListLabelVar]</label>
-						<shadowcolor>text_shadow</shadowcolor>
-					</control>
-					<control type="label">
-						<left>20</left>
-						<right>20</right>
-						<top>0</top>
-						<bottom>0</bottom>
-						<align>right</align>
-						<aligny>center</aligny>
-						<font>font12</font>
-						<label>$VAR[ListLabel2Var]</label>
-						<textcolor>grey</textcolor>
-						<shadowcolor>text_shadow</shadowcolor>
-					</control>
-					<control type="image">
-						<left>21</left>
-						<centertop>50%</centertop>
-						<width>32</width>
-						<height>32</height>
-						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
-					</control>
+				<include>Bald_BrowseDim</include>
+				<itemlayout height="48" width="$PARAM[width]">
+					<include content="Bald_BrowseTextRow"><param name="label_width">$PARAM[label_width]</param><param name="label2_left">$PARAM[label2_left]</param><param name="state_left">$PARAM[state_left]</param></include>
 				</itemlayout>
+				<focusedlayout height="48" width="$PARAM[width]">
+					<include content="Bald_BrowseRowDot"><param name="visible">Control.HasFocus($PARAM[list_id])</param></include>
+					<include content="Bald_BrowseTextRow"><param name="label_width">$PARAM[label_width]</param><param name="label2_left">$PARAM[label2_left]</param><param name="state_left">$PARAM[state_left]</param><param name="ink">bald_ink</param><param name="scroll">true</param></include>
+				</focusedlayout>
 			</control>
 		</definition>
 	</include>
+	<!-- The preview column for the views whose window supplies it (55, 504, and 54 in the video and music windows). -->
 	<include name="ListThumbInfoPanel">
 		<param name="fallback_image"></param>
 		<param name="flip_bg">false</param>
+		<param name="visible">true</param>
 		<definition>
-			<control type="group">
-				<depth>DepthContentPanel</depth>
-				<include content="ContentPanel">
-					<param name="width" value="656" />
-					<param name="flipx" value="$PARAM[flip_bg]" />
-				</include>
-				<control type="image">
-					<left>30</left>
-					<top>110</top>
-					<width>540</width>
-					<height>470</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<fadetime>300</fadetime>
-					<texture fallback="$PARAM[fallback_image]" background="true">$VAR[IconWallThumbVar]</texture>
-					<visible>!String.IsEqual(ListItem.DbType,episode) + !String.IsEqual(ListItem.DBType,song)</visible>
-				</control>
-				<control type="image">
-					<left>30</left>
-					<top>110</top>
-					<width>540</width>
-					<height>330</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<fadetime>300</fadetime>
-					<texture background="true">$VAR[ShiftThumbVar]</texture>
-					<visible>String.IsEqual(ListItem.DbType,episode)</visible>
-				</control>
-				<control type="image">
-					<left>30</left>
-					<top>110</top>
-					<width>540</width>
-					<height>470</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<fadetime>300</fadetime>
-					<texture fallback="DefaultAudio.png" background="true">$VAR[IconWallThumbVar]</texture>
-					<visible>String.IsEqual(ListItem.DBType,song)</visible>
-				</control>
-				<control type="group">
-					<left>273</left>
-					<top>560</top>
-					<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
-					<animation effect="slide" end="0,-140" time="0" condition="String.IsEqual(ListItem.DbType,episode)">conditional</animation>
-				</control>
-				<control type="group">
-					<visible>!Container.Content() | !String.isempty(ListItem.Plot)</visible>
-					<left>30</left>
-					<control type="textbox" id="15500">
-						<top>600</top>
-						<width>540</width>
-						<bottom>70</bottom>
-						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
-						<label>$VAR[ListBoxInfoVar]</label>
-						<visible>!String.IsEqual(ListItem.DbType,episode) + !String.IsEqual(ListItem.DBType,song)</visible>
-					</control>
-					<control type="textbox" id="15501">
-						<top>465</top>
-						<width>540</width>
-						<bottom>70</bottom>
-						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
-						<label>$INFO[ListItem.Plot]</label>
-						<visible>String.IsEqual(ListItem.DbType,episode)</visible>
-					</control>
-					<control type="textbox" id="15502">
-						<top>600</top>
-						<width>540</width>
-						<bottom>70</bottom>
-						<autoscroll time="3000" delay="3000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
-						<label>$VAR[ListBoxInfoVar]</label>
-						<visible>String.IsEqual(ListItem.DBType,song)</visible>
-					</control>
-				</control>
-				<control type="group">
-					<left>20</left>
-					<top>640</top>
-					<visible>ListItem.IsCollection + String.IsEmpty(ListItem.Plot)</visible>
-					<include content="InfoList">
-						<param name="bottom" value="100" />
-						<param name="width" value="540" />
-						<param name="sortby" value="year" />
-						<param name="sortorder" value="ascending" />
-						<param name="font" value="font13" />
-					</include>
-				</control>
-				<control type="group">
-					<visible>!ListItem.IsCollection + String.IsEmpty(Control.GetLabel(15500)) + Control.IsVisible(15500)</visible>
-					<control type="textbox">
-						<left>30</left>
-						<top>460</top>
-						<width>540</width>
-						<height>413</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font27</font>
-						<textcolor>80FFFFFF</textcolor>
-						<label>$LOCALIZE[19055]</label>
-						<visible>!ListItem.IsParentFolder</visible>
-						<visible>!Integer.IsGreater(Container(42000).NumItems,0) + !Integer.IsGreater(Container(43000).NumItems,0)</visible>
-						<visible>!Container.Content() | !String.isempty(ListItem.Plot)</visible>
-					</control>
-					<control type="group">
-						<left>20</left>
-						<top>640</top>
-						<visible>!String.IsEmpty(ListItem.DBID)</visible>
-						<include content="InfoList">
-							<param name="list_id" value="42000" />
-							<param name="bottom" value="100" />
-							<param name="width" value="540" />
-							<param name="sortby" value="year" />
-							<param name="sortorder" value="ascending" />
-							<param name="item_label" value="$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
-							<param name="visible" value="String.IsEqual(ListItem.DBType,artist)" />
-						</include>
-						<include content="InfoList">
-							<param name="list_id" value="43000" />
-							<param name="bottom" value="100" />
-							<param name="width" value="540" />
-							<param name="sortby" value="track" />
-							<param name="sortorder" value="ascending" />
-							<param name="item_label" value="$INFO[ListItem.Duration,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
-							<param name="visible" value="String.IsEqual(ListItem.DBType,album)" />
-						</include>
-					</control>
-				</control>
-			</control>
+			<include content="Bald_BrowsePreview">
+				<param name="visible">$PARAM[visible]</param>
+				<param name="fallback_image">$PARAM[fallback_image]</param>
+			</include>
 		</definition>
 	</include>
 </includes>

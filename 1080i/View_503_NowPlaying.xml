@@ -1,42 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: the music playlist as the compact list, with now playing in the preview column (RightListPanel). Id 503,
+     its viewtype and page control 503600 are Estuary's. -->
 <includes>
 	<include name="View_503_NowPlaying">
 		<control type="group">
-			<include>OpenClose_Right</include>
-			<left>596</left>
 			<visible>Control.IsVisible(503)</visible>
-			<include>Visible_Right</include>
+			<include>Bald_BrowseViewIn</include>
 			<include content="ListContainer">
 				<param name="list_id" value="503" />
-				<param name="right" value="594" />
 				<param name="viewtype_label" value="$LOCALIZE[31000]" />
 			</include>
-			<control type="group">
-				<depth>DepthContentPanel</depth>
-				<control type="group">
-					<right>-20</right>
-					<width>634</width>
-					<include content="ContentPanel">
-						<param name="left" value="0" />
-						<param name="top" value="-20" />
-						<param name="width" value="656" />
-						<param name="flipx" value="true" />
-					</include>
-					<include content="RightListPanel">
-						<param name="list_id" value="503" />
-					</include>
-					<control type="scrollbar" id="503600">
-						<left>20</left>
-						<top>list_top_offset</top>
-						<width>12</width>
-						<bottom>list_bottom_offset</bottom>
-						<onleft>503</onleft>
-						<onright>503</onright>
-						<orientation>vertical</orientation>
-						<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(503600)">conditional</animation>
-					</control>
-				</control>
+			<control type="scrollbar" id="503600">
+				<left>1252</left>
+				<top>Bald_ContentTop</top>
+				<width>4</width>
+				<height>624</height>
+				<onleft>503</onleft>
+				<onright>503</onright>
+				<include content="Bald_BrowseScrollbarStyle" />
 			</control>
+			<include>RightListPanel</include>
 		</control>
 	</include>
 </includes>

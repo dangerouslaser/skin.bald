@@ -1,254 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: a poster rail under a large caption, with the preview art at the right. Rail tiles are the Bald wall's
+     (192 x 288 posters, or labelled covers and icons kept whole). Id, viewtype, visibility, page control 5199 and
+     navigation are Estuary's. -->
 <includes>
 	<include name="View_53_Shift">
 		<control type="group">
-			<description>Poster Viewtype</description>
-			<centertop>50%</centertop>
-			<left>0</left>
-			<height>880</height>
+			<visible>Control.IsVisible(53)</visible>
+			<include>Bald_BrowseViewIn</include>
 			<control type="group">
-				<visible>Control.IsVisible(53)</visible>
-				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<animation effect="fade" time="200">VisibleChange</animation>
-				<control type="image">
-					<left>0</left>
-					<top>760</top>
-					<width>100%</width>
-					<height>110</height>
-					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
+				<visible>!ListItem.IsParentFolder + !$EXP[Bald_BrowseMenuOpen]</visible>
+				<include>Bald_BrowseFade</include>
+				<control type="label">
+					<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>90</height>
+					<font>Bald_InfoTitle</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
 				</control>
-				<control type="image">
-					<left>0</left>
-					<top>35</top>
-					<width>100%</width>
-					<height>190</height>
-					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
+				<control type="label">
+					<left>Bald_SafeLeft</left><top>320</top><width>1140</width><height>32</height>
+					<font>Bald_InfoMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[Bald_BrowseMeta]</label>
+				</control>
+				<control type="label">
+					<left>Bald_SafeLeft</left><top>362</top><width>1140</width><height>26</height>
+					<font>Bald_InfoGenre</font><textcolor>bald_accent</textcolor><label>$INFO[ListItem.Genre]</label>
+				</control>
+				<control type="textbox">
+					<left>Bald_SafeLeft</left><top>400</top><width>1140</width><height>100</height>
+					<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowsePlot]</label>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll) + !System.HasActiveModalDialog</autoscroll>
 				</control>
 			</control>
-			<control type="group">
-				<visible>Control.IsVisible(53)</visible>
-				<include>Visible_Right</include>
-				<include>OpenClose_Right</include>
-				<top>160</top>
-				<control type="image">
-					<left>600</left>
-					<top>600</top>
-					<width>340</width>
-					<height>110</height>
-					<visible>Control.HasFocus(53)</visible>
-					<animation effect="fade" time="200">VisibleChange</animation>
-					<texture colordiffuse="button_focus">colors/grey.png</texture>
-					<animation effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,1) | Integer.IsEqual(Container.Position,0)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,0)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,3) | Integer.IsEqual(Container.Position,4)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,4)">Conditional</animation>
-				</control>
-				<control type="fixedlist" id="53">
-					<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
-					<left>-150</left>
-					<top>0</top>
-					<width>111%</width>
-					<height>695</height>
-					<focusposition>1</focusposition>
-					<movement>0</movement>
-					<pagecontrol>5199</pagecontrol>
-					<scrolltime tween="cubic" easing="out">500</scrolltime>
-					<orientation>horizontal</orientation>
-					<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(musicvideos) | Container.Content(artists) | Container.Content(albums) | Container.Content(mixed) | Container.Content(images) | Container.Content(videos) | Container.Content(games) | Container.Content(favourites) | $EXP[videoasset_true]</visible>
-					<onleft>53</onleft>
-					<onup>9000</onup>
-					<ondown>5199</ondown>
-					<onright>53</onright>
-					<preloaditems>1</preloaditems>
-					<viewtype label="31100">icon</viewtype>
-					<itemlayout width="370">
-						<include content="ShiftImageBox" />
-					</itemlayout>
-					<focusedlayout width="370">
-						<include content="ShiftImageBox" />
-					</focusedlayout>
-				</control>
-			</control>
-			<control type="group">
-				<visible>Control.IsVisible(53)</visible>
-				<include>Visible_Right</include>
-				<include>OpenClose_Right</include>
-				<control type="group">
-					<width>50%</width>
-					<include content="ShiftTextbox">
-						<param name="textbox_id" value="53200" />
-						<param name="textbox_content" value="$VAR[ShiftLeftTextBoxVar]" />
+			<control type="list" id="53">
+				<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
+				<left>Bald_BrowseWallLeft</left>
+				<top>534</top>
+				<width>1152</width>
+				<height>336</height>
+				<orientation>horizontal</orientation>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<preloaditems>3</preloaditems>
+				<pagecontrol>5199</pagecontrol>
+				<onleft>53</onleft>
+				<onright>53</onright>
+				<onup>9000</onup>
+				<ondown>5199</ondown>
+				<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(musicvideos) | Container.Content(artists) | Container.Content(albums) | Container.Content(mixed) | Container.Content(images) | Container.Content(videos) | Container.Content(games) | Container.Content(favourites) | $EXP[videoasset_true]</visible>
+				<viewtype label="31100">icon</viewtype>
+				<include>Bald_BrowseDim</include>
+				<itemlayout width="216" height="312" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(games)">
+					<include content="Bald_BrowseTile" />
+				</itemlayout>
+				<focusedlayout width="216" height="312" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(games)">
+					<include content="Bald_BrowseTile"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(53)</param></include>
+				</focusedlayout>
+				<itemlayout width="216" height="312">
+					<include content="Bald_BrowseTile">
+						<param name="art">$VAR[Bald_BrowseIconArt]</param><param name="aspect">keep</param>
+						<param name="height">192</param><param name="ring_height">198</param><param name="center">108,108</param>
+						<param name="label_visible">true</param><param name="label_top">214</param>
 					</include>
-				</control>
-				<control type="group">
-					<left>50%</left>
-					<width>50%</width>
-					<include content="ShiftTextbox">
-						<param name="textbox_id" value="53300" />
-						<param name="textbox_content" value="$VAR[ShiftRightTextBoxVar]" />
+				</itemlayout>
+				<focusedlayout width="216" height="312">
+					<include content="Bald_BrowseTile">
+						<param name="art">$VAR[Bald_BrowseIconArt]</param><param name="aspect">keep</param>
+						<param name="height">192</param><param name="ring_height">198</param><param name="center">108,108</param>
+						<param name="label_visible">true</param><param name="label_top">214</param>
+						<param name="diffuse">bald_ink</param><param name="ink">bald_ink</param><param name="focused">Control.HasFocus(53)</param>
 					</include>
-				</control>
-				<control type="panel">
-					<left>20</left>
-					<top>48</top>
-					<width>940</width>
-					<height>180</height>
-					<orientation>horizontal</orientation>
-					<visible>ListItem.IsCollection</visible>
-					<animation effect="fade" time="200">VisibleChange</animation>
-					<focusedlayout height="40" width="470">
-						<control type="label">
-							<textoffsetx>10</textoffsetx>
-							<height>40</height>
-							<width>460</width>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$VAR[ListLabelVar]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</focusedlayout>
-					<itemlayout height="40" width="470">
-						<control type="label">
-							<textoffsetx>10</textoffsetx>
-							<height>40</height>
-							<width>460</width>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$VAR[ListLabelVar]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</itemlayout>
-					<content sortby="year" sortorder="ascending">$VAR[InfoListPathVar]</content>
-				</control>
+				</focusedlayout>
 			</control>
-		</control>
-	</include>
-	<include name="ShiftImageBox">
-		<control type="image">
-			<left>18</left>
-			<top>90</top>
-			<width>334</width>
-			<height>480</height>
-			<aspectratio aligny="center">stretch</aspectratio>
-			<texture>dialogs/dialog-bg-nobo.png</texture>
-			<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-			<bordersize>20</bordersize>
-			<visible>String.IsEmpty(ListItem.Art(thumb)) + !Container.Content(albums) | String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
-		</control>
-		<control type="image">
-			<depth>DepthContentPopout</depth>
-			<left>18</left>
-			<top>90</top>
-			<width>334</width>
-			<height>480</height>
-			<aspectratio aligny="center">keep</aspectratio>
-			<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
-			<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-			<bordersize>20</bordersize>
-			<visible>String.IsEmpty(ListItem.Art(poster))</visible>
-		</control>
-		<control type="image">
-			<depth>DepthContentPopout</depth>
-			<left>18</left>
-			<top>90</top>
-			<width>334</width>
-			<height>480</height>
-			<aspectratio aligny="center">scale</aspectratio>
-			<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
-			<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-			<bordersize>20</bordersize>
-			<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
-		</control>
-		<control type="textbox">
-			<left>20</left>
-			<top>603</top>
-			<width>330</width>
-			<height>105</height>
-			<align>center</align>
-			<aligny>center</aligny>
-			<label>$VAR[ListLabelVar]</label>
-		</control>
-		<include>IconStatusOverlay</include>
-		<control type="group">
-			<left>158</left>
-			<top>92</top>
-			<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
-		</control>
-		<control type="progress">
-			<left>32</left>
-			<top>530</top>
-			<width>298</width>
-			<height>1</height>
-			<texturebg></texturebg>
-			<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
-			<info>ListItem.PercentPlayed</info>
-			<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
-		</control>
-	</include>
-	<include name="ShiftTextbox">
-		<control type="group">
-			<animation effect="fade" time="200" start="0" end="100" condition="!String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
-			<animation effect="fade" time="200" start="100" end="0" condition="String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
-			<control type="textbox" id="$PARAM[textbox_id]">
-				<left>30</left>
-				<top>45</top>
-				<right>30</right>
-				<height>163</height>
-				<label>$PARAM[textbox_content]</label>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-		</control>
-	</include>
-	<include name="IconStatusOverlay">
-		<control type="group">
-			<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBType,season) | ListItem.IsRecording | ListItem.HasReminder | ListItem.HasTimer | ListItem.IsCollection | ListItem.HasVideoVersions | ListItem.IsPlaying | ListItem.IsResumable | ListItem.HasVideoExtras | ListItem.HasArchive | Integer.IsGreater(ListItem.Playcount,0)</visible>
-			<control type="image">
-				<left>38</left>
-				<top>500</top>
-				<width>294</width>
-				<height>50</height>
-				<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
-				<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
-			</control>
-			<control type="image">
-				<left>45</left>
-				<top>522</top>
-				<width>24</width>
-				<height>24</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<texture>$VAR[ItemTypeIconVar]</texture>
-			</control>
-			<control type="image">
-				<left>75</left>
-				<top>522</top>
-				<width>24</width>
-				<height>24</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<texture>overlays/extras.png</texture>
-				<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras + !$EXP[videoasset_true]</visible>
-			</control>
-			<control type="label">
-				<left>110</left>
-				<top>522</top>
-				<width>185</width>
-				<height>24</height>
-				<label>$VAR[WatchedStatusVar]</label>
-				<font>font20_title</font>
-				<shadowcolor>text_shadow</shadowcolor>
-				<align>right</align>
-				<aligny>center</aligny>
-				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
-			</control>
-			<control type="image">
-				<left>302</left>
-				<top>522</top>
-				<width>24</width>
-				<height>24</height>
-				<texture>$VAR[ItemStatusIconVar]</texture>
-				<align>right</align>
-				<aligny>center</aligny>
-			</control>
+			<include content="Bald_BrowsePreview"><param name="show_caption">false</param></include>
 		</control>
 	</include>
 </includes>
