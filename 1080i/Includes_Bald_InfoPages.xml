@@ -62,10 +62,9 @@
 					<include content="Bald_AnimInfoIn"><param name="delay">520</param></include>
 					<include content="Bald_MediaFlags"><param name="height">30</param><param name="font">Bald_FlagL</param></include>
 				</control>
-				<!-- Ratings, with TMDb Helper's scores for sources the library lacks (the dialog's own item). -->
+				<!-- Ratings, with TMDb Helper's scores for sources the library lacks (guarded: only the dialog's own item). -->
 				<include content="Bald_RatingsRow">
 					<param name="visible">$EXP[Bald_RatingsInfo]</param>
-					<param name="fallback">true</param>
 					<param name="top">12</param>
 					<param name="width">1400</param>
 					<param name="height">30</param>
