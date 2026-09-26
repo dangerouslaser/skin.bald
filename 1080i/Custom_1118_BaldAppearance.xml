@@ -66,6 +66,20 @@
 				<include content="Bald_RatingsSettingRow"><param name="id">9648</param><param name="label">$LOCALIZE[31309]</param><param name="setting">Bald.Ratings.NoTVDb</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9649</param><param name="label">$LOCALIZE[38018]</param><param name="setting">Bald.Ratings.NoUser</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9650</param><param name="label">$LOCALIZE[31313]</param><param name="setting">Bald.Ratings.NoDefault</param></include>
+				<!-- Which service Kodi's unnamed default rating came from (a Jellyfin-synced library stores only "default"):
+				     its glyph and format. Select cycles Generic (empty, the star), IMDb, TMDb, Rotten Tomatoes critics and
+				     audience, Metacritic, Trakt, Jellyfin, Kodi; an unknown value goes back to Generic. -->
+				<control type="button" id="9656"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31319]</label><label2>$VAR[Bald_RatingDefaultSourceName]</label2><enable>!Skin.HasSetting(Bald.Ratings.Hide) + !Skin.HasSetting(Bald.Ratings.NoDefault)</enable>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.Ratings.DefaultSource))">Skin.SetString(Bald.Ratings.DefaultSource,imdb)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),imdb)">Skin.SetString(Bald.Ratings.DefaultSource,tmdb)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),tmdb)">Skin.SetString(Bald.Ratings.DefaultSource,rt)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt)">Skin.SetString(Bald.Ratings.DefaultSource,rtaudience)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience)">Skin.SetString(Bald.Ratings.DefaultSource,metacritic)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic)">Skin.SetString(Bald.Ratings.DefaultSource,trakt)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt)">Skin.SetString(Bald.Ratings.DefaultSource,jellyfin)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),jellyfin)">Skin.SetString(Bald.Ratings.DefaultSource,kodi)</onclick>
+					<onclick condition="!String.IsEmpty(Skin.String(Bald.Ratings.DefaultSource)) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),imdb) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),tmdb) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),jellyfin)">Skin.Reset(Bald.Ratings.DefaultSource)</onclick>
+				</control>
 				<include content="Bald_RatingsSettingRow"><param name="id">9651</param><param name="label">$LOCALIZE[31314]</param><param name="setting">Bald.Ratings.NoInfo</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9652</param><param name="label">$LOCALIZE[31315]</param><param name="setting">Bald.Ratings.NoHome</param></include>
 				<include content="Bald_RatingsSettingRow"><param name="id">9653</param><param name="label">$LOCALIZE[31316]</param><param name="setting">Bald.Ratings.NoLibrary</param></include>

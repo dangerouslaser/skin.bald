@@ -387,10 +387,11 @@ Custom_1118_BaldAppearance.xml (window 1118)
 9621-9625	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
 		scroll long plots
 9631	Typography: font (fontset)
-9641-9655	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; sources 9642 IMDb, 9643 TMDb,
+9641-9656	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; sources 9642 IMDb, 9643 TMDb,
 		9644 Rotten Tomatoes critics, 9645 Rotten Tomatoes audience, 9646 Metacritic, 9647 Trakt,
 		9648 TVDb, 9649 my rating, 9650 default rating; surfaces 9651 information screens,
-		9652 Home, 9653 library views, 9654 player info overlay; 9655 vote counts
+		9652 Home, 9653 library views, 9654 player info overlay; 9655 vote counts;
+		9656 default rating source (listed after 9650)
 
 GLOBAL OVERLAYS (Includes_Bald_Overlays.xml)
 
