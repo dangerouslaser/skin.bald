@@ -30,8 +30,6 @@ LIVE_ESTUARY_SETTINGS = {
     "show_profilename": "AddonBrowser.xml",
     "OriginalTitleFormat_1st": "AddonBrowser.xml",
     "show_musicvideoposter": "MyMusicNav.xml",
-    "OSDAutoClose": "Timers.xml",
-    "OSDAutoCloseTime": "Timers.xml",
     "no_fanart": "FileManager.xml",
     "background_overlay": "FileManager.xml",
     "HomeFanart": "MyWeather.xml",
@@ -53,6 +51,8 @@ DEAD_ESTUARY_SETTINGS = (
     "circle_userrating",
     "circle_rating",
     "circle_none",
+    # Estuary's video OSD auto-close: Bald Settings, Playback (Bald.OSD.AutoClose) replaces it; Startup.xml migrates it.
+    "OSDAutoClose",
 )
 
 

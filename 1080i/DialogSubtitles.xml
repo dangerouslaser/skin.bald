@@ -7,6 +7,8 @@
      130 (local subtitles notice, shown or hidden), 140 (status text), 150 (services) and 160 (manual search); 73 is
      the results' page control and 250 Estuary's surface group. -->
 <window>
+	<!-- Parks the video OSD's auto-close while this dialog is open over it (Includes_Bald_OSD.xml). -->
+	<include>Bald_OSDSuspendAutoClose</include>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">
