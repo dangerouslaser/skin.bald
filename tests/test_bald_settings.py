@@ -3,7 +3,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import home_menu
-from kodi_includes import condition, expand, resolve_window
+from conditions import atoms, equivalent, has_action, implies, same_actions
+from kodi_includes import expand, resolve_window
 from skin_strings import loc
 
 
@@ -70,41 +71,33 @@ class BaldSettingsTests(unittest.TestCase):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
         movies = home_menu_button(root, "movies")
         tvshows = home_menu_button(root, "tvshows")
-        self.assertEqual(movies.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)")
-        self.assertEqual(tvshows.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.TVShows)")
-        self.assertNotIn("!Skin.HasSetting", movies.findtext("param[@name='visible']"))
-        self.assertNotIn("!Skin.HasSetting", tvshows.findtext("param[@name='visible']"))
-
+        # Movies and TV shows are opt-in; Live TV is opt-out.
+        self.assertTrue(equivalent(movies.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)"))
+        self.assertTrue(equivalent(tvshows.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.TVShows)"))
         livetv = home_menu_button(root, "livetv")
-        self.assertEqual(
-            livetv.findtext("param[@name='visible']"),
-            "!Skin.HasSetting(Bald.Screen.HideLiveTV)",
-        )
+        self.assertTrue(equivalent(livetv.findtext("param[@name='visible']"), "!Skin.HasSetting(Bald.Screen.HideLiveTV)"))
 
     def test_live_tv_screen_has_toggle_but_no_widget_editor(self):
         root = ET.parse(ROOT / "1080i" / "Custom_1117_BaldHomeScreens.xml").getroot()
         toggle = root.find(".//control[@id='9401']")
         configure = root.find(".//control[@id='9402']")
         self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(toggle, encoding="unicode"))
-        self.assertEqual(
-            configure.findtext("visible"),
-            "!String.IsEqual(Container(9300).ListItem.Property(node),livetv)",
-        )
+        self.assertTrue(equivalent(configure.findtext("visible"),
+                                   "!String.IsEqual(Container(9300).ListItem.Property(node),livetv)"))
 
     def test_optional_screens_restore_their_last_row_when_entered_from_menu(self):
         for screen in ("home", "movies", "tvshows"):
             actions = home_menu.select_actions(home_menu.entry(preview=screen))
             has_rows = f"$EXP[Bald_HasRows_{screen}]"
-            self.assertEqual(actions, [
+            self.assertTrue(same_actions(actions, [
                 (has_rows, f"SetProperty(Bald.Screen,{screen},home)"),
                 (has_rows, f"SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.{screen})],home)"),
                 (has_rows, "ClearProperty(Bald.Menu,home)"),
                 (has_rows, f"SetFocus($INFO[Window(home).Property(Bald.Row.{screen})])"),
-            ])
-            self.assertIn(
-                (None, f"SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.{screen})],home)"),
-                home_menu.actions(home_menu.entry(preview=screen), "onfocus"),
-            )
+            ]), actions)
+            self.assertTrue(has_action(
+                home_menu.actions(home_menu.entry(preview=screen), "onfocus"), None,
+                f"SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.{screen})],home)"))
 
     def test_menu_entries_leave_up_and_down_to_the_grouplist(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
@@ -132,7 +125,6 @@ class BaldSettingsTests(unittest.TestCase):
                          ["SetProperty(Bald.Menu,1,home)", "SetProperty(Bald.MenuPreview,$PARAM[preview],home)"])
 
     def test_menu_selection_previews_each_screens_last_active_widget(self):
-        home_includes = (ROOT / "1080i" / "Includes_Bald_Home.xml").read_text()
         rows = ET.parse(ROOT / "1080i" / "Includes_Bald_HomeDefaults.xml").getroot()
         fanart = [value.get("condition") for value in rows.findall("variable[@name='Bald_Fanart']/value")]
 
@@ -141,28 +133,24 @@ class BaldSettingsTests(unittest.TestCase):
             ("movies", "9201", "Bald_PreviewMovies"),
             ("tvshows", "9301", "Bald_PreviewTVShows"),
         ):
-            self.assertIn(
-                f'String.IsEqual(Window(home).Property(Bald.MenuPreview),{screen})',
-                home_includes,
-            )
-            self.assertIn(
-                f"$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row}) + !String.IsEmpty(Container({row}).ListItem.Art(fanart))",
-                fanart,
-            )
+            self.assertTrue(implies(f"$EXP[{preview}]", f"String.IsEqual(Window(home).Property(Bald.MenuPreview),{screen})"))
+            wanted = (f"$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row})"
+                      f" + !String.IsEmpty(Container({row}).ListItem.Art(fanart))")
+            self.assertTrue(any(c and equivalent(c, wanted) for c in fanart), screen)
             logo = next(
                 node for node in rows.findall(f"include[@name='Bald_ConfiguredArtLogos_{screen}']/definition/include")
                 if node.findtext("param[@name='c']") == row and node.findtext("param[@name='p']") == "Odd"
             )
-            self.assertEqual(
-                logo.findtext("param[@name='preview']"),
-                f"$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row})",
-            )
+            self.assertTrue(equivalent(logo.findtext("param[@name='preview']"),
+                                       f"$EXP[{preview}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row})"))
 
         row_definition = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
             ".//include[@name='Bald_Row']/definition/control[@type='group']/visible"
         ).text
-        self.assertIn("Property(Bald.MenuPreview),$PARAM[screen]", row_definition)
-        self.assertIn("Property(Bald.Row.$PARAM[screen]),$PARAM[id]", row_definition)
+        # With the menu open, a row shows exactly when its screen is previewed and it was that screen's last row.
+        previewed = ("String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen])"
+                     " + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])")
+        self.assertTrue(equivalent(f"$EXP[Bald_MenuOpen] + [{row_definition}]", f"$EXP[Bald_MenuOpen] + {previewed}"))
 
         row = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
             ".//include[@name='Bald_Row']/definition/control[@type='fixedlist']"
@@ -189,31 +177,26 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertEqual(len(images), 3)
         for image in images:
             visibility = image.findtext("visible")
-            self.assertIn("$PARAM[preview]", visibility)
-            self.assertIn(
-                "[!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]",
-                visibility,
-            )
+            self.assertIn("$PARAM[preview]", atoms(visibility))
+            # Outside its own preview, a row's logo shows only for the current row while no widget preview is open.
+            self.assertTrue(implies(
+                visibility, "!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+                assume={"$PARAM[preview]": False, "$PARAM[ignore_home_row]": False}))
 
     def test_widget_rows_reopen_menu_on_the_active_screen(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
         row = root.find(".//include[@name='Bald_Row']/definition/control[@type='fixedlist']")
-        back_actions = [(condition(node.get("condition")), node.text) for node in row.findall("onback")]
-        up_actions = [(condition(node.get("condition")), node.text) for node in row.findall("onup")]
+        back_actions = [(node.get("condition"), node.text) for node in row.findall("onback")]
+        up_actions = [(node.get("condition"), node.text) for node in row.findall("onup")]
 
-        self.assertIn(("String.IsEqual(Window(home).Property(Bald.Screen),home)", "SetFocus(9001)"), back_actions)
-        self.assertIn(("String.IsEqual(Window(home).Property(Bald.Screen),movies)", "SetFocus(9002)"), back_actions)
-        self.assertIn(
-            (
-                "String.IsEqual(Window(home).Property(Bald.Screen),tvshows)",
-                "SetFocus(9003)",
-            ),
-            back_actions,
-        )
+        for screen, entry in (("home", "9001"), ("movies", "9002"), ("tvshows", "9003")):
+            self.assertTrue(has_action(back_actions, f"String.IsEqual(Window(home).Property(Bald.Screen),{screen})",
+                                       f"SetFocus({entry})"), screen)
+        # Up from the first row returns to the active screen's menu entry.
         self.assertTrue(any(
-            condition.startswith("Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),movies)")
-            and action == "SetFocus(9002)"
-            for condition, action in up_actions
+            action == "SetFocus(9002)" and implies(
+                cond, "Integer.IsEqual($PARAM[index],1) + String.IsEqual(Window(home).Property(Bald.Screen),movies)")
+            for cond, action in up_actions
         ))
 
     def test_main_menu_accent_dot_follows_focus(self):
@@ -250,7 +233,7 @@ class BaldSettingsTests(unittest.TestCase):
             ".//include[@name='Bald_MenuRowFocused']"
         )
         disclosure = next(label for label in focused.findall(".//control[@type='label']") if label.findtext("label") == "›")
-        self.assertEqual(disclosure.findtext("visible"), "!String.IsEmpty(ListItem.Property(library))")
+        self.assertTrue(equivalent(disclosure.findtext("visible"), "!String.IsEmpty(ListItem.Property(library))"))
 
 
     def test_add_widget_passes_named_parameters_not_positional_paths(self):
