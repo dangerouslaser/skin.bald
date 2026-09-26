@@ -15,9 +15,10 @@
                 <param name="dots">Bald_RowDots_9101</param>
                 <param name="dots_width">30</param>
                 <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
                 <content target="videos" limit="25" browse="never">videodb://recentlyaddedmovies/</content>
-                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">SetProperty(Bald.Start9102,1,home)</onfocus>
-                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">Control.Move(9102,-2)</onfocus>
+                <include>Bald_RowStart_9102</include>
             </include>
             <include content="Bald_Row">
                 <param name="id">9102</param>
@@ -29,10 +30,11 @@
                 <param name="dots">Bald_RowDots_9102</param>
                 <param name="dots_width">30</param>
                 <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
                 <content target="videos" limit="15" browse="never">special://skin/playlists/inprogress_movies.xsp</content>
                 <content target="videos" limit="15" browse="never">special://skin/playlists/inprogress_episodes.xsp</content>
-                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">SetProperty(Bald.Start9103,1,home)</onfocus>
-                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">Control.Move(9103,-2)</onfocus>
+                <include>Bald_RowStart_9103</include>
             </include>
             <include content="Bald_Row">
                 <param name="id">9103</param>
@@ -44,6 +46,8 @@
                 <param name="dots">Bald_RowDots_9103</param>
                 <param name="dots_width">30</param>
                 <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
                 <content target="videos" limit="25" browse="never">videodb://inprogresstvshows/</content>
             </include>
         </definition>
@@ -76,6 +80,12 @@
     <variable name="Bald_RowsNote_home_1">
         <value>Recently added movies, $VAR[Bald_RowsNote_home_2]</value>
     </variable>
+    <include name="Bald_RowStart_9101">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9101)) + String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)">SetProperty(Bald.Start9101,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9101)) + String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)">Control.Move(9101,-2)</onfocus>
+        </definition>
+    </include>
     <include name="Bald_RowDots_9102">
         <definition>
             <control type="image">
@@ -104,6 +114,12 @@
     <variable name="Bald_RowsNote_home_2">
         <value>Continue watching, $VAR[Bald_RowsNote_home_3]</value>
     </variable>
+    <include name="Bald_RowStart_9102">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">SetProperty(Bald.Start9102,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">Control.Move(9102,-2)</onfocus>
+        </definition>
+    </include>
     <include name="Bald_RowDots_9103">
         <definition>
             <control type="image">
@@ -132,6 +148,12 @@
     <variable name="Bald_RowsNote_home_3">
         <value>Next up</value>
     </variable>
+    <include name="Bald_RowStart_9103">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">SetProperty(Bald.Start9103,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">Control.Move(9103,-2)</onfocus>
+        </definition>
+    </include>
     <include name="Bald_RowStartReset_home">
         <definition>
             <onload>ClearProperty(Bald.Start9101,home)</onload>
@@ -226,6 +248,12 @@
         <value>$VAR[Bald_RowsNote_home_1]</value>
         <value/>
     </variable>
+    <variable name="Bald_RowStyle_home">
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.home),9101)">fanart</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.home),9102)">fanart</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.home),9103)">fanart</value>
+        <value>fanart</value>
+    </variable>
     <include name="Bald_Generated_MoviesWidgets">
         <definition>
             <include content="Bald_Row">
@@ -238,9 +266,10 @@
                 <param name="dots">Bald_RowDots_9201</param>
                 <param name="dots_width">18</param>
                 <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
                 <content target="videos" limit="25" browse="never">videodb://recentlyaddedmovies/</content>
-                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">SetProperty(Bald.Start9202,1,home)</onfocus>
-                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">Control.Move(9202,-2)</onfocus>
+                <include>Bald_RowStart_9202</include>
             </include>
             <include content="Bald_Row">
                 <param name="id">9202</param>
@@ -252,6 +281,8 @@
                 <param name="dots">Bald_RowDots_9202</param>
                 <param name="dots_width">18</param>
                 <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
                 <content target="videos" limit="25" browse="never">special://skin/playlists/top_rated_movies.xsp</content>
             </include>
         </definition>
@@ -277,6 +308,12 @@
     <variable name="Bald_RowsNote_movies_1">
         <value>Recently added movies, $VAR[Bald_RowsNote_movies_2]</value>
     </variable>
+    <include name="Bald_RowStart_9201">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9201)) + String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)">SetProperty(Bald.Start9201,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9201)) + String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)">Control.Move(9201,-2)</onfocus>
+        </definition>
+    </include>
     <include name="Bald_RowDots_9202">
         <definition>
             <control type="image">
@@ -298,6 +335,12 @@
     <variable name="Bald_RowsNote_movies_2">
         <value>Top rated movies</value>
     </variable>
+    <include name="Bald_RowStart_9202">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">SetProperty(Bald.Start9202,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">Control.Move(9202,-2)</onfocus>
+        </definition>
+    </include>
     <include name="Bald_RowStartReset_movies">
         <definition>
             <onload>ClearProperty(Bald.Start9201,home)</onload>
@@ -366,6 +409,11 @@
         <value>$VAR[Bald_RowsNote_movies_1]</value>
         <value/>
     </variable>
+    <variable name="Bald_RowStyle_movies">
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.movies),9201)">fanart</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.movies),9202)">fanart</value>
+        <value>fanart</value>
+    </variable>
     <include name="Bald_Generated_TVShowsWidgets">
         <definition>
             <include content="Bald_Row">
@@ -378,9 +426,10 @@
                 <param name="dots">Bald_RowDots_9301</param>
                 <param name="dots_width">18</param>
                 <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
                 <content target="videos" limit="25" browse="never">videodb://recentlyaddedepisodes/</content>
-                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">SetProperty(Bald.Start9302,1,home)</onfocus>
-                <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">Control.Move(9302,-2)</onfocus>
+                <include>Bald_RowStart_9302</include>
             </include>
             <include content="Bald_Row">
                 <param name="id">9302</param>
@@ -392,6 +441,8 @@
                 <param name="dots">Bald_RowDots_9302</param>
                 <param name="dots_width">18</param>
                 <param name="style">fanart</param>
+                <param name="slot">2</param>
+                <param name="start">3</param>
                 <content target="videos" limit="25" browse="never">special://skin/playlists/top_rated_tvshows.xsp</content>
             </include>
         </definition>
@@ -417,6 +468,12 @@
     <variable name="Bald_RowsNote_tvshows_1">
         <value>Recently added episodes, $VAR[Bald_RowsNote_tvshows_2]</value>
     </variable>
+    <include name="Bald_RowStart_9301">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9301)) + String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)">SetProperty(Bald.Start9301,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9301)) + String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)">Control.Move(9301,-2)</onfocus>
+        </definition>
+    </include>
     <include name="Bald_RowDots_9302">
         <definition>
             <control type="image">
@@ -438,6 +495,12 @@
     <variable name="Bald_RowsNote_tvshows_2">
         <value>Top rated TV shows</value>
     </variable>
+    <include name="Bald_RowStart_9302">
+        <definition>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">SetProperty(Bald.Start9302,1,home)</onfocus>
+            <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">Control.Move(9302,-2)</onfocus>
+        </definition>
+    </include>
     <include name="Bald_RowStartReset_tvshows">
         <definition>
             <onload>ClearProperty(Bald.Start9301,home)</onload>
@@ -505,6 +568,11 @@
     <variable name="Bald_RowsNote_tvshows">
         <value>$VAR[Bald_RowsNote_tvshows_1]</value>
         <value/>
+    </variable>
+    <variable name="Bald_RowStyle_tvshows">
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.tvshows),9301)">fanart</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row.tvshows),9302)">fanart</value>
+        <value>fanart</value>
     </variable>
     <variable name="Bald_Fanart">
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + !String.IsEmpty(Container(9101).ListItem.Art(fanart))">$INFO[Container(9101).ListItem.Art(fanart)]</value>

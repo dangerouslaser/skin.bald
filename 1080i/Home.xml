@@ -18,6 +18,8 @@
 	<onload>SetProperty(Bald.Row.movies,9201,home)</onload>
 	<onload>SetProperty(Bald.Row.tvshows,9301,home)</onload>
 	<onload>SetProperty(Bald.Screen,home,home)</onload>
+	<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
+	<onload>SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)</onload>
 	<!-- Background: TMDb Helper's blurred fanart of the current row item (its image service only; no TMDB lookups),
 	     watching the current row (TMDbHelper.WidgetContainer). The earlier color tint is switched off. -->
 	<onload condition="Skin.HasSetting(TMDbHelper.EnableColors)">Skin.Reset(TMDbHelper.EnableColors)</onload>
@@ -56,6 +58,8 @@
 			<!-- Art frame -->
 			<control type="group">
 				<include>Bald_AnimInfoFrame</include>
+				<!-- Poster rows: up 63 px so the crop stays centred in the 576 px frame; undone while info is open. -->
+				<include>Bald_AnimPosterArt</include>
 				<left>Bald_SafeLeft</left>
 				<top>120</top>
 				<width>1248</width>
@@ -105,6 +109,8 @@
 			<control type="group">
 				<include>Bald_AnimInfoFrame</include>
 				<include>Bald_AnimInfoArtOverlay</include>
+				<!-- Poster rows: up 126 px with the frame's bottom edge. -->
+				<include>Bald_AnimPosterEdge</include>
 				<left>Bald_SafeLeft</left>
 				<top>120</top>
 				<width>1248</width>
@@ -142,12 +148,12 @@
 				</control>
 			</control>
 
-			<!-- Frame masks: Kodi does not clip a zoom-animated texture, so four bars cover the up-to-5% settle-zoom
-			     overflow around the art frame (96,120 1248x702). Each bar is a clipped window onto the same background
-			     (grouplists clip ordinary textures), so the bars are invisible against it. -->
-<control type="group">
+			<!-- Frame masks: Kodi does not clip a zoom-animated texture, so bars cover the up-to-5% settle-zoom
+			     overflow around the art frame (96,120 1248x702, or 1248x576 on a poster row). Each bar is a clipped window
+			     onto the same background (grouplists clip ordinary textures), so the bars are invisible against it. -->
+			<control type="group">
 				<include>Bald_AnimInfoMasks</include>
-				<include>Bald_ArtFrameMasks</include>
+				<include>Bald_HomeFrameMasks</include>
 			</control>
 
 			<!-- Clock and date -->
@@ -314,6 +320,8 @@
 			<height>1</height>
 			<texturefocus />
 			<texturenofocus />
+			<!-- The idle timer closed the menu, so the current row is displayed again. -->
+			<onfocus>SetProperty(Bald.RowStyle,$VAR[Bald_ScreenRowStyle],home)</onfocus>
 			<onup>SetFocus($VAR[Bald_RowFocus])</onup>
 			<ondown>SetFocus($VAR[Bald_RowFocus])</ondown>
 			<onleft>SetFocus($VAR[Bald_RowFocus])</onleft>

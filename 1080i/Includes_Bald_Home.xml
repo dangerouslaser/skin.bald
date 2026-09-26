@@ -69,6 +69,53 @@
 		</animation>
 	</include>
 
+	<!-- ============ Poster rows: the art frame shrinks to 1248 x 576 ============ -->
+	<!-- Bald.RowStyle holds the displayed row's style: set by the row's onfocus, Home's onload, and the menu (the
+	     previewed screen's remembered row, Bald_PreviewRowStyle). A window property, not a Container condition, because
+	     <visible> and animation conditions have no window context under a modal dialog (see Bald_DialogOver).
+	     Kodi cannot animate a control's size, so on a poster row the bottom frame mask slides up 126 px, the art moves
+	     up 63 px so its crop stays centred in the smaller window, and the scrim and clearlogo move up 126 px to stay on
+	     the frame's bottom edge; all 540 move after 30, the timing of the info close's frame return, and the reverse
+	     going back to a landscape row. The row swap runs meanwhile (out 140, in 360 / 440 after 170).
+	     Paired non-reversible Conditionals, as in Bald_AnimInfoFrame: the animation whose condition drops is reset
+	     (no transform), and the one whose condition rises starts from the state the other ended in. -->
+	<expression name="Bald_PosterRow">[String.IsEqual(Window(home).Property(Bald.RowStyle),poster)]</expression>
+	<!-- The art layers (the art frame group, which also zooms for info). While info is open the nudge is undone in step
+	     with the zoom (640 move after 40), so the zoom about 274,343 maps the whole 1248 x 702 art to the screen exactly
+	     as on a landscape row; closing info nudges it again with the zoom back (540 after 30). -->
+	<include name="Bald_AnimPosterArt">
+		<animation type="Conditional" condition="$EXP[Bald_PosterRow] + !$EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="slide" start="0,0" end="0,-63" time="540" delay="30" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="!$EXP[Bald_PosterRow]" reversible="false">
+			<effect type="slide" start="0,-63" end="0,0" time="540" delay="30" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="$EXP[Bald_PosterRow] + $EXP[Bald_InfoOpen]" reversible="false">
+			<effect type="slide" start="0,-63" end="0,0" time="640" delay="40" tween="cubic" easing="out" />
+		</animation>
+	</include>
+	<!-- The frame's bottom edge: the bottom mask, and the logo scrim and clearlogo. -->
+	<include name="Bald_AnimPosterEdge">
+		<animation type="Conditional" condition="$EXP[Bald_PosterRow]" reversible="false">
+			<effect type="slide" start="0,0" end="0,-126" time="540" delay="30" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="!$EXP[Bald_PosterRow]" reversible="false">
+			<effect type="slide" start="0,-126" end="0,0" time="540" delay="30" tween="cubic" easing="out" />
+		</animation>
+	</include>
+	<!-- The displayed screen's current row style, and the style of the screen the menu previews (empty, a full frame,
+	     for entries without rows). Bald_RowStyle_<screen> is generated: the style of the row Bald.Row.<screen> names. -->
+	<variable name="Bald_ScreenRowStyle">
+		<value condition="$EXP[Bald_Screen_movies]">$VAR[Bald_RowStyle_movies]</value>
+		<value condition="$EXP[Bald_Screen_tvshows]">$VAR[Bald_RowStyle_tvshows]</value>
+		<value>$VAR[Bald_RowStyle_home]</value>
+	</variable>
+	<variable name="Bald_PreviewRowStyle">
+		<value condition="$EXP[Bald_MenuPreview_home]">$VAR[Bald_RowStyle_home]</value>
+		<value condition="$EXP[Bald_MenuPreview_movies]">$VAR[Bald_RowStyle_movies]</value>
+		<value condition="$EXP[Bald_MenuPreview_tvshows]">$VAR[Bald_RowStyle_tvshows]</value>
+	</variable>
+
 	<!-- ============ Background ============ -->
 	<!-- The current row item's fanart, blurred by TMDb Helper (Gaussian radius 40 on a 480 px copy, cached), darkened
 	     for the OLED with colordiffuse. <fadetime> crossfades between titles and waits until the new image has loaded. -->
@@ -135,12 +182,38 @@
 			</control>
 		</definition>
 	</include>
-	<!-- Fixed screen-space masks cover the settling fanart zoom outside the 96,120,1248,702 frame. -->
+	<!-- Fixed screen-space masks cover the settling fanart zoom outside the 96,120,1248,702 frame (the info dialog's
+	     recommendations page; Home uses Bald_HomeFrameMasks). -->
 	<include name="Bald_ArtFrameMasks">
 		<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">80</param><param name="w">96</param><param name="h">782</param></include>
 		<include content="Bald_BackdropWindow"><param name="x">1344</param><param name="y">80</param><param name="w">60</param><param name="h">782</param></include>
 		<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">80</param><param name="w">1248</param><param name="h">40</param></include>
 		<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">822</param><param name="w">1248</param><param name="h">30</param></include>
+	</include>
+	<!-- Home's frame masks. Unlike Bald_ArtFrameMasks they reach the top of the screen, because on a poster row the art
+	     sits 63 px higher (Bald_AnimPosterArt), and the bottom mask is 156 px tall, so slid up 126 px
+	     (Bald_AnimPosterEdge) it covers 696-852: the frame becomes 120-696, 1248 x 576.
+	     Kodi clips a grouplist in unanimated coordinates and then applies the animation, so the sliding mask carries its
+	     view of the background with it, 126 px off. A second, fixed mask over 696-852 fades in once the slide has
+	     settled and out as it starts back, so a poster row rests on an aligned mask (docs/NOTES.md, Home row styles). -->
+	<include name="Bald_HomeFrameMasks">
+		<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">0</param><param name="w">96</param><param name="h">862</param></include>
+		<include content="Bald_BackdropWindow"><param name="x">1344</param><param name="y">0</param><param name="w">60</param><param name="h">862</param></include>
+		<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">0</param><param name="w">1248</param><param name="h">120</param></include>
+		<control type="group">
+			<include>Bald_AnimPosterEdge</include>
+			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">822</param><param name="w">1248</param><param name="h">156</param></include>
+		</control>
+		<control type="group">
+			<visible>$EXP[Bald_PosterRow]</visible>
+			<animation type="Visible">
+				<effect type="fade" start="0" end="100" time="200" delay="370" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Hidden">
+				<effect type="fade" start="100" end="0" time="150" tween="sine" easing="inout" />
+			</animation>
+			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">696</param><param name="w">1248</param><param name="h">156</param></include>
+		</control>
 	</include>
 
 	<!-- ============ Current-row variables (art frame) ============ -->
@@ -574,8 +647,15 @@
 				<texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture>
 				<visible>$PARAM[ring]</visible>
 			</control>
-			<!-- Invisible clearlogo: loads each visible tile's logo into Kodi's texture cache before it is focused,
-			     so the art-frame logo is ready when its fade-in starts (a fadetime on the logo ghosted old logos). -->
+			<include content="Bald_TileLogoPreload"><param name="x">$PARAM[x]</param><param name="y">$PARAM[y]</param></include>
+		</definition>
+	</include>
+	<!-- Invisible clearlogo: loads each visible tile's logo into Kodi's texture cache before it is focused,
+	     so the art-frame logo is ready when its fade-in starts (a fadetime on the logo ghosted old logos). -->
+	<include name="Bald_TileLogoPreload">
+		<param name="x">10</param>
+		<param name="y">10</param>
+		<definition>
 			<control type="image">
 				<left>$PARAM[x]</left>
 				<top>$PARAM[y]</top>
@@ -589,7 +669,7 @@
 
 	<!-- ============ Row styles ============ -->
 	<!-- Each Home row has a style, set in the widget editor (the Skin Variables row field "style") and passed to
-	     Bald_Row by the generator: fanart (the default, also for rows saved without a style), thumbnail or logo.
+	     Bald_Row by the generator: fanart (the default, also for rows saved without a style), thumbnail, logo or poster.
 	     Bald_RowTiles_<style> fills the row's fixedlist: its position and size, and its item layouts. -->
 	<include name="Bald_RowTiles_fanart">
 		<include content="Bald_RowLandscape" />
@@ -635,6 +715,46 @@
 			</focusedlayout>
 		</definition>
 	</include>
+	<!-- Poster row: the library's Poster-low rail (View_515_Bald_PosterLow.xml, docs/SPEC.md 5.10): 140 x 210 posters
+	     (Bald_PosterLowTile) in 156 px slots, eight across the 1248 px frame width, under an art frame that
+	     Bald_PosterRow shrinks to 1248 x 576. Episodes fall back to the season's, then the show's poster
+	     (Bald_LibraryPoster). -->
+	<include name="Bald_RowTiles_poster">
+		<left>Bald_SafeLeft</left>
+		<top>Bald_LowRailTop</top>
+		<width>1248</width>
+		<height>234</height>
+		<itemlayout width="156" height="234">
+			<include content="Bald_PosterLowTile" />
+			<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
+		</itemlayout>
+		<focusedlayout width="156" height="234">
+			<control type="group">
+				<!-- While the menu is open the focused poster dims like a landscape tile. -->
+				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+					<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
+				</animation>
+				<include content="Bald_PosterLowTile">
+					<param name="diffuse">bald_ink</param>
+					<param name="focused">!$EXP[Bald_OverlayOpen]</param>
+				</include>
+				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
+			</control>
+		</focusedlayout>
+	</include>
+	<!-- Row label line (label, dots, count): 12 px above the tiles, as on landscape rows. -->
+	<include name="Bald_RowLabelTop_fanart">
+		<top>856</top>
+	</include>
+	<include name="Bald_RowLabelTop_thumbnail">
+		<include>Bald_RowLabelTop_fanart</include>
+	</include>
+	<include name="Bald_RowLabelTop_logo">
+		<include>Bald_RowLabelTop_fanart</include>
+	</include>
+	<include name="Bald_RowLabelTop_poster">
+		<top>712</top>
+	</include>
 	<include name="Bald_TileOverlayNone">
 		<definition />
 	</include>
@@ -668,9 +788,10 @@
 	<include name="Bald_RowDotsNone">
 		<definition />
 	</include>
-	<!-- A home row: label line plus fixedlist. Pass <content> elements as children. style picks the tiles
-	     (Bald_RowTiles_<style>, see Row styles above). Focus travels to slot 2, then the row scrolls (440 move).
-	     Only the current row is visible; the others keep focus reachable with allowhiddenfocus. -->
+	<!-- A home row: label line plus fixedlist. Pass <content> elements as children. style picks the tiles and the
+	     label line's position (Bald_RowTiles_<style>, Bald_RowLabelTop_<style>, see Row styles above). Focus travels
+	     to slot (2 landscape, 5 poster), then the row scrolls (440 move); start is the item a fresh fixedlist selects
+	     there (slot + 1). Only the current row is visible; the others keep focus reachable with allowhiddenfocus. -->
 	<include name="Bald_Row">
 		<param name="id" />
 		<param name="y" />
@@ -682,6 +803,8 @@
 		<param name="up" />
 		<param name="down">noop</param>
 		<param name="style">fanart</param>
+		<param name="slot">2</param>
+		<param name="start">3</param>
 		<definition>
 			<control type="group">
 				<visible>[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]</visible>
@@ -696,7 +819,7 @@
 				<!-- Row label line: label, row dots, count -->
 				<control type="grouplist">
 					<left>Bald_SafeLeft</left>
-					<top>856</top>
+					<include content="Bald_RowLabelTop_$PARAM[style]" />
 					<width>1248</width>
 					<height>26</height>
 					<orientation>horizontal</orientation>
@@ -752,23 +875,26 @@
 				<include content="Bald_AnimNudge"><param name="prop">Bald.NudgeL</param><param name="x">14</param><param name="back">-14</param></include>
 				<include content="Bald_AnimNudge"><param name="prop">Bald.NudgeR</param><param name="x">-14</param><param name="back">14</param></include>
 				<orientation>horizontal</orientation>
-				<focusposition>2</focusposition>
-				<movement>2</movement>
+				<focusposition>$PARAM[slot]</focusposition>
+				<movement>$PARAM[slot]</movement>
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
 				<onfocus>SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
 				<onfocus>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onfocus>
-				<!-- Row start: a fixedlist first selects item 3 at its focus slot. The row above moves this one back while
+				<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
+				<onfocus>SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
+				<!-- Row start: a fixedlist first selects item slot + 1 (start) at its focus slot. The row above moves this one back while
 				     it is hidden (generated onfocus, see shortcuts/generator/screen.xml) and Timers.xml covers the rows shown
 				     before they are focused; if the row is still pristine when it gains focus, move it here. Loaded rows are
 				     marked once focused, so a later item 3 at slot 2 is the viewer's own. Home clears the marks in onload.
 				     Conditions are evaluated before any of these actions run (CGUIAction::ExecuteActions). -->
-				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$PARAM[id])) + String.IsEqual(Container($PARAM[id]).CurrentItem,3) + String.IsEqual(Container($PARAM[id]).Position,2)">Control.Move($PARAM[id],-2)</onfocus>
+				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$PARAM[id])) + String.IsEqual(Container($PARAM[id]).CurrentItem,$PARAM[start]) + String.IsEqual(Container($PARAM[id]).Position,$PARAM[slot])">Control.Move($PARAM[id],-$PARAM[slot])</onfocus>
 				<onfocus condition="Integer.IsGreater(Container($PARAM[id]).NumItems,0)">SetProperty(Bald.Start$PARAM[id],1,home)</onfocus>
 				<!-- Opening the menu is screen-relative: keep the active screen selected instead of
 				     resetting the navigation model to Home. TV moves up one slot when Movies is disabled. -->
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.Menu,1,home)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onup>
+				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.RowStyle,$PARAM[style],home)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1) + $EXP[Bald_Screen_home]">SetFocus(9001)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1) + $EXP[Bald_Screen_movies]">SetFocus(9002)</onup>
@@ -779,6 +905,7 @@
 				<onright>SetProperty(Bald.NudgeR,$VAR[Bald_NudgeRNext],home)</onright>
 				<onback>SetProperty(Bald.Menu,1,home)</onback>
 				<onback>SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onback>
+				<onback>SetProperty(Bald.RowStyle,$PARAM[style],home)</onback>
 				<onback>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onback>
 				<onback condition="$EXP[Bald_Screen_home]">SetFocus(9001)</onback>
 				<onback condition="$EXP[Bald_Screen_movies]">SetFocus(9002)</onback>
@@ -815,6 +942,8 @@
 				<onfocus condition="!$EXP[Bald_MenuOpen] + String.IsEmpty(Skin.String(Bald.MenuOpens))">Skin.SetString(Bald.MenuOpens,1)</onfocus>
 				<onfocus>SetProperty(Bald.Menu,1,home)</onfocus>
 				<onfocus>SetProperty(Bald.MenuPreview,$PARAM[preview],home)</onfocus>
+				<!-- The previewed screen's remembered row sets the art frame's shape (empty, a full frame, without rows). -->
+				<onfocus>SetProperty(Bald.RowStyle,$VAR[Bald_PreviewRowStyle],home)</onfocus>
 				<nested />
 				<onleft>Action(Select)</onleft>
 				<onright>$PARAM[right]</onright>
@@ -830,6 +959,7 @@
 			<onfocus>SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onfocus>
 			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.Screen,$PARAM[screen],home)</onclick>
 			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onclick>
+			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_$PARAM[screen]],home)</onclick>
 			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">ClearProperty(Bald.Menu,home)</onclick>
 			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetFocus($INFO[Window(home).Property(Bald.Row.$PARAM[screen])])</onclick>
 		</definition>

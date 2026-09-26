@@ -74,7 +74,7 @@
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">94</param><param name="w">1248</param><param name="h">26</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">696</param><param name="w">1248</param><param name="h">26</param></include>
 			<control type="list" id="515">
-				<left>Bald_SafeLeft</left><top>738</top><width>1248</width><height>234</height><orientation>horizontal</orientation>
+				<left>Bald_SafeLeft</left><top>Bald_LowRailTop</top><width>1248</width><height>234</height><orientation>horizontal</orientation>
 				<viewtype label="31855">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>4</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,515,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,515,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
 				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,515)</ondown><onleft>noop</onleft><onright>noop</onright>

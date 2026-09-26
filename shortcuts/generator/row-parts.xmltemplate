@@ -6,3 +6,9 @@
 <variable name="Bald_RowsNote_{screen}_{row_index}">
     <value>{item_label_escaped}{note_rest}</value>
 </variable>
+<include name="Bald_RowStart_{row_id}">
+    <definition>
+        <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start{row_id})) + String.IsEqual(Container({row_id}).CurrentItem,{row_start}) + String.IsEqual(Container({row_id}).Position,{row_slot})">SetProperty(Bald.Start{row_id},1,home)</onfocus>
+        <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start{row_id})) + String.IsEqual(Container({row_id}).CurrentItem,{row_start}) + String.IsEqual(Container({row_id}).Position,{row_slot})">Control.Move({row_id},-{row_slot})</onfocus>
+    </definition>
+</include>

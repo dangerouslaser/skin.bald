@@ -24,44 +24,50 @@
     </timer>
     <!-- Bald skin timers run in CApplication::ProcessSlow, every 500 ms: fine for row start and idle, too coarse
          for anything that must follow item changes. -->
-    <!-- Bald Home. Row start: a fixedlist first selects the item at its focus position (slot 2);
+    <!-- Bald Home. Row start: a fixedlist first selects the item at its focus position (slot 2, or slot 5 on a poster
+         row: item 6 at position 5; a landscape row's cursor never reaches position 5, so the two cannot be confused);
          once a row's items have loaded, move it back to the first item. One shot per window load; Home clears the flags in onload.
          Timers only for rows that can show before they are focused (the first rows, and each screen's first row in the menu
          preview) and the next two Home rows; every other row is moved by the row above it or on its own focus (Bald_Row). -->
     <timer>
         <name>bald_rowstart_9101</name>
-        <start>Window.IsActive(home) + !Container(9101).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9101)) + String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)</start>
+        <start>Window.IsActive(home) + !Container(9101).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9101)) + [[String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)] | [String.IsEqual(Container(9101).CurrentItem,6) + String.IsEqual(Container(9101).Position,5)]]</start>
         <onstart>SetProperty(Bald.Start9101,1,home)</onstart>
-        <onstart>Control.Move(9101,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9101).Position,2)">Control.Move(9101,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9101).Position,5)">Control.Move(9101,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9101))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9102</name>
-        <start>Window.IsActive(home) + !Container(9102).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)</start>
+        <start>Window.IsActive(home) + !Container(9102).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9102)) + [[String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)] | [String.IsEqual(Container(9102).CurrentItem,6) + String.IsEqual(Container(9102).Position,5)]]</start>
         <onstart>SetProperty(Bald.Start9102,1,home)</onstart>
-        <onstart>Control.Move(9102,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9102).Position,2)">Control.Move(9102,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9102).Position,5)">Control.Move(9102,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9102))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9103</name>
-        <start>Window.IsActive(home) + !Container(9103).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)</start>
+        <start>Window.IsActive(home) + !Container(9103).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9103)) + [[String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)] | [String.IsEqual(Container(9103).CurrentItem,6) + String.IsEqual(Container(9103).Position,5)]]</start>
         <onstart>SetProperty(Bald.Start9103,1,home)</onstart>
-        <onstart>Control.Move(9103,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9103).Position,2)">Control.Move(9103,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9103).Position,5)">Control.Move(9103,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9103))</stop>
     </timer>
     <!-- The first Movies and TV Shows rows preview in the menu before they are ever focused. -->
     <timer>
         <name>bald_rowstart_9201</name>
-        <start>Window.IsActive(home) + !Container(9201).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9201)) + String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)</start>
+        <start>Window.IsActive(home) + !Container(9201).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9201)) + [[String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)] | [String.IsEqual(Container(9201).CurrentItem,6) + String.IsEqual(Container(9201).Position,5)]]</start>
         <onstart>SetProperty(Bald.Start9201,1,home)</onstart>
-        <onstart>Control.Move(9201,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9201).Position,2)">Control.Move(9201,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9201).Position,5)">Control.Move(9201,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9201))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9301</name>
-        <start>Window.IsActive(home) + !Container(9301).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9301)) + String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)</start>
+        <start>Window.IsActive(home) + !Container(9301).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9301)) + [[String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)] | [String.IsEqual(Container(9301).CurrentItem,6) + String.IsEqual(Container(9301).Position,5)]]</start>
         <onstart>SetProperty(Bald.Start9301,1,home)</onstart>
-        <onstart>Control.Move(9301,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9301).Position,2)">Control.Move(9301,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9301).Position,5)">Control.Move(9301,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9301))</stop>
     </timer>
     <!-- Bald Home idle (60 s): close the menu and park focus on the wake button so the first key only wakes. -->

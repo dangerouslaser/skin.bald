@@ -173,6 +173,7 @@
 	<variable name="Bald_WidgetStyleLabel">
 		<value condition="String.IsEqual(Container(9100).ListItem.Property(style),thumbnail)">$LOCALIZE[31721]</value>
 		<value condition="String.IsEqual(Container(9100).ListItem.Property(style),logo)">$LOCALIZE[31722]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(style),poster)">$LOCALIZE[31723]</value>
 		<value>$LOCALIZE[31720]</value>
 	</variable>
 

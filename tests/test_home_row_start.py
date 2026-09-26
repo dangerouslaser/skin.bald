@@ -9,8 +9,13 @@ from conditions import has_action, same_actions
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
 SCREENS = (("home", "Home", 9100), ("movies", "Movies", 9200), ("tvshows", "TVShows", 9300))
-PRISTINE = ("String.IsEmpty(Window(home).Property(Bald.Start{id})) + String.IsEqual(Container({id}).CurrentItem,3)"
-            " + String.IsEqual(Container({id}).Position,2)")
+PRISTINE = ("String.IsEmpty(Window(home).Property(Bald.Start{id})) + String.IsEqual(Container({id}).CurrentItem,{start})"
+            " + String.IsEqual(Container({id}).Position,{slot})")
+
+
+def pristine(row, slot):
+    """A fresh fixedlist selects item slot + 1 at its focus slot (landscape 2, poster 5)."""
+    return PRISTINE.format(id=row, start=int(slot) + 1, slot=slot)
 
 
 def configured(screen, base):
@@ -26,15 +31,22 @@ class HomeRowStartTests(unittest.TestCase):
         for screen, title, base in SCREENS:
             ids = configured(screen, base)
             rows = self.fallback.findall(f"include[@name='Bald_Generated_{title}Widgets']/definition/include")
+            slots = {int(row.findtext("param[@name='id']")): row.findtext("param[@name='slot']") for row in rows}
             for row_id, row in zip(ids, rows):
-                actions = [(node.get("condition"), node.text) for node in row.findall("onfocus")]
+                # The row above includes the next row's own start fix, written with that row's focus slot.
+                nested = [(node.text or "").strip() for node in row.findall("include")]
                 following = row_id + 1
                 if following not in ids:
-                    self.assertEqual(actions, [])
+                    self.assertEqual(nested, [])
+                    self.assertEqual(row.findall("onfocus"), [])
                     continue
-                condition = PRISTINE.format(id=following)
+                self.assertEqual(nested, [f"Bald_RowStart_{following}"])
+                fix = self.fallback.find(f"include[@name='Bald_RowStart_{following}']/definition")
+                actions = [(node.get("condition"), node.text) for node in fix.findall("onfocus")]
+                slot = slots[following]
+                condition = pristine(following, slot)
                 expected = [(condition, f"SetProperty(Bald.Start{following},1,home)"),
-                            (condition, f"Control.Move({following},-2)")]
+                            (condition, f"Control.Move({following},-{slot})")]
                 self.assertTrue(same_actions(sorted(actions, key=lambda pair: pair[1]),
                                              sorted(expected, key=lambda pair: pair[1])), (row_id, actions))
 
@@ -55,7 +67,10 @@ class HomeRowStartTests(unittest.TestCase):
             "include[@name='Bald_Row']/definition/control[@type='fixedlist']"
         )
         actions = [(node.get("condition"), node.text) for node in row.findall("onfocus")]
-        self.assertTrue(has_action(actions, PRISTINE.format(id="$PARAM[id]"), "Control.Move($PARAM[id],-2)"))
+        self.assertTrue(has_action(actions, PRISTINE.format(id="$PARAM[id]", start="$PARAM[start]", slot="$PARAM[slot]"),
+                                   "Control.Move($PARAM[id],-$PARAM[slot])"))
+        self.assertEqual(row.findtext("focusposition"), "$PARAM[slot]")
+        self.assertEqual(row.findtext("movement"), "$PARAM[slot]")
         self.assertTrue(has_action(actions, "Integer.IsGreater(Container($PARAM[id]).NumItems,0)",
                                    "SetProperty(Bald.Start$PARAM[id],1,home)"))
 
@@ -64,6 +79,14 @@ class HomeRowStartTests(unittest.TestCase):
         names = {timer.findtext("name") for timer in timers.findall("timer")}
         for row in (9101, 9102, 9103, 9201, 9301):
             self.assertIn(f"bald_rowstart_{row}", names)
+            # The row may be a landscape (slot 2) or poster (slot 5) row; the timer moves it by its own slot.
+            timer = next(node for node in timers.findall("timer") if node.findtext("name") == f"bald_rowstart_{row}")
+            start = timer.findtext("start")
+            for slot in (2, 5):
+                self.assertIn(f"String.IsEqual(Container({row}).CurrentItem,{slot + 1})", start)
+                actions = [(node.get("condition"), node.text) for node in timer.findall("onstart")]
+                self.assertTrue(has_action(actions, f"String.IsEqual(Container({row}).Position,{slot})",
+                                           f"Control.Move({row},-{slot})"), (row, slot))
 
 
 if __name__ == "__main__":
