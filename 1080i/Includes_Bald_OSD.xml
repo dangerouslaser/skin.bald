@@ -167,11 +167,12 @@
 	<variable name="Bald_OSDSubtitleCode">
 		<value condition="VideoPlayer.SubtitlesEnabled">$INFO[VideoPlayer.SubtitlesLanguage,[UPPERCASE],[/UPPERCASE]]</value>
 	</variable>
-	<!-- Info line for the info overlay and details: rating, certificate, year and duration. -->
+	<!-- Info line for the info overlay and details: certificate, year and duration. The ratings are pills before it
+	     (Bald_RatingsPlayer, Includes_Bald_Ratings.xml), governed by Appearance > Ratings. -->
 	<variable name="Bald_OSDInfoMeta">
 		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.StartTime, · ]$INFO[VideoPlayer.EndTime, – ]$INFO[VideoPlayer.Genre, · ]</value>
-		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode, E]$INFO[VideoPlayer.Title, · ]$INFO[VideoPlayer.Rating, · ★ ]$INFO[VideoPlayer.mpaa, · ]$INFO[Player.Duration(mins), · , $LOCALIZE[31710]]</value>
-		<value>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Rating, · ★ ]$INFO[VideoPlayer.mpaa, · ]$INFO[Player.Duration(mins), · , $LOCALIZE[31710]]</value>
+		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode, E]$INFO[VideoPlayer.Title, · ]$INFO[VideoPlayer.mpaa, · ]$INFO[Player.Duration(mins), · , $LOCALIZE[31710]]</value>
+		<value>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.mpaa, · ]$INFO[Player.Duration(mins), · , $LOCALIZE[31710]]</value>
 	</variable>
 	<!-- The text under the info line: the plot, or with plots off, the episode title or the tagline. -->
 	<variable name="Bald_OSDInfoText">
@@ -971,7 +972,7 @@
 				<control type="group">
 					<height>14</height>
 				</control>
-				<!-- Info line: resolution, HDR and audio chips, then rating, certificate, year and duration. -->
+				<!-- Info line: resolution, HDR and audio chips, the rating pills, then certificate, year and duration. -->
 				<control type="grouplist">
 					<width>1100</width>
 					<height>28</height>
@@ -986,6 +987,7 @@
 					<include content="Bald_FlagChip"><param name="label">HDR10+</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.StartsWith(VideoPlayer.HdrType,hdr10) + !String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
 					<include content="Bald_FlagChip"><param name="label">HLG</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.HdrType,hlg)</param></include>
 					<include content="Bald_FlagChip"><param name="label">$MAP[DefaultCodecMap, VideoPlayer.AudioCodec]</param><param name="visible">$EXP[Bald_ShowMediaFlags] + !String.IsEmpty(VideoPlayer.AudioCodec)</param></include>
+					<include content="Bald_RatingsPlayer" />
 					<control type="label">
 						<left>6</left>
 						<width>auto</width>
