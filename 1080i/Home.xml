@@ -52,6 +52,8 @@
 
 		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). -->
 		<control type="group">
+			<!-- Home is the root: it is always returned to (in from the left) and always left deeper (out to the left). -->
+			<include content="Bald_AnimWindowDepth"><param name="back_in">true</param></include>
 			<animation type="Conditional" condition="$EXP[Bald_Idle]" pulse="true">
 				<effect type="slide" start="0,0" end="2,0" time="23000" tween="sine" easing="inout" />
 			</animation>

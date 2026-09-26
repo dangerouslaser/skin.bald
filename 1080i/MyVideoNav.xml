@@ -22,6 +22,12 @@
 		</control>
 		<include>DefaultBackground</include>
 		<control type="group">
+			<!-- Entered from Home (in from the right); returned to from anything deeper, such as playback. Leaving for Home
+			     is back (out to the right). -->
+			<include content="Bald_AnimWindowDepth">
+				<param name="back_in">!Window.Previous(home)</param>
+				<param name="back_out">Window.Next(home)</param>
+			</include>
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_510_Bald_Posters</include>
 			<include>View_511_Bald_Wall</include>

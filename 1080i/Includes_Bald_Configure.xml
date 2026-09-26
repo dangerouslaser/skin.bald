@@ -17,22 +17,10 @@
 	<!-- The closing window is going back to its parent (or Home). -->
 	<expression name="Bald_SettingsBackOut">[Window.Next(home) | Window.Next(settings) | [[Window.Next(1115) | Window.Next(skinsettings)] + [Window.IsVisible(1117) | Window.IsVisible(1118)]] | [Window.Next(1117) + Window.IsVisible(1116)]]</expression>
 	<include name="Bald_AnimSettingsWindow">
-		<animation type="WindowOpen" condition="!$EXP[Bald_SettingsBackIn]">
-			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
-			<effect type="slide" start="40,0" end="0,0" time="480" tween="cubic" easing="out" />
-		</animation>
-		<animation type="WindowOpen" condition="$EXP[Bald_SettingsBackIn]">
-			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
-			<effect type="slide" start="-40,0" end="0,0" time="480" tween="cubic" easing="out" />
-		</animation>
-		<animation type="WindowClose" condition="!$EXP[Bald_SettingsBackOut]">
-			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
-			<effect type="slide" start="0,0" end="-40,0" time="180" tween="cubic" easing="out" />
-		</animation>
-		<animation type="WindowClose" condition="$EXP[Bald_SettingsBackOut]">
-			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
-			<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
-		</animation>
+		<include content="Bald_AnimWindowDepth">
+			<param name="back_in">$EXP[Bald_SettingsBackIn]</param>
+			<param name="back_out">$EXP[Bald_SettingsBackOut]</param>
+		</include>
 	</include>
 
 	<!-- Field, backdrop, sidebar and title. -->
