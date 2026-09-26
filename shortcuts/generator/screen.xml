@@ -1,13 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Everything one screen needs, for its configured rows only (see generator/screen.xmltemplate).
      Conditions use Skin Variables' own comparisons (a==b, a!=b) so the build does not depend on Kodi state
-     and tools/build_home_defaults.py can reproduce it. Row ids are {base} + 1 + {item_x}. -->
+     and tools/build_home_defaults.py can reproduce it. Row ids are {base} + 1 + {item_x}.
+     A hub slot (node set) also reads its hub from the hubs menu: the entry at position {node}, if any. Its label, open
+     target and "disabled" field become the slot's menu entry (Bald_HubLabel_<screen>, Bald_HubShown_<screen>,
+     Bald_HubOpen_<screen>); a slot past the end of the list has no hub and no rows, so it builds only empty names. -->
 <contents>
     <items>
         <item>
             <template>generator/screen.xmltemplate</template>
+            <!-- The hub in this slot, when there is one (home and livetv have no node, so nothing matches). -->
+            <value name="hub_label">
+                <items menu="hubs" mode="submenu">
+                    <item>
+                        <condition>{item_x}=={node}</condition>
+                        <template>{item_label}</template>
+                    </item>
+                </items>
+            </value>
+            <!-- Shown in the main menu unless its "disabled" field is True (Home Screens, Show in the main menu). -->
+            <value name="hub_shown">
+                <items menu="hubs" mode="submenu">
+                    <item>
+                        <condition>{item_x}=={node}</condition>
+                        <condition>{item_disabled}!=True</condition>
+                        <template>| [true]</template>
+                    </item>
+                </items>
+            </value>
+            <!-- The optional open target (path and target, as Skin Variables' do_action stores them): a window and a
+                 path open with ActivateWindow, a path with no window is a builtin (Skin Variables' own do_open rule). -->
+            <value name="hub_has_open">
+                <items menu="hubs" mode="submenu">
+                    <item>
+                        <condition>{item_x}=={node}</condition>
+                        <condition>{item_path}!=</condition>
+                        <template>| [true]</template>
+                    </item>
+                </items>
+            </value>
+            <value name="hub_open">
+                <items menu="hubs" mode="submenu">
+                    <item>
+                        <condition>{item_x}=={node}</condition>
+                        <condition>{item_path}!=</condition>
+                        <condition>{item_target}!=</condition>
+                        <template>&lt;onfocus&gt;ActivateWindow({item_target},{item_path},return)&lt;/onfocus&gt;</template>
+                    </item>
+                    <item>
+                        <condition>{item_x}=={node}</condition>
+                        <condition>{item_path}!=</condition>
+                        <condition>{item_target}==</condition>
+                        <template>&lt;onfocus&gt;{item_path}&lt;/onfocus&gt;</template>
+                    </item>
+                </items>
+            </value>
             <value name="rows">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>generator/row.xmltemplate</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
@@ -69,10 +118,20 @@
                                 <value>$MATH[{base} + 2 + {item_x}]</value>
                             </rule>
                         </rules>
+                        <!-- Optional row fields sortby / sortorder (the Live TV defaults use them, as Estuary's PVR widgets do). -->
+                        <rules name="content_sort">
+                            <rule>
+                                <condition>{item_sortby}!=</condition>
+                                <value> sortby="{item_sortby}" sortorder="{item_sortorder}"</value>
+                            </rule>
+                            <rule>
+                                <value></value>
+                            </rule>
+                        </rules>
                         <rules name="secondary_content">
                             <rule>
                                 <condition>{item_secondary}==1</condition>
-                                <value>&lt;content target="{item_target_escaped}" limit="{item_limit_escaped}" browse="never"&gt;{item_path2_escaped}&lt;/content&gt;</value>
+                                <value>&lt;content target="{item_target_escaped}" limit="{item_limit_escaped}" browse="never"{content_sort}&gt;{item_path2_escaped}&lt;/content&gt;</value>
                             </rule>
                             <rule>
                                 <value></value>
@@ -94,7 +153,7 @@
                 </items>
             </value>
             <value name="row_parts">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>generator/row-parts.xmltemplate</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
@@ -119,7 +178,7 @@
                             </rule>
                         </rules>
                         <value name="dots">
-                            <items menu="{menu}" mode="submenu">
+                            <items menu="{menu}" item="{node}" mode="{mode}">
                                 <item>
                                     <template>generator/row-dot.xmltemplate</template>
                                     <value name="dot_x">$MATH[12 * {item_x}]</value>
@@ -148,7 +207,7 @@
                 </items>
             </value>
             <value name="row_styles">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>&lt;value condition="String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id})"&gt;{row_style}&lt;/value&gt;</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
@@ -173,7 +232,7 @@
                 </items>
             </value>
             <value name="has_rows">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>| [true]</template>
                     </item>
@@ -182,7 +241,7 @@
             <!-- Startup splash: a row is still loading until its list provider has fetched (Container.IsUpdating is true
                  from window load until then, and while a refresh is pending), so a row that loaded empty counts as done. -->
             <value name="rows_loading">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>| [Container({row_id}).IsUpdating]</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
@@ -190,7 +249,7 @@
                 </items>
             </value>
             <value name="note_head">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <condition>{item_x}==0</condition>
                         <template>&lt;value&gt;$VAR[Bald_RowsNote_{screen}_1]&lt;/value&gt;</template>
@@ -198,7 +257,7 @@
                 </items>
             </value>
             <value name="start_reset">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>&lt;onload&gt;ClearProperty(Bald.Start$MATH[{base} + 1 + {item_x}],home)&lt;/onload&gt;</template>
                     </item>
@@ -207,7 +266,7 @@
             <value name="art_logos">
                 <!-- Rows with the art-frame clearlogo off (row field "logo" = off; empty or on shows it) get no
                      clearlogo instances, and no branch in the logo expressions below, so the frame shows no logo or scrim. -->
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <condition>{item_logo}!=off</condition>
                         <template>generator/row-binding.xmltemplate</template>
@@ -217,7 +276,7 @@
                 </items>
             </value>
             <value name="captions">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>generator/row-binding.xmltemplate</template>
                         <value name="content">Bald_Caption</value>
@@ -226,7 +285,7 @@
                 </items>
             </value>
             <value name="item_odd">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>| [String.IsEqual(Window(home).Property(Bald.Row),{row_id}) + Integer.IsOdd(Container({row_id}).CurrentItem)]</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
@@ -234,7 +293,7 @@
                 </items>
             </value>
             <value name="has_logo">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <condition>{item_logo}!=off</condition>
                         <template>| [String.IsEqual(Window(home).Property(Bald.Row),{row_id}) + [!String.IsEmpty(Container({row_id}).ListItem.Art(clearlogo)) | !String.IsEmpty(Container({row_id}).ListItem.Art(tvshow.clearlogo))]]</template>
@@ -243,7 +302,7 @@
                 </items>
             </value>
             <value name="preview_item_odd">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>| [$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id}) + Integer.IsOdd(Container({row_id}).CurrentItem)]</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
@@ -251,7 +310,7 @@
                 </items>
             </value>
             <value name="preview_has_logo">
-                <items menu="{menu}" mode="submenu">
+                <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <condition>{item_logo}!=off</condition>
                         <template>| [$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id}) + [!String.IsEmpty(Container({row_id}).ListItem.Art(clearlogo)) | !String.IsEmpty(Container({row_id}).ListItem.Art(tvshow.clearlogo))]]</template>
