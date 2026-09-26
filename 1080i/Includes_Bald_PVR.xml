@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald Live TV windows other than the guide: the channel switcher and mini guide over video, programme and recording
+     information, the Channels, Recordings, Timers, Search and Providers windows, radio RDS information, guide controls,
+     and the inner layouts of the channel and group managers.
+
+     Those windows started as copies of Kodi 22 Estuary (skin.estuary, Team Kodi, GPL-2.0-or-later). Every control id
+     and action Kodi's C++ binds is kept (1080i/IDs, tests/test_pvr.py). The TV guide's own parts (Bald_EpgGrid,
+     Bald_PVRGuideTools) stay in Includes_PVR.xml and are not used here. -->
+<includes>
+	<!-- ============ Conditions ============ -->
+	<!-- The options column (menucontrol 9000) has focus: the preview column gives way to it, as in Global Search. -->
+	<expression name="Bald_PVRMenuOpen">[ControlGroup(9000).HasFocus]</expression>
+	<expression name="Bald_PVRHasFlag">[ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive | ListItem.IsNew]</expression>
+	<expression name="Bald_PVRHasArt">[!String.IsEmpty(ListItem.EpgEventIcon) | !String.IsEmpty(ListItem.Art(thumb)) | !String.IsEmpty(ListItem.Art(fanart))]</expression>
+	<expression name="Bald_PVRHasStatus">[ListItem.IsRecording | ListItem.HasTimer | ListItem.HasTimerSchedule | ListItem.HasArchive | ListItem.HasReminder]</expression>
+
+	<!-- ============ Text ============ -->
+	<!-- The programme line under a channel or item: Estuary's PVRListItemSubLabel without its colour tags, joined with
+	     Bald's middle dot. -->
+	<variable name="Bald_PVRProgramme">
+		<value condition="ListItem.IsFolder">$INFO[ListItem.Timertype]</value>
+		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle] · $VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
+		<value condition="$EXP[listitem_has_episode_info]">$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
+		<value condition="!String.IsEmpty(ListItem.TitleExtraInfo) + !String.StartsWith(ListItem.TitleExtraInfo,ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle]$INFO[ListItem.TitleExtraInfo, · ]</value>
+		<value condition="!String.IsEmpty(ListItem.TitleExtraInfo)">$INFO[ListItem.TitleExtraInfo]</value>
+		<value>$INFO[ListItem.EpgEventTitle]</value>
+	</variable>
+	<!-- Title of the focused item: the programme when there is guide data, else the item's own title or label. -->
+	<variable name="Bald_PVRTitle">
+		<value condition="ListItem.HasEpg + !String.IsEmpty(ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle]</value>
+		<value condition="!String.IsEmpty(ListItem.Title)">$INFO[ListItem.Title]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<!-- "12 BBC One · Sat 26 Sep · 20:00–21:00 · 60 min"; recordings and timers without a start time show their date. -->
+	<variable name="Bald_PVRWhen">
+		<value condition="!String.IsEmpty(ListItem.StartTime)">$INFO[ListItem.ChannelNumberLabel,, ]$INFO[ListItem.ChannelName,, · ]$INFO[ListItem.StartDate,, · ]$INFO[ListItem.StartTime]$INFO[ListItem.EndTime,–]$INFO[ListItem.Duration, · ]</value>
+		<value>$INFO[ListItem.ChannelNumberLabel,, ]$INFO[ListItem.ChannelName,, · ]$INFO[ListItem.Date]$INFO[ListItem.Duration, · ]</value>
+	</variable>
+	<!-- TV or Radio: Kodi sets the IsRadio window property on every radio PVR window. -->
+	<variable name="Bald_PVRArea">
+		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19021]</value>
+		<value>$LOCALIZE[19020]</value>
+	</variable>
+	<!-- TV or Radio for what is playing (the dialogs over video have no IsRadio property). -->
+	<variable name="Bald_PVRPlayingArea">
+		<value condition="PVR.IsPlayingRadio">$LOCALIZE[19021]</value>
+		<value>$LOCALIZE[19020]</value>
+	</variable>
+	<variable name="Bald_PVRTimersTitle">
+		<value condition="Window.IsActive(TVTimerRules) | Window.IsActive(RadioTimerRules)">$LOCALIZE[19138]</value>
+		<value>$LOCALIZE[19040]</value>
+	</variable>
+	<variable name="Bald_PVRFlag">
+		<value condition="ListItem.IsPremiere">$LOCALIZE[838]</value>
+		<value condition="ListItem.IsFinale">$LOCALIZE[849]</value>
+		<value condition="ListItem.IsLive">$LOCALIZE[839]</value>
+		<value condition="ListItem.IsNew">$LOCALIZE[842]</value>
+	</variable>
+	<!-- The accent line: premiere, finale, live or new, then the genre. -->
+	<variable name="Bald_PVRAccent">
+		<value condition="$EXP[Bald_PVRHasFlag] + !String.IsEmpty(ListItem.Genre)">$VAR[Bald_PVRFlag] · $INFO[ListItem.Genre]</value>
+		<value condition="$EXP[Bald_PVRHasFlag]">$VAR[Bald_PVRFlag]</value>
+		<value>$INFO[ListItem.Genre]</value>
+	</variable>
+	<variable name="Bald_PVRNext">
+		<value condition="!String.IsEmpty(ListItem.NextTitle)">$LOCALIZE[19031] · $INFO[ListItem.NextStartTime,, ]$INFO[ListItem.NextTitle]</value>
+	</variable>
+	<!-- Programme artwork when the guide or recording has some; the channel logo is drawn separately, smaller. -->
+	<variable name="Bald_PVRArt">
+		<value condition="!String.IsEmpty(ListItem.EpgEventIcon)">$INFO[ListItem.EpgEventIcon]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value>$INFO[ListItem.Art(fanart)]</value>
+	</variable>
+	<variable name="Bald_PVRLogo">
+		<value condition="!String.IsEmpty(ListItem.ChannelLogo)">$INFO[ListItem.ChannelLogo]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+
+	<!-- ============ Motion ============ -->
+	<!-- Full-screen Live TV windows: fade in 380, out 160 (Global Search's window pair). -->
+	<include name="Bald_PVRAnimWindow">
+		<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+		<animation type="WindowClose"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
+	</include>
+	<!-- Overlays on the left of the video (channel switcher, mini guide): the menu-open move, from the left. -->
+	<include name="Bald_PVRAnimOverlay">
+		<animation type="WindowOpen">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+			<effect type="slide" start="-40,0" end="0,0" time="480" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="-40,0" time="180" tween="cubic" easing="out" />
+		</animation>
+	</include>
+	<!-- A window's content steps aside while Kodi's programme or recording information is open over it. -->
+	<include name="Bald_PVRInfoDim">
+		<animation type="Conditional" condition="$EXP[infodialog_active]">
+			<effect type="fade" start="100" end="0" time="200" tween="sine" easing="inout" />
+		</animation>
+	</include>
+
+	<!-- ============ Shared controls ============ -->
+	<include name="Bald_PVRBackground">
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+	</include>
+	<!-- Scrims for chrome over live video: field from the left edge and from the bottom. -->
+	<include name="Bald_PVRScrims">
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_h.png</texture></control>
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_b.png</texture></control>
+	</include>
+	<!-- Page title, the accent section line under it and, optionally, the date and time on the right. -->
+	<include name="Bald_PVRHeader">
+		<param name="title" />
+		<param name="section" />
+		<param name="clock">true</param>
+		<param name="width">1140</param>
+		<definition>
+			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>$PARAM[width]</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$PARAM[title]</label></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>174</top><width>$PARAM[width]</width><height>28</height><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[section]</label></control>
+			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[System.Date] · $INFO[System.Time]</label><visible>$PARAM[clock]</visible></control>
+		</definition>
+	</include>
+	<!-- Guide progress: a 4 px ink track with the elapsed part in the accent, as in the TV guide. -->
+	<include name="Bald_PVRProgress">
+		<param name="info">ListItem.Progress</param>
+		<param name="color">bald_accent</param>
+		<definition>
+			<texturebg colordiffuse="bald_ink10">bald/white.png</texturebg>
+			<midtexture colordiffuse="$PARAM[color]">bald/white.png</midtexture>
+			<lefttexture /><righttexture /><overlaytexture />
+			<info>$PARAM[info]</info>
+		</definition>
+	</include>
+	<!-- Thin page indicator beside a list (the list's pagecontrol). Not a focus target: every move returns to the list. -->
+	<include name="Bald_PVRScrollbar">
+		<param name="id" />
+		<param name="list_id" />
+		<param name="left">1252</param>
+		<param name="height">672</param>
+		<definition>
+			<control type="scrollbar" id="$PARAM[id]">
+				<left>$PARAM[left]</left><top>Bald_ContentTop</top><width>4</width><height>$PARAM[height]</height>
+				<orientation>vertical</orientation><showonepage>false</showonepage>
+				<texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground>
+				<texturesliderbar colordiffuse="bald_ink34">bald/white.png</texturesliderbar>
+				<texturesliderbarfocus colordiffuse="bald_ink">bald/white.png</texturesliderbarfocus>
+				<textureslidernib /><textureslidernibfocus />
+				<onleft>$PARAM[list_id]</onleft><onright>$PARAM[list_id]</onright><onup>$PARAM[list_id]</onup><ondown>$PARAM[list_id]</ondown>
+			</control>
+		</definition>
+	</include>
+	<!-- Footer: the list position on the y 954 line, with an optional second fact after a dot (free disk space). -->
+	<include name="Bald_PVRFooter">
+		<param name="list_id">50</param>
+		<param name="extra" />
+		<param name="extra_visible">false</param>
+		<definition>
+			<control type="grouplist">
+				<left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><orientation>horizontal</orientation><itemgap>0</itemgap>
+				<control type="label"><width>auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[list_id]).CurrentItem]$INFO[Container($PARAM[list_id]).NumItems, / ]</label></control>
+				<control type="label"><width>20</width><height>24</height><align>center</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label><visible>$PARAM[extra_visible]</visible></control>
+				<control type="label"><width>auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[extra]</label><visible>$PARAM[extra_visible]</visible></control>
+			</control>
+		</definition>
+	</include>
+	<!-- Navigation hints, right-aligned to the safe edge on the y 954 line. -->
+	<include name="Bald_PVRHints">
+		<param name="first" />
+		<param name="second" />
+		<param name="third" />
+		<param name="third_visible">false</param>
+		<param name="left">1000</param>
+		<param name="width">824</param>
+		<definition>
+			<control type="group">
+				<left>$PARAM[left]</left><top>Bald_HintTop</top>
+				<include content="Bald_InfoHintPair">
+					<param name="first">$PARAM[first]</param>
+					<param name="second">$PARAM[second]</param>
+					<param name="third">$PARAM[third]</param>
+					<param name="third_visible">$PARAM[third_visible]</param>
+					<param name="width">$PARAM[width]</param>
+				</include>
+			</control>
+		</definition>
+	</include>
+	<!-- Direct channel number entry (digits on the remote): the number large and centred over a dimmed screen. -->
+	<include name="Bald_PVRChannelNumberInput">
+		<control type="group">
+			<visible>!String.IsEmpty(PVR.ChannelNumberInput)</visible>
+			<animation type="Visible"><effect type="fade" start="0" end="100" time="200" tween="sine" easing="inout" /></animation>
+			<animation type="Hidden"><effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" /></animation>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field60">bald/white.png</texture></control>
+			<control type="label"><width>1920</width><height>1080</height><align>center</align><aligny>center</aligny><font>Bald_Clock</font><textcolor>bald_ink</textcolor><label>$INFO[PVR.ChannelNumberInput]</label></control>
+		</control>
+	</include>
+	<!-- Labels Kodi writes into every PVR window (29, 30: group, provider or search header), kept off-screen. -->
+	<include name="Bald_PVRNativeLabels">
+		<control type="label" id="29"><font></font><include>HiddenObject</include></control>
+		<control type="label" id="30"><font></font><include>HiddenObject</include></control>
+	</include>
+
+	<!-- ============ List rows ============ -->
+	<!-- A channel: number, logo, name and the programme on now with its progress; a status mark (recording, timer,
+	     archive, reminder) at the end. Unfocused text sits at 70/45% ink; focus is full ink and the accent dot.
+	     84 px rows; text_width fits the list (872 in the Channels window, 592 in the channel switcher). -->
+	<include name="Bald_PVRChannelRow">
+		<param name="list_id" />
+		<param name="focused">false</param>
+		<param name="c1">bald_ink70</param>
+		<param name="c2">bald_ink45</param>
+		<param name="text_width">872</param>
+		<param name="status_left">1096</param>
+		<definition>
+			<control type="image"><left>0</left><top>38</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>$PARAM[focused] + Control.HasFocus($PARAM[list_id])</visible></control>
+			<control type="label"><left>20</left><width>70</width><height>84</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[c2]</textcolor><label>$INFO[ListItem.ChannelNumberLabel]</label></control>
+			<control type="image"><left>108</left><top>18</top><width>72</width><height>48</height><aspectratio>keep</aspectratio><texture background="true">$INFO[ListItem.ChannelLogo]</texture></control>
+			<control type="label"><left>204</left><top>10</top><width>$PARAM[text_width]</width><height>34</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>$PARAM[focused]</scroll><label>$INFO[ListItem.ChannelName]</label></control>
+			<control type="label"><left>204</left><top>42</top><width>$PARAM[text_width]</width><height>26</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[c2]</textcolor><scroll>$PARAM[focused]</scroll><label>$VAR[Bald_PVRProgramme]</label></control>
+			<control type="progress"><left>204</left><top>72</top><width>$PARAM[text_width]</width><height>4</height><include>Bald_PVRProgress</include><visible>ListItem.HasEpg</visible></control>
+			<control type="image"><left>$PARAM[status_left]</left><top>26</top><width>32</width><height>32</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_accent">$VAR[PVRStatusImageVar]</texture><visible>$EXP[Bald_PVRHasStatus]</visible></control>
+		</definition>
+	</include>
+	<!-- A recording, timer, search result or provider: an optional state icon (tinted ink), the title with label2 at the
+	     right, and a second line (label3, with label4 at the right). only_label draws the title alone, centred (folders,
+	     timer rules without a date). -->
+	<include name="Bald_PVRItemRow">
+		<param name="list_id" />
+		<param name="focused">false</param>
+		<param name="c1">bald_ink70</param>
+		<param name="c2">bald_ink45</param>
+		<param name="icon_color">bald_ink60</param>
+		<param name="only_label">false</param>
+		<param name="has_info_icon">false</param>
+		<param name="info_icon" />
+		<param name="text_left">26</param>
+		<param name="label1">$INFO[ListItem.Label]</param>
+		<param name="label2" />
+		<param name="label3">$VAR[Bald_PVRProgramme]</param>
+		<param name="label4">$INFO[ListItem.Comment]</param>
+		<definition>
+			<control type="image"><left>0</left><top>38</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>$PARAM[focused] + Control.HasFocus($PARAM[list_id])</visible></control>
+			<control type="image"><left>26</left><top>28</top><width>28</width><height>28</height><aspectratio>keep</aspectratio><texture colordiffuse="$PARAM[icon_color]">$PARAM[info_icon]</texture><visible>$PARAM[has_info_icon] + !ListItem.IsParentFolder</visible></control>
+			<control type="label"><left>$PARAM[text_left]</left><width>1080</width><height>84</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>$PARAM[focused]</scroll><label>$PARAM[label1]</label><visible>$PARAM[only_label]</visible></control>
+			<control type="group">
+				<visible>!$PARAM[only_label]</visible>
+				<control type="label"><left>$PARAM[text_left]</left><top>10</top><width>760</width><height>34</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>$PARAM[focused]</scroll><label>$PARAM[label1]</label></control>
+				<control type="label"><left>810</left><top>10</top><width>304</width><height>34</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[c2]</textcolor><label>$PARAM[label2]</label></control>
+				<control type="label"><left>$PARAM[text_left]</left><top>44</top><width>760</width><height>26</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[c2]</textcolor><scroll>$PARAM[focused]</scroll><label>$PARAM[label3]</label></control>
+				<control type="label"><left>810</left><top>44</top><width>304</width><height>26</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[c2]</textcolor><label>$PARAM[label4]</label></control>
+			</control>
+		</definition>
+	</include>
+	<!-- Both layouts of a list of Bald_PVRItemRow rows. -->
+	<include name="Bald_PVRItemLayouts">
+		<param name="list_id">50</param>
+		<param name="only_label">false</param>
+		<param name="has_info_icon">false</param>
+		<param name="info_icon" />
+		<param name="text_left">26</param>
+		<param name="label1">$INFO[ListItem.Label]</param>
+		<param name="label2" />
+		<definition>
+			<itemlayout width="1140" height="84">
+				<include content="Bald_PVRItemRow">
+					<param name="list_id">$PARAM[list_id]</param><param name="only_label">$PARAM[only_label]</param>
+					<param name="has_info_icon">$PARAM[has_info_icon]</param><param name="info_icon">$PARAM[info_icon]</param><param name="text_left">$PARAM[text_left]</param>
+					<param name="label1">$PARAM[label1]</param><param name="label2">$PARAM[label2]</param>
+				</include>
+			</itemlayout>
+			<focusedlayout width="1140" height="84">
+				<include content="Bald_PVRItemRow">
+					<param name="list_id">$PARAM[list_id]</param><param name="only_label">$PARAM[only_label]</param>
+					<param name="has_info_icon">$PARAM[has_info_icon]</param><param name="info_icon">$PARAM[info_icon]</param><param name="text_left">$PARAM[text_left]</param>
+					<param name="label1">$PARAM[label1]</param><param name="label2">$PARAM[label2]</param>
+					<param name="focused">true</param><param name="c1">bald_ink</param><param name="c2">bald_ink70</param><param name="icon_color">bald_ink</param>
+				</include>
+			</focusedlayout>
+		</definition>
+	</include>
+	<!-- The list every Live TV window browses (Kodi's view 50): 1140 wide from the safe margin, eight 84 px rows. Left
+	     opens the options column; Right stays on the list (the scrollbar is only a page indicator). -->
+	<include name="Bald_PVRList">
+		<param name="list_id">50</param>
+		<param name="scrollbar_id">73</param>
+		<definition>
+			<control type="list" id="$PARAM[list_id]">
+				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>672</height>
+				<onleft>9000</onleft><onright>$PARAM[list_id]</onright><onup>$PARAM[list_id]</onup><ondown>$PARAM[list_id]</ondown>
+				<pagecontrol>$PARAM[scrollbar_id]</pagecontrol><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<viewtype label="535">list</viewtype>
+				<nested />
+			</control>
+			<include content="Bald_PVRScrollbar"><param name="id">$PARAM[scrollbar_id]</param><param name="list_id">$PARAM[list_id]</param></include>
+		</definition>
+	</include>
+
+	<!-- ============ Preview column ============ -->
+	<!-- The focused item at the Library and Search preview position: programme art (or the channel logo on a quiet
+	     field), the title, when and where, the accent line, episode, progress, plot and, for channels, what is next.
+	     Hidden while the options column is open. -->
+	<include name="Bald_PVRPreview">
+		<param name="next">false</param>
+		<param name="extra" />
+		<param name="extra_visible">false</param>
+		<definition>
+			<control type="group">
+				<left>Bald_PreviewLeft</left><top>Bald_ContentTop</top><width>528</width>
+				<visible>!$EXP[Bald_PVRMenuOpen] + !String.IsEmpty(ListItem.Label) + !ListItem.IsParentFolder</visible>
+				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+				<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+				<control type="image"><width>528</width><height>297</height><aspectratio>keep</aspectratio><fadetime>380</fadetime><texture background="true">$VAR[Bald_PVRArt]</texture><visible>$EXP[Bald_PVRHasArt]</visible></control>
+				<control type="image"><left>132</left><top>74</top><width>264</width><height>148</height><aspectratio>keep</aspectratio><fadetime>380</fadetime><texture background="true">$VAR[Bald_PVRLogo]</texture><visible>!$EXP[Bald_PVRHasArt] + !ListItem.IsFolder</visible></control>
+				<control type="label"><top>326</top><width>528</width><height>88</height><aligny>top</aligny><wrapmultiline>true</wrapmultiline><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_PVRTitle]</label></control>
+				<control type="grouplist">
+					<top>418</top><width>528</width><height>294</height><orientation>vertical</orientation><itemgap>6</itemgap>
+					<control type="label"><width>528</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[Bald_PVRWhen]</label></control>
+					<control type="label"><width>528</width><height>24</height><font>Bald_Accent</font><textcolor>bald_accent</textcolor><label>$VAR[Bald_PVRAccent]</label><visible>$EXP[Bald_PVRHasFlag] | !String.IsEmpty(ListItem.Genre)</visible></control>
+					<control type="label"><width>528</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[SeasonEpisodeAndNameLabel]</label><visible>$EXP[listitem_has_episode_info]</visible></control>
+					<control type="label"><width>528</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$PARAM[extra]</label><visible>$PARAM[extra_visible]</visible></control>
+					<control type="progress"><width>528</width><height>4</height><include>Bald_PVRProgress</include><visible>Integer.IsGreater(ListItem.Progress,0)</visible></control>
+					<control type="progress"><width>528</width><height>4</height><include content="Bald_PVRProgress"><param name="info">ListItem.PercentPlayed</param><param name="color">bald_ink60</param></include><visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible></control>
+					<control type="textbox"><width>528</width><height>90</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[ListItem.Plot]</label></control>
+					<control type="label"><width>528</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_PVRNext]</label><visible>$PARAM[next] + !String.IsEmpty(ListItem.NextTitle)</visible></control>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Options column ============ -->
+	<!-- The window's menucontrol 9000 in the right column, where the preview was. The caller's option buttons are the
+	     grouplist's children (<nested />). Kodi's sort (3), direction (4) and channel-group (28) buttons stay hidden;
+	     options reach them with SendClick. Left, Right and Back return to the list. -->
+	<include name="Bald_PVROptions">
+		<param name="list_id">50</param>
+		<definition>
+			<control type="group">
+				<visible>$EXP[Bald_PVRMenuOpen]</visible><include>Bald_AnimMenuShows</include>
+				<control type="label"><left>1466</left><top>Bald_ContentTop</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31660]</label></control>
+			</control>
+			<control type="grouplist" id="9000">
+				<left>Bald_RightColumn</left><top>274</top><width>420</width><height>648</height><orientation>vertical</orientation><itemgap>6</itemgap>
+				<visible allowhiddenfocus="true">$EXP[Bald_PVRMenuOpen]</visible><include>Bald_AnimMenuShows</include>
+				<onleft>$PARAM[list_id]</onleft><onright>$PARAM[list_id]</onright><onback>$PARAM[list_id]</onback><onup>9000</onup><ondown>9000</ondown>
+				<nested />
+			</control>
+			<control type="button" id="3"><include>HiddenObject</include></control>
+			<control type="button" id="4"><include>HiddenObject</include></control>
+			<control type="button" id="28"><include>HiddenObject</include></control>
+		</definition>
+	</include>
+	<!-- One options row: Bald Settings' row (accent dot and full ink on focus, value at the right), 420 wide. -->
+	<include name="Bald_PVROption">
+		<param name="id" />
+		<param name="label" />
+		<param name="label2" />
+		<param name="onclick">noop</param>
+		<param name="visible">true</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<include content="Bald_ConfigureButton"><param name="width">420</param></include>
+				<label>$PARAM[label]</label><label2>$PARAM[label2]</label2>
+				<onclick>$PARAM[onclick]</onclick>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- A Kodi toggle in the options column (show hidden channels, group recordings, ...): the same row with Bald
+	     Settings' state dot. Kodi sets and reads the selected state by id. -->
+	<include name="Bald_PVROptionToggle">
+		<param name="id" />
+		<param name="label" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="radiobutton" id="$PARAM[id]">
+				<include content="Bald_ConfigureButton"><param name="width">420</param></include>
+				<label>$PARAM[label]</label>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- Sort method and direction, common to every Live TV list. -->
+	<include name="Bald_PVRSortOptions">
+		<include content="Bald_PVROption"><param name="id">9020</param><param name="label">$LOCALIZE[31022]</param><param name="label2">$INFO[Container.SortMethod]</param><param name="onclick">SendClick(3)</param></include>
+		<include content="Bald_PVROption"><param name="id">9021</param><param name="label">$LOCALIZE[31032]</param><param name="label2">$INFO[Container.SortOrder]</param><param name="onclick">Container.SetSortDirection</param></include>
+	</include>
+	<!-- The other Live TV windows, TV or radio after the current one (Estuary's quick navigation, ids 100-105). -->
+	<include name="Bald_PVRAreaOption">
+		<param name="id" />
+		<param name="area" />
+		<param name="label" />
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<include content="Bald_ConfigureButton"><param name="width">420</param></include>
+				<label>$PARAM[label]</label>
+				<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TV$PARAM[area])</onclick>
+				<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(Radio$PARAM[area])</onclick>
+				<visible>!Window.IsActive(TV$PARAM[area]) + !Window.IsActive(Radio$PARAM[area])</visible>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_PVRAreaOptions">
+		<include content="Bald_PVRAreaOption"><param name="id">101</param><param name="area">Guide</param><param name="label">$LOCALIZE[19069]</param></include>
+		<include content="Bald_PVRAreaOption"><param name="id">100</param><param name="area">Channels</param><param name="label">$LOCALIZE[19019]</param></include>
+		<include content="Bald_PVRAreaOption"><param name="id">102</param><param name="area">Recordings</param><param name="label">$LOCALIZE[19017]</param></include>
+		<include content="Bald_PVRAreaOption"><param name="id">103</param><param name="area">Timers</param><param name="label">$LOCALIZE[19040]</param></include>
+		<include content="Bald_PVRAreaOption"><param name="id">104</param><param name="area">TimerRules</param><param name="label">$LOCALIZE[19138]</param></include>
+		<include content="Bald_PVRAreaOption"><param name="id">105</param><param name="area">Search</param><param name="label">$LOCALIZE[137]</param></include>
+	</include>
+	<!-- Everything a Live TV list window draws around its list: field, header, preview, footer and hints. -->
+	<include name="Bald_PVRWindowChrome">
+		<param name="title" />
+		<param name="section" />
+		<param name="next">false</param>
+		<param name="extra" />
+		<param name="extra_visible">false</param>
+		<param name="footer_extra" />
+		<param name="footer_extra_visible">false</param>
+		<param name="hint">$LOCALIZE[31663]</param>
+		<definition>
+			<include content="Bald_PVRHeader"><param name="title">$PARAM[title]</param><param name="section">$PARAM[section]</param></include>
+			<include content="Bald_PVRPreview"><param name="next">$PARAM[next]</param><param name="extra">$PARAM[extra]</param><param name="extra_visible">$PARAM[extra_visible]</param></include>
+			<include content="Bald_PVRFooter"><param name="extra">$PARAM[footer_extra]</param><param name="extra_visible">$PARAM[footer_extra_visible]</param></include>
+			<include content="Bald_PVRHints"><param name="first">$LOCALIZE[31661]</param><param name="second">$PARAM[hint]</param><param name="third">$LOCALIZE[31664]</param><param name="third_visible">true</param></include>
+		</definition>
+	</include>
+
+	<!-- ============ Over video ============ -->
+	<!-- One programme in the mini guide: start time, title and, for the one on now, its progress; the accent dot at the
+	     end marks a timer or recording (as in the TV guide). 64 px rows. -->
+	<include name="Bald_PVREpgRow">
+		<param name="focused">false</param>
+		<param name="c1">bald_ink70</param>
+		<param name="c2">bald_ink45</param>
+		<definition>
+			<control type="image"><left>0</left><top>28</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>$PARAM[focused] + Control.HasFocus(11)</visible></control>
+			<control type="label"><left>26</left><width>100</width><height>64</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[c2]</textcolor><label>$INFO[ListItem.StartTime]</label></control>
+			<control type="label"><left>140</left><width>596</width><height>64</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>$PARAM[focused]</scroll><label>$VAR[Bald_PVRTitle]</label></control>
+			<control type="progress"><left>140</left><top>54</top><width>596</width><height>4</height><include>Bald_PVRProgress</include><visible>Integer.IsGreater(ListItem.Progress,0)</visible></control>
+			<control type="image"><left>752</left><top>28</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>ListItem.HasTimer | ListItem.IsRecording</visible></control>
+		</definition>
+	</include>
+
+	<!-- ============ Programme and recording information ============ -->
+	<!-- An action pill, as in the movie information: filled ink when focused, 45% outline otherwise, popping to 1.04. -->
+	<include name="Bald_PVRActionStyle">
+		<width>auto</width><height>54</height><font>Bald_Section</font><textoffsetx>28</textoffsetx><aligny>center</aligny>
+		<textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor><disabledcolor>bald_ink45</disabledcolor>
+		<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
+		<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
+		<animation type="Focus"><effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" /></animation>
+		<animation type="Unfocus"><effect type="zoom" start="104" end="100" center="auto" time="220" tween="sine" easing="inout" /></animation>
+	</include>
+	<!-- A Kodi-bound action (find, switch, record, play, timer, reminder): Kodi handles the click by id and may relabel
+	     or hide it. -->
+	<include name="Bald_PVRAction">
+		<param name="id" />
+		<param name="label" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<include>Bald_PVRActionStyle</include>
+				<label>$PARAM[label]</label>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- One fact in the information column: a small label above its value, collapsed when the value is empty. -->
+	<include name="Bald_PVRDetail">
+		<param name="label" />
+		<param name="value" />
+		<param name="visible">true</param>
+		<param name="width">528</param>
+		<definition>
+			<control type="group">
+				<width>$PARAM[width]</width><height>52</height>
+				<visible>$PARAM[visible]</visible>
+				<control type="label"><width>$PARAM[width]</width><height>22</height><font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor><label>$PARAM[label]</label></control>
+				<control type="label"><top>22</top><width>$PARAM[width]</width><height>28</height><font>Bald_DetailValue</font><textcolor>bald_ink</textcolor><label>$PARAM[value]</label></control>
+			</control>
+		</definition>
+	</include>
+	<!-- The facts Estuary's information dialog listed (InfoDialogMetadata 150-165), as Bald details. The channel, genre,
+	     date and duration moved into the header lines. -->
+	<include name="Bald_PVRInfoDetails">
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[206]</param><param name="value">$INFO[ListItem.Cast(pipe)]</param><param name="visible">!String.IsEmpty(ListItem.Cast(pipe))</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[20339]</param><param name="value">$INFO[ListItem.Director(pipe)]</param><param name="visible">!String.IsEmpty(ListItem.Director(pipe))</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[20417]</param><param name="value">$INFO[ListItem.Writer(pipe)]</param><param name="visible">!String.IsEmpty(ListItem.Writer(pipe))</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$VAR[FirstAiredLabel]</param><param name="value">$INFO[ListItem.Premiered]</param><param name="visible">!String.IsEmpty(ListItem.Premiered)</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[563]</param><param name="value">$INFO[ListItem.Rating]$INFO[ListItem.ParentalRatingCode, · ]</param><param name="visible">!String.IsEmpty(ListItem.Rating) | !String.IsEmpty(ListItem.ParentalRatingCode)</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[552]</param><param name="value">$INFO[ListItem.Date]</param><param name="visible">!String.IsEmpty(ListItem.Date) + String.IsEmpty(ListItem.StartTime)</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[22031]</param><param name="value">$INFO[ListItem.Size]</param><param name="visible">!String.IsEmpty(ListItem.Size) + !String.IsEqual(ListItem.Size,0.00 B)</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[576]</param><param name="value">$INFO[ListItem.PlayCount]</param><param name="visible">!String.IsEmpty(ListItem.PlayCount)</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[568]</param><param name="value">$INFO[ListItem.LastPlayed]</param><param name="visible">!String.IsEmpty(ListItem.LastPlayed)</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[19299]</param><param name="value">$INFO[ListItem.ExpirationDate]$INFO[ListItem.ExpirationTime, ]</param><param name="visible">!String.IsEmpty(ListItem.ExpirationDate) + !String.IsEmpty(ListItem.ExpirationTime)</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[19334]</param><param name="value">$INFO[ListItem.MediaProviders]</param><param name="visible">!String.IsEmpty(ListItem.MediaProviders)</param></include>
+		<include content="Bald_PVRDetail"><param name="label">$LOCALIZE[31137]</param><param name="value">$INFO[ListItem.PVRClientName]$INFO[ListItem.PVRInstanceName, (,)]</param><param name="visible">!String.IsEmpty(ListItem.PVRClientName)</param></include>
+	</include>
+	<!-- One RDS fact: label and value on one line, collapsed when the RDS value is empty (Estuary's RDSInfoLine). -->
+	<include name="Bald_PVRRDSLine">
+		<param name="label" />
+		<param name="value" />
+		<definition>
+			<control type="grouplist">
+				<width>820</width><height>38</height><orientation>horizontal</orientation><itemgap>12</itemgap>
+				<visible>!String.IsEmpty($PARAM[value])</visible>
+				<control type="label"><width>auto</width><height>38</height><aligny>center</aligny><font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor><label>$PARAM[label]</label></control>
+				<control type="label"><width>auto</width><height>38</height><aligny>center</aligny><font>Bald_DetailValue</font><textcolor>bald_ink</textcolor><scroll>true</scroll><label>$INFO[$PARAM[value]]</label></control>
+			</control>
+		</definition>
+	</include>
+	<!-- A heading over an RDS group. -->
+	<include name="Bald_PVRRDSHeading">
+		<param name="label" />
+		<definition>
+			<control type="label"><width>820</width><height>40</height><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[label]</label></control>
+		</definition>
+	</include>
+
+	<!-- ============ Guide controls ============ -->
+	<!-- A small text pill for the guide controls bar (Estuary drew OSD icons, two of them rotated). -->
+	<include name="Bald_PVRGuidePill">
+		<param name="id" />
+		<param name="label" />
+		<param name="action" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>auto</width><height>48</height><font>Bald_RowLabel</font><textoffsetx>22</textoffsetx><aligny>center</aligny>
+				<textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor><disabledcolor>bald_ink45</disabledcolor>
+				<texturenofocus border="24" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
+				<texturefocus border="24" colordiffuse="bald_ink">bald/pill.png</texturefocus>
+				<label>$PARAM[label]</label>
+				<onclick>$PARAM[action]</onclick>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_PVRGuideGroupLabel">
+		<param name="label" />
+		<definition>
+			<control type="label"><width>700</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[label]</label></control>
+		</definition>
+	</include>
+
+	<!-- ============ Channel and group managers ============ -->
+	<!-- Rows inside the shared popup surface: 70% ink labels on a 10% ink focus row (docs/SPEC.md 5.14). -->
+	<include name="Bald_PVRManagerFocus">
+		<param name="list_id" />
+		<definition>
+			<control type="image">
+				<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
+				<texture colordiffuse="bald_ink10">bald/white.png</texture>
+				<animation type="Conditional" condition="!Control.HasFocus($PARAM[list_id])"><effect type="fade" start="100" end="40" time="0" /></animation>
+			</control>
+		</definition>
+	</include>
+	<!-- One channel in the channel manager (list 20): logo, "number  name", the client on focus; inactive channels at
+	     half strength, edited ones marked with the accent dot, parental locks with Estuary's lock tinted ink. -->
+	<include name="Bald_PVRManagerChannel">
+		<param name="focused">false</param>
+		<param name="c1">bald_ink70</param>
+		<definition>
+			<control type="group">
+				<animation type="Conditional" condition="!ListItem.Property(ActiveChannel)"><effect type="fade" start="100" end="50" time="0" /></animation>
+				<control type="image"><left>20</left><top>15</top><width>64</width><height>40</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.Property(icon)]</texture></control>
+				<control type="label"><left>104</left><top>0</top><width>452</width><height>70</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><label>$INFO[ListItem.Property(Number),,  ]$INFO[ListItem.Property(Name)]</label><visible>!$PARAM[focused]</visible></control>
+				<control type="label"><left>104</left><top>8</top><width>452</width><height>30</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>true</scroll><label>$INFO[ListItem.Property(Number),,  ]$INFO[ListItem.Property(Name)]</label><visible>$PARAM[focused]</visible></control>
+				<control type="label"><left>104</left><top>38</top><width>452</width><height>24</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[19210]: $INFO[ListItem.Property(ClientName)]</label><visible>$PARAM[focused]</visible></control>
+				<control type="image"><left>566</left><top>23</top><width>24</width><height>24</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_ink60">OverlayLocked.png</texture><visible>ListItem.Property(ParentalLocked)</visible></control>
+				<control type="image"><left>604</left><top>31</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>ListItem.Property(Changed)</visible></control>
+			</control>
+		</definition>
+	</include>
+	<!-- One channel group or channel in the group manager: label, a detail line (origin, client) and its icon. -->
+	<include name="Bald_PVRManagerItem">
+		<param name="c1">bald_ink70</param>
+		<param name="line2" />
+		<param name="icon">$INFO[ListItem.Icon]</param>
+		<param name="text_width">370</param>
+		<param name="icon_left">402</param>
+		<definition>
+			<control type="label"><left>20</left><top>6</top><width>$PARAM[text_width]</width><height>32</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>true</scroll><label>$INFO[ListItem.Label]</label></control>
+			<control type="label"><left>20</left><top>38</top><width>$PARAM[text_width]</width><height>26</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><scroll>true</scroll><label>$PARAM[line2]</label></control>
+			<control type="image"><left>$PARAM[icon_left]</left><top>11</top><width>48</width><height>48</height><aspectratio>keep</aspectratio><texture>$PARAM[icon]</texture></control>
+		</definition>
+	</include>
+	<!-- The group manager's two channel columns (Estuary's ChannelManagerList): a heading Kodi labels by id with the
+	     count after it, the list and its thin scrollbar. -->
+	<include name="Bald_PVRManagerChannels">
+		<param name="header_id" />
+		<param name="list_id" />
+		<param name="scrollbar_id" />
+		<param name="onleft" />
+		<param name="onright" />
+		<definition>
+			<control type="grouplist">
+				<left>20</left><width>480</width><height>44</height><orientation>horizontal</orientation><itemgap>0</itemgap>
+				<control type="label" id="$PARAM[header_id]"><width>auto</width><height>44</height><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink60</textcolor></control>
+				<control type="label"><width>auto</width><height>44</height><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[list_id]).NumItems, · ]</label></control>
+			</control>
+			<control type="list" id="$PARAM[list_id]">
+				<left>0</left><top>60</top><width>470</width><height>840</height>
+				<onup>$PARAM[list_id]</onup><ondown>$PARAM[list_id]</ondown><onleft>$PARAM[onleft]</onleft><onright>$PARAM[scrollbar_id]</onright>
+				<pagecontrol>$PARAM[scrollbar_id]</pagecontrol><scrolltime tween="cubic" easing="out">200</scrolltime>
+				<itemlayout height="70" width="470">
+					<include content="Bald_PVRManagerItem"><param name="icon">$INFO[ListItem.ActualIcon]</param><param name="line2">$INFO[ListItem.PVRClientName]$INFO[ListItem.PVRInstanceName, (,)]</param></include>
+				</itemlayout>
+				<focusedlayout height="70" width="470">
+					<include content="Bald_PVRManagerFocus"><param name="list_id">$PARAM[list_id]</param></include>
+					<include content="Bald_PVRManagerItem"><param name="c1">bald_ink</param><param name="icon">$INFO[ListItem.ActualIcon]</param><param name="line2">$INFO[ListItem.ChannelNumberLabel,, · ]$INFO[ListItem.PVRClientName]$INFO[ListItem.PVRInstanceName, (,)]</param></include>
+				</focusedlayout>
+			</control>
+			<include content="Bald_PVRManagerScrollbar"><param name="id">$PARAM[scrollbar_id]</param><param name="left">478</param><param name="top">60</param><param name="height">840</param><param name="onleft">$PARAM[list_id]</param><param name="onright">$PARAM[onright]</param></include>
+		</definition>
+	</include>
+	<!-- A manager list's scrollbar. Unlike the full-screen lists these stay focusable: Estuary routes Left and Right
+	     between the manager's columns through them, and Kodi's managers expect that order. -->
+	<include name="Bald_PVRManagerScrollbar">
+		<param name="id" />
+		<param name="left" />
+		<param name="top" />
+		<param name="height" />
+		<param name="onleft" />
+		<param name="onright" />
+		<definition>
+			<control type="scrollbar" id="$PARAM[id]">
+				<left>$PARAM[left]</left><top>$PARAM[top]</top><width>6</width><height>$PARAM[height]</height>
+				<orientation>vertical</orientation><showonepage>false</showonepage>
+				<texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground>
+				<texturesliderbar colordiffuse="bald_ink34">bald/white.png</texturesliderbar>
+				<texturesliderbarfocus colordiffuse="bald_accent">bald/white.png</texturesliderbarfocus>
+				<textureslidernib /><textureslidernibfocus />
+				<onleft>$PARAM[onleft]</onleft><onright>$PARAM[onright]</onright><onup>$PARAM[id]</onup><ondown>$PARAM[id]</ondown>
+			</control>
+		</definition>
+	</include>
+	<!-- A settings row inside a manager (Bald Settings' row at the manager's column width). -->
+	<include name="Bald_PVRManagerRow">
+		<param name="width">700</param>
+		<definition>
+			<include content="Bald_ConfigureButton"><param name="width">$PARAM[width]</param></include>
+			<alttexturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</alttexturefocus>
+			<alttexturenofocus />
+		</definition>
+	</include>
+	<!-- The channel manager's EPG source spinner: the row with Bald Settings' chevrons. -->
+	<include name="Bald_PVRManagerSpinner">
+		<param name="width">700</param>
+		<definition>
+			<include content="Bald_ConfigureButton"><param name="width">$PARAM[width]</param></include>
+			<spinwidth>16</spinwidth><spinheight>16</spinheight>
+			<textureup colordiffuse="bald_ink28">bald/chevron.png</textureup>
+			<textureupfocus colordiffuse="bald_ink">bald/chevron.png</textureupfocus>
+			<textureupdisabled colordiffuse="bald_ink10">bald/chevron.png</textureupdisabled>
+			<texturedown flipx="true" colordiffuse="bald_ink28">bald/chevron.png</texturedown>
+			<texturedownfocus flipx="true" colordiffuse="bald_ink">bald/chevron.png</texturedownfocus>
+			<texturedowndisabled flipx="true" colordiffuse="bald_ink10">bald/chevron.png</texturedowndisabled>
+		</definition>
+	</include>
+	<!-- A group heading inside a manager column. -->
+	<include name="Bald_PVRManagerHeading">
+		<param name="id" />
+		<param name="label" />
+		<param name="width">700</param>
+		<definition>
+			<control type="label" id="$PARAM[id]"><width>$PARAM[width]</width><height>44</height><textoffsetx>26</textoffsetx><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink60</textcolor><label>$PARAM[label]</label></control>
+		</definition>
+	</include>
+</includes>

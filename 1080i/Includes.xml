@@ -25,6 +25,7 @@
 	<include file="Includes_Maps.xml" />
 	<include file="Includes_MusicInfo.xml" />
 	<include file="Includes_PVR.xml" />
+	<include file="Includes_Bald_PVR.xml" />
 	<include file="Includes_SettingsDialog.xml" />
 	<include file="View_50_List.xml" />
 	<include file="View_510_Bald_Posters.xml" />

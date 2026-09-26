@@ -1063,6 +1063,96 @@ msgctxt "#31650"
 msgid "Muted"
 msgstr ""
 
+# Live TV windows: 31660-31679 (see docs/LOCALIZATION.md).
+
+#: /1080i/Includes_Bald_PVR.xml
+msgctxt "#31660"
+msgid "Live TV options"
+msgstr ""
+
+#: /1080i/Includes_Bald_PVR.xml
+msgctxt "#31661"
+msgid "Left for options"
+msgstr ""
+
+#: /1080i/DialogPVRChannelsOSD.xml
+#: /1080i/MyPVRChannels.xml
+msgctxt "#31662"
+msgid "Select to watch"
+msgstr ""
+
+#: /1080i/Includes_Bald_PVR.xml
+#: /1080i/MyPVRRecordings.xml
+msgctxt "#31663"
+msgid "Select to play"
+msgstr ""
+
+#: /1080i/Includes_Bald_PVR.xml
+msgctxt "#31664"
+msgid "Info for details"
+msgstr ""
+
+#: /1080i/MyPVRTimers.xml
+msgctxt "#31665"
+msgid "Select to edit"
+msgstr ""
+
+#: /1080i/MyPVRProviders.xml
+#: /1080i/MyPVRSearch.xml
+msgctxt "#31666"
+msgid "Select to open"
+msgstr ""
+
+#: /1080i/DialogPVRChannelsOSD.xml
+msgctxt "#31667"
+msgid "Left or right for channel groups"
+msgstr ""
+
+#: /1080i/DialogPVRChannelGuide.xml
+msgctxt "#31668"
+msgid "Select for details"
+msgstr ""
+
+#: /1080i/DialogPVRChannelGuide.xml
+#: /1080i/DialogPVRInfo.xml
+msgctxt "#31669"
+msgid "Back to close"
+msgstr ""
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the first programme or channel
+msgctxt "#31670"
+msgid "First"
+msgstr ""
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the last programme or channel
+msgctxt "#31671"
+msgid "Last"
+msgstr ""
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the channel that is playing
+msgctxt "#31672"
+msgid "Playing"
+msgstr ""
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: the next channel group
+msgctxt "#31673"
+msgid "Next"
+msgstr ""
+
+#: /1080i/DialogPVRInfo.xml
+msgctxt "#31678"
+msgid "Up for the full plot"
+msgstr ""
+
+#: /1080i/DialogPVRInfo.xml
+msgctxt "#31679"
+msgid "Left or right to choose"
+msgstr ""
+
 # Bald strings: 31700-31999 (see docs/LOCALIZATION.md). Estuary keeps 31000-31699.
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
