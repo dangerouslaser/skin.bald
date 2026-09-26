@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Volume slider (window 1103), for pointer and remote volume changes; the skin does not open it itself. Started from
+     Kodi 22 Estuary's Custom_1103_VolumeSlider.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Kodi binds nothing
+     here: the slider sets the volume through its Volume action, and the arrow buttons send VolumeDown/VolumeUp.
+     Estuary named defaultcontrol 11 but gave no control that id, so the window opened with nothing focused; the
+     slider is now 11, so Left and Right change the volume straight away.
+     Bald: a 640 x 96 field panel centred above the hint baseline: the volume icon, the settings slider (4 px track,
+     16 px nib, accent when focused) over an accent fill, the percentage, and Estuary's arrows at 45% ink for the mouse.
+     A click outside the panel closes it. -->
 <window type="dialog" id="1103">
 	<defaultcontrol>11</defaultcontrol>
-	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD+</depth>
+	<include content="Bald_OverlayOpenClose">
+		<param name="offset" value="0,14" />
+	</include>
 	<controls>
 		<control type="button">
 			<description>background close area</description>
@@ -15,62 +25,82 @@
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
-			<bottom>0</bottom>
-			<height>250</height>
-			<left>30</left>
-			<width>840</width>
-			<control type="image">
-				<left>-20</left>
+			<centerleft>50%</centerleft>
+			<width>640</width>
+			<top>834</top>
+			<height>96</height>
+			<include content="Bald_OverlaySurface">
+				<param name="width" value="640" />
+				<param name="height" value="96" />
+			</include>
+			<control type="button">
+				<description>panel area: clicks here do not close</description>
+				<left>0</left>
 				<top>0</top>
-				<width>525</width>
-				<height>152</height>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
+				<width>640</width>
+				<height>96</height>
+				<texturefocus />
+				<texturenofocus />
+				<onclick>noop</onclick>
+			</control>
+			<control type="image">
+				<left>32</left>
+				<top>32</top>
+				<width>32</width>
+				<height>32</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_ink">$VAR[VolumeIconVar]</texture>
+			</control>
+			<control type="button">
+				<left>88</left>
+				<top>38</top>
+				<width>20</width>
+				<height>20</height>
+				<texturefocus flipx="true" colordiffuse="bald_ink">overlays/arrowright.png</texturefocus>
+				<texturenofocus flipx="true" colordiffuse="bald_ink45">overlays/arrowright.png</texturenofocus>
+				<hitrect x="78" y="18" w="40" h="60" />
+				<onclick>Action(VolumeDown)</onclick>
 			</control>
 			<control type="progress">
-				<left>40</left>
-				<top>20</top>
-				<width>400</width>
-				<height>112</height>
-				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
-				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+				<left>124</left>
+				<top>46</top>
+				<width>368</width>
+				<include>Bald_OverlayBarTextures</include>
 				<info>Player.Volume</info>
 			</control>
-			<control type="slider">
-				<left>40</left>
-				<top>55</top>
-				<width>400</width>
-				<height>40</height>
-				<texturesliderbar></texturesliderbar>
-				<textureslidernib></textureslidernib>
-				<textureslidernibfocus></textureslidernibfocus>
+			<control type="slider" id="11">
+				<left>124</left>
+				<top>40</top>
+				<width>368</width>
+				<height>16</height>
+				<include>Bald_OverlaySliderTextures</include>
 				<info>Player.Volume</info>
 				<action>Volume</action>
 			</control>
 			<control type="button">
-				<left>0</left>
-				<top>65</top>
-				<width>28</width>
-				<height>28</height>
-				<texturefocus flipx="true" colordiffuse="button_focus">overlays/arrowright.png</texturefocus>
-				<texturenofocus flipx="true" colordiffuse="button_focus">overlays/arrowright.png</texturenofocus>
-				<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
-				<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
-				<hitrect x="-20" y="20" w="60" h="112" />
-				<onclick>Action(VolumeDown)</onclick>
-			</control>
-			<control type="button">
-				<left>455</left>
-				<top>65</top>
-				<width>28</width>
-				<height>28</height>
-				<texturefocus colordiffuse="button_focus">overlays/arrowright.png</texturefocus>
-				<texturenofocus colordiffuse="button_focus">overlays/arrowright.png</texturenofocus>
-				<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
-				<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
-				<hitrect x="440" y="20" w="60" h="112" />
+				<left>508</left>
+				<top>38</top>
+				<width>20</width>
+				<height>20</height>
+				<texturefocus colordiffuse="bald_ink">overlays/arrowright.png</texturefocus>
+				<texturenofocus colordiffuse="bald_ink45">overlays/arrowright.png</texturenofocus>
+				<hitrect x="498" y="18" w="40" h="60" />
 				<onclick>Action(VolumeUp)</onclick>
+			</control>
+			<control type="progress" id="29999">
+				<include>HiddenObject</include>
+				<info>Player.Volume</info>
+			</control>
+			<control type="label">
+				<left>536</left>
+				<top>0</top>
+				<width>72</width>
+				<height>96</height>
+				<font>Bald_Progress</font>
+				<textcolor>bald_ink60</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$VAR[Bald_VolumeLabel]</label>
 			</control>
 		</control>
 	</controls>

@@ -1,49 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Volume bar, shown while the volume changes. Started from Kodi 22 Estuary's DialogVolumeBar.xml (GPL-2.0-or-later,
+     see LICENSE-Estuary.txt). Kodi (CGUIDialogVolumeBar) binds no control ids; it opens the window and closes it a
+     second after the last volume action. Hidden progress 29999 turns Player.Volume (which reads in dB) into a percentage
+     for the label.
+     Bald: a 420 x 54 field capsule centred in the overlay band: Estuary's volume icon at full ink, a 4 px accent bar and
+     the percentage at 60% ink. Muted, the bar dims to 28% and the percentage reads "Muted", and the capsule fades a
+     second later as in Estuary. -->
 <window>
 	<zorder>4</zorder>
 	<controls>
 		<control type="group">
 			<visible>!Window.IsActive(startup) + !Window.IsActive(GameVolume)</visible>
 			<centerleft>50%</centerleft>
-			<width>112</width>
-			<top>0</top>
-			<animation effect="fade" start="100" end="0" time="200" delay="1000" condition="Player.Muted">Conditional</animation>
-			<animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			<width>420</width>
+			<top>Bald_OverlayBandTop</top>
+			<height>54</height>
+			<include content="Bald_OverlayOpenClose">
+				<param name="offset" value="0,-14" />
+			</include>
+			<animation effect="fade" start="100" end="0" time="240" delay="1000" tween="sine" easing="inout" condition="Player.Muted">Conditional</animation>
 			<control type="progress" id="29999">
 				<include>HiddenObject</include>
 				<info>Player.Volume</info>
 			</control>
-			<control type="image">
-				<left>12</left>
-				<top>5</top>
-				<width>88</width>
-				<height>88</height>
-				<texture>osd/buffer-bg.png</texture>
-				<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(FullscreenGame) | Window.IsActive(slideshow)</visible>
-			</control>
+			<include content="Bald_OverlaySurface">
+				<param name="width" value="420" />
+				<param name="height" value="54" />
+				<param name="texture" value="bald/pill.png" />
+				<param name="border" value="27" />
+			</include>
 			<control type="image">
 				<left>22</left>
-				<top>15</top>
-				<width>68</width>
-				<height>68</height>
-				<texture>dialogs/extendedprogress/loading-back.png</texture>
-				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+				<top>13</top>
+				<width>28</width>
+				<height>28</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_ink">$VAR[VolumeIconVar]</texture>
 			</control>
-			<control type="image">
-				<left>22</left>
-				<top>15</top>
-				<width>68</width>
-				<height>68</height>
-				<texture>$INFO[Control.GetLabel(29999),dialogs/volume/progress/p,.png]</texture>
-				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+			<control type="progress">
+				<left>66</left>
+				<top>25</top>
+				<width>240</width>
+				<include>Bald_OverlayBarTextures</include>
+				<info>Player.Volume</info>
+				<animation effect="fade" start="100" end="28" time="240" tween="sine" easing="inout" condition="Player.Muted">Conditional</animation>
 			</control>
-			<control type="image">
-				<left>36</left>
-				<top>29</top>
-				<width>40</width>
-				<height>40</height>
-				<texture colordiffuse="white">$VAR[VolumeIconVar]</texture>
+			<control type="label">
+				<left>318</left>
+				<top>0</top>
+				<width>80</width>
+				<height>54</height>
+				<font>Bald_Progress</font>
+				<textcolor>bald_ink60</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$VAR[Bald_VolumeLabel]</label>
 			</control>
 		</control>
 	</controls>
