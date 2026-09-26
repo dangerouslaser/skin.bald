@@ -24,10 +24,10 @@
 			<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 		</animation>
 	</include>
-	<!-- Opaque field with optional sharp art and the info dialog's two scrims (left and bottom, diffused field). -->
+	<!-- Opaque field with optional sharp art (none when `art` is empty) and the info dialog's two scrims (left and
+	     bottom, diffused field). -->
 	<include name="Bald_MediaBackdrop">
 		<param name="art" />
-		<param name="art_visible">!String.IsEmpty($PARAM[art])</param>
 		<param name="scrims">true</param>
 		<definition>
 			<control type="group">
@@ -35,7 +35,6 @@
 				<control type="image">
 					<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>400</fadetime>
 					<texture background="true">$PARAM[art]</texture>
-					<visible>$PARAM[art_visible]</visible>
 				</control>
 				<control type="group">
 					<visible>$PARAM[scrims]</visible>
@@ -89,7 +88,7 @@
 	<include name="Bald_MediaAction">
 		<param name="id" />
 		<param name="label" />
-		<param name="onclick">noop</param>
+		<param name="onclick" />
 		<param name="visible">true</param>
 		<param name="enable">true</param>
 		<definition>
