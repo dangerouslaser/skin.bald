@@ -302,6 +302,16 @@ def make_item(xbmc, xbmcgui, media_type, dbid, details):
     return item
 
 
+def disable_mouse(xbmc):
+    """Bald is remote-only: hover focus and clicks break its focus model, so turn Kodi's mouse input off."""
+    response = json.loads(xbmc.executeJSONRPC(json.dumps({
+        "jsonrpc": "2.0", "id": 1, "method": "Settings.SetSettingValue",
+        "params": {"setting": "input.enablemouse", "value": False},
+    })))
+    if "error" in response:
+        raise RuntimeError("Could not disable mouse input: {}".format(response["error"]))
+
+
 def run(action="", media_type="", dbid=""):
     import xbmc
     import xbmcgui
@@ -309,6 +319,9 @@ def run(action="", media_type="", dbid=""):
     if action == "letters":
         from letters import publish
         publish(xbmc, xbmcgui, media_type)
+        return
+    if action == "mouse":
+        disable_mouse(xbmc)
         return
 
     identity = "{}:{}".format(media_type, dbid)

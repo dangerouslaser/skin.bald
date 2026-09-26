@@ -360,3 +360,25 @@ class TvInfoLifecycleTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class MouseInputTests(unittest.TestCase):
+    def test_mouse_action_turns_kodis_mouse_setting_off(self):
+        xbmc = Mock()
+        xbmc.executeJSONRPC.return_value = json.dumps({'jsonrpc': '2.0', 'id': 1, 'result': True})
+        with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
+            info.run('mouse')
+        request = json.loads(xbmc.executeJSONRPC.call_args.args[0])
+        self.assertEqual(request['method'], 'Settings.SetSettingValue')
+        self.assertEqual(request['params'], {'setting': 'input.enablemouse', 'value': False})
+
+    def test_mouse_is_only_disabled_while_kodi_has_it_on(self):
+        import xml.etree.ElementTree as ET
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1] / '1080i'
+        for name in ('Startup.xml', 'Home.xml'):
+            with self.subTest(window=name):
+                loads = ET.parse(root / name).getroot().findall('onload')
+                mouse = [n for n in loads if n.text == 'RunScript(skin.bald,mouse)']
+                self.assertEqual(len(mouse), 1)
+                self.assertEqual(mouse[0].get('condition'), 'System.GetBool(input.enablemouse)')
