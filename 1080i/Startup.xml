@@ -45,6 +45,21 @@
 	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">Skin.Reset(WeatherOutlookIcon.name)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">Skin.Reset(WeatherOutlookIcon.ext)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">Skin.Reset(WeatherOutlookIcon.path)</onload>
+	<onload condition="Skin.HasSetting(autoscroll)">Skin.SetBool(Bald.ScrollPlots)</onload>
+	<onload condition="Skin.HasSetting(autoscroll)">Skin.Reset(autoscroll)</onload>
+	<onload condition="Skin.HasSetting(show_weatherinfo)">Skin.SetBool(Bald.HeaderWeather)</onload>
+	<onload condition="Skin.HasSetting(show_weatherinfo)">Skin.Reset(show_weatherinfo)</onload>
+	<onload condition="Skin.HasSetting(show_profilename)">Skin.SetBool(Bald.HeaderProfile)</onload>
+	<onload condition="Skin.HasSetting(show_profilename)">Skin.Reset(show_profilename)</onload>
+	<onload condition="Skin.HasSetting(show_profileavatar)">Skin.Reset(show_profileavatar)</onload>
+	<onload condition="Skin.HasSetting(show_none)">Skin.Reset(show_none)</onload>
+	<onload condition="Skin.HasSetting(OriginalTitleFormat_Only) + String.IsEmpty(Skin.String(Bald.OriginalTitle))">Skin.SetString(Bald.OriginalTitle,original)</onload>
+	<onload condition="Skin.HasSetting(OriginalTitleFormat_1st) + String.IsEmpty(Skin.String(Bald.OriginalTitle))">Skin.SetString(Bald.OriginalTitle,originalfirst)</onload>
+	<onload condition="Skin.HasSetting(OriginalTitleFormat_2nd) + String.IsEmpty(Skin.String(Bald.OriginalTitle))">Skin.SetString(Bald.OriginalTitle,localisedfirst)</onload>
+	<onload condition="Skin.HasSetting(OriginalTitleFormat_Default)">Skin.Reset(OriginalTitleFormat_Default)</onload>
+	<onload condition="Skin.HasSetting(OriginalTitleFormat_Only)">Skin.Reset(OriginalTitleFormat_Only)</onload>
+	<onload condition="Skin.HasSetting(OriginalTitleFormat_1st)">Skin.Reset(OriginalTitleFormat_1st)</onload>
+	<onload condition="Skin.HasSetting(OriginalTitleFormat_2nd)">Skin.Reset(OriginalTitleFormat_2nd)</onload>
 	<!-- Estuary settings retired with Appearance's "Estuary windows" category (docs/NOTES.md, "Estuary windows
 	     settings folded into Bald"): clear what an old install left behind. -->
 	<onload condition="Skin.HasSetting(touchmode)">Skin.Reset(touchmode)</onload>

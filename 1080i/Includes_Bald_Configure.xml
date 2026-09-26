@@ -171,6 +171,13 @@
 	</variable>
 
 	<!-- Appearance > Typography (1118): the current fontset (Skin.Font is lookandfeel.font, a Font.xml fontset id). -->
+	<!-- Appearance > Information: how list views name a title with a different original title (ListLabelVar). -->
+	<variable name="Bald_OriginalTitleLabel">
+		<value condition="String.IsEqual(Skin.String(Bald.OriginalTitle),original)">$LOCALIZE[31049]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.OriginalTitle),originalfirst)">$LOCALIZE[31050]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.OriginalTitle),localisedfirst)">$LOCALIZE[31051]</value>
+		<value>$LOCALIZE[571]</value>
+	</variable>
 	<!-- Appearance > Artwork image packs: the chosen pack's name, or what shows without one. -->
 	<variable name="Bald_GenreFanartName">
 		<value condition="!String.IsEmpty(Skin.String(Bald.GenreFanart.path))">$INFO[Skin.String(Bald.GenreFanart.name)]</value>

@@ -353,7 +353,7 @@
 				<control type="textbox">
 					<left>20</left><top>18</top><width>528</width><height>150</height>
 					<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowsePlot]</label>
-					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll) + !System.HasActiveModalDialog</autoscroll>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(Bald.ScrollPlots) + !System.HasActiveModalDialog</autoscroll>
 					<visible>Integer.Is$PARAM[p](Container.CurrentItem) + !ListItem.IsCollection</visible>
 					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">350</param></include>
 				</control>
