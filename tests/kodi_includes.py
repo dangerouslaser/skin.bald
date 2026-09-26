@@ -1,15 +1,24 @@
-"""A small static resolver for Kodi skin includes, for tests that check windows as Kodi would build them.
+"""Static models of Kodi's include resolution, for structural tests. Conditions, $VAR, $EXP and $INFO are not evaluated.
 
-It expands named includes (``<include>Name</include>`` and ``<include content="Name">``) with their <param> defaults and
-overrides, substitutes $PARAM[...] in text and attributes, and places the caller's other children at <nested />.
-Include conditions, $VAR, $EXP and $INFO are left alone: they need a running Kodi.
+Two entry points:
+
+- ``resolve_window(filename)`` expands every named include in one window from the definitions in all include files
+  (``include_definitions``): <param> defaults and overrides, $PARAM[...] in text and attributes, and the caller's
+  other children placed at <nested />. Used by the settings window tests.
+- ``Skin`` loads Includes.xml and the files it names in order, keeping the first definition of each include, variable
+  and expression name as CGUIIncludes does. The per-install Skin Variables output is skipped unless given, as on a
+  fresh install. Used by the Home tests.
 """
+
 import copy
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+
 SKIN = Path(__file__).resolve().parents[1] / "1080i"
+XML = SKIN
+GENERATED = "script-skinvariables-generator-includes.xml"
 PARAM = re.compile(r"\$PARAM\[([^\]]+)\]")
 
 
@@ -87,3 +96,87 @@ def resolve_window(filename, definitions=None):
     root = ET.parse(SKIN / filename).getroot()
     _expand_in_place(root, definitions)
     return root
+
+
+class Skin:
+    def __init__(self, generated=None):
+        self.includes, self.expressions, self.variables = {}, {}, {}
+        self.missing = []
+        self.generated = generated
+        self._load(XML / "Includes.xml")
+
+    def _load(self, path):
+        root = ET.parse(path).getroot()
+        for node in root.findall("expression"):
+            self.expressions.setdefault(node.get("name"), node.text or "")
+        for node in root.findall("variable"):
+            self.variables.setdefault(node.get("name"), node)
+        for node in root.findall("include"):
+            if node.get("name") and len(node):
+                body = node.find("definition")
+                defaults = {param.get("name"): param.text or "" for param in node.findall("param")}
+                self.includes.setdefault(node.get("name"), (node if body is None else body, defaults))
+            elif node.get("file") == GENERATED:
+                if self.generated:
+                    self._load(self.generated)
+            elif node.get("file") and "IsLessOrEqual(System.ScreenHeight,720)" not in (node.get("condition") or ""):
+                self._load(XML / node.get("file"))
+
+    def window(self, name):
+        root = ET.parse(XML / name).getroot()
+        self._resolve(root)
+        return root
+
+    def _resolve(self, node):
+        while True:
+            call = next((child for child in node if child.tag == "include" and not child.get("file")), None)
+            if call is None:
+                break
+            index = list(node).index(call)
+            node.remove(call)
+            name = call.get("content") or (call.text or "").strip()
+            if name not in self.includes:
+                self.missing.append(name)
+                continue
+            body, defaults = self.includes[name]
+            params = dict(defaults)
+            params.update({param.get("name"): param.text or "" for param in call.findall("param")})
+            extra = [child for child in call if child.tag != "param"]
+            for child in body:
+                if child.tag == "param":
+                    continue
+                if child.tag == "nested":
+                    inserted = [copy.deepcopy(element) for element in extra]
+                else:
+                    inserted = [copy.deepcopy(child)]
+                    marker = inserted[0].find("nested")
+                    if marker is not None:
+                        at = list(inserted[0]).index(marker)
+                        inserted[0].remove(marker)
+                        for offset, element in enumerate(extra):
+                            inserted[0].insert(at + offset, copy.deepcopy(element))
+                    self._params(inserted[0], params)
+                for element in inserted:
+                    node.insert(index, element)
+                    index += 1
+        for child in node:
+            self._resolve(child)
+
+    @staticmethod
+    def _params(node, params):
+        def value(match):
+            return params.get(match.group(1), "")
+        for element in node.iter():
+            if element.text:
+                element.text = PARAM.sub(value, element.text)
+            for key, text in list(element.attrib.items()):
+                element.set(key, PARAM.sub(value, text))
+
+    def unknown_references(self, root):
+        text = ET.tostring(root, encoding="unicode")
+        expressions = set(re.findall(r"\$EXP\[([^\]]+)\]", text)) - set(self.expressions)
+        variables = set(re.findall(r"\$VAR\[([^,\]]+)", text))
+        for variable in self.variables.values():
+            for value in variable.findall("value"):
+                variables |= set(re.findall(r"\$VAR\[([^,\]]+)", value.text or ""))
+        return sorted(expressions | {f"$VAR[{name}]" for name in variables - set(self.variables)} | set(self.missing))
