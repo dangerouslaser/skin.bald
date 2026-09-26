@@ -1,0 +1,5 @@
+<include name="Bald_RowDots_{row_id}">
+    <definition>
+{dots}
+    </definition>
+</include>

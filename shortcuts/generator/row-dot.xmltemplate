@@ -1,0 +1,7 @@
+<control type="image">
+    <left>{dot_x}</left>
+    <top>10</top>
+    <width>6</width>
+    <height>6</height>
+    <texture colordiffuse="{dot_color}">bald/dot.png</texture>
+</control>

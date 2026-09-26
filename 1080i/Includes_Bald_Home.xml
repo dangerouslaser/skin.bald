@@ -620,6 +620,9 @@
 		</definition>
 	</include>
 
+	<include name="Bald_RowDotsNone">
+		<definition />
+	</include>
 	<!-- A home row: label line plus fixedlist. Pass <content> elements as children.
 	     Focus travels to slot 2, then the row scrolls (440 move). Only the current row is visible;
 	     the others keep focus reachable with allowhiddenfocus. -->
@@ -628,6 +631,8 @@
 		<param name="y" />
 		<param name="label" />
 		<param name="index" />
+		<param name="dots">Bald_RowDotsNone</param>
+		<param name="dots_width">0</param>
 		<param name="screen">home</param>
 		<param name="up" />
 		<param name="down">noop</param>
@@ -660,57 +665,14 @@
 						<textcolor>bald_ink</textcolor>
 						<label>$PARAM[label]</label>
 					</control>
+					<!-- Row dots: one 6 px dot per row of this screen, 12 px apart, the current row's bright
+					     (Bald_RowDots_<id>, generated with the rows). -->
 					<control type="group">
-						<width>30</width>
+						<width>$PARAM[dots_width]</width>
 						<animation type="Conditional" condition="$EXP[Bald_Idle]">
 							<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
 						</animation>
-						<control type="image">
-							<top>10</top>
-							<width>6</width>
-							<height>6</height>
-							<texture colordiffuse="bald_ink28">bald/dot.png</texture>
-							<visible>!String.IsEqual($PARAM[index],1)</visible>
-						</control>
-						<control type="image">
-							<top>10</top>
-							<width>6</width>
-							<height>6</height>
-							<texture colordiffuse="bald_ink95">bald/dot.png</texture>
-							<visible>String.IsEqual($PARAM[index],1)</visible>
-						</control>
-						<control type="image">
-							<left>12</left>
-							<top>10</top>
-							<width>6</width>
-							<height>6</height>
-							<texture colordiffuse="bald_ink28">bald/dot.png</texture>
-							<visible>!String.IsEqual($PARAM[index],2)</visible>
-						</control>
-						<control type="image">
-							<left>12</left>
-							<top>10</top>
-							<width>6</width>
-							<height>6</height>
-							<texture colordiffuse="bald_ink95">bald/dot.png</texture>
-							<visible>String.IsEqual($PARAM[index],2)</visible>
-						</control>
-						<control type="image">
-							<left>24</left>
-							<top>10</top>
-							<width>6</width>
-							<height>6</height>
-							<texture colordiffuse="bald_ink28">bald/dot.png</texture>
-							<visible>!String.IsEqual($PARAM[index],3)</visible>
-						</control>
-						<control type="image">
-							<left>24</left>
-							<top>10</top>
-							<width>6</width>
-							<height>6</height>
-							<texture colordiffuse="bald_ink95">bald/dot.png</texture>
-							<visible>String.IsEqual($PARAM[index],3)</visible>
-						</control>
+						<include content="$PARAM[dots]" />
 					</control>
 					<control type="label">
 						<top>3</top>

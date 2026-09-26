@@ -171,6 +171,28 @@ class WidgetGeneratorTests(unittest.TestCase):
             rows = [int(row) for row in re.findall(r"Container\((\d+)\)", " ".join(value.text or "" for value in values))]
             self.assertEqual(sorted(set(rows)), configured)
 
+    def test_each_row_draws_one_dot_per_row_of_its_screen(self):
+        root = fallback()
+        for screen, title, base in SCREENS:
+            rows = definition(root, f"Bald_Generated_{title}Widgets").findall("include")
+            count = len(defaults(screen))
+            for index, row in enumerate(rows):
+                self.assertEqual(param(row, "dots"), f"Bald_RowDots_{param(row, 'id')}")
+                self.assertEqual(int(param(row, "dots_width")), 12 * count - 6)
+                dots = definition(root, param(row, "dots")).findall("control")
+                self.assertEqual([int(dot.findtext("left")) for dot in dots], [12 * n for n in range(count)])
+                self.assertTrue(all((dot.findtext("width"), dot.findtext("height"), dot.findtext("top")) == ("6", "6", "10")
+                                    for dot in dots))
+                self.assertEqual([dot.find("texture").get("colordiffuse") for dot in dots],
+                                 ["bald_ink95" if n == index else "bald_ink28" for n in range(count)])
+                self.assertTrue(all(dot.findtext("texture") == "bald/dot.png" for dot in dots))
+
+        group = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
+            ".//include[@name='Bald_Row']/definition/control[@type='group']/control[@type='grouplist']/control[@type='group']"
+        )
+        self.assertEqual(group.findtext("width"), "$PARAM[dots_width]")
+        self.assertEqual(group.find("include").get("content"), "$PARAM[dots]")
+
     def test_generated_output_is_not_tracked(self):
         patterns = [line.strip() for line in (ROOT / ".gitignore").read_text().splitlines() if line.strip() and not line.startswith("#")]
         self.assertTrue(any(fnmatch.fnmatch("1080i/script-skinvariables-generator-includes.xml", pattern) for pattern in patterns))

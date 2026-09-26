@@ -12,6 +12,7 @@
                         <template>generator/row.xmltemplate</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                         <value name="row_index">$MATH[1 + {item_x}]</value>
+                        <value name="dots_width">$MATH[12 * {item_length_x} - 6]</value>
                         <rules name="row_up">
                             <rule>
                                 <condition>{item_x}==0</condition>
@@ -50,6 +51,32 @@
                                 <value>&lt;onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$MATH[{base} + 2 + {item_x}])) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).CurrentItem,3) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).Position,2)"&gt;SetProperty(Bald.Start$MATH[{base} + 2 + {item_x}],1,home)&lt;/onfocus&gt;&lt;onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$MATH[{base} + 2 + {item_x}])) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).CurrentItem,3) + String.IsEqual(Container($MATH[{base} + 2 + {item_x}]).Position,2)"&gt;Control.Move($MATH[{base} + 2 + {item_x}],-2)&lt;/onfocus&gt;</value>
                             </rule>
                         </rules>
+                    </item>
+                </items>
+            </value>
+            <value name="row_parts">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>generator/row-parts.xmltemplate</template>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                        <value name="row_index">$MATH[1 + {item_x}]</value>
+                        <value name="dots">
+                            <items menu="{menu}" mode="submenu">
+                                <item>
+                                    <template>generator/row-dot.xmltemplate</template>
+                                    <value name="dot_x">$MATH[12 * {item_x}]</value>
+                                    <rules name="dot_color">
+                                        <rule>
+                                            <condition>{item_x}=={parent_item_x}</condition>
+                                            <value>bald_ink95</value>
+                                        </rule>
+                                        <rule>
+                                            <value>bald_ink28</value>
+                                        </rule>
+                                    </rules>
+                                </item>
+                            </items>
+                        </value>
                     </item>
                 </items>
             </value>
