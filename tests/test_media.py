@@ -52,6 +52,8 @@ RESTYLED = sorted(NATIVE_IDS) + [
     "Includes_Bald_Media.xml",
     "Includes_MusicInfo.xml",
     "Includes_Games.xml",
+    "MyWeather.xml",
+    "Includes_Weather.xml",
 ]
 COLOR_TAGS = {"textcolor", "focusedcolor", "disabledcolor", "invalidcolor", "selectedcolor", "shadowcolor",
               "colordiffuse", "controllerdiffuse"}
