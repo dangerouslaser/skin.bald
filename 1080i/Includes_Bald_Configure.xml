@@ -8,6 +8,8 @@
 	<!-- Field, backdrop, sidebar and title. -->
 	<include name="Bald_SettingsFrame">
 		<param name="title" />
+		<!-- Kodi's settings windows fill their heading label by id (SettingsCategory: 2). -->
+		<param name="title_id">0</param>
 		<definition>
 			<control type="image">
 				<width>1920</width>
@@ -20,7 +22,7 @@
 				<height>1080</height>
 				<texture colordiffuse="bald_field60">bald/white.png</texture>
 			</control>
-			<control type="label">
+			<control type="label" id="$PARAM[title_id]">
 				<left>Bald_SafeLeft</left>
 				<top>96</top>
 				<width>494</width>
@@ -137,6 +139,23 @@
 	<include name="Bald_ConfigureButton">
 		<param name="width">720</param>
 		<definition>
+			<include content="Bald_SettingsRowStyle"><param name="width">$PARAM[width]</param></include>
+			<radiowidth>12</radiowidth>
+			<radioheight>12</radioheight>
+			<textureradioonfocus colordiffuse="bald_accent">bald/dot.png</textureradioonfocus>
+			<textureradioonnofocus colordiffuse="bald_accent">bald/dot.png</textureradioonnofocus>
+			<textureradioofffocus colordiffuse="bald_ink34">bald/dot.png</textureradioofffocus>
+			<textureradiooffnofocus colordiffuse="bald_ink28">bald/dot.png</textureradiooffnofocus>
+			<textureradioondisabled colordiffuse="bald_ink28">bald/dot.png</textureradioondisabled>
+			<textureradiooffdisabled colordiffuse="bald_ink10">bald/dot.png</textureradiooffdisabled>
+		</definition>
+	</include>
+
+	<!-- The row look alone, without the radio state dots: for a radiobutton whose state means nothing (the settings
+	     level button), which then sets its radio textures empty itself. -->
+	<include name="Bald_SettingsRowStyle">
+		<param name="width">720</param>
+		<definition>
 			<width>$PARAM[width]</width>
 			<height>56</height>
 			<font>Bald_Section</font>
@@ -148,14 +167,6 @@
 			<!-- menu_dot.png is 440 x 56 with the dot in its first 10 px: the left border keeps it round at any width. -->
 			<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
 			<texturenofocus />
-			<radiowidth>12</radiowidth>
-			<radioheight>12</radioheight>
-			<textureradioonfocus colordiffuse="bald_accent">bald/dot.png</textureradioonfocus>
-			<textureradioonnofocus colordiffuse="bald_accent">bald/dot.png</textureradioonnofocus>
-			<textureradioofffocus colordiffuse="bald_ink34">bald/dot.png</textureradioofffocus>
-			<textureradiooffnofocus colordiffuse="bald_ink28">bald/dot.png</textureradiooffnofocus>
-			<textureradioondisabled colordiffuse="bald_ink28">bald/dot.png</textureradioondisabled>
-			<textureradiooffdisabled colordiffuse="bald_ink10">bald/dot.png</textureradiooffdisabled>
 			<animation type="Focus">
 				<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" />
@@ -208,6 +219,176 @@
 		</definition>
 	</include>
 
+	<!-- The detail pane's Open button, for pages whose categories are actions: Select sends a click to list <list>. -->
+	<include name="Bald_SettingsOpen">
+		<param name="list" />
+		<param name="id">9001</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<include>Bald_ConfigureButton</include>
+				<top>216</top>
+				<label>$LOCALIZE[502]</label>
+				<onleft>$PARAM[list]</onleft>
+				<onclick>SendClick($PARAM[list])</onclick>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Kodi's own settings windows ============
+	     SettingsCategory.xml (every core settings page), SettingsSystemInfo.xml and SettingsProfile.xml draw the same
+	     frame and sidebar. Kodi builds their category and setting rows by cloning template controls, so the styling
+	     lives on the templates below; ids and actions stay in the windows. -->
+
+	<!-- Body of a sidebar category button (SettingsCategory template 10, System info sections 94-101): a category row in
+	     the scaffold's list language, Bald_MenuItem at 34%, full ink with the accent dot on focus. 56 px buttons with a
+	     6 px gap keep the list's 62 px pitch. While focus is in the settings, Kodi keeps the current category button
+	     focused at half alpha (CGUIDialogSettingsBase::DoProcess), which is the scaffold's dimmed dot. There is no slide:
+	     Kodi re-focuses that button every time focus leaves it, and a slide would jump back and forth. -->
+	<include name="Bald_SettingsCategoryButton">
+		<definition>
+			<left>0</left>
+			<width>494</width>
+			<height>56</height>
+			<font>Bald_MenuItem</font>
+			<textoffsetx>26</textoffsetx>
+			<aligny>center</aligny>
+			<textcolor>bald_ink34</textcolor>
+			<focusedcolor>bald_ink</focusedcolor>
+			<disabledcolor>bald_ink10</disabledcolor>
+			<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
+			<texturenofocus />
+			<animation type="Focus">
+				<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
+			</animation>
+		</definition>
+	</include>
+
+	<!-- Body of the sidebar grouplist that holds category buttons (SettingsCategory 3, System info 9000). -->
+	<include name="Bald_SettingsCategoryGroup">
+		<param name="height">682</param>
+		<definition>
+			<left>Bald_SafeLeft</left>
+			<top>192</top>
+			<width>494</width>
+			<height>$PARAM[height]</height>
+			<orientation>vertical</orientation>
+			<itemgap>6</itemgap>
+			<scrolltime tween="cubic" easing="out">320</scrolltime>
+		</definition>
+	</include>
+
+	<!-- Body of a setting template: the scaffold's row (Bald_ConfigureButton) at the settings pane's width. Kodi gives
+	     every clone the grouplist's width, and its value (label2, a spinner's or slider's value) sits right-aligned
+	     26 px in from the row's end. An invalid value is drawn in the accent. -->
+	<include name="Bald_SettingsTemplate">
+		<definition>
+			<include content="Bald_ConfigureButton"><param name="width">1106</param></include>
+			<invalidcolor>bald_accent</invalidcolor>
+		</definition>
+	</include>
+
+	<!-- Spinner (template 9): chevrons either side of the value, dim until the row is focused. Kodi draws the "down"
+	     texture on the left and "up" on the right; the left chevron is the right one flipped. -->
+	<include name="Bald_SettingsSpinner">
+		<definition>
+			<include>Bald_SettingsTemplate</include>
+			<spinwidth>16</spinwidth>
+			<spinheight>16</spinheight>
+			<textureup colordiffuse="bald_ink28">bald/chevron.png</textureup>
+			<textureupfocus colordiffuse="bald_ink">bald/chevron.png</textureupfocus>
+			<textureupdisabled colordiffuse="bald_ink10">bald/chevron.png</textureupdisabled>
+			<texturedown flipx="true" colordiffuse="bald_ink28">bald/chevron.png</texturedown>
+			<texturedownfocus flipx="true" colordiffuse="bald_ink">bald/chevron.png</texturedownfocus>
+			<texturedowndisabled flipx="true" colordiffuse="bald_ink10">bald/chevron.png</texturedowndisabled>
+		</definition>
+	</include>
+
+	<!-- Slider (template 13): a 4 px track with a 16 px nib, 240 px wide at the row's end, the value to its left. The
+	     track texture is 16 px tall so Kodi draws the nib at its own size (it scales the nib by the control height over
+	     the track texture's height). -->
+	<include name="Bald_SettingsSlider">
+		<definition>
+			<include>Bald_SettingsTemplate</include>
+			<sliderwidth>240</sliderwidth>
+			<sliderheight>16</sliderheight>
+			<texturesliderbar border="8,0,8,0" colordiffuse="bald_ink28">bald/slider_bar.png</texturesliderbar>
+			<texturesliderbardisabled border="8,0,8,0" colordiffuse="bald_ink10">bald/slider_bar.png</texturesliderbardisabled>
+			<textureslidernib colordiffuse="bald_ink60">bald/slider_nib.png</textureslidernib>
+			<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
+			<textureslidernibdisabled colordiffuse="bald_ink28">bald/slider_nib.png</textureslidernibdisabled>
+		</definition>
+	</include>
+
+	<!-- Colour button (template 15): the chosen colour as a 20 px dot at the row's end. -->
+	<include name="Bald_SettingsColorButton">
+		<definition>
+			<include>Bald_SettingsTemplate</include>
+			<colorwidth>20</colorwidth>
+			<colorheight>20</colorheight>
+			<texturecolormask>bald/dot.png</texturecolormask>
+			<texturecolordisabledmask colordiffuse="bald_ink28">bald/dot.png</texturecolordisabledmask>
+		</definition>
+	</include>
+
+	<!-- Group title (template 14): a small section label over its group's rows, aligned with the row text. -->
+	<include name="Bald_SettingsGroupTitle">
+		<definition>
+			<width>1106</width>
+			<height>56</height>
+			<textoffsetx>26</textoffsetx>
+			<align>left</align>
+			<aligny>bottom</aligny>
+			<font>Bald_RowLabel</font>
+			<textcolor>bald_ink60</textcolor>
+			<label />
+		</definition>
+	</include>
+
+	<!-- Separator (template 11): a hairline between groups. -->
+	<include name="Bald_SettingsSeparator">
+		<definition>
+			<height>1</height>
+			<texture colordiffuse="bald_ink10">bald/white.png</texture>
+		</definition>
+	</include>
+
+	<!-- Thin page indicator for a settings grouplist (its pagecontrol), on the right safe edge. Not a focus target. -->
+	<include name="Bald_SettingsScrollbar">
+		<param name="height">628</param>
+		<definition>
+			<left>1820</left>
+			<top>192</top>
+			<width>4</width>
+			<height>$PARAM[height]</height>
+			<orientation>vertical</orientation>
+			<showonepage>false</showonepage>
+			<texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground>
+			<texturesliderbar colordiffuse="bald_ink34">bald/white.png</texturesliderbar>
+			<texturesliderbarfocus colordiffuse="bald_ink">bald/white.png</texturesliderbarfocus>
+			<textureslidernib />
+			<textureslidernibfocus />
+			<animation type="Visible">
+				<effect type="fade" start="0" end="100" time="240" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Hidden">
+				<effect type="fade" start="100" end="0" time="240" tween="sine" easing="inout" />
+			</animation>
+		</definition>
+	</include>
+
+	<!-- Help text for the focused category or setting (SettingsCategory 6), under the rows and above the hint line. -->
+	<include name="Bald_SettingsHelp">
+		<definition>
+			<left>686</left>
+			<top>846</top>
+			<width>900</width>
+			<height>84</height>
+			<font>Bald_MenuNote</font>
+			<textcolor>bald_ink60</textcolor>
+			<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+		</definition>
+	</include>
+
 	<!-- Bald Settings home, shared by window 1115 and Kodi's "Configure skin..." (SkinSettings.xml), so both open the
 	     same page with no redirect. -->
 	<include name="Bald_SettingsHome">
@@ -247,12 +428,7 @@
 		<include content="Bald_SettingsDetail">
 			<param name="heading">$INFO[Container(9000).ListItem.Label]</param>
 			<param name="note">$INFO[Container(9000).ListItem.Label2]</param>
-			<control type="button" id="9001">
-				<include>Bald_ConfigureButton</include>
-				<top>216</top>
-				<label>$LOCALIZE[502]</label>
-				<onleft>9000</onleft><onclick>SendClick(9000)</onclick>
-			</control>
+			<include content="Bald_SettingsOpen"><param name="list">9000</param></include>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31738]</param><param name="second">$LOCALIZE[31739]</param></include>
 	</include>

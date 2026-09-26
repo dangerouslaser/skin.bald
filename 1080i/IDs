@@ -32,6 +32,23 @@ TV guide (MyPVRGuide.xml)
 1, 2	Label 1 and image 2 inside the EPG grid's layouts, numbered as Estuary numbers them
 63		EPG grid group
 
+Settings pages (SettingsCategory.xml; CGUIDialogSettingsBase and CGUIWindowSettingsCategory)
+2		Heading label (the sidebar title; Kodi writes the section name)
+3		Category grouplist; Kodi fills it with clones of 10, ids -200 upward
+5		Settings grouplist; Kodi fills it with clones of 7-9 and 11-15, ids -180 upward
+6		Help text for the focused category or setting
+7		Button template (lists, actions, labels, popup sliders, "Reset above settings to default")
+8		Radio button template (toggles)
+9		Spinner template (spincontrolex)
+10		Category button template
+11		Separator template (image)
+12		Edit template (optional to Kodi; without it Kodi builds edits from 7)
+13		Slider template (sliderex; also range settings)
+14		Group title template (label)
+15		Colour button template
+20		Settings level button (Kodi sets its label; onclick SettingsLevelChange)
+60		Settings scrollbar (5's pagecontrol; not a focus target)
+
 Global Search (script-globalsearch.xml, script.globalsearch 9.x)
 50		Results list
 990		New search button (right-hand options menu)

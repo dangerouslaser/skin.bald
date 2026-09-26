@@ -272,7 +272,8 @@ class SettingsBackTests(unittest.TestCase):
         from pathlib import Path
         root = Path(__file__).resolve().parents[1] / '1080i'
         for name in ('Includes_Bald_Configure.xml', 'Custom_1115_BaldSettings.xml', 'Custom_1116_BaldHomeWidgets.xml',
-                     'Custom_1117_BaldHomeScreens.xml', 'Custom_1118_BaldAppearance.xml', 'SkinSettings.xml'):
+                     'Custom_1117_BaldHomeScreens.xml', 'Custom_1118_BaldAppearance.xml', 'SkinSettings.xml',
+                     'SettingsCategory.xml'):
             with self.subTest(file=name):
                 backs = [node.text for node in ET.parse(root / name).getroot().iter('onback')]
                 self.assertNotIn('PreviousMenu', backs)

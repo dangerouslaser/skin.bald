@@ -17,7 +17,8 @@ BALD_FILES = sorted(
     path for path in XML.glob("*.xml")
     if path.name not in GENERATED and (
         path.name.startswith(("Includes_Bald_", "View_51", "View_52", "Custom_111"))
-        or path.name in {"Home.xml", "DialogVideoInfo.xml", "MyPVRGuide.xml", "script-globalsearch.xml"}
+        or path.name in {"Home.xml", "DialogVideoInfo.xml", "MyPVRGuide.xml", "script-globalsearch.xml",
+                         "SettingsCategory.xml"}
     )
 )
 # Names that are the same in every language.
