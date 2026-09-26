@@ -333,7 +333,7 @@ script-upnext-upnext.xml, script-upnext-stillwatching.xml (service.upnext)
 Custom_1119_BaldPlayback.xml (window 1119, Bald Settings, Playback)
 9700	Category list; static items 1-4 (Controls, Pause, Info overlay, Down from the controls)
 9800	Row grouplist
-9801-9803	Controls: close after, time display, details on the controls
+9801-9805	Controls: close after, time display, clearlogo, media flags and plot on the controls
 9811, 9812	Pause: when paused, pause delay
 9821, 9822	Info overlay: artwork, plot
 9831-9835	Down from the controls: guide, channels, playlist and episodes, bookmarks, cast and crew

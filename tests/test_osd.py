@@ -280,7 +280,8 @@ class SettingsTests(unittest.TestCase):
         read |= set(re.findall(r"Skin\.(?:HasSetting|String)\((Bald\.OSD\.\w+)",
                                (SKIN / "Custom_1128_OSDDetails.xml").read_text()))
         self.assertEqual(read, {"Bald.OSD.AutoClose", "Bald.OSD.PauseMode", "Bald.OSD.PauseDelay",
-                                "Bald.OSD.TimeDisplay", "Bald.OSD.DetailsOnControls", "Bald.OSD.HideInfoArt",
+                                "Bald.OSD.TimeDisplay", "Bald.OSD.DetailsLogo", "Bald.OSD.DetailsFlags",
+                                "Bald.OSD.DetailsPlot", "Bald.OSD.HideInfoArt",
                                 "Bald.OSD.HideInfoPlot", "Bald.OSD.NoGuidePanel", "Bald.OSD.NoChannelsPanel",
                                 "Bald.OSD.NoPlaylistPanel", "Bald.OSD.NoBookmarksPanel", "Bald.OSD.NoCastPanel"})
         for setting in read:
@@ -288,14 +289,14 @@ class SettingsTests(unittest.TestCase):
                 self.assertRegex(self.page_text, rf"Skin\.(ToggleSetting|SetString|Reset)\({re.escape(setting)}[,)]")
 
     def test_toggles_are_named_so_unset_is_the_default(self):
-        # On by default reads as the negation of a Hide/No setting; the one opt-in is Details on the controls.
+        # On by default reads as the negation of a Hide/No setting; the opt-ins are the three details on the controls.
         for row in self.page.iter("control"):
             if row.get("type") != "radiobutton":
                 continue
             selected = row.findtext("selected")
             with self.subTest(id=row.get("id")):
-                if "DetailsOnControls" in selected:
-                    self.assertEqual(selected, "Skin.HasSetting(Bald.OSD.DetailsOnControls)")
+                if "Bald.OSD.Details" in selected:
+                    self.assertRegex(selected, r"^Skin\.HasSetting\(Bald\.OSD\.Details(Logo|Flags|Plot)\)$")
                 else:
                     self.assertRegex(selected, r"^!Skin\.HasSetting\(Bald\.OSD\.(Hide|No)\w+\)")
 

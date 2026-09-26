@@ -36,7 +36,10 @@
 					<onclick condition="Skin.String(Bald.OSD.TimeDisplay,remaining)">Skin.SetString(Bald.OSD.TimeDisplay,combined)</onclick>
 					<onclick condition="!String.IsEmpty(Skin.String(Bald.OSD.TimeDisplay)) + !Skin.String(Bald.OSD.TimeDisplay,remaining)">Skin.Reset(Bald.OSD.TimeDisplay)</onclick>
 				</control>
-				<control type="radiobutton" id="9803"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31647]</label><selected>Skin.HasSetting(Bald.OSD.DetailsOnControls)</selected><onclick>Skin.ToggleSetting(Bald.OSD.DetailsOnControls)</onclick></control>
+				<!-- Details on the controls, each part on its own (Custom_1128_OSDDetails.xml). -->
+				<control type="radiobutton" id="9803"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31880]</label><selected>Skin.HasSetting(Bald.OSD.DetailsLogo)</selected><onclick>Skin.ToggleSetting(Bald.OSD.DetailsLogo)</onclick></control>
+				<control type="radiobutton" id="9804"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31881]</label><selected>Skin.HasSetting(Bald.OSD.DetailsFlags)</selected><onclick>Skin.ToggleSetting(Bald.OSD.DetailsFlags)</onclick></control>
+				<control type="radiobutton" id="9805"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31882]</label><selected>Skin.HasSetting(Bald.OSD.DetailsPlot)</selected><onclick>Skin.ToggleSetting(Bald.OSD.DetailsPlot)</onclick></control>
 				<!-- Pause: none, hide the bar or show info, after a 0-3 s delay (empty = 3 s). -->
 				<control type="button" id="9811"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">2</param></include><label>$LOCALIZE[31978]</label><label2>$VAR[Bald_OSDPauseModeLabel]</label2>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.OSD.PauseMode))">Skin.SetString(Bald.OSD.PauseMode,hide)</onclick>

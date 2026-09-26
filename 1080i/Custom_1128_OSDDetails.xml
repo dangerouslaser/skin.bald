@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald video OSD, details on the controls (docs/SPEC.md 5.16, "Video OSD"): the clearlogo or title, the info line
-     and the plot at the top left while the OSD is up with "Details on the controls" on (Bald Settings, Playback), and
-     always while the information button's panel (1120) is up. A modeless dialog with nothing to focus, shown by its
+     with media flags and the plot at the top left. While the OSD is up it shows whichever of the three are switched
+     on in Bald Settings, Playback; while the information button's panel (1120) is up it shows all three. A modeless dialog with nothing to focus, shown by its
      visibility condition. The column is Bald_OSDInfoStack (Includes_Bald_OSD.xml) without the art and the times. -->
 <window type="dialog" id="1128">
 	<zorder>0</zorder>
-	<visible>Window.IsVisible(1120) | [Window.IsVisible(videoosd) + Skin.HasSetting(Bald.OSD.DetailsOnControls)]</visible>
+	<visible>Window.IsVisible(1120) | [Window.IsVisible(videoosd) + $EXP[Bald_OSDDetailsOnControls]]</visible>
 	<visible>!$EXP[Bald_OSDPanelUp] + !$EXP[Bald_OSDPVRPanelUp] + !Window.IsVisible(sliderdialog) + !Window.IsVisible(playerprocessinfo) + !Window.IsVisible(1124)</visible>
 	<include>Bald_OSDAnimPanel</include>
 	<controls>
@@ -14,6 +14,9 @@
 			<param name="height">604</param>
 			<param name="art">false</param>
 			<param name="ends">false</param>
+			<param name="logo">Window.IsVisible(1120) | Skin.HasSetting(Bald.OSD.DetailsLogo)</param>
+			<param name="flags">Window.IsVisible(1120) | Skin.HasSetting(Bald.OSD.DetailsFlags)</param>
+			<param name="plot">Window.IsVisible(1120) | Skin.HasSetting(Bald.OSD.DetailsPlot)</param>
 		</include>
 	</controls>
 </window>
