@@ -116,7 +116,9 @@
 				<!-- A direct child of the row that hides itself: a control hidden only through a parent group can still
 				     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
 				<control type="radiobutton" id="704">
-					<include content="Bald_PlaybackButton"><param name="icon">$VAR[PlayerControlsRepeatImageVar]</param></include>
+					<!-- Radio textures are static in Kodi: off shows repeat-off, on shows repeat-all, and repeat one adds a "1" badge. -->
+						<include content="Bald_PlaybackToggle"><param name="icon">osd/fullscreen/buttons/repeat-off.png</param><param name="on">osd/fullscreen/buttons/repeat-all.png</param><param name="badge">$VAR[Bald_PlaybackRepeatBadge]</param></include>
+						<selected>Playlist.IsRepeat | Playlist.IsRepeatOne</selected>
 					<onleft>605</onleft>
 					<onright>607</onright>
 					<onup>1000</onup>
