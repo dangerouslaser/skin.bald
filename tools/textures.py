@@ -44,6 +44,12 @@ def main():
     save(rounded(16, 16, 5, stroke=1.5, inset=0.25), "chip.png")
     # Rating pill: the chip's shape filled, drawn at 10% ink (Includes_Bald_Ratings.xml). 9-slice, border 6.
     save(rounded(16, 16, 5, inset=0.25), "chip_fill.png")
+    # The same pill in two halves, so a rating pill can put its source glyph (an image) before its value (an auto-width
+    # button): the left end, rounded on the left only (border 6,6,0,6), and the right part (border 0,6,6,6). Cut from
+    # a 32 px pill so the cut edge is fully filled.
+    wide = rounded(32, 16, 5, inset=0.25)
+    save(wide.crop((0, 0, 16, 16)), "chip_fill_l.png")
+    save(wide.crop((16, 0, 32, 16)), "chip_fill_r.png")
     # Logo scrim: CSS linear-gradient(32deg, black 60% at 0, 26% at 30%, 0 at 54%) at half size.
     w, h = 624, 351
     a = math.radians(32)
