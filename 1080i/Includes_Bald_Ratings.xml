@@ -8,6 +8,10 @@
        ListItem.UserRating is the user's own 1-10. There is no ListItem.DefaultRating.
      - VideoPlayer.Rating takes no name (Kodi drops the parameter), so the player only has the default and user
        ratings; with TMDb Helper its player monitor fills the named sources (TMDbHelper.Player.*).
+     - TMDb Helper 6.17 (read from the installed add-on) publishes each rating as <source>_rating (IMDb, TMDb, Trakt,
+       Metacritic users, MyAnimeList: "7.8"; Letterboxd: "3.9" of 5; Roger Ebert: "3.5" of 4; Rotten Tomatoes,
+       Metacritic, MDbList: the 0-100 number) plus percent_<source>_rating (0-100), and votes as comma_<source>_votes
+       ("12,345"). Bald reads the percent form for TMDb and Trakt.
      - $MAP[map, info] looks the value up and returns it unchanged when there is no entry (Kodi 22 skin maps).
      Names read: imdb; themoviedb (movie scraper, Radarr) or tmdb (TV scraper); tomatometerallcritics,
      tomatometerallaudience and metacritic (NFO editors, Radarr, tinyMediaManager via OMDb); trakt; tvdb.
@@ -30,7 +34,19 @@
 	<expression name="Bald_RatingTVDb">[!Skin.HasSetting(Bald.Ratings.NoTVDb)]</expression>
 	<expression name="Bald_RatingUser">[!Skin.HasSetting(Bald.Ratings.NoUser)]</expression>
 	<expression name="Bald_RatingDefault">[!Skin.HasSetting(Bald.Ratings.NoDefault)]</expression>
+	<!-- Sources only TMDb Helper supplies: Letterboxd on by default; the rarer ones off until asked for. -->
+	<expression name="Bald_RatingLetterboxd">[!Skin.HasSetting(Bald.Ratings.NoLetterboxd)]</expression>
+	<expression name="Bald_RatingMetacriticUser">[Skin.HasSetting(Bald.Ratings.ShowMetacriticUser)]</expression>
+	<expression name="Bald_RatingMyAnimeList">[Skin.HasSetting(Bald.Ratings.ShowMyAnimeList)]</expression>
+	<expression name="Bald_RatingRogerEbert">[Skin.HasSetting(Bald.Ratings.ShowRogerEbert)]</expression>
+	<expression name="Bald_RatingMDbList">[Skin.HasSetting(Bald.Ratings.ShowMDbList)]</expression>
 	<expression name="Bald_RatingVotes">[Skin.HasSetting(Bald.Ratings.ShowVotes)]</expression>
+	<!-- Online ratings from TMDb Helper (on by default; nothing without TMDb Helper). Home keeps TMDb Helper's service
+	     monitor (Skin.HasSetting(TMDbHelper.Service)) in step with it, as does the setting row. -->
+	<expression name="Bald_RatingsOnline">[$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(Bald.Ratings.NoOnline)]</expression>
+	<!-- TMDb Helper's ListItem monitor is between items: writing the new item's details (IsUpdating) or still fetching
+	     its ratings while the previous item's are published (IsUpdatingRatings). -->
+	<expression name="Bald_TMDbHelperIdle">[String.IsEmpty(Window(Home).Property(TMDbHelper.IsUpdating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.IsUpdatingRatings))]</expression>
 	<!-- One Appearance > Ratings row (category item 6) for a negative bool: on (accent dot) while <setting> is unset.
 	     The rows under the master switch grey out while ratings are off. -->
 	<include name="Bald_RatingsSettingRow">
@@ -439,21 +455,46 @@
 	</variable>
 
 	<!-- ============ A list item's ratings ============
-	     The items for one library or plugin item, as children of the caller's horizontal grouplist (hidden items take no
-	     space), in a fixed order: IMDb, TMDb, Rotten Tomatoes critics and audience, Metacritic, Trakt, TVDb, the user's
-	     own, then Kodi's default rating when none of the named sources has one.
-	     fallback: true fills Rotten Tomatoes, Metacritic and Trakt from TMDb Helper's ListItem monitor when the library
-	     has no value. Only the info dialog passes it: the monitor follows one item, the dialog's, while Home and the
-	     library draw a caption per row and parity and would show the previous item's scores for a moment.
-	     One pill per source: a named rating always hides the default one (the default pill needs every name empty; in
-	     an NFO library Kodi's default rating is one of the named ones anyway), and when Default rating source names
-	     Rotten Tomatoes, Metacritic or Trakt and the default pill shows, TMDb Helper's value for that source stays
-	     hidden, because the library has it. -->
+	     The pills for one library or plugin item, as children of the caller's horizontal grouplist (hidden pills take no
+	     space), in a fixed order: IMDb, TMDb, Rotten Tomatoes critics and audience, Metacritic, Metacritic users, Trakt,
+	     Letterboxd, MyAnimeList, Roger Ebert, MDbList, TVDb, the user's own, then Kodi's default rating when none of the
+	     library's named sources has one.
 
+	     TMDb Helper (optional, docs/NOTES.md "Online ratings from TMDb Helper"): its ListItem monitor publishes the
+	     online ratings of the item it follows as Window(Home).Property(TMDbHelper.ListItem.<key>). A source's TMDb Helper
+	     pill shows only when the library has no rating by that source's names, and only through `helper`, the guard
+	     that proves the published values belong to the item this caption shows:
+	       - Online ratings from TMDb Helper is on (Bald_RatingsOnline: installed, Bald.Ratings.NoOnline unset);
+	       - the monitor is not mid-change (TMDbHelper.IsUpdating: it is writing the new item's details;
+	         TMDbHelper.IsUpdatingRatings: the ratings still belong to the previous item);
+	       - its identity is this item: IMDb id = UniqueID(imdb); or TMDb id = UniqueID(tmdb) (not for seasons and
+	         episodes, whose TMDb id is the show's); or, for an episode, show title, season and episode; or title and year.
+	     So on Home, in the library views and on the info screens a mismatched or loading state shows no TMDb Helper
+	     pill, never the previous title's score. fallback false turns TMDb Helper's pills off for a caller.
+	     One pill per source: a library rating by that source's names hides TMDb Helper's pill, and while the default
+	     pill shows (every library name empty) and Default rating source names that source, TMDb Helper's pill for it
+	     stays hidden too, because the library has it. -->
 	<include name="Bald_Ratings">
 		<param name="container" />
-		<param name="fallback">false</param>
+		<param name="fallback">true</param>
 		<!-- A further condition on every item, for callers that place the items in their own grouplist. -->
+		<param name="visible">true</param>
+		<param name="top">0</param>
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
+		<definition>
+			<include content="Bald_RatingsItems">
+				<param name="container">$PARAM[container]</param>
+				<param name="helper">[$PARAM[fallback]] + $EXP[Bald_RatingsOnline] + $EXP[Bald_TMDbHelperIdle] + [[!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.imdb_id)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.imdb_id),$PARAM[container]ListItem.UniqueID(imdb))] | [!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.tmdb_id)) + !String.IsEqual($PARAM[container]ListItem.DBType,episode) + !String.IsEqual($PARAM[container]ListItem.DBType,season) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.tmdb_id),$PARAM[container]ListItem.UniqueID(tmdb))] | [String.IsEqual($PARAM[container]ListItem.DBType,episode) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.episode)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.tvshowtitle),$PARAM[container]ListItem.TVShowTitle) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.season),$PARAM[container]ListItem.Season) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.episode),$PARAM[container]ListItem.Episode)] | [!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.title)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.title),$PARAM[container]ListItem.Title) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.year),$PARAM[container]ListItem.Year)]]</param>
+				<param name="visible">$PARAM[visible]</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+		</definition>
+	</include>
+	<!-- The pills themselves; `helper` is the guard Bald_Ratings and Bald_RatingsRow build (the same text in both). -->
+	<include name="Bald_RatingsItems">
+		<param name="container" />
+		<param name="helper">false</param>
 		<param name="visible">true</param>
 		<param name="top">0</param>
 		<param name="height">26</param>
@@ -468,6 +509,14 @@
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/imdb.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.imdb_rating)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingIMDb] + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.imdb_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),imdb) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.ListItem.comma_imdb_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.comma_imdb_votes))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/tmdb.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(themoviedb)]%</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTMDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb))</param>
@@ -475,13 +524,20 @@
 				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(themoviedb),0)</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
-			<!-- The TV scraper names TMDb "tmdb"; shown only when there is no "themoviedb". -->
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/tmdb.png</param>
 				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(tmdb)]%</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTMDb] + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + !String.IsEmpty($PARAM[container]ListItem.Rating(tmdb))</param>
 				<param name="votes">$PARAM[container]ListItem.Votes(tmdb)</param>
 				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(tmdb),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/tmdb.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.percent_tmdb_rating)]%</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTMDb] + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.percent_tmdb_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),tmdb) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.ListItem.comma_tmdb_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.comma_tmdb_votes))</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
@@ -495,7 +551,7 @@
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/rt.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating)]%</param>
-				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTCritics] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]] + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingRTCritics] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
@@ -509,7 +565,7 @@
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/rt_audience.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter)]%</param>
-				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTAudience] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]] + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingRTAudience] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
@@ -523,7 +579,13 @@
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/metacritic.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.metacritic_rating)]</param>
-				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingMetacritic] + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacritic_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]] + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingMetacritic] + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacritic_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/metacritic_user.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.metacriticuser_rating)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingMetacriticUser] + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacriticuser_rating))</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
@@ -536,8 +598,38 @@
 			</include>
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/trakt.png</param>
-				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.ListItem.trakt_rating)]%</param>
-				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTrakt] + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.trakt_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]] + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.percent_trakt_rating)]%</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTrakt] + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.percent_trakt_rating)) + ![String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt) + [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))]]</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.ListItem.comma_trakt_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.comma_trakt_votes))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/letterboxd.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.letterboxd_rating)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingLetterboxd] + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.letterboxd_rating))</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.ListItem.comma_letterboxd_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.comma_letterboxd_votes))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/myanimelist.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.myanimelist_rating)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingMyAnimeList] + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.myanimelist_rating))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/rogerebert.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.rogerebert_rating)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingRogerEbert] + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rogerebert_rating))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/mdblist.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.mdblist_rating)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingMDbList] + [$PARAM[helper]] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.mdblist_rating))</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.ListItem.comma_mdblist_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.comma_mdblist_votes))</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
@@ -554,9 +646,9 @@
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingUser] + !String.IsEmpty($PARAM[container]ListItem.UserRating)</param>
 				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
-			<!-- Kodi's default rating, only when no name above has a value: an NFO <rating> without a name, a single
-			     <rating> tag, a Jellyfin-synced library (only "default"), or a source Bald does not name (Letterboxd, for
-			     example). Its glyph and format come from Default rating source. -->
+			<!-- Kodi's default rating, only when no name above has a value in the library: an NFO <rating> without a name, a
+			     single <rating> tag, a Jellyfin-synced library (only "default"), or a source Bald does not name. Its glyph and
+			     format come from Default rating source. TMDb Helper's values never hide it (it is the library's). -->
 			<include content="Bald_RatingDefaultItem">
 				<param name="rating">$PARAM[container]ListItem.Rating</param>
 				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))</param>
@@ -568,19 +660,44 @@
 	</include>
 
 	<!-- ============ A rating row ============
-	     A horizontal grouplist of Bald_Ratings, shown on a surface (`visible`, one of the Bald_Ratings<surface>
+	     A horizontal grouplist of the pills, shown on a surface (`visible`, one of the Bald_Ratings<surface>
 	     expressions) when the item has at least one rating to show, and hidden otherwise so a vertical caption closes
 	     up. Animations and any further <visible> go in as nested content. -->
 	<include name="Bald_RatingsRow">
 		<param name="container" />
 		<param name="visible">$EXP[Bald_RatingsOn]</param>
-		<param name="fallback">false</param>
+		<param name="fallback">true</param>
 		<param name="left">0</param>
 		<param name="top">0</param>
 		<param name="width">528</param>
 		<param name="height">26</param>
 		<param name="font">Bald_Flag</param>
 		<param name="align">left</param>
+		<definition>
+			<include content="Bald_RatingsRowGuarded">
+				<param name="container">$PARAM[container]</param>
+				<param name="helper">[$PARAM[fallback]] + $EXP[Bald_RatingsOnline] + $EXP[Bald_TMDbHelperIdle] + [[!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.imdb_id)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.imdb_id),$PARAM[container]ListItem.UniqueID(imdb))] | [!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.tmdb_id)) + !String.IsEqual($PARAM[container]ListItem.DBType,episode) + !String.IsEqual($PARAM[container]ListItem.DBType,season) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.tmdb_id),$PARAM[container]ListItem.UniqueID(tmdb))] | [String.IsEqual($PARAM[container]ListItem.DBType,episode) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.episode)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.tvshowtitle),$PARAM[container]ListItem.TVShowTitle) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.season),$PARAM[container]ListItem.Season) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.episode),$PARAM[container]ListItem.Episode)] | [!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.title)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.title),$PARAM[container]ListItem.Title) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.year),$PARAM[container]ListItem.Year)]]</param>
+				<param name="visible">$PARAM[visible]</param>
+				<param name="left">$PARAM[left]</param>
+				<param name="top">$PARAM[top]</param>
+				<param name="width">$PARAM[width]</param>
+				<param name="height">$PARAM[height]</param>
+				<param name="font">$PARAM[font]</param>
+				<param name="align">$PARAM[align]</param>
+				<nested />
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_RatingsRowGuarded">
+		<param name="container" />
+		<param name="helper" />
+		<param name="visible" />
+		<param name="left" />
+		<param name="top" />
+		<param name="width" />
+		<param name="height" />
+		<param name="font" />
+		<param name="align" />
 		<definition>
 			<control type="grouplist">
 				<left>$PARAM[left]</left>
@@ -590,11 +707,11 @@
 				<orientation>horizontal</orientation>
 				<align>$PARAM[align]</align>
 				<itemgap>8</itemgap>
-				<visible>[$PARAM[visible]] + [[$EXP[Bald_RatingIMDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(imdb))] | [$EXP[Bald_RatingTMDb] + [!String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) | !String.IsEmpty($PARAM[container]ListItem.Rating(tmdb))]] | [$EXP[Bald_RatingRTCritics] + [!String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) | [[$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating))]]] | [$EXP[Bald_RatingRTAudience] + [!String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) | [[$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter))]]] | [$EXP[Bald_RatingMetacritic] + [!String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) | [[$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacritic_rating))]]] | [$EXP[Bald_RatingTrakt] + [!String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) | [[$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.trakt_rating))]]] | [$EXP[Bald_RatingTVDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))] | [$EXP[Bald_RatingUser] + !String.IsEmpty($PARAM[container]ListItem.UserRating)] | [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating)]]</visible>
+				<visible>[$PARAM[visible]] + [[$EXP[Bald_RatingIMDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(imdb))] | [$EXP[Bald_RatingTMDb] + [!String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) | !String.IsEmpty($PARAM[container]ListItem.Rating(tmdb))]] | [$EXP[Bald_RatingRTCritics] + !String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics))] | [$EXP[Bald_RatingRTAudience] + !String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience))] | [$EXP[Bald_RatingMetacritic] + !String.IsEmpty($PARAM[container]ListItem.Rating(metacritic))] | [$EXP[Bald_RatingTrakt] + !String.IsEmpty($PARAM[container]ListItem.Rating(trakt))] | [$EXP[Bald_RatingTVDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))] | [$EXP[Bald_RatingUser] + !String.IsEmpty($PARAM[container]ListItem.UserRating)] | [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating)] | [[$PARAM[helper]] + [[$EXP[Bald_RatingIMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.imdb_rating))] | [$EXP[Bald_RatingTMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.percent_tmdb_rating))] | [$EXP[Bald_RatingRTCritics] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating))] | [$EXP[Bald_RatingRTAudience] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter))] | [$EXP[Bald_RatingMetacritic] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacritic_rating))] | [$EXP[Bald_RatingMetacriticUser] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacriticuser_rating))] | [$EXP[Bald_RatingTrakt] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.percent_trakt_rating))] | [$EXP[Bald_RatingLetterboxd] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.letterboxd_rating))] | [$EXP[Bald_RatingMyAnimeList] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.myanimelist_rating))] | [$EXP[Bald_RatingRogerEbert] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rogerebert_rating))] | [$EXP[Bald_RatingMDbList] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.mdblist_rating))]]]]</visible>
 				<nested />
-				<include content="Bald_Ratings">
+				<include content="Bald_RatingsItems">
 					<param name="container">$PARAM[container]</param>
-					<param name="fallback">$PARAM[fallback]</param>
+					<param name="helper">$PARAM[helper]</param>
 					<param name="height">$PARAM[height]</param>
 					<param name="font">$PARAM[font]</param>
 				</include>
@@ -604,8 +721,10 @@
 
 	<!-- ============ The playing video's ratings (video OSD info overlay and details on the controls) ============
 	     Kodi's player has no named ratings (VideoPlayer.Rating ignores a name), so the named sources come from TMDb
-	     Helper's player monitor when it is installed and its online ratings are on; the player's own default rating
-	     shows when TMDb Helper has none, and the user's rating always. Children of the caller's grouplist. -->
+	     Helper's player monitor (TMDbHelper.Player.<key>) when Online ratings from TMDb Helper is on. That monitor
+	     clears every property when playback changes item and only then writes the new one, so it needs no identity
+	     guard. The player's own default rating shows when TMDb Helper has none, and the user's rating always.
+	     Children of the caller's grouplist. -->
 	<include name="Bald_RatingsPlayer">
 		<param name="height">26</param>
 		<param name="font">Bald_Flag</param>
@@ -613,37 +732,77 @@
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/imdb.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.imdb_rating)]</param>
-				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingIMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.imdb_rating))</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingIMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.imdb_rating))</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.Player.comma_imdb_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.Player.comma_imdb_votes))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/tmdb.png</param>
-				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.Player.tmdb_rating)]%</param>
-				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.tmdb_rating))</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.percent_tmdb_rating)]%</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingTMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.percent_tmdb_rating))</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.Player.comma_tmdb_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.Player.comma_tmdb_votes))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/rt.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating)]%</param>
-				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTCritics] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating))</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingRTCritics] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/rt_audience.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter)]%</param>
-				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTAudience] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter))</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingRTAudience] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/metacritic.png</param>
 				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.metacritic_rating)]</param>
-				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingMetacritic] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacritic_rating))</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingMetacritic] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacritic_rating))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/metacritic_user.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.metacriticuser_rating)]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingMetacriticUser] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacriticuser_rating))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
 				<param name="glyph">bald/ratings/trakt.png</param>
-				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.Player.trakt_rating)]%</param>
-				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTrakt] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.trakt_rating))</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.percent_trakt_rating)]%</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingTrakt] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.percent_trakt_rating))</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.Player.comma_trakt_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.Player.comma_trakt_votes))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/letterboxd.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.letterboxd_rating)]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingLetterboxd] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.letterboxd_rating))</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.Player.comma_letterboxd_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.Player.comma_letterboxd_votes))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/myanimelist.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.myanimelist_rating)]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingMyAnimeList] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.myanimelist_rating))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/rogerebert.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.rogerebert_rating)]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingRogerEbert] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rogerebert_rating))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="glyph">bald/ratings/mdblist.png</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.mdblist_rating)]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingsOnline] + $EXP[Bald_RatingMDbList] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.mdblist_rating))</param>
+				<param name="votes">Window(Home).Property(TMDbHelper.Player.comma_mdblist_votes)</param>
+				<param name="has_votes">!String.IsEmpty(Window(Home).Property(TMDbHelper.Player.comma_mdblist_votes))</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
 			</include>
 			<include content="Bald_RatingItem">
@@ -654,7 +813,7 @@
 			</include>
 			<include content="Bald_RatingDefaultItem">
 				<param name="rating">VideoPlayer.Rating</param>
-				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingDefault] + !String.IsEmpty(VideoPlayer.Rating) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.imdb_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.tmdb_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacritic_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.trakt_rating))</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingDefault] + !String.IsEmpty(VideoPlayer.Rating) + [!$EXP[Bald_RatingsOnline] | ![!String.IsEmpty(Window(Home).Property(TMDbHelper.Player.imdb_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.percent_tmdb_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacritic_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacriticuser_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.percent_trakt_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.letterboxd_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.myanimelist_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rogerebert_rating)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.mdblist_rating))]]</param>
 				<param name="votes">VideoPlayer.Votes</param>
 				<param name="has_votes">!String.IsEqual(VideoPlayer.Votes,0)</param>
 				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
