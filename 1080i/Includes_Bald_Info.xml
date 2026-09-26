@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald movie info dialog: variables, animations and repeated controls (docs/SPEC.md 5.2). -->
 <includes>
-	<expression name="Bald_InfoOwnBackdrop">!Window.IsVisible(home)</expression>
-	<expression name="Bald_HasRecommendations">!String.IsEmpty(Window(movieinformation).Property(Bald.MorePath)) + Integer.IsGreater(Container(5100).NumItems,0)</expression>
+	<expression name="Bald_InfoOwnBackdrop">[!Window.IsVisible(home)]</expression>
+	<!-- The page in view (Bald.InfoSec on Home, set by each page's focusable controls): 0 Overview, 1 Cast & details,
+	     2 More like this. -->
+	<expression name="Bald_InfoOnOverview">[String.IsEqual(Window(home).Property(Bald.InfoSec),0)]</expression>
+	<expression name="Bald_InfoOnCast">[String.IsEqual(Window(home).Property(Bald.InfoSec),1)]</expression>
+	<expression name="Bald_InfoOnMore">[String.IsEqual(Window(home).Property(Bald.InfoSec),2)]</expression>
+	<expression name="Bald_InfoHasCast">[Integer.IsGreater(Container(50).NumItems,0)]</expression>
+	<!-- scripts/info.py found a recommendations path; the list may still be loading. -->
+	<expression name="Bald_InfoHasMorePath">[!String.IsEmpty(Window(movieinformation).Property(Bald.MorePath))]</expression>
+	<expression name="Bald_HasRecommendations">[$EXP[Bald_InfoHasMorePath] + Integer.IsGreater(Container(5100).NumItems,0)]</expression>
 	<variable name="Bald_InfoPoster">
 		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
@@ -15,21 +23,21 @@
 		<value>$INFO[Container(5100).ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="Bald_MoreStatus">
-		<value condition="!String.IsEmpty(Window(movieinformation).Property(Bald.MorePath)) + Container(5100).IsUpdating">Loading recommendations…</value>
+		<value condition="$EXP[Bald_InfoHasMorePath] + Container(5100).IsUpdating">Loading recommendations…</value>
 		<value>No related titles in your library.</value>
 	</variable>
 	<variable name="Bald_InfoPageTrail">
-		<value condition="String.IsEqual(Window(home).Property(Bald.InfoSec),0)">[COLOR bald_ink]Overview[/COLOR]     ·     Cast &amp; details     ·     More like this</value>
+		<value condition="$EXP[Bald_InfoOnOverview]">[COLOR bald_ink]Overview[/COLOR]     ·     Cast &amp; details     ·     More like this</value>
 		<value>[COLOR bald_ink58]Overview[/COLOR]     ·     [COLOR bald_ink]Cast &amp; details[/COLOR]     ·     More like this</value>
 	</variable>
 	<!-- ============ Variables (ListItem.* is the dialog's item) ============ -->
 	<variable name="Bald_InfoTitle">
-		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.Title]</value>
+		<value condition="$EXP[Bald_InfoTVIsEpisode]">$INFO[ListItem.Title]</value>
 		<value>$INFO[ListItem.Title]</value>
 	</variable>
 	<variable name="Bald_InfoMeta">
-		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.TVShowTitle] · S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Duration(mins), · , min]</value>
-		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$VAR[Bald_InfoSeasons]</value>
+		<value condition="$EXP[Bald_InfoTVIsEpisode]">$INFO[ListItem.TVShowTitle] · S$INFO[ListItem.Season] E$INFO[ListItem.Episode]$INFO[ListItem.Duration(mins), · , min]</value>
+		<value condition="$EXP[Bald_InfoTVIsShow]">$VAR[Bald_InfoSeasons]</value>
 		<value condition="Integer.IsGreaterOrEqual(ListItem.Duration(mins),60)">$INFO[ListItem.Year,,$COMMA ]$INFO[ListItem.Duration(h),,h ]$INFO[ListItem.Duration(mm),,m]</value>
 		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins),$COMMA , min]</value>
 	</variable>
@@ -84,8 +92,8 @@
 	<include name="Bald_InfoActionToCast">
 		<ondown>SetProperty(Bald.InfoSec,1,home)</ondown>
 		<ondown>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
-		<ondown condition="Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</ondown>
-		<ondown condition="!Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</ondown>
+		<ondown condition="$EXP[Bald_InfoHasCast]">SetFocus(50)</ondown>
+		<ondown condition="!$EXP[Bald_InfoHasCast]">SetFocus(5050)</ondown>
 	</include>
 	<!-- Up to Overview restores the actions; TV returns to the lowest filled row (episodes, then seasons).
 	     Movies have no 5301/5302, so those conditions are false there. -->
@@ -105,8 +113,8 @@
 	<include name="Bald_InfoBackToCast">
 		<onup>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onup>
 		<onup>SetProperty(Bald.InfoSec,1,home)</onup>
-		<onup condition="Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</onup>
-		<onup condition="!Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</onup>
+		<onup condition="$EXP[Bald_InfoHasCast]">SetFocus(50)</onup>
+		<onup condition="!$EXP[Bald_InfoHasCast]">SetFocus(5050)</onup>
 	</include>
 
 	<!-- ============ Controls ============ -->

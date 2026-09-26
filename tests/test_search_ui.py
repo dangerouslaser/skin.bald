@@ -2,7 +2,10 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+import re
+
 import home_menu
+from kodi_includes import expand
 
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
@@ -24,11 +27,12 @@ class SearchUITests(unittest.TestCase):
         menu = root.find("include[@name='Bald_LibraryOptions']//control[@id='9150']/content")
         searches = [item for item in menu.findall('item') if item.findtext('label') == 'Search']
         self.assertEqual(
-            [(item.findtext('visible'), [node.text for node in item.findall('onclick')]) for item in searches],
+            # Each entry shows for exactly its content level's Bald views (OR of Control.IsVisible).
+            [(re.findall(r'Control\.IsVisible\((\d+)\)', expand(item.findtext('visible'))), [node.text for node in item.findall('onclick')]) for item in searches],
             [
-                ('Control.IsVisible(510) | Control.IsVisible(511) | Control.IsVisible(512) | Control.IsVisible(513) | Control.IsVisible(514) | Control.IsVisible(515)', ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,movies=true)']),
-                ('Control.IsVisible(520) | Control.IsVisible(521) | Control.IsVisible(522) | Control.IsVisible(523) | Control.IsVisible(530) | Control.IsVisible(531)', ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,tvshows=true)']),
-                ('Control.IsVisible(540) | Control.IsVisible(541) | Control.IsVisible(542)', ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,episodes=true)']),
+                (['510', '511', '512', '513', '514', '515'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,movies=true)']),
+                (['520', '521', '522', '523', '530', '531'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,tvshows=true)']),
+                (['540', '541', '542'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,episodes=true)']),
             ],
         )
 

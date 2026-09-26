@@ -22,7 +22,7 @@
 						<height>170</height>
 						<aspectratio align="left" aligny="bottom">keep</aspectratio>
 						<texture background="true">$VAR[Bald_ItemLogo]</texture>
-						<visible>!Skin.HasSetting(Bald.HideClearlogo) + !String.IsEqual(ListItem.DBType,episode)</visible>
+						<visible>$EXP[Bald_ShowClearlogo] + !$EXP[Bald_InfoTVIsEpisode]</visible>
 					</control>
 					<control type="label">
 						<top>80</top>
@@ -31,7 +31,7 @@
 						<font>Bald_InfoTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$VAR[Bald_InfoTitle]</label>
-						<visible>Skin.HasSetting(Bald.HideClearlogo) | String.IsEqual(ListItem.DBType,episode) | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
+						<visible>!$EXP[Bald_ShowClearlogo] | $EXP[Bald_InfoTVIsEpisode] | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
 					</control>
 				</control>
 				<control type="label">
@@ -58,7 +58,7 @@
 					<height>30</height>
 					<orientation>horizontal</orientation>
 					<itemgap>8</itemgap>
-					<visible>!Skin.HasSetting(Bald.HideMediaFlags) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,episode)]</visible>
+					<visible>$EXP[Bald_ShowMediaFlags] + [String.IsEqual(ListItem.DBType,movie) | $EXP[Bald_InfoTVIsEpisode]]</visible>
 					<include content="Bald_AnimInfoIn"><param name="delay">520</param></include>
 					<include content="Bald_MediaFlags"><param name="height">30</param><param name="font">Bald_FlagL</param></include>
 				</control>
@@ -172,7 +172,7 @@
 				<control type="label"><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[Bald_InfoMeta]$INFO[ListItem.Genre, · ,]</label></control>
 			</control>
 			<control type="label"><left>624</left><top>340</top><width>1000</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>Cast</label></control>
-			<control type="label"><left>1624</left><top>340</top><width>200</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(50).CurrentItem] / $INFO[Container(50).NumItems]</label><visible>Integer.IsGreater(Container(50).NumItems,0)</visible></control>
+			<control type="label"><left>1624</left><top>340</top><width>200</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(50).CurrentItem] / $INFO[Container(50).NumItems]</label><visible>$EXP[Bald_InfoHasCast]</visible></control>
 			<control type="list" id="50">
 				<left>624</left><top>378</top><width>1200</width><height>234</height>
 				<orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime>
@@ -186,7 +186,7 @@
 			<control type="label">
 				<left>624</left><top>400</top><width>1200</width><height>42</height>
 				<font>Bald_DetailValue</font><textcolor>bald_ink60</textcolor><label>No cast information available.</label>
-				<visible>!Integer.IsGreater(Container(50).NumItems,0)</visible>
+				<visible>!$EXP[Bald_InfoHasCast]</visible>
 			</control>
 			<control type="button" id="5050">
 				<left>624</left><top>650</top><width>180</width><height>28</height>
@@ -248,7 +248,7 @@
 			<control type="list" id="5100">
 				<left>86</left><top>884</top><width>1268</width><height>119</height><orientation>horizontal</orientation>
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
-				<visible allowhiddenfocus="true">!String.IsEmpty(Window(movieinformation).Property(Bald.MorePath))</visible>
+				<visible allowhiddenfocus="true">$EXP[Bald_InfoHasMorePath]</visible>
 				<onfocus>SetProperty(Bald.InfoSec,2,home)</onfocus>
 				<onfocus>SetProperty(TMDbHelper.WidgetContainer,5100,movieinformation)</onfocus>
 				<include>Bald_InfoBackToCast</include>

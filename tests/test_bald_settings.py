@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import home_menu
-from kodi_includes import resolve_window
+from kodi_includes import condition, expand, resolve_window
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -193,8 +193,8 @@ class BaldSettingsTests(unittest.TestCase):
     def test_widget_rows_reopen_menu_on_the_active_screen(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
         row = root.find(".//include[@name='Bald_Row']/definition/control[@type='fixedlist']")
-        back_actions = [(node.get("condition"), node.text) for node in row.findall("onback")]
-        up_actions = [(node.get("condition"), node.text) for node in row.findall("onup")]
+        back_actions = [(condition(node.get("condition")), node.text) for node in row.findall("onback")]
+        up_actions = [(condition(node.get("condition")), node.text) for node in row.findall("onup")]
 
         self.assertIn(("String.IsEqual(Window(home).Property(Bald.Screen),home)", "SetFocus(9001)"), back_actions)
         self.assertIn(("String.IsEqual(Window(home).Property(Bald.Screen),movies)", "SetFocus(9002)"), back_actions)
@@ -267,7 +267,7 @@ class BaldSettingsTests(unittest.TestCase):
         ):
             self.assertIn(setting, xml)
 
-        home = (ROOT / "1080i" / "Includes_Bald_Home.xml").read_text()
+        home = expand((ROOT / "1080i" / "Includes_Bald_Home.xml").read_text())
         self.assertIn("!Skin.HasSetting(Bald.DisableBlur)", home)
         self.assertIn("!Skin.HasSetting(Bald.HideClearlogo)", home)
         self.assertIn("!Skin.HasSetting(Bald.HideMediaFlags)", home)

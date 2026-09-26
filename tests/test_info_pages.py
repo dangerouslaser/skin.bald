@@ -3,6 +3,8 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from kodi_includes import condition, expand
+
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
 
@@ -66,13 +68,14 @@ class InfoPagesTests(unittest.TestCase):
 
     def test_episode_overview_uses_episode_identity_and_cast_poster_crops(self):
         title = self.shared.find("variable[@name='Bald_InfoTitle']")
-        episode_title = title.find("value[@condition='String.IsEqual(ListItem.DBType,episode)']")
+        episode = 'String.IsEqual(ListItem.DBType,episode)'
+        episode_title = next(value for value in title.findall('value') if condition(value.get('condition')) == episode)
         self.assertEqual(episode_title.text, '$INFO[ListItem.Title]')
-        meta = self.shared.find("variable[@name='Bald_InfoMeta']/value[@condition='String.IsEqual(ListItem.DBType,episode)']")
+        meta = next(value for value in self.shared.findall("variable[@name='Bald_InfoMeta']/value") if condition(value.get('condition')) == episode)
         for field in ('ListItem.TVShowTitle', 'ListItem.Season', 'ListItem.Episode'):
             self.assertIn(field, meta.text)
         overview_title = next(node for node in self.pages.findall("include[@name='Bald_InfoOverview']//control[@type='label']") if node.findtext('label') == '$VAR[Bald_InfoTitle]')
-        self.assertIn('String.IsEqual(ListItem.DBType,episode)', overview_title.findtext('visible'))
+        self.assertIn(episode, expand(overview_title.findtext('visible')))
         poster = self.pages.find(".//control[@id='5204']")
         self.assertEqual(poster.findtext('aspectratio'), 'scale')
 

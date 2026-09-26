@@ -16,12 +16,13 @@
        Bald.TV.RowFor     the tab (CurrentItem) the episode row was last positioned for -->
 <includes>
 	<!-- Structural switch, for include conditions only: evaluated when the dialog loads its item. -->
-	<expression name="Bald_InfoTVItem">String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)</expression>
-	<expression name="Bald_InfoIsTV">!String.IsEmpty(Window(movieinformation).Property(Bald.InfoTV))</expression>
-	<expression name="Bald_InfoTVHasSeasons">Integer.IsGreater(Container(5301).NumItems,0)</expression>
-	<expression name="Bald_InfoTVHasEpisodes">Integer.IsGreater(Container(5302).NumItems,0)</expression>
-	<expression name="Bald_InfoTVIsShow">String.IsEqual(ListItem.DBType,tvshow)</expression>
-	<expression name="Bald_InfoTVIsEpisode">String.IsEqual(ListItem.DBType,episode)</expression>
+	<expression name="Bald_InfoTVItem">[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]</expression>
+	<expression name="Bald_InfoIsTV">[!String.IsEmpty(Window(movieinformation).Property(Bald.InfoTV))]</expression>
+	<expression name="Bald_InfoTVHasSeasons">[Integer.IsGreater(Container(5301).NumItems,0)]</expression>
+	<expression name="Bald_InfoTVHasEpisodes">[Integer.IsGreater(Container(5302).NumItems,0)]</expression>
+	<expression name="Bald_InfoTVEpisodesFocused">[Control.HasFocus(5302)]</expression>
+	<expression name="Bald_InfoTVIsShow">[String.IsEqual(ListItem.DBType,tvshow)]</expression>
+	<expression name="Bald_InfoTVIsEpisode">[String.IsEqual(ListItem.DBType,episode)]</expression>
 
 	<!-- ============ Variables (ListItem.* is the dialog's item) ============ -->
 	<!-- An empty id must give an empty path: videodb://tvshows/titles// would list every show. -->
@@ -99,8 +100,8 @@
 		<ondown condition="$EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</ondown>
 		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating">SetProperty(Bald.InfoSec,1,home)</ondown>
 		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating">ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
-		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating + Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</ondown>
-		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating + !Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating + $EXP[Bald_InfoHasCast]">SetFocus(50)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating + !$EXP[Bald_InfoHasCast]">SetFocus(5050)</ondown>
 	</include>
 	<!-- Tabs: Down enters the episode row. After a season change it starts at the first episode (prototype);
 	     returning to the same season keeps the episode. Conditions are evaluated before any action runs. -->
@@ -109,8 +110,8 @@
 		<ondown condition="$EXP[Bald_InfoTVHasEpisodes] + !String.IsEqual(Window(movieinformation).Property(Bald.TV.RowFor),Container(5301).CurrentItem)">SetFocus(5302,0,absolute)</ondown>
 		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating">SetProperty(Bald.InfoSec,1,home)</ondown>
 		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating">ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
-		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating + Integer.IsGreater(Container(50).NumItems,0)">SetFocus(50)</ondown>
-		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating + !Integer.IsGreater(Container(50).NumItems,0)">SetFocus(5050)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating + $EXP[Bald_InfoHasCast]">SetFocus(50)</ondown>
+		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating + !$EXP[Bald_InfoHasCast]">SetFocus(5050)</ondown>
 	</include>
 	<include name="Bald_InfoTVOnOverview">
 		<onfocus>SetProperty(Bald.InfoSec,0,home)</onfocus>
@@ -192,10 +193,10 @@
 		<param name="focus_fade">60</param>
 		<definition>
 			<control type="group">
-				<animation type="Conditional" condition="!Control.HasFocus(5302)">
+				<animation type="Conditional" condition="!$EXP[Bald_InfoTVEpisodesFocused]">
 					<effect type="fade" start="100" end="78" time="300" tween="sine" easing="inout" />
 				</animation>
-				<animation type="Conditional" condition="Control.HasFocus(5302)">
+				<animation type="Conditional" condition="$EXP[Bald_InfoTVEpisodesFocused]">
 					<effect type="fade" start="100" end="$PARAM[focus_fade]" time="300" tween="sine" easing="inout" />
 				</animation>
 				<animation type="Focus">
@@ -288,7 +289,7 @@
 					<height>170</height>
 					<aspectratio align="left" aligny="bottom">keep</aspectratio>
 					<texture background="true">$VAR[Bald_ItemLogo]</texture>
-					<visible>!Skin.HasSetting(Bald.HideClearlogo)</visible>
+					<visible>$EXP[Bald_ShowClearlogo]</visible>
 				</control>
 				<control type="label">
 					<top>80</top>
@@ -297,7 +298,7 @@
 					<font>Bald_InfoTitle</font>
 					<textcolor>bald_ink</textcolor>
 					<label>$VAR[Bald_InfoTVTitle]</label>
-					<visible>Skin.HasSetting(Bald.HideClearlogo) | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
+					<visible>!$EXP[Bald_ShowClearlogo] | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
 				</control>
 			</control>
 			<control type="label">
@@ -422,7 +423,7 @@
 					<onclick>RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])</onclick>
 					<itemlayout width="344" height="204"><include>Bald_InfoTVEpisodeCard</include></itemlayout>
 					<focusedlayout width="344" height="204">
-						<include content="Bald_InfoTVEpisodeCard"><param name="ring">Control.HasFocus(5302)</param><param name="focus_fade">100</param></include>
+						<include content="Bald_InfoTVEpisodeCard"><param name="ring">$EXP[Bald_InfoTVEpisodesFocused]</param><param name="focus_fade">100</param></include>
 					</focusedlayout>
 					<content target="videos" browse="never">$INFO[Container(5301).ListItem.FolderPath]</content>
 				</control>
@@ -482,7 +483,7 @@
 		<control type="group">
 			<left>1440</left>
 			<top>954</top>
-			<visible>String.IsEqual(Window(home).Property(Bald.InfoSec),0) + Control.HasFocus(5302)</visible>
+			<visible>$EXP[Bald_InfoOnOverview] + $EXP[Bald_InfoTVEpisodesFocused]</visible>
 			<include content="Bald_InfoHintPair"><param name="first">Select to play</param><param name="second">Down for cast &amp; details</param></include>
 		</control>
 	</include>
