@@ -25,6 +25,20 @@
 				<!-- Artwork -->
 				<control type="radiobutton" id="9601"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31761]</label><selected>!Skin.HasSetting(Bald.HideClearlogo)</selected><onclick>Skin.ToggleSetting(Bald.HideClearlogo)</onclick></control>
 				<control type="radiobutton" id="9602"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31762]</label><selected>!Skin.HasSetting(Bald.DisableBlur)</selected><onclick>Skin.ToggleSetting(Bald.DisableBlur)</onclick></control>
+				<!-- Library pages outside the Bald views: the focused item's fanart behind the page (DefaultBackground). -->
+				<control type="radiobutton" id="9603"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31985]</label><selected>!Skin.HasSetting(Bald.HideBrowseFanart)</selected><onclick>Skin.ToggleSetting(Bald.HideBrowseFanart)</onclick></control>
+				<!-- Music videos as posters rather than 16:9 thumbs in walls 500 and 54. -->
+				<control type="radiobutton" id="9604"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31986]</label><selected>Skin.HasSetting(Bald.MusicVideoPosters)</selected><onclick>Skin.ToggleSetting(Bald.MusicVideoPosters)</onclick></control>
+				<!-- Image packs, picked with script.image.resource.select (it writes <property>.name, .path and .ext). -->
+				<control type="button" id="9605"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31987]</label><label2>$VAR[Bald_GenreFanartName]</label2><enable>!Skin.HasSetting(Bald.HideBrowseFanart)</enable>
+					<include content="Bald_ImageResourceActions"><param name="property">Bald.GenreFanart</param><param name="type">resource.images.moviegenrefanart</param></include>
+				</control>
+				<control type="button" id="9606"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31988]</label><label2>$VAR[Bald_WeatherFanartName]</label2>
+					<include content="Bald_ImageResourceActions"><param name="property">Bald.WeatherFanart</param><param name="type">resource.images.weatherfanart</param></include>
+				</control>
+				<control type="button" id="9607"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31989]</label><label2>$VAR[Bald_WeatherIconsName]</label2>
+					<include content="Bald_ImageResourceActions"><param name="property">Bald.WeatherIcons</param><param name="type">resource.images.weathericons</param></include>
+				</control>
 				<!-- Information -->
 				<control type="radiobutton" id="9611"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31763]</label><selected>!Skin.HasSetting(Bald.HideMediaFlags)</selected><onclick>Skin.ToggleSetting(Bald.HideMediaFlags)</onclick></control>
 				<control type="radiobutton" id="9612"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31769]</label><selected>Skin.HasSetting(Bald.ShowRowCount)</selected><onclick>Skin.ToggleSetting(Bald.ShowRowCount)</onclick></control>
@@ -45,17 +59,6 @@
 				<control type="radiobutton" id="704"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31093]</label><selected>Skin.HasSetting(show_weatherinfo) + !String.IsEmpty(Weather.Plugin)</selected><onclick condition="!String.IsEmpty(Weather.Plugin)">Skin.ToggleSetting(show_weatherinfo)</onclick><onclick condition="String.IsEmpty(Weather.Plugin)">ActivateWindow(servicesettings,weather)</onclick></control>
 				<control type="button" id="707"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31164]</label><label2>$VAR[ProfileIdentificationLabel2Var]</label2><onclick>Skin.SelectBool(31164, 31165|show_profilename, 31166|show_profileavatar, 16018|show_none)</onclick></control>
 				<control type="button" id="708"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31047]</label><label2>$VAR[OriginalTitleSetting]</label2><onclick>Skin.SelectBool(31047, 571|OriginalTitleFormat_Default, 31049|OriginalTitleFormat_Only, 31050|OriginalTitleFormat_1st, 31051|OriginalTitleFormat_2nd)</onclick></control>
-				<control type="radiobutton" id="6067"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31168]</label><selected>Skin.HasSetting(show_musicvideoposter)</selected><onclick>Skin.ToggleSetting(show_musicvideoposter)</onclick></control>
-				<control type="radiobutton" id="605"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31002]</label><selected>!Skin.HasSetting(no_fanart)</selected><onclick>Skin.ToggleSetting(no_fanart)</onclick></control>
-				<control type="button" id="609"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31062]</label><label2>$INFO[Skin.String(WeatherFanart.name)]</label2><enable>!Skin.HasSetting(no_fanart)</enable>
-					<include content="Bald_ImageResourceActions"><param name="property">WeatherFanart</param><param name="type">resource.images.weatherfanart</param></include>
-				</control>
-				<control type="button" id="6066"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31149]</label><label2>$INFO[Skin.String(MovieGenreFanart.Name)]</label2>
-					<include content="Bald_ImageResourceActions"><param name="property">MovieGenreFanart</param><param name="type">resource.images.moviegenrefanart</param></include>
-				</control>
-				<control type="button" id="6068"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31177]</label><label2>$INFO[Skin.String(WeatherOutlookIcon.name)]</label2>
-					<include content="Bald_ImageResourceActions"><param name="property">WeatherOutlookIcon</param><param name="type">resource.images.weathericons</param></include>
-				</control>
 			</control>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>

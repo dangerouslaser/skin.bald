@@ -366,7 +366,8 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		as item 5, Estuary windows as item 4)
 		pick the rows (Bald_SettingRow)
 9600	Row grouplist
-9601, 9602	Artwork: clearlogos, blurred backgrounds
+9601-9607	Artwork: clearlogos, blurred backgrounds, fanart behind other library pages, music video
+		posters; genre background, weather background and weather icon packs
 9611, 9612	Information: media flags, row item count
 9621-9624	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup
 9631	Typography: font (fontset)
