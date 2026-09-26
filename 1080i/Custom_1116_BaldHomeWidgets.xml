@@ -22,7 +22,7 @@
 				<control type="button" id="9204"><include>Bald_ConfigureButton</include><label>Move up</label><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_move&amp;&amp;-1&amp;&amp;refocus::9100)</onclick></control>
 				<control type="button" id="9205"><include>Bald_ConfigureButton</include><label>Move down</label><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_move&amp;&amp;1&amp;&amp;refocus::9100)</onclick></control>
 				<control type="button" id="9206"><include>Bald_ConfigureButton</include><label>Add widget</label><visible>Integer.IsLess(Container(9100).NumItems,20)</visible><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url),,&amp;func=do_new&amp;&amp;use_rawpath::True&amp;&amp;limit::25&amp;&amp;secondary::0&amp;&amp;path2::&amp;&amp;refocus::9100])</onclick></control>
-				<control type="button" id="9207"><include>Bald_ConfigureButton</include><label>Remove widget</label><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_delete)</onclick></control>
+				<control type="button" id="9207"><include>Bald_ConfigureButton</include><label>Remove widget</label><visible>Integer.IsGreater(Container(9100).NumItems,1)</visible><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_delete)</onclick></control>
 			</control>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">Back to save and apply</param><param name="second">Left for widgets</param></include>

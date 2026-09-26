@@ -201,6 +201,11 @@
 		<value>Home</value>
 	</variable>
 
+	<!-- Where focus goes back to the rows (idle wake): the current row, or with no Home rows the menu's Home entry. -->
+	<variable name="Bald_RowFocus">
+		<value condition="!String.IsEmpty(Window(home).Property(Bald.Row))">$INFO[Window(home).Property(Bald.Row)]</value>
+		<value>9001</value>
+	</variable>
 	<variable name="Bald_NudgeLNext">
 		<value condition="String.IsEqual(Window(home).Property(Bald.NudgeL),a)">b</value>
 		<value>a</value>
@@ -805,7 +810,7 @@
 				<ondown condition="$PARAM[down_condition2]">SetProperty(Bald.MenuPreview,$PARAM[down_preview2],home)</ondown><ondown condition="$PARAM[down_condition2]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget2])],home)</ondown><ondown condition="$PARAM[down_condition2]">$PARAM[down2]</ondown>
 				<ondown condition="$PARAM[down_condition3]">SetProperty(Bald.MenuPreview,$PARAM[down_preview3],home)</ondown><ondown condition="$PARAM[down_condition3]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget3])],home)</ondown><ondown condition="$PARAM[down_condition3]">$PARAM[down3]</ondown>
 				<ondown condition="$PARAM[down_condition4]">SetProperty(Bald.MenuPreview,$PARAM[down_preview4],home)</ondown><ondown condition="$PARAM[down_condition4]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[down_widget4])],home)</ondown><ondown condition="$PARAM[down_condition4]">$PARAM[down4]</ondown>
-				<onback>ClearProperty(Bald.Menu,home)</onback><onback>SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
+				<onback condition="!String.IsEmpty(Window(home).Property(Bald.Row))">ClearProperty(Bald.Menu,home)</onback><onback condition="!String.IsEmpty(Window(home).Property(Bald.Row))">SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
 			</control>
 		</definition>
 	</include>

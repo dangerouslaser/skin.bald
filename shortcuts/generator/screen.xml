@@ -89,6 +89,13 @@
                     </item>
                 </items>
             </value>
+            <value name="has_rows">
+                <items menu="{menu}" mode="submenu">
+                    <item>
+                        <template>| [true]</template>
+                    </item>
+                </items>
+            </value>
             <value name="note_head">
                 <items menu="{menu}" mode="submenu">
                     <item>

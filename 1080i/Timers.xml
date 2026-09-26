@@ -77,6 +77,6 @@
         <name>bald_ambient</name>
         <start reset="true">Window.IsActive(home) + System.IdleTime(60) + !Skin.HasSetting(Bald.AmbientOff)</start>
         <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_ambient),8) | !System.IdleTime(60)</stop>
-        <onstop condition="System.IdleTime(60)">Control.Move($INFO[Window(home).Property(Bald.Row)],1)</onstop>
+        <onstop condition="System.IdleTime(60) + !String.IsEmpty(Window(home).Property(Bald.Row))">Control.Move($INFO[Window(home).Property(Bald.Row)],1)</onstop>
     </timer>
 </timers>
