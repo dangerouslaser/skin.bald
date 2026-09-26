@@ -132,6 +132,31 @@ def tv_info_textures():
     im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
     im.putalpha(mark.resize((size, size), Image.LANCZOS))
     save(im, "check.png")
+    settings_textures()
+
+
+def settings_textures():
+    """Kodi's settings pages (SettingsCategory.xml templates): spinner arrows and the slider."""
+    # Spinner arrow: a right-pointing chevron in a 32 px square, drawn for 16 px (2 px stroke, round caps).
+    # The left arrow is the same texture with flipx.
+    size, k = 32, 2 * SS
+    mark = Image.new("L", (size * SS, size * SS), 0)
+    d = ImageDraw.Draw(mark)
+    pts = [(6 * k, 3.5 * k), (10.5 * k, 8 * k), (6 * k, 12.5 * k)]
+    width = round(2 * k)
+    d.line(pts, fill=255, width=width, joint="curve")
+    for x, y in (pts[0], pts[-1]):
+        d.ellipse([x - width / 2, y - width / 2, x + width / 2, y + width / 2], fill=255)
+    im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
+    im.putalpha(mark.resize((size, size), Image.LANCZOS))
+    save(im, "chevron.png")
+    # Slider track: a 4 px rounded line centred in a 16 px tall texture, so the 16 px nib keeps its size (Kodi scales
+    # the nib by the control height over the track texture's height). 9-slice border 8,0,8,0.
+    im = Image.new("RGBA", (16, 16), (255, 255, 255, 0))
+    im.paste(rounded(16, 4, 2), (0, 6))
+    save(im, "slider_bar.png")
+    # Slider nib: a 16 px dot.
+    save(rounded(16, 16, 8), "slider_nib.png")
 
 
 if __name__ == "__main__":
