@@ -112,8 +112,8 @@ class BrowseTokenTests(unittest.TestCase):
                 self.assertEqual(used & (estuary_colors | estuary_fonts), set())
 
     def test_restyled_windows_draw_text_in_bald_fonts(self):
-        # A label without <font> falls back to Estuary's font13, so every text control the window resolves to names
-        # a Bald font.
+        # Defaults.xml gives a label without <font> the generic Bald_InfoPlot body type; each restyled text control
+        # names its own role font instead of relying on that default.
         fonts = bald_fonts()
         skin = Skin()
         for name in WINDOWS[1:]:
