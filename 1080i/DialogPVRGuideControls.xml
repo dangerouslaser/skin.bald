@@ -1,179 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Bald guide controls (pvrguidecontrols): a bar under the guide grid. Started from Kodi 22 Estuary's
+     DialogPVRGuideControls.xml (Team Kodi, GPL-2.0-or-later). Kodi binds no ids here; every button runs a
+     PVR.EpgGridControl action. The ids are Estuary's, which PVRGuideControlsHelpTextVar (Variables.xml) reads for the
+     help line. Estuary drew OSD icons, turning a play icon into arrows with rotations; Bald uses text pills, since its
+     motion is fade, slide and zoom only. -->
 <window>
 	<defaultcontrol always="true">602</defaultcontrol>
-	<include>Animation_BottomSlide</include>
 	<depth>DepthOSD</depth>
+	<animation type="WindowOpen">
+		<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+		<effect type="slide" start="0,40" end="0,0" time="480" tween="cubic" easing="out" />
+	</animation>
+	<animation type="WindowClose">
+		<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+		<effect type="slide" start="0,0" end="0,40" time="180" tween="cubic" easing="out" />
+	</animation>
 	<controls>
 		<control type="button">
 			<description>background close area</description>
-			<left>0</left>
-			<top>0</top>
-			<width>100%</width>
-			<bottom>280</bottom>
-			<texturefocus />
-			<texturenofocus />
+			<left>0</left><top>0</top><width>1920</width><bottom>280</bottom>
+			<texturefocus /><texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
-		<control type="group">
-			<bottom>0</bottom>
-			<height>150</height>
-			<animation effect="fade" time="200">VisibleChange</animation>
-			<control type="group" id="200">
-				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>100%</width>
-					<height>100%</height>
-					<texture>dialogs/dialog-bg-nobo.png</texture>
+		<control type="group" id="200">
+			<top>844</top><height>236</height>
+			<control type="image"><width>1920</width><height>236</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+			<control type="image"><width>1920</width><height>2</height><texture colordiffuse="bald_ink10">bald/white.png</texture></control>
+			<!-- Programme -->
+			<control type="group">
+				<left>Bald_SafeLeft</left><top>32</top>
+				<include content="Bald_PVRGuideGroupLabel"><param name="label">$LOCALIZE[19325]</param></include>
+				<control type="grouplist" id="201">
+					<top>36</top><width>880</width><height>48</height><orientation>horizontal</orientation><itemgap>12</itemgap>
+					<scrolltime tween="cubic" easing="out">200</scrolltime>
+					<onleft>70045</onleft><onright>70040</onright>
+					<include content="Bald_PVRGuidePill"><param name="id">600</param><param name="label">$LOCALIZE[31670]</param><param name="action">PVR.EpgGridControl(FirstProgramme)</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">601</param><param name="label">−12 h</param><param name="action">PVR.EpgGridControl(-12)</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">602</param><param name="label">$LOCALIZE[19030]</param><param name="action">PVR.EpgGridControl(CurrentProgramme)</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">603</param><param name="label">+12 h</param><param name="action">PVR.EpgGridControl(+12)</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">604</param><param name="label">$LOCALIZE[31671]</param><param name="action">PVR.EpgGridControl(LastProgramme)</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">605</param><param name="label">$LOCALIZE[552]</param><param name="action">PVR.EpgGridControl(SelectDate)</param></include>
 				</control>
-				<control type="group">
-					<left>20</left>
-					<width>600</width>
-					<control type="label">
-						<top>12</top>
-						<height>20</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$LOCALIZE[19325]</label>
-					</control>
-					<control type="grouplist" id="201">
-						<top>54</top>
-						<height>135</height>
-						<align>center</align>
-						<itemgap>20</itemgap>
-						<scrolltime tween="sine">200</scrolltime>
-						<orientation>horizontal</orientation>
-						<onleft>70045</onleft>
-						<onright>70040</onright>
-						<control type="radiobutton" id="600">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(FirstProgramme)</onclick>
-						</control>
-						<control type="radiobutton" id="601">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/rewind.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(-12)</onclick>
-						</control>
-						<control type="radiobutton" id="602">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
-							</include>
-							<animation effect="rotate" start="0" end="-90" center="auto" condition="true">Conditional</animation>
-							<onclick>PVR.EpgGridControl(CurrentProgramme)</onclick>
-						</control>
-						<control type="radiobutton" id="603">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/forward.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(+12)</onclick>
-						</control>
-						<control type="radiobutton" id="604">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/next.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(LastProgramme)</onclick>
-						</control>
-						<control type="radiobutton" id="605">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/calendar.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(SelectDate)</onclick>
-						</control>
-					</control>
+			</control>
+			<!-- Channel -->
+			<control type="group">
+				<left>1004</left><top>32</top>
+				<include content="Bald_PVRGuideGroupLabel"><param name="label">$LOCALIZE[19148]</param></include>
+				<control type="grouplist" id="202">
+					<top>36</top><width>420</width><height>48</height><orientation>horizontal</orientation><itemgap>12</itemgap>
+					<scrolltime tween="cubic" easing="out">200</scrolltime>
+					<onleft>605</onleft><onright>70043</onright>
+					<include content="Bald_PVRGuidePill"><param name="id">70040</param><param name="label">$LOCALIZE[31670]</param><param name="action">PVR.EpgGridControl(FirstChannel)</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">70041</param><param name="label">$LOCALIZE[31672]</param><param name="action">PVR.EpgGridControl(PlayingChannel)</param><param name="visible">PVR.IsPlayingTV | PVR.IsPlayingRadio | PVR.IsPlayingEpgTag</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">70042</param><param name="label">$LOCALIZE[31671]</param><param name="action">PVR.EpgGridControl(LastChannel)</param></include>
 				</control>
-				<control type="textbox">
-					<left>620</left>
-					<top>54</top>
-					<align>center</align>
-					<aligny>center</aligny>
-					<width>630</width>
-					<height>76</height>
-					<label>$VAR[PVRGuideControlsHelpTextVar]</label>
+			</control>
+			<!-- Channel group -->
+			<control type="group">
+				<left>Bald_RightColumn</left><top>32</top>
+				<include content="Bald_PVRGuideGroupLabel"><param name="label">$LOCALIZE[19141]</param></include>
+				<control type="grouplist" id="203">
+					<top>36</top><width>384</width><height>48</height><orientation>horizontal</orientation><itemgap>12</itemgap>
+					<scrolltime tween="cubic" easing="out">200</scrolltime>
+					<onleft>70042</onleft><onright>600</onright>
+					<include content="Bald_PVRGuidePill"><param name="id">70043</param><param name="label">$LOCALIZE[210]</param><param name="action">PVR.EpgGridControl(PreviousGroup)</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">70044</param><param name="label">$LOCALIZE[31673]</param><param name="action">PVR.EpgGridControl(NextGroup)</param></include>
+					<include content="Bald_PVRGuidePill"><param name="id">70045</param><param name="label">$LOCALIZE[22080]</param><param name="action">PVR.EpgGridControl(SelectGroup)</param></include>
 				</control>
-				<control type="group">
-					<right>370</right>
-					<width>300</width>
-					<control type="label">
-						<top>12</top>
-						<height>20</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$LOCALIZE[19148]</label>
-					</control>
-					<control type="grouplist" id="202">
-						<top>54</top>
-						<height>135</height>
-						<align>center</align>
-						<itemgap>20</itemgap>
-						<scrolltime tween="sine">200</scrolltime>
-						<orientation>horizontal</orientation>
-						<onleft>605</onleft>
-						<onright>70043</onright>
-						<control type="radiobutton" id="70040">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(FirstChannel)</onclick>
-						</control>
-						<control type="radiobutton" id="70041">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
-							</include>
-							<animation effect="rotate" start="0" end="-90" center="auto" condition="true">Conditional</animation>
-							<onclick>PVR.EpgGridControl(PlayingChannel)</onclick>
-							<visible>PVR.IsPlayingTV | PVR.IsPlayingRadio | PVR.IsPlayingEpgTag</visible>
-						</control>
-						<control type="radiobutton" id="70042">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/next.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(LastChannel)</onclick>
-						</control>
-					</control>
-				</control>
-				<control type="group">
-					<right>20</right>
-					<width>300</width>
-					<control type="label">
-						<top>12</top>
-						<height>20</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$LOCALIZE[19141]</label>
-					</control>
-					<control type="grouplist" id="203">
-						<top>54</top>
-						<height>135</height>
-						<align>center</align>
-						<itemgap>20</itemgap>
-						<scrolltime tween="sine">200</scrolltime>
-						<orientation>horizontal</orientation>
-						<onleft>70042</onleft>
-						<onright>600</onright>
-						<control type="radiobutton" id="70043">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
-							</include>
-							<animation effect="rotate" start="0" end="180" center="auto" condition="true">Conditional</animation>
-							<onclick>PVR.EpgGridControl(PreviousGroup)</onclick>
-						</control>
-						<control type="radiobutton" id="70044">
-							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(NextGroup)</onclick>
-						</control>
-						<control type="radiobutton" id="70045">
-							<include content="OSDButton">
-								<param name="texture" value="DefaultPlaylist.png"/>
-							</include>
-							<onclick>PVR.EpgGridControl(SelectGroup)</onclick>
-						</control>
-					</control>
-				</control>
+			</control>
+			<!-- What the focused control does (Estuary's help text). -->
+			<control type="label">
+				<left>Bald_SafeLeft</left><top>146</top><width>1728</width><height>28</height>
+				<font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor>
+				<label>$VAR[PVRGuideControlsHelpTextVar]</label>
 			</control>
 		</control>
 	</controls>

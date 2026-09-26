@@ -1,276 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald radio RDS information (pvrradiordsinfo). Started from Kodi 22 Estuary's DialogPVRRadioRDSInfo.xml (Team Kodi,
+     GPL-2.0-or-later). Like Estuary, it shows RDS info labels only: Kodi's optional OK button 10, spinner 21, text 22
+     and list 70 are absent, which CGUIDialogPVRRadioRDSInfo tolerates. Default control 9000 is Estuary's; nothing
+     here takes focus, and Back closes the dialog. -->
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<onunload>ClearProperty(infobackground,home)</onunload>
+	<include>Bald_PVRAnimWindow</include>
 	<controls>
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field60">bald/white.png</texture></control>
+		<include>Bald_PVRScrims</include>
+		<include content="Bald_PVRHeader">
+			<param name="title">$LOCALIZE[29900]</param>
+			<param name="section">$VAR[RDSInfoSubTitle]</param>
+			<param name="width">1728</param>
+		</include>
+		<!-- Song, then the studio's contacts. -->
+		<control type="grouplist">
+			<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>820</width><height>320</height><orientation>vertical</orientation>
+			<include content="Bald_AnimInfoIn"><param name="delay">0</param></include>
+			<include content="Bald_PVRRDSHeading"><param name="label">$LOCALIZE[179]</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29901]</param><param name="value">RDS.Band</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[557]</param><param name="value">RDS.Artist</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[556]</param><param name="value">RDS.Title</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29903]</param><param name="value">RDS.Composer</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29905]</param><param name="value">RDS.Conductor</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[558]</param><param name="value">RDS.Album</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[569]</param><param name="value">RDS.Comment</param></include>
+		</control>
+		<control type="grouplist">
+			<left>Bald_SafeLeft</left><top>566</top><width>820</width><height>160</height><orientation>vertical</orientation>
+			<include content="Bald_AnimInfoIn"><param name="delay">60</param></include>
+			<include content="Bald_PVRRDSHeading"><param name="label">$LOCALIZE[29909]</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29910]</param><param name="value">RDS.PhoneStudio</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29911]</param><param name="value">RDS.EmailStudio</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29912]</param><param name="value">RDS.SMSStudio</param></include>
+		</control>
+		<!-- Programme, then the hotline. -->
+		<control type="grouplist">
+			<left>1004</left><top>Bald_ContentTop</top><width>820</width><height>320</height><orientation>vertical</orientation>
+			<include content="Bald_AnimInfoIn"><param name="delay">100</param></include>
+			<include content="Bald_PVRRDSHeading"><param name="label">$LOCALIZE[29908]</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[19030]</param><param name="value">RDS.ProgNow</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[19031]</param><param name="value">RDS.ProgNext</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29902]</param><param name="value">RDS.ProgStyle</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[19148]</param><param name="value">RDS.ProgStation</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29906]</param><param name="value">RDS.ProgHost</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29907]</param><param name="value">RDS.ProgEditStaff</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29914]</param><param name="value">RDS.ProgHomepage</param></include>
+		</control>
+		<control type="grouplist">
+			<left>1004</left><top>566</top><width>820</width><height>160</height><orientation>vertical</orientation>
+			<include content="Bald_AnimInfoIn"><param name="delay">140</param></include>
+			<include content="Bald_PVRRDSHeading"><param name="label">$LOCALIZE[29913]</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29910]</param><param name="value">RDS.PhoneHotline</param></include>
+			<include content="Bald_PVRRDSLine"><param name="label">$LOCALIZE[29911]</param><param name="value">RDS.EmailHotline</param></include>
+		</control>
+		<!-- Info services (news, sport, weather ...) and the last four radiotext lines. -->
 		<control type="group">
-			<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
-			<animation effect="fade" start="100" end="75" time="0" condition="true">Conditional</animation>
-			<include>ColoredBackgroundImages</include>
+			<left>Bald_SafeLeft</left><top>742</top>
+			<include content="Bald_AnimInfoIn"><param name="delay">180</param></include>
+			<include content="Bald_PVRRDSHeading"><param name="label">$LOCALIZE[29915]</param></include>
+			<control type="textbox">
+				<top>44</top><width>820</width><height>150</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor>
+				<label>$INFO[RDS.InfoNews,$LOCALIZE[29916] · ,[CR]]$INFO[RDS.InfoNewsLocal,$LOCALIZE[29917] · ,[CR]]$INFO[RDS.InfoStock,$LOCALIZE[29920] · ,[CR]]$INFO[RDS.InfoSport,$LOCALIZE[29918] · ,[CR]]$INFO[RDS.Infolottery,$LOCALIZE[29919] · ,[CR]]$INFO[RDS.InfoWeather,$LOCALIZE[400] · ,[CR]]$INFO[RDS.InfoCinema,$LOCALIZE[19602] · ,[CR]]$INFO[RDS.InfoHoroscope,$LOCALIZE[29922] · ,[CR]]$INFO[RDS.InfoOther,$LOCALIZE[29921] · ,[CR]]</label>
+				<autoscroll delay="5000" time="3000" repeat="10000">true</autoscroll>
+			</control>
 		</control>
 		<control type="group">
-			<centertop>50%</centertop>
-			<height>1080</height>
-			<centerleft>50%</centerleft>
-			<width>1920</width>
-
-			<control type="image">
-				<left>120</left>
-				<top>160</top>
-				<width>840</width>
-				<height>405</height>
-				<texture border="21">dialogs/dialog-bg.png</texture>
-			</control>
-			<control type="label">
-				<left>150</left>
-				<top>180</top>
-				<width>780</width>
-				<height>25</height>
-				<textcolor>button_focus</textcolor>
-				<font>font36_title</font>
-				<label>$LOCALIZE[179]</label>
-			</control>
+			<left>1004</left><top>742</top>
+			<include content="Bald_AnimInfoIn"><param name="delay">220</param></include>
+			<include content="Bald_PVRRDSHeading"><param name="label">$LOCALIZE[14304]</param></include>
 			<control type="grouplist">
-				<left>150</left>
-				<top>230</top>
-				<width>780</width>
-				<height>315</height>
-				<orientation>vertical</orientation>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29901]"/>
-					<param name="value" value="RDS.Band" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[557]"/>
-					<param name="value" value="RDS.Artist" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[556]"/>
-					<param name="value" value="RDS.Title" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29903]"/>
-					<param name="value" value="RDS.Composer" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29905]"/>
-					<param name="value" value="RDS.Conductor" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[558]"/>
-					<param name="value" value="RDS.Album" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[569]"/>
-					<param name="value" value="RDS.Comment" />
-				</include>
+				<top>44</top><width>820</width><height>152</height><orientation>vertical</orientation>
+				<control type="label"><width>820</width><height>38</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><scroll>true</scroll><label>$INFO[RDS.GetLine(3)]</label></control>
+				<control type="label"><width>820</width><height>38</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink80</textcolor><scroll>true</scroll><label>$INFO[RDS.GetLine(2)]</label></control>
+				<control type="label"><width>820</width><height>38</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><scroll>true</scroll><label>$INFO[RDS.GetLine(1)]</label></control>
+				<control type="label"><width>820</width><height>38</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><scroll>true</scroll><label>$INFO[RDS.GetLine(0)]</label></control>
 			</control>
-
-			<control type="image">
-				<left>120</left>
-				<top>575</top>
-				<width>840</width>
-				<height>225</height>
-				<texture border="21">dialogs/dialog-bg.png</texture>
-			</control>
-			<control type="label">
-				<left>150</left>
-				<top>595</top>
-				<width>780</width>
-				<height>25</height>
-				<textcolor>button_focus</textcolor>
-				<font>font36_title</font>
-				<label>$LOCALIZE[29909]</label>
-			</control>
-			<control type="grouplist">
-				<left>150</left>
-				<top>645</top>
-				<width>780</width>
-				<height>135</height>
-				<orientation>vertical</orientation>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29910]"/>
-					<param name="value" value="RDS.PhoneStudio" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29911]"/>
-					<param name="value" value="RDS.EmailStudio" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29912]"/>
-					<param name="value" value="RDS.SMSStudio" />
-				</include>
-			</control>
-
-			<control type="image">
-				<left>970</left>
-				<top>160</top>
-				<width>840</width>
-				<height>405</height>
-				<texture border="21">dialogs/dialog-bg.png</texture>
-			</control>
-			<control type="label">
-				<left>1000</left>
-				<top>180</top>
-				<width>780</width>
-				<height>25</height>
-				<textcolor>button_focus</textcolor>
-				<font>font36_title</font>
-				<label>$LOCALIZE[29908]</label>
-			</control>
-			<control type="grouplist">
-				<left>1000</left>
-				<top>230</top>
-				<width>780</width>
-				<height>315</height>
-				<orientation>vertical</orientation>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[19030]"/>
-					<param name="value" value="RDS.ProgNow" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[19031]"/>
-					<param name="value" value="RDS.ProgNext" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29902]"/>
-					<param name="value" value="RDS.ProgStyle" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[19148]"/>
-					<param name="value" value="RDS.ProgStation" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29906]"/>
-					<param name="value" value="RDS.ProgHost" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29907]"/>
-					<param name="value" value="RDS.ProgEditStaff" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29914]"/>
-					<param name="value" value="RDS.ProgHomepage" />
-				</include>
-			</control>
-
-			<control type="image">
-				<left>970</left>
-				<top>575</top>
-				<width>840</width>
-				<height>225</height>
-				<texture border="21">dialogs/dialog-bg.png</texture>
-			</control>
-			<control type="label">
-				<left>1000</left>
-				<top>595</top>
-				<width>780</width>
-				<height>25</height>
-				<textcolor>button_focus</textcolor>
-				<font>font36_title</font>
-				<label>$LOCALIZE[29913]</label>
-			</control>
-			<control type="grouplist">
-				<left>1000</left>
-				<top>645</top>
-				<width>780</width>
-				<height>135</height>
-				<orientation>vertical</orientation>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29910]"/>
-					<param name="value" value="RDS.PhoneHotline" />
-				</include>
-				<include content="RDSInfoLine">
-					<param name="label" value="$LOCALIZE[29911]"/>
-					<param name="value" value="RDS.EmailHotline" />
-				</include>
-			</control>
-
-			<control type="image">
-				<left>120</left>
-				<top>810</top>
-				<width>840</width>
-				<height>260</height>
-				<texture border="21">dialogs/dialog-bg.png</texture>
-			</control>
-			<control type="group">
-				<left>150</left>
-				<top>830</top>
-				<control type="label">
-					<width>780</width>
-					<height>25</height>
-					<textcolor>button_focus</textcolor>
-					<font>font36_title</font>
-					<label>$LOCALIZE[29915]</label>
-				</control>
-				<control type="textbox">
-					<top>50</top>
-					<width>780</width>
-					<height>170</height>
-					<align>justify</align>
-					<label>$INFO[RDS.InfoNews,[COLOR button_focus]$LOCALIZE[29916]:[/COLOR] ,[CR]]$INFO[RDS.InfoNewsLocal,[COLOR button_focus]$LOCALIZE[29917]:[/COLOR] ,[CR]]$INFO[RDS.InfoStock,[COLOR button_focus]$LOCALIZE[29920]:[/COLOR] ,[CR]]$INFO[RDS.InfoSport,[COLOR button_focus]$LOCALIZE[29918]:[/COLOR] ,[CR]]$INFO[RDS.Infolottery,[COLOR button_focus]$LOCALIZE[29919]:[/COLOR] ,[CR]]$INFO[RDS.InfoWeather,[COLOR button_focus]$LOCALIZE[400]:[/COLOR] ,[CR]]$INFO[RDS.InfoCinema,$[COLOR button_focus]LOCALIZE[19602]:[/COLOR] ,[CR]]$INFO[RDS.InfoHoroscope,[COLOR button_focus]$LOCALIZE[29922]:[/COLOR] ,[CR]]$INFO[RDS.InfoOther,[COLOR button_focus]$LOCALIZE[29921]:[/COLOR] ,[CR]]</label>
-					<autoscroll delay="5000" time="3000" repeat="10000">true</autoscroll>
-				</control>
-			</control>
-
-			<control type="image">
-				<left>970</left>
-				<top>810</top>
-				<width>840</width>
-				<height>260</height>
-				<texture border="21">dialogs/dialog-bg.png</texture>
-			</control>
-			<control type="group">
-				<left>1000</left>
-				<top>830</top>
-				<control type="label">
-					<width>780</width>
-					<height>25</height>
-					<textcolor>button_focus</textcolor>
-					<font>font36_title</font>
-					<label>$LOCALIZE[14304]</label>
-				</control>
-				<control type="label">
-					<top>50</top>
-					<width>780</width>
-					<height>40</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.GetLine(3)]</label>
-					<scroll>true</scroll>
-				</control>
-				<control type="label">
-					<top>90</top>
-					<width>780</width>
-					<height>40</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.GetLine(2)]</label>
-					<scroll>true</scroll>
-				</control>
-				<control type="label">
-					<top>130</top>
-					<width>780</width>
-					<height>40</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.GetLine(1)]</label>
-					<scroll>true</scroll>
-				</control>
-				<control type="label">
-					<top>170</top>
-					<width>780</width>
-					<height>40</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.GetLine(0)]</label>
-					<scroll>true</scroll>
-				</control>
-			</control>
-
-			<include content="InfoDialogTopBarInfo">
-				<param name="main_label" value="$LOCALIZE[29900]" />
-				<param name="sub_label" value="[COLOR grey]$VAR[RDSInfoSubTitle][/COLOR]" />
-				<param name="posy" value="40" />
-			</include>
 		</control>
-		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>
