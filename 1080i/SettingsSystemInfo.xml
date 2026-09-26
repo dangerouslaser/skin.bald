@@ -49,6 +49,7 @@
 		</control>
 		<!-- Memory, CPU and version, under the sections (hidden by Kodi on the thank-you page). -->
 		<control type="group" id="104">
+			<include>Bald_AnimSettingsWindow</include>
 			<left>122</left>
 			<top>720</top>
 			<width>372</width>

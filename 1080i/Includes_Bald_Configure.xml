@@ -5,6 +5,36 @@
      focused category's heading, a Bald_MenuNote description and its rows. Hints sit on the info dialog's y 954 line,
      right-aligned to the 1824 safe edge. Control IDs stay in the windows; these includes supply layout and styling. -->
 <includes>
+	<!-- ============ Window transitions ============
+	     Moving between settings windows: the content (title, lists, detail, hints) leaves in 160 FADE and a 40 px move,
+	     and the next window's content arrives in 380 FADE and a 40 px move over 480. Going deeper moves right to left;
+	     going back (to the parent window, or Home) moves left to right. Kodi finishes a window's close animation before
+	     the next window opens, and the field, backdrop and sidebar panel never animate, so nothing flashes between them.
+	     Hierarchy: Home > Settings hub > Bald Settings (1115 / skinsettings), Kodi's settings pages, Profiles,
+	     System info > Home Screens (1117), Appearance (1118), Add-ons > Widgets (1116). -->
+	<!-- The opening window is receiving a Back from one of its children. -->
+	<expression name="Bald_SettingsBackIn">[[Window.IsActive(settings) + [Window.Previous(1115) | Window.Previous(skinsettings) | Window.Previous(profiles) | Window.Previous(systeminfo) | Window.Previous(systemsettings) | Window.Previous(servicesettings) | Window.Previous(pvrsettings) | Window.Previous(playersettings) | Window.Previous(mediasettings) | Window.Previous(interfacesettings) | Window.Previous(gamesettings) | Window.Previous(appearancesettings)]] | [[Window.IsActive(1115) | Window.IsActive(skinsettings)] + [Window.Previous(1117) | Window.Previous(1118) | Window.Previous(addonbrowser)]] | [Window.IsActive(1117) + Window.Previous(1116)]]</expression>
+	<!-- The closing window is going back to its parent (or Home). -->
+	<expression name="Bald_SettingsBackOut">[Window.Next(home) | Window.Next(settings) | [[Window.Next(1115) | Window.Next(skinsettings)] + [Window.IsVisible(1117) | Window.IsVisible(1118)]] | [Window.Next(1117) + Window.IsVisible(1116)]]</expression>
+	<include name="Bald_AnimSettingsWindow">
+		<animation type="WindowOpen" condition="!$EXP[Bald_SettingsBackIn]">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+			<effect type="slide" start="40,0" end="0,0" time="480" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowOpen" condition="$EXP[Bald_SettingsBackIn]">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+			<effect type="slide" start="-40,0" end="0,0" time="480" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose" condition="!$EXP[Bald_SettingsBackOut]">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="-40,0" time="180" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose" condition="$EXP[Bald_SettingsBackOut]">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
+		</animation>
+	</include>
+
 	<!-- Field, backdrop, sidebar and title. -->
 	<include name="Bald_SettingsFrame">
 		<param name="title" />
@@ -31,6 +61,7 @@
 				<font>Bald_CaptionTitle</font>
 				<textcolor>bald_ink</textcolor>
 				<label>$PARAM[title]</label>
+				<include>Bald_AnimSettingsWindow</include>
 			</control>
 		</definition>
 	</include>
@@ -42,6 +73,7 @@
 		<param name="right" />
 		<param name="font">Bald_MenuItem</param>
 		<definition>
+			<include>Bald_AnimSettingsWindow</include>
 			<left>Bald_SafeLeft</left>
 			<top>192</top>
 			<width>494</width>
@@ -97,6 +129,7 @@
 		<param name="heading_id">0</param>
 		<definition>
 			<control type="group">
+				<include>Bald_AnimSettingsWindow</include>
 				<left>686</left>
 				<top>192</top>
 				<width>1138</width>
@@ -210,6 +243,7 @@
 		<param name="second" />
 		<definition>
 			<control type="group">
+				<include>Bald_AnimSettingsWindow</include>
 				<left>1224</left>
 				<top>Bald_HintTop</top>
 				<include content="Bald_InfoHintPair">
@@ -269,6 +303,7 @@
 	<include name="Bald_SettingsCategoryGroup">
 		<param name="height">682</param>
 		<definition>
+			<include>Bald_AnimSettingsWindow</include>
 			<left>Bald_SafeLeft</left>
 			<top>192</top>
 			<width>494</width>
@@ -363,6 +398,7 @@
 		<param name="top">192</param>
 		<param name="height">628</param>
 		<definition>
+			<include>Bald_AnimSettingsWindow</include>
 			<left>1820</left>
 			<top>$PARAM[top]</top>
 			<width>4</width>
@@ -386,6 +422,7 @@
 	<!-- Help text for the focused category or setting (SettingsCategory 6), under the rows and above the hint line. -->
 	<include name="Bald_SettingsHelp">
 		<definition>
+			<include>Bald_AnimSettingsWindow</include>
 			<left>686</left>
 			<top>846</top>
 			<width>900</width>
