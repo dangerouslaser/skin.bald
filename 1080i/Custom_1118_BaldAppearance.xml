@@ -15,6 +15,7 @@
 				<item id="1"><label>$LOCALIZE[39123]</label><property name="note">$LOCALIZE[31755]</property></item>
 				<item id="2"><label>$LOCALIZE[19033]</label><property name="note">$LOCALIZE[31756]</property></item>
 				<item id="3"><label>$LOCALIZE[31757]</label><property name="note">$LOCALIZE[31758]</property></item>
+				<item id="5"><label>$LOCALIZE[31942]</label><property name="note">$LOCALIZE[31943]</property></item>
 				<item id="4"><label>$LOCALIZE[31759]</label><property name="note">$LOCALIZE[31760]</property></item>
 			</content>
 		</control>
@@ -33,6 +34,12 @@
 				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
 				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>
 				<control type="button" id="9623"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31766]</label><onclick>Skin.Reset(Bald.MenuOpens)</onclick><visible>Skin.HasSetting(Bald.AutoHideMenuHint)</visible></control>
+				<!-- Typography: switches Kodi's fontset (lookandfeel.font) between the two Font.xml typefaces; Kodi then
+				     reloads the skin. Any other fontset (Arial for non-Latin languages) switches to DM Sans. -->
+				<control type="button" id="9631"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">5</param></include><label>$LOCALIZE[31944]</label><label2>$VAR[Bald_FontName]</label2>
+					<onclick condition="String.IsEqual(Skin.Font,DMSans)">RunScript(skin.bald,font,Default)</onclick>
+					<onclick condition="!String.IsEqual(Skin.Font,DMSans)">RunScript(skin.bald,font,DMSans)</onclick>
+				</control>
 				<!-- Estuary windows: Estuary's own settings, labels and control IDs. -->
 				<control type="radiobutton" id="701"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[31095]</label><selected>!Skin.HasSetting(no_slide_animations)</selected><onclick>Skin.ToggleSetting(no_slide_animations)</onclick></control>
 				<control type="radiobutton" id="702"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">4</param></include><label>$LOCALIZE[20189]</label><selected>Skin.HasSetting(autoscroll)</selected><onclick>Skin.ToggleSetting(autoscroll)</onclick></control>

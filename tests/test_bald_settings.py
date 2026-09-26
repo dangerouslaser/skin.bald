@@ -257,6 +257,11 @@ class BaldSettingsTests(unittest.TestCase):
         ):
             self.assertIn(setting, xml)
 
+        font = root.find(".//control[@id='9631']")
+        self.assertEqual(font.findtext("label2"), "$VAR[Bald_FontName]")
+        self.assertEqual(sorted(node.text for node in font.findall("onclick")),
+                         ["RunScript(skin.bald,font,DMSans)", "RunScript(skin.bald,font,Default)"])
+
         home = expand((ROOT / "1080i" / "Includes_Bald_Home.xml").read_text())
         self.assertIn("!Skin.HasSetting(Bald.DisableBlur)", home)
         self.assertIn("!Skin.HasSetting(Bald.HideClearlogo)", home)
