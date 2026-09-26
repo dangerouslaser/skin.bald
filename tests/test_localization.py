@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from scripts import info
-from skin_strings import BALD_RANGE, PO, bald_strings, strings
+from skin_strings import BALD_RANGE, PO, RATINGS_RANGE, bald_strings, is_bald, strings
 
 
 XML = Path(__file__).resolve().parents[1] / "1080i"
@@ -97,7 +97,7 @@ class LocalizationTests(unittest.TestCase):
                 continue
             for num in skin_ids(path.read_text(encoding="utf-8")):
                 cls.uses.setdefault(num, set()).add(path.name)
-        cls.script_uses = {num for num in info.STRINGS if num in BALD_RANGE}
+        cls.script_uses = {num for num in info.STRINGS if is_bald(num)}
 
     def test_every_skin_string_the_xml_shows_is_defined(self):
         missing = sorted(num for num in self.uses if num not in self.strings)
@@ -120,9 +120,11 @@ class LocalizationTests(unittest.TestCase):
             self.assertEqual(info.STRINGS[num], self.bald[num], f"#{num}")
 
     def test_bald_block_does_not_overlap_estuary(self):
-        estuary = [num for num in self.strings if 31000 <= num < BALD_RANGE.start]
+        estuary = [num for num in self.strings if 31000 <= num < BALD_RANGE.start and not is_bald(num)]
         self.assertTrue(estuary)
         self.assertLess(max(estuary), BALD_RANGE.start)
+        # The ratings block sits in the gap Estuary left unused (31178-31596).
+        self.assertFalse([num for num in estuary if num in RATINGS_RANGE])
 
     def test_bald_windows_have_no_hardcoded_english(self):
         for path in BALD_FILES:

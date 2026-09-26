@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ratings: the scores the video library already holds (NFO <ratings> or a scraper), one quiet item per source.
+
+     Kodi 22 facts this file rests on (xbmc master, docs/NOTES.md "Ratings in media views"):
+     - ListItem.Rating(name) is the named rating, "" when the item has none; without a name it is the item's default
+       rating. Kodi stores every rating on a 0-10 scale (an NFO max="100" is divided on import) and prints it with one
+       decimal in the system locale ("7.8", or "7,8"). ListItem.Votes(name) prints "0" when there are no votes.
+       ListItem.UserRating is the user's own 1-10. There is no ListItem.DefaultRating.
+     - VideoPlayer.Rating takes no name (Kodi drops the parameter), so the player only has the default and user
+       ratings; with TMDb Helper its player monitor fills the named sources (TMDbHelper.Player.*).
+     - $MAP[map, info] looks the value up and returns it unchanged when there is no entry (Kodi 22 skin maps).
+     Names read: imdb; themoviedb (movie scraper, Radarr) or tmdb (TV scraper); tomatometerallcritics,
+     tomatometerallaudience and metacritic (NFO editors, Radarr, tinyMediaManager via OMDb); trakt; tvdb.
+
+     Item prefix: `container` is the text before ListItem, as for Bald_MediaFlags (Includes_Bald_Common.xml). -->
+<includes>
+	<!-- ============ Settings (Appearance > Ratings, Custom_1118_BaldAppearance.xml) ============
+	     Named so that unset is the default: everything on, vote counts off. -->
+	<expression name="Bald_RatingsOn">[!Skin.HasSetting(Bald.Ratings.Hide)]</expression>
+	<expression name="Bald_RatingsInfo">[$EXP[Bald_RatingsOn] + !Skin.HasSetting(Bald.Ratings.NoInfo)]</expression>
+	<expression name="Bald_RatingsHome">[$EXP[Bald_RatingsOn] + !Skin.HasSetting(Bald.Ratings.NoHome)]</expression>
+	<expression name="Bald_RatingsLibrary">[$EXP[Bald_RatingsOn] + !Skin.HasSetting(Bald.Ratings.NoLibrary)]</expression>
+	<expression name="Bald_RatingsOSD">[$EXP[Bald_RatingsOn] + !Skin.HasSetting(Bald.Ratings.NoOSD)]</expression>
+	<expression name="Bald_RatingIMDb">[!Skin.HasSetting(Bald.Ratings.NoIMDb)]</expression>
+	<expression name="Bald_RatingTMDb">[!Skin.HasSetting(Bald.Ratings.NoTMDb)]</expression>
+	<expression name="Bald_RatingRTCritics">[!Skin.HasSetting(Bald.Ratings.NoRTCritics)]</expression>
+	<expression name="Bald_RatingRTAudience">[!Skin.HasSetting(Bald.Ratings.NoRTAudience)]</expression>
+	<expression name="Bald_RatingMetacritic">[!Skin.HasSetting(Bald.Ratings.NoMetacritic)]</expression>
+	<expression name="Bald_RatingTrakt">[!Skin.HasSetting(Bald.Ratings.NoTrakt)]</expression>
+	<expression name="Bald_RatingTVDb">[!Skin.HasSetting(Bald.Ratings.NoTVDb)]</expression>
+	<expression name="Bald_RatingUser">[!Skin.HasSetting(Bald.Ratings.NoUser)]</expression>
+	<expression name="Bald_RatingDefault">[!Skin.HasSetting(Bald.Ratings.NoDefault)]</expression>
+	<expression name="Bald_RatingVotes">[Skin.HasSetting(Bald.Ratings.ShowVotes)]</expression>
+	<!-- One Appearance > Ratings row (category item 6) for a negative bool: on (accent dot) while <setting> is unset.
+	     The rows under the master switch grey out while ratings are off. -->
+	<include name="Bald_RatingsSettingRow">
+		<param name="id" />
+		<param name="label" />
+		<param name="setting" />
+		<param name="enable">!Skin.HasSetting(Bald.Ratings.Hide)</param>
+		<definition>
+			<control type="radiobutton" id="$PARAM[id]">
+				<include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include>
+				<label>$PARAM[label]</label>
+				<selected>!Skin.HasSetting($PARAM[setting])</selected>
+				<onclick>Skin.ToggleSetting($PARAM[setting])</onclick>
+				<enable>$PARAM[enable]</enable>
+			</control>
+		</definition>
+	</include>
+
+	<!-- A 0-10 rating as Kodi prints it ("7.8" or "7,8") to the 0-100 score it came from ("78"). Kodi divides
+	     100-point scores on import, so this gives TMDb, Trakt, Rotten Tomatoes and Metacritic their own scale back.
+	     Generated: 0.0 to 10.0 in tenths, with a point and with a comma. -->
+	<map name="Bald_RatingPercent">
+		<entry key="0.0">0</entry>
+		<entry key="0.1">1</entry>
+		<entry key="0.2">2</entry>
+		<entry key="0.3">3</entry>
+		<entry key="0.4">4</entry>
+		<entry key="0.5">5</entry>
+		<entry key="0.6">6</entry>
+		<entry key="0.7">7</entry>
+		<entry key="0.8">8</entry>
+		<entry key="0.9">9</entry>
+		<entry key="1.0">10</entry>
+		<entry key="1.1">11</entry>
+		<entry key="1.2">12</entry>
+		<entry key="1.3">13</entry>
+		<entry key="1.4">14</entry>
+		<entry key="1.5">15</entry>
+		<entry key="1.6">16</entry>
+		<entry key="1.7">17</entry>
+		<entry key="1.8">18</entry>
+		<entry key="1.9">19</entry>
+		<entry key="2.0">20</entry>
+		<entry key="2.1">21</entry>
+		<entry key="2.2">22</entry>
+		<entry key="2.3">23</entry>
+		<entry key="2.4">24</entry>
+		<entry key="2.5">25</entry>
+		<entry key="2.6">26</entry>
+		<entry key="2.7">27</entry>
+		<entry key="2.8">28</entry>
+		<entry key="2.9">29</entry>
+		<entry key="3.0">30</entry>
+		<entry key="3.1">31</entry>
+		<entry key="3.2">32</entry>
+		<entry key="3.3">33</entry>
+		<entry key="3.4">34</entry>
+		<entry key="3.5">35</entry>
+		<entry key="3.6">36</entry>
+		<entry key="3.7">37</entry>
+		<entry key="3.8">38</entry>
+		<entry key="3.9">39</entry>
+		<entry key="4.0">40</entry>
+		<entry key="4.1">41</entry>
+		<entry key="4.2">42</entry>
+		<entry key="4.3">43</entry>
+		<entry key="4.4">44</entry>
+		<entry key="4.5">45</entry>
+		<entry key="4.6">46</entry>
+		<entry key="4.7">47</entry>
+		<entry key="4.8">48</entry>
+		<entry key="4.9">49</entry>
+		<entry key="5.0">50</entry>
+		<entry key="5.1">51</entry>
+		<entry key="5.2">52</entry>
+		<entry key="5.3">53</entry>
+		<entry key="5.4">54</entry>
+		<entry key="5.5">55</entry>
+		<entry key="5.6">56</entry>
+		<entry key="5.7">57</entry>
+		<entry key="5.8">58</entry>
+		<entry key="5.9">59</entry>
+		<entry key="6.0">60</entry>
+		<entry key="6.1">61</entry>
+		<entry key="6.2">62</entry>
+		<entry key="6.3">63</entry>
+		<entry key="6.4">64</entry>
+		<entry key="6.5">65</entry>
+		<entry key="6.6">66</entry>
+		<entry key="6.7">67</entry>
+		<entry key="6.8">68</entry>
+		<entry key="6.9">69</entry>
+		<entry key="7.0">70</entry>
+		<entry key="7.1">71</entry>
+		<entry key="7.2">72</entry>
+		<entry key="7.3">73</entry>
+		<entry key="7.4">74</entry>
+		<entry key="7.5">75</entry>
+		<entry key="7.6">76</entry>
+		<entry key="7.7">77</entry>
+		<entry key="7.8">78</entry>
+		<entry key="7.9">79</entry>
+		<entry key="8.0">80</entry>
+		<entry key="8.1">81</entry>
+		<entry key="8.2">82</entry>
+		<entry key="8.3">83</entry>
+		<entry key="8.4">84</entry>
+		<entry key="8.5">85</entry>
+		<entry key="8.6">86</entry>
+		<entry key="8.7">87</entry>
+		<entry key="8.8">88</entry>
+		<entry key="8.9">89</entry>
+		<entry key="9.0">90</entry>
+		<entry key="9.1">91</entry>
+		<entry key="9.2">92</entry>
+		<entry key="9.3">93</entry>
+		<entry key="9.4">94</entry>
+		<entry key="9.5">95</entry>
+		<entry key="9.6">96</entry>
+		<entry key="9.7">97</entry>
+		<entry key="9.8">98</entry>
+		<entry key="9.9">99</entry>
+		<entry key="10.0">100</entry>
+		<entry key="0,0">0</entry>
+		<entry key="0,1">1</entry>
+		<entry key="0,2">2</entry>
+		<entry key="0,3">3</entry>
+		<entry key="0,4">4</entry>
+		<entry key="0,5">5</entry>
+		<entry key="0,6">6</entry>
+		<entry key="0,7">7</entry>
+		<entry key="0,8">8</entry>
+		<entry key="0,9">9</entry>
+		<entry key="1,0">10</entry>
+		<entry key="1,1">11</entry>
+		<entry key="1,2">12</entry>
+		<entry key="1,3">13</entry>
+		<entry key="1,4">14</entry>
+		<entry key="1,5">15</entry>
+		<entry key="1,6">16</entry>
+		<entry key="1,7">17</entry>
+		<entry key="1,8">18</entry>
+		<entry key="1,9">19</entry>
+		<entry key="2,0">20</entry>
+		<entry key="2,1">21</entry>
+		<entry key="2,2">22</entry>
+		<entry key="2,3">23</entry>
+		<entry key="2,4">24</entry>
+		<entry key="2,5">25</entry>
+		<entry key="2,6">26</entry>
+		<entry key="2,7">27</entry>
+		<entry key="2,8">28</entry>
+		<entry key="2,9">29</entry>
+		<entry key="3,0">30</entry>
+		<entry key="3,1">31</entry>
+		<entry key="3,2">32</entry>
+		<entry key="3,3">33</entry>
+		<entry key="3,4">34</entry>
+		<entry key="3,5">35</entry>
+		<entry key="3,6">36</entry>
+		<entry key="3,7">37</entry>
+		<entry key="3,8">38</entry>
+		<entry key="3,9">39</entry>
+		<entry key="4,0">40</entry>
+		<entry key="4,1">41</entry>
+		<entry key="4,2">42</entry>
+		<entry key="4,3">43</entry>
+		<entry key="4,4">44</entry>
+		<entry key="4,5">45</entry>
+		<entry key="4,6">46</entry>
+		<entry key="4,7">47</entry>
+		<entry key="4,8">48</entry>
+		<entry key="4,9">49</entry>
+		<entry key="5,0">50</entry>
+		<entry key="5,1">51</entry>
+		<entry key="5,2">52</entry>
+		<entry key="5,3">53</entry>
+		<entry key="5,4">54</entry>
+		<entry key="5,5">55</entry>
+		<entry key="5,6">56</entry>
+		<entry key="5,7">57</entry>
+		<entry key="5,8">58</entry>
+		<entry key="5,9">59</entry>
+		<entry key="6,0">60</entry>
+		<entry key="6,1">61</entry>
+		<entry key="6,2">62</entry>
+		<entry key="6,3">63</entry>
+		<entry key="6,4">64</entry>
+		<entry key="6,5">65</entry>
+		<entry key="6,6">66</entry>
+		<entry key="6,7">67</entry>
+		<entry key="6,8">68</entry>
+		<entry key="6,9">69</entry>
+		<entry key="7,0">70</entry>
+		<entry key="7,1">71</entry>
+		<entry key="7,2">72</entry>
+		<entry key="7,3">73</entry>
+		<entry key="7,4">74</entry>
+		<entry key="7,5">75</entry>
+		<entry key="7,6">76</entry>
+		<entry key="7,7">77</entry>
+		<entry key="7,8">78</entry>
+		<entry key="7,9">79</entry>
+		<entry key="8,0">80</entry>
+		<entry key="8,1">81</entry>
+		<entry key="8,2">82</entry>
+		<entry key="8,3">83</entry>
+		<entry key="8,4">84</entry>
+		<entry key="8,5">85</entry>
+		<entry key="8,6">86</entry>
+		<entry key="8,7">87</entry>
+		<entry key="8,8">88</entry>
+		<entry key="8,9">89</entry>
+		<entry key="9,0">90</entry>
+		<entry key="9,1">91</entry>
+		<entry key="9,2">92</entry>
+		<entry key="9,3">93</entry>
+		<entry key="9,4">94</entry>
+		<entry key="9,5">95</entry>
+		<entry key="9,6">96</entry>
+		<entry key="9,7">97</entry>
+		<entry key="9,8">98</entry>
+		<entry key="9,9">99</entry>
+		<entry key="10,0">100</entry>
+	</map>
+
+	<!-- ============ One rating ============
+	     A quiet pill: the source mark in the accent, the value in ink, on a 10% ink fill with no outline, so it never
+	     reads as a media flag chip (outlined). Two buttons, with and without the vote count; a disabled button sizes to
+	     its label (width auto), as the flag chips do. -->
+	<include name="Bald_RatingItem">
+		<param name="mark" />
+		<param name="value" />
+		<param name="visible">true</param>
+		<!-- The vote count's infolabel and whether it has one; sources without votes leave has_votes false (the default
+		     infolabel only keeps the unused votes button's label valid). -->
+		<param name="votes">ListItem.Votes</param>
+		<param name="has_votes">false</param>
+		<param name="top">0</param>
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
+		<definition>
+			<include content="Bald_RatingPill">
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+				<param name="label">[COLOR bald_accent]$PARAM[mark][/COLOR] $PARAM[value]</param>
+				<param name="visible">[$PARAM[visible]] + ![$EXP[Bald_RatingVotes] + [$PARAM[has_votes]]]</param>
+			</include>
+			<include content="Bald_RatingPill">
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+				<param name="label">[COLOR bald_accent]$PARAM[mark][/COLOR] $PARAM[value][COLOR bald_ink60] · $INFO[$PARAM[votes]][/COLOR]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingVotes] + [$PARAM[has_votes]]</param>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_RatingPill">
+		<param name="label" />
+		<param name="visible" />
+		<param name="top">0</param>
+		<param name="height" />
+		<param name="font" />
+		<definition>
+			<control type="button">
+				<top>$PARAM[top]</top>
+				<width>auto</width>
+				<height>$PARAM[height]</height>
+				<label>$PARAM[label]</label>
+				<font>$PARAM[font]</font>
+				<textoffsetx>10</textoffsetx>
+				<aligny>center</aligny>
+				<textcolor>bald_ink</textcolor>
+				<disabledcolor>bald_ink</disabledcolor>
+				<texturenofocus border="6" colordiffuse="bald_ink10">bald/chip_fill.png</texturenofocus>
+				<texturefocus border="6" colordiffuse="bald_ink10">bald/chip_fill.png</texturefocus>
+				<enable>false</enable>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ A list item's ratings ============
+	     The items for one library or plugin item, as children of the caller's horizontal grouplist (hidden items take no
+	     space), in a fixed order: IMDb, TMDb, Rotten Tomatoes critics and audience, Metacritic, Trakt, TVDb, the user's
+	     own, then Kodi's default rating when none of the named sources has one.
+	     fallback: true fills Rotten Tomatoes, Metacritic and Trakt from TMDb Helper's ListItem monitor when the library
+	     has no value. Only the info dialog passes it: the monitor follows one item, the dialog's, while Home and the
+	     library draw a caption per row and parity and would show the previous item's scores for a moment. -->
+	<include name="Bald_Ratings">
+		<param name="container" />
+		<param name="fallback">false</param>
+		<!-- A further condition on every item, for callers that place the items in their own grouplist. -->
+		<param name="visible">true</param>
+		<param name="top">0</param>
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
+		<definition>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31303]</param>
+				<param name="value">$INFO[$PARAM[container]ListItem.Rating(imdb)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingIMDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(imdb))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes(imdb)</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(imdb),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31304]</param>
+				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(themoviedb)]%</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTMDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes(themoviedb)</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(themoviedb),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<!-- The TV scraper names TMDb "tmdb"; shown only when there is no "themoviedb". -->
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31304]</param>
+				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(tmdb)]%</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTMDb] + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + !String.IsEmpty($PARAM[container]ListItem.Rating(tmdb))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes(tmdb)</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(tmdb),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31305]</param>
+				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(tomatometerallcritics)]%</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingRTCritics] + !String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes(tomatometerallcritics)</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(tomatometerallcritics),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31305]</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating)]%</param>
+				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTCritics] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31306]</param>
+				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(tomatometerallaudience)]%</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingRTAudience] + !String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes(tomatometerallaudience)</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(tomatometerallaudience),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31306]</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter)]%</param>
+				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTAudience] + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31307]</param>
+				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(metacritic)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingMetacritic] + !String.IsEmpty($PARAM[container]ListItem.Rating(metacritic))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes(metacritic)</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(metacritic),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31307]</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.ListItem.metacritic_rating)]</param>
+				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingMetacritic] + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacritic_rating))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31308]</param>
+				<param name="value">$MAP[Bald_RatingPercent, $PARAM[container]ListItem.Rating(trakt)]%</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTrakt] + !String.IsEmpty($PARAM[container]ListItem.Rating(trakt))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes(trakt)</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(trakt),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31308]</param>
+				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.ListItem.trakt_rating)]%</param>
+				<param name="visible">[$PARAM[visible]] + [$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTrakt] + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.trakt_rating))</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31309]</param>
+				<param name="value">$INFO[$PARAM[container]ListItem.Rating(tvdb)]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingTVDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes(tvdb)</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes(tvdb),0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31310]</param>
+				<param name="value">$INFO[$PARAM[container]ListItem.UserRating]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingUser] + !String.IsEmpty($PARAM[container]ListItem.UserRating)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<!-- Kodi's default rating, only when no name above has a value: an NFO <rating> without a name, a single
+			     <rating> tag, or a source Bald does not name (Letterboxd, for example). -->
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[563]</param>
+				<param name="value">$INFO[$PARAM[container]ListItem.Rating]</param>
+				<param name="visible">[$PARAM[visible]] + $EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating) + String.IsEmpty($PARAM[container]ListItem.Rating(imdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tmdb)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) + String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) + String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) + String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) + String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))</param>
+				<param name="votes">$PARAM[container]ListItem.Votes</param>
+				<param name="has_votes">!String.IsEqual($PARAM[container]ListItem.Votes,0)</param>
+				<param name="top">$PARAM[top]</param><param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+		</definition>
+	</include>
+
+	<!-- ============ A rating row ============
+	     A horizontal grouplist of Bald_Ratings, shown on a surface (`visible`, one of the Bald_Ratings<surface>
+	     expressions) when the item has at least one rating to show, and hidden otherwise so a vertical caption closes
+	     up. Animations and any further <visible> go in as nested content. -->
+	<include name="Bald_RatingsRow">
+		<param name="container" />
+		<param name="visible">$EXP[Bald_RatingsOn]</param>
+		<param name="fallback">false</param>
+		<param name="left">0</param>
+		<param name="top">0</param>
+		<param name="width">528</param>
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
+		<param name="align">left</param>
+		<definition>
+			<control type="grouplist">
+				<left>$PARAM[left]</left>
+				<top>$PARAM[top]</top>
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
+				<orientation>horizontal</orientation>
+				<align>$PARAM[align]</align>
+				<itemgap>8</itemgap>
+				<visible>[$PARAM[visible]] + [[$EXP[Bald_RatingIMDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(imdb))] | [$EXP[Bald_RatingTMDb] + [!String.IsEmpty($PARAM[container]ListItem.Rating(themoviedb)) | !String.IsEmpty($PARAM[container]ListItem.Rating(tmdb))]] | [$EXP[Bald_RatingRTCritics] + [!String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallcritics)) | [[$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_rating))]]] | [$EXP[Bald_RatingRTAudience] + [!String.IsEmpty($PARAM[container]ListItem.Rating(tomatometerallaudience)) | [[$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.rottentomatoes_usermeter))]]] | [$EXP[Bald_RatingMetacritic] + [!String.IsEmpty($PARAM[container]ListItem.Rating(metacritic)) | [[$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.metacritic_rating))]]] | [$EXP[Bald_RatingTrakt] + [!String.IsEmpty($PARAM[container]ListItem.Rating(trakt)) | [[$PARAM[fallback]] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.trakt_rating))]]] | [$EXP[Bald_RatingTVDb] + !String.IsEmpty($PARAM[container]ListItem.Rating(tvdb))] | [$EXP[Bald_RatingUser] + !String.IsEmpty($PARAM[container]ListItem.UserRating)] | [$EXP[Bald_RatingDefault] + !String.IsEmpty($PARAM[container]ListItem.Rating)]]</visible>
+				<nested />
+				<include content="Bald_Ratings">
+					<param name="container">$PARAM[container]</param>
+					<param name="fallback">$PARAM[fallback]</param>
+					<param name="height">$PARAM[height]</param>
+					<param name="font">$PARAM[font]</param>
+				</include>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ The playing video's ratings (video OSD info overlay and details on the controls) ============
+	     Kodi's player has no named ratings (VideoPlayer.Rating ignores a name), so the named sources come from TMDb
+	     Helper's player monitor when it is installed and its online ratings are on; the player's own default rating
+	     shows when TMDb Helper has none, and the user's rating always. Children of the caller's grouplist. -->
+	<include name="Bald_RatingsPlayer">
+		<param name="height">26</param>
+		<param name="font">Bald_Flag</param>
+		<definition>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31303]</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.imdb_rating)]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingIMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.imdb_rating))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31304]</param>
+				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.Player.tmdb_rating)]%</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTMDb] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.tmdb_rating))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31305]</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating)]%</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTCritics] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31306]</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter)]%</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingRTAudience] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31307]</param>
+				<param name="value">$INFO[Window(Home).Property(TMDbHelper.Player.metacritic_rating)]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingMetacritic] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacritic_rating))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31308]</param>
+				<param name="value">$MAP[Bald_RatingPercent, Window(Home).Property(TMDbHelper.Player.trakt_rating)]%</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_RatingTrakt] + !String.IsEmpty(Window(Home).Property(TMDbHelper.Player.trakt_rating))</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[31310]</param>
+				<param name="value">$INFO[VideoPlayer.UserRating]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingUser] + !String.IsEmpty(VideoPlayer.UserRating)</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+			<include content="Bald_RatingItem">
+				<param name="mark">$LOCALIZE[563]</param>
+				<param name="value">$INFO[VideoPlayer.Rating]</param>
+				<param name="visible">$EXP[Bald_RatingsOSD] + $EXP[Bald_RatingDefault] + !String.IsEmpty(VideoPlayer.Rating) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.imdb_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.tmdb_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.rottentomatoes_usermeter)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.metacritic_rating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.Player.trakt_rating))</param>
+				<param name="votes">VideoPlayer.Votes</param>
+				<param name="has_votes">!String.IsEqual(VideoPlayer.Votes,0)</param>
+				<param name="height">$PARAM[height]</param><param name="font">$PARAM[font]</param>
+			</include>
+		</definition>
+	</include>
+</includes>

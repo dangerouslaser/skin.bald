@@ -162,7 +162,7 @@
 		<param name="p" /><param name="c">510</param>
 		<definition>
 			<include content="Bald_Caption">
-				<param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="ignore_home_row">true</param>
+				<param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="ignore_home_row">true</param><param name="ratings">$EXP[Bald_RatingsLibrary]</param>
 				<param name="x">1276</param><param name="title_y">548</param><param name="title_height">88</param><param name="body_y">636</param><param name="width">528</param><param name="clip_width">568</param>
 			</include>
 		</definition>

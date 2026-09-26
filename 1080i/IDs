@@ -362,8 +362,8 @@ Custom_1117_BaldHomeScreens.xml (window 1117)
 9400	Action grouplist; 9401-9402
 
 Custom_1118_BaldAppearance.xml (window 1118)
-9500	Category list; static items 1, 2, 3 and 5 (Artwork, Information, Behavior, Typography; item 4
-		was "Estuary windows", folded into the others); the item ids pick the rows (Bald_SettingRow)
+9500	Category list; static items 1, 2, 6, 3 and 5 (Artwork, Information, Ratings, Behavior, Typography;
+		item 4 was "Estuary windows", folded into the others); the item ids pick the rows (Bald_SettingRow)
 9600	Row grouplist
 9601-9607	Artwork: clearlogos, blurred backgrounds, fanart behind other library pages, music video
 		posters; genre background, weather background and weather icon packs
@@ -372,6 +372,10 @@ Custom_1118_BaldAppearance.xml (window 1118)
 9621-9625	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
 		scroll long plots
 9631	Typography: font (fontset)
+9641-9655	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; sources 9642 IMDb, 9643 TMDb,
+		9644 Rotten Tomatoes critics, 9645 Rotten Tomatoes audience, 9646 Metacritic, 9647 Trakt,
+		9648 TVDb, 9649 my rating, 9650 default rating; surfaces 9651 information screens,
+		9652 Home, 9653 library views, 9654 player info overlay; 9655 vote counts
 
 GLOBAL OVERLAYS (Includes_Bald_Overlays.xml)
 
