@@ -263,3 +263,16 @@ class BaldSettingsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SettingsBackTests(unittest.TestCase):
+    def test_back_steps_to_the_previous_window_instead_of_home(self):
+        # PreviousMenu behaves like Escape and leaves for Home; Kodi's own Back retraces the window history.
+        import xml.etree.ElementTree as ET
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1] / '1080i'
+        for name in ('Includes_Bald_Configure.xml', 'Custom_1115_BaldSettings.xml', 'Custom_1116_BaldHomeWidgets.xml',
+                     'Custom_1117_BaldHomeScreens.xml', 'Custom_1118_BaldAppearance.xml', 'SkinSettings.xml'):
+            with self.subTest(file=name):
+                backs = [node.text for node in ET.parse(root / name).getroot().iter('onback')]
+                self.assertNotIn('PreviousMenu', backs)

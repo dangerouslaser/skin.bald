@@ -47,7 +47,6 @@
 			<orientation>vertical</orientation>
 			<scrolltime tween="cubic" easing="out">320</scrolltime>
 			<onright>$PARAM[right]</onright>
-			<onback>PreviousMenu</onback>
 			<itemlayout height="62">
 				<control type="label">
 					<left>20</left>
@@ -130,7 +129,6 @@
 			<scrolltime tween="cubic" easing="out">320</scrolltime>
 			<usecontrolcoords>true</usecontrolcoords>
 			<onleft>$PARAM[left]</onleft>
-			<onback>PreviousMenu</onback>
 		</definition>
 	</include>
 
@@ -253,7 +251,7 @@
 				<include>Bald_ConfigureButton</include>
 				<top>216</top>
 				<label>$LOCALIZE[502]</label>
-				<onleft>9000</onleft><onback>PreviousMenu</onback><onclick>SendClick(9000)</onclick>
+				<onleft>9000</onleft><onclick>SendClick(9000)</onclick>
 			</control>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31738]</param><param name="second">$LOCALIZE[31739]</param></include>
