@@ -760,7 +760,7 @@
 			<focusedlayout width="192" height="119">
 				<control type="group">
 					<!-- Tile focus pop: 280 pop to 1.05. While the menu is open the tile settles back and dims. -->
-					<animation type="Focus">
+					<animation type="Focus" reversible="false">
 						<effect type="zoom" start="100" end="105" center="98,59" time="280" tween="back" easing="out" />
 						<effect type="fade" start="55" end="100" time="300" tween="sine" easing="inout" />
 					</animation>
@@ -1041,7 +1041,7 @@
 		<definition>
 			<control type="image"><top>23</top><width>10</width><height>10</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>$PARAM[always_dot]</visible></control>
 			<control type="label"><left>26</left><width>394</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
-				<animation type="Focus"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
+				<animation type="Focus" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
 			</control>
 			<!-- A quiet disclosure cue for screen entries whose full native library opens with Right. -->
 			<control type="label"><left>374</left><width>28</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink70</textcolor><label>›</label><visible>!String.IsEmpty(ListItem.Property(library))</visible></control>

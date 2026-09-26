@@ -99,7 +99,7 @@
 						<font>$PARAM[font]</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$INFO[ListItem.Label]</label>
-						<animation type="Focus">
+						<animation type="Focus" reversible="false">
 							<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
 							<effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" />
 						</animation>
@@ -210,7 +210,7 @@
 			<!-- menu_dot.png is 440 x 56 with the dot in its first 10 px: the left border keeps it round at any width. -->
 			<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
 			<texturenofocus />
-			<animation type="Focus">
+			<animation type="Focus" reversible="false">
 				<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" />
 			</animation>
@@ -301,7 +301,7 @@
 			<disabledcolor>bald_ink10</disabledcolor>
 			<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
 			<texturenofocus />
-			<animation type="Focus">
+			<animation type="Focus" reversible="false">
 				<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
 			</animation>
 		</definition>
@@ -460,7 +460,7 @@
 					<visible>$PARAM[focused]</visible>
 				</control>
 				<control type="group">
-					<animation type="Focus" condition="$PARAM[focused]">
+					<animation type="Focus" reversible="false" condition="$PARAM[focused]">
 						<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
 						<effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" />
 					</animation>
