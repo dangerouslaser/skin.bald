@@ -22,6 +22,7 @@
 	<!-- Estuary settings retired with Appearance's "Estuary windows" category (docs/NOTES.md, "Estuary windows
 	     settings folded into Bald"): clear what an old install left behind. -->
 	<onload condition="Skin.HasSetting(touchmode)">Skin.Reset(touchmode)</onload>
+	<onload condition="Skin.HasSetting(no_slide_animations)">Skin.Reset(no_slide_animations)</onload>
 	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
 	<controls />
 </window>

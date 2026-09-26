@@ -22,7 +22,6 @@ WINDOWS = {
 # window reads a setting when its markup, the includes it calls (with their call conditions) or the variables and
 # expressions those reach name it; an include that no window calls does not count.
 LIVE_ESTUARY_SETTINGS = {
-    "no_slide_animations": "MyMusicPlaylistEditor.xml",
     "autoscroll": "AddonBrowser.xml",
     "show_weatherinfo": "AddonBrowser.xml",
     "hide_mediaflags": "AddonBrowser.xml",
@@ -55,6 +54,9 @@ DEAD_ESTUARY_SETTINGS = (
     # Touch mode: Bald is remote-only (Startup.xml turns mouse input off), so the touch buttons and the footer it hid
     # were retired with it.
     "touchmode",
+    # Slide animations: only four Estuary-structured windows read it (games, pictures, music and the playlist editor
+    # side panels) and Bald's own windows never did; those windows keep the slide.
+    "no_slide_animations",
 )
 
 
