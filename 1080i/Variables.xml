@@ -179,20 +179,6 @@
 		<value condition="MusicPlayer.IsMultiDisc + Window.IsActive(visualisation)">$INFO[MusicPlayer.DiscNumber, - [$LOCALIZE[427] ,] ]$INFO[MusicPlayer.DiscTitle]</value>
 		<value condition="MusicPlayer.IsMultiDisc">$INFO[MusicPlayer.DiscNumber]$INFO[MusicPlayer.DiscTitle, - ]</value>
 	</variable>
-	<variable name="WidgetGenreIconVar">
-		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">$INFO[ListItem.Icon]</value>
-		<value condition="System.AddonIsEnabled(resource.images.moviegenreicons.transparent)">$INFO[ListItem.Label,resource://resource.images.moviegenreicons.transparent/,.png]</value>
-		<value>DefaultGenre.png</value>
-	</variable>
-	<variable name="WidgetStudioIconVar">
-		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">$INFO[ListItem.Icon]</value>
-		<value condition="System.AddonIsEnabled(resource.images.studios.white)">$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]</value>
-		<value>DefaultStudios.png</value>
-	</variable>
-	<variable name="WidgetPlaylistIconVar">
-		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">$INFO[ListItem.Icon]</value>
-		<value>DefaultPlaylist.png</value>
-	</variable>
 	<variable name="AddonsLabel2Var">
 		<value condition="ListItem.Property(addon.downloading)">$INFO[ListItem.Property(addon.status)]</value>
 		<value condition="!Container.SortMethod(1)">$INFO[ListItem.Label2]</value>
@@ -208,55 +194,6 @@
 		<value condition="Skin.HasSetting(show_profilename)">$LOCALIZE[31165]</value>
 		<value condition="Skin.HasSetting(show_profileavatar)">$LOCALIZE[31166]</value>
 		<value>$LOCALIZE[16018]</value>
-	</variable>
-	<variable name="AlbumOnClickActionLabel2Var">
-		<value condition="Skin.HasSetting(album_onclick_browse)">$LOCALIZE[37015]</value>
-		<value condition="Skin.HasSetting(album_onclick_play)">$LOCALIZE[208]</value>
-		<value condition="Skin.HasSetting(album_onclick_playnext)">$LOCALIZE[10008]</value>
-		<value condition="Skin.HasSetting(album_onclick_queue)">$LOCALIZE[13347]</value>
-		<value>$LOCALIZE[37015]</value>
-	</variable>
-	<variable name="AlbumOnClickActionVar">
-		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">ActivateWindow(music,$INFO[ListItem.FilenameAndPath],return)</value>
-		<value condition="Skin.HasSetting(album_onclick_browse)">ActivateWindow(music,musicdb://albums/$INFO[ListItem.DBID]/,return)</value>
-		<value condition="Skin.HasSetting(album_onclick_play)">PlayMedia(musicdb://albums/$INFO[ListItem.DBID]/)</value>
-		<value condition="Skin.HasSetting(album_onclick_playnext)">QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/,playnext)</value>
-		<value condition="Skin.HasSetting(album_onclick_queue)">QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/)</value>
-		<value>ActivateWindow(music,musicdb://albums/$INFO[ListItem.DBID]/,return)</value>
-	</variable>
-	<variable name="TVShowOnClickActionLabel2Var">
-		<value condition="Skin.HasSetting(tvshow_onclick_browse)">$LOCALIZE[37015]</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_continuewatching)">$LOCALIZE[13362]</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_playfrombeginning)">$LOCALIZE[12021]</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_playnext)">$LOCALIZE[10008]</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_queue)">$LOCALIZE[13347]</value>
-		<value>$LOCALIZE[37015]</value>
-	</variable>
-	<variable name="TVShowOnClickActionVar">
-		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">ActivateWindow(videos,$INFO[ListItem.FilenameAndPath],return)</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_browse)">ActivateWindow(videos,videodb://tvshows/titles/$INFO[ListItem.DBID]/,return)</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_continuewatching)">PlayMedia(videodb://tvshows/titles/$INFO[ListItem.DBID]/,resume)</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_playfrombeginning)">PlayMedia(videodb://tvshows/titles/$INFO[ListItem.DBID]/,noresume)</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_playnext)">QueueMedia(videodb://tvshows/titles/$INFO[ListItem.DBID]/,playnext)</value>
-		<value condition="Skin.HasSetting(tvshow_onclick_queue)">QueueMedia(videodb://tvshows/titles/$INFO[ListItem.DBID]/)</value>
-		<value>ActivateWindow(videos,videodb://tvshows/titles/$INFO[ListItem.DBID]/,return)</value>
-	</variable>
-	<variable name="MovieSetOnClickActionLabel2Var">
-		<value condition="Skin.HasSetting(movieset_onclick_browse)">$LOCALIZE[37015]</value>
-		<value condition="Skin.HasSetting(movieset_onclick_continuewatching)">$LOCALIZE[13362]</value>
-		<value condition="Skin.HasSetting(movieset_onclick_playfrombeginning)">$LOCALIZE[12021]</value>
-		<value condition="Skin.HasSetting(movieset_onclick_playnext)">$LOCALIZE[10008]</value>
-		<value condition="Skin.HasSetting(movieset_onclick_queue)">$LOCALIZE[13347]</value>
-		<value>$LOCALIZE[37015]</value>
-	</variable>
-	<variable name="MovieSetOnClickActionVar">
-		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">ActivateWindow(videos,$INFO[ListItem.FilenameAndPath],return)</value>
-		<value condition="Skin.HasSetting(movieset_onclick_browse)">ActivateWindow(videos,videodb://movies/sets/$INFO[ListItem.DBID]/,return)</value>
-		<value condition="Skin.HasSetting(movieset_onclick_continuewatching)">PlayMedia(videodb://movies/sets/$INFO[ListItem.DBID]/,resume)</value>
-		<value condition="Skin.HasSetting(movieset_onclick_playfrombeginning)">PlayMedia(videodb://movies/sets/$INFO[ListItem.DBID]/,noresume)</value>
-		<value condition="Skin.HasSetting(movieset_onclick_playnext)">QueueMedia(videodb://movies/sets/$INFO[ListItem.DBID]/,playnext)</value>
-		<value condition="Skin.HasSetting(movieset_onclick_queue)">QueueMedia(videodb://movies/sets/$INFO[ListItem.DBID]/)</value>
-		<value>ActivateWindow(videos,videodb://movies/sets/$INFO[ListItem.DBID]/,return)</value>
 	</variable>
 	<variable name="AddonLifecycleType">
 		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">[COLOR button_focus]$LOCALIZE[24170][/COLOR][CR]$INFO[ListItem.AddonLifecycleDesc]</value> <!-- Deprecated -->
@@ -371,12 +308,6 @@
 		<value condition="Control.HasFocus(70054)">$LOCALIZE[590]: $LOCALIZE[16039]</value>
 		<value condition="Control.HasFocus(70055)">$LOCALIZE[24013]</value>
 	</variable>
-	<variable name="SkinSettingsHelpTextVar">
-		<value condition="Container(9000).HasFocus(1)">$LOCALIZE[31129]</value>
-		<value condition="Container(9000).HasFocus(2)">$LOCALIZE[31130]</value>
-		<value condition="Container(9000).HasFocus(3)">$LOCALIZE[31169]</value>
-		<value condition="Container(9000).HasFocus(4)">$LOCALIZE[31171]</value>
-	</variable>
 	<variable name="SkinSettingOSDAutoCloseTime">
 		<value condition="!String.IsEmpty(Skin.String(OSDAutoCloseTime))">$INFO[Skin.String(OSDAutoCloseTime)]</value>
 		<value condition="String.IsEmpty(Skin.String(OSDAutoCloseTime))">4</value> <!-- Default value -->
@@ -450,17 +381,6 @@
 	<variable name="PlayerClearLogoVar">
 		<value condition="!String.IsEmpty(Player.Art(tvshow.clearlogo))">$INFO[Player.Art(tvshow.clearlogo)]</value>
 		<value condition="!String.IsEmpty(Player.Art(clearlogo))">$INFO[Player.Art(clearlogo)]</value>
-	</variable>
-	<variable name="HomeFanartVar">
-		<value condition="Skin.HasSetting(no_fanart)"></value>
-		<value condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo)">$INFO[Window(home).Property(infobackground)]</value>
-		<value condition="!String.IsEmpty(Container.ListItem.Art(fanart))">$INFO[Container.ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(Container.ListItem.Property(FanartCode))">$INFO[Skin.String(WeatherFanart.path)]$INFO[Container.ListItem.Property(FanartCode)]$INFO[Skin.String(WeatherFanart.ext)]</value>
-		<value condition="!String.IsEmpty(Skin.String(HomeFanart.path)) + Control.HasFocus(804)">$INFO[Skin.String(HomeFanart.path)]power$INFO[Skin.String(HomeFanart.ext)]</value>
-		<value condition="!String.IsEmpty(Skin.String(HomeFanart.path)) + Control.HasFocus(802)">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</value>
-		<value condition="!String.IsEmpty(Skin.String(HomeFanart.path)) + Control.HasFocus(803)">$INFO[Skin.String(HomeFanart.path)]favorites$INFO[Skin.String(HomeFanart.ext)]</value>
-		<value condition="!String.IsEmpty(Skin.String(HomeFanart.path)) + Control.HasFocus(801)">$INFO[Skin.String(HomeFanart.path)]search$INFO[Skin.String(HomeFanart.ext)]</value>
-		<value condition="!String.IsEmpty(Skin.String(HomeFanart.path))">$INFO[Skin.String(HomeFanart.path)]$INFO[Container(9000).ListItem.Property(id)]$INFO[Skin.String(HomeFanart.ext)]</value>
 	</variable>
 	<variable name="MediaFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)"></value>
