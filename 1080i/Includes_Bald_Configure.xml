@@ -11,11 +11,11 @@
 	     going back (to the parent window, or Home) moves left to right. Kodi finishes a window's close animation before
 	     the next window opens, and the field, backdrop and sidebar panel never animate, so nothing flashes between them.
 	     Hierarchy: Home > Settings hub > Bald Settings (1115 / skinsettings), Kodi's settings pages, Profiles,
-	     System info > Home Screens (1117), Appearance (1118), Add-ons > Widgets (1116). -->
+	     System info > Home Screens (1117), Appearance (1118), Playback (1119), Add-ons > Widgets (1116). -->
 	<!-- The opening window is receiving a Back from one of its children. -->
-	<expression name="Bald_SettingsBackIn">[[Window.IsActive(settings) + [Window.Previous(1115) | Window.Previous(skinsettings) | Window.Previous(profiles) | Window.Previous(systeminfo) | Window.Previous(systemsettings) | Window.Previous(servicesettings) | Window.Previous(pvrsettings) | Window.Previous(playersettings) | Window.Previous(mediasettings) | Window.Previous(interfacesettings) | Window.Previous(gamesettings) | Window.Previous(appearancesettings)]] | [[Window.IsActive(1115) | Window.IsActive(skinsettings)] + [Window.Previous(1117) | Window.Previous(1118) | Window.Previous(addonbrowser)]] | [Window.IsActive(1117) + Window.Previous(1116)]]</expression>
+	<expression name="Bald_SettingsBackIn">[[Window.IsActive(settings) + [Window.Previous(1115) | Window.Previous(skinsettings) | Window.Previous(profiles) | Window.Previous(systeminfo) | Window.Previous(systemsettings) | Window.Previous(servicesettings) | Window.Previous(pvrsettings) | Window.Previous(playersettings) | Window.Previous(mediasettings) | Window.Previous(interfacesettings) | Window.Previous(gamesettings) | Window.Previous(appearancesettings)]] | [[Window.IsActive(1115) | Window.IsActive(skinsettings)] + [Window.Previous(1117) | Window.Previous(1118) | Window.Previous(1119) | Window.Previous(addonbrowser)]] | [Window.IsActive(1117) + Window.Previous(1116)]]</expression>
 	<!-- The closing window is going back to its parent (or Home). -->
-	<expression name="Bald_SettingsBackOut">[Window.Next(home) | Window.Next(settings) | [[Window.Next(1115) | Window.Next(skinsettings)] + [Window.IsVisible(1117) | Window.IsVisible(1118)]] | [Window.Next(1117) + Window.IsVisible(1116)]]</expression>
+	<expression name="Bald_SettingsBackOut">[Window.Next(home) | Window.Next(settings) | [[Window.Next(1115) | Window.Next(skinsettings)] + [Window.IsVisible(1117) | Window.IsVisible(1118) | Window.IsVisible(1119)]] | [Window.Next(1117) + Window.IsVisible(1116)]]</expression>
 	<include name="Bald_AnimSettingsWindow">
 		<include content="Bald_AnimWindowDepth">
 			<param name="back_in">$EXP[Bald_SettingsBackIn]</param>
@@ -602,6 +602,11 @@
 					<label>$LOCALIZE[480]</label>
 					<label2>$LOCALIZE[31733]</label2>
 					<onclick>ActivateWindow(1118)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[14086]</label>
+					<label2>$LOCALIZE[31649]</label2>
+					<onclick>ActivateWindow(1119)</onclick>
 				</item>
 				<item>
 					<label>CoreELEC</label>
