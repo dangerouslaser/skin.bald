@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald settings scaffold, shared by Bald Settings (1115), the widget editor (1116), Home Screens (1117)
+<!-- Bald settings scaffold, shared by Bald Settings (1115 and SkinSettings), the widget editor (1116), Home Screens (1117)
      and Appearance (1118). Two panes over the field and blurred backdrop: a 590 px sidebar with the title and a category
      list drawn as the Home menu (accent dot, Bald_MenuItem, unfocused at 34%), and a detail pane at x 686 with the
      focused category's heading, a Bald_MenuNote description and its rows. Hints sit on the info dialog's y 954 line,
@@ -198,7 +198,8 @@
 		</definition>
 	</include>
 
-	<!-- Bald Settings home (window 1115). -->
+	<!-- Bald Settings home, shared by window 1115 and Kodi's "Configure skin..." (SkinSettings.xml), so both open the
+	     same page with no redirect. -->
 	<include name="Bald_SettingsHome">
 		<include content="Bald_SettingsFrame"><param name="title">Bald Settings</param></include>
 		<control type="list" id="9000">
@@ -211,7 +212,7 @@
 				</item>
 				<item>
 					<label>Appearance</label>
-					<label2>Artwork, media information, motion, and navigation hints.</label2>
+					<label2>Artwork, media information, motion, navigation hints, and the settings of windows that still use Estuary's design.</label2>
 					<onclick>ActivateWindow(1118)</onclick>
 				</item>
 				<item>

@@ -8,10 +8,41 @@ ROOT = SKIN.parent
 
 WINDOWS = {
     "Custom_1115_BaldSettings.xml": ("9000", ["9001"]),
+    "SkinSettings.xml": ("9000", ["9001"]),
     "Custom_1116_BaldHomeWidgets.xml": ("9100", ["9200", "9201", "9202", "9203", "9204", "9205", "9206", "9207"]),
     "Custom_1117_BaldHomeScreens.xml": ("9300", ["9400", "9401", "9402"]),
     "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9611", "9621", "9622", "9623"]),
 }
+
+# Estuary skin settings that windows Bald still ships read, and where one reader is.
+LIVE_ESTUARY_SETTINGS = {
+    "no_slide_animations": "Includes_Animations.xml",
+    "autoscroll": "MyVideoNav.xml",
+    "touchmode": "Includes.xml",
+    "show_weatherinfo": "Includes.xml",
+    "hide_mediaflags": "MyVideoNav.xml",
+    "circle_userrating": "Includes.xml",
+    "show_profilename": "Includes.xml",
+    "OriginalTitleFormat_1st": "Variables.xml",
+    "show_musicvideoposter": "View_500_Wall.xml",
+    "OSDAutoClose": "Timers.xml",
+    "OSDAutoCloseTime": "Timers.xml",
+    "no_fanart": "Variables.xml",
+    "background_overlay": "Includes.xml",
+    "HomeFanart": "Variables.xml",
+    "WeatherFanart": "Variables.xml",
+    "MovieGenreFanart": "Variables.xml",
+    "WeatherOutlookIcon": "Variables.xml",
+}
+DEAD_ESTUARY_SETTINGS = (
+    "HomeMenuNo",
+    "home_no_addons_categories_widget",
+    "movieset_onclick_",
+    "tvshow_onclick_",
+    "album_onclick_",
+    "settingsdialog_content",
+)
+
 
 def tokens(path, tag):
     return {node.findtext("name") if tag == "font" else node.get("name")
@@ -84,10 +115,17 @@ class SettingsScaffoldTests(unittest.TestCase):
             for label in root.iter("label"):
                 self.assertNotIn("  •  ", label.text or "", name)
 
+    def test_configure_skin_opens_the_bald_settings_page_itself(self):
+        bald, skin = (self.windows[name].find("controls") for name in ("Custom_1115_BaldSettings.xml", "SkinSettings.xml"))
+        self.assertEqual(ET.tostring(bald), ET.tostring(skin))
+        self.assertIsNone(self.windows["SkinSettings.xml"].find(".//onload"))
+        actions = [node.text for node in self.windows["SkinSettings.xml"].iter("onclick")]
+        self.assertFalse(any("ReplaceWindow" in action for action in actions))
+
     def test_appearance_rows_follow_category_ids_not_labels(self):
         root = self.windows["Custom_1118_BaldAppearance.xml"]
         ids = [item.get("id") for item in root.findall(".//control[@id='9500']/content/item")]
-        self.assertEqual(ids, ["1", "2", "3"])
+        self.assertEqual(ids, ["1", "2", "3", "4"])
         seen = set()
         for row in self.control("Custom_1118_BaldAppearance.xml", "9600").findall("control"):
             conditions = [node.text for node in row.findall("visible")]
@@ -98,6 +136,20 @@ class SettingsScaffoldTests(unittest.TestCase):
             self.assertIn(owners[0], ids)
             seen.add(owners[0])
         self.assertEqual(seen, set(ids), "every category needs rows")
+
+    def test_live_estuary_settings_stay_reachable(self):
+        appearance = ET.tostring(self.windows["Custom_1118_BaldAppearance.xml"], encoding="unicode")
+        estuary = self.windows["Custom_1118_BaldAppearance.xml"].find(".//control[@id='9500']/content/item[@id='4']")
+        self.assertEqual(estuary.findtext("label"), "Estuary windows")
+        for setting, reader in LIVE_ESTUARY_SETTINGS.items():
+            self.assertIn(setting, appearance, f"{setting} is no longer configurable")
+            self.assertIn(setting, (SKIN / reader).read_text(), f"{setting} is no longer read by {reader}")
+
+    def test_dead_estuary_settings_are_gone(self):
+        for name in ("SkinSettings.xml", "Custom_1118_BaldAppearance.xml"):
+            text = ET.tostring(self.windows[name], encoding="unicode")
+            for setting in DEAD_ESTUARY_SETTINGS:
+                self.assertNotIn(setting, text, f"{name} still offers {setting}")
 
 
 if __name__ == "__main__":
