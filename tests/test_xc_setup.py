@@ -5,12 +5,20 @@ import xml.etree.ElementTree as ET
 
 
 MODULE = Path(__file__).resolve().parents[1] / "addons/script.bald.xcsetup/resources/lib/config.py"
+SETUP = MODULE.parents[2] / "default.py"
 SPEC = importlib.util.spec_from_file_location("bald_xc_config", MODULE)
 config = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(config)
 
 
 class XCSetupTests(unittest.TestCase):
+    def test_applying_credentials_enables_the_selected_pvr_instance(self):
+        source = SETUP.read_text()
+        self.assertIn(
+            '_set(root, "kodi_addon_instance_enabled", "true")',
+            source,
+        )
+
     def test_kodi_settings_expose_only_the_guided_setup_action(self):
         root = ET.parse(MODULE.parents[1] / "settings.xml").getroot()
         for setting_id in ("launch", "server", "username", "password", "output"):
