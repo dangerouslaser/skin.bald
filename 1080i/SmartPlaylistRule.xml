@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
+     Bald: the popup surface with settings-style rows (Bald_ConfigureButton) and pill actions. Kodi binds 2 (heading),
+     15 (field), 16 (operator), 17 (value), 20 (browse) and 18 / 19 (OK / Cancel); every id and route is Estuary's. -->
 <window>
 	<defaultcontrol always="true">9001</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
@@ -18,7 +21,10 @@
 				<left>20</left>
 				<top>65</top>
 				<width>720</width>
-				<include>SettingsLabelCommon</include>
+				<height>44</height>
+				<textoffsetx>30</textoffsetx>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>bald_ink60</textcolor>
 				<label>$LOCALIZE[21422]</label>
 			</control>
 			<control type="grouplist" id="9001">
@@ -29,13 +35,11 @@
 				<ondown>9000</ondown>
 				<control type="button" id="15">
 					<description>Rule Field</description>
-					<include>SettingsItemCommon</include>
-					<width>900</width>
+					<include content="Bald_ConfigureButton"><param name="width">900</param></include>
 				</control>
 				<control type="button" id="16">
 					<description>Rule operator</description>
-					<width>900</width>
-					<include>SettingsItemCommon</include>
+					<include content="Bald_ConfigureButton"><param name="width">900</param></include>
 				</control>
 				<control type="grouplist" id="9002">
 					<left>30</left>
@@ -43,14 +47,12 @@
 					<orientation>horizontal</orientation>
 					<control type="edit" id="17">
 						<description>Value Button</description>
-						<width>600</width>
-						<include>SettingsItemCommon</include>
+						<include content="Bald_ConfigureButton"><param name="width">600</param></include>
 						<hinttext>$LOCALIZE[31103]</hinttext>
 					</control>
 					<control type="button" id="20">
 						<description>Browse Button</description>
-						<width>300</width>
-						<include>SettingsItemCommon</include>
+						<include content="Bald_ConfigureButton"><param name="width">300</param></include>
 						<align>center</align>
 						<label>$LOCALIZE[1024]</label>
 					</control>
