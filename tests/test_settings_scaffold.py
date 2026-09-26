@@ -13,7 +13,7 @@ WINDOWS = {
     "SkinSettings.xml": ("9000", ["9001"]),
     "Custom_1116_BaldHomeWidgets.xml": ("9100", ["9200", "9201", "9202", "9203", "9204", "9205", "9206", "9207", "9208", "9209"]),
     "Custom_1117_BaldHomeScreens.xml": ("9300", ["9400", "9401", "9402"]),
-    "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9611", "9612", "9621", "9622", "9623"]),
+    "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9611", "9612", "9621", "9622", "9623", "9624"]),
 }
 
 # Estuary skin settings that windows Bald still ships read, and one window (or Kodi-read file) that reads each. A

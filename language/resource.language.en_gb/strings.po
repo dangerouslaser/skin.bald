@@ -1331,6 +1331,12 @@ msgctxt "#31725"
 msgid "Off"
 msgstr ""
 
+#. Bald Appearance, Behavior: hold a splash at startup until every Home row has loaded.
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31726"
+msgid "Preload Home at startup"
+msgstr ""
+
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Settings.xml
 msgctxt "#31730"
