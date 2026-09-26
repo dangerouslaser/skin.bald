@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald movie library: three large posters, selected artwork and the shared media caption. -->
 <includes>
+	<!-- A Bald library view is showing; MyVideoNav hides Estuary's chrome and routes Menu to Bald options. -->
+	<expression name="Bald_LibraryViewActive">Control.IsVisible(510) | Control.IsVisible(511) | Control.IsVisible(512) | Control.IsVisible(513) | Control.IsVisible(514) | Control.IsVisible(515) | Control.IsVisible(520) | Control.IsVisible(521) | Control.IsVisible(522) | Control.IsVisible(523) | Control.IsVisible(530) | Control.IsVisible(531) | Control.IsVisible(540) | Control.IsVisible(541) | Control.IsVisible(542)</expression>
 	<expression name="Bald_LibraryLettersOpen">Control.HasFocus(9160)</expression>
 	<expression name="Bald_LibraryTitleSorted">String.IsEqual(Container.SortMethod,$LOCALIZE[556])</expression>
 	<variable name="Bald_LibraryLetterLabel">

@@ -52,4 +52,6 @@ class WallTests(unittest.TestCase):
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
         self.assertIn('512', nav.findtext('views').split(','))
         self.assertIn('View_512_Bald_WallPreview', [n.text for n in nav.iter('include')])
-        self.assertTrue(all('512' in n.get('condition') for n in nav.findall(".//control[@id='9151']/onfocus")))
+        self.assertTrue(all('Bald_LibraryViewActive' in n.get('condition') for n in nav.findall(".//control[@id='9151']/onfocus")))
+        active = ET.parse(ROOT / 'View_510_Bald_Posters.xml').getroot().findtext(".//expression[@name='Bald_LibraryViewActive']")
+        self.assertIn('Control.IsVisible(512)', active)

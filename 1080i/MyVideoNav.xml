@@ -17,8 +17,8 @@
 		<!-- Route Kodi's Menu action without duplicating native menu/control IDs. -->
 		<control type="button" id="9151">
 			<include>HiddenObject</include>
-			<onfocus condition="Control.IsVisible(510) | Control.IsVisible(511) | Control.IsVisible(512) | Control.IsVisible(513) | Control.IsVisible(514) | Control.IsVisible(515) | Control.IsVisible(520) | Control.IsVisible(521) | Control.IsVisible(522) | Control.IsVisible(523) | Control.IsVisible(530) | Control.IsVisible(531) | Control.IsVisible(540) | Control.IsVisible(541) | Control.IsVisible(542)">SetFocus(9150)</onfocus>
-			<onfocus condition="!Control.IsVisible(510) + !Control.IsVisible(511) + !Control.IsVisible(512) + !Control.IsVisible(513) + !Control.IsVisible(514) + !Control.IsVisible(515) + !Control.IsVisible(520) + !Control.IsVisible(521) + !Control.IsVisible(522) + !Control.IsVisible(523) + !Control.IsVisible(530) + !Control.IsVisible(531) + !Control.IsVisible(540) + !Control.IsVisible(541) + !Control.IsVisible(542)">SetFocus(9000)</onfocus>
+			<onfocus condition="$EXP[Bald_LibraryViewActive]">SetFocus(9150)</onfocus>
+			<onfocus condition="!$EXP[Bald_LibraryViewActive]">SetFocus(9000)</onfocus>
 		</control>
 		<include>DefaultBackground</include>
 		<control type="group">
@@ -38,7 +38,7 @@
 			<include>View_540_Bald_Episodes</include>
 			<include>View_541_Bald_EpisodesCompact</include>
 			<include>View_542_Bald_EpisodesWall</include>
-			<control type="group"><visible>Control.IsVisible(510) | Control.IsVisible(511) | Control.IsVisible(512) | Control.IsVisible(513) | Control.IsVisible(514) | Control.IsVisible(515) | Control.IsVisible(520) | Control.IsVisible(521) | Control.IsVisible(522) | Control.IsVisible(523) | Control.IsVisible(530) | Control.IsVisible(531) | Control.IsVisible(540) | Control.IsVisible(541) | Control.IsVisible(542)</visible><include>Bald_LibraryOptions</include><include>Bald_LibraryLetters</include></control>
+			<control type="group"><visible>$EXP[Bald_LibraryViewActive]</visible><include>Bald_LibraryOptions</include><include>Bald_LibraryLetters</include></control>
 			<include>View_50_List</include>
 			<include>View_51_Poster</include>
 			<include>View_52_IconWall</include>
@@ -111,13 +111,13 @@
 				</control>
 			</control>
 			<control type="group">
-				<visible>!Control.IsVisible(510) + !Control.IsVisible(511) + !Control.IsVisible(512) + !Control.IsVisible(513) + !Control.IsVisible(514) + !Control.IsVisible(515) + !Control.IsVisible(520) + !Control.IsVisible(521) + !Control.IsVisible(522) + !Control.IsVisible(523) + !Control.IsVisible(530) + !Control.IsVisible(531) + !Control.IsVisible(540) + !Control.IsVisible(541) + !Control.IsVisible(542)</visible>
+				<visible>!$EXP[Bald_LibraryViewActive]</visible>
 				<include content="TopBar"><param name="breadcrumbs_label" value="$VAR[BreadcrumbsVideoVar]" /></include>
 				<include content="BottomBar"><param name="info_visible" value="true" /></include>
 			</control>
 			<control type="group">
 				<depth>DepthBars</depth>
-				<visible>!Control.IsVisible(510) + !Control.IsVisible(511) + !Control.IsVisible(512) + !Control.IsVisible(513) + !Control.IsVisible(514) + !Control.IsVisible(515) + !Control.IsVisible(520) + !Control.IsVisible(521) + !Control.IsVisible(522) + !Control.IsVisible(523) + !Control.IsVisible(530) + !Control.IsVisible(531) + !Control.IsVisible(540) + !Control.IsVisible(541) + !Control.IsVisible(542)</visible>
+				<visible>!$EXP[Bald_LibraryViewActive]</visible>
 				<bottom>10</bottom>
 				<height>40</height>
 				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
@@ -125,10 +125,10 @@
 				<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
 			</control>
 			<include>CommonScrollbars</include>
-			<control type="group"><visible>!Control.IsVisible(510) + !Control.IsVisible(511) + !Control.IsVisible(512) + !Control.IsVisible(513) + !Control.IsVisible(514) + !Control.IsVisible(515) + !Control.IsVisible(520) + !Control.IsVisible(521) + !Control.IsVisible(522) + !Control.IsVisible(523) + !Control.IsVisible(530) + !Control.IsVisible(531) + !Control.IsVisible(540) + !Control.IsVisible(541) + !Control.IsVisible(542)</visible><include>MediaMenuMouseOverlay</include></control>
+			<control type="group"><visible>!$EXP[Bald_LibraryViewActive]</visible><include>MediaMenuMouseOverlay</include></control>
 			<control type="group">
 				<include>MediaMenuCommon</include>
-				<visible>!Control.IsVisible(510) + !Control.IsVisible(511) + !Control.IsVisible(512) + !Control.IsVisible(513) + !Control.IsVisible(514) + !Control.IsVisible(515) + !Control.IsVisible(520) + !Control.IsVisible(521) + !Control.IsVisible(522) + !Control.IsVisible(523) + !Control.IsVisible(530) + !Control.IsVisible(531) + !Control.IsVisible(540) + !Control.IsVisible(541) + !Control.IsVisible(542)</visible>
+				<visible>!$EXP[Bald_LibraryViewActive]</visible>
 				<control type="grouplist" id="9000">
 					<top>50</top>
 					<include>MediaMenuListCommon</include>
