@@ -27,8 +27,8 @@ class HomeZeroRowsTests(unittest.TestCase):
             return next(i for i, pair in enumerate(onload) if same_actions([pair], [(condition, action)]))
 
         clear, focus = position(NO_ROWS, "ClearProperty(Bald.Row,home)"), position(NO_ROWS, "SetFocus(9001)")
-        # After the unconditional current-row setup, before Search's own return focus.
-        self.assertLess(position(None, "SetProperty(Bald.Row,9101,home)"), clear)
+        # After the current-row setup (skipped only when returning to a menu entry), before Search's own return focus.
+        self.assertLess(position("!$EXP[Bald_ReturningToMenu]", "SetProperty(Bald.Row,9101,home)"), clear)
         search_focus = next(i for i, (_, action) in enumerate(onload) if action == "SetFocus(9005)")
         self.assertLess(focus, search_focus)
 
