@@ -4,6 +4,7 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
+from conditions import equivalent, has_action, implies
 from scripts import info
 
 
@@ -41,10 +42,10 @@ class InfoTvTests(unittest.TestCase):
             self.assertIn(f"String.IsEqual(ListItem.DBType,{dbtype})", kind)
         self.assertNotIn("movie", kind)
         chosen = {node.text: node.get("condition") for node in self.dialog.iter("include") if node.get("condition")}
-        self.assertEqual(chosen["Bald_InfoOverview"], "!" + TV_ITEM)
-        self.assertEqual(chosen["Bald_InfoMovieOnLoad"], "!" + TV_ITEM)
+        for name in ("Bald_InfoOverview", "Bald_InfoMovieOnLoad"):
+            self.assertTrue(equivalent(chosen[name], "!" + TV_ITEM), name)
         for name in ("Bald_InfoTVOverview", "Bald_InfoTVOnLoad", "Bald_InfoTVDim", "Bald_InfoTVHints"):
-            self.assertEqual(chosen[name], TV_ITEM)
+            self.assertTrue(equivalent(chosen[name], TV_ITEM), name)
         # Movie info keeps its own onload focus and paged includes.
         movie_focus = [n.text for n in self.shared.find("include[@name='Bald_InfoMovieOnLoad']")]
         self.assertEqual(movie_focus, ["SetFocus(5001)", "SetFocus(5003)"])
@@ -96,9 +97,10 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(seasons.findtext("content"), "$VAR[Bald_InfoTVSeasonsPath]")
         path = self.tv.find("variable[@name='Bald_InfoTVSeasonsPath']").findall("value")
         for value in path:
-            # Never an unconditional value: an empty id would list every show.
-            self.assertIn("!String.IsEmpty(", value.get("condition") or "")
-            self.assertRegex(value.text, r"^videodb://tvshows/titles/\$INFO\[[^\]]+\]/$")
+            # Never an unconditional value: an empty id would list every show, so each value needs its own id.
+            match = re.fullmatch(r"videodb://tvshows/titles/\$INFO\[([^\]]+)\]/", value.text)
+            self.assertIsNotNone(match, value.text)
+            self.assertTrue(implies(value.get("condition") or "true", f"!String.IsEmpty({match.group(1)})"), value.text)
         tab = include_def(self.tv, "Bald_InfoTVSeasonTab")
         underline = tab.find("control[@type='group']")
         grow = underline.find("animation[@type='Focus']/effect")
@@ -122,9 +124,12 @@ class InfoTvTests(unittest.TestCase):
         self.assertIn("Bald_InfoActionToCast", [n.text for n in row.findall("include")])
         # The season change fades the row out 140 while it updates, then in 340 / rises 420.
         group = next(g for g in self.page.iter("control") if g.find("control[@id='5302']") is not None)
-        swaps = {a.get("condition"): [(e.get("type"), e.get("time")) for e in a] for a in group.findall("animation[@type='Conditional']")}
-        self.assertEqual(swaps["Container(5302).IsUpdating"], [("fade", "140"), ("slide", "140")])
-        self.assertEqual(swaps["!Container(5302).IsUpdating"], [("fade", "340"), ("slide", "420")])
+        swaps = [(a.get("condition"), [(e.get("type"), e.get("time")) for e in a])
+                 for a in group.findall("animation[@type='Conditional']")]
+        effects = {state: [steps for cond, steps in swaps if equivalent(cond, state)]
+                   for state in ("Container(5302).IsUpdating", "!Container(5302).IsUpdating")}
+        self.assertEqual(effects["Container(5302).IsUpdating"], [[("fade", "140"), ("slide", "140")]])
+        self.assertEqual(effects["!Container(5302).IsUpdating"], [[("fade", "340"), ("slide", "420")]])
         # Tabs reset the row only after a season change; the script and row share the same marker.
         down = [(n.get("condition") or "", n.text) for n in self.tv.find("include[@name='Bald_InfoTVSeasonsDown']")]
         self.assertIn("SetFocus(5302,0,absolute)", [text for _, text in down])
@@ -144,9 +149,9 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(p["art"], "$VAR[Bald_EpisodeThumb]")
         pop = card.find(".//animation[@type='Focus']/effect")
         self.assertEqual((pop.get("end"), pop.get("time"), pop.get("tween")), ("105", "280", "back"))
-        visible = {n.findtext("visible") for n in card.iter("control") if n.findtext("visible")}
-        self.assertIn("Integer.IsGreater(ListItem.PlayCount,0)", visible)
-        self.assertIn("ListItem.IsResumable", visible)
+        visible = [n.findtext("visible") for n in card.iter("control") if n.findtext("visible")]
+        for state in ("Integer.IsGreater(ListItem.PlayCount,0)", "ListItem.IsResumable"):
+            self.assertTrue(any(equivalent(v, state) for v in visible), state)
         self.assertEqual(card.find(".//control[@type='progress']").findtext("info"), "ListItem.PercentPlayed")
         # Episode detail reuses the shared flag row on the episode list's item.
         flags = self.page.find(".//include[@content='Bald_MediaFlags']")
@@ -170,7 +175,7 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(dim.find("animation").get("end"), "70")
         # Up from Cast returns to the lowest filled TV row; movies fall through to their actions.
         up = [(n.get("condition"), n.text) for n in self.shared.find("include[@name='Bald_InfoToOverview']").findall("onup")]
-        self.assertIn(("$EXP[Bald_InfoTVHasEpisodes]", "SetFocus(5302)"), up)
+        self.assertTrue(has_action(up, "$EXP[Bald_InfoTVHasEpisodes]", "SetFocus(5302)"))
         self.assertEqual(up[-1][1], "SetFocus(5000)")
 
     def test_script_contract_matches_the_xml(self):
