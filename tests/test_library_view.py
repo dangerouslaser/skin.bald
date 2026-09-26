@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 
 import home_menu
 from kodi_includes import condition, expand, parse
+from skin_strings import loc
 
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
@@ -50,7 +51,7 @@ class LibraryViewTests(unittest.TestCase):
 
     def test_no_redundant_details_button(self):
         self.assertIsNone(self.view.find(".//control[@id='6101']"))
-        item = home_menu.entry(label="Movies")
+        item = home_menu.entry(preview="movies")
         self.assertEqual(item.findtext("param[@name='visible']"), "Skin.HasSetting(Bald.Screen.Movies)")
         self.assertIn(
             "SetFocus($INFO[Window(home).Property(Bald.Row.movies)])",
@@ -111,7 +112,8 @@ class LibraryViewTests(unittest.TestCase):
             and (item.findtext('onclick') or '').startswith('Container.SetViewMode')
         ]
         self.assertEqual(movie_view_actions, [f'Container.SetViewMode({view})' for view in (511, 512, 513, 514, 515, 510)])
-        view_items = [item for item in menu.findall('content/item') if item.findtext('label') == 'View']
+        view_items = [item for item in menu.findall('content/item') if item.findtext("property[@name='option']") == 'view']
+        self.assertTrue(all(item.findtext('label') == loc('View') for item in view_items))
         self.assertEqual(len(view_items), 15)
         self.assertTrue(all(item.findall('onclick')[1].text == 'SetFocus(9150)' for item in view_items))
         self.assertIsNotNone(self.view.find("include[@name='Bald_LibraryOptions']//include[@content='Bald_MenuNote']"))

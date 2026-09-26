@@ -5,16 +5,16 @@
 			<visible>Control.IsVisible(513)</visible>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
 			<include>Bald_BackdropImage</include>
-			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>Movies</label></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[342]</label></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="group"><left>Bald_SafeLeft</left><top>180</top>
-				<control type="label"><left>26</left><width>702</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Title</label></control>
-				<control type="label"><left>752</left><width>80</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Year</label></control>
-				<control type="label"><left>856</left><width>120</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Runtime</label></control>
+				<control type="label"><left>26</left><width>702</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[369]</label></control>
+				<control type="label"><left>752</left><width>80</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[345]</label></control>
+				<control type="label"><left>856</left><width>120</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[2050]</label></control>
 			</control>
 			<control type="list" id="513">
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height><orientation>vertical</orientation>
-				<viewtype label="Bald compact list">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<viewtype label="31853">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,513,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,513,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
 				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright>RunScript(skin.bald,letters,513)</onright><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,513)</ondown>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
@@ -24,9 +24,9 @@
 					<include content="Bald_CompactMovieRow"><param name="ink">bald_ink</param></include>
 				</focusedlayout>
 			</control>
-			<control type="label"><left>122</left><top>240</top><width>1050</width><height>48</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>No movies to display. Open options to adjust your filters.</label><visible>Integer.IsEqual(Container(513).NumItems,0)</visible></control>
+			<control type="label"><left>122</left><top>240</top><width>1050</width><height>48</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$LOCALIZE[31825]</label><visible>Integer.IsEqual(Container(513).NumItems,0)</visible></control>
 			<include content="Bald_LibraryPreview"><param name="c">513</param></include>
-			<include content="Bald_WallFooter"><param name="c">513</param><param name="letters_hint">Right for letters</param></include>
+			<include content="Bald_WallFooter"><param name="c">513</param><param name="letters_hint">$LOCALIZE[31834]</param></include>
 		</control>
 	</include>
 </includes>

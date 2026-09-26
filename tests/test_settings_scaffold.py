@@ -3,6 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from kodi_includes import SKIN, include_definitions, resolve_window
+from skin_strings import LOCALIZE, english, loc
 
 ROOT = SKIN.parent
 
@@ -111,7 +112,8 @@ class SettingsScaffoldTests(unittest.TestCase):
             self.assertEqual(len(hints), 1, name)
             self.assertEqual(int(hints[0].findtext("left")) + int(hints[0].find("control").findtext("width")), 1824)
             for label in hints[0].iter("label"):
-                self.assertFalse(label.text.isupper(), f"{name}: {label.text}")
+                words = LOCALIZE.sub("", english(label.text))  # Bald strings as en_gb text; core ids carry no case
+                self.assertFalse(words.isupper(), f"{name}: {label.text}")
             for label in root.iter("label"):
                 self.assertNotIn("  •  ", label.text or "", name)
 
@@ -140,7 +142,7 @@ class SettingsScaffoldTests(unittest.TestCase):
     def test_live_estuary_settings_stay_reachable(self):
         appearance = ET.tostring(self.windows["Custom_1118_BaldAppearance.xml"], encoding="unicode")
         estuary = self.windows["Custom_1118_BaldAppearance.xml"].find(".//control[@id='9500']/content/item[@id='4']")
-        self.assertEqual(estuary.findtext("label"), "Estuary windows")
+        self.assertEqual(estuary.findtext("label"), loc("Estuary windows"))
         for setting, reader in LIVE_ESTUARY_SETTINGS.items():
             self.assertIn(setting, appearance, f"{setting} is no longer configurable")
             self.assertIn(setting, (SKIN / reader).read_text(), f"{setting} is no longer read by {reader}")

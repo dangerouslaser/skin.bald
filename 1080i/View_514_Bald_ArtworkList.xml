@@ -30,11 +30,11 @@
 			<visible>Control.IsVisible(514)</visible>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
 			<include>Bald_BackdropImage</include>
-			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>624</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>Movies</label></control>
+			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>624</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[342]</label></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="list" id="514">
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>624</width><height>616</height><orientation>vertical</orientation>
-				<viewtype label="Bald artwork list">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<viewtype label="31854">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,514,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,514,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
 				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright>RunScript(skin.bald,letters,514)</onright><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,514)</ondown>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
@@ -44,7 +44,7 @@
 					<include content="Bald_ArtworkMovieRow"><param name="ink">bald_ink</param><param name="scroll">true</param></include>
 				</focusedlayout>
 			</control>
-			<control type="textbox"><left>122</left><top>240</top><width>598</width><height>88</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>No movies to display. Open options to adjust your filters.</label><visible>Integer.IsEqual(Container(514).NumItems,0)</visible></control>
+			<control type="textbox"><left>122</left><top>240</top><width>598</width><height>88</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$LOCALIZE[31825]</label><visible>Integer.IsEqual(Container(514).NumItems,0)</visible></control>
 			<control type="group">
 				<visible>!$EXP[Bald_LibraryMenuOpen] + !Container(514).ListItem.IsParentFolder + !String.IsEmpty(Container(514).ListItem.Title)</visible>
 				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
@@ -65,7 +65,7 @@
 			<include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">164</param><param name="w">26</param><param name="h">599</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">164</param><param name="w">1008</param><param name="h">16</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">747</param><param name="w">1008</param><param name="h">16</param></include>
-			<include content="Bald_WallFooter"><param name="c">514</param><param name="letters_hint">Right for letters</param></include>
+			<include content="Bald_WallFooter"><param name="c">514</param><param name="letters_hint">$LOCALIZE[31834]</param></include>
 		</control>
 	</include>
 </includes>

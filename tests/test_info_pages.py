@@ -4,6 +4,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from kodi_includes import condition, expand, parse
+from skin_strings import loc
 
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
@@ -28,7 +29,7 @@ class InfoPagesTests(unittest.TestCase):
         self.assertEqual([node.findtext("width") for node in labels], ["auto", "20", "auto", "20", "auto"])
         self.assertEqual(labels[1].findtext("label"), "·")
         self.assertTrue(all(node.findtext("height") == "24" for node in labels))
-        overview = next(node for node in self.dialog.iter("control") if node.findtext("label") == "Down for cast & details")
+        overview = next(node for node in self.dialog.iter("control") if node.findtext("label") == loc("Down for cast & details"))
         self.assertEqual(overview.findtext("align"), "right")
         self.assertEqual(overview.findtext("height"), "24")
         self.assertEqual(overview.findtext("top"), "954")
@@ -81,7 +82,7 @@ class InfoPagesTests(unittest.TestCase):
 
     def test_more_like_heading_uses_resolved_recommendation_subject(self):
         label = next(node for node in self.pages.findall("include[@name='Bald_InfoRecommendationsPage']//control[@type='label']") if 'Bald.MoreFor' in (node.findtext('label') or ''))
-        self.assertEqual(label.findtext('label'), '$INFO[Window(movieinformation).Property(Bald.MoreFor),For ,]')
+        self.assertEqual(label.findtext('label'), f"$INFO[Window(movieinformation).Property(Bald.MoreFor),{loc('For')} ,]")
 
     def test_three_independent_pages_without_section_slides(self):
         for name in ("Bald_InfoOverview", "Bald_InfoCastPage", "Bald_InfoRecommendationsPage"):

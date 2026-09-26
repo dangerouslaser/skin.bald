@@ -40,9 +40,9 @@
 	<include name="Bald_PosterLowFooter">
 		<definition>
 			<control type="label"><left>Bald_SafeLeft</left><top>704</top><width>420</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(515).CurrentItem] / $INFO[Container(515).NumItems]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible></control>
-			<control type="group"><left>700</left><top>Bald_HintTop</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">Down for letters</param><param name="second">Info for details</param><param name="third">Up for options</param><param name="third_visible">true</param></include></control>
-			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">Left / Right to jump letters</param><param name="second">Up / Select / Back to browse</param></include></control>
-			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">Left / Back to browse</param><param name="second">Select to change</param></include></control>
+			<control type="group"><left>700</left><top>Bald_HintTop</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1124</param><param name="first">$LOCALIZE[31826]</param><param name="second">$LOCALIZE[31827]</param><param name="third">$LOCALIZE[31828]</param><param name="third_visible">true</param></include></control>
+			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$LOCALIZE[31830]</param><param name="second">$LOCALIZE[31831]</param></include></control>
+			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">$LOCALIZE[31832]</param><param name="second">$LOCALIZE[31747]</param></include></control>
 		</definition>
 	</include>
 	<include name="View_515_Bald_PosterLow">
@@ -75,7 +75,7 @@
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">696</param><param name="w">1248</param><param name="h">26</param></include>
 			<control type="list" id="515">
 				<left>Bald_SafeLeft</left><top>738</top><width>1248</width><height>234</height><orientation>horizontal</orientation>
-				<viewtype label="Bald poster low">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>4</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<viewtype label="31855">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>4</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,515,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,515,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
 				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,515)</ondown><onleft>noop</onleft><onright>noop</onright>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
@@ -84,7 +84,7 @@
 			</control>
 			<!-- Letter mode deliberately covers the low row; otherwise the full alphabet collides with poster art. -->
 			<control type="group"><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">730</param><param name="w">1248</param><param name="h">242</param></include></control>
-			<control type="label"><left>110</left><top>768</top><width>1228</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>No movies to display. Open options to adjust your filters.</label><visible>Integer.IsEqual(Container(515).NumItems,0)</visible></control>
+			<control type="label"><left>110</left><top>768</top><width>1228</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$LOCALIZE[31825]</label><visible>Integer.IsEqual(Container(515).NumItems,0)</visible></control>
 			<include>Bald_PosterLowFooter</include>
 		</control>
 	</include>

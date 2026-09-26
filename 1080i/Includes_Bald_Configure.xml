@@ -213,35 +213,35 @@
 	<!-- Bald Settings home, shared by window 1115 and Kodi's "Configure skin..." (SkinSettings.xml), so both open the
 	     same page with no redirect. -->
 	<include name="Bald_SettingsHome">
-		<include content="Bald_SettingsFrame"><param name="title">Bald Settings</param></include>
+		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[31730]</param></include>
 		<control type="list" id="9000">
 			<include content="Bald_SettingsCategories"><param name="id">9000</param><param name="right">9001</param></include>
 			<content>
 				<item>
-					<label>Customization</label>
-					<label2>Configure Home, Movies, and TV Shows screens and their widgets.</label2>
+					<label>$LOCALIZE[31731]</label>
+					<label2>$LOCALIZE[31732]</label2>
 					<onclick>ActivateWindow(1117)</onclick>
 				</item>
 				<item>
-					<label>Appearance</label>
-					<label2>Artwork, media information, motion, navigation hints, and the settings of windows that still use Estuary's design.</label2>
+					<label>$LOCALIZE[480]</label>
+					<label2>$LOCALIZE[31733]</label2>
 					<onclick>ActivateWindow(1118)</onclick>
 				</item>
 				<item>
 					<label>CoreELEC</label>
-					<label2>Open CoreELEC service and hardware settings.</label2>
+					<label2>$LOCALIZE[31734]</label2>
 					<onclick>RunAddon(service.coreelec.settings)</onclick>
 					<visible>System.AddonIsEnabled(service.coreelec.settings)</visible>
 				</item>
 				<item>
 					<label>LibreELEC</label>
-					<label2>Open LibreELEC service and hardware settings.</label2>
+					<label2>$LOCALIZE[31735]</label2>
 					<onclick>RunAddon(service.libreelec.settings)</onclick>
 					<visible>System.AddonIsEnabled(service.libreelec.settings)</visible>
 				</item>
 				<item>
-					<label>Services &amp; Helpers</label>
-					<label2>Manage installed add-ons and their settings.</label2>
+					<label>$LOCALIZE[31736]</label>
+					<label2>$LOCALIZE[31737]</label2>
 					<onclick>ActivateWindow(addonbrowser)</onclick>
 				</item>
 			</content>
@@ -252,10 +252,10 @@
 			<control type="button" id="9001">
 				<include>Bald_ConfigureButton</include>
 				<top>216</top>
-				<label>Open</label>
+				<label>$LOCALIZE[502]</label>
 				<onleft>9000</onleft><onback>PreviousMenu</onback><onclick>SendClick(9000)</onclick>
 			</control>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">Back for settings</param><param name="second">Select to open</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31738]</param><param name="second">$LOCALIZE[31739]</param></include>
 	</include>
 </includes>

@@ -42,14 +42,14 @@
 	<include name="Bald_MetaLibraryMovie">
 		<param name="container" />
 		<definition>
-			<label>$INFO[$PARAM[container]ListItem.Year]$INFO[$PARAM[container]ListItem.Duration(mins), · , min]$INFO[$PARAM[container]ListItem.Genre, · ,]</label>
+			<label>$INFO[$PARAM[container]ListItem.Year]$INFO[$PARAM[container]ListItem.Duration(mins), · , $LOCALIZE[31710]]$INFO[$PARAM[container]ListItem.Genre, · ,]</label>
 		</definition>
 	</include>
 	<!-- Episode: "S1 E2 · 2024-03-03 · 52 min". -->
 	<include name="Bald_MetaLibraryEpisode">
 		<param name="container" />
 		<definition>
-			<label>S$INFO[$PARAM[container]ListItem.Season] E$INFO[$PARAM[container]ListItem.Episode] · $INFO[$PARAM[container]ListItem.Premiered]$INFO[$PARAM[container]ListItem.Duration(mins), · , min]</label>
+			<label>S$INFO[$PARAM[container]ListItem.Season] E$INFO[$PARAM[container]ListItem.Episode] · $INFO[$PARAM[container]ListItem.Premiered]$INFO[$PARAM[container]ListItem.Duration(mins), · , $LOCALIZE[31710]]</label>
 		</definition>
 	</include>
 
