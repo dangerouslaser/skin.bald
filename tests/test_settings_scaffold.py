@@ -3,7 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import all_of, atoms, implies, same_actions
-from kodi_includes import SKIN, include_definitions, resolve_window
+from kodi_includes import SKIN, Skin, include_definitions, resolve_window
 from skin_strings import LOCALIZE, english, loc
 
 ROOT = SKIN.parent
@@ -16,26 +16,29 @@ WINDOWS = {
     "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9611", "9612", "9621", "9622", "9623"]),
 }
 
-# Estuary skin settings that windows Bald still ships read, and where one reader is.
+# Estuary skin settings that windows Bald still ships read, and one window (or Kodi-read file) that reads each. A
+# window reads a setting when its markup, the includes it calls (with their call conditions) or the variables and
+# expressions those reach name it; an include that no window calls does not count.
 LIVE_ESTUARY_SETTINGS = {
-    "no_slide_animations": "Includes_Animations.xml",
-    "autoscroll": "Includes_Bald_Browse.xml",
-    "touchmode": "Includes.xml",
-    "show_weatherinfo": "Includes.xml",
-    "hide_mediaflags": "Includes_Bald_Browse.xml",
-    "circle_userrating": "Includes.xml",
-    "show_profilename": "Includes.xml",
-    "OriginalTitleFormat_1st": "Variables.xml",
-    "show_musicvideoposter": "View_500_Wall.xml",
+    "no_slide_animations": "MyMusicPlaylistEditor.xml",
+    "autoscroll": "AddonBrowser.xml",
+    "touchmode": "AddonBrowser.xml",
+    "show_weatherinfo": "AddonBrowser.xml",
+    "hide_mediaflags": "AddonBrowser.xml",
+    "show_profilename": "AddonBrowser.xml",
+    "OriginalTitleFormat_1st": "AddonBrowser.xml",
+    "show_musicvideoposter": "MyMusicNav.xml",
     "OSDAutoClose": "Timers.xml",
     "OSDAutoCloseTime": "Timers.xml",
-    "no_fanart": "Variables.xml",
-    "background_overlay": "Includes.xml",
-    "HomeFanart": "Variables.xml",
-    "WeatherFanart": "Variables.xml",
-    "MovieGenreFanart": "Variables.xml",
-    "WeatherOutlookIcon": "Variables.xml",
+    "no_fanart": "FileManager.xml",
+    "background_overlay": "FileManager.xml",
+    "HomeFanart": "MyWeather.xml",
+    "WeatherFanart": "MyWeather.xml",
+    "MovieGenreFanart": "FileManager.xml",
+    "WeatherOutlookIcon": "MyWeather.xml",
 }
+# Files Kodi reads directly rather than as windows.
+KODI_READ_FILES = {"Timers.xml"}
 DEAD_ESTUARY_SETTINGS = (
     "HomeMenuNo",
     "home_no_addons_categories_widget",
@@ -43,7 +46,46 @@ DEAD_ESTUARY_SETTINGS = (
     "tvshow_onclick_",
     "album_onclick_",
     "settingsdialog_content",
+    # The rating circle: its only include (RatingCircle) lost every caller when the library views and music info
+    # became Bald, so the setting and the include were removed.
+    "circle_userrating",
+    "circle_rating",
+    "circle_none",
 )
+
+
+REFERENCE = re.compile(r"\$(VAR|EXP)\[([^\],]+)")
+
+
+def window_reach(name, definitions=None, skin=None):
+    """All markup a window can reach: the window as Kodi resolves it (params substituted, so includes named through a
+    param count), every include it calls with the call conditions the resolver drops (each definition once), and the
+    variables and expressions any of that names."""
+    definitions = definitions if definitions is not None else include_definitions()
+    skin = skin if skin is not None else Skin()
+    parts, seen, todo = [], set(), [ET.parse(SKIN / name).getroot(), skin.window(name)]
+    while todo:
+        node = todo.pop()
+        parts.append(ET.tostring(node, encoding="unicode"))
+        for call in node.iter("include"):
+            include = call.get("content") or (call.text or "").strip()
+            if include in definitions and include not in seen:
+                seen.add(include)
+                todo.append(definitions[include])
+    text, names = "\n".join(parts), set()
+    pending = [text]
+    while pending:
+        for kind, ref in REFERENCE.findall(pending.pop()):
+            if (kind, ref) in names:
+                continue
+            names.add((kind, ref))
+            if kind == "VAR" and ref in skin.variables:
+                body = ET.tostring(skin.variables[ref], encoding="unicode")
+            else:
+                body = skin.expressions.get(ref, "")
+            parts.append(body)
+            pending.append(body)
+    return "\n".join(parts)
 
 
 def tokens(path, tag):
@@ -145,7 +187,8 @@ class SettingsScaffoldTests(unittest.TestCase):
         self.assertEqual(estuary.findtext("label"), loc("Estuary windows"))
         for setting, reader in LIVE_ESTUARY_SETTINGS.items():
             self.assertIn(setting, appearance, f"{setting} is no longer configurable")
-            self.assertIn(setting, (SKIN / reader).read_text(), f"{setting} is no longer read by {reader}")
+            text = (SKIN / reader).read_text() if reader in KODI_READ_FILES else window_reach(reader)
+            self.assertTrue(setting in text, f"{setting} is no longer read by {reader}")
 
     def test_dead_estuary_settings_are_gone(self):
         for name in ("SkinSettings.xml", "Custom_1118_BaldAppearance.xml"):
