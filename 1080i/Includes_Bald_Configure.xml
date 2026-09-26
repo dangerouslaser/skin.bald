@@ -1,13 +1,248 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald settings scaffold, shared by Bald Settings (1115), the widget editor (1116), Home Screens (1117)
+     and Appearance (1118). Two panes over the field and blurred backdrop: a 590 px sidebar with the title and a category
+     list drawn as the Home menu (accent dot, Bald_MenuItem, unfocused at 34%), and a detail pane at x 686 with the
+     focused category's heading, a Bald_MenuNote description and its rows. Hints sit on the info dialog's y 954 line,
+     right-aligned to the 1824 safe edge. Control IDs stay in the windows; these includes supply layout and styling. -->
 <includes>
+	<!-- Field, backdrop, sidebar and title. -->
+	<include name="Bald_SettingsFrame">
+		<param name="title" />
+		<definition>
+			<control type="image">
+				<width>1920</width>
+				<height>1080</height>
+				<texture colordiffuse="bald_field">bald/white.png</texture>
+			</control>
+			<include>Bald_Backdrop</include>
+			<control type="image">
+				<width>590</width>
+				<height>1080</height>
+				<texture colordiffuse="bald_field60">bald/white.png</texture>
+			</control>
+			<control type="label">
+				<left>96</left>
+				<top>96</top>
+				<width>494</width>
+				<height>48</height>
+				<aligny>center</aligny>
+				<font>Bald_CaptionTitle</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$PARAM[title]</label>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Body of a sidebar category list: <control type="list" id="..."> + this + <content>. Rows are 62 px, the Home
+	     menu's pitch. The selected category keeps its dot and dims while focus is in the detail pane. -->
+	<include name="Bald_SettingsCategories">
+		<param name="id" />
+		<param name="right" />
+		<param name="font">Bald_MenuItem</param>
+		<definition>
+			<left>96</left>
+			<top>192</top>
+			<width>494</width>
+			<height>682</height>
+			<orientation>vertical</orientation>
+			<scrolltime tween="cubic" easing="out">320</scrolltime>
+			<onright>$PARAM[right]</onright>
+			<onback>PreviousMenu</onback>
+			<itemlayout height="62">
+				<control type="label">
+					<left>20</left>
+					<width>454</width>
+					<height>62</height>
+					<aligny>center</aligny>
+					<font>$PARAM[font]</font>
+					<textcolor>bald_ink34</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout height="62">
+				<control type="group">
+					<animation type="Conditional" condition="!Control.HasFocus($PARAM[id])">
+						<effect type="fade" start="100" end="55" time="240" tween="sine" easing="inout" />
+					</animation>
+					<control type="image">
+						<top>26</top>
+						<width>10</width>
+						<height>10</height>
+						<texture colordiffuse="bald_accent">bald/dot.png</texture>
+					</control>
+					<control type="label">
+						<left>26</left>
+						<width>448</width>
+						<height>62</height>
+						<aligny>center</aligny>
+						<font>$PARAM[font]</font>
+						<textcolor>bald_ink</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+						<animation type="Focus">
+							<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
+							<effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" />
+						</animation>
+					</control>
+				</control>
+			</focusedlayout>
+		</definition>
+	</include>
+
+	<!-- Detail pane: heading and note for the focused category; the window's rows go in as nested content. -->
+	<include name="Bald_SettingsDetail">
+		<param name="heading" />
+		<param name="note" />
+		<definition>
+			<control type="group">
+				<left>686</left>
+				<top>192</top>
+				<width>1138</width>
+				<height>736</height>
+				<control type="label">
+					<width>1138</width>
+					<height>62</height>
+					<aligny>center</aligny>
+					<font>Bald_CaptionTitle</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$PARAM[heading]</label>
+				</control>
+				<include content="Bald_MenuNote">
+					<param name="text">$PARAM[note]</param>
+					<param name="x">0</param>
+					<param name="y">78</param>
+					<param name="width">720</param>
+				</include>
+				<nested />
+			</control>
+		</definition>
+	</include>
+
+	<!-- Body of a detail-pane row list: <control type="grouplist" id="..."> + this + rows. Eight 56 px rows with 6 px
+	     gaps fit above the hint line; longer lists scroll. 6 px wider than the rows, which slide 6 px on focus. -->
+	<include name="Bald_SettingsRows">
+		<param name="left" />
+		<definition>
+			<top>216</top>
+			<width>726</width>
+			<height>520</height>
+			<orientation>vertical</orientation>
+			<itemgap>6</itemgap>
+			<scrolltime tween="cubic" easing="out">320</scrolltime>
+			<usecontrolcoords>true</usecontrolcoords>
+			<onleft>$PARAM[left]</onleft>
+			<onback>PreviousMenu</onback>
+		</definition>
+	</include>
+
+	<!-- One settings row (button or radiobutton), in the Home menu's focus language: unfocused at 50%, focused full ink
+	     with the accent dot, sliding 6 px right. A radiobutton's state is a dot at the right: accent on, dim off. -->
 	<include name="Bald_ConfigureButton">
-		<param name="width">520</param>
-		<width>$PARAM[width]</width>
-		<height>62</height>
-		<font>font27</font>
-		<textcolor>B0FFFFFF</textcolor>
-		<focusedcolor>white</focusedcolor>
-		<texturefocus colordiffuse="30FFFFFF">bald/white.png</texturefocus>
-		<texturenofocus colordiffuse="0CFFFFFF">bald/white.png</texturenofocus>
+		<param name="width">720</param>
+		<definition>
+			<width>$PARAM[width]</width>
+			<height>56</height>
+			<font>Bald_Section</font>
+			<textoffsetx>26</textoffsetx>
+			<aligny>center</aligny>
+			<textcolor>bald_ink50</textcolor>
+			<focusedcolor>bald_ink</focusedcolor>
+			<disabledcolor>bald_ink28</disabledcolor>
+			<!-- menu_dot.png is 440 x 56 with the dot in its first 10 px: the left border keeps it round at any width. -->
+			<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
+			<texturenofocus />
+			<radiowidth>12</radiowidth>
+			<radioheight>12</radioheight>
+			<textureradioonfocus colordiffuse="bald_accent">bald/dot.png</textureradioonfocus>
+			<textureradioonnofocus colordiffuse="bald_accent">bald/dot.png</textureradioonnofocus>
+			<textureradioofffocus colordiffuse="bald_ink34">bald/dot.png</textureradioofffocus>
+			<textureradiooffnofocus colordiffuse="bald_ink28">bald/dot.png</textureradiooffnofocus>
+			<textureradioondisabled colordiffuse="bald_ink28">bald/dot.png</textureradioondisabled>
+			<textureradiooffdisabled colordiffuse="bald_ink10">bald/dot.png</textureradiooffdisabled>
+			<animation type="Focus">
+				<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
+				<effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" />
+			</animation>
+			<animation type="Unfocus">
+				<effect type="slide" start="6,0" end="0,0" time="320" tween="cubic" easing="out" />
+			</animation>
+		</definition>
+	</include>
+
+	<!-- A row that belongs to one category: shown while category item <item> of list <list> is selected. Rows are
+	     matched by the static item's id, never its label, so translated labels keep working. A further <visible>
+	     on the control is ANDed with this one. -->
+	<include name="Bald_SettingRow">
+		<param name="list" />
+		<param name="item" />
+		<param name="width">720</param>
+		<definition>
+			<include content="Bald_ConfigureButton"><param name="width">$PARAM[width]</param></include>
+			<visible>Container($PARAM[list]).HasFocus($PARAM[item])</visible>
+		</definition>
+	</include>
+
+	<!-- Footer hints, sentence case, on the y 954 line and right-aligned to x 1824 (1224 + 600). -->
+	<include name="Bald_SettingsHints">
+		<param name="first" />
+		<param name="second" />
+		<definition>
+			<control type="group">
+				<left>1224</left>
+				<top>954</top>
+				<include content="Bald_InfoHintPair">
+					<param name="first">$PARAM[first]</param>
+					<param name="second">$PARAM[second]</param>
+					<param name="width">600</param>
+				</include>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Bald Settings home (window 1115). -->
+	<include name="Bald_SettingsHome">
+		<include content="Bald_SettingsFrame"><param name="title">Bald Settings</param></include>
+		<control type="list" id="9000">
+			<include content="Bald_SettingsCategories"><param name="id">9000</param><param name="right">9001</param></include>
+			<content>
+				<item>
+					<label>Customization</label>
+					<label2>Configure Home, Movies, and TV Shows screens and their widgets.</label2>
+					<onclick>ActivateWindow(1117)</onclick>
+				</item>
+				<item>
+					<label>Appearance</label>
+					<label2>Artwork, media information, motion, and navigation hints.</label2>
+					<onclick>ActivateWindow(1118)</onclick>
+				</item>
+				<item>
+					<label>CoreELEC</label>
+					<label2>Open CoreELEC service and hardware settings.</label2>
+					<onclick>RunAddon(service.coreelec.settings)</onclick>
+					<visible>System.AddonIsEnabled(service.coreelec.settings)</visible>
+				</item>
+				<item>
+					<label>LibreELEC</label>
+					<label2>Open LibreELEC service and hardware settings.</label2>
+					<onclick>RunAddon(service.libreelec.settings)</onclick>
+					<visible>System.AddonIsEnabled(service.libreelec.settings)</visible>
+				</item>
+				<item>
+					<label>Services &amp; Helpers</label>
+					<label2>Manage installed add-ons and their settings.</label2>
+					<onclick>ActivateWindow(addonbrowser)</onclick>
+				</item>
+			</content>
+		</control>
+		<include content="Bald_SettingsDetail">
+			<param name="heading">$INFO[Container(9000).ListItem.Label]</param>
+			<param name="note">$INFO[Container(9000).ListItem.Label2]</param>
+			<control type="button" id="9001">
+				<include>Bald_ConfigureButton</include>
+				<top>216</top>
+				<label>Open</label>
+				<onleft>9000</onleft><onback>PreviousMenu</onback><onclick>SendClick(9000)</onclick>
+			</control>
+		</include>
+		<include content="Bald_SettingsHints"><param name="first">Back for settings</param><param name="second">Select to open</param></include>
 	</include>
 </includes>
