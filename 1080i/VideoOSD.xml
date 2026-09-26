@@ -4,7 +4,7 @@
      track (hidden button 87: Left and Right skip), marked by an accent dot left of it. The title, time and track are
      drawn by DialogSeekBar.xml, which shows with the OSD. Started from Kodi 22 Estuary's VideoOSD.xml
      (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogVideoOSD binds no control ids; every button keeps
-     Estuary's id, navigation and actions (200-202 rows, 600-608 transport, 698 play group, 804 and 70040-70048
+     Estuary's id, navigation and actions (200-202 rows, 600-608 transport, 804 and 70040-70048
      tools, 6000 seek group, 87 seek button, 799 touch back). -->
 <window>
 	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
@@ -47,17 +47,17 @@
 						<onclick condition="!Player.Paused">PlayerControl(Rewind)</onclick>
 						<visible>Player.SeekEnabled + !VideoPlayer.Content(livetv)</visible>
 					</control>
-					<include content="Bald_PlaybackIconGroup">
-						<param name="group_id">698</param>
-						<param name="id">602</param>
-						<param name="icon">$VAR[PlayerControlsPlayImageVar]</param>
-						<param name="visible">Player.PauseEnabled</param>
+					<!-- A direct child of the row that hides itself: a control hidden only through a parent group can still
+					     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
+					<control type="radiobutton" id="602">
+						<include content="Bald_PlaybackButton"><param name="icon">$VAR[PlayerControlsPlayImageVar]</param></include>
 						<onleft>601</onleft>
 						<onright>603</onright>
 						<onup>87</onup>
 						<ondown>noop</ondown>
 						<onclick>PlayerControl(Play)</onclick>
-					</include>
+						<visible>Player.PauseEnabled</visible>
+					</control>
 					<control type="radiobutton" id="603">
 						<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/stop.png</param></include>
 						<onclick>PlayerControl(Stop)</onclick>

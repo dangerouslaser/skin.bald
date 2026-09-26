@@ -589,52 +589,6 @@
 	<!-- An icon button whose icon is a variable (play or pause, repeat): Estuary's group of a plain button and an image,
 	     kept so the ids stay where Kodi and the skin expect them. The caller's navigation and actions are nested into
 	     the button. -->
-	<include name="Bald_PlaybackIconGroup">
-		<param name="group_id" />
-		<param name="id" />
-		<param name="icon" />
-		<param name="visible">true</param>
-		<definition>
-			<control type="group" id="$PARAM[group_id]">
-				<width>64</width>
-				<height>84</height>
-				<visible>$PARAM[visible]</visible>
-				<control type="button" id="$PARAM[id]">
-					<left>0</left>
-					<top>0</top>
-					<width>64</width>
-					<height>84</height>
-					<label />
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink</textcolor>
-					<texturefocus colordiffuse="bald_accent">bald/osd_focus.png</texturefocus>
-					<texturenofocus />
-					<nested />
-				</control>
-				<control type="image">
-					<left>4</left>
-					<top>4</top>
-					<width>56</width>
-					<height>56</height>
-					<aspectratio>keep</aspectratio>
-					<texture colordiffuse="bald_ink60">$PARAM[icon]</texture>
-					<visible>!Control.HasFocus($PARAM[id])</visible>
-				</control>
-				<control type="image">
-					<left>4</left>
-					<top>4</top>
-					<width>56</width>
-					<height>56</height>
-					<aspectratio>keep</aspectratio>
-					<texture colordiffuse="bald_ink">$PARAM[icon]</texture>
-					<visible>Control.HasFocus($PARAM[id])</visible>
-					<animation type="Visible" reversible="false">
-						<effect type="zoom" start="100" end="105" center="32,32" time="280" tween="back" easing="out" />
-					</animation>
-				</control>
-			</control>
-		</definition>
-	</include>
 	<!-- Body of an OSD button grouplist: one row of 64 px buttons, 8 px apart. -->
 	<include name="Bald_PlaybackButtonRow">
 		<param name="top">818</param>

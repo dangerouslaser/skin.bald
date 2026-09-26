@@ -24,18 +24,18 @@ PLAYBACK_RANGE = range(31616, 31650)
 WINDOWS = {
     "DialogSeekBar.xml": {"401": "slider", "403": "slider", "40000": "label"},
     "VideoOSD.xml": {"87": "button", "200": "group", "201": "grouplist", "202": "grouplist", "600": "radiobutton",
-                     "601": "radiobutton", "602": "button", "603": "radiobutton", "606": "radiobutton",
-                     "607": "radiobutton", "608": "radiobutton", "698": "group", "804": "radiobutton",
+                     "601": "radiobutton", "602": "radiobutton", "603": "radiobutton", "606": "radiobutton",
+                     "607": "radiobutton", "608": "radiobutton", "804": "radiobutton",
                      "6000": "group", **{str(i): "radiobutton" for i in range(70040, 70049)}},
     "MusicOSD.xml": {"87": "button", "200": "group", "201": "grouplist", "202": "grouplist", "600": "radiobutton",
-                     "601": "radiobutton", "602": "button", "603": "radiobutton", "606": "radiobutton",
-                     "607": "radiobutton", "608": "radiobutton", "698": "group", "699": "group",
+                     "601": "radiobutton", "602": "radiobutton", "603": "radiobutton", "606": "radiobutton",
+                     "607": "radiobutton", "608": "radiobutton",
                      "70040": "radiobutton", "70041": "radiobutton", "70048": "radiobutton", "70050": "radiobutton",
-                     "70051": "radiobutton", "70052": "radiobutton", "70053": "button", "70054": "radiobutton",
+                     "70051": "radiobutton", "70052": "radiobutton", "70053": "radiobutton", "70054": "radiobutton",
                      "70055": "radiobutton"},
     "PlayerControls.xml": {"23": "progress", "87": "button", "201": "grouplist", "600": "radiobutton",
                            "602": "radiobutton", "603": "radiobutton", "605": "radiobutton", "607": "radiobutton",
-                           "699": "group", "704": "button"},
+                           "704": "radiobutton"},
     "VideoOSDBookmarks.xml": {"2": "button", "3": "button", "4": "button", "11": "panel", "9001": "grouplist"},
     "Custom_1109_TopBarOverlay.xml": {},
     "Custom_1110_TempoControl.xml": {"11": "button", "12": "button"},
@@ -82,6 +82,10 @@ def _estuary_window(filename):
     return root
 
 
+# Estuary wrapper groups whose buttons Bald hoists into the row (play/pause 602 in 698, repeat in 699).
+HOISTED_GROUPS = {"698", "699"}
+
+
 class PlaybackContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -112,17 +116,27 @@ class PlaybackContractTests(unittest.TestCase):
     def test_every_estuary_id_keeps_its_actions_and_visibility(self):
         bodies = expressions()
         for name in WINDOWS:
-            estuary = _ids(_estuary_window(name))
+            estuary_root = _estuary_window(name)
+            estuary = _ids(estuary_root)
+            parents = {child: node for node in estuary_root.iter() for child in node}
             bald = _ids(self.windows[name])
             for control_id, old in estuary.items():
+                if control_id in HOISTED_GROUPS:
+                    # Estuary hid these buttons through a wrapper group; Bald's buttons hide themselves instead
+                    # (see HiddenParentFocusTests), so the group id is gone and its visibility moves to the button.
+                    continue
                 with self.subTest(window=name, id=control_id):
                     self.assertIn(control_id, bald)
                     new = bald[control_id]
                     for tag in ACTION_TAGS:
                         self.assertTrue(same_actions(_actions(new, tag), _actions(old, tag), bodies),
                                         f"{tag}: {_actions(new, tag)} != {_actions(old, tag)}")
+                    old_visible = [v.text for v in old.findall("visible")]
+                    parent = parents.get(old)
+                    if parent is not None and parent.get("id") in HOISTED_GROUPS:
+                        old_visible += [v.text for v in parent.findall("visible")]
                     self.assertTrue(equivalent(all_of([v.text for v in new.findall("visible")]),
-                                               all_of([v.text for v in old.findall("visible")]), bodies))
+                                               all_of(old_visible), bodies))
 
     @unittest.skipUnless(ESTUARY.is_dir(), "Kodi 22's bundled Estuary is not installed")
     def test_window_visibility_is_estuarys(self):
@@ -294,3 +308,25 @@ class PlaybackStringTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HiddenParentFocusTests(unittest.TestCase):
+    """Kodi's CGUIControl::CanFocus checks only the control's own visibility, so a focusable control hidden only
+    through a parent group can take focus while invisible and strand the remote (Live TV play/pause, 0.2.0)."""
+
+    FOCUSABLE = {"button", "radiobutton", "togglebutton", "slider", "sliderex", "spincontrol", "spincontrolex",
+                 "edit", "list", "fixedlist", "wraplist", "panel", "grouplist"}
+
+    def test_osd_buttons_hide_themselves(self):
+        # The pattern that stranded the remote: a button row whose entry is a group wrapping a focusable button.
+        # Each entry must be the focusable control itself, carrying its own visibility.
+        for name in ("VideoOSD.xml", "MusicOSD.xml", "PlayerControls.xml"):
+            root = resolve_window(name)
+            for row in root.iter("control"):
+                if row.get("type") != "grouplist":
+                    continue
+                for entry in row.findall("control"):
+                    with self.subTest(window=name, row=row.get("id"), entry=entry.get("id")):
+                        wrapped = [c for c in entry.iter("control") if c is not entry and c.get("type") in self.FOCUSABLE]
+                        self.assertFalse(entry.get("type") == "group" and wrapped,
+                                         "focusable control hidden only through its parent group")

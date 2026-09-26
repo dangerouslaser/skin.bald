@@ -3,7 +3,7 @@
      visualisation; DialogSeekBar.xml draws the title, time and track. Started from Kodi 22 Estuary's MusicOSD.xml
      (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogMusicOSD binds 500 (visualisation) and 501 (lock), which
      Estuary does not draw either. Every button keeps Estuary's id, navigation and actions (200-202 rows, 600-608
-     transport, 698 play group, 699 repeat group, 70040-70055 and 70048 tools, 87 seek button, 799 touch back). -->
+     transport, 70040-70055 and 70048 tools, 87 seek button, 799 touch back). -->
 <window>
 	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
 	<defaultcontrol always="true">602</defaultcontrol>
@@ -44,17 +44,17 @@
 					<onclick condition="!Player.Paused">PlayerControl(Rewind)</onclick>
 					<visible>Player.SeekEnabled + !MusicPlayer.Content(livetv)</visible>
 				</control>
-				<include content="Bald_PlaybackIconGroup">
-					<param name="group_id">698</param>
-					<param name="id">602</param>
-					<param name="icon">$VAR[PlayerControlsPlayImageVar]</param>
-					<param name="visible">Player.PauseEnabled</param>
+				<!-- A direct child of the row that hides itself: a control hidden only through a parent group can still
+				     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
+				<control type="radiobutton" id="602">
+					<include content="Bald_PlaybackButton"><param name="icon">$VAR[PlayerControlsPlayImageVar]</param></include>
 					<onleft>601</onleft>
 					<onright>603</onright>
 					<onup>87</onup>
 					<ondown>noop</ondown>
 					<onclick>PlayerControl(Play)</onclick>
-				</include>
+					<visible>Player.PauseEnabled</visible>
+				</control>
 				<control type="radiobutton" id="603">
 					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/stop.png</param></include>
 					<onclick>PlayerControl(Stop)</onclick>
@@ -120,17 +120,17 @@
 					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/rating.png</param></include>
 					<onclick>SetRating</onclick>
 				</control>
-				<include content="Bald_PlaybackIconGroup">
-					<param name="group_id">699</param>
-					<param name="id">70053</param>
-					<param name="icon">$VAR[PlayerControlsRepeatImageVar]</param>
-					<param name="visible">![MusicPlayer.Content(LiveTV) | MusicPartyMode.Enabled]</param>
+				<!-- A direct child of the row that hides itself: a control hidden only through a parent group can still
+				     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
+				<control type="radiobutton" id="70053">
+					<include content="Bald_PlaybackButton"><param name="icon">$VAR[PlayerControlsRepeatImageVar]</param></include>
 					<onleft>70052</onleft>
 					<onright>70054</onright>
 					<onup>87</onup>
 					<ondown>noop</ondown>
 					<onclick>PlayerControl(Repeat)</onclick>
-				</include>
+					<visible>![MusicPlayer.Content(LiveTV) | MusicPartyMode.Enabled]</visible>
+				</control>
 				<control type="radiobutton" id="70054">
 					<include content="Bald_PlaybackToggle">
 						<param name="icon">osd/fullscreen/buttons/random-off.png</param>

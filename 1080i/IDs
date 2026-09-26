@@ -283,15 +283,14 @@ MusicOSD.xml (CGUIDialogMusicOSD)
 Skin ids, kept as Estuary numbers them (skin actions and navigation refer to them):
 VideoOSD.xml, MusicOSD.xml
 200		Button rows group; 201 transport grouplist; 202 tools grouplist
-600-608	Previous, rewind, play (602 in group 698), stop, forward, next, record
-699		Repeat group (70053 in MusicOSD)
+600-608	Previous, rewind, play/pause, stop, forward, next, record
 804		Disc menu
 70040-70048	Channels, guide, playlist, information, bookmarks, teletext, streams, 3D, settings
 70050-70055	Music: RDS, playlist, rating, repeat, random, lyrics
 6000	Seek group; 87 hidden seek button (Up from the buttons)
 799		Touch-mode back button (Bald_PlaybackTouchBack)
 PlayerControls.xml
-201		Button grouplist; 600, 602, 603, 605, 607 buttons; 699 and 704 repeat group and button
+201		Button grouplist; 600, 602, 603, 605, 607 buttons; 704 repeat button
 23		Progress; 87 hidden seek button (Bald_PlaybackFocusTrack)
 Custom_1101_SettingsDialog.xml (window 1101) and Includes_SettingsDialog.xml
 1		Heading; 11000 row group (default); 11100 row grouplist; 22101-22110 rows
