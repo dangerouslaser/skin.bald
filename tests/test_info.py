@@ -372,6 +372,40 @@ class MouseInputTests(unittest.TestCase):
         self.assertEqual(request['method'], 'Settings.SetSettingValue')
         self.assertEqual(request['params'], {'setting': 'input.enablemouse', 'value': False})
 
+    def test_font_action_sets_kodis_fontset_setting(self):
+        for fontset in ('Default', 'DMSans'):
+            with self.subTest(fontset=fontset):
+                xbmc = Mock()
+                xbmc.executeJSONRPC.return_value = json.dumps({'jsonrpc': '2.0', 'id': 1, 'result': True})
+                with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
+                    info.run('font', fontset)
+                request = json.loads(xbmc.executeJSONRPC.call_args.args[0])
+                self.assertEqual(request['method'], 'Settings.SetSettingValue')
+                self.assertEqual(request['params'], {'setting': 'lookandfeel.font', 'value': fontset})
+
+    def test_font_action_rejects_unknown_fontsets(self):
+        for fontset in ('', 'Arial', 'dmsans', 'DMSans,Default'):
+            with self.subTest(fontset=fontset):
+                xbmc = Mock()
+                with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
+                    with self.assertRaises(ValueError):
+                        info.run('font', fontset)
+                xbmc.executeJSONRPC.assert_not_called()
+
+    def test_font_action_reports_a_json_rpc_error(self):
+        xbmc = Mock()
+        xbmc.executeJSONRPC.return_value = json.dumps({'jsonrpc': '2.0', 'id': 1, 'error': {'code': -32602}})
+        with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
+            with self.assertRaises(RuntimeError):
+                info.run('font', 'DMSans')
+
+    def test_font_choices_are_font_xml_fontsets(self):
+        import xml.etree.ElementTree as ET
+        from pathlib import Path
+        root = ET.parse(Path(__file__).resolve().parents[1] / '1080i' / 'Font.xml').getroot()
+        ids = [node.get('id') for node in root.findall('fontset')]
+        self.assertEqual([i for i in ids if i != 'Arial'], list(info.FONTSETS))
+
     def test_mouse_is_only_disabled_while_kodi_has_it_on(self):
         import xml.etree.ElementTree as ET
         from pathlib import Path
