@@ -59,6 +59,10 @@ Hundreds digit 5, tens digit is the content level, units digit the layout.
 530-539	TV seasons
   530	Seasons (View_520_Bald_TV.xml)
   531	Seasons compact (View_521_Bald_TV_Alternates.xml)
+		Clash, inherited: Estuary's CommonScrollbars (Includes.xml, included by MyVideoNav.xml)
+		also defines scrollbar 531, the pagecontrol and onright target of Estuary views 52, 55,
+		500, 501 and 504. Keep view 531 (Container.SetViewMode, letters.py); see docs/NOTES.md,
+		"Control ID 531 is used twice".
 540-549	TV episodes
   540	Episodes (View_520_Bald_TV.xml)
   541	Episodes compact (View_521_Bald_TV_Alternates.xml)
