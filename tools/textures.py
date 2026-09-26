@@ -157,6 +157,17 @@ def settings_textures():
     save(im, "slider_bar.png")
     # Slider nib: a 16 px dot.
     save(rounded(16, 16, 8), "slider_nib.png")
+    playback_textures()
+
+
+def playback_textures():
+    """Player OSD icon buttons (Includes_Bald_Playback.xml): the focus texture of a 64 x 84 button, transparent but
+    for an 8 px dot centred under the 56 px icon (x 28-36, y 70-78). Drawn at its own size, so no border."""
+    im = Image.new("RGBA", (64, 84), (255, 255, 255, 0))
+    mark = Image.new("L", (8 * SS, 8 * SS), 0)
+    ImageDraw.Draw(mark).ellipse([0, 0, 8 * SS - 1, 8 * SS - 1], fill=255)
+    im.paste((255, 255, 255, 255), (28, 70), mark.resize((8, 8), Image.LANCZOS))
+    save(im, "osd_focus.png")
 
 
 if __name__ == "__main__":

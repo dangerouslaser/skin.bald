@@ -1005,6 +1005,56 @@ msgctxt "#31615"
 msgid "Subtitle language"
 msgstr ""
 
+# Bald playback strings: 31616-31649 (Includes_Bald_Playback.xml).
+
+#: /1080i/Includes_Bald_Playback.xml
+#. Seek row hint while playing
+msgctxt "#31616"
+msgid "Left and right to skip"
+msgstr ""
+
+#: /1080i/Includes_Bald_Playback.xml
+#. Seek row hint while paused
+msgctxt "#31617"
+msgid "Right for the next frame"
+msgstr ""
+
+#: /1080i/Includes_Bald_Playback.xml
+#. OSD hint: the seek row is above the buttons
+msgctxt "#31618"
+msgid "Up to seek"
+msgstr ""
+
+#: /1080i/Includes_Bald_Playback.xml
+#. OSD hint when there is no seek row, and the touch back button
+msgctxt "#31619"
+msgid "Back to close"
+msgstr ""
+
+#: /1080i/Includes_Bald_Playback.xml
+#. OSD stop button
+msgctxt "#31620"
+msgid "Stop"
+msgstr ""
+
+#: /1080i/Includes_Bald_Playback.xml
+#. OSD play/pause button while playing
+msgctxt "#31621"
+msgid "Pause"
+msgstr ""
+
+#: /1080i/Includes_Bald_Playback.xml
+#. Prefix of the next item on the info overlay
+msgctxt "#31622"
+msgid "Up next"
+msgstr ""
+
+#: /1080i/Includes_Bald_Playback.xml
+#. Seek row hint: the buttons are below
+msgctxt "#31623"
+msgid "Down for controls"
+msgstr ""
+
 # Bald strings: 31700-31999 (see docs/LOCALIZATION.md). Estuary keeps 31000-31699.
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml

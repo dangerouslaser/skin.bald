@@ -167,6 +167,47 @@ VIDEO INFORMATION PAGES (DialogVideoInfo.xml, Includes_Bald_InfoPages.xml, Inclu
 5303-5999	Free for new info-page IDs; record them above.
 
 
+PLAYBACK (Includes_Bald_Playback.xml and the player windows that use it; docs/SPEC.md 5, "Playback (proposed)")
+Kodi binds these by number (checked against xbmc master):
+DialogSeekBar.xml (CGUIDialogSeekBar)
+401		File progress slider (Kodi selects the position)
+402		EPG event progress (optional; not drawn)
+403		Timeshift progress slider
+40000	Seek state label (Estuary's id, kept)
+VideoFullScreen.xml (CGUIWindowFullScreen)
+0		View-mode group Kodi shows and hides; 10, 11, 12 its three lines
+1		Buffering indicator group and its parts (Estuary's numbering)
+DialogSlider.xml (CGUIDialogSlider)
+10		Heading; 11 slider; 12 value; 13, 14 mouse step buttons (skin actions)
+VideoOSDBookmarks.xml (CGUIDialogVideoBookmarks)
+2		Create bookmark; 3 clear bookmarks; 4 set episode bookmark (Kodi enables it)
+11		Bookmark list; 9001 button row
+DialogSubtitles.xml (CGUIDialogSubtitles)
+100		Service name (popup heading); 110 service logo; 120 results; 130 local subtitles notice;
+		140 status; 150 services; 160 manual search; 73 results page control; 250 surface group
+MusicOSD.xml (CGUIDialogMusicOSD)
+500, 501	Visualisation and lock buttons (bound by Kodi, not drawn, as in Estuary)
+Skin ids, kept as Estuary numbers them (skin actions and navigation refer to them):
+VideoOSD.xml, MusicOSD.xml
+200		Button rows group; 201 transport grouplist; 202 tools grouplist
+600-608	Previous, rewind, play (602 in group 698), stop, forward, next, record
+699		Repeat group (70053 in MusicOSD)
+804		Disc menu
+70040-70048	Channels, guide, playlist, information, bookmarks, teletext, streams, 3D, settings
+70050-70055	Music: RDS, playlist, rating, repeat, random, lyrics
+6000	Seek group; 87 hidden seek button (Up from the buttons)
+799		Touch-mode back button (Bald_PlaybackTouchBack)
+PlayerControls.xml
+201		Button grouplist; 600, 602, 603, 605, 607 buttons; 699 and 704 repeat group and button
+23		Progress; 87 hidden seek button (Bald_PlaybackFocusTrack)
+Custom_1101_SettingsDialog.xml (window 1101) and Includes_SettingsDialog.xml
+1		Heading; 11000 row group (default); 11100 row grouplist; 22101-22110 rows
+Custom_1110_TempoControl.xml (window 1110)
+11, 12	Slower and faster buttons
+DialogFullScreenInfo.xml
+999		Full-screen button (step, chapter or big step, OSD)
+
+
 DIALOGS AND CUSTOM WINDOWS
 
 DialogContextMenu.xml
@@ -176,8 +217,7 @@ Settings.xml (Kodi's settings hub; Kodi binds no ids here)
 9000	Entry list (Bald_SettingsCategories); every entry is an onclick action
 9001	Open button (Bald_SettingsOpen)
 
-Custom_1110_TempoControl.xml (window 1110, Estuary)
-11, 12	Buttons
+Custom_1110_TempoControl.xml (window 1110): see PLAYBACK
 
 Custom_1115_BaldSettings.xml (window 1115) and SkinSettings.xml (Kodi's "Configure skin...")
 		Both draw Bald_SettingsHome (Includes_Bald_Configure.xml).
