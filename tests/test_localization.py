@@ -29,9 +29,10 @@ TOKEN = re.compile(r"\$(INFO|ESCINFO|VAR|ESCVAR|EXP|PARAM|LOCALIZE|ADDON|NUMBER|
 
 
 def skin_ids(text):
-    """Skin-range string ids a file shows: $LOCALIZE[...] and numeric viewtype labels."""
+    """Skin-range string ids a file shows: $LOCALIZE[...], numeric viewtype labels and fontset labels (idloc)."""
     ids = [int(n) for n in re.findall(r"\$LOCALIZE\[(\d+)\]", text)]
     ids += [int(n) for n in re.findall(r'<viewtype label="(\d+)"', text)]
+    ids += [int(n) for n in re.findall(r'<fontset id="[^"]*" idloc="(\d+)"', text)]
     return [n for n in ids if 31000 <= n <= 31999]
 
 
