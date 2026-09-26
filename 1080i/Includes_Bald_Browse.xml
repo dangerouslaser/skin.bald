@@ -404,11 +404,14 @@
 					<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
 					<include content="Bald_BrowseCaption"><param name="p">Odd</param></include>
 					<include content="Bald_BrowseCaption"><param name="p">Even</param></include>
-					<!-- A movie set without its own plot lists its movies, as Estuary did. -->
+					<!-- A movie set without its own plot lists its movies, as Estuary did. The preview is included more
+					     than once per window and nothing addresses this list by id, so it has none (Kodi reads an
+					     empty id as 0, no id). -->
 					<control type="group">
 						<left>1286</left><top>680</top>
 						<visible>ListItem.IsCollection + String.IsEmpty(ListItem.Plot)</visible>
 						<include content="InfoList">
+							<param name="list_id" />
 							<param name="bottom">150</param>
 							<param name="width">528</param>
 							<param name="sortby">year</param>
