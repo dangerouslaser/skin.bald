@@ -2179,6 +2179,17 @@ msgctxt "#31930"
 msgid "Select an action for this item."
 msgstr ""
 
+#. Font set names: Kodi's Interface > Skin > Fonts list and Bald Settings > Appearance > Typography
+#: /1080i/Font.xml
+msgctxt "#31940"
+msgid "Instrument Sans"
+msgstr ""
+
+#: /1080i/Font.xml
+msgctxt "#31941"
+msgid "DM Sans"
+msgstr ""
+
 #: /1080i/SettingsCategory.xml
 msgctxt "#31950"
 msgid "Settings level"
