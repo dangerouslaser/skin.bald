@@ -413,3 +413,26 @@ class ReturnToMenuTests(unittest.TestCase):
         for entry in ("901$PARAM[n]", "9004", "9006"):
             with self.subTest(entry=entry):
                 self.assertIn(f"SetProperty(Bald.ReturnMenu,{entry},home)", text)
+
+
+class ReturnKeepsStateTests(unittest.TestCase):
+    """Returning to a menu entry keeps the state Home was left in: Kodi starts each control's animations from the
+    properties as they were, so resetting and restoring them would animate the art frame away and back."""
+
+    RESETS = ["SetProperty(Bald.Row,9101,home)", "SetProperty(Bald.Row.home,9101,home)",
+              "SetProperty(Bald.Row.livetv,9051,home)"] + [f"SetProperty(Bald.Row.hub{n},9{n + 1}01,home)" for n in range(1, 9)] + [
+              "SetProperty(Bald.Screen,home,home)", "SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)",
+              "SetProperty(TMDbHelper.WidgetContainer,9101,home)", "ClearProperty(Bald.Menu,home)"]
+
+    def test_state_resets_are_skipped_on_return_to_a_menu_entry(self):
+        onload = {node.text: node.get("condition") for node in ET.parse(XML / "Home.xml").getroot().findall("onload")}
+        for action in self.RESETS:
+            with self.subTest(action=action):
+                self.assertEqual(onload[action], "!$EXP[Bald_ReturningToMenu]")
+
+    def test_returning_matches_the_restored_entries(self):
+        home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        expr = home.findtext("expression[@name='Bald_ReturningToMenu']")
+        for entry in ReturnToMenuTests.ENTRIES:
+            with self.subTest(entry=entry):
+                self.assertIn(f"[String.IsEqual(Window(home).Property(Bald.ReturnMenu),{entry}) + Control.IsVisible({entry})]", expr)

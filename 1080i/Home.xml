@@ -16,22 +16,23 @@
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">SetProperty(Bald.HubsMigrating,1,home)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">RunScript(skin.bald,hubs)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
-	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load.
-	     Focus always starts on row 1 (defaultcontrol always). -->
-	<onload>SetProperty(Bald.Row,9101,home)</onload>
-	<onload>SetProperty(Bald.Row.home,9101,home)</onload>
-	<onload>SetProperty(Bald.Row.livetv,9051,home)</onload>
-	<onload>SetProperty(Bald.Row.hub1,9201,home)</onload>
-	<onload>SetProperty(Bald.Row.hub2,9301,home)</onload>
-	<onload>SetProperty(Bald.Row.hub3,9401,home)</onload>
-	<onload>SetProperty(Bald.Row.hub4,9501,home)</onload>
-	<onload>SetProperty(Bald.Row.hub5,9601,home)</onload>
-	<onload>SetProperty(Bald.Row.hub6,9701,home)</onload>
-	<onload>SetProperty(Bald.Row.hub7,9801,home)</onload>
-	<onload>SetProperty(Bald.Row.hub8,9901,home)</onload>
-	<onload>SetProperty(Bald.Screen,home,home)</onload>
+	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load, except when
+	     returning to the menu entry Home was left from (Bald_ReturningToMenu), which keeps the state it was left in.
+	     Focus always starts on row 1 (defaultcontrol always), unless an onload below moves it. -->
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row,9101,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.home,9101,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.livetv,9051,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub1,9201,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub2,9301,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub3,9401,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub4,9501,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub5,9601,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub6,9701,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub7,9801,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub8,9901,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Screen,home,home)</onload>
 	<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
-	<onload>SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)</onload>
 	<!-- Background: TMDb Helper's blurred fanart of the current row item (its image service only; no TMDB lookups),
 	     watching the current row (TMDbHelper.WidgetContainer). The earlier color tint is switched off. -->
 	<onload condition="Skin.HasSetting(TMDbHelper.EnableColors)">Skin.Reset(TMDbHelper.EnableColors)</onload>
@@ -43,8 +44,8 @@
 	<onload condition="$EXP[Bald_RatingsOnline] + !Skin.HasSetting(TMDbHelper.Service)">Skin.SetBool(TMDbHelper.Service)</onload>
 	<onload condition="!$EXP[Bald_RatingsOnline] + Skin.HasSetting(TMDbHelper.Service)">Skin.Reset(TMDbHelper.Service)</onload>
 	<onload>SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
-	<onload>SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
-	<onload>ClearProperty(Bald.Menu,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
+	<onload condition="!$EXP[Bald_ReturningToMenu]">ClearProperty(Bald.Menu,home)</onload>
 	<!-- No Home rows (the widget editor keeps one, but a row list can be emptied by hand): no current row, and focus
 	     goes to the menu's Home entry, which opens the menu. Search's return below still takes precedence. -->
 	<onload condition="!$EXP[Bald_HasRows_home]">ClearProperty(Bald.Row,home)</onload>
