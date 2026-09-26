@@ -195,8 +195,11 @@
                 </items>
             </value>
             <value name="art_logos">
+                <!-- Rows with the art-frame clearlogo off (row field "logo" = off; empty or on shows it) get no
+                     clearlogo instances, and no branch in the logo expressions below, so the frame shows no logo or scrim. -->
                 <items menu="{menu}" mode="submenu">
                     <item>
+                        <condition>{item_logo}!=off</condition>
                         <template>generator/row-binding.xmltemplate</template>
                         <value name="content">Bald_ArtLogo</value>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
@@ -223,6 +226,7 @@
             <value name="has_logo">
                 <items menu="{menu}" mode="submenu">
                     <item>
+                        <condition>{item_logo}!=off</condition>
                         <template>| [String.IsEqual(Window(home).Property(Bald.Row),{row_id}) + [!String.IsEmpty(Container({row_id}).ListItem.Art(clearlogo)) | !String.IsEmpty(Container({row_id}).ListItem.Art(tvshow.clearlogo))]]</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                     </item>
@@ -239,6 +243,7 @@
             <value name="preview_has_logo">
                 <items menu="{menu}" mode="submenu">
                     <item>
+                        <condition>{item_logo}!=off</condition>
                         <template>| [$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),{row_id}) + [!String.IsEmpty(Container({row_id}).ListItem.Art(clearlogo)) | !String.IsEmpty(Container({row_id}).ListItem.Art(tvshow.clearlogo))]]</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                     </item>

@@ -144,6 +144,7 @@
 						<height>170</height>
 						<aspectratio align="left" aligny="bottom">keep</aspectratio>
 						<texture background="true">$VAR[Bald_Logo]</texture>
+						<visible>$EXP[Bald_ShowClearlogo]</visible>
 					</control>
 				</control>
 			</control>

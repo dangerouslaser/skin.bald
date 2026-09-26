@@ -220,7 +220,8 @@
 	<!-- Per-row bindings come from Skin Variables for the configured rows only (shortcuts/generator/, built into
 	     script-skinvariables-generator-includes.xml, defaults in Includes_Bald_HomeDefaults.xml): $VAR[Bald_Fanart]
 	     and $VAR[Bald_Logo], and per screen the parity and logo expressions and the caption and clearlogo instances
-	     combined here. -->
+	     combined here. A row whose row field "logo" is off gets no clearlogo instances or logo branches, and an empty
+	     Bald_Logo value, so the frame shows no logo or logo scrim for it. -->
 	<expression name="Bald_ItemOdd">[$EXP[Bald_ItemOdd_home] | $EXP[Bald_ItemOdd_movies] | $EXP[Bald_ItemOdd_tvshows]]</expression>
 	<expression name="Bald_HasLogo">[$EXP[Bald_HasLogo_home] | $EXP[Bald_HasLogo_movies] | $EXP[Bald_HasLogo_tvshows]]</expression>
 	<expression name="Bald_PreviewItemOdd">[$EXP[Bald_PreviewItemOdd_home] | $EXP[Bald_PreviewItemOdd_movies] | $EXP[Bald_PreviewItemOdd_tvshows]]</expression>
