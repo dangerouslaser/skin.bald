@@ -377,6 +377,17 @@ Not in the prototype; proposed for review in Kodi. Shared pieces live in `Includ
 - Busy is three 12 px dots that brighten in turn (28% to full `ink`, 360 each way, 180 apart, 1200 ms cycle) instead of a spinner, since Bald's motion is fade, slide and zoom only.
 - Motion: overlays fade in over 240 and out over 160 (FADE) with a 14 px slide (24 px from the right for toasts) over 360 in and 200 out (MOVE). The text viewer keeps the shared popup open and close.
 
+### 5.18 Live TV windows and dialogs (2026-09-26, for review)
+
+Design decisions the spec did not cover, taken in the Live TV restyle (docs/NOTES.md, "Live TV windows restyle"). The guide (5.14) is unchanged.
+
+- Channels, Recordings, Timers, Search and Providers reuse the Library/Search layout: title at 96,108, accent section line at y 174 (TV or Radio, then group, provider or search), list at 96,222 (1140 wide, eight 84 px rows), preview column at 1296,222 (528 wide) and hints on y 954. Channel rows: number, logo, name, programme line and a 4 px progress bar in `accent`; other rows: optional state icon tinted `ink`, title with a right-hand value, and a second line. Focus is full `ink` plus the accent dot; unfocused text is 70% / 45% `ink`.
+- The options column replaces Estuary's sidebar at the Home menu's x 1440 in Bald Settings' row style (accent dot, state dot at the right for Kodi's toggles). Left opens it, the preview gives way with the menu-open motion, and Left, Right or Back return to the list. Channels keep one view.
+- Over live video, the channel switcher and mini guide are left-column overlays on the field scrims (no panel), entering with the menu-open move from the left (fade 380, slide 40 px over 480). The switcher's Left and Right change channel group.
+- Programme and recording information: channel line, 76 px title, accent line (premiere, finale, live or new, then genre), when, episode, progress, 22 px plot and Kodi's actions as the info dialog's pills; art and details at the preview position. Content enters with the info stagger (0-180 ms). The dialog lays `field` at 60% plus the scrims over whatever is behind, and the programme's fanart at backdrop brightness when there is one.
+- Guide controls are text pills (48 px, `Bald_RowLabel`) grouped Programme / Channel / Group on a `field` bar with a 10% `ink` top rule; the 12-hour steps read "−12 h" and "+12 h".
+- Channel and group managers keep the shared popup surface; lists use the popup list rule (70% `ink`, 10% `ink` focus row), settings rows use Bald Settings' rows, and boxed Estuary panels are removed.
+
 ---
 
 ## 6. Default rows (alpha uses a fixed configuration)

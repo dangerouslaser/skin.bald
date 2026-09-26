@@ -8,6 +8,7 @@ shows it through `$LOCALIZE[id]`.
 | Range       | Owner                                                                                  |
 |-------------|----------------------------------------------------------------------------------------|
 | 31000-31699 | Estuary's strings, kept for the copied utility windows (currently up to 31615)          |
+| 31660-31679 | Bald Live TV windows restyled from Estuary (Includes_Bald_PVR.xml; tests/test_pvr.py)  |
 | 31700-31999 | Bald                                                                                    |
 
 Kodi keeps skin strings in 31000-31999 and clears that range when the skin reloads, so Bald stays inside it.

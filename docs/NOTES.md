@@ -107,6 +107,78 @@ Static checks only (`tools/kodi_dev.py validate`, the unit tests); nothing here 
 9. Text viewer 1102: Add-on information, "What's new" (sets `TextViewer_Header`/`TextViewer_Text` and opens 1102), and a PVR programme's plot. Same layout, header from the property, text fills and pages.
 10. Power menu: Home, Power (or `ActivateWindow(shutdownmenu)`). Bald header, 70% ink items with a 10% ink focus row, Instrument Sans; unchanged from before.
 
+## Live TV windows restyle (2026-09-26, not yet run in Kodi)
+
+Static checks only (`tools/kodi_dev.py validate`, the unit tests); nothing here has been reloaded or driven in Kodi.
+
+- **What changed.** Every Live TV window except the guide left Estuary's look. Shared parts are in the new
+  `1080i/Includes_Bald_PVR.xml` (registered after `Includes_PVR.xml`); strings 31660-31679 were added.
+  - Channels, Recordings, Timers (and Timer rules), Search and Providers draw the Library/Search layout: title at
+    96,108, accent section line (TV or Radio, group, provider or search), a 1140 px list of 84 px rows with the accent
+    focus dot, the preview column at x 1296 (programme art or the channel logo on a placeholder, title, when, accent
+    line of premiere/live/new and genre, episode, accent progress, plot, and for channels what is next), the list
+    position on the y 954 line and sentence-case hints. Menucontrol 9000 is now the options column at x 1440, in
+    Bald Settings' row style, replacing Estuary's sidebar: channel group (SendClick 28), Kodi's own toggles (show
+    hidden 6, filter 31, group items 5, show deleted 7, show mode 10, hide disabled 8), sort by and order, go to
+    playlist (302), and the other Live TV windows (Estuary's quick-navigation ids 100-105, TV or radio as before).
+    Left opens it; Left, Right or Back return to the list. The list's scrollbar 73 is a page indicator only.
+  - The channel switcher (`DialogPVRChannelsOSD.xml`) and mini guide (`DialogPVRChannelGuide.xml`) are left-column
+    overlays over live video on Bald's field scrims (`scrim_info_h`, `scrim_info_b`), sliding in 40 px from the left.
+    Channel rows show number, logo, name, programme and accent progress with a status mark; programme rows show start
+    time, title, accent progress for the one on now and the guide's accent timer dot. The mini guide shows the focused
+    programme's times, genre and plot under the list.
+  - Programme and recording information (`DialogPVRInfo.xml`) follows the movie information: channel line, 76 px
+    title, accent line, when, episode, accent progress, plot (138 still opens the full text viewer), Kodi's actions as
+    pills, and art plus details (cast, director, writer, first aired, rating, size, plays, expiry, provider, client)
+    at the preview position, over the programme's fanart when it has one.
+  - Radio RDS information is two columns of label/value lines with accent headings. Guide controls are text pills on
+    a field bar with Estuary's help line; the managers keep the shared popup surface and now use Bald rows inside it.
+  - `Includes_PVR.xml` lost the Estuary includes nothing calls any more (PVRListItemLayout(s), PVRInfoPanel,
+    ChannelManagerList, RDSInfoLine, PVRBackendDiskspace, `listitem_has_epg_event_info`).
+- **Kodi contract.** Checked against Kodi's `xbmc/pvr` sources (master): list 11 in both overlays
+  (CGUIDialogPVRItemsViewBase); 4, 5, 6, 8, 9, 10, 11 in the information dialog; 50, 3, 4, 28, 29, 30 in every list
+  window plus 6/31 (Channels), 5/7/10 (Recordings) and 8 (Timers); the managers' full sets (1080i/IDs). Kodi's
+  handlers stay in charge: no skin onclick was added to a Kodi-handled button. `tests/test_pvr.py` pins the ids and
+  types, the guide controls' EPG-grid actions and the channel switcher's PreviousChannelGroup/NextChannelGroup.
+- **Deliberately left alone or dropped.**
+  - The TV guide (`MyPVRGuide.xml`, `Bald_EpgGrid`, `Bald_PVRGuideTools`) and the shared `PVRProgress` and
+    `PVRChannelNumberInput` (used by the seek bar and top-bar overlay, another stream's files). The Live TV windows
+    use their own `Bald_PVRChannelNumberInput`.
+  - `Includes_MediaMenu.xml` (`PVRSideBar`, `PVRQuickNavItemsCommon`) and the Estuary PVR variables in
+    `Variables.xml` (`BreadcrumbsPVR*Var`, `PVRNextProgrammeLabel`, `PVRInfoPanelDateDurationLabel`, ...) now have no
+    Live TV caller but are shared files; left for a later dead-code pass.
+  - Channels' second view (51, Estuary's compact list) was dropped, as the guide dropped its alternate orientations;
+    Kodi falls back to view 50. The now-playing transport row in Estuary's sidebar (14100) and the Search window's
+    duplicate `<menucontrol>6053` were dropped too. The information dialog's "Same director" button (13) had no action
+    in Estuary or Kodi and was dropped; touch-mode back buttons were not carried over.
+  - Estuary's view Left/Right in the channel switcher went via its scrollbar; Right now runs NextChannelGroup directly
+    (Left was already PreviousChannelGroup). The mini guide's Left/Right no longer focus its scrollbar.
+  - RDS info texts keep `$LOCALIZE` inside `$INFO` prefixes as Estuary did; core strings there contain no commas.
+- **To check in Kodi** (TV first, then radio where noted; the user runs IPTV Simple):
+  1. Reload; the log has no XML, include, variable or expression errors for the files above or `Includes_Bald_PVR.xml`.
+  2. Live TV → Channels: rows show number, logo, name, programme and accent progress; the preview shows the right
+     programme, next line and art or logo. Check whether a channel item's `Art(thumb)` is its logo (the preview would
+     then show the logo full size rather than small on the placeholder).
+  3. Left opens the options column, preview hidden; each option works: channel group chooser (and the section line
+     updates), show hidden channels, filter (keyboard, then focus back on the list), sort by, order, and each other
+     Live TV window. Back and Right return to the list. The Menu key also opens it.
+  4. Recordings: state icons tinted, folders collapse to one line, group items / show deleted / show mode toggles,
+     free space on the footer, go to playlist only with a playlist, Select plays.
+  5. Timers and Timer rules: title switches between the two; hide disabled; Select opens the timer editor.
+  6. Search: saved searches and results, header line shows the search; Providers opens a provider's channels.
+  7. Fullscreen live TV → channel switcher (OK or the channels key): list over the scrims, current channel focused,
+     Left/Right change group and the section line follows, Select switches, digits show the centred number entry.
+  8. Mini guide (from the OSD or a channel's context menu): current programme selected and marked with progress,
+     timer dots, Select opens information, Back closes; from a Live TV window the window behind is dimmed.
+  9. Programme information from the guide, a channel and the mini guide: actions appear as pills, Kodi's relabelling
+     (Record ↔ Stop recording / Delete timer) and hidden actions work, pills pop on focus, Up focuses the plot and
+     Select opens the full text, Show fanart opens 1104. Recording information shows Play recording and Find similar.
+  10. Guide controls (if opened): pills run their actions, focus wraps across the three rows, the help line follows.
+  11. Channel manager and group manager: every row edits, toggles and spinner work; lists scroll; Left/Right routes
+     between columns through the scrollbars as before.
+  12. Radio: RDS information while a radio channel with RDS plays.
+  13. On CoreELEC: scroll performance of the channel list with logos and progress at 84 px rows.
+
 ## Kodi's settings windows in the Bald scaffold (2026-09-26, not yet run in Kodi)
 
 Static checks only (`tools/kodi_dev.py validate`, the unit tests); nothing here has been reloaded or driven in Kodi.
