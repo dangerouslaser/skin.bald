@@ -749,7 +749,9 @@
 				<left>-6</left><width>426</width><height>62</height><visible>$PARAM[visible]</visible>
 				<texturefocus colordiffuse="bald_accent">bald/menu_dot.png</texturefocus><texturenofocus /><font>Bald_MenuItem</font><align>left</align><aligny>center</aligny><textoffsetx>26</textoffsetx>
 				<textcolor>bald_ink34</textcolor><focusedcolor>bald_ink</focusedcolor><label>$PARAM[label]$PARAM[suffix]</label>
-				<animation type="Focus"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" /></animation>
+				<!-- Not reversible: Kodi reverses an interrupted Focus animation from wherever it stopped, which left quickly
+				     passed items at a stray brightness. Resetting it returns every unfocused item to exactly bald_ink34. -->
+				<animation type="Focus" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" /></animation>
 				<animation type="Unfocus"><effect type="slide" start="6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
 				<onfocus condition="!$EXP[Bald_MenuOpen] + String.IsEqual(Skin.String(Bald.MenuOpens),2)">Skin.SetString(Bald.MenuOpens,3)</onfocus>
 				<onfocus condition="!$EXP[Bald_MenuOpen] + String.IsEqual(Skin.String(Bald.MenuOpens),1)">Skin.SetString(Bald.MenuOpens,2)</onfocus>

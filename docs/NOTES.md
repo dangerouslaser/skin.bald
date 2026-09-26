@@ -58,6 +58,11 @@ Built and statically validated only (XML parse, include resolution, unit tests);
 - **Left runs Select.** Left used to repeat each entry's four actions; it is now `Action(Select)`, which Kodi sends to the focused control (the button, since a Left with no navigation keeps focus) and which runs the same `<onclick>` list. Not checked live.
 - **Still to verify in Kodi:** Up and Down through the menu with Movies, TV shows and Live TV each hidden and shown (previews and backdrop follow, the ends do not wrap); Left on every entry does what Select does; Home with an empty Home row list opens on the menu and stays usable (Back, idle wake, Movies and TV shows entries); the row dots and the Home menu note with 1, 3 and 5 rows; rows 4 and later, and each screen's second row, open on their first item without a visible slide; the first Home load builds and reloads once, later loads do not; closing the widget editor and returning Home rebuilds once; a reload with both files present shows no include or expression errors in `kodi.log`; the per-screen `$EXP` combiners behave exactly as the old single expressions (parity crossfades, menu previews, dialog-over art).
 
+## Home menu focus fade (2026-09-26)
+
+- Moving quickly through the Home menu left some items at a different text brightness. Kodi reverses a reversible Focus animation that is still running when focus leaves (`CGUIControl::QueueAnimation`), so the 240 ms 34→100 fade played backwards from wherever it stopped and could settle at a stray alpha. `Bald_HomeMenuButton`'s Focus animation is now `reversible="false"`: an interrupted fade is reset instead, and every unfocused item draws exactly `bald_ink34`. The Unfocus slide still runs; after a very fast pass the slide may start from 6 px rather than its interrupted position (at most a pixel or two).
+- To verify live: hold Down/Up through the menu, then compare the unfocused labels; all should match.
+
 ## Palette scale (2026-09-26)
 
 - `bald_ink` opacity now uses one fixed scale: 100 / 95 / 80 / 70 / 60 / 45 / 34 / 28 / 10 (was 14 steps). Spec-pinned values are kept: 70 and 34 (letter strip), 45 (pill outlines), 10 (popup header/focus row). `bald_ink28` and `bald_ink95` also stay because generated Home includes reference them.
