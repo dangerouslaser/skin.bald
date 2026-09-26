@@ -3,6 +3,7 @@
 {rows}
     </definition>
 </include>
+{row_parts}
 <include name="Bald_RowStartReset_{screen}">
     <definition>
 {start_reset}

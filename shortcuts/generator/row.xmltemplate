@@ -5,6 +5,8 @@
     <param name="screen">{screen}</param>
     <param name="up">{row_up}</param>
     <param name="down">{row_down}</param>
+    <param name="dots">Bald_RowDots_{row_id}</param>
+    <param name="dots_width">{dots_width}</param>
     <content target="{item_target_escaped}" limit="{item_limit_escaped}">{item_path_escaped}</content>
     {secondary_content}
     {next_start}
