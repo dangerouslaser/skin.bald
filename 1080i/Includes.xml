@@ -963,19 +963,11 @@
 		<width>auto</width>
 	</include>
 	<include name="ColoredBackgroundImages">
-		<!-- Bald: the opaque field. Estuary's pattern overlay stays available through its skin string, as a quiet ink
-		     texture, and is off unless a pattern was chosen. -->
+		<!-- Bald: the opaque field (Estuary's pattern overlay was retired with its background_overlay setting). -->
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<texture colordiffuse="bald_field">bald/white.png</texture>
-		</control>
-		<control type="image">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="bald_ink10">$INFO[Skin.String(background_overlay),special://skin/extras/backgrounds/pattern,.png]</texture>
-			<visible>!String.IsEmpty(Skin.String(background_overlay)) + !String.IsEqual(Skin.String(background_overlay),0)</visible>
 		</control>
 	</include>
 	<include name="DefaultBackground">
