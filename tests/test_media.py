@@ -155,7 +155,8 @@ class BaldLookTests(unittest.TestCase):
                     self.assertIn(value, known)
 
     def test_text_controls_name_their_font_and_colour(self):
-        # Defaults.xml still gives an unstyled label Estuary's font13 in white.
+        # Defaults.xml gives an unstyled label the generic Bald_InfoPlot in full ink; each restyled text control names
+        # its own role font and ink instead of relying on that default.
         for name in RESTYLED:
             root = ET.parse(SKIN / name).getroot()
             for node in root.iter("control"):
