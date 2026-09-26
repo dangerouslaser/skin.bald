@@ -79,5 +79,35 @@ class PopupFocusRowTests(unittest.TestCase):
                 self.assertEqual(ends, {"50"})
 
 
+class PlaybackHintSeparatorTests(unittest.TestCase):
+    def test_help_parts_carry_no_inline_separator(self):
+        # The hint line's parts are joined by Bald_InfoHintPair's 20 px dot, so no part carries its own.
+        root = ET.parse(SKIN / "Includes_Bald_Playback.xml").getroot()
+        for name in ("Bald_PlaybackHelp", "Bald_PlaybackHelpDetail", "Bald_PlaybackHint"):
+            variable = root.find(f"variable[@name='{name}']")
+            self.assertIsNotNone(variable, name)
+            for value in variable.findall("value"):
+                with self.subTest(variable=name, value=value.text):
+                    self.assertNotIn("·", value.text or "")
+
+    def test_osd_hint_line_shows_the_state_as_its_own_part(self):
+        for name in ("VideoOSD.xml", "MusicOSD.xml"):
+            root = Skin().window(name)
+            labels = [node for node in root.iter("control") if node.get("type") == "label"
+                      and "Bald_PlaybackHelp" in (node.findtext("label") or "")]
+            with self.subTest(window=name):
+                self.assertEqual([node.findtext("label") for node in labels], ["$VAR[Bald_PlaybackHelp]"])
+                texts = [node.findtext("label") for node in root.iter("control") if node.get("type") == "label"]
+                self.assertIn("$VAR[Bald_PlaybackHintAfterHelp]", texts)
+                self.assertIn("$VAR[Bald_PlaybackHint]", texts)
+
+    def test_player_controls_caption_uses_the_dot_separator(self):
+        root = Skin().window("PlayerControls.xml")
+        texts = [node.findtext("label") for node in root.iter("control") if node.get("type") == "label"]
+        self.assertIn("$VAR[Bald_PlaybackHelp]", texts)
+        self.assertIn("$VAR[Bald_PlaybackHelpDetail]", texts)
+        self.assertIn("·", texts)
+
+
 if __name__ == "__main__":
     unittest.main()
