@@ -97,6 +97,16 @@ def main():
     # Progress track and bar: 4 px, rounded. 9-slice border 2.
     save(rounded(8, 4, 2), "bar.png")
 
+    # EPG "now" progress: Kodi stretches this texture over all elapsed time.
+    # Keep the stretchable body transparent and preserve only the 1 px right edge
+    # (with border="0,0,1,0"). A wider edge is softened by Kodi's filtering and
+    # reads as a glow rather than a precise point in time.
+    # Zero RGB as well as alpha in the transparent body. Kodi's EPG texture
+    # scaler can otherwise sample the hidden white channels into a soft halo.
+    im = Image.new("RGBA", (4, 4), (0, 0, 0, 0))
+    ImageDraw.Draw(im).line([(3, 0), (3, 3)], fill=(255, 255, 255, 255), width=1)
+    save(im, "epg_now.png")
+
 
 if __name__ == "__main__":
     main()

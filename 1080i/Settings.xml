@@ -41,6 +41,11 @@
 				<include>SettingsPanel</include>
 				<content>
 					<item>
+						<label>Bald Settings</label>
+						<onclick>ActivateWindow(1115)</onclick>
+						<icon>icons/settings/interface.png</icon>
+					</item>
+					<item>
 						<label>$LOCALIZE[10003]</label>
 						<onclick>ActivateWindow(filemanager)</onclick>
 						<icon>icons/settings/filemanager.png</icon>
@@ -118,6 +123,12 @@
 						<onclick>RunAddon(service.libreelec.settings)</onclick>
 						<icon>icons/settings/libreelec.png</icon>
 						<visible>System.AddonIsEnabled(service.libreelec.settings)</visible>
+					</item>
+					<item>
+						<label>CoreELEC</label>
+						<onclick>RunAddon(service.coreelec.settings)</onclick>
+						<icon>icons/settings/libreelec.png</icon>
+						<visible>System.AddonIsEnabled(service.coreelec.settings)</visible>
 					</item>
 				</content>
 			</control>

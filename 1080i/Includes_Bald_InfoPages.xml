@@ -22,7 +22,7 @@
 						<height>170</height>
 						<aspectratio align="left" aligny="bottom">keep</aspectratio>
 						<texture background="true">$VAR[Bald_InfoLogo]</texture>
-						<visible>!String.IsEqual(ListItem.DBType,episode)</visible>
+						<visible>!Skin.HasSetting(Bald.HideClearlogo) + !String.IsEqual(ListItem.DBType,episode)</visible>
 					</control>
 					<control type="label">
 						<top>80</top>
@@ -31,7 +31,7 @@
 						<font>Bald_InfoTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$VAR[Bald_InfoTitle]</label>
-						<visible>String.IsEqual(ListItem.DBType,episode) | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
+						<visible>Skin.HasSetting(Bald.HideClearlogo) | String.IsEqual(ListItem.DBType,episode) | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
 					</control>
 				</control>
 				<control type="label">
@@ -58,7 +58,7 @@
 					<height>30</height>
 					<orientation>horizontal</orientation>
 					<itemgap>8</itemgap>
-					<visible>String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,episode)</visible>
+					<visible>!Skin.HasSetting(Bald.HideMediaFlags) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,episode)]</visible>
 					<include content="Bald_AnimInfoIn"><param name="delay">520</param></include>
 					<include content="Bald_InfoFlag"><param name="label">4K</param><param name="visible">String.IsEqual(ListItem.VideoResolution,4K)</param></include>
 					<include content="Bald_InfoFlag"><param name="label">1080p</param><param name="visible">String.IsEqual(ListItem.VideoResolution,1080)</param></include>

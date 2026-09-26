@@ -1,0 +1,19 @@
+{
+    "folder": "1080i",
+    "output": "script-skinvariables-generator-includes{skinuser}.xml",
+    "header": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<includes>",
+    "footer": "</includes>",
+    "skinid": "skin.bald",
+    "getnfo": {},
+    "genxml": [
+        {"template": "<include name=\"Bald_Generated_HomeWidgets\"><definition>"},
+        {"datafile": "generator/home-widgets.xml"},
+        {"template": "</definition></include>"},
+        {"template": "<include name=\"Bald_Generated_MoviesWidgets\"><definition>"},
+        {"datafile": "generator/movies-widgets.xml"},
+        {"template": "</definition></include>"},
+        {"template": "<include name=\"Bald_Generated_TVShowsWidgets\"><definition>"},
+        {"datafile": "generator/tvshows-widgets.xml"},
+        {"template": "</definition></include>"}
+    ]
+}

@@ -1,0 +1,10 @@
+<include content="Bald_Row">
+    <param name="id">{row_id}</param>
+    <param name="label">{item_label_escaped}</param>
+    <param name="index">{row_index}</param>
+    <param name="screen">{screen}</param>
+    <param name="up">{row_up}</param>
+    <param name="down">{row_down}</param>
+    <content target="{item_target_escaped}" limit="{item_limit_escaped}">{item_path_escaped}</content>
+    {secondary_content}
+</include>

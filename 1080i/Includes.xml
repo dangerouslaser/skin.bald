@@ -3,6 +3,10 @@
 	<include file="Defaults.xml" />
 	<include file="Includes_Home.xml" />
 	<include file="Includes_Bald_Home.xml" />
+	<!-- Shipped baseline is regenerated from Skin Variables widget configuration. -->
+	<include file="script-skinvariables-generator-includes.xml" />
+	<include file="Includes_Bald_Configure.xml" />
+	<include file="Includes_Bald_HomeRows.xml" />
 	<include file="Includes_Bald_Info.xml" />
 	<include file="Includes_Bald_InfoPages.xml" />
 	<include file="Includes_Bald_ContextMenu.xml" />

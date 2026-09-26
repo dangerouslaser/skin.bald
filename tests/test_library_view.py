@@ -48,7 +48,12 @@ class LibraryViewTests(unittest.TestCase):
     def test_no_redundant_details_button(self):
         self.assertIsNone(self.view.find(".//control[@id='6101']"))
         home = ET.parse(ROOT / "Home.xml").getroot()
-        self.assertIn("ActivateWindow(Videos,videodb://movies/titles/,return)", [n.text for n in home.iter("onclick")])
+        item = next(item for item in home.findall(".//control[@id='9000']/content/item") if item.findtext("label") == "Movies")
+        self.assertEqual(item.findtext("visible"), "Skin.HasSetting(Bald.Screen.Movies)")
+        self.assertIn(
+            "SetFocus($INFO[Window(home).Property(Bald.Row.movies)])",
+            [n.text for n in item.findall("onclick")],
+        )
 
     def test_frame_masks_are_outside_preview_menu_animations(self):
         root = self.view.find("include[@name='Bald_LibraryPreview']/definition")

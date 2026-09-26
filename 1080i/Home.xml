@@ -7,6 +7,10 @@
 	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load.
 	     Focus always starts on row 1 (defaultcontrol always). -->
 	<onload>SetProperty(Bald.Row,9101,home)</onload>
+	<onload>SetProperty(Bald.Row.home,9101,home)</onload>
+	<onload>SetProperty(Bald.Row.movies,9201,home)</onload>
+	<onload>SetProperty(Bald.Row.tvshows,9301,home)</onload>
+	<onload>SetProperty(Bald.Screen,home,home)</onload>
 	<!-- Background: TMDb Helper's blurred fanart of the current row item (its image service only; no TMDB lookups),
 	     watching the current row (TMDbHelper.WidgetContainer). The earlier color tint is switched off. -->
 	<onload condition="Skin.HasSetting(TMDbHelper.EnableColors)">Skin.Reset(TMDbHelper.EnableColors)</onload>
@@ -51,8 +55,8 @@
 					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
 				</control>
 				<!-- Fanart: two parity layers (see Bald_ArtLayer). -->
-				<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_ItemOdd]</param></include>
-				<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_ItemOdd]</param></include>
+				<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param></include>
+				<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param></include>
 				<!-- Dialog art. Kodi evaluates <visible> and animation conditions without a window context
 				     (CGUIControl::UpdateVisibility), so with a modal dialog over Home, Container(9101..9103) in them
 				     resolves against the dialog and the parity layers above flip or blank. Textures and variables are
@@ -98,7 +102,7 @@
 				<height>702</height>
 				<control type="image">
 					<texture>bald/scrim_logo.png</texture>
-					<visible>$EXP[Bald_HasLogo]</visible>
+					<visible>!Skin.HasSetting(Bald.HideClearlogo) + $EXP[Bald_EffectiveHasLogo]</visible>
 					<animation type="Visible">
 						<effect type="fade" start="0" end="100" time="500" tween="sine" easing="inout" />
 					</animation>
@@ -107,12 +111,7 @@
 					</animation>
 				</control>
 				<!-- Clearlogo, per row and parity (see Bald_ArtLogo). -->
-				<include content="Bald_ArtLogo"><param name="c">9101</param><param name="p">Odd</param></include>
-				<include content="Bald_ArtLogo"><param name="c">9101</param><param name="p">Even</param></include>
-				<include content="Bald_ArtLogo"><param name="c">9102</param><param name="p">Odd</param></include>
-				<include content="Bald_ArtLogo"><param name="c">9102</param><param name="p">Even</param></include>
-				<include content="Bald_ArtLogo"><param name="c">9103</param><param name="p">Odd</param></include>
-				<include content="Bald_ArtLogo"><param name="c">9103</param><param name="p">Even</param></include>
+				<include>Bald_ConfiguredArtLogos</include>
 				<!-- Dialog logo and scrim (e.g. under the context menu), for the same reason as the dialog art. The logo
 				     texture is the live variable; the scrim cannot test for a logo without a container, so it always shows. -->
 				<control type="group">
@@ -175,12 +174,7 @@
 					<effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" />
 					<effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" />
 				</animation>
-				<include content="Bald_Caption"><param name="c">9101</param><param name="p">Odd</param></include>
-				<include content="Bald_Caption"><param name="c">9101</param><param name="p">Even</param></include>
-				<include content="Bald_Caption"><param name="c">9102</param><param name="p">Odd</param></include>
-				<include content="Bald_Caption"><param name="c">9102</param><param name="p">Even</param></include>
-				<include content="Bald_Caption"><param name="c">9103</param><param name="p">Odd</param></include>
-				<include content="Bald_Caption"><param name="c">9103</param><param name="p">Even</param></include>
+				<include>Bald_ConfiguredCaptions</include>
 			</control>
 
 			<!-- Menu: in fade 380 and slide 40 px over 480 after 120; out 160. -->
@@ -205,11 +199,23 @@
 				<onfocus condition="String.IsEmpty(Skin.String(Bald.MenuOpens))">Skin.SetString(Bald.MenuOpens,1)</onfocus>
 				<!-- Left or Select enters a screen; screens without rows stay in the menu. Back closes without switching. -->
 				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">ClearProperty(Bald.Menu,home)</onleft>
-				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">SetFocus($INFO[Window(home).Property(Bald.Row)])</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">SetProperty(Bald.Screen,home,home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.home)],home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),home)">SetFocus($INFO[Window(home).Property(Bald.Row.home)])</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">SetProperty(Bald.Screen,movies,home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.movies)],home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">ClearProperty(Bald.Menu,home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">SetFocus($INFO[Window(home).Property(Bald.Row.movies)])</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">SetProperty(Bald.Screen,tvshows,home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.tvshows)],home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">ClearProperty(Bald.Menu,home)</onleft>
+				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])</onleft>
 				<onleft condition="String.IsEqual(Container(9000).ListItem.Property(id),settings)">ActivateWindow(settings)</onleft>
 				<onback>ClearProperty(Bald.Menu,home)</onback>
 				<onback>SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
-				<onright>noop</onright>
+				<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),movies)">9197</onright>
+				<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows)">9196</onright>
+				<onright condition="String.IsEmpty(Container(9000).ListItem.Property(library))">noop</onright>
 				<!-- No wrapping at either end. -->
 				<onup>noop</onup>
 				<ondown>noop</ondown>
@@ -224,22 +230,32 @@
 						<label>Home</label>
 						<property name="id">home</property>
 						<property name="note">Recently added movies, Continue watching, Next up</property>
+						<onclick>SetProperty(Bald.Screen,home,home)</onclick>
+						<onclick>SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.home)],home)</onclick>
 						<onclick>ClearProperty(Bald.Menu,home)</onclick>
-						<onclick>SetFocus($INFO[Window(home).Property(Bald.Row)])</onclick>
+						<onclick>SetFocus($INFO[Window(home).Property(Bald.Row.home)])</onclick>
 					</item>
 					<item>
 						<label>Movies</label>
 						<property name="id">movies</property>
+						<property name="library">videodb://movies/titles/</property>
 						<property name="note">Browse your movie library with large posters and an artwork preview.</property>
+						<visible>Skin.HasSetting(Bald.Screen.Movies)</visible>
+						<onclick>SetProperty(Bald.Screen,movies,home)</onclick>
+						<onclick>SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.movies)],home)</onclick>
 						<onclick>ClearProperty(Bald.Menu,home)</onclick>
-						<onclick>ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
+						<onclick>SetFocus($INFO[Window(home).Property(Bald.Row.movies)])</onclick>
 					</item>
 					<item>
 						<label>TV shows</label>
 						<property name="id">tvshows</property>
+						<property name="library">videodb://tvshows/titles/</property>
 						<property name="note">Browse series, seasons and episodes in your TV library.</property>
+						<visible>Skin.HasSetting(Bald.Screen.TVShows)</visible>
+						<onclick>SetProperty(Bald.Screen,tvshows,home)</onclick>
+						<onclick>SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.tvshows)],home)</onclick>
 						<onclick>ClearProperty(Bald.Menu,home)</onclick>
-						<onclick>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
+						<onclick>SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])</onclick>
 					</item>
 					<item>
 						<label>Live TV</label>
@@ -295,7 +311,7 @@
 					<aligny>top</aligny>
 					<font>Bald_Section</font>
 					<textcolor>bald_ink</textcolor>
-					<label>Home</label>
+					<label>$VAR[Bald_ScreenLabel]</label>
 				</control>
 				<control type="label">
 					<top>5</top>
@@ -305,39 +321,17 @@
 					<font>Bald_Hint</font>
 					<textcolor>bald_ink55</textcolor>
 					<label>Back for menu</label>
-					<!-- Spec: hide after three menu opens (Skin.String(Bald.MenuOpens), still counted in the menu's onfocus).
-					     Always shown for now; the auto-hide returns in 0.2 as an Appearance setting. -->
+					<visible>!Skin.HasSetting(Bald.AutoHideMenuHint) | !String.IsEqual(Skin.String(Bald.MenuOpens),3)</visible>
 					<animation type="Conditional" condition="$EXP[Bald_Idle]">
 						<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
 					</animation>
 				</control>
 			</control>
 
-			<!-- Rows (default configuration, docs/SPEC.md section 6) -->
-			<include content="Bald_Row">
-				<param name="id">9101</param>
-				<param name="label">Recently added movies</param>
-				<param name="index">1</param>
-				<param name="up">SetFocus(9000,0,absolute)</param>
-				<param name="down">9102</param>
-				<content target="videos" limit="25">videodb://recentlyaddedmovies/</content>
-			</include>
-			<include content="Bald_Row">
-				<param name="id">9102</param>
-				<param name="label">Continue watching</param>
-				<param name="index">2</param>
-				<param name="up">9101</param>
-				<param name="down">9103</param>
-				<content target="videos" limit="15">special://skin/playlists/inprogress_movies.xsp</content>
-				<content target="videos" limit="15">special://skin/playlists/inprogress_episodes.xsp</content>
-			</include>
-			<include content="Bald_Row">
-				<param name="id">9103</param>
-				<param name="label">Next up</param>
-				<param name="index">3</param>
-				<param name="up">9102</param>
-				<content target="videos" limit="25">videodb://inprogresstvshows/</content>
-			</include>
+			<!-- Configured rows. The shipped generated include reproduces the defaults exactly. -->
+			<include>Bald_Generated_HomeWidgets</include>
+			<include>Bald_Generated_MoviesWidgets</include>
+			<include>Bald_Generated_TVShowsWidgets</include>
 
 			<!-- Menu preview for screens without rows yet -->
 			<control type="group">
@@ -378,6 +372,16 @@
 			<onright>SetFocus($INFO[Window(home).Property(Bald.Row)])</onright>
 			<onclick>SetFocus($INFO[Window(home).Property(Bald.Row)])</onclick>
 			<onback>SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
+		</control>
+		<!-- Directional navigation accepts a control target more reliably than an ActivateWindow
+		     built-in on Kodi's list edge. These invisible bridges own the secondary library routes. -->
+		<control type="button" id="9197">
+			<width>1</width><height>1</height><texturefocus /><texturenofocus />
+			<onfocus>ActivateWindow(Videos,videodb://movies/titles/,return)</onfocus>
+		</control>
+		<control type="button" id="9196">
+			<width>1</width><height>1</height><texturefocus /><texturenofocus />
+			<onfocus>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onfocus>
 		</control>
 	</controls>
 </window>

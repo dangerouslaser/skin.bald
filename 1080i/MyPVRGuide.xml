@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald primary Live TV guide. Native Kodi 22 PVR controls and actions are retained. -->
 <window>
+	<!-- Migration: remove Bald's retired always-open-on-Left userdata keymap. -->
+	<onload>RunScript(special://skin/scripts/pvr_keymap.py,remove)</onload>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<views>50</views>
@@ -21,16 +23,18 @@
 			<control type="label"><left>184</left><top>94</top><width>980</width><height>34</height><font>Bald_CaptionPlot</font><textcolor>bald_ink60</textcolor><label>The selected channel has no matching guide data.</label><visible>String.IsEmpty(ListItem.EpgEventTitle)</visible></control>
 			<control type="image"><left>1200</left><top>0</top><width>528</width><height>176</height><aspectratio>scale</aspectratio><fadetime>700</fadetime><texture background="true">$INFO[ListItem.EpgEventIcon]</texture><visible>!String.IsEmpty(ListItem.EpgEventIcon)</visible></control>
 		</control>
-		<control type="fixedlist" id="11"><left>96</left><top>354</top><width>1728</width><height>44</height><orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><onleft>noop</onleft><onright>noop</onright><onup>50</onup><ondown>50</ondown>
-			<itemlayout width="288" height="44"><control type="label"><width>280</width><height>44</height><align>center</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
-			<focusedlayout width="288" height="44"><control type="image"><left>140</left><top>36</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control><control type="label"><width>280</width><height>38</height><align>center</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label></control></focusedlayout>
+		<!-- Kodi owns control 11 and binds the available channel groups to it. Keep that native
+		     contract active off-screen; the visible group controls live in Bald_PVRGuideTools. -->
+		<control type="fixedlist" id="11"><left>2000</left><top>0</top><width>1</width><height>1</height><orientation>horizontal</orientation><onleft>50</onleft><onright>50</onright><onup>50</onup><ondown>50</ondown>
+			<itemlayout width="1" height="1" />
+			<focusedlayout width="1" height="1" />
 		</control>
 		<control type="group" id="63"><include content="Bald_EpgGrid"><param name="control_id" value="50" /></include></control>
 		<include>PVRChannelNumberInput</include>
-		<control type="group"><include>MediaMenuCommon</include><include content="PVRSideBar"><param name="group_label2" value="$INFO[Control.GetLabel(30)]" /></include></control>
+		<include>Bald_PVRGuideTools</include>
 		<control type="label" id="29"><font></font><include>HiddenObject</include></control>
 		<control type="label" id="30"><font></font><include>HiddenObject</include></control>
 		<control type="label"><left>96</left><top>1010</top><width>800</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Control.GetLabel(30)]</label></control>
-		<control type="label"><left>1024</left><top>1010</top><width>800</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Menu for options · Info for programme details</label></control>
+		<control type="label"><left>1024</left><top>1010</top><width>800</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>Menu for guide tools · Info for programme details</label></control>
 	</controls>
 </window>

@@ -44,10 +44,14 @@ class TVLibraryTests(unittest.TestCase):
         self.assertEqual(seasons.findtext('ondown'), 'noop')
         self.assertIsNone(episodes.find('ondown'))
 
-    def test_home_tv_item_opens_native_library(self):
+    def test_home_tv_item_opens_configured_screen(self):
         home = ET.parse(ROOT / 'Home.xml').getroot()
         item = next(item for item in home.findall(".//control[@id='9000']/content/item") if item.findtext('label') == 'TV shows')
-        self.assertIn('ActivateWindow(Videos,videodb://tvshows/titles/,return)', [n.text for n in item.findall('onclick')])
+        self.assertEqual(item.findtext('visible'), 'Skin.HasSetting(Bald.Screen.TVShows)')
+        self.assertIn(
+            'SetFocus($INFO[Window(home).Property(Bald.Row.tvshows)])',
+            [n.text for n in item.findall('onclick')],
+        )
 
     def test_legacy_chrome_is_hidden_for_every_bald_tv_level(self):
         custom = ('520', '530', '540')
