@@ -233,8 +233,12 @@ HOME (Home.xml, Includes_Bald_Home.xml)
 		builds them and their bindings into script-skinvariables-generator-includes.xml
 		from shortcuts/generator/ (bases in screens.xml); Includes_Bald_HomeDefaults.xml
 		(tools/build_home_defaults.py) stands in until the first build.
+9180	Startup splash: hidden list of random fanart that drives the background
+9194	Startup splash: shows once every row has loaded (Timers.xml bald_preload reads it)
+9195	Startup splash: focus lifts the splash and moves on to row 1 (or the menu)
 9196	Invisible bridge: focus opens the TV shows library
 9197	Invisible bridge: focus opens the movie library
+9198	Startup splash: holds focus and ignores keys while the splash shows
 9199	Idle-wake button: the idle timer parks focus here, any key returns to the row
 0		Bald_MenuNote label default (no id)
 

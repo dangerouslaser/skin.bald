@@ -70,10 +70,22 @@
         <onstart condition="String.IsEqual(Container(9301).Position,5)">Control.Move(9301,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9301))</stop>
     </timer>
+    <!-- Bald startup splash (Home.xml, Includes_Bald_Home.xml Bald_Splash): lift it once every row has loaded (the
+         9194 marker shows the Bald_RowsLoaded expression, which a timer condition cannot use) or the 10 s alarm Startup.xml set
+         has run out, and not under a modal dialog (focus would go to the dialog). 9195 moves focus on to Home's usual
+         first control. The rows' start timers above run behind the splash; idle and ambient wait for it. -->
+    <timer>
+        <name>bald_preload</name>
+        <start>Window.IsActive(home) + !String.IsEmpty(Window(home).Property(Bald.Preload)) + !System.HasActiveModalDialog + [Control.IsVisible(9194) | !System.HasAlarm(bald_preload)]</start>
+        <onstart>ClearProperty(Bald.Preload,home)</onstart>
+        <onstart>CancelAlarm(bald_preload,silent)</onstart>
+        <onstart>SetFocus(9195)</onstart>
+        <stop>String.IsEmpty(Window(home).Property(Bald.Preload))</stop>
+    </timer>
     <!-- Bald Home idle (60 s): close the menu and park focus on the wake button so the first key only wakes. -->
     <timer>
         <name>bald_idle</name>
-        <start reset="true">Window.IsActive(home) + System.IdleTime(60) + !Control.HasFocus(9199)</start>
+        <start reset="true">Window.IsActive(home) + System.IdleTime(60) + !Control.HasFocus(9199) + String.IsEmpty(Window(home).Property(Bald.Preload))</start>
         <onstart>ClearProperty(Bald.Menu,home)</onstart>
         <onstart>SetFocus(9199)</onstart>
         <stop>!System.IdleTime(60) | Control.HasFocus(9199)</stop>
@@ -81,7 +93,7 @@
     <!-- Bald Home ambient: while idle, advance the current row every 8 s (Skin setting Bald.AmbientOff turns it off). -->
     <timer>
         <name>bald_ambient</name>
-        <start reset="true">Window.IsActive(home) + System.IdleTime(60) + !Skin.HasSetting(Bald.AmbientOff)</start>
+        <start reset="true">Window.IsActive(home) + System.IdleTime(60) + !Skin.HasSetting(Bald.AmbientOff) + String.IsEmpty(Window(home).Property(Bald.Preload))</start>
         <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_ambient),8) | !System.IdleTime(60)</stop>
         <onstop condition="System.IdleTime(60) + !String.IsEmpty(Window(home).Property(Bald.Row))">Control.Move($INFO[Window(home).Property(Bald.Row)],1)</onstop>
     </timer>

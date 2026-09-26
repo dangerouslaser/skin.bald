@@ -2,6 +2,12 @@
 <window>
 	<!-- Bald is remote-only; see RunScript(skin.bald,mouse) in scripts/info.py. -->
 	<onload condition="System.GetBool(input.enablemouse)">RunScript(skin.bald,mouse)</onload>
+	<!-- Startup splash, only when Kodi starts on Home (window 10000) and Appearance's "Preload Home at startup" is on:
+	     Home shows it while Bald.Preload is set and every row loads behind it (Includes_Bald_Home.xml, Bald_Preloading).
+	     Startup.xml does not run on ReloadSkin or a skin switch, so neither shows it. The alarm is the hard timeout
+	     (Timers.xml bald_preload); alarms and Home's properties outlive the reload a Home row rebuild triggers. -->
+	<onload condition="!Skin.HasSetting(Bald.DisablePreload) + String.IsEqual(System.StartupWindow,10000)">SetProperty(Bald.Preload,1,home)</onload>
+	<onload condition="!Skin.HasSetting(Bald.DisablePreload) + String.IsEqual(System.StartupWindow,10000)">AlarmClock(bald_preload,noop,00:10,silent)</onload>
 	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
 	<controls />
 </window>

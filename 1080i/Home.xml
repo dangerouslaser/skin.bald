@@ -35,6 +35,10 @@
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetProperty(Bald.Menu,1,home)</onload>
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetFocus(9005)</onload>
 	<onload>ClearProperty(Bald.ReturnSearch,home)</onload>
+	<!-- Startup splash (Bald_Splash). No current row until it lifts, so the first row, its art, clearlogo and caption
+	     come in with their usual motion as it fades; until then keys go to 9198, which ignores them. -->
+	<onload condition="$EXP[Bald_Preloading]">ClearProperty(Bald.Row,home)</onload>
+	<onload condition="$EXP[Bald_Preloading]">SetFocus(9198)</onload>
 	<include>Bald_RowStartReset</include>
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<controls>
@@ -330,6 +334,37 @@
 			<onclick>SetFocus($VAR[Bald_RowFocus])</onclick>
 			<onback>SetFocus($VAR[Bald_RowFocus])</onback>
 		</control>
+		<!-- Startup splash. 9198 holds focus while it shows and swallows keys (Arctic Fuse 3's splash has no skip either);
+		     if it somehow still has focus afterwards, any key goes on to 9195. The bald_preload timer lifts the splash
+		     by focusing 9195, which moves on to Home's usual first focus. 9194 is the timer's "all rows loaded" marker
+		     (Timers.xml cannot use $EXP). -->
+		<control type="group" id="9194">
+			<visible>$EXP[Bald_RowsLoaded]</visible>
+		</control>
+		<control type="button" id="9198">
+			<width>1</width>
+			<height>1</height>
+			<texturefocus />
+			<texturenofocus />
+			<onup condition="!$EXP[Bald_Preloading]">SetFocus(9195)</onup>
+			<ondown condition="!$EXP[Bald_Preloading]">SetFocus(9195)</ondown>
+			<onleft condition="!$EXP[Bald_Preloading]">SetFocus(9195)</onleft>
+			<onright condition="!$EXP[Bald_Preloading]">SetFocus(9195)</onright>
+			<onclick condition="!$EXP[Bald_Preloading]">SetFocus(9195)</onclick>
+			<onback condition="!$EXP[Bald_Preloading]">SetFocus(9195)</onback>
+			<onback>noop</onback>
+		</control>
+		<control type="button" id="9195">
+			<width>1</width>
+			<height>1</height>
+			<texturefocus />
+			<texturenofocus />
+			<onfocus>ClearProperty(Bald.Preload,home)</onfocus>
+			<onfocus>CancelAlarm(bald_preload,silent)</onfocus>
+			<!-- Home's default: row 1 (its onfocus makes it the current row), or the menu with no Home rows. -->
+			<onfocus condition="$EXP[Bald_HasRows_home]">SetFocus(9101)</onfocus>
+			<onfocus condition="!$EXP[Bald_HasRows_home]">SetFocus(9001)</onfocus>
+		</control>
 		<!-- Directional navigation accepts a control target more reliably than an ActivateWindow
 		     built-in on Kodi's list edge. These invisible bridges own the secondary library routes. -->
 		<control type="button" id="9197">
@@ -340,5 +375,7 @@
 			<width>1</width><height>1</height><texturefocus /><texturenofocus />
 			<onfocus>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onfocus>
 		</control>
+		<!-- Startup splash: the top layer while Bald.Preload is set; fades out 600 as it lifts. -->
+		<include>Bald_Splash</include>
 	</controls>
 </window>
