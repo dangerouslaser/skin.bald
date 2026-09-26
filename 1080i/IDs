@@ -358,3 +358,33 @@ DialogTextViewer.xml (CGUIDialogTextViewer) and Custom_1102_TextViewer.xml (wind
 1000	Hidden button that holds remote focus: Select closes, Up and Down page
 
 Free custom window numbers start at 1119.
+
+
+MEDIA WINDOWS (restyled Estuary copies; Includes_Bald_Media.xml adds no fixed ids)
+
+Kodi binds these (xbmc master, Kodi 22); the rest are the skin's own, kept as Estuary numbers them.
+DialogColorPicker.xml		1 heading, 6 swatch panel, 7 Cancel; 61 scrollbar, 9001 actions
+DialogMediaSource.xml		2 heading, 10 paths, 11 Browse, 12 name, 13 Add, 14 Remove, 18 OK, 19 Cancel;
+		60 scrollbar, 9000 and 9001 action grouplists
+DialogVideoManager.xml		2 title, 50 assets, 21 Play, 22 Add version, 23 Add extra, 24 Rename version,
+		25 Set default, 26 Remove, 27 Choose art, 28 Rename extra (29 Ungroup not shown, as in Estuary);
+		60 scrollbar, 100 list group, 101 actions
+LoginScreen.xml		52 profiles, 2 heading and 3 selected-profile counter (both new in Bald; Kodi fills them);
+		20 power button
+SlideShow.xml		10 hidden label whose font Kodi uses for its load-error message (new in Bald)
+DialogPictureInfo.xml		5 details list; 9000 group, 60 scrollbar
+MusicVisualisation.xml		2 visualisation
+DialogMusicInfo.xml		6 Refresh, 7 Your rating, 8 Play, 10 Choose art, 12 Artist / album information,
+		50 songs / albums / artists; 41 details list, 120 fanart, 130 description button,
+		400 description label, 9000 action row
+GameOSD.xml		1103 menu (one per variant group), 1101 help text; 1, 10, 20, 1000, 1100, 2000 groups,
+		2200 / 2201 scrollbars
+DialogGameControllers.xml (Includes_Games.xml)
+		Controllers: 2, 3, 5, 7, 8, 9, 10, 17-22, 31, 32; 61, 62 scrollbars, 9001 actions
+		Ports: 2, 3, 18, 19; 62, 9001. Players: 2, 3, 4, 7, 18; 10 actions, 61 scrollbar
+		Disc manager: 3 menu (items 108323-108327), 108321 disc list, 108322 scrollbar
+MyWeather.xml		Kodi binds none that Estuary or Bald ship. 2000 page grouplist, 567 current block,
+		20 location button, 15100 daily, 15200 hourly (+666 row captions), 70010-70059 maps
+		(700N0 button ... 700N9 heading), 20000 / 20001 end bumps, 10000 Menu to weather settings
+MyPics.xml		6 slideshow, 7 recursive slideshow, 9 shuffle (Estuary side panel, unchanged)
+MyMusicPlaylistEditor.xml	6 load, 7 save, 8 clear, 50 files, 100 playlist; 60 / 61 scrollbars, 9000 actions
