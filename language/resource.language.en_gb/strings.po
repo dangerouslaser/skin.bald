@@ -1153,6 +1153,13 @@ msgctxt "#31679"
 msgid "Left or right to choose"
 msgstr ""
 
+# Browse restyle strings: 31685-31699 (docs/NOTES.md, "Browse restyle").
+
+#: /1080i/Includes.xml
+msgctxt "#31685"
+msgid "Left for options"
+msgstr ""
+
 # Bald strings: 31700-31999 (see docs/LOCALIZATION.md). Estuary keeps 31000-31699.
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
@@ -1213,6 +1220,7 @@ msgstr ""
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
 #: /1080i/script-globalsearch.xml
+#: /1080i/Includes_Bald_Browse.xml
 #. Runtime unit after a number of minutes, "52 min"
 msgctxt "#31710"
 msgid "min"
@@ -1423,6 +1431,7 @@ msgstr ""
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
+#: /1080i/Includes.xml
 msgctxt "#31747"
 msgid "Select to change"
 msgstr ""
@@ -1769,6 +1778,7 @@ msgstr ""
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
+#: /1080i/Includes.xml
 msgctxt "#31827"
 msgid "Info for details"
 msgstr ""
@@ -1805,6 +1815,7 @@ msgstr ""
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
+#: /1080i/Includes.xml
 msgctxt "#31832"
 msgid "Left / Back to browse"
 msgstr ""

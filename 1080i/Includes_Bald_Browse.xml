@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald browsing outside the Bald movie and TV views: the restyled Estuary library views (View_50-55, View_500-504),
+     their preview column, tiles, rows and scrollbars, the side options menu's transport buttons, and the add-on,
+     file manager, event log and smart playlist windows. See docs/SPEC.md 5.15 and docs/NOTES.md "Browse restyle".
+
+     Items are read as ListItem.* (the focused item of the window's active view), as Estuary's panels did, so the
+     same preview serves every view and window that includes it. -->
+<includes>
+	<!-- ============ Layout ============ -->
+	<!-- Browse lists and walls: 1140 wide from the safe margin, 624 tall from the content top (13 rows of 48). -->
+	<constant name="Bald_BrowseListWidth">1140</constant>
+	<constant name="Bald_BrowseListHeight">624</constant>
+	<!-- Walls and poster rails: the 12 px focus-ring inset left of the safe margin and above the content top. -->
+	<constant name="Bald_BrowseWallLeft">84</constant>
+	<constant name="Bald_BrowseWallTop">210</constant>
+	<!-- The preview column's caption: 20 px left of the column so the 14 px slide-in is not clipped. -->
+	<constant name="Bald_BrowseCaptionLeft">1276</constant>
+
+	<!-- ============ Conditions ============ -->
+	<!-- Estuary's side options menu (grouplist 9000, see Includes_MediaMenu.xml) has focus. -->
+	<expression name="Bald_BrowseMenuOpen">[$EXP[sidebar_visible]]</expression>
+	<!-- The item has landscape art to fill the preview frame; otherwise its poster, thumb or icon sits inside it. -->
+	<expression name="Bald_BrowseHasWideArt">[!String.IsEmpty(ListItem.Art(fanart)) | !String.IsEmpty(ListItem.Art(landscape)) | !String.IsEmpty(ListItem.Art(tvshow.fanart))]</expression>
+	<!-- Items that carry stream details for the media flags. -->
+	<expression name="Bald_BrowseVideoItem">[String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,video)]</expression>
+	<expression name="Bald_BrowseHasFlags">[String.IsEqual(ListItem.VideoResolution,4K) | String.IsEqual(ListItem.VideoResolution,1080) | !String.IsEmpty(ListItem.HdrType) | !String.IsEmpty(ListItem.AudioCodec) | String.IsEqual(ListItem.AudioChannels,6) | String.IsEqual(ListItem.AudioChannels,8)]</expression>
+	<!-- An add-on marked deprecated (24170) or broken (24171) by its repository. -->
+	<expression name="Bald_BrowseAddonWarning">[String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])]</expression>
+
+	<!-- ============ Text ============ -->
+	<variable name="Bald_BrowseWideArt">
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
+		<value>$INFO[ListItem.Art(tvshow.fanart)]</value>
+	</variable>
+	<variable name="Bald_BrowseIconArt">
+		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+	<!-- Landscape stills for episode, picture and video walls; Estuary's ShiftThumbVar keeps the unwatched-episode
+	     spoiler setting. -->
+	<variable name="Bald_BrowseLandscapeArt">
+		<value condition="String.IsEqual(ListItem.DbType,episode)">$VAR[ShiftThumbVar]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+	<!-- One caption line: "1.2.0 · Team Kodi" for add-ons, "2019 · 132 min" for videos, else the item's second label. -->
+	<variable name="Bald_BrowseMeta">
+		<value condition="Container.Content(addons) + !String.IsEmpty(ListItem.AddonVersion)">$INFO[ListItem.AddonVersion]$INFO[ListItem.AddonCreator, · ,]</value>
+		<value condition="!String.IsEmpty(ListItem.Year)">$INFO[ListItem.Year]$INFO[ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
+		<value condition="!String.IsEmpty(ListItem.Duration(mins))">$INFO[ListItem.Duration(mins),, $LOCALIZE[31710]]</value>
+		<value>$INFO[ListItem.Label2]</value>
+	</variable>
+	<!-- Body text without Estuary's coloured field names. -->
+	<variable name="Bald_BrowsePlot">
+		<value condition="String.IsEqual(Container.FolderPath,addons://outdated/) + !String.IsEmpty(ListItem.AddonNews)">$INFO[ListItem.AddonNews]</value>
+		<value condition="Container.Content(addons)">$INFO[ListItem.AddonDescription]</value>
+		<value condition="String.IsEqual(ListItem.DBType,album)">$INFO[ListItem.Property(album_description)]</value>
+		<value condition="String.IsEqual(ListItem.DBType,artist)">$INFO[ListItem.Property(artist_description)]</value>
+		<value condition="!String.IsEmpty(ListItem.PlotOutline)">$INFO[ListItem.PlotOutline]</value>
+		<value condition="!String.IsEmpty(ListItem.Plot)">$INFO[ListItem.Plot]</value>
+		<value condition="String.IsEqual(ListItem.DBType,season)">$INFO[Container.ShowPlot]</value>
+		<value condition="Container.Content(favourites)">$INFO[ListItem.Property(favourite.provider)]</value>
+		<value>$INFO[ListItem.AddonSummary]</value>
+	</variable>
+	<variable name="Bald_BrowseAddonWarningTitle">
+		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])">$LOCALIZE[24171]</value>
+		<value>$LOCALIZE[24170]</value>
+	</variable>
+
+	<!-- ============ Motion ============ -->
+	<!-- Views dim to 72% while the options menu covers the preview column (SPEC 5.5). -->
+	<include name="Bald_BrowseDim">
+		<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_BrowseMenuOpen]">Conditional</animation>
+	</include>
+	<!-- A view appearing after a view switch or window open: fade 380 and a 40 px settle, as the Bald menus. -->
+	<include name="Bald_BrowseViewIn">
+		<animation type="Visible">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+			<effect type="slide" start="0,18" end="0,0" time="440" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowOpen">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+			<effect type="slide" start="0,18" end="0,0" time="440" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Hidden">
+			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
+		</animation>
+		<animation type="WindowClose">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<include name="Bald_BrowseFade">
+		<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+		<animation type="WindowClose"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
+		<animation type="Visible"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+		<animation type="Hidden"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
+	</include>
+
+	<!-- ============ Scrollbars ============ -->
+	<!-- A 4 px track: quiet ink, the nib at 45% and the accent when it has focus. Page controls keep their Kodi ids. -->
+	<include name="Bald_BrowseScrollbarStyle">
+		<param name="orientation">vertical</param>
+		<definition>
+			<orientation>$PARAM[orientation]</orientation>
+			<showonepage>false</showonepage>
+			<texturesliderbackground border="2" colordiffuse="bald_ink10">bald/bar.png</texturesliderbackground>
+			<texturesliderbar border="2" colordiffuse="bald_ink45">bald/bar.png</texturesliderbar>
+			<texturesliderbarfocus border="2" colordiffuse="bald_accent">bald/bar.png</texturesliderbarfocus>
+			<textureslidernib />
+			<textureslidernibfocus />
+		</definition>
+	</include>
+
+	<!-- ============ List rows ============ -->
+	<!-- The focused row's 8 px accent dot, vertically centred in a row of <height>. -->
+	<include name="Bald_BrowseRowDot">
+		<param name="top">20</param>
+		<param name="visible">true</param>
+		<definition>
+			<control type="image">
+				<left>0</left><top>$PARAM[top]</top><width>8</width><height>8</height>
+				<texture colordiffuse="bald_accent">bald/dot.png</texture>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- A text row: label, a right-aligned second label and the quiet Resume / Watched state (Bald_CompactMovieRow's
+	     columns). <label> and <label2> default to Estuary's list variables, which carry the sort-dependent second
+	     label and original-title settings. -->
+	<include name="Bald_BrowseTextRow">
+		<param name="ink">bald_ink70</param>
+		<param name="height">48</param>
+		<param name="label">$VAR[ListLabelVar]</param>
+		<param name="label2">$VAR[ListLabel2Var]</param>
+		<param name="label_width">820</param>
+		<param name="label2_left">860</param>
+		<param name="state_left">1020</param>
+		<param name="scroll">false</param>
+		<definition>
+			<control type="label">
+				<left>26</left><width>$PARAM[label_width]</width><height>$PARAM[height]</height><aligny>center</aligny>
+				<font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$PARAM[label]</label>
+			</control>
+			<control type="label">
+				<left>$PARAM[label2_left]</left><width>150</width><height>$PARAM[height]</height><align>right</align><aligny>center</aligny>
+				<font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><label>$PARAM[label2]</label>
+			</control>
+			<control type="label">
+				<left>$PARAM[state_left]</left><width>120</width><height>$PARAM[height]</height><align>right</align><aligny>center</aligny>
+				<font>Bald_Hint</font><textcolor>bald_accent</textcolor><label>$VAR[Bald_ListWatchState]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- An icon row (add-ons, playlists, favourites, plain folders): a 40 px icon, then label and second label. -->
+	<include name="Bald_BrowseIconRow">
+		<param name="ink">bald_ink70</param>
+		<param name="icon_diffuse">bald_poster_dim</param>
+		<param name="label2">$VAR[ListLabel2Var]</param>
+		<param name="scroll">false</param>
+		<definition>
+			<control type="image">
+				<left>26</left><top>8</top><width>40</width><height>40</height><aspectratio>keep</aspectratio>
+				<texture background="true" colordiffuse="$PARAM[icon_diffuse]">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<left>86</left><width>760</width><height>56</height><aligny>center</aligny>
+				<font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>860</left><width>280</width><height>56</height><align>right</align><aligny>center</aligny>
+				<font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><label>$PARAM[label2]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- An add-on row: its icon, name, author and version, and Estuary's status and origin marks tinted to the tokens. -->
+	<include name="Bald_BrowseAddonRow">
+		<param name="ink">bald_ink70</param>
+		<param name="icon_diffuse">bald_poster_dim</param>
+		<param name="scroll">false</param>
+		<definition>
+			<control type="image">
+				<left>26</left><top>8</top><width>40</width><height>40</height><aspectratio>keep</aspectratio>
+				<texture background="true" colordiffuse="$PARAM[icon_diffuse]">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<left>86</left><width>640</width><height>56</height><aligny>center</aligny>
+				<font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>740</left><width>320</width><height>56</height><align>right</align><aligny>center</aligny>
+				<font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[AddonsLabel2Var]</label>
+			</control>
+			<control type="image">
+				<left>1076</left><top>16</top><width>24</width><height>24</height><aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_accent">$VAR[AddonsListIconVar]</texture>
+			</control>
+			<control type="image">
+				<left>1112</left><top>16</top><width>24</width><height>24</height><aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_ink45">$VAR[AddonsOriginVar]</texture>
+				<visible>!ListItem.IsFolder</visible>
+			</control>
+		</definition>
+	</include>
+
+	<!-- An event log row: the event's icon, title, date and two lines of description. -->
+	<include name="Bald_EventLogRow">
+		<param name="ink">bald_ink70</param>
+		<param name="diffuse">bald_poster_dim</param>
+		<definition>
+			<control type="image">
+				<left>26</left><top>12</top><width>40</width><height>40</height><aspectratio>keep</aspectratio>
+				<texture fallback="DefaultAddon.png" colordiffuse="$PARAM[diffuse]">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<left>86</left><top>8</top><width>800</width><height>32</height>
+				<font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>900</left><top>8</top><width>240</width><height>32</height><align>right</align>
+				<font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Label2]</label>
+			</control>
+			<control type="textbox">
+				<left>86</left><top>44</top><width>1054</width><height>50</height>
+				<font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Property(Event.Description)]</label>
+			</control>
+		</definition>
+	</include>
+	<!-- ============ Tiles ============ -->
+	<!-- One wall or rail tile, after Bald_LibraryPosterItem: placeholder, art, 3 px ink ring when focused, 2.5% pop.
+	     <art> and <aspect> let the same tile carry posters (scale-cropped to 2:3) and icons or covers (kept whole). -->
+	<include name="Bald_BrowseTile">
+		<param name="art">$VAR[Bald_LibraryPoster]</param>
+		<param name="aspect">scale</param>
+		<param name="width">192</param><param name="height">288</param>
+		<param name="ring_width">198</param><param name="ring_height">294</param>
+		<param name="center">108,156</param>
+		<param name="diffuse">bald_poster_dim</param>
+		<param name="focused">false</param>
+		<param name="label_visible">false</param>
+		<param name="label_top">312</param>
+		<param name="label_width">192</param>
+		<param name="ink">bald_ink70</param>
+		<definition>
+			<control type="group">
+				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
+				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><texture colordiffuse="bald_tile_placeholder">bald/white.png</texture></control>
+				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio>$PARAM[aspect]</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$PARAM[art]</texture></control>
+				<control type="image"><left>9</left><top>9</top><width>$PARAM[ring_width]</width><height>$PARAM[ring_height]</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
+			</control>
+			<control type="label">
+				<left>12</left><top>$PARAM[label_top]</top><width>$PARAM[label_width]</width><height>52</height>
+				<font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><wrapmultiline>true</wrapmultiline><aligny>top</aligny>
+				<label>$INFO[ListItem.Label]</label><visible>$PARAM[label_visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- The item layouts of a wall panel <c>, by artwork shape: 2:3 posters where <poster> holds, 16:9 stills where
+	     <landscape> holds, and square covers and icons (kept whole, labelled) for everything else. Slots: poster
+	     216 x 312, landscape 288 x 216, square 216 x 276. -->
+	<include name="Bald_BrowseWallLayouts">
+		<param name="c" />
+		<param name="poster">false</param>
+		<param name="landscape">false</param>
+		<definition>
+			<itemlayout width="216" height="312" condition="$PARAM[poster]">
+				<include content="Bald_BrowseTile" />
+			</itemlayout>
+			<focusedlayout width="216" height="312" condition="$PARAM[poster]">
+				<include content="Bald_BrowseTile"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus($PARAM[c])</param></include>
+			</focusedlayout>
+			<itemlayout width="288" height="216" condition="$PARAM[landscape]">
+				<include content="Bald_BrowseTile">
+					<param name="art">$VAR[Bald_BrowseLandscapeArt]</param>
+					<param name="width">264</param><param name="height">149</param><param name="ring_width">270</param><param name="ring_height">155</param><param name="center">144,86</param>
+					<param name="label_visible">true</param><param name="label_top">170</param><param name="label_width">264</param>
+				</include>
+			</itemlayout>
+			<focusedlayout width="288" height="216" condition="$PARAM[landscape]">
+				<include content="Bald_BrowseTile">
+					<param name="art">$VAR[Bald_BrowseLandscapeArt]</param>
+					<param name="width">264</param><param name="height">149</param><param name="ring_width">270</param><param name="ring_height">155</param><param name="center">144,86</param>
+					<param name="label_visible">true</param><param name="label_top">170</param><param name="label_width">264</param>
+					<param name="diffuse">bald_ink</param><param name="ink">bald_ink</param><param name="focused">Control.HasFocus($PARAM[c])</param>
+				</include>
+			</focusedlayout>
+			<itemlayout width="216" height="276">
+				<include content="Bald_BrowseTile">
+					<param name="art">$VAR[Bald_BrowseIconArt]</param><param name="aspect">keep</param>
+					<param name="height">192</param><param name="ring_height">198</param><param name="center">108,108</param>
+					<param name="label_visible">true</param><param name="label_top">214</param>
+				</include>
+			</itemlayout>
+			<focusedlayout width="216" height="276">
+				<include content="Bald_BrowseTile">
+					<param name="art">$VAR[Bald_BrowseIconArt]</param><param name="aspect">keep</param>
+					<param name="height">192</param><param name="ring_height">198</param><param name="center">108,108</param>
+					<param name="label_visible">true</param><param name="label_top">214</param>
+					<param name="diffuse">bald_ink</param><param name="ink">bald_ink</param><param name="focused">Control.HasFocus($PARAM[c])</param>
+				</include>
+			</focusedlayout>
+		</definition>
+	</include>
+	<!-- The focused item's title and one meta line under a wall with no preview column (views 500 and 52). -->
+	<include name="Bald_BrowseWallCaption">
+		<param name="top">858</param>
+		<definition>
+			<control type="group">
+				<top>$PARAM[top]</top>
+				<visible>!ListItem.IsParentFolder + !$EXP[Bald_BrowseMenuOpen]</visible>
+				<include>Bald_BrowseFade</include>
+				<control type="label"><left>Bald_SafeLeft</left><width>1100</width><height>32</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label></control>
+				<control type="label"><left>Bald_SafeLeft</left><top>36</top><width>1100</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_BrowseMeta]</label></control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Preview column ============ -->
+	<!-- One parity of the caption, after Bald_LibraryCaption: the title grows upward from 636, the body follows. -->
+	<include name="Bald_BrowseCaption">
+		<param name="p" />
+		<definition>
+			<control type="grouplist">
+				<left>Bald_BrowseCaptionLeft</left><top>548</top><width>568</width><height>88</height>
+				<orientation>vertical</orientation><align>right</align><usecontrolcoords>true</usecontrolcoords>
+				<control type="textbox">
+					<left>20</left><width>528</width><height max="88">auto</height>
+					<font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
+					<visible>Integer.Is$PARAM[p](Container.CurrentItem)</visible>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">180</param></include>
+				</control>
+			</control>
+			<control type="grouplist">
+				<left>Bald_BrowseCaptionLeft</left><top>636</top><width>568</width><height>300</height>
+				<orientation>vertical</orientation><itemgap>0</itemgap><usecontrolcoords>true</usecontrolcoords>
+				<control type="label">
+					<left>20</left><top>14</top><width>528</width><height>26</height>
+					<font>Bald_CaptionMeta</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowseMeta]</label>
+					<visible>Integer.Is$PARAM[p](Container.CurrentItem)</visible>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">250</param></include>
+				</control>
+				<control type="grouplist">
+					<left>20</left><top>10</top><width>528</width><height>26</height><orientation>horizontal</orientation><itemgap>8</itemgap>
+					<visible>!Skin.HasSetting(hide_mediaflags) + Integer.Is$PARAM[p](Container.CurrentItem) + $EXP[Bald_BrowseVideoItem] + $EXP[Bald_BrowseHasFlags]</visible>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">275</param></include>
+					<include content="Bald_MediaFlags" />
+				</control>
+				<control type="label">
+					<left>20</left><top>8</top><width>528</width><height>24</height>
+					<font>Bald_Accent</font><textcolor>bald_accent</textcolor><label>$INFO[ListItem.Genre]</label>
+					<visible>Integer.Is$PARAM[p](Container.CurrentItem) + !String.IsEmpty(ListItem.Genre)</visible>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">300</param></include>
+				</control>
+				<control type="textbox">
+					<left>20</left><top>18</top><width>528</width><height>150</height>
+					<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowsePlot]</label>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll) + !System.HasActiveModalDialog</autoscroll>
+					<visible>Integer.Is$PARAM[p](Container.CurrentItem) + !ListItem.IsCollection</visible>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">350</param></include>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- The right-hand preview column (SPEC 5.5 geometry): 528 x 297 art at (1296,222) and the caption beneath. Items
+	     without landscape art show their poster, thumb or icon whole inside the frame. The art crossfades in place
+	     with no settle zoom, so it needs none of the library's backdrop masks over Estuary's backgrounds. Hidden while
+	     the options menu is open, on the parent-folder item, and when <visible> is false. -->
+	<include name="Bald_BrowsePreview">
+		<param name="visible">true</param>
+		<param name="show_caption">true</param>
+		<param name="fallback_image" />
+		<definition>
+			<control type="group">
+				<visible>[$PARAM[visible]] + !$EXP[Bald_BrowseMenuOpen] + !ListItem.IsParentFolder + !String.IsEmpty(ListItem.Label)</visible>
+				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
+				<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
+				<animation type="WindowClose"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
+				<control type="group">
+					<left>Bald_PreviewLeft</left><top>Bald_ContentTop</top>
+					<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+					<control type="image">
+						<width>528</width><height>297</height><aspectratio>scale</aspectratio><fadetime>400</fadetime>
+						<texture background="true">$VAR[Bald_BrowseWideArt]</texture>
+						<visible>$EXP[Bald_BrowseHasWideArt]</visible>
+					</control>
+					<control type="image">
+						<left>24</left><top>24</top><width>480</width><height>249</height><aspectratio>keep</aspectratio><fadetime>400</fadetime>
+						<texture background="true" fallback="$PARAM[fallback_image]">$VAR[Bald_BrowseIconArt]</texture>
+						<visible>!$EXP[Bald_BrowseHasWideArt]</visible>
+					</control>
+					<!-- Deprecated or broken add-ons: the repository's warning over the art, as Estuary's panel showed. -->
+					<control type="group">
+						<visible>Container.Content(addons) + $EXP[Bald_BrowseAddonWarning]</visible>
+						<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_field60">bald/white.png</texture></control>
+						<control type="label"><left>28</left><top>28</top><width>472</width><height>28</height><font>Bald_Accent</font><textcolor>bald_accent</textcolor><label>$VAR[Bald_BrowseAddonWarningTitle]</label></control>
+						<control type="textbox"><left>28</left><top>64</top><width>472</width><height>205</height><font>Bald_CaptionPlot</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.AddonLifecycleDesc]</label></control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>$PARAM[show_caption]</visible>
+					<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+					<include content="Bald_BrowseCaption"><param name="p">Odd</param></include>
+					<include content="Bald_BrowseCaption"><param name="p">Even</param></include>
+					<!-- A movie set without its own plot lists its movies, as Estuary did. -->
+					<control type="group">
+						<left>1286</left><top>680</top>
+						<visible>ListItem.IsCollection + String.IsEmpty(ListItem.Plot)</visible>
+						<include content="InfoList">
+							<param name="bottom">150</param>
+							<param name="width">528</param>
+							<param name="sortby">year</param>
+							<param name="sortorder">ascending</param>
+						</include>
+					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Actions ============ -->
+	<!-- A dialog action pill (Bald_InfoAction's look) at a fixed width, for native ids whose labels Kodi may set.
+	     As a radiobutton its state is a check at the right (the auto-update toggle); unselected shows nothing. -->
+	<include name="Bald_BrowseAction">
+		<param name="type">button</param>
+		<param name="width">240</param>
+		<param name="label" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="$PARAM[type]" id="$PARAM[id]">
+				<width>$PARAM[width]</width><height>54</height>
+				<label>$PARAM[label]</label><font>Bald_Section</font>
+				<align>center</align><aligny>center</aligny>
+				<textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor><disabledcolor>bald_ink34</disabledcolor>
+				<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
+				<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
+				<radioposx>12</radioposx><radioposy>17</radioposy><radiowidth>20</radiowidth><radioheight>20</radioheight>
+				<textureradioonfocus colordiffuse="bald_field">bald/check.png</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="bald_accent">bald/check.png</textureradioonnofocus>
+				<textureradioondisabled colordiffuse="bald_ink34">bald/check.png</textureradioondisabled>
+				<textureradioofffocus />
+				<textureradiooffnofocus />
+				<textureradiooffdisabled />
+				<visible>$PARAM[visible]</visible>
+				<animation type="Focus"><effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" /></animation>
+				<animation type="Unfocus"><effect type="zoom" start="104" end="100" center="auto" time="220" tween="sine" easing="inout" /></animation>
+			</control>
+		</definition>
+	</include>
+	<!-- Add-on information: the content's staggered entrance (fade 380 and an 18 px rise over 560, after 120). -->
+	<include name="Bald_AddonInfoIn">
+		<animation type="WindowOpen">
+			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
+			<effect type="slide" start="0,18" end="0,0" time="560" delay="120" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose">
+			<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
+		</animation>
+	</include>
+	<!-- One row of the add-on details column: the field name, its value and an optional origin mark. -->
+	<include name="Bald_AddonInfoDetail">
+		<control type="label"><width>528</width><height>24</height><font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Label]</label></control>
+		<control type="label"><top>26</top><width>488</width><height>40</height><font>Bald_DetailValue</font><textcolor>bald_ink</textcolor><wrapmultiline>true</wrapmultiline><label>$INFO[ListItem.Label2]</label></control>
+		<control type="image"><left>500</left><top>30</top><width>24</width><height>24</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_ink45">$INFO[ListItem.Icon]</texture></control>
+	</include>
+	<!-- Round transport button for the options menu's now-playing row (ids 14101-14106): Estuary's icon, tinted. -->
+	<include name="Bald_BrowseTransportButton">
+		<param name="visible">true</param>
+		<param name="icon_on" />
+		<param name="selected">false</param>
+		<param name="onclick_2" />
+		<definition>
+			<control type="radiobutton" id="$PARAM[control_id]">
+				<width>72</width><height>72</height>
+				<label></label>
+				<texturefocus colordiffuse="bald_ink">bald/circle_112.png</texturefocus>
+				<texturenofocus />
+				<radioposx>20</radioposx><radioposy>20</radioposy><radiowidth>32</radiowidth><radioheight>32</radioheight>
+				<textureradioonfocus colordiffuse="bald_field">$PARAM[icon_on]</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="bald_ink70">$PARAM[icon_on]</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="bald_field">$PARAM[icon]</textureradioofffocus>
+				<textureradiooffnofocus colordiffuse="bald_ink70">$PARAM[icon]</textureradiooffnofocus>
+				<textureradioondisabled colordiffuse="bald_ink34">$PARAM[icon_on]</textureradioondisabled>
+				<textureradiooffdisabled colordiffuse="bald_ink34">$PARAM[icon]</textureradiooffdisabled>
+				<font>Bald_Hint</font>
+				<selected>$PARAM[selected]</selected>
+				<onclick>$PARAM[onclick]</onclick>
+				<onclick>$PARAM[onclick_2]</onclick>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+</includes>

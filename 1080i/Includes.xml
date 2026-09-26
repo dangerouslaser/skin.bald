@@ -17,6 +17,7 @@
 	<include file="Includes_Bald_Foundations.xml" />
 	<include file="Includes_Bald_Playback.xml" />
 	<include file="Includes_Bald_Overlays.xml" />
+	<include file="Includes_Bald_Browse.xml" />
 	<include file="Includes_Animations.xml" />
 	<include file="Includes_Games.xml" />
 	<include file="Includes_MediaMenu.xml" />
@@ -58,56 +59,37 @@
 	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131)</expression>
 	<expression name="videoasset_true">Container.Content(videoassets) | Container.Content(videoversions) | Container.Content(videoextras)</expression>
 	<include name="CommonScrollbars">
+		<!-- Bald: 4 px tracks outside the content (Bald_BrowseScrollbarStyle). 531 is the vertical page control of views
+		     52, 55, 500, 501, 504 and 54, 5199 the horizontal one of views 51 and 53. Both keep Estuary's ids and routes. -->
 		<param name="bottom_offset">list_bottom_offset</param>
 		<definition>
 			<control type="group">
-				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
-				<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="System.HasActiveModalDialog">Conditional</animation>
-				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
-				<control type="group">
-					<right>0</right>
-					<top>list_top_offset</top>
-					<width>60</width>
-					<bottom>$PARAM[bottom_offset]</bottom>
-					<control type="scrollbar" id="531">
-						<right>0</right>
-						<top>0</top>
-						<bottom>0</bottom>
-						<width>13</width>
-						<onleft condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onleft>
-						<onleft condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onleft>
-						<onright condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onright>
-						<onright condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onright>
-						<orientation>vertical</orientation>
-						<texturesliderbackground />
-						<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-						<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-						<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(531)">conditional</animation>
-						<visible>Control.IsVisible(52) | Control.IsVisible(500) | Control.IsVisible(55) | Control.IsVisible(501) | Control.IsVisible(54)</visible>
-					</control>
+				<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>
+				<animation effect="fade" start="100" end="0" time="200" tween="sine" easing="inout" condition="System.HasActiveModalDialog">Conditional</animation>
+				<animation effect="fade" start="0" end="100" delay="300" time="380" tween="sine" easing="inout">WindowOpen</animation>
+				<control type="scrollbar" id="531">
+					<left>1860</left>
+					<top>Bald_ContentTop</top>
+					<width>4</width>
+					<height>624</height>
+					<onleft condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onleft>
+					<onleft condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onleft>
+					<onright condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onright>
+					<onright condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onright>
+					<include content="Bald_BrowseScrollbarStyle" />
+					<include>Bald_BrowseFade</include>
+					<visible>Control.IsVisible(52) | Control.IsVisible(500) | Control.IsVisible(55) | Control.IsVisible(501) | Control.IsVisible(54)</visible>
 				</control>
-				<control type="group">
-					<left>0</left>
-					<right>0</right>
-					<bottom>0</bottom>
-					<width>100%</width>
-					<height>60</height>
-					<control type="scrollbar" id="5199">
-						<left>0</left>
-						<bottom>0</bottom>
-						<width>100%</width>
-						<height>12</height>
-						<texturesliderbackground />
-						<onup>50</onup>
-						<ondown>50</ondown>
-						<orientation>horizontal</orientation>
-						<visible>Control.IsVisible(51) | Control.IsVisible(53)</visible>
-						<animation effect="slide" end="0,6" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(5199)">conditional</animation>
-						<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-						<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-						<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
-						<hitrect x="0" y="20" w="100%" h="40" />
-					</control>
+				<control type="scrollbar" id="5199">
+					<left>Bald_SafeLeft</left>
+					<top>890</top>
+					<width>1728</width>
+					<height>4</height>
+					<onup>50</onup>
+					<ondown>50</ondown>
+					<include content="Bald_BrowseScrollbarStyle"><param name="orientation">horizontal</param></include>
+					<include>Bald_BrowseFade</include>
+					<visible>Control.IsVisible(51) | Control.IsVisible(53)</visible>
 				</control>
 			</control>
 		</definition>
@@ -158,13 +140,13 @@
 		</control>
 	</include>
 	<include name="InfoList">
-		<param name="item_label">$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]</param>
+		<param name="item_label">$INFO[ListItem.Year,[COLOR bald_ink60],  ·  [/COLOR]]$INFO[ListItem.Label]</param>
 		<param name="path">$VAR[InfoListPathVar]</param>
-		<param name="item_height">40</param>
+		<param name="item_height">36</param>
 		<param name="bottom">100</param>
 		<param name="width">1152</param>
 		<param name="list_id">5000</param>
-		<param name="font">font13</param>
+		<param name="font">Bald_CaptionMeta</param>
 		<param name="sortby"></param>
 		<param name="sortorder">ascending</param>
 		<param name="visible">true</param>
@@ -182,7 +164,7 @@
 						<width>$PARAM[width]</width>
 						<aligny>center</aligny>
 						<label>$PARAM[item_label]</label>
-						<shadowcolor>text_shadow</shadowcolor>
+						<textcolor>bald_ink80</textcolor>
 						<font>$PARAM[font]</font>
 					</control>
 				</focusedlayout>
@@ -193,7 +175,7 @@
 						<width>$PARAM[width]</width>
 						<aligny>center</aligny>
 						<label>$PARAM[item_label]</label>
-						<shadowcolor>text_shadow</shadowcolor>
+						<textcolor>bald_ink80</textcolor>
 						<font>$PARAM[font]</font>
 					</control>
 				</itemlayout>
@@ -335,20 +317,13 @@
 		</definition>
 	</include>
 	<include name="MediaFlag">
-		<param name="texture">colors/white.png</param>
+		<!-- Bald: Estuary's info rows draw the shared outlined chip (Bald_FlagChip). -->
 		<param name="flag_visible">true</param>
 		<definition>
-			<control type="button">
-				<width>auto</width>
-				<height>33</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font_flag</font>
-				<label>$PARAM[flag_label]</label>
-				<texturefocus border="MediaFlagBorder" infill="false" colordiffuse="white">$PARAM[texture]</texturefocus>
-				<texturenofocus border="MediaFlagBorder" infill="false" colordiffuse="white">$PARAM[texture]</texturenofocus>
-				<visible>$PARAM[flag_visible]</visible>
-			</control>
+			<include content="Bald_FlagChip">
+				<param name="label">$PARAM[flag_label]</param>
+				<param name="visible">$PARAM[flag_visible]</param>
+			</include>
 		</definition>
 	</include>
 	<include name="MediaFlags">
@@ -357,34 +332,28 @@
 			<control type="grouplist">
 				<visible>Window.IsActive(Home) | Window.IsActive(10025) | Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
 				<orientation>horizontal</orientation>
-				<right>20</right>
+				<right>96</right>
 				<height>40</height>
 				<align>right</align>
-				<itemgap>9</itemgap>
-				<width>1900</width>
+				<itemgap>8</itemgap>
+				<width>1728</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<control type="image">
+					<top>7</top>
 					<width>114</width>
-					<height>36</height>
+					<height>26</height>
 					<fadetime>0</fadetime>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<texture>$INFO[ListItem.Studio,resource://resource.images.studios.white/,.png]</texture>
+					<texture colordiffuse="bald_ink70">$INFO[ListItem.Studio,resource://resource.images.studios.white/,.png]</texture>
 					<visible>System.AddonIsEnabled(resource.images.studios.white) + !String.IsEmpty($PARAM[infolabel_prefix]ListItem.Studio)</visible>
-				</control>
-				<control type="image">
-					<visible>!String.IsEmpty(ListItem.Premiered)</visible>
-					<top>-2</top>
-					<width>32</width>
-					<height>32</height>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<texture colordiffuse="white">lists/year.png</texture>
 				</control>
 				<control type="label">
 					<visible>!String.IsEmpty(ListItem.Premiered)</visible>
 					<width>auto</width>
-					<height>33</height>
+					<height>40</height>
 					<aligny>center</aligny>
-					<font>font_flag</font>
+					<font>Bald_CaptionMeta</font>
+					<textcolor>bald_ink60</textcolor>
 					<label>$INFO[ListItem.Premiered]</label>
 				</control>
 				<include content="MediaFlag">
@@ -423,12 +392,12 @@
 			<control type="grouplist">
 				<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
 				<orientation>horizontal</orientation>
-				<right>20</right>
+				<right>96</right>
 				<bottom>0</bottom>
 				<height>60</height>
 				<align>right</align>
-				<itemgap>9</itemgap>
-				<width>1900</width>
+				<itemgap>8</itemgap>
+				<width>1728</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="VideoPlayer.IsStereoscopic" />
@@ -466,12 +435,12 @@
 			<control type="grouplist">
 				<visible>!String.IsEqual(ListItem.DbType,musicvideo) + [Container.Content(albums) | Window.IsActive(music)]</visible>
 				<orientation>horizontal</orientation>
-				<right>20</right>
+				<right>96</right>
 				<bottom>10</bottom>
 				<height>60</height>
 				<align>right</align>
-				<itemgap>9</itemgap>
-				<width>1900</width>
+				<itemgap>8</itemgap>
+				<width>1728</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.Duration) + Container.Content(albums) + ![Window.IsVisible(songinformation) | Window.IsVisible(musicinformation)]" />
@@ -491,7 +460,7 @@
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.BitRate)" />
-					 <param name="flag_label" value="$INFO[ListItem.BitRate, ,kbps]" /> 
+					<param name="flag_label" value="$INFO[ListItem.BitRate, ,kbps]" />
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.MusicBitsPerSample)" />
@@ -503,14 +472,14 @@
 				</include>
 			</control>
 			<control type="grouplist">
-				<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>)
+				<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>
 				<orientation>horizontal</orientation>
-				<right>20</right>
+				<right>96</right>
 				<bottom>9</bottom>
 				<height>60</height>
 				<align>right</align>
-				<itemgap>9</itemgap>
-				<width>1900</width>
+				<itemgap>8</itemgap>
+				<width>1728</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="RDS.HasRDS" />
@@ -530,7 +499,7 @@
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(MusicPlayer.BitRate)" />
-					 <param name="flag_label" value="$INFO[MusicPlayer.BitRate, ,kbps]" /> 
+					<param name="flag_label" value="$INFO[MusicPlayer.BitRate, ,kbps]" />
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(MusicPlayer.BitsPerSample)" />
@@ -565,91 +534,74 @@
 		</control>
 	</include>
 	<include name="FileManagerPanel">
+		<!-- Bald: 48 px text rows in the compact-list language: accent dot and full ink on the focused row, 70% ink
+		     otherwise, selected (marked) items in the accent. -->
 		<param name="width"></param>
 		<param name="right"></param>
+		<param name="top">list_top_offset</param>
+		<param name="bottom">list_bottom_offset</param>
 		<definition>
 			<control type="fixedlist" id="$PARAM[list_id]">
 				<left>0</left>
-				<top>list_top_offset</top>
-				<bottom>list_bottom_offset</bottom>
+				<top>$PARAM[top]</top>
+				<bottom>$PARAM[bottom]</bottom>
 				<right>$PARAM[right]</right>
 				<width>$PARAM[width]</width>
-				<focusposition>4</focusposition>
-				<movement>3</movement>
+				<focusposition>5</focusposition>
+				<movement>4</movement>
 				<onleft>$PARAM[onleft_id]</onleft>
 				<onright>$PARAM[onright_id]</onright>
 				<onup>$PARAM[list_id]</onup>
 				<ondown>$PARAM[list_id]</ondown>
 				<pagecontrol>$PARAM[scrollbar_id]</pagecontrol>
-				<scrolltime>200</scrolltime>
-				<focusedlayout height="list_item_height">
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<right>0</right>
-						<bottom>0</bottom>
-						<texture colordiffuse="button_focus">lists/focus.png</texture>
-						<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus($PARAM[list_id])">Conditional</animation>
-					</control>
-					<control type="image">
-						<left>15</left>
-						<top>0</top>
-						<width>32</width>
-						<bottom>0</bottom>
-						<aspectratio aligny="center">keep</aspectratio>
-						<texture>$VAR[ListWatchedIconVar]</texture>
-					</control>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<focusedlayout height="48">
+					<include content="Bald_BrowseRowDot"><param name="visible">Control.HasFocus($PARAM[list_id])</param></include>
 					<control type="label">
-						<left>65</left>
-						<top>0</top>
-						<bottom>0</bottom>
-						<right>20</right>
+						<left>26</left>
+						<right>200</right>
+						<height>48</height>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
+						<font>Bald_Section</font>
+						<textcolor>bald_ink</textcolor>
+						<selectedcolor>bald_accent</selectedcolor>
 						<label>$INFO[ListItem.Label]</label>
-						<shadowcolor>text_shadow</shadowcolor>
+						<animation effect="fade" start="100" end="70" time="0" condition="!Control.HasFocus($PARAM[list_id])">Conditional</animation>
 					</control>
 					<control type="label">
 						<left>0</left>
-						<textoffsetx>30</textoffsetx>
-						<top>0</top>
-						<bottom>0</bottom>
 						<right>0</right>
+						<height>48</height>
 						<align>right</align>
 						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink60</textcolor>
+						<selectedcolor>bald_accent</selectedcolor>
 						<label>$INFO[ListItem.Label2]</label>
-						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 				</focusedlayout>
-				<itemlayout height="list_item_height">
-					<control type="image">
-						<left>15</left>
-						<top>0</top>
-						<width>32</width>
-						<bottom>0</bottom>
-						<aspectratio aligny="center">keep</aspectratio>
-						<texture>$VAR[ListWatchedIconVar]</texture>
-					</control>
+				<itemlayout height="48">
 					<control type="label">
-						<left>65</left>
-						<top>0</top>
-						<bottom>0</bottom>
-						<right>20</right>
+						<left>26</left>
+						<right>200</right>
+						<height>48</height>
 						<aligny>center</aligny>
+						<font>Bald_Section</font>
+						<textcolor>bald_ink70</textcolor>
+						<selectedcolor>bald_accent</selectedcolor>
 						<label>$INFO[ListItem.Label]</label>
-						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
 						<left>0</left>
-						<textoffsetx>30</textoffsetx>
-						<top>0</top>
-						<bottom>0</bottom>
 						<right>0</right>
+						<height>48</height>
 						<align>right</align>
 						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink45</textcolor>
+						<selectedcolor>bald_accent</selectedcolor>
 						<label>$INFO[ListItem.Label2]</label>
-						<textcolor>grey</textcolor>
-						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 				</itemlayout>
 			</control>
@@ -899,227 +851,151 @@
 		</control>
 	</include>
 	<include name="TopBar">
-		<param name="sublabel">$INFO[Container.SortMethod,$LOCALIZE[31022]: ,  •  ]$INFO[Container.CurrentItem,, / ]$INFO[Container.NumItems]</param>
+		<!-- Bald: the library header. The title sits at the safe margin in caption-title type; the sort summary, now
+		     playing and the optional profile and weather items are a quiet right-aligned meta line ending on the x 1824
+		     safe edge (SPEC 5.5). <top> is the header's baseline: 24 keeps Estuary's band for windows whose content
+		     still starts at list_top_offset; the restyled browse windows pass Bald's page title top, 108. -->
+		<param name="sublabel">$INFO[Container.SortMethod]$INFO[Container.SortOrder, · ,]</param>
+		<param name="top">24</param>
 		<definition>
 			<control type="group">
-				<animation effect="slide" end="0,-112" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
 				<depth>DepthBars</depth>
-				<animation effect="fade" start="0" end="100" time="300" condition="[Window.Previous(fullscreenvideo) | Window.Previous(startup)] + !Window.IsVisible(1109)">WindowOpen</animation>
-				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>110%</width>
-					<height>130</height>
-					<texture>frame/InfoBar.png</texture>
-					<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
-				</control>
+				<top>$PARAM[top]</top>
+				<animation effect="fade" start="100" end="0" time="200" tween="sine" easing="inout" condition="$EXP[infodialog_active]">Conditional</animation>
+				<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout" condition="[Window.Previous(fullscreenvideo) | Window.Previous(startup)] + !Window.IsVisible(1109)">WindowOpen</animation>
 				<control type="grouplist">
-					<width>900</width>
+					<left>Bald_SafeLeft</left>
+					<width>1100</width>
 					<include content="TopBarLabels">
 						<param name="breadcrumbs_label" value="$PARAM[breadcrumbs_label]" />
 					</include>
-					<visible>Player.HasMedia</visible>
-				</control>
-				<control type="grouplist">
-					<width>1800</width>
-					<include content="TopBarLabels">
-						<param name="breadcrumbs_label" value="$PARAM[breadcrumbs_label]" />
-					</include>
-					<visible>!Player.HasMedia</visible>
 				</control>
 				<control type="button">
-					<top>0</top>
-					<width>200</width>
-					<height>100</height>
+					<left>Bald_SafeLeft</left>
+					<width>400</width>
+					<height>52</height>
 					<label></label>
 					<onclick>Action(Back)</onclick>
 					<visible>!Window.IsActive(home)</visible>
 					<texturefocus />
 					<texturenofocus />
 				</control>
-				<control type="label" id="18900">
-					<top>50</top>
-					<label>$PARAM[sublabel]</label>
-					<left>35</left>
-					<shadowcolor>text_shadow</shadowcolor>
-					<height>100</height>
-					<width>900</width>
-					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-					<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-					<animation effect="slide" end="70,0" time="200" reversible="true" condition="Control.IsVisible(799)">Conditional</animation>
-				</control>
 				<control type="grouplist">
-					<top>0</top>
+					<left>724</left>
+					<top>12</top>
+					<width>1100</width>
+					<height>28</height>
 					<align>right</align>
-					<right>20</right>
-					<height>200</height>
 					<orientation>horizontal</orientation>
-					<width>900</width>
-					<itemgap>10</itemgap>
-					<visible>!Window.IsVisible(extendedprogressdialog) + !Window.IsActive(fullscreenvideo)</visible>
-					<animation effect="fade" time="150">VisibleChange</animation>
-					<control type="group">
-						<width>600</width>
-						<visible>!Control.IsVisible(503) + Player.HasMedia + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
-						<animation effect="fade" time="200">VisibleChange</animation>
-						<control type="grouplist">
-							<left>-75</left>
-							<orientation>horizontal</orientation>
-							<height>38</height>
-							<top>14</top>
-							<align>right</align>
-							<width>660</width>
-							<itemgap>5</itemgap>
-							<usecontrolcoords>true</usecontrolcoords>
-							<control type="image">
-								<top>4</top>
-								<width>32</width>
-								<height>32</height>
-								<aspectratio>keep</aspectratio>
-								<texture colordiffuse="button_focus">$VAR[NowPlayingIconVar]</texture>
-							</control>
-							<control type="label">
-								<label>$INFO[Player.Title]</label>
-								<font>font27</font>
-								<shadowcolor>text_shadow</shadowcolor>
-								<height>35</height>
-								<width min="1" max="602">auto</width>
-							</control>
-						</control>
-						<control type="label" id="7700">
-							<label>$VAR[NowPlayingSublabelVar]</label>
-							<left>-44</left>
-							<top>44</top>
-							<font>font12</font>
-							<textcolor>grey</textcolor>
-							<shadowcolor>text_shadow</shadowcolor>
-							<height>25</height>
-							<width>630</width>
-							<align>right</align>
-							<scroll>true</scroll>
-						</control>
-					</control>
-					<control type="group">
-						<visible>Integer.IsGreater(System.ProfileCount,1) + !Player.HasMedia</visible>
-						<control type="image">
-							<visible>Skin.HasSetting(show_profileavatar)</visible>
-							<top>25</top>
-							<left>-70</left>
-							<width>50</width>
-							<height>50</height>
-							<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
-							<texture>$INFO[System.ProfileThumb]</texture>
-							<aspectratio>scale</aspectratio>
-						</control>
-						<control type="label">
-							<visible>Skin.HasSetting(show_profilename)</visible>
-							<font>font45</font>
-							<align>right</align>
-							<left>-630</left>
-							<shadowcolor>text_shadow</shadowcolor>
-							<aligny>center</aligny>
-							<height>110</height>
-							<width max="600">auto</width>
-							<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
-							<label>$INFO[System.ProfileName]</label>
-						</control>
-					</control>
-					<control type="label">
-						<font>font_clock</font>
-						<shadowcolor>text_shadow</shadowcolor>
-						<height>200</height>
-						<width>auto</width>
-						<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
-						<label>$INFO[System.Time]</label>
-					</control>
-				</control>
-				<control type="grouplist">
-					<right>10</right>
-					<top>70</top>
-					<width>800</width>
-					<height>100</height>
-					<align>right</align>
-					<itemgap>5</itemgap>
-					<orientation>horizontal</orientation>
+					<itemgap>24</itemgap>
 					<usecontrolcoords>true</usecontrolcoords>
-					<control type="label">
-						<height>50</height>
-						<width>auto</width>
-						<aligny>center</aligny>
-						<textoffsetx>-8</textoffsetx>
-						<label>$INFO[System.AlarmPos]</label>
-						<visible>System.HasAlarm(shutdowntimer)</visible>
-					</control>
+					<visible>!Window.IsVisible(extendedprogressdialog) + !Window.IsActive(fullscreenvideo)</visible>
+					<animation effect="fade" time="160" tween="sine" easing="inout">VisibleChange</animation>
+					<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
+					<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>
 					<control type="image">
-						<top>16</top>
-						<width>40</width>
-						<height>22</height>
-						<fadetime>300</fadetime>
-						<aspectratio aligny="center" align="left">keep</aspectratio>
-						<texture>icons/power.png</texture>
-						<visible>System.HasAlarm(shutdowntimer)</visible>
+						<top>6</top>
+						<width>16</width>
+						<height>16</height>
+						<aspectratio>keep</aspectratio>
+						<texture colordiffuse="bald_accent">$VAR[NowPlayingIconVar]</texture>
+						<visible>!Control.IsVisible(503) + Player.HasMedia + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
 					</control>
 					<control type="label">
-						<height>50</height>
-						<width>auto</width>
+						<left>-16</left>
+						<width min="1" max="420">auto</width>
+						<height>28</height>
 						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink70</textcolor>
+						<label>$INFO[Player.Title]</label>
+						<visible>!Control.IsVisible(503) + Player.HasMedia + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
+					</control>
+					<control type="label" id="7700">
+						<left>-16</left>
+						<width min="1" max="300">auto</width>
+						<height>28</height>
+						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink45</textcolor>
+						<label>$VAR[NowPlayingSublabelVar]</label>
+						<visible>!Control.IsVisible(503) + Player.HasMedia + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
+					</control>
+					<control type="label">
+						<width min="1" max="300">auto</width>
+						<height>28</height>
+						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink60</textcolor>
+						<label>$INFO[System.ProfileName]</label>
+						<visible>Skin.HasSetting(show_profilename) + Integer.IsGreater(System.ProfileCount,1) + !Player.HasMedia</visible>
+					</control>
+					<control type="label">
+						<width min="1" max="200">auto</width>
+						<height>28</height>
+						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink60</textcolor>
 						<label>$INFO[Weather.Data(Current.Temperature)]</label>
 						<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched</visible>
 						<visible>!Window.IsActive(weather) + [!Window.IsActive(home) | !String.IsEqual(Container(9000).ListItem.Property(id),weather)]</visible>
 					</control>
-					<control type="image">
-						<top>1</top>
-						<width>50</width>
-						<height>50</height>
-						<fadetime>300</fadetime>
-						<aspectratio aligny="center" align="left">keep</aspectratio>
-						<texture>$INFO[Weather.Data(Current.FanartCode),weather/small/,.png]</texture>
-						<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![String.IsEqual(Weather.Data(Current.FanartCode),na)]</visible>
-						<visible>!Window.IsActive(weather) + [!Window.IsActive(home) | !String.IsEqual(Container(9000).ListItem.Property(id),weather)]</visible>
+					<control type="label">
+						<width min="1" max="200">auto</width>
+						<height>28</height>
+						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink60</textcolor>
+						<label>$INFO[System.AlarmPos]</label>
+						<visible>System.HasAlarm(shutdowntimer)</visible>
 					</control>
 					<control type="image">
-						<top>8</top>
-						<left>-20</left>
-						<width>74</width>
-						<height>40</height>
-						<fadetime>300</fadetime>
-						<aspectratio aligny="center" align="center">keep</aspectratio>
-						<texture>dialogs/volume/mute.png</texture>
+						<top>4</top>
+						<width>28</width>
+						<height>20</height>
+						<aspectratio>keep</aspectratio>
+						<texture colordiffuse="bald_ink60">dialogs/volume/mute.png</texture>
 						<visible>Player.Muted</visible>
 					</control>
+					<control type="label" id="18900">
+						<width min="1" max="700">auto</width>
+						<height>28</height>
+						<aligny>center</aligny>
+						<font>Bald_CaptionMeta</font>
+						<textcolor>bald_ink60</textcolor>
+						<label>$PARAM[sublabel]</label>
+					</control>
 				</control>
+				<!-- The first letter while a title-sorted list scrolls fast, in the accent at the top centre. -->
 				<control type="label" id="23000">
-					<top>0</top>
 					<left>0</left>
-					<label>$INFO[ListItem.SortLetter]</label>
-					<font>font_MainMenu</font>
-					<width>100%</width>
-					<height>80</height>
+					<width>1920</width>
+					<height>52</height>
 					<align>center</align>
+					<font>Bald_CaptionTitle</font>
+					<textcolor>bald_accent</textcolor>
+					<label>$INFO[ListItem.SortLetter]</label>
 					<visible>!System.HasActiveModalDialog</visible>
 					<visible>Container.Scrolling</visible>
 					<visible>!Container.Content(seasons)</visible>
 					<visible>Container.SortMethod(1) | Container.SortMethod(4) | Container.SortMethod(12) | Container.SortMethod(10) | Container.SortMethod(7) | Container.SortMethod(29) | Container.SortMethod(17)</visible>
-					<animation effect="fade" start="0" end="100" time="200" reversible="true">VisibleChange</animation>
-					<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+					<animation effect="fade" start="0" end="100" time="180" tween="sine" easing="inout" reversible="true">VisibleChange</animation>
+					<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>
 				</control>
 			</control>
 			<include condition="Skin.HasSetting(touchmode) + !Window.IsActive(home)">TouchBackButton</include>
 		</definition>
 	</include>
 	<include name="TopBarLabels">
-		<left>35</left>
-		<description>Left side of top bar</description>
-		<top>-7</top>
-		<height>100</height>
+		<description>The header title: the section in full ink, then its folders in 60% ink.</description>
+		<height>52</height>
 		<orientation>horizontal</orientation>
 		<usecontrolcoords>true</usecontrolcoords>
-		<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-		<animation effect="slide" end="0,16" time="200" reversible="true" condition="String.IsEmpty(Control.GetLabel(18900))">Conditional</animation>
-		<animation effect="slide" end="70,0" time="200" reversible="true" condition="Control.IsVisible(799)">Conditional</animation>
+		<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
+		<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>
 		<control type="label">
 			<label>$PARAM[breadcrumbs_label]</label>
+			<textcolor>bald_ink</textcolor>
 			<include>BreadcrumbsLabel</include>
 		</control>
 		<control type="label">
@@ -1151,33 +1027,37 @@
 		<control type="label">
 			<left>10</left>
 			<label>($LOCALIZE[31052])</label>
+			<textcolor>bald_accent</textcolor>
 			<include>BreadcrumbsLabel</include>
 			<visible>Container.Filtered</visible>
 		</control>
 	</include>
 	<include name="BreadcrumbsLabel">
-		<font>font45</font>
-		<shadowcolor>text_shadow</shadowcolor>
-		<top>7</top>
-		<height>100</height>
+		<font>Bald_CaptionTitle</font>
+		<textcolor>bald_ink60</textcolor>
+		<height>52</height>
 		<width>auto</width>
 	</include>
 	<include name="ColoredBackgroundImages">
+		<!-- Bald: the opaque field. Estuary's pattern overlay stays available through its skin string, as a quiet ink
+		     texture, and is off unless a pattern was chosen. -->
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="primary_background">special://skin/extras/backgrounds/primary.jpg</texture>
+			<texture colordiffuse="bald_field">bald/white.png</texture>
 		</control>
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="secondary_background" fallback="special://skin/extras/backgrounds/pattern1.png">$INFO[Skin.String(background_overlay),special://skin/extras/backgrounds/pattern,.png]</texture>
-			<visible>!String.IsEqual(Skin.String(background_overlay),0)</visible>
+			<texture colordiffuse="bald_ink10">$INFO[Skin.String(background_overlay),special://skin/extras/backgrounds/pattern,.png]</texture>
+			<visible>!String.IsEmpty(Skin.String(background_overlay)) + !String.IsEqual(Skin.String(background_overlay),0)</visible>
 		</control>
 	</include>
 	<include name="DefaultBackground">
+		<!-- Bald: the field, with the focused item's fanart at the backdrop brightness under a 60% field layer, so art
+		     tints the page without competing with the sharp preview. Playing video or a visualisation shows through as
+		     in Estuary. -->
 		<definition>
 			<control type="videowindow">
 				<depth>DepthBackground</depth>
@@ -1192,98 +1072,73 @@
 			</control>
 			<control type="group">
 				<include>FullScreenDimensions</include>
-				<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
 				<control type="group">
 					<animation effect="fade" start="100" end="bg_alpha" time="0" condition="!Control.IsVisible(31111)">Conditional</animation>
-					<animation effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(FullscreenGame) | Window.Previous(startup)">WindowOpen</animation>
+					<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout" condition="Window.Previous(fullscreenvideo) | Window.Previous(FullscreenGame) | Window.Previous(startup)">WindowOpen</animation>
 					<include>ColoredBackgroundImages</include>
 				</control>
 				<control type="group" id="31111">
 					<visible>!Window.IsActive(Home) + [![Player.HasVideo | [Player.HasAudio + Visualisation.Enabled + !String.IsEmpty(Visualisation.Name)]] | !String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))]</visible>
 					<depth>DepthBackground</depth>
-					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-					<animation effect="fade" time="400">VisibleChange</animation>
+					<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
+					<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>
+					<animation effect="fade" time="380" tween="sine" easing="inout">VisibleChange</animation>
 					<control type="image" id="32111">
 						<include>FullScreenDimensions</include>
 						<aspectratio>scale</aspectratio>
-						<fadetime>400</fadetime>
-						<animation effect="fade" time="400">VisibleChange</animation>
-						<texture background="true" colordiffuse="37FFFFFF">$VAR[MediaFanartVar]</texture>
+						<fadetime>800</fadetime>
+						<texture background="true" colordiffuse="bald_backdrop">$VAR[MediaFanartVar]</texture>
 						<visible>!Control.IsVisible(502) | $EXP[infodialog_active]</visible>
 					</control>
 					<control type="image">
-						<left>-3</left>
-						<top>0</top>
-						<right>1193</right>
-						<height>100%</height>
-						<aspectratio aligny="center">scale</aspectratio>
-						<fadetime>400</fadetime>
-						<include>OpenClose_Left</include>
-						<animation effect="fade" time="400">VisibleChange</animation>
-						<texture background="true" colordiffuse="37FFFFFF">$VAR[PosterVar]</texture>
-						<visible>!Control.IsVisible(32111)</visible>
+						<include>FullScreenDimensions</include>
+						<texture colordiffuse="bald_field60">bald/white.png</texture>
 					</control>
 				</control>
 			</control>
 		</definition>
 	</include>
 	<include name="BottomBar">
+		<!-- Bald: the footer on the y 954 hint line. The item count sits at the safe margin; with <info_visible> the
+		     window has Estuary's options menu, and the right-hand hints say how to open and leave it (SPEC 5.5). -->
 		<param name="info_visible">false</param>
+		<param name="count">$INFO[Container.CurrentItem]$INFO[Container.NumItems, / ,]</param>
 		<definition>
 			<control type="group">
-				<animation effect="slide" end="0,112" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
 				<depth>DepthBars</depth>
-				<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(visualisation) | Window.Next(screencalibration)">WindowClose</animation>
-				<animation effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(startup) | Window.Previous(visualisation)">WindowOpen</animation>
-				<bottom>0</bottom>
-				<control type="image">
-					<left>0</left>
-					<bottom>0</bottom>
-					<width>110%</width>
-					<height>115</height>
-					<texture flipy="true">frame/InfoBar.png</texture>
-				</control>
+				<animation effect="fade" start="100" end="0" time="200" tween="sine" easing="inout" condition="$EXP[infodialog_active]">Conditional</animation>
+				<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout" condition="Window.Next(visualisation) | Window.Next(screencalibration)">WindowClose</animation>
+				<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout" condition="Window.Previous(fullscreenvideo) | Window.Previous(startup) | Window.Previous(visualisation)">WindowOpen</animation>
 				<control type="group">
-					<visible>$PARAM[info_visible]</visible>
-					<visible>!System.HasActiveModalDialog</visible>
 					<visible>!Skin.HasSetting(touchmode)</visible>
-					<animation effect="fade" time="400">VisibleChange</animation>
-					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-					<control type="button">
-						<bottom>20</bottom>
-						<left>12</left>
-						<width>36</width>
-						<height>36</height>
-						<animation effect="rotate" end="-90" center="auto" time="200" reversible="true" condition="Control.IsVisible(51) | Control.IsVisible(53)">Conditional</animation>
-						<texturefocus colordiffuse="button_focus">frame/menu-nofo.png</texturefocus>
-						<texturenofocus colordiffuse="FFCCCCCC">frame/menu-nofo.png</texturenofocus>
-						<animation effect="fade" time="200">VisibleChange</animation>
-						<onclick>SetFocus(9000)</onclick>
-						<visible>!Control.IsVisible(6160)</visible>
+					<control type="label">
+						<left>Bald_SafeLeft</left>
+						<top>Bald_HintTop</top>
+						<width>600</width>
+						<height>24</height>
+						<font>Bald_Hint</font>
+						<textcolor>bald_ink60</textcolor>
+						<label>$PARAM[count]</label>
 					</control>
-					<control type="button" id="6160">
-						<bottom>20</bottom>
-						<left>12</left>
-						<width>36</width>
-						<height>36</height>
-						<texturefocus colordiffuse="button_focus">icons/menu.png</texturefocus>
-						<texturenofocus colordiffuse="FFCCCCCC">icons/menu.png</texturenofocus>
-						<animation effect="fade" time="200">VisibleChange</animation>
-						<onclick>SetFocus(9000)</onclick>
-						<visible>Window.IsActive(MyPVRGuide.xml)</visible>
+					<control type="group">
+						<left>800</left>
+						<top>Bald_HintTop</top>
+						<visible>$PARAM[info_visible] + !$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
+						<include content="Bald_InfoHintPair">
+							<param name="width">1024</param>
+							<param name="first">$LOCALIZE[31685]</param>
+							<param name="second">$LOCALIZE[31827]</param>
+						</include>
 					</control>
-					<control type="button">
-						<bottom>16</bottom>
-						<left>64</left>
-						<width>300</width>
-						<height>44</height>
-						<shadowcolor>text_shadow</shadowcolor>
-						<label>$LOCALIZE[33063]</label>
-						<onclick>SetFocus(9000)</onclick>
-						<texturefocus />
-						<texturenofocus />
+					<control type="group">
+						<left>1404</left>
+						<top>Bald_HintTop</top>
+						<visible>$PARAM[info_visible] + $EXP[sidebar_visible]</visible>
+						<include content="Bald_InfoHintPair">
+							<param name="width">420</param>
+							<param name="first">$LOCALIZE[31832]</param>
+							<param name="second">$LOCALIZE[31747]</param>
+						</include>
 					</control>
 				</control>
 				<include>TouchButtons</include>
@@ -1407,6 +1262,7 @@
 		</definition>
 	</include>
 	<include name="ContentPanel">
+		<!-- Bald: a flat 60% field surface in place of Estuary's shadowed panel; same geometry params. -->
 		<param name="width">500</param>
 		<param name="left">-40</param>
 		<param name="right"></param>
@@ -1415,9 +1271,7 @@
 		<param name="flipx">false</param>
 		<definition>
 			<control type="image">
-				<texture flipx="$PARAM[flipx]" colordiffuse="EDFFFFFF">lists/panel.png</texture>
-				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
+				<texture colordiffuse="bald_field60">bald/white.png</texture>
 				<width>$PARAM[width]</width>
 				<left>$PARAM[left]</left>
 				<right>$PARAM[right]</right>
