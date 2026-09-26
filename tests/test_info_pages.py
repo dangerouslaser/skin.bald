@@ -4,7 +4,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import equivalent, find_value, implies
-from kodi_includes import parse
+from kodi_includes import expand_call, parse
 from skin_strings import loc
 
 
@@ -18,15 +18,15 @@ class InfoPagesTests(unittest.TestCase):
         self.shared = ET.parse(ROOT / "Includes_Bald_Info.xml").getroot()
 
     def test_hint_pair_right_aligns_as_a_unit_with_20px_separator(self):
-        pair = self.shared.find("include[@name='Bald_InfoHintPair']/definition/control")
+        # As the dialog calls it (two hints, default width): 384 wide, right-aligned, third hint hidden.
+        pair, = expand_call("Bald_InfoHintPair", {"first": "a", "second": "b"})
         self.assertEqual(pair.get("type"), "grouplist")
         self.assertEqual(pair.findtext("align"), "right")
-        self.assertEqual(pair.findtext("width"), "$PARAM[width]")
-        hint = self.shared.find("include[@name='Bald_InfoHintPair']")
-        self.assertEqual(hint.findtext("param[@name='width']"), "384")
-        self.assertEqual(hint.findtext("param[@name='third_visible']"), "false")
+        self.assertEqual(pair.findtext("width"), "384")
         self.assertEqual(pair.findtext("itemgap"), "0")
         labels = pair.findall("control")
+        self.assertEqual([node.findtext("visible") for node in labels[3:]], ["false", "false"])
+        self.assertEqual(expand_call("Bald_InfoHintPair", {"width": "1024"})[0].findtext("width"), "1024")
         self.assertEqual([node.findtext("width") for node in labels], ["auto", "20", "auto", "20", "auto"])
         self.assertEqual(labels[1].findtext("label"), "·")
         self.assertTrue(all(node.findtext("height") == "24" for node in labels))

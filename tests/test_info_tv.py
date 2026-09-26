@@ -5,6 +5,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import equivalent, has_action, implies
+from kodi_includes import expand_call
 from scripts import info
 
 
@@ -78,14 +79,13 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(by_id["5004"]["onclick"], "SendClick(11)")
         down = [n.text for n in self.tv.find("include[@name='Bald_InfoTVActionDown']")]
         self.assertEqual(down[0], "SetFocus(5301)")
-        # Movie actions keep their original Down route through the default parameter.
-        action = self.shared.find("include[@name='Bald_InfoAction']")
-        self.assertEqual(params(action)["down"], "Bald_InfoActionToCast")
-        self.assertEqual(action.find("definition/control/include").text, "$PARAM[down]")
-        to_cast = [n.text for n in self.shared.find("include[@name='Bald_InfoActionToCast']")]
-        self.assertEqual(to_cast, ["SetProperty(Bald.InfoSec,1,home)",
-                                   "ClearProperty(TMDbHelper.WidgetContainer,movieinformation)",
-                                   "SetFocus(50)", "SetFocus(5050)"])
+        # Movie actions keep their original Down route (to Cast) when no route is passed; TV actions go to the tabs.
+        movie_down = [n.text for n in expand_call("Bald_InfoAction", {"id": "5001"})[0].findall("ondown")]
+        self.assertEqual(movie_down, ["SetProperty(Bald.InfoSec,1,home)",
+                                      "ClearProperty(TMDbHelper.WidgetContainer,movieinformation)",
+                                      "SetFocus(50)", "SetFocus(5050)"])
+        tv_down = expand_call("Bald_InfoAction", {"id": "5001", "down": "Bald_InfoTVActionDown"})[0].findall("ondown")
+        self.assertEqual([n.text for n in tv_down], down)
         movie = ET.parse(ROOT / "Includes_Bald_InfoPages.xml").getroot()
         for node in movie.findall("include[@name='Bald_InfoOverview']//include[@content='Bald_InfoAction']"):
             self.assertNotIn("down", params(node))

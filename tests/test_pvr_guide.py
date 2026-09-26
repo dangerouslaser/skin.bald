@@ -5,6 +5,7 @@ import importlib.util
 
 import home_menu
 from conditions import equivalent
+from kodi_includes import Skin
 
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
@@ -30,8 +31,9 @@ class PVRGuideTests(unittest.TestCase):
         self.assertIsNotNone(guide.find(".//include[.='PVRChannelNumberInput']"))
 
         includes = ET.parse(ROOT / 'Includes_PVR.xml').getroot()
-        grid = includes.find("include[@name='Bald_EpgGrid']/definition/control[@type='epggrid']")
-        self.assertEqual(grid.get('id'), '$PARAM[control_id]')
+        # The grid as the guide window resolves it: one epggrid, the window's control 50.
+        grid, = [node for node in Skin().window('MyPVRGuide.xml').iter('control') if node.get('type') == 'epggrid']
+        self.assertEqual(grid.get('id'), '50')
         self.assertEqual(grid.findtext('onleft'), '9000')
         self.assertEqual(grid.findtext('onright'), '50')
         self.assertEqual(grid.findtext('onup'), '50')
