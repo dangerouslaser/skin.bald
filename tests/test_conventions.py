@@ -98,3 +98,26 @@ class IdMapTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FocusFadeTests(unittest.TestCase):
+    """Kodi reverses a reversible Focus animation from wherever it stopped when focus leaves early, so a fading
+    focus animation can leave a quickly passed label at a stray opacity (Home menu, settings lists). Every Focus
+    animation that fades must be reversible="false", so an interrupted one resets instead."""
+
+    def test_fading_focus_animations_are_not_reversible(self):
+        import glob
+        import xml.etree.ElementTree as ET
+        from pathlib import Path
+        skin = Path(__file__).resolve().parents[1] / '1080i'
+        for path in sorted(skin.glob('*.xml')):
+            if path.name.startswith('script-skinvariables'):
+                continue
+            text = path.read_text(encoding='utf-8')
+            if 'Bald' not in text and 'bald' not in text:
+                continue
+            for anim in ET.parse(path).getroot().iter('animation'):
+                if anim.get('type') != 'Focus' or anim.find("effect[@type='fade']") is None:
+                    continue
+                with self.subTest(file=path.name):
+                    self.assertEqual(anim.get('reversible'), 'false')
