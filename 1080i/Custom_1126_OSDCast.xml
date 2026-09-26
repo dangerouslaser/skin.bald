@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald video OSD, down chain: cast and crew of what is playing, from TMDb Helper (docs/SPEC.md 5.16, "Video OSD").
+     TMDb Helper is an optional dependency: without it this panel is not in the chain (Bald_OSDChainCast). Down switches
+     the row from cast to crew, Up back to cast and then closes the panel. The tray shows the focused person; Select
+     opens their biography in the text viewer (1102). Layout and data: Includes_Bald_OSD.xml. -->
+<window type="dialog" id="1126">
+	<defaultcontrol always="true">8160</defaultcontrol>
+	<zorder>1</zorder>
+	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<onload>ClearProperty(Bald.OSD.Credits,home)</onload>
+	<onunload>ClearProperty(Bald.OSD.Credits,home)</onunload>
+	<include>Bald_OSDAnimPanel</include>
+	<controls>
+		<control type="group">
+			<include content="Bald_OSDPanelHeading"><param name="label">$VAR[Bald_OSDCastHeading]</param></include>
+			<control type="list" id="8160">
+				<left>84</left>
+				<top>516</top>
+				<width>1752</width>
+				<height>264</height>
+				<orientation>horizontal</orientation>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<preloaditems>2</preloaditems>
+				<onup condition="String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">ClearProperty(Bald.OSD.Credits,home)</onup>
+				<onup condition="!String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">Dialog.Close(1126)</onup>
+				<ondown condition="!String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">SetProperty(Bald.OSD.Credits,crew,home)</ondown>
+				<onclick>SetProperty(TextViewer_Header,$ESCINFO[ListItem.Label],home)</onclick>
+				<onclick>SetProperty(TextViewer_Text,$ESCVAR[Bald_OSDPersonText],home)</onclick>
+				<onclick>ActivateWindow(1102)</onclick>
+				<content>$VAR[Bald_OSDCastPath]</content>
+				<itemlayout width="240" height="264">
+					<include>Bald_CastItem</include>
+				</itemlayout>
+				<focusedlayout width="240" height="264">
+					<include content="Bald_CastItem"><param name="focused">true</param></include>
+				</focusedlayout>
+				<animation type="Conditional" condition="Container(8160).IsUpdating">
+					<effect type="fade" start="100" end="34" time="160" tween="sine" easing="inout" />
+				</animation>
+			</control>
+			<include content="Bald_OSDPanelTray">
+				<param name="title">$INFO[Container(8160).ListItem.Label]</param>
+				<param name="meta">$INFO[Container(8160).ListItem.Label2]</param>
+				<param name="text">$VAR[Bald_OSDPersonText]</param>
+			</include>
+			<include content="Bald_OSDPanelHints">
+				<param name="first">$LOCALIZE[31632]</param>
+				<param name="second">$VAR[Bald_OSDCastHint]</param>
+			</include>
+		</control>
+	</controls>
+</window>

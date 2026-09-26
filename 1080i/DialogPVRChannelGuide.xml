@@ -4,6 +4,8 @@
      it with the channel's programmes, selects the one on now and opens information on Select; scrollbar 60 is the
      list's page control. -->
 <window>
+	<!-- The video OSD's auto-close stops while the guide is browsed. -->
+	<onload>CancelAlarm(bald_osd_close,true)</onload>
 	<defaultcontrol always="true">11</defaultcontrol>
 	<depth>DepthOSD</depth>
 	<include>Bald_PVRAnimOverlay</include>
@@ -23,7 +25,12 @@
 			<control type="label" id="2"><font></font><include>HiddenObject</include></control>
 			<control type="fixedlist" id="11">
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>780</width><height>512</height>
-				<onleft>11</onleft><onright>11</onright><onup>11</onup><ondown>11</ondown>
+				<onleft>11</onleft><onright>11</onright><onup>11</onup>
+				<!-- Opened from the video OSD's down chain (Includes_Bald_OSD.xml): Right, or Down past the last programme,
+				     opens the next panel of the chain, the channel list. Otherwise Down wraps as before. -->
+				<onright condition="Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</onright>
+				<ondown condition="![Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]]">11</ondown>
+				<ondown condition="Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</ondown>
 				<movement>3</movement><focusposition>3</focusposition>
 				<pagecontrol>60</pagecontrol><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<itemlayout width="780" height="64"><include>Bald_PVREpgRow</include></itemlayout>

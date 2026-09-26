@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald video OSD, down chain: the playlist, or for a library episode the rest of its season (docs/SPEC.md 5.16,
+     "Video OSD"). A row of landscape tiles under the lifted bar with a tray for the focused item. The playing item has
+     an accent dot; the row opens on what plays next (the bald_osd_playlist_focus timer, Timers.xml). Select plays an
+     item (Kodi's default action for a video item). Up closes the panel, Down opens the next panel of the chain.
+     Layout and data: Includes_Bald_OSD.xml. -->
+<window type="dialog" id="1125">
+	<defaultcontrol always="true">8150</defaultcontrol>
+	<zorder>1</zorder>
+	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<onload>ClearProperty(Bald.OSD.Placed,home)</onload>
+	<include>Bald_OSDAnimPanel</include>
+	<controls>
+		<control type="group">
+			<include content="Bald_OSDPanelCovered"><param name="condition">Window.IsVisible(videobookmarks) | Window.IsVisible(1126)</param></include>
+			<include content="Bald_OSDPanelHeading"><param name="label">$VAR[Bald_OSDPlaylistHeading]</param></include>
+			<control type="list" id="8150">
+				<left>84</left>
+				<top>516</top>
+				<width>1752</width>
+				<height>264</height>
+				<orientation>horizontal</orientation>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<preloaditems>2</preloaditems>
+				<onup>Dialog.Close(1125)</onup>
+				<include>Bald_OSDChainFrom_3</include>
+				<content target="videos">$VAR[Bald_OSDPlaylistPath]</content>
+				<itemlayout width="344" height="264">
+					<include>Bald_OSDPanelTile</include>
+				</itemlayout>
+				<focusedlayout width="344" height="264">
+					<include content="Bald_OSDPanelTile">
+						<param name="focused">true</param>
+						<param name="dim">bald_ink</param>
+						<param name="color">bald_ink</param>
+					</include>
+				</focusedlayout>
+				<animation type="Conditional" condition="Container(8150).IsUpdating">
+					<effect type="fade" start="100" end="34" time="160" tween="sine" easing="inout" />
+				</animation>
+			</control>
+			<include content="Bald_OSDPanelTray">
+				<param name="title">$INFO[Container(8150).ListItem.Title]</param>
+				<param name="meta">$VAR[Bald_OSDPlaylistTrayMeta]</param>
+				<param name="text">$INFO[Container(8150).ListItem.Plot]</param>
+			</include>
+			<include content="Bald_OSDPanelHints">
+				<param name="first">$LOCALIZE[31662]</param>
+				<param name="second">$VAR[Bald_OSDHintAfter3]</param>
+			</include>
+		</control>
+	</controls>
+</window>

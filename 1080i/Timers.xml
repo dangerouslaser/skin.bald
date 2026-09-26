@@ -22,6 +22,17 @@
         <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(videoosd)</onstart>
         <stop>String.IsEmpty(Window(home).Property(Bald.OSD.Close))</stop>
     </timer>
+    <!-- Video OSD playlist panel (1125): once its row has loaded, move it to what plays next. Playlist.Position is
+         1-based, so as a 0-based index it names the next item; for a season (sorted by episode, starting at 1) the
+         current episode number does the same. One shot per panel: 1125 clears Bald.OSD.Placed when it opens. -->
+    <timer>
+        <name>bald_osd_playlist_focus</name>
+        <start>Window.IsActive(1125) + !Container(8150).IsUpdating + Integer.IsGreater(Container(8150).NumItems,0) + String.IsEmpty(Window(home).Property(Bald.OSD.Placed))</start>
+        <onstart>SetProperty(Bald.OSD.Placed,1,home)</onstart>
+        <onstart condition="Integer.IsGreater(Playlist.Length(video),1)">SetFocus(8150,$INFO[Playlist.Position(video)],absolute)</onstart>
+        <onstart condition="!Integer.IsGreater(Playlist.Length(video),1) + !String.IsEmpty(VideoPlayer.Episode)">SetFocus(8150,$INFO[VideoPlayer.Episode],absolute)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.OSD.Placed))</stop>
+    </timer>
     <!-- Bald skin timers run in CApplication::ProcessSlow, every 500 ms: fine for row start and idle, too coarse
          for anything that must follow item changes. -->
     <!-- Bald Home. Row start: a fixedlist first selects the item at its focus position (slot 2, or slot 5 on a poster

@@ -3,6 +3,8 @@
      (Team Kodi, GPL-2.0-or-later). Kodi binds list 11 (CGUIDialogPVRItemsViewBase) and handles Select, number entry
      and the channel-group actions itself; scrollbar 60 is the list's page control. -->
 <window>
+	<!-- The video OSD's auto-close stops while the channels are browsed. -->
+	<onload>CancelAlarm(bald_osd_close,true)</onload>
 	<defaultcontrol always="true">11</defaultcontrol>
 	<depth>DepthOSD</depth>
 	<include>Bald_PVRAnimOverlay</include>

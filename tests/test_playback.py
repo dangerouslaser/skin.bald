@@ -47,7 +47,7 @@ WINDOWS = {
 }
 # Windows the Bald video OSD redesigned (Includes_Bald_OSD.xml, tests/test_osd.py): their layout, navigation and
 # visibility are Bald's own, so only the ids Kodi binds are compared with Estuary.
-REDESIGNED = {"DialogSeekBar.xml", "VideoOSD.xml"}
+REDESIGNED = {"DialogSeekBar.xml", "VideoOSD.xml", "VideoOSDBookmarks.xml"}
 # Files restyled by this pass: the windows plus their includes.
 FILES = list(WINDOWS) + ["Includes_Bald_Playback.xml", "Includes_SettingsDialog.xml"]
 # Estuary includes still called: they carry no Estuary colours or fonts (the popup surface and buttons are Bald).
