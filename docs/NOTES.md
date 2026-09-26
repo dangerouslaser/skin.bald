@@ -152,7 +152,8 @@ Static checks only (`tools/kodi_dev.py validate`, the unit tests); nothing here 
 - **Deliberately left alone or dropped.**
   - The TV guide (`MyPVRGuide.xml`, `Bald_EpgGrid`, `Bald_PVRGuideTools`) and the shared `PVRProgress` and
     `PVRChannelNumberInput` (used by the seek bar and top-bar overlay, another stream's files). The Live TV windows
-    use their own `Bald_PVRChannelNumberInput`.
+    use their own `Bald_PVRChannelNumberInput`. (After the merge review the guide uses it too, and the two Estuary
+    includes, which nothing called any more, were removed.)
   - `Includes_MediaMenu.xml` (`PVRSideBar`, `PVRQuickNavItemsCommon`) and the Estuary PVR variables in
     `Variables.xml` (`BreadcrumbsPVR*Var`, `PVRNextProgrammeLabel`, `PVRInfoPanelDateDurationLabel`, ...) now have no
     Live TV caller but are shared files; left for a later dead-code pass.

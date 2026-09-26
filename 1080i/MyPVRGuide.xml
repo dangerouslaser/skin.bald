@@ -27,7 +27,7 @@
 			<focusedlayout width="1" height="1" />
 		</control>
 		<control type="group" id="63"><include content="Bald_EpgGrid"><param name="control_id" value="50" /></include></control>
-		<include>PVRChannelNumberInput</include>
+		<include>Bald_PVRChannelNumberInput</include>
 		<include>Bald_PVRGuideTools</include>
 		<control type="label" id="29"><font></font><include>HiddenObject</include></control>
 		<control type="label" id="30"><font></font><include>HiddenObject</include></control>
