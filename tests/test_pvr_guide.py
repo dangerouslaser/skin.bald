@@ -28,7 +28,10 @@ class PVRGuideTests(unittest.TestCase):
         self.assertIsNotNone(guide.find(".//control[@id='63']"))
         self.assertIsNotNone(guide.find(".//include[@content='Bald_EpgGrid']"))
         self.assertIsNotNone(guide.find(".//include[.='Bald_PVRGuideTools']"))
-        self.assertIsNotNone(guide.find(".//include[.='PVRChannelNumberInput']"))
+        # Direct channel number entry, drawn as the Live TV windows draw it.
+        number = [node for node in Skin().window('MyPVRGuide.xml').iter('control')
+                  if node.get('type') == 'label' and 'PVR.ChannelNumberInput' in (node.findtext('label') or '')]
+        self.assertEqual([node.findtext('font') for node in number], ['Bald_Clock'])
 
         includes = ET.parse(ROOT / 'Includes_PVR.xml').getroot()
         # The grid as the guide window resolves it: one epggrid, the window's control 50.
