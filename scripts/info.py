@@ -318,8 +318,19 @@ def run(action="", media_type="", dbid=""):
             tv_position(xbmc, window, identity, target[0], target[1], media_type == "episode")
         return
     if action == "play":
-        if media_type == "episode" and valid_id and xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
+        if media_type != "episode" or not valid_id or not xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
+            return
+        home = xbmcgui.Window(10000)
+        # Repeat Select while info closes must not start a second playback.
+        if home.getProperty("Bald.InfoPlay"):
+            return
+        token = uuid.uuid4().hex
+        home.setProperty("Bald.InfoPlay", token)
+        try:
             play_episode(xbmc, int(dbid))
+        finally:
+            if home.getProperty("Bald.InfoPlay") == token:
+                home.clearProperty("Bald.InfoPlay")
         return
     if action == "recommendations":
         if window.getProperty("Bald.Identity") != identity:
