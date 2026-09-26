@@ -23,9 +23,9 @@ A Kodi 22 skin: minimal, artwork-first, fluid motion. Kodi 22 only. `addon.xml` 
 ## Conventions
 
 - Coordinates are 1080i (1920 x 1080). Safe margin is 96 px on every side.
-- One UI font family, Instrument Sans, shipped as TTF in `fonts/`, declared in `xml/Font.xml`.
+- One UI font family, Instrument Sans, shipped as TTF in `fonts/`, declared in `1080i/Font.xml`.
 - Animation curves map exactly as the spec says: move = `tween="cubic" easing="out"`, fade = `tween="sine" easing="inout"`, pop = `tween="back" easing="out"`. Use only fade, slide and zoom.
-- Put repeated control groups and animations in `xml/Includes_*.xml` with params rather than copying them.
+- Put repeated control groups and animations in `1080i/Includes_*.xml` with params rather than copying them.
 - Utility windows (dialogs, player OSD, settings, add-on and file browsers, library and PVR windows) start as copies of Kodi 22's bundled Estuary, taken from
   `/Applications/Kodi.app/Contents/Resources/Kodi/addons/skin.estuary/` so the version matches exactly. Keep Estuary's license notices. The skin is GPL-2.0-or-later.
 - Native windows for alpha 0.1: `Home.xml` and `DialogVideoInfo.xml`. Everything else stays Estuary until it is redesigned.
