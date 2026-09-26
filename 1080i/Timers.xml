@@ -64,7 +64,9 @@
         <onstart condition="String.IsEqual(Container(9103).Position,5)">Control.Move(9103,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9103))</stop>
     </timer>
-    <!-- The first Movies and TV Shows rows preview in the menu before they are ever focused. -->
+    <!-- Each hub's first row (slots 1-8: 9201 to 9901) and Live TV's (9051) preview in the menu before they are ever
+         focused. Timers.xml cannot be generated, so every slot has one; a slot without rows has no container, and
+         the start condition never holds. -->
     <timer>
         <name>bald_rowstart_9201</name>
         <start>Window.IsActive(home) + !Container(9201).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9201)) + [[String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)] | [String.IsEqual(Container(9201).CurrentItem,6) + String.IsEqual(Container(9201).Position,5)]]</start>
@@ -80,6 +82,62 @@
         <onstart condition="String.IsEqual(Container(9301).Position,2)">Control.Move(9301,-2)</onstart>
         <onstart condition="String.IsEqual(Container(9301).Position,5)">Control.Move(9301,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9301))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9401</name>
+        <start>Window.IsActive(home) + !Container(9401).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9401)) + [[String.IsEqual(Container(9401).CurrentItem,3) + String.IsEqual(Container(9401).Position,2)] | [String.IsEqual(Container(9401).CurrentItem,6) + String.IsEqual(Container(9401).Position,5)]]</start>
+        <onstart>SetProperty(Bald.Start9401,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9401).Position,2)">Control.Move(9401,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9401).Position,5)">Control.Move(9401,-5)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9401))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9501</name>
+        <start>Window.IsActive(home) + !Container(9501).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9501)) + [[String.IsEqual(Container(9501).CurrentItem,3) + String.IsEqual(Container(9501).Position,2)] | [String.IsEqual(Container(9501).CurrentItem,6) + String.IsEqual(Container(9501).Position,5)]]</start>
+        <onstart>SetProperty(Bald.Start9501,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9501).Position,2)">Control.Move(9501,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9501).Position,5)">Control.Move(9501,-5)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9501))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9601</name>
+        <start>Window.IsActive(home) + !Container(9601).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9601)) + [[String.IsEqual(Container(9601).CurrentItem,3) + String.IsEqual(Container(9601).Position,2)] | [String.IsEqual(Container(9601).CurrentItem,6) + String.IsEqual(Container(9601).Position,5)]]</start>
+        <onstart>SetProperty(Bald.Start9601,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9601).Position,2)">Control.Move(9601,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9601).Position,5)">Control.Move(9601,-5)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9601))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9701</name>
+        <start>Window.IsActive(home) + !Container(9701).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9701)) + [[String.IsEqual(Container(9701).CurrentItem,3) + String.IsEqual(Container(9701).Position,2)] | [String.IsEqual(Container(9701).CurrentItem,6) + String.IsEqual(Container(9701).Position,5)]]</start>
+        <onstart>SetProperty(Bald.Start9701,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9701).Position,2)">Control.Move(9701,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9701).Position,5)">Control.Move(9701,-5)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9701))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9801</name>
+        <start>Window.IsActive(home) + !Container(9801).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9801)) + [[String.IsEqual(Container(9801).CurrentItem,3) + String.IsEqual(Container(9801).Position,2)] | [String.IsEqual(Container(9801).CurrentItem,6) + String.IsEqual(Container(9801).Position,5)]]</start>
+        <onstart>SetProperty(Bald.Start9801,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9801).Position,2)">Control.Move(9801,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9801).Position,5)">Control.Move(9801,-5)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9801))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9901</name>
+        <start>Window.IsActive(home) + !Container(9901).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9901)) + [[String.IsEqual(Container(9901).CurrentItem,3) + String.IsEqual(Container(9901).Position,2)] | [String.IsEqual(Container(9901).CurrentItem,6) + String.IsEqual(Container(9901).Position,5)]]</start>
+        <onstart>SetProperty(Bald.Start9901,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9901).Position,2)">Control.Move(9901,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9901).Position,5)">Control.Move(9901,-5)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9901))</stop>
+    </timer>
+    <timer>
+        <name>bald_rowstart_9051</name>
+        <start>Window.IsActive(home) + !Container(9051).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9051)) + [[String.IsEqual(Container(9051).CurrentItem,3) + String.IsEqual(Container(9051).Position,2)] | [String.IsEqual(Container(9051).CurrentItem,6) + String.IsEqual(Container(9051).Position,5)]]</start>
+        <onstart>SetProperty(Bald.Start9051,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9051).Position,2)">Control.Move(9051,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9051).Position,5)">Control.Move(9051,-5)</onstart>
+        <stop>!String.IsEmpty(Window(home).Property(Bald.Start9051))</stop>
     </timer>
     <!-- Bald startup splash (Home.xml, Includes_Bald_Home.xml Bald_Splash): lift it once every row has loaded (the
          9194 marker shows the Bald_RowsLoaded expression, which a timer condition cannot use) or the 10 s alarm Startup.xml set
