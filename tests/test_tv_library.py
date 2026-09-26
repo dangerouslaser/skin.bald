@@ -40,7 +40,7 @@ class TVLibraryTests(unittest.TestCase):
         series = self.root.find(".//control[@id='520']")
         seasons = self.root.find(".//control[@id='530']")
         episodes = self.root.find(".//control[@id='540']")
-        self.assertEqual([n.text for n in series.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters)'])
+        self.assertEqual([n.text for n in series.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters,520)'])
         self.assertEqual(seasons.findtext('ondown'), 'noop')
         self.assertIsNone(episodes.find('ondown'))
 

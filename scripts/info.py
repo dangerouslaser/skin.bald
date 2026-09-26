@@ -116,7 +116,7 @@ def run(action="", media_type="", dbid=""):
 
     if action == "letters":
         from letters import publish
-        publish(xbmc, xbmcgui)
+        publish(xbmc, xbmcgui, media_type)
         return
 
     identity = "{}:{}".format(media_type, dbid)

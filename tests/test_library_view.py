@@ -21,7 +21,7 @@ class LibraryViewTests(unittest.TestCase):
         self.assertIsNone(control.find("content"))
         self.assertEqual(int(control.findtext("width")), 3 * int(control.find("itemlayout").get("width")))
         self.assertEqual(control.findtext("onup"), "9150")
-        self.assertEqual([n.text for n in control.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters)'])
+        self.assertEqual([n.text for n in control.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters,510)'])
 
     def test_caption_reuses_home_media_flags_and_motion(self):
         caption = self.view.find("include[@name='Bald_LibraryCaption']//include")

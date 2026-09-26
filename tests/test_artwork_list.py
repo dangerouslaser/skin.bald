@@ -14,7 +14,7 @@ class ArtworkListTests(unittest.TestCase):
         self.assertEqual(control.findtext('visible'), 'Container.Content(movies)')
         self.assertEqual(int(control.findtext('height')), 7 * int(control.find('itemlayout').get('height')))
         self.assertEqual(control.findtext('onleft'), '9150')
-        self.assertEqual([n.text for n in control.findall('onright')], ['SetFocus(9160)', 'RunScript(skin.bald,letters)'])
+        self.assertEqual([n.text for n in control.findall('onright')], ['SetFocus(9160)', 'RunScript(skin.bald,letters,514)'])
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
         self.assertIn('514', nav.findtext('views').split(','))
         self.assertIn('View_514_Bald_ArtworkList', [n.text for n in nav.iter('include')])

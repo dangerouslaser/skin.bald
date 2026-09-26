@@ -18,7 +18,7 @@ class PosterLowTests(unittest.TestCase):
         self.assertEqual(int(control.findtext('width')), 8 * int(control.find('itemlayout').get('width')))
         self.assertEqual((control.findtext('left'), control.findtext('width')), ('96', '1248'))
         self.assertGreaterEqual(int(control.findtext('height')), int(control.find('focusedlayout').get('height')))
-        self.assertEqual([n.text for n in control.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters)'])
+        self.assertEqual([n.text for n in control.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters,515)'])
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
         self.assertIn('515', nav.findtext('views').split(','))
         self.assertIn('View_515_Bald_PosterLow', [n.text for n in nav.iter('include')])
