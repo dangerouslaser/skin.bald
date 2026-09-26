@@ -49,7 +49,7 @@
 			<control type="textbox" id="15599">
 				<left>Bald_PreviewLeft</left><top>584</top><width>528</width><height>300</height>
 				<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor>
-				<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+				<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(Bald.ScrollPlots)</autoscroll>
 				<label>$INFO[MusicPlayer.Title,[COLOR bald_ink],[/COLOR][CR]]$INFO[MusicPlayer.Artist,,[CR]]$INFO[MusicPlayer.Album]</label>
 				<visible>Player.HasAudio</visible>
 			</control>

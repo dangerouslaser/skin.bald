@@ -853,7 +853,7 @@
 						<font>Bald_CaptionMeta</font>
 						<textcolor>bald_ink60</textcolor>
 						<label>$INFO[System.ProfileName]</label>
-						<visible>Skin.HasSetting(show_profilename) + Integer.IsGreater(System.ProfileCount,1) + !Player.HasMedia</visible>
+						<visible>Skin.HasSetting(Bald.HeaderProfile) + Integer.IsGreater(System.ProfileCount,1) + !Player.HasMedia</visible>
 					</control>
 					<control type="label">
 						<width min="1" max="200">auto</width>
@@ -862,7 +862,7 @@
 						<font>Bald_CaptionMeta</font>
 						<textcolor>bald_ink60</textcolor>
 						<label>$INFO[Weather.Data(Current.Temperature)]</label>
-						<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched</visible>
+						<visible>Skin.HasSetting(Bald.HeaderWeather) + Weather.IsFetched</visible>
 						<visible>!Window.IsActive(weather) + [!Window.IsActive(home) | !String.IsEqual(Container(9000).ListItem.Property(id),weather)]</visible>
 					</control>
 					<control type="label">

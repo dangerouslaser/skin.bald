@@ -1680,7 +1680,7 @@ msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 msgctxt "#31756"
-msgid "Choose which technical details are displayed with movies and episodes."
+msgid "Choose which details Bald shows with titles, in list views and in page headers."
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
@@ -1690,17 +1690,7 @@ msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 msgctxt "#31758"
-msgid "Configure idle motion and persistent navigation help."
-msgstr ""
-
-#: /1080i/Custom_1118_BaldAppearance.xml
-msgctxt "#31759"
-msgid "Estuary windows"
-msgstr ""
-
-#: /1080i/Custom_1118_BaldAppearance.xml
-msgctxt "#31760"
-msgid "Library, dialog and player windows that still use Estuary's design, until Bald redesigns them."
+msgid "Configure idle motion, navigation help, plot scrolling and startup."
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
@@ -2603,4 +2593,28 @@ msgstr ""
 #. Appearance > Artwork: image pack for weather icons
 msgctxt "#31989"
 msgid "Weather icon pack"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: how list views show a title's original title
+msgctxt "#31990"
+msgid "Titles in list views"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: profile name on the library page header
+msgctxt "#31991"
+msgid "Profile name in page headers"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: current temperature on the library page header
+msgctxt "#31992"
+msgid "Temperature in page headers"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Behavior: long plots scroll on their own
+msgctxt "#31993"
+msgid "Scroll long plots"
 msgstr ""

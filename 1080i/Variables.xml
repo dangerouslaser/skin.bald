@@ -76,16 +76,10 @@
 		<value condition="Container.Content(recordings)">$INFO[ListItem.Label]$VAR[PVRListItemSubLabelFocused, (,)]</value>
 		<value condition="[!String.IsEmpty(ListItem.EpgEventTitle) | !String.IsEmpty(ListItem.TitleExtraInfo)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Label]$VAR[PVRListItemSubLabelFocused, (,)]</value>
 		<value condition="[!String.IsEmpty(ListItem.Season) | !String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Title,,: ]$VAR[SeasonEpisodeLabel]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_1st) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]$INFO[ListItem.Label, (,)]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_2nd) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.Label]$INFO[ListItem.OriginalTitle, (,)]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_Only) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.OriginalTitle),originalfirst) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]$INFO[ListItem.Label, (,)]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.OriginalTitle),localisedfirst) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.Label]$INFO[ListItem.OriginalTitle, (,)]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.OriginalTitle),original) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]</value>
 		<value>$INFO[ListItem.Label]</value>
-	</variable>
-	<variable name="OriginalTitleSetting">
-		<value condition="Skin.HasSetting(OriginalTitleFormat_Only)">$LOCALIZE[31049]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_1st)">$LOCALIZE[31050]</value>
-		<value condition="Skin.HasSetting(OriginalTitleFormat_2nd)">$LOCALIZE[31051]</value>
-		<value>$LOCALIZE[571]</value>
 	</variable>
 	<variable name="ListLabel2Var">
 		<value condition="String.IsEmpty(Container.PluginName) + Container.Content(tvshows) + Container.SortMethod(29)">$VAR[WatchedStatusVar]</value>
@@ -177,11 +171,6 @@
 		<value condition="!Container.SortMethod(1)">$INFO[ListItem.Label2]</value>
 		<value condition="String.IsEqual(ListItem.Path,addons://all/)">$INFO[ListItem.AddonOrigin,, - ]$INFO[ListItem.AddonVersion]</value>
 		<value>$INFO[ListItem.AddonCreator,, - ]$INFO[ListItem.AddonVersion]</value>
-	</variable>
-	<variable name="ProfileIdentificationLabel2Var">
-		<value condition="Skin.HasSetting(show_profilename)">$LOCALIZE[31165]</value>
-		<value condition="Skin.HasSetting(show_profileavatar)">$LOCALIZE[31166]</value>
-		<value>$LOCALIZE[16018]</value>
 	</variable>
 	<variable name="AddonLifecycleType">
 		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">[COLOR bald_accent]$LOCALIZE[24170][/COLOR][CR]$INFO[ListItem.AddonLifecycleDesc]</value> <!-- Deprecated -->

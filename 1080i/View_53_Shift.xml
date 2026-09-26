@@ -26,7 +26,7 @@
 				<control type="textbox">
 					<left>Bald_SafeLeft</left><top>400</top><width>1140</width><height>100</height>
 					<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowsePlot]</label>
-					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll) + !System.HasActiveModalDialog</autoscroll>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(Bald.ScrollPlots) + !System.HasActiveModalDialog</autoscroll>
 				</control>
 			</control>
 			<control type="list" id="53">

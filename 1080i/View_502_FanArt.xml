@@ -42,7 +42,7 @@
 				<control type="textbox">
 					<left>Bald_PreviewLeft</left><top>640</top><width>528</width><height>240</height>
 					<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowsePlot]</label>
-					<autoscroll time="3000" delay="7000" repeat="5000">!System.HasActiveModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="3000" delay="7000" repeat="5000">!System.HasActiveModalDialog + Skin.HasSetting(Bald.ScrollPlots)</autoscroll>
 				</control>
 			</control>
 		</control>

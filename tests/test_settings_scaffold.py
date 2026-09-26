@@ -13,20 +13,11 @@ WINDOWS = {
     "SkinSettings.xml": ("9000", ["9001"]),
     "Custom_1116_BaldHomeWidgets.xml": ("9100", ["9200", "9201", "9202", "9203", "9204", "9205", "9206", "9207", "9208", "9209"]),
     "Custom_1117_BaldHomeScreens.xml": ("9300", ["9400", "9401", "9402"]),
-    "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9603", "9604", "9605", "9606", "9607", "9611", "9612", "9621", "9622", "9623", "9624"]),
+    "Custom_1118_BaldAppearance.xml": ("9500", ["9600", "9601", "9602", "9603", "9604", "9605", "9606", "9607", "9611", "9612", "9613", "9614", "9615", "9621", "9622", "9623", "9624", "9625"]),
     "Custom_1119_BaldPlayback.xml": ("9700", ["9800", "9801", "9802", "9803", "9811", "9812", "9821", "9822", "9831",
                                               "9832", "9833", "9834", "9835"]),
 }
 
-# Estuary skin settings that windows Bald still ships read, and one window (or Kodi-read file) that reads each. A
-# window reads a setting when its markup, the includes it calls (with their call conditions) or the variables and
-# expressions those reach name it; an include that no window calls does not count.
-LIVE_ESTUARY_SETTINGS = {
-    "autoscroll": "AddonBrowser.xml",
-    "show_weatherinfo": "AddonBrowser.xml",
-    "show_profilename": "AddonBrowser.xml",
-    "OriginalTitleFormat_1st": "AddonBrowser.xml",
-}
 # Estuary settings folded into a Bald setting, the Bald setting, and windows that must read it through it.
 FOLDED_ESTUARY_SETTINGS = {
     "hide_mediaflags": ("Bald.HideMediaFlags", ("AddonBrowser.xml", "MyMusicNav.xml")),
@@ -35,11 +26,16 @@ FOLDED_ESTUARY_SETTINGS = {
     "MovieGenreFanart": ("Bald.GenreFanart", ("MyVideoNav.xml",)),
     "WeatherFanart": ("Bald.WeatherFanart", ("MyWeather.xml",)),
     "WeatherOutlookIcon": ("Bald.WeatherIcons", ("MyWeather.xml",)),
+    "OriginalTitleFormat": ("Bald.OriginalTitle", ("AddonBrowser.xml", "MyVideoNav.xml")),
+    "show_profilename": ("Bald.HeaderProfile", ("AddonBrowser.xml", "MyPics.xml")),
+    "show_weatherinfo": ("Bald.HeaderWeather", ("AddonBrowser.xml", "MyPics.xml")),
+    "autoscroll": ("Bald.ScrollPlots", ("AddonBrowser.xml", "MyGames.xml", "MyVideoNav.xml")),
 }
 # Folded settings Startup.xml carries over (hide_mediaflags is only cleared: Bald's switch also governs Home).
 MIGRATED_ESTUARY_SETTINGS = [old for old in FOLDED_ESTUARY_SETTINGS if old != "hide_mediaflags"]
-# Files Kodi reads directly rather than as windows.
-KODI_READ_FILES = {"Timers.xml"}
+# Estuary settings retired with Appearance's "Estuary windows" category (docs/NOTES.md), which nothing may read.
+RETIRED_ESTUARY_SETTINGS = ("touchmode", "no_slide_animations", "background_overlay", "HomeFanart", "hide_mediaflags",
+                            "show_profileavatar", "show_none")
 DEAD_ESTUARY_SETTINGS = (
     "HomeMenuNo",
     "home_no_addons_categories_widget",
@@ -187,7 +183,7 @@ class SettingsScaffoldTests(unittest.TestCase):
     def test_appearance_rows_follow_category_ids_not_labels(self):
         root = self.windows["Custom_1118_BaldAppearance.xml"]
         ids = [item.get("id") for item in root.findall(".//control[@id='9500']/content/item")]
-        self.assertEqual(ids, ["1", "2", "3", "5", "4"])
+        self.assertEqual(ids, ["1", "2", "3", "5"])
         seen = set()
         for row in self.control("Custom_1118_BaldAppearance.xml", "9600").findall("control"):
             visible = all_of([node.text for node in row.findall("visible")])
@@ -198,20 +194,26 @@ class SettingsScaffoldTests(unittest.TestCase):
             seen.add(owners[0])
         self.assertEqual(seen, set(ids), "every category needs rows")
 
-    def test_live_estuary_settings_stay_reachable(self):
-        appearance = ET.tostring(self.windows["Custom_1118_BaldAppearance.xml"], encoding="unicode")
-        estuary = self.windows["Custom_1118_BaldAppearance.xml"].find(".//control[@id='9500']/content/item[@id='4']")
-        self.assertEqual(estuary.findtext("label"), loc("Estuary windows"))
-        for setting, reader in LIVE_ESTUARY_SETTINGS.items():
-            self.assertIn(setting, appearance, f"{setting} is no longer configurable")
-            text = (SKIN / reader).read_text() if reader in KODI_READ_FILES else window_reach(reader)
-            self.assertTrue(setting in text, f"{setting} is no longer read by {reader}")
+    def test_appearance_has_only_bald_rows(self):
+        # The "Estuary windows" category (item 4) is gone: every row is a Bald row in 9601-9699.
+        for row in self.control("Custom_1118_BaldAppearance.xml", "9600").findall("control"):
+            self.assertIn(int(row.get("id")), range(9601, 9700), row.get("id"))
+
+    def test_retired_and_folded_estuary_settings_are_read_nowhere(self):
+        # Only Startup.xml may name them, to carry a value over or clear it. Skin setting names are case-insensitive.
+        names = RETIRED_ESTUARY_SETTINGS + tuple(FOLDED_ESTUARY_SETTINGS)
+        pattern = re.compile(r"[(=](" + "|".join(map(re.escape, names)) + r")[.)&_,]", re.I)
+        for path in sorted(SKIN.glob("*.xml")):
+            if path.name in ("Startup.xml", "script-skinvariables-generator-includes.xml"):
+                continue
+            with self.subTest(file=path.name):
+                self.assertIsNone(pattern.search(path.read_text()))
 
     def test_folded_estuary_settings_are_read_as_bald_settings(self):
         appearance = ET.tostring(self.windows["Custom_1118_BaldAppearance.xml"], encoding="unicode")
         for old, (setting, readers) in FOLDED_ESTUARY_SETTINGS.items():
             # A bool reads as (Name); an image pack's strings as (Name.path) and its picker as property=Name&.
-            new_name = re.compile(r"[(=]" + re.escape(setting) + r"[.)&]")
+            new_name = re.compile(r"[(=]" + re.escape(setting) + r"[.)&,]")
             old_name = re.compile(r"[(=]" + re.escape(old) + r"[.)&_]", re.I)
             self.assertRegex(appearance, new_name, f"{setting} is not offered")
             self.assertNotRegex(appearance, old_name)
