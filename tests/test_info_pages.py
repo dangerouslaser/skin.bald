@@ -3,7 +3,8 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
-from kodi_includes import condition, expand, parse
+from conditions import equivalent, find_value, implies
+from kodi_includes import parse
 from skin_strings import loc
 
 
@@ -44,8 +45,10 @@ class InfoPagesTests(unittest.TestCase):
         self.assertEqual((frame.findtext("width"), frame.findtext("height")), ("1248", "702"))
         layers = frame.findall(".//include[@content='Bald_ArtLayer']")
         self.assertEqual(len(layers), 2)
-        self.assertEqual({node.findtext("param[@name='visible']") for node in layers}, {
-            "Integer.IsOdd(Container(5100).CurrentItem)", "Integer.IsEven(Container(5100).CurrentItem)"})
+        # One layer per parity of the focused recommendation, as Home's crossfade.
+        for parity in ("Odd", "Even"):
+            self.assertEqual(sum(equivalent(node.findtext("param[@name='visible']"),
+                                            f"Integer.Is{parity}(Container(5100).CurrentItem)") for node in layers), 1)
         for node in layers:
             self.assertEqual(node.findtext("param[@name='texture']"), "$VAR[Bald_ItemFanart5100]")
         home = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
@@ -70,13 +73,15 @@ class InfoPagesTests(unittest.TestCase):
     def test_episode_overview_uses_episode_identity_and_cast_poster_crops(self):
         title = self.shared.find("variable[@name='Bald_InfoTitle']")
         episode = 'String.IsEqual(ListItem.DBType,episode)'
-        episode_title = next(value for value in title.findall('value') if condition(value.get('condition')) == episode)
-        self.assertEqual(episode_title.text, '$INFO[ListItem.Title]')
-        meta = next(value for value in self.shared.findall("variable[@name='Bald_InfoMeta']/value") if condition(value.get('condition')) == episode)
+        values = [(value.get('condition'), value.text) for value in title.findall('value')]
+        self.assertEqual(find_value(values, episode), '$INFO[ListItem.Title]')
+        meta = find_value([(value.get('condition'), value.text)
+                           for value in self.shared.findall("variable[@name='Bald_InfoMeta']/value")], episode)
         for field in ('ListItem.TVShowTitle', 'ListItem.Season', 'ListItem.Episode'):
-            self.assertIn(field, meta.text)
+            self.assertIn(field, meta)
         overview_title = next(node for node in self.pages.findall("include[@name='Bald_InfoOverview']//control[@type='label']") if node.findtext('label') == '$VAR[Bald_InfoTitle]')
-        self.assertIn(episode, expand(overview_title.findtext('visible')))
+        # An episode always shows its title as text (its show's clearlogo would name the show, not the episode).
+        self.assertTrue(implies(episode, overview_title.findtext('visible')))
         poster = self.pages.find(".//control[@id='5204']")
         self.assertEqual(poster.findtext('aspectratio'), 'scale')
 
@@ -123,9 +128,17 @@ class InfoPagesTests(unittest.TestCase):
         home = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         shared = home.find("include[@name='Bald_ArtLogo']")
         self.assertEqual(shared.findtext("param[@name='ignore_home_row']"), "false")
+        some_logo = " | ".join(f"!String.IsEmpty({art})" for art in (
+            "Container($PARAM[c]).ListItem.Art(clearlogo)", "Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)",
+            "Container.Art(tvshow.clearlogo)"))
         for image in shared.findall("definition/control"):
-            self.assertIn("String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])", image.findtext("visible"))
-            self.assertIn("!String.IsEmpty", image.findtext("visible"))
+            visible = image.findtext("visible")
+            # On Home the logo follows the current row; ignore_home_row="true" (used above) lifts that for the dialog.
+            self.assertTrue(implies(visible, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+                                    assume={"$PARAM[ignore_home_row]": False, "$PARAM[preview]": False}))
+            self.assertFalse(implies(visible, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+                                     assume={"$PARAM[ignore_home_row]": True}))
+            self.assertTrue(implies(visible, some_logo))
 
     def test_reuses_home_blur_and_clears_local_override(self):
         self.assertEqual(self.dialog.findtext(".//control[@id='5200']/include"), "Bald_BackdropImage")
@@ -138,10 +151,10 @@ class InfoPagesTests(unittest.TestCase):
         self.assertEqual(fallback.findtext("include"), "Bald_InfoBackToCast")
         timers = ET.parse(ROOT / "Timers.xml").getroot()
         timer = next(node for node in timers if node.findtext("name") == "bald_info_recommendations_ready")
-        condition = timer.findtext("start")
+        start = timer.findtext("start")
         for required in ("Control.HasFocus(5150)", "Window.IsActive(movieinformation)", "Integer.IsGreater(Container(5100).NumItems,0)"):
-            self.assertIn(required, condition)
-        self.assertNotIn("$EXP", condition)  # Not expanded by the skin timer loader.
+            self.assertTrue(implies(start, required), required)
+        self.assertNotIn("$EXP", start)  # Not expanded by the skin timer loader.
         self.assertEqual(timer.findtext("onstart"), "SetFocus(5100)")
 
 
