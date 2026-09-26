@@ -2,6 +2,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from kodi_includes import resolve_window
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -20,7 +22,7 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertEqual(item.findtext("onclick"), "ActivateWindow(1115)")
 
     def test_bald_settings_exposes_home_and_platform_settings(self):
-        root = ET.parse(ROOT / "1080i" / "Custom_1115_BaldSettings.xml").getroot()
+        root = resolve_window("Custom_1115_BaldSettings.xml")
         actions = [node.text for node in root.findall(".//onclick")]
         self.assertIn("ActivateWindow(1117)", actions)
         self.assertIn("ActivateWindow(1118)", actions)
