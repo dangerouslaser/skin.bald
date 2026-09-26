@@ -5,6 +5,7 @@ RunScript(skin.bald,open,movie,456)
 RunScript(skin.bald,tvinfo,episode,789)
 RunScript(skin.bald,play,episode,789)
 RunScript(skin.bald,font,DMSans)
+RunScript(skin.bald,hubs)  (one-time Home hubs migration, see hubs.py)
 No network requests, library writes, or long-running service.
 """
 import json
@@ -339,6 +340,11 @@ def run(action="", media_type="", dbid=""):
         return
     if action == "mouse":
         disable_mouse(xbmc)
+        return
+    if action == "hubs":
+        import xbmcvfs
+        from hubs import migrate
+        migrate(xbmc, xbmcgui, xbmcvfs)
         return
     if action == "font":
         # RunScript(skin.bald,font,<fontset id>): the id arrives in the second argument.

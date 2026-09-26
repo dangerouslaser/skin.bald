@@ -55,6 +55,9 @@ def main() -> None:
         assert "skin.bald/shortcuts/skinvariables-generator.json" in names
         assert "skin.bald/shortcuts/generator/screen.xml" in names
         assert "skin.bald/shortcuts/skinvariables-shortcut-homewidgets.json" in names
+        assert "skin.bald/shortcuts/skinvariables-shortcut-livetvwidgets.json" in names
+        assert "skin.bald/shortcuts/skinvariables-shortcut-hubs.json" in names
+        assert "skin.bald/scripts/hubs.py" in names
         assert "skin.bald/shortcuts/generator/screens.xml" in names
         assert "skin.bald/1080i/Includes_Bald_HomeDefaults.xml" in names
         assert not any("script-skinvariables-generator-includes" in name for name in names)
