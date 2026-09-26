@@ -274,7 +274,7 @@ class SettingsBackTests(unittest.TestCase):
         for name in ('Includes_Bald_Configure.xml', 'Custom_1115_BaldSettings.xml', 'Custom_1116_BaldHomeWidgets.xml',
                      'Custom_1117_BaldHomeScreens.xml', 'Custom_1118_BaldAppearance.xml', 'SkinSettings.xml',
                      'Settings.xml', 'SettingsCategory.xml',
-                     'SettingsProfile.xml'):
+                     'SettingsProfile.xml', 'SettingsSystemInfo.xml'):
             with self.subTest(file=name):
                 backs = [node.text for node in ET.parse(root / name).getroot().iter('onback')]
                 self.assertNotIn('PreviousMenu', backs)

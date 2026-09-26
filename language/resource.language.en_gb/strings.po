@@ -1179,6 +1179,7 @@ msgstr ""
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/SettingsCategory.xml
 #: /1080i/SettingsProfile.xml
+#: /1080i/SettingsSystemInfo.xml
 msgctxt "#31738"
 msgid "Back for settings"
 msgstr ""
@@ -2037,4 +2038,9 @@ msgstr ""
 #: /1080i/SettingsProfile.xml
 msgctxt "#31946"
 msgid "Select a profile to edit it, or add a new one."
+msgstr ""
+
+#: /1080i/SettingsSystemInfo.xml
+msgctxt "#31947"
+msgid "Up and down to browse"
 msgstr ""

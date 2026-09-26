@@ -56,6 +56,18 @@ Profiles (SettingsProfile.xml; CGUIWindowSettingsProfile)
 		Bald chrome: 9000 sidebar list (static items 1 General, 2 Profiles pick the pane),
 		9100 detail group, 9001 General rows grouplist
 
+System information (SettingsSystemInfo.xml; CGUIWindowSystemInfo)
+2-13	Text lines Kodi fills for the focused section
+30		Privacy policy text
+40		Section heading (the detail heading)
+52, 53	App name and version, build date
+60		Privacy policy scrollbar (30's pagecontrol)
+94-101	Section buttons: 94 Storage, 95 Summary, 96 Network, 97 Video, 98 Hardware, 99 PVR,
+		100 Privacy policy, 101 Thank you
+102		Thank-you group; 103 its QR multiimage
+104		Memory, CPU and version group (hidden on the thank-you page)
+		Bald chrome: 9000 section grouplist
+
 Global Search (script-globalsearch.xml, script.globalsearch 9.x)
 50		Results list
 990		New search button (right-hand options menu)
