@@ -13,6 +13,20 @@
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                         <value name="row_index">$MATH[1 + {item_x}]</value>
                         <value name="dots_width">$MATH[12 * {item_length_x} - 6]</value>
+                        <!-- The row's style (widget editor, row field "style"); anything else, or none, is fanart. -->
+                        <rules name="row_style">
+                            <rule>
+                                <condition>{item_style}==thumbnail</condition>
+                                <value>thumbnail</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_style}==logo</condition>
+                                <value>logo</value>
+                            </rule>
+                            <rule>
+                                <value>fanart</value>
+                            </rule>
+                        </rules>
                         <rules name="row_up">
                             <rule>
                                 <condition>{item_x}==0</condition>

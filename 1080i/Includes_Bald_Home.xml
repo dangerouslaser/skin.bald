@@ -587,12 +587,90 @@
 		</definition>
 	</include>
 
+	<!-- ============ Row styles ============ -->
+	<!-- Each Home row has a style, set in the widget editor (the Skin Variables row field "style") and passed to
+	     Bald_Row by the generator: fanart (the default, also for rows saved without a style), thumbnail or logo.
+	     Bald_RowTiles_<style> fills the row's fixedlist: its position and size, and its item layouts. -->
+	<include name="Bald_RowTiles_fanart">
+		<include content="Bald_RowLandscape" />
+	</include>
+	<include name="Bald_RowTiles_thumbnail">
+		<include content="Bald_RowLandscape"><param name="art">$VAR[Bald_ItemThumbnail]</param></include>
+	</include>
+	<include name="Bald_RowTiles_logo">
+		<include content="Bald_RowLandscape"><param name="overlay">Bald_TileLogo</param></include>
+	</include>
+	<!-- Landscape row: 176 x 99 tiles in 192 px slots. art is the tile texture; overlay names an include drawn over each
+	     tile (it gets the tile's diffuse). -->
+	<include name="Bald_RowLandscape">
+		<param name="art">$VAR[Bald_ItemFanart]</param>
+		<param name="overlay">Bald_TileOverlayNone</param>
+		<definition>
+			<left>86</left>
+			<top>884</top>
+			<width>1258</width>
+			<height>119</height>
+			<itemlayout width="192" height="119">
+				<include content="Bald_LandscapeTile"><param name="art">$PARAM[art]</param></include>
+				<include content="$PARAM[overlay]" />
+			</itemlayout>
+			<focusedlayout width="192" height="119">
+				<control type="group">
+					<!-- Tile focus pop: 280 pop to 1.05. While the menu is open the tile settles back and dims. -->
+					<animation type="Focus">
+						<effect type="zoom" start="100" end="105" center="98,59" time="280" tween="back" easing="out" />
+						<effect type="fade" start="55" end="100" time="300" tween="sine" easing="inout" />
+					</animation>
+					<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+						<effect type="zoom" start="100" end="95.2" center="98,59" time="300" tween="cubic" easing="out" />
+						<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
+					</animation>
+					<include content="Bald_LandscapeTile">
+						<param name="art">$PARAM[art]</param>
+						<param name="diffuse">FFFFFFFF</param>
+						<param name="ring">!$EXP[Bald_OverlayOpen]</param>
+					</include>
+					<include content="$PARAM[overlay]"><param name="diffuse">FFFFFFFF</param></include>
+				</control>
+			</focusedlayout>
+		</definition>
+	</include>
+	<include name="Bald_TileOverlayNone">
+		<definition />
+	</include>
+	<!-- Fanart + logo: the item's clearlogo (else the show's, Bald_ItemLogo) at the tile's bottom left, 8 px in, at most
+	     100 x 34, over the logo scrim clipped to the tile's corners. Hidden without a logo or with clearlogos turned off
+	     (Appearance). -->
+	<include name="Bald_TileLogo">
+		<param name="diffuse">bald_tile_dim</param>
+		<definition>
+			<control type="group">
+				<visible>$EXP[Bald_ShowClearlogo] + [!String.IsEmpty(ListItem.Art(clearlogo)) | !String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
+				<control type="image">
+					<left>10</left>
+					<top>10</top>
+					<width>176</width>
+					<height>99</height>
+					<texture diffuse="bald/tile.png">bald/scrim_logo.png</texture>
+				</control>
+				<control type="image">
+					<left>18</left>
+					<top>67</top>
+					<width>100</width>
+					<height>34</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<texture colordiffuse="$PARAM[diffuse]" background="true">$VAR[Bald_ItemLogo]</texture>
+				</control>
+			</control>
+		</definition>
+	</include>
+
 	<include name="Bald_RowDotsNone">
 		<definition />
 	</include>
-	<!-- A home row: label line plus fixedlist. Pass <content> elements as children.
-	     Focus travels to slot 2, then the row scrolls (440 move). Only the current row is visible;
-	     the others keep focus reachable with allowhiddenfocus. -->
+	<!-- A home row: label line plus fixedlist. Pass <content> elements as children. style picks the tiles
+	     (Bald_RowTiles_<style>, see Row styles above). Focus travels to slot 2, then the row scrolls (440 move).
+	     Only the current row is visible; the others keep focus reachable with allowhiddenfocus. -->
 	<include name="Bald_Row">
 		<param name="id" />
 		<param name="y" />
@@ -603,6 +681,7 @@
 		<param name="screen">home</param>
 		<param name="up" />
 		<param name="down">noop</param>
+		<param name="style">fanart</param>
 		<definition>
 			<control type="group">
 				<visible>[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]</visible>
@@ -656,10 +735,8 @@
 				</control>
 			</control>
 			<control type="fixedlist" id="$PARAM[id]">
-				<left>86</left>
-				<top>884</top>
-				<width>1258</width>
-				<height>119</height>
+				<!-- Position, size and item layouts come from the row's style. -->
+				<include content="Bald_RowTiles_$PARAM[style]" />
 				<!-- Kodi does not process hidden lists, so a row also counts as visible until its items load;
 				     that lets it load (and the row-start timer fix its selection) before it is first shown. Not while a
 				     dialog is up: <visible> has no window context then, and NumItems would read empty for every row. -->
@@ -707,26 +784,6 @@
 				<onback condition="$EXP[Bald_Screen_movies]">SetFocus(9002)</onback>
 				<onback condition="$EXP[Bald_Screen_tvshows]">SetFocus(9003)</onback>
 				<onclick>Action(Info)</onclick>
-				<itemlayout width="192" height="119">
-					<include content="Bald_LandscapeTile" />
-				</itemlayout>
-				<focusedlayout width="192" height="119">
-					<control type="group">
-						<!-- Tile focus pop: 280 pop to 1.05. While the menu is open the tile settles back and dims. -->
-						<animation type="Focus">
-							<effect type="zoom" start="100" end="105" center="98,59" time="280" tween="back" easing="out" />
-							<effect type="fade" start="55" end="100" time="300" tween="sine" easing="inout" />
-						</animation>
-						<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
-							<effect type="zoom" start="100" end="95.2" center="98,59" time="300" tween="cubic" easing="out" />
-							<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
-						</animation>
-						<include content="Bald_LandscapeTile">
-							<param name="diffuse">FFFFFFFF</param>
-							<param name="ring">!$EXP[Bald_OverlayOpen]</param>
-						</include>
-					</control>
-				</focusedlayout>
 				<nested />
 			</control>
 		</definition>

@@ -1132,6 +1132,25 @@ msgctxt "#31719"
 msgid "to"
 msgstr ""
 
+#. Home row style names (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31720"
+msgid "Fanart"
+msgstr ""
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31721"
+msgid "Thumbnail"
+msgstr ""
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31722"
+msgid "Fanart with logo"
+msgstr ""
+
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Settings.xml
 msgctxt "#31730"
@@ -1335,6 +1354,11 @@ msgstr ""
 #: /1080i/Custom_1118_BaldAppearance.xml
 msgctxt "#31766"
 msgid "Reset navigation hint"
+msgstr ""
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31767"
+msgid "Style"
 msgstr ""
 
 #: /1080i/Includes_Bald_Info.xml
