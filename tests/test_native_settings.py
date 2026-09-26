@@ -4,6 +4,7 @@ and the scaffold's tokens, fonts and motion. Checks structure, not XML spelling.
 import unittest
 import xml.etree.ElementTree as ET
 
+from conditions import equivalent
 from kodi_includes import SKIN, include_definitions, resolve_window
 
 ROOT = SKIN.parent
@@ -32,7 +33,7 @@ ROW_TEMPLATES = ("7", "8", "9", "12", "13", "15")
 # Motion (CLAUDE.md): move = cubic out, fade = sine in-out, pop = back out. Only fade, slide and zoom.
 CURVES = {"fade": ("sine", "inout"), "slide": ("cubic", "out"), "zoom": ("back", "out")}
 
-WINDOWS = ("Settings.xml", "SettingsCategory.xml")
+WINDOWS = ("Settings.xml", "SettingsCategory.xml", "SettingsProfile.xml")
 
 
 def tokens(path, tag):
@@ -165,6 +166,32 @@ class NativeSettingsTests(unittest.TestCase):
         open_button = self.control("Settings.xml", "9001")
         self.assertEqual(open_button.findtext("onclick"), "SendClick(9000)")
         self.assertEqual(open_button.findtext("onleft"), "9000")
+
+    # ---- Profiles ----
+
+    def test_profiles_keep_kodis_ids(self):
+        for control_id, kind in (("2", "list"), ("4", "radiobutton"), ("5", "button")):
+            self.assertEqual(self.control("SettingsProfile.xml", control_id).get("type"), kind, control_id)
+
+    def test_profile_panes_follow_the_sidebar_item_ids(self):
+        sidebar = self.control("SettingsProfile.xml", "9000")
+        self.assertEqual([item.get("id") for item in sidebar.findall("content/item")], ["1", "2"])
+        self.assertTrue(equivalent(self.control("SettingsProfile.xml", "9001").findtext("visible"),
+                                   "Container(9000).HasFocus(1)"))
+        self.assertTrue(equivalent(self.control("SettingsProfile.xml", "2").findtext("visible"),
+                                   "Container(9000).HasFocus(2)"))
+        self.assertEqual(sidebar.findtext("onright"), "9100")
+        self.assertEqual(self.control("SettingsProfile.xml", "9100").get("type"), "group")
+
+    def test_profile_rows_mark_focus_and_the_profile_in_use(self):
+        profiles = self.control("SettingsProfile.xml", "2")
+        focused = profiles.find("focusedlayout")
+        dots = [image for image in focused.iter("control") if image.findtext("texture") == "bald/dot.png"]
+        self.assertEqual(len(dots), 1)
+        self.assertEqual(dots[0].find("texture").get("colordiffuse"), "bald_accent")
+        for layout in (profiles.find("itemlayout"), focused):
+            checks = [image for image in layout.iter("control") if image.findtext("texture") == "bald/check.png"]
+            self.assertEqual([check.findtext("visible") for check in checks], ["ListItem.IsSelected"])
 
     # ---- Scaffold conventions ----
 

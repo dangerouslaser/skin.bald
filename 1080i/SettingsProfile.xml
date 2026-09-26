@@ -1,238 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Kodi's profile settings (window profiles), drawn in Bald's settings scaffold (Includes_Bald_Configure.xml).
+     Started from Kodi 22 Estuary's SettingsProfile.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt).
+     Kodi (CGUIWindowSettingsProfile) binds: 2 profile list (it fills the items and handles clicks), 4 login screen
+     toggle, 5 automatic login button. Sidebar items 1 and 2 pick the pane, as in Estuary. -->
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
-	<backgroundcolor>background</backgroundcolor>
+	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>
-		<include>DefaultBackground</include>
-		<control type="multiimage">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<fadetime>600</fadetime>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
-			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
-			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
+		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[13200]</param></include>
+		<control type="list" id="9000">
+			<include content="Bald_SettingsCategories"><param name="id">9000</param><param name="right">9100</param></include>
+			<content>
+				<item id="1">
+					<label>$LOCALIZE[128]</label>
+					<property name="note">$LOCALIZE[31945]</property>
+					<onclick>noop</onclick>
+				</item>
+				<item id="2">
+					<label>$LOCALIZE[13200]</label>
+					<property name="note">$LOCALIZE[31946]</property>
+					<onclick>noop</onclick>
+				</item>
+			</content>
 		</control>
-		<control type="group" id="9100">
-			<include>OpenClose_Right</include>
-			<left>472</left>
-			<control type="image">
-				<top>130</top>
-				<right>0</right>
-				<height>3</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-			</control>
-			<control type="image">
-				<bottom>134</bottom>
-				<right>0</right>
-				<height>3</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-			</control>
-			<control type="panel" id="2">
-				<top>148</top>
-				<left>30</left>
-				<visible>Container(9000).Hasfocus(2)</visible>
-				<right>0</right>
-				<bottom>137</bottom>
-				<onleft>9000</onleft>
-				<onright>9000</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
-				<scrolltime>200</scrolltime>
-				<itemlayout height="390" width="354">
-					<control type="image">
-						<top>5</top>
-						<width>320</width>
-						<height>380</height>
-						<texture>dialogs/dialog-bg-nobo.png</texture>
-						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-						<bordersize>20</bordersize>
+		<include content="Bald_SettingsDetail">
+			<param name="heading">$INFO[Container(9000).ListItem.Label]</param>
+			<param name="note">$INFO[Container(9000).ListItem.Property(note)]</param>
+			<control type="group" id="9100">
+				<control type="grouplist" id="9001">
+					<include content="Bald_SettingsRows"><param name="left">9000</param></include>
+					<visible>Container(9000).HasFocus(1)</visible>
+					<control type="radiobutton" id="4">
+						<include>Bald_ConfigureButton</include>
+						<label>$LOCALIZE[31057]</label>
 					</control>
-					<control type="image">
-						<left>51</left>
-						<top>38</top>
-						<width>215</width>
-						<height>215</height>
-						<aspectratio>scale</aspectratio>
-						<texture fallback="DefaultUser.png">$INFO[Listitem.Icon]</texture>
+					<control type="button" id="5">
+						<include>Bald_ConfigureButton</include>
+						<label>$LOCALIZE[31058]</label>
+						<label2>$INFO[System.ProfileAutoLogin]</label2>
+						<enable>!Window.IsVisible(ProfileSettings) + !System.HasLoginScreen</enable>
 					</control>
-					<control type="label">
-						<left>10</left>
-						<top>255</top>
-						<width>305</width>
-						<height>100</height>
-						<align>center</align>
-						<aligny>top</aligny>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
-					<control type="label">
-						<left>10</left>
-						<top>290</top>
-						<width>305</width>
-						<height>100</height>
-						<font>font10</font>
-						<align>center</align>
-						<aligny>top</aligny>
-						<label>$LOCALIZE[31029]:</label>
-						<visible>!String.IsEqual(Listitem.Label,$LOCALIZE[20058])</visible>
-					</control>
-					<control type="label">
-						<left>10</left>
-						<top>321</top>
-						<width>305</width>
-						<height>100</height>
-						<font>font10</font>
-						<align>center</align>
-						<aligny>top</aligny>
-						<label fallback="13170">$INFO[ListItem.Label2]</label>
-						<visible>!String.Contains(Listitem.Label,$LOCALIZE[20058])</visible>
-					</control>
-				</itemlayout>
-				<focusedlayout height="390" width="354">
-					<control type="group">
-						<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,190">Focus</animation>
-						<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,190">UnFocus</animation>
-						<control type="image">
-							<top>5</top>
-							<width>320</width>
-							<height>380</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-						</control>
-						<control type="image">
-							<top>5</top>
-							<width>320</width>
-							<height>380</height>
-							<texture colordiffuse="button_focus">colors/grey.png</texture>
-							<bordersize>20</bordersize>
-							<include>Animation_FocusTextureFade</include>
-						</control>
-						<control type="image">
-							<left>51</left>
-							<top>38</top>
-							<width>215</width>
-							<height>215</height>
-							<aspectratio>scale</aspectratio>
-							<texture fallback="DefaultUser.png">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>255</top>
-							<width>305</width>
-							<height>100</height>
-							<align>center</align>
-							<aligny>top</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>290</top>
-							<width>305</width>
-							<height>100</height>
-							<font>font10</font>
-							<align>center</align>
-							<aligny>top</aligny>
-							<label>$LOCALIZE[31029]:</label>
-							<visible>!String.Contains(Listitem.Label,$LOCALIZE[20058])</visible>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>321</top>
-							<width>305</width>
-							<height>100</height>
-							<font>font10</font>
-							<align>center</align>
-							<aligny>top</aligny>
-							<label fallback="13170">$INFO[ListItem.Label2]</label>
-							<visible>!String.Contains(Listitem.Label,$LOCALIZE[20058])</visible>
-						</control>
-					</control>
-				</focusedlayout>
-			</control>
-			<control type="grouplist" id="9001">
-				<visible>Container(9000).Hasfocus(1)</visible>
-				<right>0</right>
-				<height>735</height>
-				<top>163</top>
-				<onleft>9000</onleft>
-				<onright>9000</onright>
-				<onup>9001</onup>
-				<ondown>9001</ondown>
-				<control type="radiobutton" id="4">
-					<label>$LOCALIZE[31057]</label>
-					<include>DefaultSettingButton</include>
 				</control>
-				<control type="button" id="5">
-					<label>$LOCALIZE[31058]</label>
-					<label2>[B]$INFO[System.ProfileAutoLogin][/B]</label2>
-					<include>DefaultSettingButton</include>
-					<enable>!Window.IsVisible(ProfileSettings) + !System.HasLoginScreen</enable>
+				<control type="list" id="2">
+					<top>216</top>
+					<width>726</width>
+					<height>520</height>
+					<orientation>vertical</orientation>
+					<scrolltime tween="cubic" easing="out">320</scrolltime>
+					<onleft>9000</onleft>
+					<visible>Container(9000).HasFocus(2)</visible>
+					<itemlayout height="78">
+						<include content="Bald_SettingsProfileItem" />
+					</itemlayout>
+					<focusedlayout height="78">
+						<include content="Bald_SettingsProfileItem">
+							<param name="color">bald_ink</param>
+							<param name="focused">true</param>
+						</include>
+					</focusedlayout>
 				</control>
 			</control>
-		</control>
-		<control type="group">
-			<depth>DepthContentPanel</depth>
-			<include>OpenClose_Left</include>
-			<include content="ContentPanel">
-				<param name="width" value="530" />
-			</include>
-			<control type="list" id="9000">
-				<left>0</left>
-				<top>130</top>
-				<width>470</width>
-				<height>567</height>
-				<onleft>9100</onleft>
-				<onright>9100</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-				<scrolltime>300</scrolltime>
-				<itemlayout height="85" width="470">
-					<control type="label">
-						<left>30</left>
-						<right>30</right>
-						<bottom>0</bottom>
-						<label>$INFO[ListItem.Label]</label>
-						<font>font37</font>
-						<aligny>center</aligny>
-					</control>
-				</itemlayout>
-				<focusedlayout height="85" width="470">
-					<control type="image">
-						<right>0</right>
-						<bottom>0</bottom>
-						<texture colordiffuse="button_focus">lists/focus.png</texture>
-						<animation effect="fade" start="100" end="50" time="40" condition="!Control.HasFocus(9000)">Conditional</animation>
-					</control>
-					<control type="label">
-						<left>30</left>
-						<right>30</right>
-						<bottom>0</bottom>
-						<label>$INFO[ListItem.Label]</label>
-						<font>font37</font>
-						<aligny>center</aligny>
-					</control>
-				</focusedlayout>
-				<content>
-					<item id="1">
-						<label>$LOCALIZE[128]</label>
-						<onclick>noop</onclick>
-						<icon></icon>
-					</item>
-					<item id="2">
-						<label>$LOCALIZE[13200]</label>
-						<onclick>noop</onclick>
-						<icon></icon>
-					</item>
-				</content>
-			</control>
-		</control>
-		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[10034]" />
 		</include>
-		<include>BottomBar</include>
+		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31738]</param><param name="second">$LOCALIZE[31747]</param></include>
 	</controls>
 </window>

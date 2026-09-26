@@ -389,6 +389,94 @@
 		</definition>
 	</include>
 
+	<!-- One row of Kodi's profile list (SettingsProfile 2): round avatar, name and last login, and a check on the profile
+	     in use (Kodi marks it selected). The last item is Kodi's "Add profile...", which has no avatar or date. Unfocused
+	     rows use <color> (45%); the focused row is full ink with the accent dot and fades in like a scaffold row. -->
+	<include name="Bald_SettingsProfileItem">
+		<param name="color">bald_ink45</param>
+		<param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<animation type="Conditional" condition="$PARAM[focused] + !Control.HasFocus(2)">
+					<effect type="fade" start="100" end="55" time="240" tween="sine" easing="inout" />
+				</animation>
+				<control type="image">
+					<top>31</top>
+					<width>10</width>
+					<height>10</height>
+					<texture colordiffuse="bald_accent">bald/dot.png</texture>
+					<visible>$PARAM[focused]</visible>
+				</control>
+				<control type="group">
+					<animation type="Focus" condition="$PARAM[focused]">
+						<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
+						<effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" />
+					</animation>
+					<control type="image">
+						<left>26</left>
+						<top>12</top>
+						<width>48</width>
+						<height>48</height>
+						<aspectratio>scale</aspectratio>
+						<texture diffuse="bald/circle_112.png" fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+						<visible>!String.IsEqual(ListItem.Label,$LOCALIZE[20058])</visible>
+					</control>
+					<control type="label">
+						<left>90</left>
+						<top>10</top>
+						<width>560</width>
+						<height>30</height>
+						<aligny>center</aligny>
+						<font>Bald_Section</font>
+						<textcolor>$PARAM[color]</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>!String.IsEqual(ListItem.Label,$LOCALIZE[20058])</visible>
+					</control>
+					<control type="label">
+						<left>26</left>
+						<width>624</width>
+						<height>72</height>
+						<aligny>center</aligny>
+						<font>Bald_Section</font>
+						<textcolor>$PARAM[color]</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>String.IsEqual(ListItem.Label,$LOCALIZE[20058])</visible>
+					</control>
+					<control type="label">
+						<left>90</left>
+						<top>40</top>
+						<width>560</width>
+						<height>24</height>
+						<aligny>center</aligny>
+						<font>Bald_MenuNote</font>
+						<textcolor>bald_ink45</textcolor>
+						<label>$LOCALIZE[31029]: $INFO[ListItem.Label2]</label>
+						<visible>!String.IsEmpty(ListItem.Label2)</visible>
+					</control>
+					<control type="label">
+						<left>90</left>
+						<top>40</top>
+						<width>560</width>
+						<height>24</height>
+						<aligny>center</aligny>
+						<font>Bald_MenuNote</font>
+						<textcolor>bald_ink45</textcolor>
+						<label>$LOCALIZE[31029]: $LOCALIZE[13170]</label>
+						<visible>String.IsEmpty(ListItem.Label2) + !String.IsEqual(ListItem.Label,$LOCALIZE[20058])</visible>
+					</control>
+					<control type="image">
+						<left>668</left>
+						<top>24</top>
+						<width>24</width>
+						<height>24</height>
+						<texture colordiffuse="bald_accent">bald/check.png</texture>
+						<visible>ListItem.IsSelected</visible>
+					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+
 	<!-- Bald Settings home, shared by window 1115 and Kodi's "Configure skin..." (SkinSettings.xml), so both open the
 	     same page with no redirect. -->
 	<include name="Bald_SettingsHome">
