@@ -978,13 +978,15 @@
 	</include>
 	<include name="DefaultBackground">
 		<!-- Bald: the field, with the focused item's fanart at the backdrop brightness under a 60% field layer, so art
-		     tints the page without competing with the sharp preview. Playing video or a visualisation shows through as
-		     in Estuary. -->
+		     tints the page without competing with the sharp preview. Playing video (unless Playback › Background video
+		     is off, Bald_VideoBackdropOn) or a visualisation shows through as in Estuary. A window that draws
+		     Bald_VideoBackdrop over this passes video false, so it has one videowindow. -->
+		<param name="video">true</param>
 		<definition>
 			<control type="videowindow">
 				<depth>DepthBackground</depth>
 				<include>FullScreenDimensions</include>
-				<visible>Player.HasVideo</visible>
+				<visible>$PARAM[video] + $EXP[Bald_VideoBackdropOn]</visible>
 				<visible>!Slideshow.IsActive</visible>
 			</control>
 			<control type="visualisation">
@@ -1000,7 +1002,7 @@
 					<include>ColoredBackgroundImages</include>
 				</control>
 				<control type="group" id="31111">
-					<visible>!Window.IsActive(Home) + [![Player.HasVideo | [Player.HasAudio + Visualisation.Enabled + !String.IsEmpty(Visualisation.Name)]] | !String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))]</visible>
+					<visible>!Window.IsActive(Home) + [![$EXP[Bald_VideoBackdropOn] | [Player.HasAudio + Visualisation.Enabled + !String.IsEmpty(Visualisation.Name)]] | !String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))]</visible>
 					<depth>DepthBackground</depth>
 					<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
 					<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>

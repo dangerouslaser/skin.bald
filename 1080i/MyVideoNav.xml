@@ -29,7 +29,8 @@
 			<onfocus condition="$EXP[Bald_LibraryViewActive]">SetFocus(9150)</onfocus>
 			<onfocus condition="!$EXP[Bald_LibraryViewActive]">SetFocus(9000)</onfocus>
 		</control>
-		<include>DefaultBackground</include>
+		<!-- Bald_VideoBackdrop draws the video, so DefaultBackground leaves its own videowindow out. -->
+		<include content="DefaultBackground"><param name="video">false</param></include>
 		<include>Bald_VideoBackdrop</include>
 		<control type="group">
 			<!-- Entered from Home (in from the right); returned to from anything deeper, such as playback. Leaving for Home

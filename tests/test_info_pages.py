@@ -144,7 +144,7 @@ class InfoPagesTests(unittest.TestCase):
 
     def test_reuses_home_blur_and_clears_local_override(self):
         self.assertEqual([n.text for n in self.dialog.findall(".//control[@id='5200']/include")],
-                         ["Bald_Field", "Bald_BackdropImage"])
+                         ["Bald_WindowBase", "Bald_BackdropImage"])
         unloads = [node.text for node in expand_follow(self.dialog) if node.tag == "onunload"]
         for name in ("Bald_InfoToOverview", "Bald_InfoBackToCast"):
             actions = [node.text for node in expand_follow(self.shared.find(f"include[@name='{name}']"))]
