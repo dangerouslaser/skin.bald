@@ -287,16 +287,15 @@ class BaldSettingsTests(unittest.TestCase):
     def test_menu_preview_suppresses_the_previously_active_rows_clearlogo(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
         logo = root.find(".//include[@name='Bald_ArtLogo']")
-        images = logo.findall("definition/control[@type='image']")
-
-        self.assertEqual(len(images), 3)
-        for image in images:
-            visibility = image.findtext("visible")
-            self.assertIn("$PARAM[preview]", atoms(visibility))
-            # Outside its own preview, a row's logo shows only for the current row while no widget preview is open.
-            self.assertTrue(implies(
-                visibility, "!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
-                assume={"$PARAM[preview]": False, "$PARAM[ignore_home_row]": False}))
+        group = logo.find("definition/control[@type='group']")
+        self.assertEqual(len(group.findall("control[@type='image']")), 3)
+        # The row's group holds the three images (Kodi skips them while it is hidden).
+        visibility = group.findtext("visible")
+        self.assertIn("$PARAM[preview]", atoms(visibility))
+        # Outside its own preview, a row's logo shows only for the current row while no widget preview is open.
+        self.assertTrue(implies(
+            visibility, "!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+            assume={"$PARAM[preview]": False, "$PARAM[ignore_home_row]": False}))
 
     def test_widget_rows_reopen_menu_on_the_active_screen(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
@@ -313,7 +312,7 @@ class BaldSettingsTests(unittest.TestCase):
                 self.assertEqual(call.findtext("param[@name='screen']"), screen)
 
     def test_main_menu_accent_dot_follows_focus(self):
-        root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
+        root = ET.parse(ROOT / "1080i" / "View_510_Bald_Posters.xml").getroot()
         focused = root.find(".//include[@name='Bald_MenuRowFocused']")
         unfocused = root.find(".//include[@name='Bald_MenuRowUnfocused']")
 
@@ -355,7 +354,7 @@ class BaldSettingsTests(unittest.TestCase):
         suffix = fallback.find("variable[@name='Bald_HubSuffix_hub1']/value")
         self.assertEqual((suffix.get("condition"), suffix.text), ("$EXP[Bald_HubHasOpen_hub1]", "  ›"))
 
-        focused = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
+        focused = ET.parse(ROOT / "1080i" / "View_510_Bald_Posters.xml").getroot().find(
             ".//include[@name='Bald_MenuRowFocused']"
         )
         disclosure = next(label for label in focused.findall(".//control[@type='label']") if label.findtext("label") == "›")

@@ -80,12 +80,13 @@
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<include>Bald_CurtainHandoff</include>
 	<controls>
-		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_Backdrop); or the playing video,
+		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_BackdropImage); or the playing video,
 		     dimmed (Bald_WindowBase). -->
 		<include>Bald_WindowBase</include>
-		<include content="Bald_Backdrop" />
+		<include>Bald_BackdropImage</include>
 
-		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). -->
+		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). The drift slides are sine in-out, a
+		     deliberate exception to the move curve (cubic out): a pulsing drift must ease at both ends. -->
 		<control type="group">
 			<!-- Home is the root: it is always returned to (in from the left) and always left deeper (out to the left). -->
 			<include content="Bald_AnimWindowDepth"><param name="back_in">true</param></include>

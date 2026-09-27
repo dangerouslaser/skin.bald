@@ -12,7 +12,7 @@
                 <param name="screen">home</param>
                 <param name="menu">9001</param>
                 <param name="enabled">!$EXP[Bald_HomeHidden]</param>
-                <param name="up">SetFocus(9000,0,absolute)</param>
+                <param name="up">noop</param>
                 <param name="down">9102</param>
                 <param name="dots">Bald_RowDots_9101</param>
                 <param name="dots_width">30</param>
@@ -173,31 +173,37 @@
                 <param name="c">9101</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9101</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9102</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9102</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9103</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9103</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103)</param>
+                <param name="container_logo">false</param>
             </include>
         </definition>
     </include>
@@ -290,7 +296,7 @@
                 <param name="screen">livetv</param>
                 <param name="menu">9004</param>
                 <param name="enabled">System.HasPVRAddon</param>
-                <param name="up">SetFocus(9000,0,absolute)</param>
+                <param name="up">noop</param>
                 <param name="down">9052</param>
                 <param name="dots">Bald_RowDots_9051</param>
                 <param name="dots_width">30</param>
@@ -450,31 +456,37 @@
                 <param name="c">9051</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9051</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9052</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9052</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9053</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9053</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)</param>
+                <param name="container_logo">false</param>
             </include>
         </definition>
     </include>
@@ -567,7 +579,7 @@
                 <param name="screen">hub1</param>
                 <param name="menu">9011</param>
                 <param name="enabled">true</param>
-                <param name="up">SetFocus(9000,0,absolute)</param>
+                <param name="up">noop</param>
                 <param name="down">9202</param>
                 <param name="dots">Bald_RowDots_9201</param>
                 <param name="dots_width">18</param>
@@ -661,21 +673,25 @@
                 <param name="c">9201</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9201</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9202</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9202</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)</param>
+                <param name="container_logo">false</param>
             </include>
         </definition>
     </include>
@@ -752,7 +768,7 @@
                 <param name="screen">hub2</param>
                 <param name="menu">9012</param>
                 <param name="enabled">true</param>
-                <param name="up">SetFocus(9000,0,absolute)</param>
+                <param name="up">noop</param>
                 <param name="down">9302</param>
                 <param name="dots">Bald_RowDots_9301</param>
                 <param name="dots_width">18</param>
@@ -846,21 +862,25 @@
                 <param name="c">9301</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9301</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9302</param>
                 <param name="p">Odd</param>
                 <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)</param>
+                <param name="container_logo">false</param>
             </include>
             <include content="Bald_ArtLogo">
                 <param name="c">9302</param>
                 <param name="p">Even</param>
                 <param name="preview">$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)</param>
+                <param name="container_logo">false</param>
             </include>
         </definition>
     </include>

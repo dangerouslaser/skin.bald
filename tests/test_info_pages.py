@@ -133,14 +133,15 @@ class InfoPagesTests(unittest.TestCase):
         some_logo = " | ".join(f"!String.IsEmpty({art})" for art in (
             "Container($PARAM[c]).ListItem.Art(clearlogo)", "Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)",
             "Container.Art(tvshow.clearlogo)"))
-        for image in shared.findall("definition/control"):
-            visible = image.findtext("visible")
-            # On Home the logo follows the current row; ignore_home_row="true" (used above) lifts that for the dialog.
-            self.assertTrue(implies(visible, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
-                                    assume={"$PARAM[ignore_home_row]": False, "$PARAM[preview]": False}))
-            self.assertFalse(implies(visible, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
-                                     assume={"$PARAM[ignore_home_row]": True}))
-            self.assertTrue(implies(visible, some_logo))
+        group = shared.find("definition/control[@type='group']")
+        row = group.findtext("visible")
+        # On Home the logo follows the current row; ignore_home_row="true" (used above) lifts that for the dialog.
+        self.assertTrue(implies(row, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+                                assume={"$PARAM[ignore_home_row]": False, "$PARAM[preview]": False}))
+        self.assertFalse(implies(row, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+                                 assume={"$PARAM[ignore_home_row]": True}))
+        for image in group.findall("control[@type='image']"):
+            self.assertTrue(implies(image.findtext("visible"), some_logo))
 
     def test_reuses_home_blur_and_clears_local_override(self):
         self.assertEqual([n.text for n in self.dialog.findall(".//control[@id='5200']/include")],

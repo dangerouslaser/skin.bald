@@ -186,9 +186,6 @@
 		<value condition="!String.IsEmpty(Window(home).Property(Bald.CurtainBlur))">$INFO[Window(home).Property(Bald.CurtainBlur)]</value>
 		<value>$VAR[Bald_BlurImage]</value>
 	</variable>
-	<include name="Bald_Backdrop">
-		<include>Bald_BackdropImage</include>
-	</include>
 	<!-- Shared note position and typography for the five-row Home and context menus. -->
 	<include name="Bald_MenuNote">
 		<param name="id">0</param>
@@ -415,7 +412,6 @@
 	<expression name="Bald_MenuPreview_search">[String.IsEqual(Window(home).Property(Bald.MenuPreview),search)]</expression>
 	<expression name="Bald_MenuPreview_settings">[String.IsEqual(Window(home).Property(Bald.MenuPreview),settings)]</expression>
 	<!-- The screen whose rows are showing (Bald.Screen), and whether a row is current (Bald.Row). -->
-	<expression name="Bald_Screen_home">[String.IsEqual(Window(home).Property(Bald.Screen),home)]</expression>
 	<expression name="Bald_Screen_livetv">[String.IsEqual(Window(home).Property(Bald.Screen),livetv)]</expression>
 	<expression name="Bald_Screen_hub1">[String.IsEqual(Window(home).Property(Bald.Screen),hub1)]</expression>
 	<expression name="Bald_Screen_hub2">[String.IsEqual(Window(home).Property(Bald.Screen),hub2)]</expression>
@@ -618,7 +614,7 @@
 		</animation>
 		<animation type="Hidden">
 			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
-			<effect type="slide" start="0,0" end="0,18" time="140" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="0,18" time="140" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<!-- Row edge nudge: 14 px over 110, then back. -->
@@ -637,7 +633,7 @@
 			</animation>
 		</definition>
 	</include>
-	<!-- Things that hide while the menu is open: out 160, back 360 after 120. -->
+	<!-- Things that hide while the menu is open: out 160, and back in 160 as the (reversible) Conditional reverses. -->
 	<include name="Bald_AnimMenuHides">
 		<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
 			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
@@ -656,7 +652,6 @@
 	</include>
 
 	<include name="Bald_AnimLogoIn">
-		<param name="c" />
 		<definition>
 			<animation type="Visible">
 				<effect type="fade" start="0" end="100" time="520" delay="380" tween="sine" easing="inout" />
@@ -667,7 +662,6 @@
 			</animation>
 		</definition>
 	</include>
-	<!-- The current row item's clearlogo (clearlogo, else the show's). -->
 	<!-- Fanart layer for one parity. The incoming layer fades in (700) while settling from 1.05 (1500; not with
 	     background video, see Bald_BackdropWindow); the outgoing layer fades out (700) still showing the old art. A row
 	     swap that keeps the parity changes the visible layer's texture instead, which <fadetime> crossfades (it waits
@@ -724,39 +718,48 @@
 	</include>
 
 	<!-- Clearlogo on the art for one row and parity: fade 520 and rise 10 px over 760, 380 after the art starts;
-	     the outgoing logo fades out (150) still showing the old picture. -->
+	     the outgoing logo fades out (150) still showing the old picture. The group follows the row (current, or the
+	     previewed screen's remembered row), so Kodi skips the images of every other row each frame; it carries the
+	     row's in and out motion, and the images their own for a change of item within the row. The item's clearlogo,
+	     else its show's, else (container_logo, library pages) the listing's show clearlogo, which Home, with no media
+	     container, never has. -->
 	<include name="Bald_ArtLogo">
 		<param name="c" />
 		<param name="p" />
 		<param name="ignore_home_row">false</param>
 		<param name="preview">false</param>
+		<param name="container_logo">true</param>
 		<param name="x">52</param><param name="y">486</param><param name="width">560</param><param name="height">170</param>
 		<definition>
-			<control type="image">
-				<left>$PARAM[x]</left>
-				<top>$PARAM[y]</top>
-				<width>$PARAM[width]</width>
-				<height>$PARAM[height]</height>
-				<aspectratio align="left" aligny="bottom">keep</aspectratio>
-				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(clearlogo)]</texture>
-				<visible>$EXP[Bald_ShowClearlogo] + [$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
-				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
-			</control>
-			<control type="image">
-				<left>$PARAM[x]</left>
-				<top>$PARAM[y]</top>
-				<width>$PARAM[width]</width>
-				<height>$PARAM[height]</height>
-				<aspectratio align="left" aligny="bottom">keep</aspectratio>
-				<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)]</texture>
-				<visible>$EXP[Bald_ShowClearlogo] + [$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
-				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
-			</control>
-			<control type="image">
-				<left>$PARAM[x]</left><top>$PARAM[y]</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio align="left" aligny="bottom">keep</aspectratio>
-				<texture background="true">$INFO[Container.Art(tvshow.clearlogo)]</texture>
-				<visible>$EXP[Bald_ShowClearlogo] + [$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)) + !String.IsEmpty(Container.Art(tvshow.clearlogo))</visible>
-				<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
+			<control type="group">
+				<visible>$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]</visible>
+				<include>Bald_AnimLogoIn</include>
+				<control type="image">
+					<left>$PARAM[x]</left>
+					<top>$PARAM[y]</top>
+					<width>$PARAM[width]</width>
+					<height>$PARAM[height]</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(clearlogo)]</texture>
+					<visible>$EXP[Bald_ShowClearlogo] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo))</visible>
+					<include>Bald_AnimLogoIn</include>
+				</control>
+				<control type="image">
+					<left>$PARAM[x]</left>
+					<top>$PARAM[y]</top>
+					<width>$PARAM[width]</width>
+					<height>$PARAM[height]</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)]</texture>
+					<visible>$EXP[Bald_ShowClearlogo] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo))</visible>
+					<include>Bald_AnimLogoIn</include>
+				</control>
+				<control type="image">
+					<left>$PARAM[x]</left><top>$PARAM[y]</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<texture background="true">$INFO[Container.Art(tvshow.clearlogo)]</texture>
+					<visible>$PARAM[container_logo] + $EXP[Bald_ShowClearlogo] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(clearlogo)) + String.IsEmpty(Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)) + !String.IsEmpty(Container.Art(tvshow.clearlogo))</visible>
+					<include>Bald_AnimLogoIn</include>
+				</control>
 			</control>
 		</definition>
 	</include>
@@ -777,7 +780,7 @@
 				<visible>$PARAM[ignore_home_row] | $PARAM[preview] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
-					<effect type="slide" start="0,0" end="-14,0" time="130" tween="sine" easing="inout" />
+					<effect type="slide" start="0,0" end="-14,0" time="130" tween="cubic" easing="out" />
 				</animation>
 				<!-- Title: wraps up to 3 lines (44 px each) and grows upward. The textbox sizes to its text and this
 				     grouplist bottom-aligns it (align right = end of a vertical grouplist), so the last line always
@@ -1216,9 +1219,6 @@
 			</control>
 		</definition>
 	</include>
-	<!-- Fanart + logo: the item's clearlogo (else the show's, Bald_ItemLogo) at the tile's bottom left, 8 px in, at most
-	     100 x 34, over the logo scrim clipped to the tile's corners. Hidden without a logo or with clearlogos turned off
-	     (Appearance). -->
 	<!-- The item's name inside a text-style tile (the tile is 176 x 99 at 10,10): centred, up to two lines, 12 px in,
 	     in the row label's semibold. Its colour is the tile's diffuse, dim unfocused and full ink focused, like the art
 	     on other tiles. -->
@@ -1239,6 +1239,9 @@
 			</control>
 		</definition>
 	</include>
+	<!-- Fanart + logo: the item's clearlogo (else the show's, Bald_ItemLogo) at the tile's bottom left, 8 px in, at most
+	     100 x 34, over the logo scrim clipped to the tile's corners. Hidden without a logo or with clearlogos turned off
+	     (Appearance). -->
 	<include name="Bald_TileLogo">
 		<param name="diffuse">bald_tile_dim</param>
 		<definition>
@@ -1645,20 +1648,4 @@
 		</definition>
 	</include>
 	<expression name="Bald_LiveTVRows">[System.HasPVRAddon + $EXP[Bald_HasRows_livetv]]</expression>
-	<include name="Bald_MenuRowUnfocused">
-		<definition>
-			<control type="label"><left>20</left><width>400</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><label>$INFO[ListItem.Label]</label></control>
-		</definition>
-	</include>
-	<include name="Bald_MenuRowFocused">
-		<param name="always_dot">true</param>
-		<definition>
-			<control type="image"><top>23</top><width>10</width><height>10</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>$PARAM[always_dot]</visible></control>
-			<control type="label"><left>26</left><width>394</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
-				<animation type="Focus" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
-			</control>
-			<!-- A quiet disclosure cue for screen entries whose full native library opens with Right. -->
-			<control type="label"><left>374</left><width>28</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink70</textcolor><label>›</label><visible>!String.IsEmpty(ListItem.Property(library))</visible></control>
-		</definition>
-	</include>
 </includes>

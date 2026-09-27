@@ -30,7 +30,7 @@
 		<param name="title_id">0</param>
 		<definition>
 			<include>Bald_WindowBase</include>
-			<include>Bald_Backdrop</include>
+			<include>Bald_BackdropImage</include>
 			<control type="image">
 				<width>590</width>
 				<height>1080</height>

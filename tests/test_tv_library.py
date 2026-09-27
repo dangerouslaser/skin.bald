@@ -82,7 +82,7 @@ class TVLibraryTests(unittest.TestCase):
     def test_shared_logo_has_container_tvshow_fallback(self):
         shared = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot()
         logo = shared.find("include[@name='Bald_ArtLogo']")
-        textures = [node.text for node in logo.findall('definition/control/texture')]
+        textures = [node.text for node in logo.findall('definition/control/control/texture')]
         self.assertIn('$INFO[Container.Art(tvshow.clearlogo)]', textures)
 
     def test_alternate_views_are_registered_for_their_content_levels(self):
