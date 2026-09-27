@@ -172,7 +172,7 @@ class NativeSettingsTests(unittest.TestCase):
         self.assertEqual((dot.text, dot.get("colordiffuse")), ("bald/dot.png", "bald_accent"))
         self.assertEqual(hub.findtext("onright"), "9001")
         open_button = self.control("Settings.xml", "9001")
-        self.assertEqual(open_button.findtext("onclick"), "SendClick(9000)")
+        self.assertEqual([node.text for node in open_button.findall("onclick")], ["SetFocus(9000)", "Action(Select)"])
         self.assertEqual(open_button.findtext("onleft"), "9000")
 
     # ---- Profiles ----

@@ -300,7 +300,7 @@ class BaldSettingsTests(unittest.TestCase):
         menu = root.find(".//control[@id='9000']")
         self.assertEqual(menu.get("type"), "grouplist")
         self.assertEqual(menu.findtext("orientation"), "vertical")
-        self.assertEqual(menu.findtext("itemgap"), "0")
+        self.assertEqual(menu.findtext("itemgap"), "6")
         self.assertEqual(menu.findtext("height"), "310")
         self.assertEqual(menu.findtext("scrolltime"), "320")
 
