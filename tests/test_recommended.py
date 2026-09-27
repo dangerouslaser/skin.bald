@@ -29,13 +29,14 @@ def kodi(values, yes=True):
 
 
 class RecommendedTests(unittest.TestCase):
-    DEFAULTS = {"filelists.showparentdiritems": True, "myvideos.selectaction": 8}
+    DEFAULTS = {"filelists.showparentdiritems": True, "myvideos.selectaction": 8, "videolibrary.flattentvshows": 1}
+    RECOMMENDED = {"filelists.showparentdiritems": False, "myvideos.selectaction": 3, "videolibrary.flattentvshows": 0}
 
     def test_applies_after_yes(self):
         values = dict(self.DEFAULTS)
         xbmc, xbmcgui, _ = kodi(values)
         self.assertTrue(recommended.apply(xbmc, xbmcgui))
-        self.assertEqual(values, {"filelists.showparentdiritems": False, "myvideos.selectaction": 3})
+        self.assertEqual(values, self.RECOMMENDED)
 
     def test_no_changes_after_no(self):
         values = dict(self.DEFAULTS)
@@ -45,14 +46,14 @@ class RecommendedTests(unittest.TestCase):
         self.assertFalse([c for c in calls if c["method"] == "Settings.SetSettingValue"])
 
     def test_prompt_mode_is_silent_when_already_set(self):
-        values = {"filelists.showparentdiritems": False, "myvideos.selectaction": 3}
+        values = dict(self.RECOMMENDED)
         xbmc, xbmcgui, _ = kodi(values)
         self.assertFalse(recommended.apply(xbmc, xbmcgui, "prompt"))
         xbmcgui.Dialog.return_value.yesno.assert_not_called()
         xbmcgui.Dialog.return_value.notification.assert_not_called()
 
     def test_button_says_when_already_set(self):
-        values = {"filelists.showparentdiritems": False, "myvideos.selectaction": 3}
+        values = dict(self.RECOMMENDED)
         xbmc, xbmcgui, _ = kodi(values)
         recommended.apply(xbmc, xbmcgui)
         xbmcgui.Dialog.return_value.notification.assert_called_once()
