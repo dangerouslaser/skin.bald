@@ -7,7 +7,8 @@
 <window type="dialog" id="1125">
 	<defaultcontrol always="true">8150</defaultcontrol>
 	<zorder>1</zorder>
-	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<!-- The video OSD's auto-close waits while this panel is browsed (Includes_Bald_OSD.xml). -->
+	<include content="Bald_OSDSuspendAutoClose"><param name="name">1125</param></include>
 	<onload>ClearProperty(Bald.OSD.Placed,home)</onload>
 	<include>Bald_OSDAnimPanel</include>
 	<controls>

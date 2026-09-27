@@ -257,11 +257,16 @@ class ChainTests(unittest.TestCase):
         self.assertEqual([w for _, w in activations(guide)], ["pvrosdchannels"])
 
     def test_chain_panels_stop_the_auto_close(self):
+        # Browsed, not glanced at: the alarm waits while a chain panel is open and comes back when it closes (focus
+        # returns to the OSD button without its onfocus).
         for name in ("Custom_1125_OSDPlaylist.xml", "Custom_1126_OSDCast.xml", "VideoOSDBookmarks.xml",
                      "DialogPVRChannelGuide.xml", "DialogPVRChannelsOSD.xml"):
-            onload = [n.text for n in ET.parse(SKIN / name).getroot().findall("onload")]
+            root = resolve_window(name)
+            onload = [n.text for n in root.findall("onload")]
+            onunload = [n.text for n in root.findall("onunload")]
             with self.subTest(window=name):
                 self.assertIn("CancelAlarm(bald_osd_close,true)", onload)
+                self.assertTrue(any(text.startswith("AlarmClock(bald_osd_close,") for text in onunload), onunload)
 
 
 class HelperGuardTests(unittest.TestCase):
@@ -393,6 +398,27 @@ class SettingsTests(unittest.TestCase):
         for name in ("DialogSettings.xml", "DialogSlider.xml", "DialogSubtitles.xml"):
             with self.subTest(dialog=name):
                 self.assertIn("Bald_OSDSuspendAutoClose", (SKIN / name).read_text())
+
+    def test_each_window_parks_the_auto_close_under_its_own_flag(self):
+        # Stacked dialogs (the audio settings, then DialogSlider over them): one shared flag let the inner dialog's
+        # close re-arm the alarm and close the OSD under the still open outer one.
+        flags = {}
+        for path in sorted(SKIN.glob("*.xml")):
+            root = ET.parse(path).getroot()
+            for node in root.findall("include"):
+                if node.get("content") == "Bald_OSDSuspendAutoClose" or node.text == "Bald_OSDSuspendAutoClose":
+                    name = node.findtext("param[@name='name']")
+                    with self.subTest(window=path.name):
+                        self.assertTrue(name)
+                        self.assertNotIn(name, flags.values())
+                    flags[path.name] = name
+        self.assertGreaterEqual(len(flags), 10)
+        for name, flag in flags.items():
+            root = resolve_window(name)
+            rearm = [n for n in root.findall("onunload") if (n.text or "").startswith("AlarmClock(bald_osd_close,")]
+            with self.subTest(window=name):
+                self.assertEqual(len(rearm), 1)
+                self.assertIn(f"Property(Bald.OSD.Suspended.{flag})", rearm[0].get("condition"))
 
 
 class OSDStyleTests(unittest.TestCase):

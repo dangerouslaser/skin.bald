@@ -5,8 +5,8 @@
      it with the channel's programmes, selects the one on now and opens information on Select; scrollbar 60 is the
      list's page control. -->
 <window>
-	<!-- The video OSD's auto-close stops while the guide is browsed. -->
-	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<!-- The video OSD's auto-close waits while this panel is browsed (Includes_Bald_OSD.xml). -->
+	<include content="Bald_OSDSuspendAutoClose"><param name="name">guide</param></include>
 	<defaultcontrol always="true">11</defaultcontrol>
 	<depth>DepthOSD</depth>
 	<include>Bald_PVRAnimOverlay</include>

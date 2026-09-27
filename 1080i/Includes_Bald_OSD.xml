@@ -117,8 +117,8 @@
 	     One mechanism (it replaces Estuary's autoclosevideoosd timer): each real OSD button arms the alarm
 	     bald_osd_close on focus and click and cancels it on unfocus. When it fires it only sets a Home property;
 	     the bald_osd_close timer (Timers.xml) then closes the companion panels and the OSD. Dialogs opened from the OSD
-	     (osd*settings via DialogSettings.xml, DialogSlider, DialogSubtitles) suspend it with Bald_OSDSuspendAutoClose.
-	     The chain panels cancel it: they are browsed, not glanced at. -->
+	     (osd*settings via DialogSettings.xml, 1101, DialogSlider, DialogSubtitles, 1110) and the down-chain panels
+	     (browsed, not glanced at) suspend it with Bald_OSDSuspendAutoClose. -->
 	<include name="Bald_OSDAutoCloseArm">
 		<onfocus>CancelAlarm(bald_osd_close,true)</onfocus>
 		<onfocus condition="$EXP[Bald_OSDAutoCloses]">AlarmClock(bald_osd_close,SetProperty(Bald.OSD.Close,1,home),$INFO[Skin.String(Bald.OSD.AutoClose),00:,],silent)</onfocus>
@@ -126,12 +126,17 @@
 		<onclick>CancelAlarm(bald_osd_close,true)</onclick>
 		<onclick condition="$EXP[Bald_OSDAutoCloses]">AlarmClock(bald_osd_close,SetProperty(Bald.OSD.Close,1,home),$INFO[Skin.String(Bald.OSD.AutoClose),00:,],silent)</onclick>
 	</include>
-	<!-- For a dialog opened over the OSD: park a running alarm while it is open and re-arm it when it closes. -->
+	<!-- For a window opened over the OSD: park a running alarm while it is open and re-arm it when it closes. The flag
+	     is the window's own (<name>): a dialog opened from another (the audio settings' DialogSlider) finds no alarm
+	     and leaves it parked, so only the outer one re-arms it, when focus is back on the OSD. -->
 	<include name="Bald_OSDSuspendAutoClose">
-		<onload condition="System.HasAlarm(bald_osd_close)">SetProperty(Bald.OSD.Suspended,1,home)</onload>
-		<onload condition="System.HasAlarm(bald_osd_close)">CancelAlarm(bald_osd_close,true)</onload>
-		<onunload condition="!String.IsEmpty(Window(home).Property(Bald.OSD.Suspended)) + $EXP[Bald_OSDAutoCloses]">AlarmClock(bald_osd_close,SetProperty(Bald.OSD.Close,1,home),$INFO[Skin.String(Bald.OSD.AutoClose),00:,],silent)</onunload>
-		<onunload>ClearProperty(Bald.OSD.Suspended,home)</onunload>
+		<param name="name" />
+		<definition>
+			<onload condition="System.HasAlarm(bald_osd_close)">SetProperty(Bald.OSD.Suspended.$PARAM[name],1,home)</onload>
+			<onload condition="System.HasAlarm(bald_osd_close)">CancelAlarm(bald_osd_close,true)</onload>
+			<onunload condition="!String.IsEmpty(Window(home).Property(Bald.OSD.Suspended.$PARAM[name])) + $EXP[Bald_OSDAutoCloses]">AlarmClock(bald_osd_close,SetProperty(Bald.OSD.Close,1,home),$INFO[Skin.String(Bald.OSD.AutoClose),00:,],silent)</onunload>
+			<onunload>ClearProperty(Bald.OSD.Suspended.$PARAM[name],home)</onunload>
+		</definition>
 	</include>
 
 	<!-- ============ Labels ============ -->

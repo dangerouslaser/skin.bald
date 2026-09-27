@@ -8,7 +8,8 @@
      by Kodi) and 11 (the bookmark list, chapters included); 9001 is the button row. -->
 <window>
 	<defaultcontrol always="true">2</defaultcontrol>
-	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<!-- The video OSD's auto-close waits while this panel is browsed (Includes_Bald_OSD.xml). -->
+	<include content="Bald_OSDSuspendAutoClose"><param name="name">bookmarks</param></include>
 	<include>Bald_OSDAnimPanel</include>
 	<depth>DepthDialog</depth>
 	<zorder>1</zorder>
