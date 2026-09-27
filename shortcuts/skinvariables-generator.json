@@ -3,7 +3,7 @@
     "output": "script-skinvariables-generator-includes{skinuser}.xml",
     "header": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<includes>",
     "footer": "</includes>",
-    "buildv": "1e57141bd8f6",
+    "buildv": "b6af268e716e",
     "skinid": "skin.bald",
     "getnfo": {},
     "genxml": [

@@ -869,7 +869,8 @@
 
 	<!-- ============ Row styles ============ -->
 	<!-- Each Home row has a style, set in the widget editor (the Skin Variables row field "style") and passed to
-	     Bald_Row by the generator: fanart (the default, also for rows saved without a style), thumbnail, logo or poster.
+	     Bald_Row by the generator: fanart (the default, also for rows saved without a style), thumbnail, logo, poster
+	     or text.
 	     Bald_RowTiles_<style> fills the row's fixedlist: its position and size, and its item layouts. -->
 	<include name="Bald_RowTiles_fanart">
 		<include content="Bald_RowLandscape" />
@@ -879,6 +880,11 @@
 	</include>
 	<include name="Bald_RowTiles_logo">
 		<include content="Bald_RowLandscape"><param name="overlay">Bald_TileLogo</param></include>
+	</include>
+	<!-- Text: fanart-sized tiles that show the item's name instead of art (channel groups, genres, folders); the big art
+	     frame is unchanged. The tile is the empty-art placeholder box with Bald_TileText over it. -->
+	<include name="Bald_RowTiles_text">
+		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param></include>
 	</include>
 	<!-- Landscape row: 176 x 99 tiles in 192 px slots. art is the tile texture; overlay names an include drawn over each
 	     tile (it gets the tile's diffuse). -->
@@ -952,6 +958,9 @@
 	<include name="Bald_RowLabelTop_logo">
 		<include>Bald_RowLabelTop_fanart</include>
 	</include>
+	<include name="Bald_RowLabelTop_text">
+		<include>Bald_RowLabelTop_fanart</include>
+	</include>
 	<include name="Bald_RowLabelTop_poster">
 		<top>712</top>
 	</include>
@@ -961,6 +970,24 @@
 	<!-- Fanart + logo: the item's clearlogo (else the show's, Bald_ItemLogo) at the tile's bottom left, 8 px in, at most
 	     100 x 34, over the logo scrim clipped to the tile's corners. Hidden without a logo or with clearlogos turned off
 	     (Appearance). -->
+	<!-- The item's name inside a text-style tile (the tile is 176 x 99 at 10,10): up to two lines, 12 px in. Its colour
+	     is the tile's diffuse, dim unfocused and full ink focused, like the art on other tiles. -->
+	<include name="Bald_TileText">
+		<param name="diffuse">bald_tile_dim</param>
+		<definition>
+			<control type="label">
+				<left>22</left>
+				<top>10</top>
+				<width>152</width>
+				<height>99</height>
+				<aligny>center</aligny>
+				<wrapmultiline>true</wrapmultiline>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>$PARAM[diffuse]</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+		</definition>
+	</include>
 	<include name="Bald_TileLogo">
 		<param name="diffuse">bald_tile_dim</param>
 		<definition>

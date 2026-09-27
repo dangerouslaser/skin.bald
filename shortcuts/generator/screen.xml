@@ -62,7 +62,8 @@
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                         <value name="row_index">$MATH[1 + {item_x}]</value>
                         <value name="dots_width">$MATH[12 * {item_length_x} - 6]</value>
-                        <!-- The row's style (widget editor, row field "style"); anything else, or none, is fanart. -->
+                        <!-- The row's style (widget editor, row field "style"); anything else, or none, is fanart. Text is a landscape
+                             row whose tiles show the name (Bald_RowTiles_text); the frame treats it as fanart. -->
                         <rules name="row_style">
                             <rule>
                                 <condition>{item_style}==thumbnail</condition>
@@ -75,6 +76,10 @@
                             <rule>
                                 <condition>{item_style}==poster</condition>
                                 <value>poster</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_style}==text</condition>
+                                <value>text</value>
                             </rule>
                             <rule>
                                 <value>fanart</value>
@@ -231,6 +236,10 @@
                             <rule>
                                 <condition>{item_style}==poster</condition>
                                 <value>poster</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_style}==text</condition>
+                                <value>text</value>
                             </rule>
                             <rule>
                                 <value>fanart</value>
