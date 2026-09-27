@@ -392,8 +392,10 @@
 			</control>
 		</definition>
 	</include>
-	<!-- Detail cell: 380 px wide; label 17 px at 58%, two-line value 21 px medium. -->
+	<!-- Detail cell: 380 px wide; label 17 px at 58%, two-line value 21 px medium, or Kodi's "Not available" in the
+	     same style while the value is empty (<id> names the value label so the fallback can read it; ids in 1080i/IDs). -->
 	<include name="Bald_Detail">
+		<param name="id" />
 		<param name="x" />
 		<param name="y" />
 		<param name="vy" />
@@ -409,7 +411,7 @@
 				<textcolor>bald_ink60</textcolor>
 				<label>$PARAM[label]</label>
 			</control>
-			<control type="label">
+			<control type="label" id="$PARAM[id]">
 				<left>$PARAM[x]</left>
 				<top>$PARAM[vy]</top>
 				<width>380</width>
@@ -418,6 +420,17 @@
 				<font>Bald_DetailValue</font>
 				<textcolor>bald_ink</textcolor>
 				<label>$PARAM[value]</label>
+			</control>
+			<control type="label">
+				<left>$PARAM[x]</left>
+				<top>$PARAM[vy]</top>
+				<width>380</width>
+				<height>56</height>
+				<aligny>top</aligny>
+				<font>Bald_DetailValue</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$LOCALIZE[10005]</label>
+				<visible>String.IsEmpty(Control.GetLabel($PARAM[id]))</visible>
 			</control>
 		</definition>
 	</include>

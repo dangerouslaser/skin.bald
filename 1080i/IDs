@@ -277,7 +277,9 @@ VIDEO INFORMATION PAGES (DialogVideoInfo.xml, Includes_Bald_InfoPages.xml, Inclu
 5302	TV episode row (fixedlist; follows the selected tab's folder path)
 		scripts/info.py (tvinfo) selects the opening season and episode in 5301 and 5302.
 		5302 is also the library Series page's episode row (MyVideoNav, view 532).
-5303-5999	Free for new info-page IDs; record them above.
+5303-5308	Cast page details: value labels of director, writer, genre, video, audio, subtitles
+		(Bald_Detail, id param); each shows "Not available" while its label is empty.
+5309-5999	Free for new info-page IDs; record them above.
 
 
 PLAYBACK (Includes_Bald_Playback.xml and the player windows that use it; docs/SPEC.md 5.16)
