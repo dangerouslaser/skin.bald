@@ -4,7 +4,9 @@
      artists) and songinformation. Kodi binds 6 Refresh, 7 Your rating, 8 Play, 10 Choose art, 12 Artist / album
      information and 50 (the song, album or artist list); it sets their labels and shows or hides 7, 8 and 12
      itself, so those carry no <visible>. 41 (details), 130 (description button), 400 (description text), 120
-     (fanart) and 9000 (action row) are the skin's own.
+     (fanart), 13 (play next, albums) and 9000 (action row) are the skin's own. List 50 draws an album's tracks as
+     rows (disc-track numbers on multi-disc albums), an artist's discography as square covers, and a song's
+     contributors as the cast circles.
      As in Estuary, a song dialog opened over an album dialog draws nothing of its own. -->
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
@@ -125,6 +127,14 @@
 					<param name="id">8</param>
 					<param name="label">$LOCALIZE[208]</param>
 				</include>
+				<!-- Play next: the album after the song that is playing (Kodi's QueueMedia inserts it next, or plays it when
+				     nothing plays). -->
+				<include content="Bald_MediaAction">
+					<param name="id">13</param>
+					<param name="label">$LOCALIZE[10008]</param>
+					<param name="onclick">QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/,isdir)</param>
+					<param name="visible">String.IsEqual(ListItem.DBType,album) + !String.IsEmpty(ListItem.DBID)</param>
+				</include>
 				<include content="Bald_MediaAction">
 					<param name="id">7</param>
 					<param name="label">$LOCALIZE[38023]</param>
@@ -170,6 +180,17 @@
 					<onleft>noop</onleft>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">440</scrolltime>
+					<!-- An artist's discography: a row of square covers. -->
+					<itemlayout width="200" height="236" condition="Container.Content(albums)">
+						<include content="Bald_MusicInfoCover" />
+					</itemlayout>
+					<focusedlayout width="200" height="236" condition="Container.Content(albums)">
+						<include content="Bald_MusicInfoCover">
+							<param name="ink">bald_ink</param>
+							<param name="diffuse">bald_ink</param>
+							<param name="focused">Control.HasFocus(50)</param>
+						</include>
+					</focusedlayout>
 					<itemlayout width="594" height="59" condition="!Container.Content(artists)">
 						<include content="Bald_MusicInfoRow" />
 					</itemlayout>

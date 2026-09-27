@@ -462,8 +462,8 @@ DialogPictureInfo.xml		5 details list; 9000 group, 60 scrollbar
 MusicVisualisation.xml		2 visualisation; 5500 the playing item as a one-item list for Bald Helper to follow
 		(Bald_NowPlayingFollowList, Includes_Bald_Music.xml; Bald.FocusContainer on the visualisation window)
 DialogMusicInfo.xml		6 Refresh, 7 Your rating, 8 Play, 10 Choose art, 12 Artist / album information,
-		50 songs / albums / artists; 41 details list, 120 fanart, 130 description button,
-		400 description label, 9000 action row
+		50 songs / albums / artists; 13 play next (albums, QueueMedia), 41 details list, 120 fanart,
+		130 description button, 400 description label, 9000 action row
 GameOSD.xml		1103 menu (one per variant group), 1101 help text; 1, 10, 20, 1000, 1100, 2000 groups,
 		2200 / 2201 scrollbars
 DialogGameControllers.xml (Includes_Games.xml)
