@@ -245,9 +245,12 @@ class BaldSettingsTests(unittest.TestCase):
         backdrop = root.find(".//include[@name='Bald_BackdropImage']")
         images = backdrop.findall("control[@type='image']")
 
-        self.assertEqual(len(images), 1)
-        self.assertIn("TMDbHelper.ListItem.BlurImage", images[0].findtext("texture"))
-        self.assertEqual(images[0].findtext("fadetime"), "800")
+        # Two layers of the same live blur: the still one, then the crossfading one (tests/test_window_transitions.py).
+        self.assertEqual(len(images), 2)
+        for image in images:
+            self.assertIn("TMDbHelper.ListItem.BlurImage", image.findtext("texture"))
+        self.assertIsNone(images[0].find("fadetime"))
+        self.assertEqual(images[1].findtext("fadetime"), "800")
 
     def test_menu_preview_suppresses_the_previously_active_rows_clearlogo(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
