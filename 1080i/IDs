@@ -384,7 +384,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		posters; genre background, weather background and weather icon packs
 9611-9615	Information: media flags, row item count, titles in list views, profile name and
 		temperature in page headers
-9621-9625	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
+9621-9626	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
 		scroll long plots
 9631	Typography: font (fontset)
 9641-9663	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; 9657 online ratings from TMDb Helper,

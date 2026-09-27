@@ -6,6 +6,7 @@ RunScript(skin.bald,tvinfo,episode,789)
 RunScript(skin.bald,play,episode,789)
 RunScript(skin.bald,font,InstrumentSans)
 RunScript(skin.bald,hubs)  (one-time Home hubs migration, see hubs.py)
+RunScript(skin.bald,recommended[,prompt])  (Kodi settings Bald recommends, see recommended.py)
 No network requests, library writes, or long-running service.
 """
 import json
@@ -345,6 +346,11 @@ def run(action="", media_type="", dbid=""):
         import xbmcvfs
         from hubs import migrate
         migrate(xbmc, xbmcgui, xbmcvfs)
+        return
+    if action == "recommended":
+        # RunScript(skin.bald,recommended[,prompt]): see recommended.py.
+        from recommended import apply
+        apply(xbmc, xbmcgui, media_type)
         return
     if action == "font":
         # RunScript(skin.bald,font,<fontset id>): the id arrives in the second argument.

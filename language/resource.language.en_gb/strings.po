@@ -2233,6 +2233,37 @@ msgctxt "#31836"
 msgid "Select for episodes"
 msgstr ""
 
+#: /scripts/recommended.py
+#. Recommended Kodi settings dialog: heading and notification title
+msgctxt "#31837"
+msgid "Recommended Kodi settings"
+msgstr ""
+
+#: /scripts/recommended.py
+#. Recommended Kodi settings dialog: what changes; [CR] is a line break
+msgctxt "#31838"
+msgid "Bald works best with two of Kodi's own settings:[CR]- no parent folder item (\"..\") at the top of lists[CR]- selecting a movie or episode shows its information first[CR][CR]Apply them now? You can change them back in Kodi's settings."
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /scripts/recommended.py
+#. Bald Settings > Appearance > Behavior row, and the dialog's yes button
+msgctxt "#31839"
+msgid "Apply recommended Kodi settings"
+msgstr ""
+
+#: /scripts/recommended.py
+#. Notification when nothing needs changing
+msgctxt "#31840"
+msgid "Kodi's settings already match Bald's recommendations."
+msgstr ""
+
+#: /scripts/recommended.py
+#. Notification after applying
+msgctxt "#31841"
+msgid "Recommended settings applied."
+msgstr ""
+
 #: /1080i/View_510_Bald_Posters.xml
 #. Name of a library layout, shown by Container.Viewmode
 msgctxt "#31850"

@@ -16,6 +16,10 @@
 	<!-- DM Sans became the Default fontset (docs/NOTES.md): an earlier choice saved as "DMSans" still works (Kodi falls
 	     back to Default) but logs a warning each load, so it is moved to Default once; Kodi then reloads the skin. -->
 	<onload condition="String.IsEqual(Skin.Font,DMSans)">RunScript(skin.bald,font,Default)</onload>
+	<!-- Offer Bald's recommended Kodi settings once, after the startup splash (scripts/recommended.py; it says nothing
+	     when they are already in place). Bald Settings > Appearance > Behavior offers them again any time. -->
+	<onload condition="!Skin.HasSetting(Bald.RecommendedOffered) + !$EXP[Bald_Preloading]">RunScript(skin.bald,recommended,prompt)</onload>
+	<onload condition="!Skin.HasSetting(Bald.RecommendedOffered) + !$EXP[Bald_Preloading]">Skin.SetBool(Bald.RecommendedOffered)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">SetProperty(Bald.HubsMigrating,1,home)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">RunScript(skin.bald,hubs)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
