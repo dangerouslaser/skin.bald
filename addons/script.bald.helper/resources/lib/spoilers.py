@@ -4,7 +4,7 @@ spoiler protection (Bald Settings, Appearance, Information, "Hide spoilers for u
 Kodi's skin engine cannot blur an image, and a skin cannot name a file after a hash. It can build a texture path from
 an item's database id, so this service keeps
 
-    <cache>/<episode id>.jpg     a 320 x 180 copy of the episode's thumb, reduced to a 32 x 18 colour field and blurred
+    <cache>/<episode id>.jpg     a 320 x 180 copy of the episode's thumb, reduced to a 16 x 9 colour field and blurred
 
 and Bald draws $INFO[Window(home).Property(Bald.Spoilers.Path)]$INFO[ListItem.DBID,,.jpg] over the tile of an
 unwatched episode. Nothing is written to the video library: the stills live in this add-on's profile folder, and the
@@ -46,8 +46,8 @@ HOME_WINDOW = 10000
 CACHE_DIR = "special://profile/addon_data/script.bald.helper/spoilers/"
 INDEX = "index.json"
 SIZE = (320, 180)
-FIELD = (32, 18)  # the colour field the still is reduced to before the blur: no shape survives it
-RADIUS = 6
+FIELD = (16, 9)  # the colour field the still is reduced to before the blur: no shape survives it
+RADIUS = 14
 QUALITY = 85
 MAX_FILES = 6000  # about 40 MB
 
