@@ -183,12 +183,25 @@ def landing_page(repository_zip: str, repository_version: str, skin_version: str
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 :root {{ --field: #0b0c10; --ink: #eceef2; --ink60: rgba(236,238,242,.6); --ink34: rgba(236,238,242,.34);
-  --ink10: rgba(236,238,242,.1); --accent: #9fb0c6; }}
+  --ink10: rgba(236,238,242,.1); --accent: #ffffff; }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--field); color: var(--ink); font: 400 17px/1.55 "DM Sans", system-ui, sans-serif; }}
 main {{ max-width: 1200px; margin: 0 auto; padding: 72px 24px 96px; }}
 header {{ display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr) 360px; align-items: end; }}
 h1 {{ margin: 0; font-weight: 600; font-size: clamp(56px, 9vw, 104px); line-height: .95; letter-spacing: -.02em; }}
+/* The full stop drops in from above the page and bounces to rest: falls ease-in, rises ease-out, each bounce lower. */
+h1 .dot {{ display: inline-block; animation: bald-drop 1.6s .25s both; }}
+@keyframes bald-drop {{
+  0%   {{ transform: translateY(-120vh); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
+  46%  {{ transform: translateY(0);      animation-timing-function: cubic-bezier(0, .55, .45, 1); }}
+  62%  {{ transform: translateY(-.28em); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
+  76%  {{ transform: translateY(0);      animation-timing-function: cubic-bezier(0, .55, .45, 1); }}
+  85%  {{ transform: translateY(-.1em);  animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
+  92%  {{ transform: translateY(0);      animation-timing-function: cubic-bezier(0, .55, .45, 1); }}
+  96%  {{ transform: translateY(-.03em); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
+  100% {{ transform: translateY(0); }}
+}}
+@media (prefers-reduced-motion: reduce) {{ h1 .dot {{ animation: none; }} }}
 .lede {{ margin: 18px 0 0; color: var(--ink60); font-size: 20px; max-width: 34ch; }}
 .install {{ border-left: 1px solid var(--ink10); padding-left: 28px; }}
 .install h2 {{ margin: 0 0 12px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
@@ -243,7 +256,7 @@ dialog:focus {{ outline: none; }}
 <main>
 <header>
 <div>
-<h1>Bald.</h1>
+<h1>Bald<span class="dot">.</span></h1>
 <p class="lede">A minimal, artwork-first skin for Kodi 22, with fluid motion and nothing in the way of your library.</p>
 </div>
 <div class="install">
