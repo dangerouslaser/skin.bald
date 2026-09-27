@@ -2,3 +2,13 @@
 *.pyc
 # Built per install by Skin Variables (the skin folder is symlinked into Kodi, so it lands here).
 1080i/script-skinvariables-generator-includes*.xml
+
+# AI assistant instructions, agent configs and working docs: kept locally, not published.
+CLAUDE.md
+CLAUDE.MD
+AGENTS.md
+.claude/
+.agents/
+.codex/
+docs/
+real_defaults.xml
