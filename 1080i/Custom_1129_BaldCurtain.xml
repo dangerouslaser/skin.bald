@@ -37,7 +37,7 @@
 			<height>1080</height>
 			<aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_CurtainBlur]</texture>
-			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_HasBlur]</visible>
+			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</controls>

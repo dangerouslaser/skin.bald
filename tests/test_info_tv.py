@@ -5,7 +5,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import equivalent, has_action, implies
-from kodi_includes import expand_call
+from kodi_includes import expand_call, expand_follow
 from scripts import info
 
 
@@ -86,11 +86,12 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(by_id["5003"]["onclick"],
                          "RunScript(skin.bald,play,episode,$INFO[Window(movieinformation).Property(Bald.TV.NextID)])")
         self.assertEqual(by_id["5004"]["onclick"], "SendClick(11)")
-        down = [n.text for n in self.tv.find("include[@name='Bald_InfoTVActionDown']")]
+        down = [n.text for n in expand_follow(self.tv.find("include[@name='Bald_InfoTVActionDown']"))]
         self.assertEqual(down[0], "SetFocus(5301)")
         # Movie actions keep their original Down route (to Cast) when no route is passed; TV actions go to the tabs.
         movie_down = [n.text for n in expand_call("Bald_InfoAction", {"id": "5001"})[0].findall("ondown")]
         self.assertEqual(movie_down, ["SetProperty(Bald.InfoSec,1,home)",
+                                      "ClearProperty(Bald.FocusContainer,movieinformation)",
                                       "ClearProperty(TMDbHelper.WidgetContainer,movieinformation)",
                                       "SetFocus(50)", "SetFocus(5050)"])
         tv_down = expand_call("Bald_InfoAction", {"id": "5001", "down": "Bald_InfoTVActionDown"})[0].findall("ondown")

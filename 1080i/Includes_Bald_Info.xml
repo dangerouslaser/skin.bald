@@ -258,14 +258,14 @@
 	<!-- Down to Cast & details: focus cast, or Details (5050) if cast is empty. Also the TV episode row's Down. -->
 	<include name="Bald_InfoActionToCast">
 		<ondown>SetProperty(Bald.InfoSec,1,home)</ondown>
-		<ondown>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
+		<include content="Bald_UnfollowContainerOnDown"><param name="window">movieinformation</param></include>
 		<ondown condition="$EXP[Bald_InfoHasCast]">SetFocus(50)</ondown>
 		<ondown condition="!$EXP[Bald_InfoHasCast]">SetFocus(5050)</ondown>
 	</include>
 	<!-- Up to Overview restores the actions; TV returns to the lowest filled row (episodes, then seasons).
 	     Movies have no 5301/5302, so those conditions are false there. -->
 	<include name="Bald_InfoToOverview">
-		<onup>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onup>
+		<include content="Bald_UnfollowContainerOnUp"><param name="window">movieinformation</param></include>
 		<onup>SetProperty(Bald.InfoSec,0,home)</onup>
 		<onup condition="$EXP[Bald_InfoTVHasEpisodes]">SetFocus(5302)</onup>
 		<onup condition="!$EXP[Bald_InfoTVHasEpisodes] + $EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</onup>
@@ -273,12 +273,12 @@
 	</include>
 	<include name="Bald_InfoToMore">
 		<ondown>SetProperty(Bald.InfoSec,2,home)</ondown>
-		<ondown>SetProperty(TMDbHelper.WidgetContainer,5100,movieinformation)</ondown>
+		<include content="Bald_FollowContainerOnDown"><param name="id">5100</param><param name="window">movieinformation</param></include>
 		<ondown condition="$EXP[Bald_HasRecommendations]">SetFocus(5100)</ondown>
 		<ondown condition="!$EXP[Bald_HasRecommendations]">SetFocus(5150)</ondown>
 	</include>
 	<include name="Bald_InfoBackToCast">
-		<onup>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onup>
+		<include content="Bald_UnfollowContainerOnUp"><param name="window">movieinformation</param></include>
 		<onup>SetProperty(Bald.InfoSec,1,home)</onup>
 		<onup condition="$EXP[Bald_InfoHasCast]">SetFocus(50)</onup>
 		<onup condition="!$EXP[Bald_InfoHasCast]">SetFocus(5050)</onup>
@@ -325,7 +325,7 @@
 				<include>$PARAM[down]</include>
 				<onup>noop</onup>
 				<onfocus>SetProperty(Bald.InfoSec,0,home)</onfocus>
-				<onfocus>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onfocus>
+				<include content="Bald_UnfollowContainerOnFocus"><param name="window">movieinformation</param></include>
 				<visible>$PARAM[visible]</visible>
 				<animation type="Focus">
 					<effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" />

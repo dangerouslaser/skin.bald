@@ -8,6 +8,98 @@
 	<!-- ============ Shared conditions ============ -->
 	<!-- Expression bodies are wrapped in [...] so a name negates and combines safely wherever it is used. -->
 	<expression name="Bald_HasTMDbHelper">[System.HasAddon(plugin.video.themoviedb.helper)]</expression>
+	<!-- Bald Helper (addons/script.bald.helper) is installed and enabled: it blurs the backgrounds (Bald.Blur) and owns
+	     Bald's keymaps. TMDb Helper's blur is the fallback without it. -->
+	<expression name="Bald_HasHelper">[System.HasAddon(script.bald.helper) + System.AddonIsEnabled(script.bald.helper)]</expression>
+
+	<!-- ============ Following an item ============ -->
+	<!-- The background follows the focused item of the container a window names in its Bald.FocusContainer property
+	     (Bald Helper's blur, resources/lib/blur.py); with none, Bald Helper follows a media window's view or the info
+	     dialog's own item. TMDb Helper follows the same container in its TMDbHelper.WidgetContainer, for its blur
+	     without Bald Helper and for its online ratings (Includes_Bald_Ratings.xml) with or without it:
+	       - Bald Helper absent: TMDb Helper blurs, so it must follow;
+	       - Bald Helper present and online ratings on: TMDb Helper's ListItem monitor still publishes the ratings of
+	         the item it follows (TMDbHelper.ListItem.*), so it must follow too (its blur is off, Home.xml);
+	       - Bald Helper present and online ratings off: TMDb Helper has nothing to do, so it is not told.
+	     Clears are unconditional. One include per event, as an include cannot choose its tag. -->
+	<expression name="Bald_TMDbHelperFollows">[!$EXP[Bald_HasHelper] | $EXP[Bald_RatingsOnline]]</expression>
+	<include name="Bald_FollowContainer">
+		<param name="condition">true</param>
+		<definition>
+			<onfocus condition="$PARAM[condition]">SetProperty(Bald.FocusContainer,$PARAM[id],$PARAM[window])</onfocus>
+			<onfocus condition="[$PARAM[condition]] + $EXP[Bald_TMDbHelperFollows]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],$PARAM[window])</onfocus>
+		</definition>
+	</include>
+	<include name="Bald_FollowContainerOnUp">
+		<param name="condition">true</param>
+		<definition>
+			<onup condition="$PARAM[condition]">SetProperty(Bald.FocusContainer,$PARAM[id],$PARAM[window])</onup>
+			<onup condition="[$PARAM[condition]] + $EXP[Bald_TMDbHelperFollows]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],$PARAM[window])</onup>
+		</definition>
+	</include>
+	<include name="Bald_FollowContainerOnDown">
+		<param name="condition">true</param>
+		<definition>
+			<ondown condition="$PARAM[condition]">SetProperty(Bald.FocusContainer,$PARAM[id],$PARAM[window])</ondown>
+			<ondown condition="[$PARAM[condition]] + $EXP[Bald_TMDbHelperFollows]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],$PARAM[window])</ondown>
+		</definition>
+	</include>
+	<include name="Bald_FollowContainerOnBack">
+		<param name="condition">true</param>
+		<definition>
+			<onback condition="$PARAM[condition]">SetProperty(Bald.FocusContainer,$PARAM[id],$PARAM[window])</onback>
+			<onback condition="[$PARAM[condition]] + $EXP[Bald_TMDbHelperFollows]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],$PARAM[window])</onback>
+		</definition>
+	</include>
+	<include name="Bald_FollowContainerOnLoad">
+		<param name="condition">true</param>
+		<definition>
+			<onload condition="$PARAM[condition]">SetProperty(Bald.FocusContainer,$PARAM[id],$PARAM[window])</onload>
+			<onload condition="[$PARAM[condition]] + $EXP[Bald_TMDbHelperFollows]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],$PARAM[window])</onload>
+		</definition>
+	</include>
+	<include name="Bald_UnfollowContainer">
+		<param name="condition">true</param>
+		<definition>
+			<onunfocus condition="$PARAM[condition]">ClearProperty(Bald.FocusContainer,$PARAM[window])</onunfocus>
+			<onunfocus condition="$PARAM[condition]">ClearProperty(TMDbHelper.WidgetContainer,$PARAM[window])</onunfocus>
+		</definition>
+	</include>
+	<include name="Bald_UnfollowContainerOnFocus">
+		<param name="condition">true</param>
+		<definition>
+			<onfocus condition="$PARAM[condition]">ClearProperty(Bald.FocusContainer,$PARAM[window])</onfocus>
+			<onfocus condition="$PARAM[condition]">ClearProperty(TMDbHelper.WidgetContainer,$PARAM[window])</onfocus>
+		</definition>
+	</include>
+	<include name="Bald_UnfollowContainerOnUp">
+		<param name="condition">true</param>
+		<definition>
+			<onup condition="$PARAM[condition]">ClearProperty(Bald.FocusContainer,$PARAM[window])</onup>
+			<onup condition="$PARAM[condition]">ClearProperty(TMDbHelper.WidgetContainer,$PARAM[window])</onup>
+		</definition>
+	</include>
+	<include name="Bald_UnfollowContainerOnDown">
+		<param name="condition">true</param>
+		<definition>
+			<ondown condition="$PARAM[condition]">ClearProperty(Bald.FocusContainer,$PARAM[window])</ondown>
+			<ondown condition="$PARAM[condition]">ClearProperty(TMDbHelper.WidgetContainer,$PARAM[window])</ondown>
+		</definition>
+	</include>
+	<include name="Bald_UnfollowContainerOnLoad">
+		<param name="condition">true</param>
+		<definition>
+			<onload condition="$PARAM[condition]">ClearProperty(Bald.FocusContainer,$PARAM[window])</onload>
+			<onload condition="$PARAM[condition]">ClearProperty(TMDbHelper.WidgetContainer,$PARAM[window])</onload>
+		</definition>
+	</include>
+	<include name="Bald_UnfollowContainerOnUnload">
+		<param name="condition">true</param>
+		<definition>
+			<onunload condition="$PARAM[condition]">ClearProperty(Bald.FocusContainer,$PARAM[window])</onunload>
+			<onunload condition="$PARAM[condition]">ClearProperty(TMDbHelper.WidgetContainer,$PARAM[window])</onunload>
+		</definition>
+	</include>
 	<expression name="Bald_ShowClearlogo">[!Skin.HasSetting(Bald.HideClearlogo)]</expression>
 	<expression name="Bald_ShowMediaFlags">[!Skin.HasSetting(Bald.HideMediaFlags)]</expression>
 	<!-- Global Search's right-hand options menu has focus (script-globalsearch.xml sets it on its own window). -->
@@ -118,8 +210,9 @@
 	<include name="Bald_CurtainHandoff">
 		<onload>ClearProperty(Bald.Curtain,home)</onload>
 		<onunload condition="$EXP[Bald_CurtainNext]">SetProperty(Bald.Curtain,1,home)</onunload>
-		<!-- The last blur seen, for windows without one of their own (Bald_BlurImage). -->
-		<onunload condition="!String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))">SetProperty(Bald.LastBlur,$ESCINFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)],home)</onunload>
+		<!-- TMDb Helper's blur: the last one seen, for windows without one of their own (Bald_BlurImage). Bald Helper
+		     keeps its own (Bald.Blur.Last). -->
+		<onunload condition="!$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))">SetProperty(Bald.LastBlur,$ESCINFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)],home)</onunload>
 	</include>
 	<include name="Bald_AnimWindowDepth">
 		<param name="back_in">false</param>

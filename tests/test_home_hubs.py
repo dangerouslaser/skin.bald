@@ -13,7 +13,7 @@ from pathlib import Path
 import home_menu
 from conditions import equivalent, implies
 from home_screens import HUB_SLOTS, SCREENS, hubs, rows
-from kodi_includes import Skin, resolve_window
+from kodi_includes import Skin, expand_follow, resolve_window
 
 from scripts import hubs as migration
 
@@ -422,13 +422,16 @@ class ReturnKeepsStateTests(unittest.TestCase):
     RESETS = ["SetProperty(Bald.Row,9101,home)", "SetProperty(Bald.Row.home,9101,home)",
               "SetProperty(Bald.Row.livetv,9051,home)"] + [f"SetProperty(Bald.Row.hub{n},9{n + 1}01,home)" for n in range(1, 9)] + [
               "SetProperty(Bald.Screen,home,home)", "SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)",
-              "SetProperty(TMDbHelper.WidgetContainer,9101,home)", "ClearProperty(Bald.Menu,home)"]
+              "SetProperty(Bald.FocusContainer,9101,home)", "ClearProperty(Bald.Menu,home)"]
 
     def test_state_resets_are_skipped_on_return_to_a_menu_entry(self):
-        onload = {node.text: node.get("condition") for node in ET.parse(XML / "Home.xml").getroot().findall("onload")}
+        loads = [n for n in expand_follow(ET.parse(XML / "Home.xml").getroot()) if n.tag == "onload"]
+        onload = {node.text: node.get("condition") for node in loads}
         for action in self.RESETS:
             with self.subTest(action=action):
-                self.assertEqual(onload[action], "!$EXP[Bald_ReturningToMenu]")
+                self.assertTrue(equivalent(onload[action], "!$EXP[Bald_ReturningToMenu]"), onload[action])
+        self.assertTrue(equivalent(onload["SetProperty(TMDbHelper.WidgetContainer,9101,home)"],
+                                   "!$EXP[Bald_ReturningToMenu] + $EXP[Bald_TMDbHelperFollows]"))
 
     def test_returning_matches_the_restored_entries(self):
         home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
@@ -445,11 +448,13 @@ class ReturnDefaultFocusTests(unittest.TestCase):
     def test_row_onfocus_leaves_the_state_alone_on_return(self):
         home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         row = next(c for c in home.iter("control") if c.get("type") == "fixedlist" and c.get("id") == "$PARAM[id]")
-        guarded = {n.text: n.get("condition") for n in row.findall("onfocus")}
+        guarded = {n.text: n.get("condition") for n in expand_follow(row) if n.tag == "onfocus"}
         for action in ("SetProperty(Bald.Row,$PARAM[id],home)", "SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)",
-                       "SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)", "SetProperty(Bald.RowStyle,$PARAM[style],home)"):
+                       "SetProperty(Bald.FocusContainer,$PARAM[id],home)", "SetProperty(Bald.RowStyle,$PARAM[style],home)"):
             with self.subTest(action=action):
-                self.assertEqual(guarded[action], "!$EXP[Bald_ReturningToMenu]")
+                self.assertTrue(equivalent(guarded[action], "!$EXP[Bald_ReturningToMenu]"), guarded[action])
+        self.assertTrue(equivalent(guarded["SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)"],
+                                   "!$EXP[Bald_ReturningToMenu] + $EXP[Bald_TMDbHelperFollows]"))
 
 
 class ContentPickerTests(unittest.TestCase):
