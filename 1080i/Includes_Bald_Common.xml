@@ -108,9 +108,6 @@
 	     and Kodi finishes one window's close before the next opens, so nothing flashes. Leaving: 160 FADE and a 40 px
 	     move over 180. Arriving: 380 FADE and a 40 px move over 480. Deeper moves right to left; back moves left to right.
 	     back_in: the opening window is being returned to. back_out: the closing window is going back. -->
-	<!-- Home and the video library are changing places under the curtain (Custom_1129_BaldCurtain.xml). Window.Next is
-	     only valid while windows change. -->
-	<expression name="Bald_CurtainChange">[[Window.IsActive(home) + Window.Next(videos)] | [Window.IsActive(videos) + Window.Next(home)]]</expression>
 	<include name="Bald_AnimWindowDepth">
 		<param name="back_in">false</param>
 		<param name="back_out">false</param>
@@ -125,23 +122,13 @@
 				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 				<effect type="slide" start="-40,0" end="0,0" time="480" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowClose" condition="![$PARAM[back_out]] + !$EXP[Bald_CurtainChange]">
+			<animation type="WindowClose" condition="![$PARAM[back_out]]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="-40,0" time="180" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowClose" condition="$PARAM[back_out] + !$EXP[Bald_CurtainChange]">
+			<animation type="WindowClose" condition="$PARAM[back_out]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
-			</animation>
-			<!-- Under the curtain the close lasts as long as the curtain's fade in (260), so the window is gone only once
-			     the curtain covers the screen. -->
-			<animation type="WindowClose" condition="![$PARAM[back_out]] + $EXP[Bald_CurtainChange]">
-				<effect type="fade" start="100" end="0" time="260" tween="sine" easing="inout" />
-				<effect type="slide" start="0,0" end="-40,0" time="260" tween="cubic" easing="out" />
-			</animation>
-			<animation type="WindowClose" condition="$PARAM[back_out] + $EXP[Bald_CurtainChange]">
-				<effect type="fade" start="100" end="0" time="260" tween="sine" easing="inout" />
-				<effect type="slide" start="0,0" end="40,0" time="260" tween="cubic" easing="out" />
 			</animation>
 		</definition>
 	</include>

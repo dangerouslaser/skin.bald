@@ -10,15 +10,15 @@
          drawn underneath, and clears Bald.Curtain in its onload; the curtain then fades away over it.
      No focus: a dialog with a <visible> condition is modeless and takes no input. -->
 <window type="dialog" id="1129">
-	<visible>$EXP[Bald_CurtainChange] | !String.IsEmpty(Window(home).Property(Bald.Curtain))</visible>
+	<visible>[Window.IsActive(home) + Window.Next(videos)] | [Window.IsActive(videos) + Window.Next(home)] | !String.IsEmpty(Window(home).Property(Bald.Curtain))</visible>
 	<zorder>0</zorder>
 	<onload>SetProperty(Bald.CurtainBlur,$ESCINFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)],home)</onload>
 	<onunload>ClearProperty(Bald.CurtainBlur,home)</onunload>
 	<animation type="WindowOpen">
-		<effect type="fade" start="0" end="100" time="260" tween="sine" easing="inout" />
+		<effect type="fade" start="0" end="100" time="140" tween="sine" easing="inout" />
 	</animation>
 	<animation type="WindowClose">
-		<effect type="fade" start="100" end="0" delay="200" time="540" tween="sine" easing="inout" />
+		<effect type="fade" start="100" end="0" delay="150" time="360" tween="sine" easing="inout" />
 	</animation>
 	<controls>
 		<control type="image">
