@@ -944,39 +944,35 @@
 	     focused. Left and Right seek (Kodi's slider "seek" and "pvr.seek" actions); Down returns to the buttons. Kodi
 	     scales a slider's nib by the control height over the bar texture's height, so the bar is the transparent,
 	     nib-sized bald/slider_clear.png (an empty bar ballooned the nib on CoreELEC). -->
+	<include name="Bald_OSDSeekSlider">
+		<param name="id" />
+		<param name="info" />
+		<param name="action" />
+		<param name="visible" />
+		<definition>
+			<control type="slider" id="$PARAM[id]">
+				<include content="Bald_PlaybackSeekArea"><param name="nib">bald/slider_nib.png</param></include>
+				<info>$PARAM[info]</info>
+				<action>$PARAM[action]</action>
+				<ondown>201</ondown>
+				<onup>noop</onup>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
 	<include name="Bald_OSDSeekSliders">
-		<control type="slider" id="87">
-			<left>264</left>
-			<top>824</top>
-			<width>1392</width>
-			<height>16</height>
-			<texturesliderbar>bald/slider_clear.png</texturesliderbar>
-			<texturesliderbardisabled>bald/slider_clear.png</texturesliderbardisabled>
-			<textureslidernib />
-			<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
-			<textureslidernibdisabled />
-			<info>Player.Progress</info>
-			<action>seek</action>
-			<ondown>201</ondown>
-			<onup>noop</onup>
-			<visible>Player.SeekEnabled + !VideoPlayer.Content(livetv)</visible>
-		</control>
-		<control type="slider" id="88">
-			<left>264</left>
-			<top>824</top>
-			<width>1392</width>
-			<height>16</height>
-			<texturesliderbar>bald/slider_clear.png</texturesliderbar>
-			<texturesliderbardisabled>bald/slider_clear.png</texturesliderbardisabled>
-			<textureslidernib />
-			<textureslidernibfocus colordiffuse="bald_accent">bald/slider_nib.png</textureslidernibfocus>
-			<textureslidernibdisabled />
-			<info>PVR.TimeshiftProgressPlayPos</info>
-			<action>pvr.seek</action>
-			<ondown>201</ondown>
-			<onup>noop</onup>
-			<visible>Player.SeekEnabled + VideoPlayer.Content(livetv)</visible>
-		</control>
+		<include content="Bald_OSDSeekSlider">
+			<param name="id">87</param>
+			<param name="info">Player.Progress</param>
+			<param name="action">seek</param>
+			<param name="visible">Player.SeekEnabled + !VideoPlayer.Content(livetv)</param>
+		</include>
+		<include content="Bald_OSDSeekSlider">
+			<param name="id">88</param>
+			<param name="info">PVR.TimeshiftProgressPlayPos</param>
+			<param name="action">pvr.seek</param>
+			<param name="visible">Player.SeekEnabled + VideoPlayer.Content(livetv)</param>
+		</include>
 		<!-- The accent dot left of the bar while a slider has focus (the settings rows' focus mark). -->
 		<control type="image">
 			<left>244</left>
@@ -1113,13 +1109,7 @@
 					<orientation>horizontal</orientation>
 					<itemgap>8</itemgap>
 					<usecontrolcoords>true</usecontrolcoords>
-					<include content="Bald_FlagChip"><param name="label">4K</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.VideoResolution,4K)</param></include>
-					<include content="Bald_FlagChip"><param name="label">1080p</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.VideoResolution,1080)</param></include>
-					<include content="Bald_FlagChip"><param name="label">Dolby Vision</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.HdrType,dolbyvision)</param></include>
-					<include content="Bald_FlagChip"><param name="label">HDR10</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
-					<include content="Bald_FlagChip"><param name="label">HDR10+</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.StartsWith(VideoPlayer.HdrType,hdr10) + !String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
-					<include content="Bald_FlagChip"><param name="label">HLG</param><param name="visible">$EXP[Bald_ShowMediaFlags] + String.IsEqual(VideoPlayer.HdrType,hlg)</param></include>
-					<include content="Bald_FlagChip"><param name="label">$MAP[DefaultCodecMap, VideoPlayer.AudioCodec]</param><param name="visible">$EXP[Bald_ShowMediaFlags] + !String.IsEmpty(VideoPlayer.AudioCodec)</param></include>
+					<include content="Bald_PlaybackFlagChips"><param name="when">$EXP[Bald_ShowMediaFlags]</param><param name="channels">false</param></include>
 					<include content="Bald_RatingsPlayer" />
 					<control type="label">
 						<left>6</left>

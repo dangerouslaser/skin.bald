@@ -311,16 +311,20 @@
 	     y 796): invisible, since the seek dialog already
 	     draws the playhead, but still a seek target for the mouse (Estuary's sliders with <action>seek</action>). -->
 	<include name="Bald_PlaybackSeekArea">
-		<left>264</left>
-		<top>824</top>
-		<width>1392</width>
-		<height>16</height>
-		<!-- Transparent, nib-sized bar for the same reason as Bald_PlaybackNib; the nibs stay empty (invisible). -->
-		<texturesliderbar>bald/slider_clear.png</texturesliderbar>
-		<texturesliderbardisabled>bald/slider_clear.png</texturesliderbardisabled>
-		<textureslidernib />
-		<textureslidernibfocus />
-		<textureslidernibdisabled />
+		<!-- The focused nib: none by default (the music OSD's mouse targets); the video OSD's sliders show the accent nib. -->
+		<param name="nib" />
+		<definition>
+			<left>264</left>
+			<top>824</top>
+			<width>1392</width>
+			<height>16</height>
+			<!-- Transparent, nib-sized bar for the same reason as Bald_PlaybackNib; the other nibs stay empty (invisible). -->
+			<texturesliderbar>bald/slider_clear.png</texturesliderbar>
+			<texturesliderbardisabled>bald/slider_clear.png</texturesliderbardisabled>
+			<textureslidernib />
+			<textureslidernibfocus colordiffuse="bald_accent">$PARAM[nib]</textureslidernibfocus>
+			<textureslidernibdisabled />
+		</definition>
 	</include>
 	<!-- Focus mark for the seek row: the menu's accent dot, 12 px left of the seek layer's lifted bar (x 264, y 796),
 	     while the hidden seek button (87) has focus. -->
@@ -383,18 +387,27 @@
 			<include>Bald_PlaybackFlags</include>
 		</control>
 	</include>
-	<!-- The playing video's flag chips (Bald_MediaFlags reads list items; the player has its own infolabels). -->
+	<!-- The playing video's flag chips (Bald_MediaFlags reads list items; the player has its own infolabels): resolution,
+	     HDR, the audio codec and, with <channels>, 7.1 or 5.1. <when> gates every chip (for a row that holds more than
+	     the chips). -->
+	<include name="Bald_PlaybackFlagChips">
+		<param name="when">true</param>
+		<param name="channels">true</param>
+		<definition>
+			<include content="Bald_FlagChip"><param name="label">4K</param><param name="visible">[$PARAM[when]] + String.IsEqual(VideoPlayer.VideoResolution,4K)</param></include>
+			<include content="Bald_FlagChip"><param name="label">1080p</param><param name="visible">[$PARAM[when]] + String.IsEqual(VideoPlayer.VideoResolution,1080)</param></include>
+			<include content="Bald_FlagChip"><param name="label">Dolby Vision</param><param name="visible">[$PARAM[when]] + String.IsEqual(VideoPlayer.HdrType,dolbyvision)</param></include>
+			<include content="Bald_FlagChip"><param name="label">HDR10</param><param name="visible">[$PARAM[when]] + String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
+			<include content="Bald_FlagChip"><param name="label">HDR10+</param><param name="visible">[$PARAM[when]] + String.StartsWith(VideoPlayer.HdrType,hdr10) + !String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
+			<include content="Bald_FlagChip"><param name="label">HLG</param><param name="visible">[$PARAM[when]] + String.IsEqual(VideoPlayer.HdrType,hlg)</param></include>
+			<include content="Bald_FlagChip"><param name="label">$MAP[DefaultCodecMap, VideoPlayer.AudioCodec]</param><param name="visible">[$PARAM[when]] + !String.IsEmpty(VideoPlayer.AudioCodec)</param></include>
+			<include content="Bald_FlagChip"><param name="label">7.1</param><param name="visible">[$PARAM[when]] + [$PARAM[channels]] + String.IsEqual(VideoPlayer.AudioChannels,8)</param></include>
+			<include content="Bald_FlagChip"><param name="label">5.1</param><param name="visible">[$PARAM[when]] + [$PARAM[channels]] + String.IsEqual(VideoPlayer.AudioChannels,6)</param></include>
+		</definition>
+	</include>
 	<include name="Bald_PlaybackFlags">
 		<visible>$EXP[Bald_ShowMediaFlags] + Player.HasVideo + !VideoPlayer.Content(livetv)</visible>
-		<include content="Bald_FlagChip"><param name="label">4K</param><param name="visible">String.IsEqual(VideoPlayer.VideoResolution,4K)</param></include>
-		<include content="Bald_FlagChip"><param name="label">1080p</param><param name="visible">String.IsEqual(VideoPlayer.VideoResolution,1080)</param></include>
-		<include content="Bald_FlagChip"><param name="label">Dolby Vision</param><param name="visible">String.IsEqual(VideoPlayer.HdrType,dolbyvision)</param></include>
-		<include content="Bald_FlagChip"><param name="label">HDR10</param><param name="visible">String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
-		<include content="Bald_FlagChip"><param name="label">HDR10+</param><param name="visible">String.StartsWith(VideoPlayer.HdrType,hdr10) + !String.IsEqual(VideoPlayer.HdrType,hdr10)</param></include>
-		<include content="Bald_FlagChip"><param name="label">HLG</param><param name="visible">String.IsEqual(VideoPlayer.HdrType,hlg)</param></include>
-		<include content="Bald_FlagChip"><param name="label">$MAP[DefaultCodecMap, VideoPlayer.AudioCodec]</param><param name="visible">!String.IsEmpty(VideoPlayer.AudioCodec)</param></include>
-		<include content="Bald_FlagChip"><param name="label">7.1</param><param name="visible">String.IsEqual(VideoPlayer.AudioChannels,8)</param></include>
-		<include content="Bald_FlagChip"><param name="label">5.1</param><param name="visible">String.IsEqual(VideoPlayer.AudioChannels,6)</param></include>
+		<include content="Bald_PlaybackFlagChips" />
 	</include>
 
 	<!-- ============ Buttons ============ -->
