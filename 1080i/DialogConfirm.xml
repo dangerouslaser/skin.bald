@@ -33,6 +33,7 @@
 				<info>System.Progressbar</info>
 			</control>
 			<control type="grouplist" id="9000">
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<orientation>horizontal</orientation>
 				<left>0</left>
 				<top>290</top>
@@ -41,14 +42,17 @@
 				<include content="DefaultDialogButton">
 					<param name="id" value="11" />
 					<param name="label" value="" />
+					<param name="width" value="280" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="10" />
 					<param name="label" value="" />
+					<param name="width" value="280" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="12" />
 					<param name="label" value="" />
+					<param name="width" value="280" />
 				</include>
 			</control>
 		</control>
