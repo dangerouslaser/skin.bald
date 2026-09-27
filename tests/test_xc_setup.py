@@ -1,7 +1,12 @@
 from pathlib import Path
+import http.client
 import importlib.util
+import types
 import unittest
 import xml.etree.ElementTree as ET
+from unittest import mock
+
+from support import service
 
 
 MODULE = Path(__file__).resolve().parents[1] / "addons/script.bald.xcsetup/resources/lib/config.py"
@@ -72,6 +77,20 @@ class XCSetupTests(unittest.TestCase):
         self.assertIn('tvg-id="news.example"', playlist)
         self.assertIn('group-title="News"', playlist)
         self.assertIn("https://iptv.example:8443/panel/live/a%2Bb/p%2Fx/42.ts", playlist)
+
+
+class DownloadTests(unittest.TestCase):
+    def test_a_cut_off_answer_is_a_config_error_not_a_traceback(self):
+        addon = types.SimpleNamespace(getAddonInfo=lambda key: "script.bald.xcsetup")
+        fakes = {"xbmc": types.SimpleNamespace(LOGINFO=1, log=lambda *a: None),
+                 "xbmcaddon": types.SimpleNamespace(Addon=lambda *a: addon),
+                 "xbmcgui": types.SimpleNamespace(), "xbmcvfs": types.SimpleNamespace()}
+        with service(fakes, SETUP.parent, "default.py") as setup:
+            for error in (http.client.IncompleteRead(b"[{"), http.client.RemoteDisconnected("closed")):
+                with self.subTest(error=type(error).__name__), \
+                        mock.patch("urllib.request.urlopen", side_effect=error), \
+                        self.assertRaises(setup.ConfigError):
+                    setup._xc_data("http://example.invalid", "user", "pass", "get_live_streams")
 
 
 if __name__ == "__main__":

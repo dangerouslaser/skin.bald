@@ -39,19 +39,20 @@ def load_builder():
 
 
 @contextmanager
-def service(fakes):
-    """Bald Helper's service.py loaded as Kodi runs it (the add-on folder on sys.path, `resources.lib` imported
-    fresh), with `fakes` as the xbmc modules; sys.modules and sys.path are put back afterwards."""
+def service(fakes, addon=ADDON, script="service.py"):
+    """An add-on's entry script (Bald Helper's service.py by default) loaded as Kodi runs it (the add-on folder on
+    sys.path, `resources.lib` imported fresh), with `fakes` as the xbmc modules; sys.modules and sys.path are put back
+    afterwards."""
     saved = {name: module for name, module in sys.modules.items()
              if name in fakes or name == "resources" or name.startswith("resources.")}
     for name in saved:
         sys.modules.pop(name)
     sys.modules.update(fakes)
-    sys.path.insert(0, str(ADDON))
+    sys.path.insert(0, str(addon))
     try:
-        yield load_file("bald_helper_service", ADDON / "service.py")
+        yield load_file(f"bald_entry_{addon.name}", addon / script)
     finally:
-        sys.path.remove(str(ADDON))
+        sys.path.remove(str(addon))
         for name in [name for name in sys.modules
                      if name in fakes or name == "resources" or name.startswith("resources.")]:
             sys.modules.pop(name)
