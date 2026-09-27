@@ -1145,13 +1145,21 @@
 				<onback>SetProperty(Bald.RowStyle,$PARAM[style],home)</onback>
 				<onback>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onback>
 				<onback>SetFocus($PARAM[menu])</onback>
-				<onclick>Action(Info)</onclick>
+				<!-- A PVR channel group (a "channel groups" row, widget editor Choose content) opens the guide on that group:
+				     the guide windows take a group path with ActivateWindow and make it the active group
+				     (CGUIWindowPVRGuideBase::OnMessage, SetChannelGroupPath). Everything else opens its information. -->
+				<onclick condition="$EXP[Bald_TVChannelGroupItem]">ActivateWindow(TVGuide,$ESCINFO[ListItem.FolderPath],return)</onclick>
+				<onclick condition="$EXP[Bald_RadioChannelGroupItem]">ActivateWindow(RadioGuide,$ESCINFO[ListItem.FolderPath],return)</onclick>
+				<onclick condition="!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem]">Action(Info)</onclick>
 				<nested />
 			</control>
 		</definition>
 	</include>
 
 	<!-- ============ Menu ============ -->
+	<!-- The focused row item is a PVR channel group (a folder under pvr://channels/). -->
+	<expression name="Bald_TVChannelGroupItem">[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/tv/)]</expression>
+	<expression name="Bald_RadioChannelGroupItem">[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/radio/)]</expression>
 	<!-- One entry of the Home menu (grouplist 9000). Pass what Select does as <onclick> children (nested), or
 	     Bald_HomeMenuScreen for a screen with rows. Up and Down are the grouplist's: CGUIControlGroupList::AddControl
 	     points each entry at its neighbours (replacing any onup/ondown here) and CGUIWindow::OnMove passes over hidden

@@ -462,3 +462,18 @@ class ContentPickerTests(unittest.TestCase):
         entries = {e["path"]: e for e in config["grouping://shortcuts/"]}
         self.assertEqual((entries["pvr://channels/tv/"]["node"], entries["pvr://channels/tv/"]["link"]), ("tvchannels", "false"))
         self.assertEqual((entries["pvr://channels/radio/"]["node"], entries["pvr://channels/radio/"]["link"]), ("radiochannels", "false"))
+
+
+class ChannelGroupSelectTests(unittest.TestCase):
+    """Select on a channel group in a Home row opens the guide on that group; other items open their information."""
+
+    def test_row_select_opens_the_guide_for_a_group(self):
+        home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        row = next(c for c in home.iter("control") if c.get("type") == "fixedlist" and c.get("id") == "$PARAM[id]")
+        clicks = [(n.get("condition"), n.text) for n in row.findall("onclick")]
+        self.assertEqual(clicks, [
+            ("$EXP[Bald_TVChannelGroupItem]", "ActivateWindow(TVGuide,$ESCINFO[ListItem.FolderPath],return)"),
+            ("$EXP[Bald_RadioChannelGroupItem]", "ActivateWindow(RadioGuide,$ESCINFO[ListItem.FolderPath],return)"),
+            ("!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem]", "Action(Info)")])
+        self.assertEqual(home.findtext("expression[@name='Bald_TVChannelGroupItem']"),
+                         "[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/tv/)]")
