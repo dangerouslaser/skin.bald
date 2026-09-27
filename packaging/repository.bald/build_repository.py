@@ -116,8 +116,9 @@ SCREENSHOT_CAPTIONS = (
     "Library views with a live preview",
     "Live TV rows and channel groups",
     "TV guide",
+    "Series page: seasons as tabs, episodes in a row",
 )
-# The movie library's views (resources/screenshot-09.jpg onward), a section of their own.
+# The movie library's views (the screenshots after SCREENSHOT_CAPTIONS's), a section of their own.
 LIBRARY_CAPTIONS = (
     "Posters with a preview",
     "Poster wall with a preview",
