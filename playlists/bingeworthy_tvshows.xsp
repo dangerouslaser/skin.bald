@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="tvshows">
+    <name>Binge-worthy, not started</name>
+    <match>all</match>
+    <rule field="rating" operator="greaterthan">
+        <value>7.9</value>
+    </rule>
+    <rule field="numwatched" operator="is">
+        <value>0</value>
+    </rule>
+    <order direction="ascending">random</order>
+</smartplaylist>

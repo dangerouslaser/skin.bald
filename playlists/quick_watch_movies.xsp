@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="movies">
+    <name>Quick watch</name>
+    <match>all</match>
+    <rule field="time" operator="lessthan">
+        <value>01:36:00</value>
+    </rule>
+    <rule field="time" operator="greaterthan">
+        <value>00:00:00</value>
+    </rule>
+    <rule field="playcount" operator="is">
+        <value>0</value>
+    </rule>
+    <order direction="ascending">random</order>
+</smartplaylist>

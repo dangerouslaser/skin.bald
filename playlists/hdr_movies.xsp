@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="movies">
+    <name>Dolby Vision and HDR</name>
+    <match>all</match>
+    <rule field="hdrtype" operator="is">
+        <value>dolbyvision</value>
+        <value>hdr10</value>
+        <value>hlg</value>
+    </rule>
+    <limit>50</limit>
+    <order direction="descending">dateadded</order>
+</smartplaylist>
