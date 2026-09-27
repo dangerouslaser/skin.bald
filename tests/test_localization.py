@@ -23,7 +23,7 @@ BALD_FILES = sorted(
     )
 )
 # Names that are the same in every language.
-PROPER_NOUNS = ("CoreELEC", "LibreELEC", "Dolby Vision", "HDR10+", "HDR10", "HLG", "Jellyfin")
+PROPER_NOUNS = ("CoreELEC", "LibreELEC", "Dolby Vision", "HDR10+", "HDR10", "HLG", "SDR", "Jellyfin")
 TEXT_PARAMS = re.compile(r"^(label|label2|title|first|second|third|note|hint|[a-z_]+_hint)$")
 TOKEN = re.compile(r"\$(INFO|ESCINFO|VAR|ESCVAR|EXP|PARAM|LOCALIZE|ADDON|NUMBER|MAP)\[")
 
