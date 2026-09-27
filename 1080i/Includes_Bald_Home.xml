@@ -827,6 +827,17 @@
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Duration(mins),$COMMA , $LOCALIZE[31710]]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + !Integer.IsGreaterOrEqual(Container($PARAM[c]).ListItem.Duration(mins),60)</param>
 					</include>
+					<!-- Music (a music row): an album's artist and year, a song's artist and album. -->
+					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Artist]$INFO[Container($PARAM[c]).ListItem.Year,$COMMA ,]</param>
+						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,album)</param>
+					</include>
+					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Artist]$INFO[Container($PARAM[c]).ListItem.Album,$COMMA ,]</param>
+						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,song)</param>
+					</include>
 					<!-- Media flags: movies only -->
 					<control type="grouplist">
 						<top>10</top>

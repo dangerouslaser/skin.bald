@@ -185,6 +185,13 @@ class MusicRowTests(unittest.TestCase):
         text = home.find("include[@name='Bald_RowTiles_text']/include")
         self.assertEqual(text.findtext("param[@name='cover']"), "false")
 
+    def test_the_caption_names_the_artist(self):
+        home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        metas = {call.findtext("param[@name='visible']"): call.findtext("param[@name='label']")
+                 for call in home.iter("include") if call.get("content") == "Bald_CaptionMeta"}
+        self.assertIn("ListItem.Artist]", metas["String.IsEqual(Container($PARAM[c]).ListItem.DBType,album)"])
+        self.assertIn("ListItem.Album,", metas["String.IsEqual(Container($PARAM[c]).ListItem.DBType,song)"])
+
     def test_a_favourite_in_a_row_runs_itself(self):
         home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         self.assertEqual(home.findtext("expression[@name='Bald_FavouriteItem']"),
