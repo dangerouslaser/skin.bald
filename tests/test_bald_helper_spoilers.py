@@ -129,7 +129,7 @@ class Clock:
 
 
 def episode(episode_id, thumb=None, playcount=0, position=0):
-    return {"episodeid": episode_id, "thumb": thumb or f"image://still{episode_id}.jpg/", "playcount": playcount,
+    return {"episodeid": episode_id, "art": {"thumb": thumb or f"image://still{episode_id}.jpg/"}, "playcount": playcount,
             "resume": {"position": position, "total": 1500}}
 
 
@@ -398,7 +398,9 @@ class LibraryTests(unittest.TestCase):
         params = rpc.requests[0]["params"]
         self.assertEqual((params["tvshowid"], params["season"]), (12, 3))
         self.assertEqual(params["filter"], spoilers.UNWATCHED)
-        self.assertIn("thumb", params["properties"])
+        # Kodi 22's schema: "thumb" is not an episode field (Invalid params); the still is in art.
+        self.assertIn("art", params["properties"])
+        self.assertNotIn("thumb", params["properties"])
         self.assertIn("resume", params["properties"])
 
     def test_next_up_follows_the_shows_in_progress(self):

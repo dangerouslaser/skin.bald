@@ -78,7 +78,12 @@ SHOW_LIMIT = 40
 SEASON_LIMIT = 200
 
 UNWATCHED = {"field": "playcount", "operator": "is", "value": "0"}
-PROPERTIES = ["thumb", "playcount", "resume", "tvshowid", "season"]
+# Kodi 22's VideoLibrary episode fields have no "thumb": the still is art["thumb"] (with "thumbnail" as a fallback).
+PROPERTIES = ["art", "thumbnail", "playcount", "resume", "tvshowid", "season"]
+
+
+def still_source(episode: dict) -> str:
+    return (episode.get("art") or {}).get("thumb") or episode.get("thumbnail") or ""
 LIBRARY_SCANS = frozenset(("VideoLibrary.OnScanFinished", "VideoLibrary.OnCleanFinished"))
 
 
@@ -500,7 +505,7 @@ class Spoilers:
             if self._stop.is_set() or not self.active:
                 break
             try:
-                if self.stills.make(int(episode["episodeid"]), episode.get("thumb") or ""):
+                if self.stills.make(int(episode["episodeid"]), still_source(episode)):
                     made += 1
             except Exception as error:  # noqa: BLE001 - one bad image must not end the batch
                 self.log_once(f"{type(error).__name__}: {error}")
