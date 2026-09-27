@@ -240,9 +240,22 @@ class StillSitesTests(unittest.TestCase):
         self.spoiler_before_thumb("Bald_OSDUpNextArt", "$EXP[Bald_OSDUpNextThumbHidden]", "$INFO[Window.Property(fanart)]",
                                   "Window.Property(thumb)")
         self.spoiler_before_thumb("Bald_InfoPoster", "$EXP[Bald_SpoilerThumb]", "")
+        self.spoiler_before_thumb("Bald_BrowseIconArt", "$EXP[Bald_SpoilerThumb]", "$VAR[Bald_SpoilerArt]")
+        self.spoiler_before_thumb("Bald_LibraryPoster", "$EXP[Bald_SpoilerThumb]", "", "ListItem.Icon")
+        # A Jellyfin episode's landscape can be a still too: a hidden one goes on to Bald_ItemFanart.
+        landscape = [c for c, v in self.variables["Bald_ItemThumbnail"] if "Art(landscape)" in v]
+        self.assertTrue(implies(landscape[0], "!$EXP[Bald_SpoilerThumb]", expressions()))
         self.spoiler_before_thumb("Bald_PVRLogo", "$EXP[Bald_SpoilerThumb]", "", "ListItem.Icon")
         for name in ("ShiftThumbVar", "InfoWallThumbVar"):
             self.spoiler_before_thumb(name, "$EXP[Bald_SpoilerThumb]", "$VAR[Bald_SpoilerArt]")
+
+    def test_an_episodes_own_poster_is_skipped_when_its_still_is_hidden(self):
+        # Jellyfin for Kodi writes an episode's primary image as both thumb and poster.
+        for name in ("Bald_LibraryPoster", "Bald_InfoPoster", "ShiftThumbVar", "InfoWallThumbVar"):
+            with self.subTest(variable=name):
+                own = [c for c, value in self.variables[name] if value.lower() == "$info[listitem.art(poster)]"]
+                self.assertTrue(own)
+                self.assertTrue(implies(own[0], "!$EXP[Bald_SpoilerThumb]", expressions()))
 
     def test_spoiler_art_is_never_the_still(self):
         for suffix, prefix in SUFFIXES.items():

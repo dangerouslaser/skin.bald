@@ -11,8 +11,9 @@
 	<!-- scripts/info.py found a recommendations path; the list may still be loading. -->
 	<expression name="Bald_InfoHasMorePath">[!String.IsEmpty(Window(movieinformation).Property(Bald.MorePath))]</expression>
 	<expression name="Bald_HasRecommendations">[$EXP[Bald_InfoHasMorePath] + Integer.IsGreater(Container(5100).NumItems,0)]</expression>
+	<!-- A hidden still (Includes_Bald_Spoilers.xml) skips the episode's own poster, which Jellyfin sets to the still. -->
 	<variable name="Bald_InfoPoster">
-		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(poster)) + !$EXP[Bald_SpoilerThumb]">$INFO[ListItem.Art(poster)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
 		<value condition="$EXP[Bald_SpoilerThumb]" />
 		<value>$INFO[ListItem.Art(thumb)]</value>

@@ -129,7 +129,7 @@
 	     the item's landscape art, else the fanart chain. A movie's thumb is usually its poster, so it is not used. -->
 	<variable name="Bald_ItemThumbnail">
 		<value condition="ListItem.IsEpisode">$VAR[Bald_EpisodeThumb]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(landscape)) + !$EXP[Bald_SpoilerThumb]">$INFO[ListItem.Art(landscape)]</value>
 		<value>$VAR[Bald_ItemFanart]</value>
 	</variable>
 	<!-- Episode still: thumb, else fanart, else the show's fanart. The library's Bald_EpisodeThumb540/541/542 end on the
