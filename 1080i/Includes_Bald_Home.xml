@@ -1179,8 +1179,8 @@
 		<param name="left_if">true</param>
 		<definition>
 			<control type="button" id="$PARAM[id]">
-				<left>-6</left><width>426</width><height>62</height><visible>$PARAM[visible]</visible>
-				<texturefocus colordiffuse="bald_accent">bald/menu_dot.png</texturefocus><texturenofocus /><font>Bald_MenuItem</font><align>left</align><aligny>center</aligny><textoffsetx>26</textoffsetx>
+				<left>-6</left><width>426</width><height>56</height><visible>$PARAM[visible]</visible>
+				<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus><texturenofocus /><font>Bald_MenuItem</font><align>left</align><aligny>center</aligny><textoffsetx>26</textoffsetx>
 				<textcolor>bald_ink34</textcolor><focusedcolor>bald_ink</focusedcolor><label>$PARAM[label]$PARAM[suffix]</label>
 				<!-- Not reversible: Kodi reverses an interrupted Focus animation from wherever it stopped, which left quickly
 				     passed items at a stray brightness. Resetting it returns every unfocused item to exactly bald_ink34. -->
