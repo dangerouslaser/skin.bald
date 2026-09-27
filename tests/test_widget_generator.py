@@ -264,3 +264,21 @@ class WidgetGeneratorTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PlaylistCatalogTests(unittest.TestCase):
+    """Every bundled smart playlist parses, is named (the widget editor lists it by name) and orders its items."""
+
+    def test_every_playlist_is_named_and_ordered(self):
+        import xml.etree.ElementTree as ET
+        from pathlib import Path
+        for path in sorted((Path(__file__).resolve().parents[1] / "playlists").glob("*.xsp")):
+            with self.subTest(playlist=path.name):
+                root = ET.parse(path).getroot()
+                self.assertEqual(root.tag, "smartplaylist")
+                self.assertTrue((root.findtext("name") or "").strip())
+                self.assertIsNotNone(root.find("order"))
+                for rule in root.findall("rule"):
+                    # Kodi's true/false fields (inprogress, hastrailer, ...) take no value.
+                    if rule.get("operator") not in ("true", "false"):
+                        self.assertTrue(rule.findall("value"), rule.get("field"))

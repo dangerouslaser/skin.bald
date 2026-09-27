@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="movies">
+    <name>Lossless audio</name>
+    <match>all</match>
+    <rule field="audiocodec" operator="is">
+        <value>truehd</value>
+        <value>dtshd_ma</value>
+        <value>flac</value>
+        <value>pcm_s24le</value>
+        <value>pcm_s16le</value>
+    </rule>
+    <limit>50</limit>
+    <order direction="descending">dateadded</order>
+</smartplaylist>

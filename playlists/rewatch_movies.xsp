@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="movies">
+    <name>Worth a rewatch</name>
+    <match>all</match>
+    <rule field="playcount" operator="greaterthan">
+        <value>0</value>
+    </rule>
+    <rule field="rating" operator="greaterthan">
+        <value>7.9</value>
+    </rule>
+    <rule field="lastplayed" operator="notinthelast">
+        <value>730 days</value>
+    </rule>
+    <order direction="ascending">random</order>
+</smartplaylist>

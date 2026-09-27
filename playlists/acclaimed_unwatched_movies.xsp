@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="movies">
+    <name>Critically acclaimed, unwatched</name>
+    <match>all</match>
+    <rule field="rating" operator="greaterthan">
+        <value>7.9</value>
+    </rule>
+    <rule field="playcount" operator="is">
+        <value>0</value>
+    </rule>
+    <order direction="ascending">random</order>
+</smartplaylist>
