@@ -146,17 +146,16 @@ class StaticItemNumberTests(unittest.TestCase):
 
 class MapOrderTests(unittest.TestCase):
     """Kodi resolves a skin map's ref when it loads the map (CSkinMapManager::LoadMaps logs "references unknown map"
-    otherwise), so a file whose map extends another must be included after the file that defines it."""
+    otherwise), so a map that extends another must load after it: in a later included file, or later in the same file."""
 
     def test_referenced_maps_load_first(self):
-        order = [node.get('file') for node in ET.parse(SKIN / 'Includes.xml').getroot().findall('include')]
-        defined = {}
-        for position, name in enumerate(order):
-            for node in ET.parse(SKIN / name).getroot().iter('map'):
-                defined[node.get('name')] = position
-        for position, name in enumerate(order):
-            for node in ET.parse(SKIN / name).getroot().iter('map'):
-                if node.get('ref'):
-                    with self.subTest(map=node.get('name')):
-                        self.assertLess(defined[node.get('ref')], position + (node.get('ref') in
-                                        {m.get('name') for m in ET.parse(SKIN / name).getroot().iter('map')}))
+        files = [node.get('file') for node in ET.parse(SKIN / 'Includes.xml').getroot().findall('include')
+                 if node.get('file')]
+        maps = [(node.get('name'), node.get('ref')) for name in files
+                for node in ET.parse(SKIN / name).getroot().iter('map')]
+        loaded = set()
+        for name, ref in maps:
+            if ref:
+                with self.subTest(map=name):
+                    self.assertIn(ref, loaded)
+            loaded.add(name)
