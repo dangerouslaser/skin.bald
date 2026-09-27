@@ -2265,6 +2265,30 @@ msgid "Recommended settings applied."
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#. Library options menu (series views): what Select does on a TV show
+msgctxt "#31842"
+msgid "Open shows as"
+msgstr ""
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Library options note, before the current choice (Seasons or Series page)
+msgctxt "#31843"
+msgid "Shows open as:"
+msgstr ""
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Library options note, after the current choice
+msgctxt "#31844"
+msgid "Select to switch between the seasons list and the series page."
+msgstr ""
+
+#: /1080i/View_510_Bald_Posters.xml
+#. The tabbed TV show information page (seasons as tabs, episodes in a row)
+msgctxt "#31845"
+msgid "Series page"
+msgstr ""
+
+#: /1080i/View_510_Bald_Posters.xml
 #. Name of a library layout, shown by Container.Viewmode
 msgctxt "#31850"
 msgid "Bald posters"
