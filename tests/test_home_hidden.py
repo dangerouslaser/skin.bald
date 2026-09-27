@@ -103,7 +103,7 @@ class HiddenHomeTests(unittest.TestCase):
         texts = [text for _, text in loads]
         focus = texts.index("SetFocus($INFO[Window(home).Property(Bald.Row)])")
         cond = loads[focus][0]
-        self.assertTrue(equivalent(cond, f"{returning} + $EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]"))
+        self.assertTrue(equivalent(cond, f"{returning} + !$EXP[Bald_Preloading] + $EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]"))
         # After the start row is set; before Search's and the menu entry's return focus and the splash's hold.
         self.assertLess(texts.index("SetProperty(Bald.Row,$VAR[Bald_StartRow],home)"), focus)
         for later in ("SetFocus(9005)", "SetFocus(9198)"):

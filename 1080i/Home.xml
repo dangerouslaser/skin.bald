@@ -62,8 +62,9 @@
 	<onload condition="!$EXP[Bald_StartHasRows]">ClearProperty(Bald.Row,home)</onload>
 	<onload condition="!$EXP[Bald_StartHasRows]">SetFocus($VAR[Bald_StartMenuEntry])</onload>
 	<!-- Home hidden: focus the start row (Kodi has already focused the default control, Home's hidden row 1). If that
-	     row cannot take focus yet, Timers.xml bald_home_start finishes the move (Bald_HomeRowStranded). -->
-	<onload condition="!$EXP[Bald_ReturningToMenu] + $EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onload>
+	     row cannot take focus yet, Timers.xml bald_home_start finishes the move (Bald_HomeRowStranded). Behind the
+	     startup splash 9195 does it as the splash lifts. -->
+	<onload condition="!$EXP[Bald_ReturningToMenu] + !$EXP[Bald_Preloading] + $EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onload>
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetProperty(Bald.Menu,1,home)</onload>
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetFocus(9005)</onload>
 	<onload>ClearProperty(Bald.ReturnSearch,home)</onload>
