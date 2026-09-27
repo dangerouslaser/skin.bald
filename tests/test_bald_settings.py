@@ -85,7 +85,7 @@ class BaldSettingsTests(unittest.TestCase):
         expected = {
             "9401": f"RunPlugin({url}&func=do_toggle&&disabled)",
             "9403": f"RunPlugin({url}&func=do_edit&&label)",
-            "9404": f"RunPlugin({url}&func=do_action&&use_rawpath::True)",
+            "9404": f"RunPlugin({url}&func=do_action&&grouping::grouping://hubs/&&use_rawpath::True)",
             "9405": f"RunPlugin({url}&func=do_edit&&path&&null)",
             "9406": f"RunPlugin({url}&func=do_move&&-1)",
             "9407": f"RunPlugin({url}&func=do_move&&1)",

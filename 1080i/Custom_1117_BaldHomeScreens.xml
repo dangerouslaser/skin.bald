@@ -72,11 +72,12 @@
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
 					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;label)</onclick>
 				</control>
-				<!-- What Right (and Select without rows) opens: Skin Variables' Browse (library nodes, Bald playlists, video
-				     add-ons) or Edit (a path or a builtin such as ActivateWindow(Weather)). -->
+				<!-- What Right (and Select without rows) opens: Skin Variables' Browse over grouping://hubs/ (video and music
+				     library nodes, Bald playlists, add-ons, Favourites, Pictures, Programs, Weather, Radio, channel groups) or Edit
+				     (a path or a builtin such as ActivateWindow(Weather)). The generator picks the window (Bald_HubOpen_<screen>). -->
 				<control type="button" id="9404"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31203]</label><label2>$VAR[Bald_HubTargetLabel]</label2>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
-					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_action&amp;&amp;use_rawpath::True)</onclick>
+					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_action&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
 				</control>
 				<control type="button" id="9405"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31209]</label>
 					<visible>$EXP[Bald_HubCategorySelected] + !String.IsEmpty(Container(9300).ListItem.Property(path))</visible>
