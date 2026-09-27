@@ -273,7 +273,7 @@ dialog:focus {{ outline: none; }}
 <section class="gallery">{shots}</section>
 <section class="views"><h2>Library views</h2><p>Six ways to browse a library, switched from the options menu.</p>
 <div class="gallery">{views}</div></section>
-<p class="files">Files: <a href="{repository_zip}">{repository_zip}</a> · <a href="kodi/">kodi/</a></p>
+<p class="files"><a href="https://github.com/dangerouslaser/skin.bald">Source on GitHub</a> · <a href="https://forum.kodi.tv/showthread.php?tid=388804">Kodi forum thread</a> · Files: <a href="{repository_zip}">{repository_zip}</a> · <a href="kodi/">kodi/</a></p>
 </main>
 <dialog id="viewer" aria-label="Screenshot" tabindex="-1">
 <figure class="lightbox"><img id="viewer-img" alt=""><figcaption><span id="viewer-caption"></span><span class="count" id="viewer-count"></span></figcaption></figure>
