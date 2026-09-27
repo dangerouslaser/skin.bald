@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Build the static Kodi repository feed from a clean, tagged skin checkout."""
+"""Build the static Kodi repository feed from a clean, tagged skin checkout.
+
+Everything published comes from --revision (the skin, the bundled add-ons, the repository add-on and every icon,
+fanart and screenshot), never from the working tree. --output is deleted and rebuilt, and the landing page and the
+repository zip go into its parent, so it must be a new or empty directory, or one this script built before, and
+neither it nor its parent may be the checkout, the home folder or a folder that holds either."""
 
 from __future__ import annotations
 
@@ -7,21 +12,20 @@ import argparse
 import hashlib
 import shutil
 import subprocess
-import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
+from fnmatch import fnmatch
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REPOSITORY_SOURCE = Path(__file__).resolve().parent
+REPOSITORY_SOURCE = "packaging/repository.bald"  # the repository add-on, in the checkout
 BUNDLED_ADDONS = ("addons/script.bald.xcsetup", "addons/script.bald.helper")
 # Skin Variables writes the Home rows per install; releases ship 1080i/Includes_Bald_HomeDefaults.xml instead.
 PER_INSTALL_FILES = ("1080i/script-skinvariables-generator-includes",)
 
 
-def addon_identity(path: Path) -> tuple[str, str]:
-    root = ET.parse(path).getroot()
+def addon_identity(root: ET.Element) -> tuple[str, str]:
     return root.attrib["id"], root.attrib["version"]
 
 
@@ -71,12 +75,12 @@ def zip_skin(output: Path, revision: str, version: str) -> Path:
     return destination
 
 
-def zip_repository(output: Path, version: str) -> Path:
+def zip_repository(output: Path, revision: str, version: str) -> Path:
     destination = output / "repository.bald" / f"repository.bald-{version}.zip"
     destination.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for name in ("addon.xml", "icon.png", "fanart.jpg"):
-            archive.write(REPOSITORY_SOURCE / name, f"repository.bald/{name}")
+            archive.writestr(f"repository.bald/{name}", git_file(revision, f"{REPOSITORY_SOURCE}/{name}"))
     return destination
 
 
@@ -103,14 +107,30 @@ def zip_bundled_addon(output: Path, revision: str, source: str) -> ET.Element:
     return root
 
 
-def copy_metadata(output: Path, addon_id: str, source_dir: Path, asset_dir: str = "") -> None:
-    """Icon, fanart and any screenshot-NN.jpg next to the add-on's zip, where Kodi's add-on browser reads them."""
+def copy_metadata(output: Path, revision: str, addon_id: str, source: str, asset_dir: str = "") -> None:
+    """Icon, fanart and any screenshot-NN.jpg of `source` at the revision next to the add-on's zip, where Kodi's
+    add-on browser reads them."""
     target = output / addon_id / asset_dir
     target.mkdir(parents=True, exist_ok=True)
-    for name in ("icon.png", "fanart.jpg"):
-        shutil.copy2(source_dir / name, target / name)
-    for screenshot in sorted(source_dir.glob("screenshot-*.jpg")):
-        shutil.copy2(screenshot, target / screenshot.name)
+    names = [path.removeprefix(f"{source}/") for path in git_tree_files(revision, source)]
+    screenshots = sorted(name for name in names if "/" not in name and fnmatch(name, "screenshot-*.jpg"))
+    for name in ("icon.png", "fanart.jpg", *screenshots):
+        (target / name).write_bytes(git_file(revision, f"{source}/{name}"))
+
+
+def check_output(output: Path) -> None:
+    """Refuse an output directory whose deletion, or whose parent's new index.html and zip, could harm anything:
+    the checkout, the home folder, a folder holding either, or a directory this script did not build."""
+    output = output.resolve()
+    home = Path.home().resolve()
+    for guarded in (ROOT, home):
+        if guarded.is_relative_to(output) or output.parent == guarded:
+            raise SystemExit(f"refusing unsafe output directory: {output}")
+    if output.exists():
+        if not output.is_dir():
+            raise SystemExit(f"refusing output that is not a directory: {output}")
+        if any(output.iterdir()) and not (output / "addons.xml.md5").is_file():
+            raise SystemExit(f"refusing to delete {output}: not empty, and not a feed this script built")
 
 
 # Captions for the skin's screenshots (resources/screenshot-NN.jpg, in order) on the landing page.
@@ -291,12 +311,10 @@ def main() -> None:
     parser.add_argument("--expected-version")
     args = parser.parse_args()
 
-    skin_xml = git_file(args.revision, "addon.xml")
-    with tempfile.NamedTemporaryFile() as handle:
-        handle.write(skin_xml)
-        handle.flush()
-        skin_id, skin_version = addon_identity(Path(handle.name))
-    repository_id, repository_version = addon_identity(REPOSITORY_SOURCE / "addon.xml")
+    skin_root = ET.fromstring(git_file(args.revision, "addon.xml"))
+    repository_root = ET.fromstring(git_file(args.revision, f"{REPOSITORY_SOURCE}/addon.xml"))
+    skin_id, skin_version = addon_identity(skin_root)
+    repository_id, repository_version = addon_identity(repository_root)
     if skin_id != "skin.bald":
         raise SystemExit(f"unexpected skin id: {skin_id}")
     if args.expected_version and skin_version != args.expected_version:
@@ -305,18 +323,15 @@ def main() -> None:
         )
 
     output = args.output.resolve()
-    if output in {Path("/"), Path.home().resolve(), ROOT.resolve()}:
-        raise SystemExit(f"refusing unsafe output directory: {output}")
+    check_output(output)
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
     zip_skin(output, args.revision, skin_version)
-    repository_zip = zip_repository(output, repository_version)
-    copy_metadata(output, skin_id, ROOT / "resources", "resources")
-    copy_metadata(output, repository_id, REPOSITORY_SOURCE)
+    repository_zip = zip_repository(output, args.revision, repository_version)
+    copy_metadata(output, args.revision, skin_id, "resources", "resources")
+    copy_metadata(output, args.revision, repository_id, REPOSITORY_SOURCE)
 
-    skin_root = ET.fromstring(skin_xml)
-    repository_root = ET.parse(REPOSITORY_SOURCE / "addon.xml").getroot()
     addons = ET.Element("addons")
     addons.append(skin_root)
     for source in BUNDLED_ADDONS:
