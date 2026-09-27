@@ -28,8 +28,7 @@
                     </item>
                 </items>
             </value>
-            <!-- The optional open target (path and target, as Skin Variables' do_action stores them): a window and a
-                 path open with ActivateWindow, a path with no window is a builtin (Skin Variables' own do_open rule). -->
+            <!-- The optional open target (path and target, as Skin Variables' do_action stores them). -->
             <value name="hub_has_open">
                 <items menu="hubs" mode="submenu">
                     <item>
@@ -39,19 +38,87 @@
                     </item>
                 </items>
             </value>
+            <!-- What the bridge runs (first rule that holds; a<<b is "a contains b", a!<b "a does not contain b", Skin
+                 Variables' check_condition):
+                   a builtin runs as it is: a path with no "://" (Browse's Favourites, Weather, Pictures, Programs,
+                     Add-ons and Radio entries, or Edit's ActivateWindow(Weather)), or one that names a common builtin;
+                   music, picture and program paths open their own window whatever the stored target says (Edit keeps
+                     the old target, so a hub first set to a video node and then edited to musicdb:// still has "videos");
+                     Bald's album and artist playlists are music too;
+                   any other path opens in its target window (Browse stores the grouping entry's node: videos, music,
+                     tvchannels, radiochannels, favouritesbrowser), or in videos when the target is empty. -->
             <value name="hub_open">
                 <items menu="hubs" mode="submenu">
                     <item>
                         <condition>{item_x}=={node}</condition>
                         <condition>{item_path}!=</condition>
-                        <condition>{item_target}!=</condition>
-                        <template>&lt;onfocus&gt;ActivateWindow({item_target},{item_path},return)&lt;/onfocus&gt;</template>
-                    </item>
-                    <item>
-                        <condition>{item_x}=={node}</condition>
-                        <condition>{item_path}!=</condition>
-                        <condition>{item_target}==</condition>
-                        <template>&lt;onfocus&gt;{item_path}&lt;/onfocus&gt;</template>
+                        <template>&lt;onfocus&gt;{hub_action}&lt;/onfocus&gt;</template>
+                        <rules name="hub_action">
+                            <rule>
+                                <condition>{item_path}!&lt;://</condition>
+                                <value>{item_path}</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;ActivateWindow(</condition>
+                                <value>{item_path}</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;activatewindow(</condition>
+                                <value>{item_path}</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;PlayMedia(</condition>
+                                <value>{item_path}</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;RunScript(</condition>
+                                <value>{item_path}</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;RunAddon(</condition>
+                                <value>{item_path}</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;RunPlugin(</condition>
+                                <value>{item_path}</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;musicdb://</condition>
+                                <value>ActivateWindow(music,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;library://music/</condition>
+                                <value>ActivateWindow(music,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;addons://sources/audio</condition>
+                                <value>ActivateWindow(music,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;special://skin/playlists/</condition>
+                                <condition>{item_path}&lt;&lt;_albums.xsp</condition>
+                                <value>ActivateWindow(music,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;special://skin/playlists/random_artists.xsp</condition>
+                                <value>ActivateWindow(music,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;addons://sources/image</condition>
+                                <value>ActivateWindow(pictures,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;addons://sources/executable</condition>
+                                <value>ActivateWindow(programs,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_target}!=</condition>
+                                <value>ActivateWindow({item_target},{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <value>ActivateWindow(videos,{item_path},return)</value>
+                            </rule>
+                        </rules>
                     </item>
                 </items>
             </value>

@@ -121,11 +121,11 @@ class WidgetGeneratorTests(unittest.TestCase):
                                      ("{menu}", "{node}", "{mode}"), path.name)
 
     def test_generator_conditions_do_not_need_kodi(self):
-        # Skin Variables compares a==b and a!=b itself; anything else is a Kodi condition, which the fallback
-        # builder cannot reproduce.
+        # Skin Variables compares a==b, a!=b and the containment tests a>>b, a<<b, a!>b, a!<b itself
+        # (operations.check_condition); anything else is a Kodi condition, which the fallback builder cannot reproduce.
         for path in (SHORTCUTS / "generator").glob("*.xml"):
             for node in ET.parse(path).getroot().iter("condition"):
-                self.assertRegex(node.text, r"==|!=", path.name)
+                self.assertRegex(node.text, r"==|!=|>>|<<|!>|!<", path.name)
 
     def test_fallback_and_build_version_are_current(self):
         builder = load_builder()
@@ -192,7 +192,7 @@ class WidgetGeneratorTests(unittest.TestCase):
     def test_art_variables_prefer_the_previewed_screen_then_the_current_row(self):
         root = fallback()
         configured = sorted(base + index for screen, _, base in SCREENS for index in range(1, len(defaults(screen)) + 1))
-        for name, per_row in (("Bald_Fanart", 3), ("Bald_Logo", 2)):
+        for name, per_row in (("Bald_Fanart", 4), ("Bald_Logo", 2)):
             values = root.findall(f"variable[@name='{name}']/value")
             conditions = [value.get("condition") for value in values]
             catch_all = next(i for i, c in enumerate(conditions) if c and equivalent(c, "$EXP[Bald_WidgetPreview]"))
