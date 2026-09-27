@@ -212,7 +212,7 @@
 				<include content="Bald_Detail"><param name="x">820</param><param name="y">0</param><param name="vy">26</param><param name="label">$LOCALIZE[135]</param><param name="value">$INFO[ListItem.Genre]</param></include>
 				<include content="Bald_Detail"><param name="x">0</param><param name="y">100</param><param name="vy">126</param><param name="label">$LOCALIZE[291]</param><param name="value">$VAR[Bald_InfoVideo]</param></include>
 				<include content="Bald_Detail"><param name="x">410</param><param name="y">100</param><param name="vy">126</param><param name="label">$LOCALIZE[292]</param><param name="value">$VAR[Bald_InfoAudio]</param></include>
-				<include content="Bald_Detail"><param name="x">820</param><param name="y">100</param><param name="vy">126</param><param name="label">$LOCALIZE[287]</param><param name="value">$INFO[ListItem.SubtitleLanguage]</param></include>
+				<include content="Bald_Detail"><param name="x">820</param><param name="y">100</param><param name="vy">126</param><param name="label">$LOCALIZE[287]</param><param name="value">$VAR[Bald_InfoSubtitle]</param></include>
 			</control>
 		</control>
 	</include>
