@@ -23,7 +23,7 @@
        Bald.OSD.DetailsLogo, DetailsFlags, DetailsPlot  bools (off by default): clearlogo, media flags and plot
                                 on the controls (1128), each on its own
        Bald.OSD.HideInfoArt, Bald.OSD.HideInfoPlot  bools
-       Bald.OSD.NoGuidePanel, NoChannelsPanel, NoPlaylistPanel, NoBookmarksPanel, NoCastPanel  bools
+       NoChannelsPanel, NoPlaylistPanel, NoBookmarksPanel, NoCastPanel  bools
 
      Only fade, slide and zoom; move = cubic out, fade = sine in-out, pop = back out (docs/SPEC.md 4). -->
 <includes>
@@ -35,6 +35,8 @@
 	<!-- A bottom panel that sits under the lifted bar: a down-chain row or Up Next. -->
 	<expression name="Bald_OSDPanelUp">[Window.IsVisible(1125) | Window.IsVisible(1126) | Window.IsVisible(videobookmarks) | Window.IsVisible(script-upnext-upnext.xml) | Window.IsVisible(script-upnext-stillwatching.xml) | Window.IsVisible(script-upnext-upnext-simple.xml) | Window.IsVisible(script-upnext-stillwatching-simple.xml)]</expression>
 	<!-- The Live TV lists, which fill the left of the screen: the bar steps aside. -->
+	<!-- A panel of the down chain is up (channels, playlist, bookmarks, cast): the seek layer's clock gives way. -->
+	<expression name="Bald_OSDDownPanelUp">[Window.IsVisible(pvrosdchannels) | Window.IsVisible(pvrchannelguide) | Window.IsVisible(1125) | Window.IsVisible(1126) | Window.IsVisible(videobookmarks)]</expression>
 	<expression name="Bald_OSDPVRPanelUp">[Window.IsVisible(pvrosdchannels) | Window.IsVisible(pvrchannelguide)]</expression>
 	<!-- The pause delay has run: System.IdleTime counts from the last key, so from the pause itself. -->
 	<expression name="Bald_OSDPauseDelayDone">[System.IdleTime(3) | [System.IdleTime(2) + Skin.String(Bald.OSD.PauseDelay,2)] | [System.IdleTime(1) + Skin.String(Bald.OSD.PauseDelay,1)] | Skin.String(Bald.OSD.PauseDelay,0)]</expression>
@@ -76,7 +78,9 @@
 	     Order: PVR guide, PVR channels, playlist or episodes (1125), bookmarks, cast (1126). A panel is in the chain
 	     when its setting allows it and it applies to what is playing. Bald_OSDChainFrom_<n> sends Down to the first
 	     panel after stage n (0 = the OSD buttons). -->
-	<expression name="Bald_OSDChainGuide">[VideoPlayer.Content(livetv) + VideoPlayer.HasEpg + !Skin.HasSetting(Bald.OSD.NoGuidePanel)]</expression>
+	<!-- The one-channel guide is no longer in the chain: Down on Live TV opens the channel list, whose detail pane shows
+	     each channel's now and next (DialogPVRChannelsOSD.xml). The stage stays, off, so the chain keeps its order. -->
+	<expression name="Bald_OSDChainGuide">[false]</expression>
 	<expression name="Bald_OSDChainChannels">[VideoPlayer.Content(livetv) + !Skin.HasSetting(Bald.OSD.NoChannelsPanel)]</expression>
 	<expression name="Bald_OSDChainPlaylist">[!VideoPlayer.Content(livetv) + [Integer.IsGreater(Playlist.Length(video),1) | [VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TvShowDBID) + !String.IsEmpty(VideoPlayer.Season)]] + !Skin.HasSetting(Bald.OSD.NoPlaylistPanel)]</expression>
 	<expression name="Bald_OSDChainBookmarks">[!VideoPlayer.Content(livetv) + !Skin.HasSetting(Bald.OSD.NoBookmarksPanel)]</expression>

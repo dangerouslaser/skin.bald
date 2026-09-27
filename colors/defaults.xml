@@ -23,7 +23,8 @@
 	     100 / 95 / 80 / 70 / 60 / 45 / 34 / 28 / 10. Pick the nearest step; do not add in-between values.
 	     Image treatments (dimming, placeholders, backdrop brightness, scrims) have role names instead. -->
 	<color name="bald_field">FF0B0C10</color>
-	<color name="bald_accent">FF9FB0C6</color>
+	<!-- Accent: white (it was a light blue): focus discs and dots, progress, the genre line, ratings glyphs. -->
+	<color name="bald_accent">FFFFFFFF</color>
 	<color name="bald_ink">FFECEEF2</color>
 	<color name="bald_ink95">F2ECEEF2</color>
 	<color name="bald_ink80">CCECEEF2</color>

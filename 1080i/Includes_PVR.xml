@@ -15,7 +15,7 @@
 				<orientation>vertical</orientation><pagecontrol>60</pagecontrol>
 				<scrolltime tween="cubic" easing="out">200</scrolltime><timeblocks>180</timeblocks><minspertimeblock>1</minspertimeblock><rulerunit>6</rulerunit>
 				<onleft>9000</onleft><onright>50</onright><onup>50</onup><ondown>50</ondown><onback>9000</onback><viewtype label="19298">list</viewtype>
-				<progresstexture border="0,0,1,0" colordiffuse="809FB0C6">bald/epg_now.png</progresstexture>
+				<progresstexture border="0,0,1,0" colordiffuse="80FFFFFF">bald/epg_now.png</progresstexture>
 				<!-- 180 one-minute blocks across a 1428 px timeline; rulerunit 6 is 30 minutes,
 				     therefore each ruler cell is 238 px. -->
 				<rulerlayout height="40" width="1428"><control type="label"><width>238</width><height>40</height><font>Bald_Hint</font><label>$INFO[ListItem.Label]</label><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor></control></rulerlayout>

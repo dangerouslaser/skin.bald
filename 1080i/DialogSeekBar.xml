@@ -29,9 +29,9 @@
 			<visible>!String.IsEmpty(PVR.ChannelNumberInput)</visible>
 		</control>
 		<include>Bald_OSDScrims</include>
-		<!-- Clock, top right as on Home, with the finish time under it. -->
+		<!-- Clock, top right as on Home, with the finish time under it; gone while a panel opened with Down is up. -->
 		<control type="group">
-			<visible>!$EXP[infodialog_active]</visible>
+			<visible>!$EXP[infodialog_active] + !$EXP[Bald_OSDDownPanelUp]</visible>
 			<include>Bald_OSDAnimFade</include>
 			<control type="group"><include>Bald_OSDShade</include><include>Bald_PlaybackScrimTop</include></control>
 			<include>Bald_PlaybackClock</include>

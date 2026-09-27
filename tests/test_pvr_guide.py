@@ -48,7 +48,7 @@ class PVRGuideTests(unittest.TestCase):
         progress = grid.find('progresstexture')
         self.assertEqual(progress.text, 'bald/epg_now.png')
         self.assertEqual(progress.get('border'), '0,0,1,0')
-        self.assertEqual(progress.get('colordiffuse'), '809FB0C6')
+        self.assertEqual(progress.get('colordiffuse'), '80FFFFFF')
         self.assertIsNotNone(grid.find('rulerlayout'))
         self.assertIsNotNone(grid.find('channellayout'))
         self.assertIsNotNone(grid.find('focusedchannellayout'))

@@ -219,7 +219,8 @@ class ChainTests(unittest.TestCase):
                     self.assertEqual(condition.count("!$EXP[Bald_OSDChain"), index)
 
     def test_every_stage_can_be_switched_off(self):
-        for name, setting in (("Guide", "NoGuidePanel"), ("Channels", "NoChannelsPanel"),
+        self.assertEqual(self.bodies["Bald_OSDChainGuide"], "[false]")  # the guide left the chain
+        for name, setting in (("Channels", "NoChannelsPanel"),
                               ("Playlist", "NoPlaylistPanel"), ("Bookmarks", "NoBookmarksPanel"),
                               ("Cast", "NoCastPanel")):
             with self.subTest(stage=name):
@@ -332,7 +333,7 @@ class SettingsTests(unittest.TestCase):
         self.assertEqual(read, {"Bald.OSD.AutoClose", "Bald.OSD.PauseMode", "Bald.OSD.PauseDelay",
                                 "Bald.OSD.TimeDisplay", "Bald.OSD.DetailsLogo", "Bald.OSD.DetailsFlags",
                                 "Bald.OSD.DetailsPlot", "Bald.OSD.HideInfoArt",
-                                "Bald.OSD.HideInfoPlot", "Bald.OSD.NoGuidePanel", "Bald.OSD.NoChannelsPanel",
+                                "Bald.OSD.HideInfoPlot", "Bald.OSD.NoChannelsPanel",
                                 "Bald.OSD.NoPlaylistPanel", "Bald.OSD.NoBookmarksPanel", "Bald.OSD.NoCastPanel",
                                 "Bald.OSD.Shade", "Bald.OSD.BackgroundVideoDim"})
         for setting in read:
