@@ -15,6 +15,8 @@
 	     Both actions' conditions are evaluated before either runs. -->
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated))">SetProperty(Bald.HubsMigrating,1,home)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(skin.bald,hubs)</onload>
+	<!-- Should the script fail before it clears Bald.HubsMigrating, a later Home load may start it again after 30 s. -->
+	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated))">AlarmClock(bald_hubs_migrating,ClearProperty(Bald.HubsMigrating,home),00:30,silent)</onload>
 	<!-- Estuary's video OSD auto-close (OSDAutoClose, OSDAutoCloseTime, default 4 s) became Bald.OSD.AutoClose
 	     (Bald Settings, Playback). Carry an old choice over once, then clear the old settings. -->
 	<onload condition="Skin.HasSetting(OSDAutoClose) + String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + String.IsEmpty(Skin.String(OSDAutoCloseTime))">Skin.SetString(Bald.OSD.AutoClose,4)</onload>

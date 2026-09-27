@@ -211,6 +211,10 @@ class MigrationWiringTests(unittest.TestCase):
         self.assertTrue(equivalent(started[0], idle))
         self.assertTrue(any(action == "SetProperty(Bald.HubsMigrating,1,home)" and equivalent(cond, idle)
                             for cond, action in home))
+        # A run that fails before clearing the flag cannot leave it set for good.
+        safety = "AlarmClock(bald_hubs_migrating,ClearProperty(Bald.HubsMigrating,home),00:30,silent)"
+        self.assertIn((unset, safety), startup)
+        self.assertTrue(any(action == safety and equivalent(cond, idle) for cond, action in home))
         # The build waits for the marker, so it never builds from the old screens.
         build = next(cond for cond, action in home if action.startswith("RunScript(script.skinvariables,action=buildtemplate"))
         self.assertTrue(implies(build, "!" + unset))

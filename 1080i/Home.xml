@@ -23,6 +23,8 @@
 	<onload condition="!Skin.HasSetting(Bald.RecommendedOffered) + !$EXP[Bald_Preloading]">Skin.SetBool(Bald.RecommendedOffered)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">SetProperty(Bald.HubsMigrating,1,home)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">RunScript(skin.bald,hubs)</onload>
+	<!-- As in Startup.xml: a failed run cannot leave Bald.HubsMigrating set for good. -->
+	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">AlarmClock(bald_hubs_migrating,ClearProperty(Bald.HubsMigrating,home),00:30,silent)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
 	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load, except when
 	     returning to the menu entry Home was left from (Bald_ReturningToMenu), which keeps the state it was left in.
