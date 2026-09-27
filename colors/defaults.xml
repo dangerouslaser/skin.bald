@@ -25,6 +25,11 @@
 	<color name="bald_field">FF0B0C10</color>
 	<!-- Accent: white (it was a light blue): focus discs and dots, progress, the genre line, ratings glyphs. -->
 	<color name="bald_accent">FFFFFFFF</color>
+	<!-- Recording and timer marks (the channel status icon, the guide's timer dots, timer rows): a clear red, the one
+	     colour the white accent cannot stand in for. -->
+	<color name="bald_record">FFE5484D</color>
+	<!-- The TV guide's "now" line: the accent at half strength. -->
+	<color name="bald_accent50">80FFFFFF</color>
 	<color name="bald_ink">FFECEEF2</color>
 	<color name="bald_ink95">F2ECEEF2</color>
 	<color name="bald_ink80">CCECEEF2</color>

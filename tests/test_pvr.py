@@ -297,6 +297,35 @@ class StyleTests(unittest.TestCase):
                 self.assertTrue(all("HasTimer" in node.findtext("visible", "") for node in unfocused))
 
 
+class RecordColourTests(unittest.TestCase):
+    """The accent is white, so recording and timer marks have their own red (bald_record); nothing else uses it."""
+
+    def test_recording_and_timer_marks_are_red(self):
+        palette = {node.get("name"): node.text for node in ET.parse(ROOT / "colors" / "defaults.xml").getroot()}
+        red = int(palette["bald_record"][2:4], 16), int(palette["bald_record"][4:6], 16), int(palette["bald_record"][6:], 16)
+        self.assertGreater(red[0], 2 * max(red[1:]))
+        marks = 0
+        for path in sorted(XML.glob("*.xml")):
+            if path.name.startswith("script-skinvariables-generator"):
+                continue
+            for node in ET.parse(path).getroot().iter("control"):
+                texture = node.find("texture")
+                if texture is None:
+                    continue
+                visible = node.findtext("visible") or ""
+                is_mark = ("recording.png" in (texture.text or "")
+                           or (texture.text == "bald/dot.png" and "HasTimer" in visible)
+                           or "Bald_PVRRecordStatus]" in visible.replace("!$EXP[Bald_PVRRecordStatus]", ""))
+                with self.subTest(file=path.name, texture=texture.text, visible=visible):
+                    self.assertEqual(texture.get("colordiffuse") == "bald_record", is_mark)
+                marks += is_mark
+        self.assertGreaterEqual(marks, 6)
+
+    def test_guide_now_line_is_a_token(self):
+        progress = ET.parse(XML / "Includes_PVR.xml").getroot().find(".//progresstexture")
+        self.assertEqual(progress.get("colordiffuse"), "bald_accent50")
+
+
 class StringTests(unittest.TestCase):
     def test_live_tv_strings_are_defined_used_and_cited(self):
         po = PO.read_text(encoding="utf-8")

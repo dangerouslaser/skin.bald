@@ -15,6 +15,8 @@
 	     (Includes_Bald_Spoilers.xml). -->
 	<expression name="Bald_PVRHasArt">[[!String.IsEmpty(ListItem.EpgEventIcon) | !String.IsEmpty(ListItem.Art(thumb)) | !String.IsEmpty(ListItem.Art(fanart))] + !$EXP[Bald_SpoilerEpgArt] + !$EXP[Bald_SpoilerThumb]]</expression>
 	<expression name="Bald_PVRHasStatus">[ListItem.IsRecording | ListItem.HasTimer | ListItem.HasTimerSchedule | ListItem.HasArchive | ListItem.HasReminder]</expression>
+	<!-- The status is a recording or a timer (PVRStatusImageVar's first two icons): drawn in the record red. -->
+	<expression name="Bald_PVRRecordStatus">[ListItem.IsRecording | ListItem.HasTimer | ListItem.HasTimerSchedule]</expression>
 	<!-- The one-channel guide swaps to the channel list (Right, or Down past the end) only over Live TV in full screen,
 	     with the channel list allowed (Bald_OSDChainChannels); the hint and the header's Channels tab say so then. -->
 	<expression name="Bald_PVRGuideToChannels">[Window.IsActive(fullscreenvideo) + $EXP[Bald_OSDChainChannels]]</expression>
@@ -267,8 +269,8 @@
 	</include>
 
 	<!-- ============ List rows ============ -->
-	<!-- A channel: number, logo, name and the programme on now with its progress; a status mark (recording, timer,
-	     archive, reminder) at the end. Unfocused text sits at 70/45% ink; focus is full ink and the accent dot.
+	<!-- A channel: number, logo, name and the programme on now with its progress; a status mark (recording or timer in
+	     the record red, archive or reminder in the accent) at the end. Unfocused text sits at 70/45% ink; focus is full ink and the accent dot.
 	     84 px rows; text_width fits the list (872 in the Channels window, 592 in the channel switcher). -->
 	<include name="Bald_PVRChannelRow">
 		<param name="list_id" />
@@ -284,7 +286,8 @@
 			<control type="label"><left>204</left><top>10</top><width>$PARAM[text_width]</width><height>34</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>$PARAM[focused]</scroll><label>$INFO[ListItem.ChannelName]</label></control>
 			<control type="label"><left>204</left><top>42</top><width>$PARAM[text_width]</width><height>26</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[c2]</textcolor><scroll>$PARAM[focused]</scroll><label>$VAR[Bald_PVRProgramme]</label></control>
 			<control type="progress"><left>204</left><top>72</top><width>$PARAM[text_width]</width><height>4</height><include>Bald_PVRProgress</include><visible>ListItem.HasEpg</visible></control>
-			<control type="image"><left>$PARAM[status_left]</left><top>26</top><width>32</width><height>32</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_accent">$VAR[PVRStatusImageVar]</texture><visible>$EXP[Bald_PVRHasStatus]</visible></control>
+			<control type="image"><left>$PARAM[status_left]</left><top>26</top><width>32</width><height>32</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_record">$VAR[PVRStatusImageVar]</texture><visible>$EXP[Bald_PVRRecordStatus]</visible></control>
+			<control type="image"><left>$PARAM[status_left]</left><top>26</top><width>32</width><height>32</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_accent">$VAR[PVRStatusImageVar]</texture><visible>$EXP[Bald_PVRHasStatus] + !$EXP[Bald_PVRRecordStatus]</visible></control>
 		</definition>
 	</include>
 	<!-- A recording, timer, search result or provider: an optional state icon (tinted ink), the title with label2 at the
@@ -494,8 +497,8 @@
 	</include>
 
 	<!-- ============ Over video ============ -->
-	<!-- One programme in the mini guide: start time, title and, for the one on now, its progress; the accent dot at the
-	     end marks a timer or recording (as in the TV guide). 64 px rows. -->
+	<!-- One programme in the mini guide: start time, title and, for the one on now, its progress; the red dot at the
+	     end marks a timer or recording (as in the TV guide), so it never reads as the focus dot. 64 px rows. -->
 	<include name="Bald_PVREpgRow">
 		<param name="focused">false</param>
 		<param name="c1">bald_ink70</param>
@@ -505,7 +508,7 @@
 			<control type="label"><left>26</left><width>100</width><height>64</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[c2]</textcolor><label>$INFO[ListItem.StartTime]</label></control>
 			<control type="label"><left>140</left><width>596</width><height>64</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>$PARAM[focused]</scroll><label>$VAR[Bald_PVRTitle]</label></control>
 			<control type="progress"><left>140</left><top>54</top><width>596</width><height>4</height><include>Bald_PVRProgress</include><visible>Integer.IsGreater(ListItem.Progress,0)</visible></control>
-			<control type="image"><left>752</left><top>28</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>ListItem.HasTimer | ListItem.IsRecording</visible></control>
+			<control type="image"><left>752</left><top>28</top><width>8</width><height>8</height><texture colordiffuse="bald_record">bald/dot.png</texture><visible>ListItem.HasTimer | ListItem.IsRecording</visible></control>
 		</definition>
 	</include>
 
