@@ -1677,10 +1677,15 @@ msgctxt "#31668"
 msgid "Select for details"
 msgstr ""
 
-#: /1080i/DialogPVRChannelGuide.xml
 #: /1080i/DialogPVRInfo.xml
 msgctxt "#31669"
 msgid "Back to close"
+msgstr ""
+
+#. In-player Live TV panel, Guide tab: Right swaps in the channel list
+#: /1080i/DialogPVRChannelGuide.xml
+msgctxt "#31687"
+msgid "Right for channels"
 msgstr ""
 
 #: /1080i/DialogPVRGuideControls.xml

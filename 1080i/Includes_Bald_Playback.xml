@@ -312,7 +312,7 @@
 	     draws the playhead, but still a seek target for the mouse (Estuary's sliders with <action>seek</action>). -->
 	<include name="Bald_PlaybackSeekArea">
 		<left>264</left>
-		<top>788</top>
+		<top>824</top>
 		<width>1392</width>
 		<height>16</height>
 		<!-- Transparent, nib-sized bar for the same reason as Bald_PlaybackNib; the nibs stay empty (invisible). -->
@@ -325,7 +325,7 @@
 	<!-- Focus mark for the seek row: the menu's accent dot, 12 px left of the seek layer's lifted bar (x 264, y 796),
 	     while the hidden seek button (87) has focus. -->
 	<include name="Bald_PlaybackSeekFocus">
-		<param name="top">792</param>
+		<param name="top">828</param>
 		<definition>
 			<control type="image">
 				<left>244</left>
@@ -466,10 +466,11 @@
 	</include>
 	<!-- Hints on the y 954 line, right-aligned to x 1824. -->
 	<include name="Bald_PlaybackHints">
+		<param name="top">Bald_HintTop</param>
 		<definition>
 			<control type="group">
 				<left>1224</left>
-				<top>Bald_HintTop</top>
+				<top>$PARAM[top]</top>
 				<include content="Bald_InfoHintPair">
 					<param name="first">$VAR[Bald_PlaybackHelp]</param>
 					<param name="second">$VAR[Bald_PlaybackHintAfterHelp]</param>

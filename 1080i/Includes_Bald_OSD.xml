@@ -7,7 +7,7 @@
          accent bar with the cache line, chapter and cut ticks and the 401/402/403 seek-preview nib. It rests low (bar
          at y 932) and lifts 136 px while the OSD or a companion panel is up, and 496 px while a down-chain panel is up.
        VideoOSD (zorder 1): transport buttons on the left (play/pause, back, forward, stop), tools on the right (info,
-         audio, subtitles, video), an invisible seek slider over the lifted bar. 80 x 96 buttons at y 836.
+         audio, subtitles, video), an invisible seek slider over the lifted bar. 80 x 96 buttons at y 872.
        companion panels (1120-1124, zorder 1): opened by focusing a tool (or the forward button). Each repeats the
          button row: the focused button for real, the others as invisible buttons with the same ids that close the
          panel and hand focus back to the OSD (the "fake button" pattern).
@@ -240,7 +240,7 @@
 	<!-- Seek layer lift: 136 px while the buttons are up, 496 px under a bottom panel (480 MOVE either way). -->
 	<include name="Bald_OSDLift">
 		<animation type="Conditional" condition="$EXP[Bald_OSDControlsUp] + !$EXP[Bald_OSDPanelUp]">
-			<effect type="slide" start="0,0" end="0,-136" time="480" tween="cubic" easing="out" />
+			<effect type="slide" start="0,0" end="0,-100" time="480" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="$EXP[Bald_OSDPanelUp]">
 			<effect type="slide" start="0,0" end="0,-496" time="480" tween="cubic" easing="out" />
@@ -425,7 +425,7 @@
 	<!-- ============ Buttons ============
 	     The row: transport grouplist 201 from x 96 (play/pause 602, back 600, forward 607, stop 603) and tools grouplist
 	     202 ending at x 1824 (disc menu 804, teletext 70045 and 3D 70047 when they apply, then info 70043, audio 70060,
-	     subtitles 70061, TinyPPI 70063 when installed, video 70062). 80 x 96 buttons, 8 px apart, at y 836. Left from the first transport button
+	     subtitles 70061, TinyPPI 70063 when installed, video 70062). 80 x 96 buttons, 8 px apart, at y 872. Left from the first transport button
 	     wraps to the last tool, Right from the last tool to the first transport button. -->
 	<!-- Kodi's radio textures take no $VAR, so back and forward carry both icons and pick one with <selected>: the
 	     guide and record icons on Live TV. A recording shows as an accent-free dot under the record icon (the status
@@ -860,7 +860,7 @@
 		<definition>
 			<control type="grouplist" id="201">
 				<left>Bald_SafeLeft</left>
-				<top>836</top>
+				<top>872</top>
 				<width>760</width>
 				<height>96</height>
 				<orientation>horizontal</orientation>
@@ -879,7 +879,7 @@
 			</control>
 			<control type="grouplist" id="202">
 				<left>1064</left>
-				<top>836</top>
+				<top>872</top>
 				<width>760</width>
 				<height>96</height>
 				<orientation>horizontal</orientation>
@@ -907,7 +907,7 @@
 	<include name="Bald_OSDSeekSliders">
 		<control type="slider" id="87">
 			<left>264</left>
-			<top>788</top>
+			<top>824</top>
 			<width>1392</width>
 			<height>16</height>
 			<texturesliderbar>bald/slider_clear.png</texturesliderbar>
@@ -923,7 +923,7 @@
 		</control>
 		<control type="slider" id="88">
 			<left>264</left>
-			<top>788</top>
+			<top>824</top>
 			<width>1392</width>
 			<height>16</height>
 			<texturesliderbar>bald/slider_clear.png</texturesliderbar>
@@ -940,7 +940,7 @@
 		<!-- The accent dot left of the bar while a slider has focus (the settings rows' focus mark). -->
 		<control type="image">
 			<left>244</left>
-			<top>792</top>
+			<top>828</top>
 			<width>8</width>
 			<height>8</height>
 			<texture colordiffuse="bald_accent">bald/dot.png</texture>
@@ -955,7 +955,7 @@
 		<definition>
 			<control type="group">
 				<left>1224</left>
-				<top>Bald_HintTop</top>
+				<top>Bald_OSDHintTop</top>
 				<animation type="Conditional" condition="$PARAM[hidden]">
 					<effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" />
 				</animation>
@@ -1043,6 +1043,15 @@
 					<fadetime>200</fadetime>
 					<texture>$VAR[PlayerClearLogoVar]</texture>
 					<visible>$EXP[Bald_PlaybackHasLogo] + [$PARAM[logo]]</visible>
+				</control>
+				<!-- Live TV: the channel's logo above the programme title, with 16 px under it. -->
+				<control type="image">
+					<width>240</width>
+					<height>112</height>
+					<aspectratio align="left" aligny="top">keep</aspectratio>
+					<fadetime>200</fadetime>
+					<texture background="true">$INFO[VideoPlayer.ChannelLogo]</texture>
+					<visible>VideoPlayer.Content(livetv) + !String.IsEmpty(VideoPlayer.ChannelLogo) + !$EXP[Bald_PlaybackHasLogo] + [$PARAM[logo]]</visible>
 				</control>
 				<control type="label">
 					<width>1100</width>

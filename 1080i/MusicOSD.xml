@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Bald music OSD (docs/SPEC.md 5.16, "Other playback windows"): the video OSD's buttons (Bald_OSDButtonBody, 80 x 96
-     rows at y 836, auto-close included) and a seek row over the visualisation; DialogSeekBar.xml draws the title, time
+     rows at y 872, auto-close included) and a seek row over the visualisation; DialogSeekBar.xml draws the title, time
      and track. Started from Kodi 22 Estuary's MusicOSD.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogMusicOSD binds 500 (visualisation) and 501 (lock), which
      Estuary does not draw either. Every button keeps Estuary's id, navigation and actions (200-202 rows, 600-608
      transport, 70040-70055 and 70048 tools, 87 seek button). -->
@@ -25,10 +25,10 @@
 			<include>Bald_PlaybackAnimWindow</include>
 			<visible>!Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(playerprocessinfo)</visible>
 			<include>Bald_PlaybackAnimVisible</include>
-			<include>Bald_PlaybackHints</include>
+			<include content="Bald_PlaybackHints"><param name="top">Bald_OSDHintTop</param></include>
 			<control type="grouplist" id="201">
 				<left>Bald_SafeLeft</left>
-				<top>836</top>
+				<top>872</top>
 				<width>760</width>
 				<height>96</height>
 				<orientation>horizontal</orientation>
@@ -88,7 +88,7 @@
 			</control>
 			<control type="grouplist" id="202">
 				<left>1064</left>
-				<top>836</top>
+				<top>872</top>
 				<width>760</width>
 				<height>96</height>
 				<orientation>horizontal</orientation>

@@ -163,7 +163,7 @@ class HelperNamesTests(unittest.TestCase):
 class PlotSitesTests(unittest.TestCase):
     """Every plot label in Bald's own windows gives way to the note for the same item."""
 
-    PLOT = re.compile(r"^\$INFO\[((?:Container\([^)]*\)\.)?ListItem\.)Plot\]$")
+    PLOT = re.compile(r"^\$INFO\[((?:Container\([^)]*\)\.)?ListItem\.|\$PARAM\[item\])Plot\]$")
 
     def test_every_plot_label_has_the_rule_and_a_note_beside_it(self):
         seen = set()
@@ -191,7 +191,7 @@ class PlotSitesTests(unittest.TestCase):
                      ("Includes_Bald_InfoTV.xml", "Container(5302).ListItem."),
                      ("Includes_Bald_InfoPages.xml", "ListItem."), ("Includes_Bald_PVR.xml", "ListItem."),
                      ("DialogPVRInfo.xml", "ListItem."), ("MyPVRGuide.xml", "ListItem."),
-                     ("DialogPVRChannelGuide.xml", "Container(11).ListItem."),
+                     ("Includes_Bald_PVR.xml", "$PARAM[item]"),  # the Live TV panel's detail pane
                      ("script-globalsearch.xml", "Container(50).ListItem.")):
             self.assertIn(site, seen)
 

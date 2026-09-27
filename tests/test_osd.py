@@ -424,10 +424,13 @@ class OSDStyleTests(unittest.TestCase):
                     self.assertIn((effect.get("tween"), effect.get("easing")), TWEENS[kind])
 
     def test_hints_sit_on_the_hint_line(self):
-        for name in ["VideoOSD.xml", "Custom_1125_OSDPlaylist.xml", "Custom_1126_OSDCast.xml",
-                     "VideoOSDBookmarks.xml"] + list(COMPANIONS):
+        # The OSD and its companions sit 36 px lower than the page layout, so their hints do too (990); the
+        # full-height panels keep the page hint line (954).
+        lines = {name: "990" for name in ["VideoOSD.xml"] + list(COMPANIONS)}
+        lines.update({name: "954" for name in ("Custom_1125_OSDPlaylist.xml", "Custom_1126_OSDCast.xml", "VideoOSDBookmarks.xml")})
+        for name, line in lines.items():
             groups = [n for n in self.roots[name].iter("control")
-                      if n.get("type") == "group" and n.findtext("top") == "954"]
+                      if n.get("type") == "group" and n.findtext("top") == line]
             with self.subTest(window=name):
                 self.assertEqual(len(groups), 1)
                 self.assertEqual(groups[0].findtext("left"), "1224")

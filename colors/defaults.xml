@@ -41,6 +41,8 @@
 	     Playback › Background shading scales them (Bald_OSDShade). -->
 	<color name="bald_scrim">FF000000</color>
 	<color name="bald_scrim60">99000000</color>
+	<!-- The in-player Live TV panel (guide and channels): an even black under the whole screen. -->
+	<color name="bald_scrim85">D9000000</color>
 	<!-- Background video (playing video behind Bald's windows): Playback › Background video dim darkens it by 60, 70,
 	     80 (the default) or 90 %, so rows and text stay readable. -->
 	<color name="bald_video_dim60">99000000</color>

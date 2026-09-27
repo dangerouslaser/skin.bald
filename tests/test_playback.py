@@ -240,7 +240,7 @@ class PlaybackStyleTests(unittest.TestCase):
                 self.assertEqual(button.findtext("radiowidth"), "48")
         for row in ("201", "202"):
             grouplist = root.find(f".//control[@id='{row}']")
-            self.assertEqual((grouplist.findtext("top"), grouplist.findtext("height")), ("836", "96"))
+            self.assertEqual((grouplist.findtext("top"), grouplist.findtext("height")), ("872", "96"))
 
     def test_osd_buttons_use_the_icon_button(self):
         for name in ("PlayerControls.xml",):
@@ -280,7 +280,7 @@ class PlaybackStyleTests(unittest.TestCase):
         self.assertIn("bald/scrim_info_b.png", seekbar)
         for name in ("VideoOSD.xml", "MusicOSD.xml"):
             groups = [node for node in resolve_window(name).iter("control")
-                      if node.get("type") == "group" and node.findtext("top") == "954"]
+                      if node.get("type") == "group" and node.findtext("top") == "990"]  # the OSD hint line
             with self.subTest(window=name):
                 self.assertEqual(len(groups), 1)
 
