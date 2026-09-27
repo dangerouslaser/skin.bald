@@ -39,7 +39,7 @@
 				<param name="back_in">!Window.Previous(home)</param>
 				<param name="back_out">Window.Next(home)</param>
 			</include>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" easing="inout" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_510_Bald_Posters</include>
 			<include>View_511_Bald_Wall</include>
 			<include>View_512_Bald_WallPreview</include>

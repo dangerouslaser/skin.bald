@@ -429,7 +429,7 @@
 	<include name="Bald_InfoTVEpisodeSwap">
 		<animation type="Conditional" condition="Container(5302).IsUpdating" reversible="false">
 			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
-			<effect type="slide" start="0,0" end="0,14" time="140" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="0,14" time="140" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="!Container(5302).IsUpdating" reversible="false">
 			<effect type="fade" start="0" end="100" time="340" tween="sine" easing="inout" />

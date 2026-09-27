@@ -109,7 +109,7 @@
 					<control type="group">
 						<left>$PARAM[inset_x]</left><top>$PARAM[inset_y]</top>
 						<visible>!String.IsEmpty(Container($PARAM[c]).ListItem.Art(fanart)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(thumb)) + [String.IsEqual(Container($PARAM[c]).ListItem.DBType,album) | String.IsEqual(Container($PARAM[c]).ListItem.DBType,song)]</visible>
-						<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
+						<include>Bald_AnimLogoIn</include>
 						<control type="image"><left>-3</left><top>-3</top><width>$PARAM[inset]</width><height>$PARAM[inset]</height><texture border="8" colordiffuse="bald_field60">bald/focus_ring.png</texture></control>
 						<control type="image"><width>$PARAM[inset]</width><height>$PARAM[inset]</height><aspectratio>scale</aspectratio><fadetime>300</fadetime><texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(thumb)]</texture></control>
 					</control>
@@ -166,7 +166,7 @@
 			<control type="group">
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
-					<effect type="slide" start="0,0" end="-14,0" time="130" tween="sine" easing="inout" />
+					<effect type="slide" start="0,0" end="-14,0" time="130" tween="cubic" easing="out" />
 				</animation>
 				<!-- Title: bottom-aligned in a vertical grouplist (align right), so its last line ends at body_y. -->
 				<control type="grouplist">
