@@ -331,4 +331,148 @@
 		<item><label>$LOCALIZE[31810]</label><property name="note">$LOCALIZE[31403]</property><onclick>UpdateLibrary(music)</onclick><visible>!Library.IsScanningMusic</visible></item>
 		<item><label>$LOCALIZE[31812]</label><property name="note">$LOCALIZE[31404]</property><onclick>UpdateLibrary(music)</onclick><visible>Library.IsScanningMusic</visible></item>
 	</include>
+
+	<!-- ============ Now Playing (MusicVisualisation.xml) ============ -->
+	<!-- The full screen shows without a visualisation, and with one while Kodi shows the song's info (Player.ShowInfo:
+	     ten seconds after each new song, or always once Info turns it on; Info again leaves the visualisation alone)
+	     and while the music OSD is up. -->
+	<expression name="Bald_NowPlayingFull">[!Visualisation.Enabled | Player.ShowInfo | Window.IsVisible(musicosd)]</expression>
+	<!-- The seek layer (DialogSeekBar.xml) is up with its own bar: Now Playing's bar and hints give way. -->
+	<expression name="Bald_NowPlayingSeekLayer">[Window.IsVisible(seekbar)]</expression>
+	<!-- Idle for a minute: the screen drifts and dims (burn-in, docs/SPEC.md 7). -->
+	<expression name="Bald_NowPlayingIdle">[System.IdleTime(60) + !Window.IsVisible(musicosd)]</expression>
+	<!-- What Bald Helper blurs for the background (hidden list 5500): the artist's fanart, else the cover. -->
+	<variable name="Bald_NowPlayingBlurSource">
+		<value condition="!String.IsEmpty(Player.Art(fanart))">$INFO[Player.Art(fanart)]</value>
+		<value>$INFO[MusicPlayer.Cover]</value>
+	</variable>
+	<!-- The sharp background without a blur: Artist Slideshow's image while it runs, else the artist's fanart. -->
+	<variable name="Bald_NowPlayingFanart">
+		<value condition="!String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</value>
+		<value>$INFO[Player.Art(fanart)]</value>
+	</variable>
+	<!-- "Now playing · 3 of 12", "Paused · 3 of 12". -->
+	<variable name="Bald_NowPlayingStatus">
+		<value condition="Player.Paused + Integer.IsGreater(Playlist.Length(music),1)">$LOCALIZE[112]$INFO[Playlist.Position(music), · , $LOCALIZE[31708] ]$INFO[Playlist.Length(music)]</value>
+		<value condition="Player.Paused">$LOCALIZE[112]</value>
+		<value condition="Integer.IsGreater(Playlist.Length(music),1)">$LOCALIZE[31634]$INFO[Playlist.Position(music), · , $LOCALIZE[31708] ]$INFO[Playlist.Length(music)]</value>
+		<value>$LOCALIZE[31634]</value>
+	</variable>
+	<!-- "Album · 1997 · Disc 2 · disc title" (the disc only on a multi-disc album). -->
+	<variable name="Bald_NowPlayingAlbum">
+		<value condition="MusicPlayer.IsMultiDisc">$INFO[MusicPlayer.Album]$INFO[MusicPlayer.Year, · ,]$INFO[MusicPlayer.DiscNumber, · $LOCALIZE[427] ,]$INFO[MusicPlayer.DiscTitle, · ,]</value>
+		<value>$INFO[MusicPlayer.Album]$INFO[MusicPlayer.Year, · ,]</value>
+	</variable>
+	<!-- The background: the field, then the blur of the playing item (Bald Helper follows list 5500), or without a
+	     blur the sharp fanart at the backdrop brightness under a 60% field layer (docs/SPEC.md 5.19). Artwork off
+	     (Appearance, "fanart behind other library pages") leaves the field. -->
+	<include name="Bald_NowPlayingBackdrop">
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+		<control type="group">
+			<visible>!Skin.HasSetting(hide_background_fanart)</visible>
+			<control type="image">
+				<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>800</fadetime>
+				<texture background="true">$VAR[Bald_MusicBlur]</texture>
+				<visible>$EXP[Bald_MusicHasBlur]</visible>
+				<colordiffuse>bald_backdrop</colordiffuse>
+			</control>
+			<control type="group">
+				<visible>!$EXP[Bald_MusicHasBlur]</visible>
+				<control type="image">
+					<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>800</fadetime>
+					<texture background="true">$VAR[Bald_NowPlayingFanart]</texture>
+					<colordiffuse>bald_backdrop</colordiffuse>
+				</control>
+				<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field60">bald/white.png</texture></control>
+			</control>
+		</control>
+	</include>
+	<!-- The playing item as a one-item list for Bald Helper to follow (Bald.FocusContainer on the visualisation
+	     window). Off screen but visible, so Kodi keeps its static item's $INFO values current. -->
+	<include name="Bald_NowPlayingFollowList">
+		<control type="list" id="5500">
+			<left>-3000</left><top>-3000</top><width>1</width><height>1</height>
+			<itemlayout width="1" height="1" /><focusedlayout width="1" height="1" />
+			<content>
+				<item><label>$INFO[MusicPlayer.Title]</label><thumb>$VAR[Bald_NowPlayingBlurSource]</thumb></item>
+			</content>
+		</control>
+	</include>
+	<!-- Codec, "24-bit · 96 kHz" and "320 kbps" as the info screens' 30 px flag chips; missing values show none. -->
+	<include name="Bald_NowPlayingFlags">
+		<visible>$EXP[Bald_ShowMediaFlags]</visible>
+		<include content="Bald_FlagChip"><param name="height">30</param><param name="font">Bald_FlagL</param><param name="label">$MAP[DefaultCodecMap, MusicPlayer.Codec]</param><param name="visible">!String.IsEmpty(MusicPlayer.Codec)</param></include>
+		<include content="Bald_FlagChip"><param name="height">30</param><param name="font">Bald_FlagL</param><param name="label">$INFO[MusicPlayer.BitsPerSample,,-$LOCALIZE[31414] · ]$INFO[MusicPlayer.SampleRate,, $LOCALIZE[31413]]</param><param name="visible">!String.IsEmpty(MusicPlayer.SampleRate)</param></include>
+		<include content="Bald_FlagChip"><param name="height">30</param><param name="font">Bald_FlagL</param><param name="label">$INFO[MusicPlayer.BitRate,, $LOCALIZE[31412]]</param><param name="visible">!String.IsEmpty(MusicPlayer.BitRate)</param></include>
+	</include>
+	<!-- The full screen's content: the cover (576 px at the safe margin, y 180) and the text column from x 736 (1088
+	     wide): status, title (Info title 76), artist (Info tagline), album line (Info meta), genre (accent), flags,
+	     the progress bar with elapsed and remaining times, and what plays next, ending with the cover at y 756. The
+	     lower quarter stays free for the seek layer and the music OSD. Each element comes in on the info stagger. -->
+	<include name="Bald_NowPlayingContent">
+		<control type="group">
+			<left>Bald_SafeLeft</left><top>180</top>
+			<include content="Bald_AnimInfoIn"><param name="delay">120</param></include>
+			<control type="image"><width>576</width><height>576</height><texture colordiffuse="bald_tile_placeholder">bald/white.png</texture></control>
+			<control type="image"><width>576</width><height>576</height><aspectratio>scale</aspectratio><fadetime>400</fadetime><texture fallback="DefaultAlbumCover.png" background="true">$INFO[MusicPlayer.Cover]</texture></control>
+		</control>
+		<control type="group">
+			<left>736</left>
+			<control type="label"><top>214</top><width>1088</width><height>28</height><aligny>center</aligny><font>Bald_RowLabel</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_NowPlayingStatus]</label><include content="Bald_AnimInfoIn"><param name="delay">200</param></include></control>
+			<control type="label"><top>246</top><width>1088</width><height>104</height><aligny>center</aligny><font>Bald_InfoTitle</font><textcolor>bald_ink</textcolor><scroll>true</scroll><label>$INFO[Player.Title]</label><include content="Bald_AnimInfoIn"><param name="delay">260</param></include></control>
+			<control type="label"><top>356</top><width>1088</width><height>40</height><aligny>center</aligny><font>Bald_InfoTagline</font><textcolor>bald_ink80</textcolor><scroll>true</scroll><label>$INFO[MusicPlayer.Artist]</label><include content="Bald_AnimInfoIn"><param name="delay">300</param></include></control>
+			<control type="label"><top>404</top><width>1088</width><height>32</height><aligny>center</aligny><font>Bald_InfoMeta</font><textcolor>bald_ink70</textcolor><scroll>true</scroll><label>$VAR[Bald_NowPlayingAlbum]</label><include content="Bald_AnimInfoIn"><param name="delay">340</param></include></control>
+			<control type="label"><top>446</top><width>1088</width><height>26</height><aligny>center</aligny><font>Bald_InfoGenre</font><textcolor>bald_accent</textcolor><label>$INFO[MusicPlayer.Genre]</label><include content="Bald_AnimInfoIn"><param name="delay">380</param></include></control>
+			<control type="grouplist">
+				<top>492</top><width>1088</width><height>30</height><orientation>horizontal</orientation><itemgap>8</itemgap>
+				<include content="Bald_AnimInfoIn"><param name="delay">420</param></include>
+				<include>Bald_NowPlayingFlags</include>
+			</control>
+			<!-- Progress: the seek layer's bar (4 px, 28% track, accent played part) with the times under it; it gives
+			     way while the seek layer shows its own. -->
+			<control type="group">
+				<top>590</top>
+				<include content="Bald_AnimInfoIn"><param name="delay">460</param></include>
+				<control type="group">
+					<visible>!$EXP[Bald_NowPlayingSeekLayer]</visible>
+					<animation type="Visible"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+					<animation type="Hidden"><effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" /></animation>
+					<control type="image"><width>1088</width><height>4</height><texture border="2" colordiffuse="bald_ink28">bald/bar.png</texture></control>
+					<control type="progress">
+						<width>1088</width><height>4</height>
+						<texturebg /><lefttexture /><midtexture border="2" colordiffuse="bald_accent">bald/bar.png</midtexture><righttexture />
+						<info>Player.Progress</info>
+					</control>
+					<control type="label"><top>16</top><width>540</width><height>28</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[MusicPlayer.Time]</label></control>
+					<control type="label"><left>548</left><top>16</top><width>540</width><height>28</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[MusicPlayer.TimeRemaining,-,]</label></control>
+				</control>
+			</control>
+			<!-- Up next: the next song's cover (88 px), "Up next" and "Title · Artist", on the cover's bottom line. -->
+			<control type="group">
+				<top>668</top>
+				<visible>MusicPlayer.HasNext</visible>
+				<include content="Bald_AnimInfoIn"><param name="delay">500</param></include>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+				<animation type="Hidden"><effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" /></animation>
+				<control type="image"><width>88</width><height>88</height><texture colordiffuse="bald_tile_placeholder">bald/white.png</texture></control>
+				<control type="image"><width>88</width><height>88</height><aspectratio>scale</aspectratio><fadetime>300</fadetime><texture background="true">$INFO[MusicPlayer.offset(1).Cover]</texture></control>
+				<control type="label"><left>112</left><top>10</top><width>976</width><height>26</height><aligny>center</aligny><font>Bald_Accent</font><textcolor>bald_accent</textcolor><label>$LOCALIZE[31622]</label></control>
+				<control type="label"><left>112</left><top>40</top><width>976</width><height>34</height><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink80</textcolor><label>$INFO[MusicPlayer.offset(1).Title]$INFO[MusicPlayer.offset(1).Artist, · ,]</label></control>
+			</control>
+		</control>
+	</include>
+	<!-- Right-hand hints on the footer line while nothing else is up. -->
+	<include name="Bald_NowPlayingHints">
+		<control type="group">
+			<left>Bald_SafeLeft</left><top>Bald_HintTop</top>
+			<visible>!$EXP[Bald_NowPlayingSeekLayer] + !Window.IsVisible(musicosd) + !$EXP[Bald_NowPlayingIdle]</visible>
+			<animation type="Visible"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+			<animation type="Hidden"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
+			<control type="group">
+				<visible>Visualisation.Enabled</visible>
+				<include content="Bald_InfoHintPair"><param name="width">1728</param><param name="first">$LOCALIZE[31410]</param><param name="second">$LOCALIZE[31411]</param></include>
+			</control>
+			<control type="label"><width>1728</width><height>24</height><align>right</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31410]</label><visible>!Visualisation.Enabled</visible></control>
+		</control>
+	</include>
 </includes>

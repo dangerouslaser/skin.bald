@@ -459,7 +459,8 @@ LoginScreen.xml		52 profiles, 2 heading and 3 selected-profile counter (both new
 		20 power button
 SlideShow.xml		10 hidden label whose font Kodi uses for its load-error message (new in Bald)
 DialogPictureInfo.xml		5 details list; 9000 group, 60 scrollbar
-MusicVisualisation.xml		2 visualisation
+MusicVisualisation.xml		2 visualisation; 5500 the playing item as a one-item list for Bald Helper to follow
+		(Bald_NowPlayingFollowList, Includes_Bald_Music.xml; Bald.FocusContainer on the visualisation window)
 DialogMusicInfo.xml		6 Refresh, 7 Your rating, 8 Play, 10 Choose art, 12 Artist / album information,
 		50 songs / albums / artists; 41 details list, 120 fanart, 130 description button,
 		400 description label, 9000 action row

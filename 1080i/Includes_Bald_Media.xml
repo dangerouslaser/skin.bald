@@ -349,22 +349,6 @@
 		</definition>
 	</include>
 	<!-- ============ Music ============ -->
-	<!-- Now playing lines (MusicVisualisation.xml). Album, with the disc on multi-disc releases. -->
-	<variable name="Bald_MusicAlbumLine">
-		<value condition="MusicPlayer.IsMultiDisc">$INFO[MusicPlayer.Album]$INFO[MusicPlayer.DiscNumber, · $LOCALIZE[427] ,]$INFO[MusicPlayer.DiscTitle, · ,]</value>
-		<value>$INFO[MusicPlayer.Album]</value>
-	</variable>
-	<!-- "1997 · Rock · 8/10": year, genre and the user's rating, whichever are set. -->
-	<variable name="Bald_MusicMetaLine">
-		<value condition="!String.IsEmpty(MusicPlayer.Year)">$INFO[MusicPlayer.Year]$INFO[MusicPlayer.Genre, · ,]$INFO[MusicPlayer.UserRating, · ,/10]</value>
-		<value condition="!String.IsEmpty(MusicPlayer.Genre)">$INFO[MusicPlayer.Genre]$INFO[MusicPlayer.UserRating, · ,/10]</value>
-		<value>$INFO[MusicPlayer.UserRating,,/10]</value>
-	</variable>
-	<!-- "Next: Title · Artist" while the playlist has more than one song. -->
-	<variable name="Bald_MusicNextLine">
-		<value condition="Integer.IsGreater(Playlist.Length(music),1)">$INFO[MusicPlayer.offset(1).Title,$LOCALIZE[19031]: ,]$INFO[MusicPlayer.offset(1).Artist, · ,]</value>
-		<value></value>
-	</variable>
 	<!-- Music information (DialogMusicInfo.xml). -->
 	<variable name="Bald_MusicInfoTitle">
 		<value condition="String.IsEqual(ListItem.DBType,song)">$INFO[ListItem.Title]</value>

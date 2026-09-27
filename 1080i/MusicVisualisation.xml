@@ -1,150 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- From Kodi 22 Estuary's MusicVisualisation.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt), restyled for Bald
-     (docs/NOTES.md, "Media windows restyle"). Kodi binds 2 (the visualisation). The now playing block keeps
-     Estuary's show conditions (Info, or the music OSD open) and rises 180 px while the OSD's bottom bar is up. -->
+<!-- Bald Now Playing (docs/NOTES.md, "Music"; pieces in Includes_Bald_Music.xml): the album cover large at the safe
+     margin, the song's title, artist, album, year and genre, codec flags, the progress with elapsed and remaining
+     times and what plays next, over the blurred artist fanart. A visualisation, when Kodi runs one, plays behind the
+     screen dimmed to 40%, and has the screen to itself once Kodi stops showing the song's info (Info toggles that);
+     the music OSD (MusicOSD.xml) and the seek layer (DialogSeekBar.xml) open over the lower quarter, which the screen
+     leaves free. Started from Kodi 22 Estuary's MusicVisualisation.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt).
+     Kodi (CGUIWindowVisualisation) binds 2, the visualisation. -->
 <window>
 	<defaultcontrol></defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<onload condition="System.AddonIsEnabled(script.artistslideshow) + !Skin.HasSetting(hide_background_fanart)">RunScript(script.artistslideshow)</onload>
+	<!-- The blur follows the playing item (list 5500). -->
+	<include content="Bald_FollowContainerOnLoad"><param name="id">5500</param><param name="window">visualisation</param></include>
+	<include content="Bald_UnfollowContainerOnUnload"><param name="window">visualisation</param></include>
 	<controls>
-		<control type="image">
-			<width>1920</width>
-			<height>1080</height>
-			<texture colordiffuse="bald_field">bald/white.png</texture>
+		<include>Bald_NowPlayingFollowList</include>
+		<control type="group">
+			<include>Bald_MediaOpenClose</include>
+			<include>Bald_NowPlayingBackdrop</include>
 		</control>
 		<control type="visualisation" id="2">
 			<include>FullScreenDimensions</include>
 			<visible>Player.HasAudio</visible>
 		</control>
-		<!-- Artist fanart (or Artist Slideshow's image), dimmed to the Bald backdrop level behind a visualisation. -->
-		<control type="group">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<visible>!Skin.HasSetting(hide_background_fanart)</visible>
-			<animation effect="zoom" start="100" end="105" center="auto" time="12000" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animate_background_fanart)">Conditional</animation>
-			<animation effect="fade" start="100" end="30" time="800" tween="sine" easing="inout" condition="Visualisation.Enabled">Conditional</animation>
-			<include>Bald_MediaOpenClose</include>
-			<control type="image">
-				<aspectratio>scale</aspectratio>
-				<fadetime>800</fadetime>
-				<texture background="true">$INFO[Player.Art(fanart)]</texture>
-				<visible>String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
-			</control>
-			<control type="image">
-				<aspectratio>scale</aspectratio>
-				<fadetime>800</fadetime>
-				<texture background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
-			</control>
+		<!-- The visualisation dims to 40% under the full screen. -->
+		<control type="image">
+			<width>1920</width><height>1080</height>
+			<texture colordiffuse="bald_field60">bald/white.png</texture>
+			<visible>Visualisation.Enabled + $EXP[Bald_NowPlayingFull]</visible>
+			<animation type="Visible"><effect type="fade" start="0" end="100" time="800" tween="sine" easing="inout" /></animation>
+			<animation type="Hidden"><effect type="fade" start="100" end="0" time="800" tween="sine" easing="inout" /></animation>
 		</control>
-		<!-- Now playing -->
 		<control type="group">
-			<visible>[Player.ShowInfo | Window.IsActive(musicosd)] + !MusicPlayer.Content(livetv)</visible>
+			<visible>$EXP[Bald_NowPlayingFull] + !MusicPlayer.Content(livetv)</visible>
 			<animation type="Visible" reversible="false">
 				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 				<effect type="slide" start="0,18" end="0,0" time="560" tween="cubic" easing="out" />
 			</animation>
 			<animation type="Hidden" reversible="false">
+				<effect type="fade" start="100" end="0" time="380" tween="sine" easing="inout" />
+			</animation>
+			<animation type="WindowClose">
 				<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 			</animation>
-			<control type="image">
-				<width>1920</width>
-				<height>1080</height>
-				<texture colordiffuse="bald_field">bald/scrim_info_b.png</texture>
-			</control>
-			<control type="group">
-				<animation effect="slide" start="0,0" end="0,-180" time="440" tween="cubic" easing="out" condition="Window.IsActive(musicosd)">Conditional</animation>
-				<control type="image">
-					<left>Bald_SafeLeft</left>
-					<top>604</top>
-					<width>320</width>
-					<height>320</height>
-					<texture colordiffuse="bald_tile_placeholder">bald/white.png</texture>
-				</control>
-				<control type="image">
-					<left>Bald_SafeLeft</left>
-					<top>604</top>
-					<width>320</width>
-					<height>320</height>
-					<fadetime>400</fadetime>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture fallback="DefaultAlbumCover.png" background="true">$INFO[MusicPlayer.Cover]</texture>
-				</control>
-				<control type="group">
-					<left>456</left>
-					<visible>![Window.IsActive(playerprocessinfo) | MusicPlayer.Content(livetv)]</visible>
-					<control type="label">
-						<top>714</top>
-						<width>1368</width>
-						<height>52</height>
-						<aligny>center</aligny>
-						<font>Bald_CaptionTitle</font>
-						<textcolor>bald_ink</textcolor>
-						<scroll>true</scroll>
-						<label>$INFO[MusicPlayer.TrackNumber,,. ]$INFO[Player.Title]</label>
-					</control>
-					<control type="label">
-						<top>772</top>
-						<width>1368</width>
-						<height>34</height>
-						<aligny>center</aligny>
-						<font>Bald_InfoMeta</font>
-						<textcolor>bald_ink80</textcolor>
-						<scroll>true</scroll>
-						<label>$INFO[MusicPlayer.Artist]</label>
-					</control>
-					<control type="label">
-						<top>818</top>
-						<width>1368</width>
-						<height>28</height>
-						<aligny>center</aligny>
-						<font>Bald_InfoGenre</font>
-						<textcolor>bald_accent</textcolor>
-						<scroll>true</scroll>
-						<label>$VAR[Bald_MusicAlbumLine]</label>
-					</control>
-					<control type="label">
-						<top>856</top>
-						<width>1368</width>
-						<height>28</height>
-						<aligny>center</aligny>
-						<font>Bald_CaptionMeta</font>
-						<textcolor>bald_ink60</textcolor>
-						<label>$VAR[Bald_MusicMetaLine]</label>
-					</control>
-					<!-- Progress: the info dialog's 4 px bar, with elapsed and total time. -->
-					<control type="group">
-						<top>900</top>
-						<control type="image">
-							<width>480</width>
-							<height>4</height>
-							<texture border="2" colordiffuse="bald_ink28">bald/bar.png</texture>
-						</control>
-						<control type="progress">
-							<width>480</width>
-							<height>4</height>
-							<texturebg />
-							<lefttexture />
-							<midtexture border="2" colordiffuse="bald_ink">bald/bar.png</midtexture>
-							<righttexture />
-							<info>Player.Progress</info>
-						</control>
-						<control type="label">
-							<left>498</left>
-							<top>-10</top>
-							<width>400</width>
-							<height>24</height>
-							<aligny>center</aligny>
-							<font>Bald_Progress</font>
-							<textcolor>bald_ink70</textcolor>
-							<label>$INFO[MusicPlayer.Time]$INFO[MusicPlayer.Duration, / ,]</label>
-						</control>
-					</control>
-				</control>
-				<include content="Bald_MediaFooter">
-					<param name="label">$VAR[Bald_MusicNextLine]</param>
-					<param name="width">1728</param>
-				</include>
-			</control>
+			<!-- Idle: a slow drift and a dim, so nothing burns in over a long album (as Home's idle). -->
+			<animation type="Conditional" condition="$EXP[Bald_NowPlayingIdle]" pulse="true">
+				<effect type="slide" start="0,0" end="12,0" time="23000" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Conditional" condition="$EXP[Bald_NowPlayingIdle]" pulse="true">
+				<effect type="slide" start="0,0" end="0,8" time="31000" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Conditional" condition="$EXP[Bald_NowPlayingIdle]">
+				<effect type="fade" start="100" end="70" time="600" tween="sine" easing="inout" />
+			</animation>
+			<include>Bald_NowPlayingContent</include>
+			<include>Bald_NowPlayingHints</include>
 		</control>
 	</controls>
 </window>

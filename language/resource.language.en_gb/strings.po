@@ -1192,6 +1192,36 @@ msgctxt "#31409"
 msgid "Nothing to show. Open options to adjust your filters."
 msgstr ""
 
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: hint for the music controls
+msgctxt "#31410"
+msgid "Select for controls"
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: hint for the visualisation
+msgctxt "#31411"
+msgid "Info for the visualisation"
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: bitrate unit
+msgctxt "#31412"
+msgid "kbps"
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: sample rate unit
+msgctxt "#31413"
+msgid "kHz"
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: bit depth unit, as in 24-bit
+msgctxt "#31414"
+msgid "bit"
+msgstr ""
+
 #: /xml/Includes_SettingsDialog.xml
 #. Button to select Player Process Info window
 msgctxt "#31597"
@@ -1354,6 +1384,7 @@ msgstr ""
 #: /1080i/Includes_Bald_OSD.xml
 #: /1080i/script-upnext-upnext-simple.xml
 #: /1080i/script-upnext-upnext.xml
+#: /1080i/Includes_Bald_Music.xml
 #. Prefix of the next item on the info overlay
 msgctxt "#31622"
 msgid "Up next"
@@ -1679,6 +1710,7 @@ msgid "Configure Kodi, manage media sources, or change the skin."
 msgstr ""
 
 #: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_Music.xml
 #. Row position counter, "3 of 12"
 msgctxt "#31708"
 msgid "of"

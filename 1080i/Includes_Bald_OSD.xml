@@ -390,11 +390,12 @@
 		<include content="Bald_OSDSeekNib"><param name="id">402</param><param name="visible">Player.Seeking + VideoPlayer.Content(livetv) + VideoPlayer.HasEpg + !Player.ChannelPreviewActive</param></include>
 		<include content="Bald_OSDSeekNib"><param name="id">403</param><param name="visible">Player.Seeking + Player.SeekEnabled + VideoPlayer.Content(livetv) + !VideoPlayer.HasEpg + !Player.ChannelPreviewActive</param></include>
 	</include>
-	<!-- Music keeps its title block (song, artist and album) over the status line. -->
+	<!-- Music keeps its title block (song, artist and album) over the status line while the visualisation has the
+	     screen; with Now Playing's full screen up (Bald_NowPlayingFull, Includes_Bald_Music.xml) the title is there. -->
 	<include name="Bald_OSDMusicTitle">
 		<control type="group">
 			<top>140</top>
-			<visible>Player.HasAudio + !Player.HasVideo</visible>
+			<visible>Player.HasAudio + !Player.HasVideo + !$EXP[Bald_NowPlayingFull]</visible>
 			<include>Bald_PlaybackTitleBlock</include>
 		</control>
 	</include>
