@@ -676,7 +676,7 @@
 						<font>Bald_CaptionTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.TVShowTitle]</label>
-						<visible>Container($PARAM[c]).ListItem.IsEpisode + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
+						<visible>String.IsEqual(Container($PARAM[c]).ListItem.DBType,episode) + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">180</param></include>
 					</control>
 					<control type="textbox">
@@ -686,7 +686,7 @@
 						<font>Bald_CaptionTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Title]</label>
-						<visible>!Container($PARAM[c]).ListItem.IsEpisode + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
+						<visible>!String.IsEqual(Container($PARAM[c]).ListItem.DBType,episode) + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">180</param></include>
 					</control>
 				</control>
@@ -705,7 +705,7 @@
 						<param name="c">$PARAM[c]</param>
 						<param name="p">$PARAM[p]</param>
 						<param name="label">S$INFO[Container($PARAM[c]).ListItem.Season] E$INFO[Container($PARAM[c]).ListItem.Episode]$INFO[Container($PARAM[c]).ListItem.Title,$COMMA ,]</param>
-						<param name="visible">Container($PARAM[c]).ListItem.IsEpisode</param>
+						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,episode)</param>
 					</include>
 					<include content="Bald_CaptionMeta">
 						<param name="width">$PARAM[width]</param>

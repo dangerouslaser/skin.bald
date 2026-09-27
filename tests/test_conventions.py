@@ -159,3 +159,15 @@ class MapOrderTests(unittest.TestCase):
                 with self.subTest(map=name):
                     self.assertIn(ref, loaded)
             loaded.add(name)
+
+
+class InfoLabelNameTests(unittest.TestCase):
+    """Infobools Kodi 22 does not have are silently false. ListItem.IsEpisode is one: episodes are
+    String.IsEqual(ListItem.DBType,episode)."""
+
+    def test_no_listitem_isepisode(self):
+        for path in sorted(SKIN.glob('*.xml')):
+            if path.name.startswith('script-skinvariables'):
+                continue
+            with self.subTest(file=path.name):
+                self.assertNotRegex(path.read_text(encoding='utf-8'), r'ListItem\.IsEpisode\b')

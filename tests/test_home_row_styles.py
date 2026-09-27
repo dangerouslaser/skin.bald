@@ -87,7 +87,7 @@ class RowStyleIncludeTests(unittest.TestCase):
                   ET.parse(XML / "Includes_Bald_Common.xml").getroot().findall("variable[@name='Bald_ItemThumbnail']/value")]
         # Episodes: the still chain first. Everything else: landscape art, then the fanart chain. A movie's thumb (its
         # poster, usually) is never read directly.
-        self.assertTrue(implies(values[0][0], "ListItem.IsEpisode"))
+        self.assertTrue(implies(values[0][0], "String.IsEqual(ListItem.DBType,episode)"))
         self.assertEqual(values[0][1], "$VAR[Bald_EpisodeThumb]")
         self.assertTrue(any("Art(landscape)" in text for _, text in values))
         self.assertEqual(values[-1], (None, "$VAR[Bald_ItemFanart]"))
