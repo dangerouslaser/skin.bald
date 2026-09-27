@@ -41,7 +41,7 @@
 		</definition>
 	</include>
 	<include name="View_520_Bald_Series">
-		<control type="group"><visible>Control.IsVisible(520)</visible>
+		<control type="group"><visible>Control.IsVisible(520)</visible><animation type="Visible"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control><include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_LibraryShowsHeading]</label></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
