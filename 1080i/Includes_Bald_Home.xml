@@ -80,9 +80,9 @@
 	     going back to a landscape row. The row swap runs meanwhile (out 140, in 360 / 440 after 170).
 	     Paired non-reversible Conditionals, as in Bald_AnimInfoFrame: the animation whose condition drops is reset
 	     (no transform), and the one whose condition rises starts from the state the other ended in. -->
+	<expression name="Bald_PosterRow">[String.IsEqual(Window(home).Property(Bald.RowStyle),poster) | String.IsEqual(Window(home).Property(Bald.RowStyle),square)]</expression>
 	<!-- A poster row's frame over background video: art layers of their own, 576 tall (Home.xml). -->
 	<expression name="Bald_VideoPosterFrame">[$EXP[Bald_VideoBackdropOn] + $EXP[Bald_PosterRow] + !$EXP[Bald_InfoOpen]]</expression>
-	<expression name="Bald_PosterRow">[String.IsEqual(Window(home).Property(Bald.RowStyle),poster) | String.IsEqual(Window(home).Property(Bald.RowStyle),square)]</expression>
 	<!-- The art layers (the art frame group, which also zooms for info). While info is open the nudge is undone in step
 	     with the zoom (640 move after 40), so the zoom about 274,343 maps the whole 1248 x 702 art to the screen exactly
 	     as on a landscape row; closing info nudges it again with the zoom back (540 after 30). -->
@@ -141,7 +141,7 @@
 	<include name="Bald_BackdropImage">
 		<!-- Still copy (curtain prototype): the same blur with no fadetime and loaded at once (a local file from the
 		     helper's blur cache), so a window's background is complete on its first frame, which the curtain lifts
-		     onto. The crossfading copy above still dissolves between titles. -->
+		     onto. The crossfading copy below still dissolves between titles. -->
 		<control type="image">
 			<width>1920</width>
 			<height>1080</height>
@@ -668,10 +668,10 @@
 		</definition>
 	</include>
 	<!-- The current row item's clearlogo (clearlogo, else the show's). -->
-	<!-- Fanart layer for one parity. The incoming layer fades in (700) while settling from 1.05 (1500; not with background
-	     video, see Bald_BackdropWindow); the outgoing
-	     layer fades out (700) still showing the old art. A row swap that keeps the parity changes the visible
-	     layer's texture instead, which <fadetime> crossfades (it waits until the new image has loaded). -->
+	<!-- Fanart layer for one parity. The incoming layer fades in (700) while settling from 1.05 (1500; not with
+	     background video, see Bald_BackdropWindow); the outgoing layer fades out (700) still showing the old art. A row
+	     swap that keeps the parity changes the visible layer's texture instead, which <fadetime> crossfades (it waits
+	     until the new image has loaded). -->
 	<include name="Bald_ArtLayer">
 		<param name="visible" />
 		<param name="texture">$VAR[Bald_Fanart]</param>
@@ -694,6 +694,30 @@
 				</animation>
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="700" tween="sine" easing="inout" />
+				</animation>
+			</control>
+		</definition>
+	</include>
+
+	<!-- Dialog art (Home.xml): the live $VAR[Bald_Fanart] while a dialog is over Home, lingering (900, then out 250)
+	     while the parity layers settle after it closes. <cut>, when true as it hides, fades it out at once instead
+	     (the 702 copy giving way to a poster row's 576 frame over background video as info closes). -->
+	<include name="Bald_DialogArt">
+		<param name="height">702</param>
+		<param name="visible">$EXP[Bald_DialogOver]</param>
+		<param name="cut">false</param>
+		<definition>
+			<control type="image">
+				<width>1248</width>
+				<height>$PARAM[height]</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$VAR[Bald_Fanart]</texture>
+				<visible>$PARAM[visible]</visible>
+				<animation type="Hidden" condition="![$PARAM[cut]]">
+					<effect type="fade" start="100" end="0" time="250" delay="900" tween="sine" easing="inout" />
+				</animation>
+				<animation type="Hidden" condition="$PARAM[cut]">
+					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 				</animation>
 			</control>
 		</definition>
@@ -1054,8 +1078,11 @@
 						<effect type="zoom" start="100" end="105" center="98,59" time="280" tween="back" easing="out" />
 						<effect type="fade" start="55" end="100" time="300" tween="sine" easing="inout" />
 					</animation>
-					<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + !$EXP[Bald_VideoBackdropOn]">
+					<!-- The settle zoom always runs; the dim is dropped over background video (no partial fade there). -->
+					<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
 						<effect type="zoom" start="100" end="95.2" center="98,59" time="300" tween="cubic" easing="out" />
+					</animation>
+					<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + !$EXP[Bald_VideoBackdropOn]">
 						<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
 					</animation>
 					<include content="Bald_LandscapeTile">

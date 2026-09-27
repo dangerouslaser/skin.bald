@@ -126,30 +126,20 @@
 					</control>
 					<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param><param name="height">576</param><param name="center">624,288</param></include>
 					<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param><param name="height">576</param><param name="center">624,288</param></include>
-					<control type="image">
-						<width>1248</width>
-						<height>576</height>
-						<aspectratio>scale</aspectratio>
-						<texture background="true">$VAR[Bald_Fanart]</texture>
-						<visible>$EXP[Bald_DialogOver]</visible>
-					</control>
+					<include content="Bald_DialogArt"><param name="height">576</param></include>
 				</control>
 				<!-- Dialog art. Kodi evaluates <visible> and animation conditions without a window context
 				     (CGUIControl::UpdateVisibility), so with a modal dialog over Home, Container(9101..9103) in them
 				     resolves against the dialog and the parity layers above flip or blank. Textures and variables are
 				     evaluated with the control's window (CGUIImage::UpdateInfo, CSkinVariableString::GetValue), so this
 				     image, whose texture is the live $VAR[Bald_Fanart] and whose visibility needs no container, shows the
-				     right art for as long as a dialog is up, and lingers while the layers settle after it closes. -->
-				<control type="image">
-					<width>1248</width>
-					<height>702</height>
-					<aspectratio>scale</aspectratio>
-					<texture background="true">$VAR[Bald_Fanart]</texture>
-					<visible>$EXP[Bald_DialogOver] + !$EXP[Bald_VideoPosterFrame]</visible>
-					<animation type="Hidden">
-						<effect type="fade" start="100" end="0" time="250" delay="900" tween="sine" easing="inout" />
-					</animation>
-				</control>
+				     right art for as long as a dialog is up, and lingers while the layers settle after it closes (the
+				     576 copy above does the same for a poster row over background video; this one gives way to it at
+				     once, Bald_DialogArt). -->
+				<include content="Bald_DialogArt">
+					<param name="visible">$EXP[Bald_DialogOver] + !$EXP[Bald_VideoPosterFrame]</param>
+					<param name="cut">$EXP[Bald_VideoPosterFrame]</param>
+				</include>
 				<!-- The current info item can change independently of the originating Home tile.
 				     Keep its artwork inside this zoomed frame; fade it back to the tile on final close. -->
 				<control type="group">
