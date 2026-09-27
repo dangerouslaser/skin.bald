@@ -1477,7 +1477,12 @@
 
 	<!-- ============ Video panel (1123) ============ -->
 	<variable name="Bald_OSDVideoFlags">
-		<value>$VAR[Bald_OSDResolution][UPPERCASE]$INFO[VideoPlayer.VideoCodec, · ][/UPPERCASE]$VAR[Bald_OSDHdr]$INFO[VideoPlayer.VideoAspect, · ,:1]$INFO[VideoPlayer.AudioCodec, · ]$INFO[VideoPlayer.AudioChannels, · , $LOCALIZE[10127]]</value>
+		<!-- Codec and channel names from the stream maps in Includes_Bald_Info.xml, as on the information screen. -->
+		<value>$VAR[Bald_OSDResolution]$MAP[DefaultCodecMap, VideoPlayer.VideoCodec, · ]$VAR[Bald_OSDHdr]$INFO[VideoPlayer.VideoAspect, · ,:1]$MAP[Bald_AudioCodec, VideoPlayer.AudioCodec, · ]$VAR[Bald_OSDChannels]</value>
+	</variable>
+	<variable name="Bald_OSDChannels">
+		<value condition="Integer.IsGreater(VideoPlayer.AudioChannels,10)">$INFO[VideoPlayer.AudioChannels, · , $LOCALIZE[10127]]</value>
+		<value>$MAP[Bald_AudioChannels, VideoPlayer.AudioChannels, · ]</value>
 	</variable>
 	<variable name="Bald_OSDResolution">
 		<value condition="String.IsEqual(VideoPlayer.VideoResolution,4K) | String.IsEqual(VideoPlayer.VideoResolution,8K)">$INFO[VideoPlayer.VideoResolution]</value>
@@ -1488,6 +1493,8 @@
 		<value condition="String.IsEqual(VideoPlayer.HdrType,hdr10)"> · HDR10</value>
 		<value condition="String.StartsWith(VideoPlayer.HdrType,hdr10)"> · HDR10+</value>
 		<value condition="String.IsEqual(VideoPlayer.HdrType,hlg)"> · HLG</value>
+		<!-- Kodi leaves the HDR type empty for SDR video. -->
+		<value condition="String.IsEmpty(VideoPlayer.HdrType) + !String.IsEmpty(VideoPlayer.VideoCodec)"> · SDR</value>
 	</variable>
 	<!-- The speed row's value: the tempo, or the fast forward or rewind speed. -->
 	<variable name="Bald_OSDSpeedValue">
