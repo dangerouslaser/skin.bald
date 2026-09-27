@@ -193,7 +193,7 @@
 	<include name="Bald_MenuNote">
 		<param name="id">0</param>
 		<param name="text" />
-		<param name="x">1466</param><param name="y">714</param><param name="width">394</param>
+		<param name="x">1466</param><param name="y">714</param><param name="width">358</param>
 		<definition>
 			<control type="label" id="$PARAM[id]">
 				<left>$PARAM[x]</left>
@@ -1435,16 +1435,18 @@
 		<param name="left_if">true</param>
 		<definition>
 			<control type="button" id="$PARAM[id]">
-				<left>-6</left><width>426</width><height>56</height><visible>$PARAM[visible]</visible>
+				<left>-6</left><width>390</width><height>56</height><visible>$PARAM[visible]</visible>
 				<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus><texturenofocus /><font>Bald_MenuItem</font><align>left</align><aligny>center</aligny><textoffsetx>26</textoffsetx>
 				<textcolor>bald_ink34</textcolor><focusedcolor>bald_ink</focusedcolor><label>$PARAM[label]$PARAM[suffix]</label>
 				<!-- Not reversible: Kodi reverses an interrupted Focus animation from wherever it stopped, which left quickly
 				     passed items at a stray brightness. Resetting it returns every unfocused item to exactly bald_ink34. -->
 				<animation type="Focus" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" /></animation>
 				<animation type="Unfocus"><effect type="slide" start="6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
-				<onfocus condition="!$EXP[Bald_MenuOpen] + String.IsEqual(Skin.String(Bald.MenuOpens),2)">Skin.SetString(Bald.MenuOpens,3)</onfocus>
-				<onfocus condition="!$EXP[Bald_MenuOpen] + String.IsEqual(Skin.String(Bald.MenuOpens),1)">Skin.SetString(Bald.MenuOpens,2)</onfocus>
-				<onfocus condition="!$EXP[Bald_MenuOpen] + String.IsEmpty(Skin.String(Bald.MenuOpens))">Skin.SetString(Bald.MenuOpens,1)</onfocus>
+				<!-- Count the first three menu opens for the auto-hiding menu hint; not Home's own move to the menu when
+				     there are no rows (no current row then). -->
+				<onfocus condition="!$EXP[Bald_MenuOpen] + $EXP[Bald_HasRow] + String.IsEqual(Skin.String(Bald.MenuOpens),2)">Skin.SetString(Bald.MenuOpens,3)</onfocus>
+				<onfocus condition="!$EXP[Bald_MenuOpen] + $EXP[Bald_HasRow] + String.IsEqual(Skin.String(Bald.MenuOpens),1)">Skin.SetString(Bald.MenuOpens,2)</onfocus>
+				<onfocus condition="!$EXP[Bald_MenuOpen] + $EXP[Bald_HasRow] + String.IsEmpty(Skin.String(Bald.MenuOpens))">Skin.SetString(Bald.MenuOpens,1)</onfocus>
 				<onfocus>SetProperty(Bald.Menu,1,home)</onfocus>
 				<onfocus>SetProperty(Bald.MenuPreview,$PARAM[preview],home)</onfocus>
 				<!-- The previewed screen's remembered row sets the art frame's shape (empty, a full frame, without rows). -->

@@ -255,9 +255,10 @@
 				<include content="Bald_MenuNote"><param name="text">$VAR[Bald_MenuPreviewNote]</param></include>
 			</control>
 			<control type="grouplist" id="9000">
+				<!-- 384 wide: its right edge on the 96 px safe margin (x 1824). -->
 				<left>Bald_RightColumn</left>
 				<top>395</top>
-				<width>420</width>
+				<width>384</width>
 				<height>310</height>
 				<orientation>vertical</orientation>
 				<itemgap>6</itemgap>

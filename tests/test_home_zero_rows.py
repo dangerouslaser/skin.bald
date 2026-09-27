@@ -53,6 +53,11 @@ class HomeZeroRowsTests(unittest.TestCase):
         self.assertEqual((backs[0].get("condition"), backs[0].text), ("$EXP[Bald_VideoBackdropOn]", "Action(FullScreen)"))
         for node in backs[1:]:
             self.assertTrue(equivalent(node.get("condition"), f"{HAS_ROW} + !$EXP[Bald_VideoBackdropOn]"))
+        # Home's own move to the menu without rows is not a menu open the hint counts.
+        counts = [n for n in button.findall("onfocus") if "Bald.MenuOpens" in n.text]
+        self.assertEqual(len(counts), 3)
+        for node in counts:
+            self.assertIn("!$EXP[Bald_MenuOpen] + $EXP[Bald_HasRow] + ", node.get("condition"))
         # Timers.xml keeps the literal (docs/NOTES.md: $EXP in a timer condition did not trigger).
         timers = ET.parse(XML / "Timers.xml").getroot()
         ambient = next(t for t in timers.findall("timer") if t.findtext("name") == "bald_ambient")

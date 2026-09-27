@@ -516,3 +516,16 @@ class HubHeadingTests(unittest.TestCase):
             with self.subTest(view=name):
                 text = (XML / name).read_text(encoding="utf-8")
                 self.assertRegex(text, r"\$VAR\[Bald_Library(Movies|Shows)Heading\]")
+
+
+class MenuSafeMarginTests(unittest.TestCase):
+    def test_the_menu_and_its_note_end_on_the_safe_margin(self):
+        home = ET.parse(XML / "Home.xml").getroot()
+        menu = home.find(".//control[@id='9000']")
+        self.assertEqual((menu.findtext("left"), menu.findtext("width")), ("Bald_RightColumn", "384"))
+        self.assertEqual(1440 + 384, 1920 - 96)
+        includes = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        button = includes.find("include[@name='Bald_HomeMenuButton']/definition/control")
+        self.assertEqual(int(button.findtext("left")) + int(button.findtext("width")), 384)
+        note = {p.get("name"): p.text for p in includes.findall("include[@name='Bald_MenuNote']/param")}
+        self.assertLessEqual(int(note["x"]) + int(note["width"]), 1920 - 96)
