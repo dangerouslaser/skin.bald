@@ -119,6 +119,16 @@
 				<control type="radiobutton" id="9625"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31993]</label><selected>Skin.HasSetting(Bald.ScrollPlots)</selected><onclick>Skin.ToggleSetting(Bald.ScrollPlots)</onclick></control>
 				<!-- Kodi settings Bald recommends (scripts/recommended.py): hide parent folder items, Select shows information. -->
 				<control type="button" id="9626"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31839]</label><onclick>RunScript(skin.bald,recommended)</onclick></control>
+				<!-- Select on a TV show in the library opens its information page: Bald Helper (addons/script.bald.helper) maps
+				     Select there to the skin timer bald_library_select while this is on. 9627 is the switch while the add-on is
+				     enabled; 9628 stands in for it otherwise, with a note, and installs the add-on from the Bald repository or
+				     enables it. -->
+				<control type="radiobutton" id="9627"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31848]</label><selected>Skin.HasSetting(Bald.ShowsOpenInfo)</selected><onclick>Skin.ToggleSetting(Bald.ShowsOpenInfo)</onclick><visible>System.AddonIsEnabled(script.bald.helper)</visible></control>
+				<control type="button" id="9628"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31848]</label><visible>!System.AddonIsEnabled(script.bald.helper)</visible>
+					<label2>$VAR[Bald_HelperNote]</label2>
+					<onclick condition="!System.HasAddon(script.bald.helper)">InstallAddon(script.bald.helper)</onclick>
+					<onclick condition="System.HasAddon(script.bald.helper)">EnableAddon(script.bald.helper)</onclick>
+				</control>
 			</control>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>

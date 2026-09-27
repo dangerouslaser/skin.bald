@@ -196,6 +196,8 @@ Library chrome (MyVideoNav.xml and View_510_Bald_Posters.xml, shared by all Bald
 9150	Library options list
 9151	Hidden bridge for Kodi's Menu action: focuses 9150 in a Bald view, else 9000
 9160	Letter mode (alphabet strip)
+		No control routes Select: with Bald Helper's keymap (addons/script.bald.helper), Select starts the skin
+		timer bald_library_select (Timers.xml), which runs Info on a focused library TV show and Select otherwise.
 
 
 BROWSE WINDOWS (restyled Estuary windows and views; Includes_Bald_Browse.xml, docs/SPEC.md 5.19)
@@ -389,8 +391,9 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		posters; genre background, weather background and weather icon packs
 9611-9615	Information: media flags, row item count, titles in list views, profile name and
 		temperature in page headers
-9621-9626	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
-		scroll long plots
+9621-9628	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
+		scroll long plots, recommended Kodi settings; 9627 open TV shows on their info page (Bald Helper
+		enabled), 9628 the same row while Bald Helper is missing or disabled (installs or enables it)
 9631	Typography: font (fontset)
 9641-9663	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; 9657 online ratings from TMDb Helper,
 		9658 TMDb Helper settings (both listed after 9641); sources 9642 IMDb, 9643 TMDb,

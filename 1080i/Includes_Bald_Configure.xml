@@ -322,6 +322,12 @@
 		</definition>
 	</include>
 
+	<!-- Appearance, Behavior, row 9628: why "Open TV shows on their info page" is not a switch yet. -->
+	<variable name="Bald_HelperNote">
+		<value condition="!System.HasAddon(script.bald.helper)">$LOCALIZE[31849]</value>
+		<value>$LOCALIZE[31866]</value>
+	</variable>
+
 	<!-- Estuary's image-pack picker actions for an Appearance button: run script.image.resource.select for skin string
 	     <property> and resource type <type>, enabling or installing the script first when needed. -->
 	<include name="Bald_ImageResourceActions">
