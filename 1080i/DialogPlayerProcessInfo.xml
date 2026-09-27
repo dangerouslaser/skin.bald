@@ -44,7 +44,7 @@
 			<include content="Bald_ProcessDetail"><param name="label">$LOCALIZE[31606]</param><param name="value">$INFO[VideoPlayer.AudioBitrate,, kb/s]</param><param name="visible">!String.IsEmpty(VideoPlayer.AudioBitrate)</param></include>
 			<include content="Bald_ProcessDetail"><param name="label">$LOCALIZE[21447]</param><param name="value">$MAP[Bald_Language, VideoPlayer.AudioLanguage]</param><param name="visible">!String.IsEmpty(VideoPlayer.AudioLanguage)</param></include>
 			<include content="Bald_ProcessDetail"><param name="label">$LOCALIZE[31599]</param><param name="value">$INFO[Player.Process(audiodecoder)]</param><param name="visible">!String.IsEmpty(Player.Process(audiodecoder))</param></include>
-			<include content="Bald_ProcessDetail"><param name="label">$LOCALIZE[31605]</param><param name="value">$INFO[Player.Process(audiochannels)]</param><param name="visible">!String.IsEmpty(Player.Process(audiochannels))</param></include>
+			<include content="Bald_ProcessDetail"><param name="label">$LOCALIZE[31995]</param><param name="value">$INFO[Player.Process(audiochannels)]</param><param name="visible">!String.IsEmpty(Player.Process(audiochannels))</param></include>
 			<include content="Bald_ProcessDetail"><param name="label">$LOCALIZE[460]</param><param name="value">$INFO[Player.Process(audiobitspersample),, bit]$INFO[Player.Process(audiosamplerate), · , Hz]</param><param name="visible">!String.IsEmpty(Player.Process(audiobitspersample))</param></include>
 		</include>
 

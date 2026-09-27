@@ -2615,6 +2615,11 @@ msgctxt "#31994"
 msgid "CPU temperature"
 msgstr "CPU-Temperatur"
 
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31995"
+msgid "Speaker layout"
+msgstr "Lautsprecherbelegung"
+
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 #~ msgstr "Keine Favoriten gefunden. Es kann jeder beliebige Eintrag aus den Medienansichten via Kontextmenü zu den Favoriten hinzugefügt werden."

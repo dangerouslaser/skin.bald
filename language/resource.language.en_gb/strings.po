@@ -2889,3 +2889,9 @@ msgstr ""
 msgctxt "#31994"
 msgid "CPU temperature"
 msgstr ""
+
+#. Player process info, Audio column: the decoder's speaker list (FL, FR, FC, LFE...), under the channel count
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31995"
+msgid "Speaker layout"
+msgstr ""
