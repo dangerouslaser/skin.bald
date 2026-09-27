@@ -393,6 +393,8 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		posters; genre background, weather background and weather icon packs
 9611-9615	Information: media flags, row item count, titles in list views, profile name and
 		temperature in page headers
+9616-9620	Information, spoiler protection (Includes_Bald_Spoilers.xml): 9616 hide spoilers for unwatched
+		items, 9617 blur episode thumbnails, 9618 hide episode plots, 9619 hide movie plots, 9620 Live TV
 9621-9628	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
 		scroll long plots, recommended Kodi settings; 9627 open TV shows on their info page (Bald Helper
 		enabled), 9628 the same row while Bald Helper is missing or disabled (installs or enables it)
