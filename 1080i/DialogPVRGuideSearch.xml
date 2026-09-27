@@ -203,6 +203,7 @@
 				</control>
 			</control>
 			<control type="grouplist" id="9000">
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<top>80</top>
 				<left>1460</left>
 				<onup>9000</onup>

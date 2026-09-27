@@ -203,11 +203,11 @@
 
 	<!-- Episode card: 320 x 180 in a 344 px slot, drawn 12 px in so the 1.05 pop (280 POP) and ring are not
 	     clipped. Home's landscape tile with the episode still; number and title over a bottom scrim, a watched check,
-	     and a progress bar while in progress. Cards sit at 78% while the row is unfocused; with focus the others
-	     drop to 60% (focus_fade) and the focused card is full. -->
+	     and a progress bar while in progress. Cards sit at 78% while the row is unfocused; with focus every card is
+	     full (focus_fade 100): the ring and the pop mark the focused one. -->
 	<include name="Bald_InfoTVEpisodeCard">
 		<param name="ring">false</param>
-		<param name="focus_fade">60</param>
+		<param name="focus_fade">100</param>
 		<definition>
 			<control type="group">
 				<animation type="Conditional" condition="!$EXP[Bald_InfoTVEpisodesFocused]">

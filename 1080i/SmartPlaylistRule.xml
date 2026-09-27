@@ -59,6 +59,7 @@
 				</control>
 			</control>
 			<control type="grouplist" id="9000">
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<orientation>horizontal</orientation>
 				<left>0</left>
 				<top>410</top>
