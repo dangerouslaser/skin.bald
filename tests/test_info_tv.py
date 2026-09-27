@@ -113,11 +113,13 @@ class InfoTvTests(unittest.TestCase):
         slot = int(seasons.find("itemlayout").get("width"))
         self.assertTrue(all(int(w) < slot for w in widths))
         self.assertEqual(self.tv.find("include[@name='Bald_InfoTVUnderline']//texture").get("colordiffuse"), "bald_accent")
-        # One underline per typeface: Instrument Sans unless DM Sans is the selected fontset.
+        # One underline per typeface: DM Sans (Default) unless Instrument Sans or Arial is the selected fontset.
         images = self.tv.findall("include[@name='Bald_InfoTVUnderline']/definition/control")
         self.assertEqual([(i.findtext("width"), i.findtext("visible")) for i in images],
-                         [("$PARAM[w]", "$PARAM[visible] + !String.IsEqual(Skin.Font,DMSans)"),
-                          ("$PARAM[w_dm]", "$PARAM[visible] + String.IsEqual(Skin.Font,DMSans)")])
+                         [("$PARAM[w]", "$PARAM[visible] + $EXP[Bald_FontNotDMSans]"),
+                          ("$PARAM[w_dm]", "$PARAM[visible] + !$EXP[Bald_FontNotDMSans]")])
+        self.assertEqual(self.tv.findtext("expression[@name='Bald_FontNotDMSans']"),
+                         "[String.IsEqual(Skin.Font,InstrumentSans) | String.IsEqual(Skin.Font,Arial)]")
 
     def test_episode_row_follows_the_focused_season(self):
         row = self.control("5302")

@@ -173,6 +173,8 @@
 		</definition>
 	</include>
 	<!-- Kodi reads <width> once, so each typeface gets its own image; Skin.Font is the selected Font.xml fontset. -->
+	<!-- DM Sans is the Default fontset (Font.xml); Instrument Sans and Arial use the other widths. -->
+	<expression name="Bald_FontNotDMSans">[String.IsEqual(Skin.Font,InstrumentSans) | String.IsEqual(Skin.Font,Arial)]</expression>
 	<include name="Bald_InfoTVUnderline">
 		<param name="w" />
 		<param name="w_dm" />
@@ -183,14 +185,14 @@
 				<width>$PARAM[w]</width>
 				<height>2</height>
 				<texture colordiffuse="bald_accent">bald/white.png</texture>
-				<visible>$PARAM[visible] + !String.IsEqual(Skin.Font,DMSans)</visible>
+				<visible>$PARAM[visible] + $EXP[Bald_FontNotDMSans]</visible>
 			</control>
 			<control type="image">
 				<top>36</top>
 				<width>$PARAM[w_dm]</width>
 				<height>2</height>
 				<texture colordiffuse="bald_accent">bald/white.png</texture>
-				<visible>$PARAM[visible] + String.IsEqual(Skin.Font,DMSans)</visible>
+				<visible>$PARAM[visible] + !$EXP[Bald_FontNotDMSans]</visible>
 			</control>
 		</definition>
 	</include>

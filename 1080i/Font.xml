@@ -1,304 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fonts>
-	<!-- Instrument Sans. The id stays "Default", lookandfeel.font's default value in Kodi, so a fresh install and a
-	     skin switch land here; the label comes from idloc. -->
-	<fontset id="Default" idloc="31940">
-        <font>
-            <name>font23_narrow</name>
-            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
-            <size>21</size>
-        </font>
-        <font>
-            <name>font32</name>
-            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
-            <size>32</size>
-        </font>
-		<!-- Normal Fonts -->
-		<font>
-			<name>font10</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>23</size>
-		</font>
-		<font>
-			<name>font12</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>25</size>
-		</font>
-		<font>
-			<name>font13</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>30</size>
-		</font>
-		<font>
-			<name>font14</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>33</size>
-		</font>
-		<font>
-			<name>font23_narrow</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>23</size>
-			<linespacing>0.8</linespacing>
-		</font>
-		<font>
-			<name>font25_narrow</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>25</size>
-			<linespacing>0.8</linespacing>
-		</font>
-		<font>
-			<name>font27</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>27</size>
-		</font>
-		<font>
-			<name>font27_narrow</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>27</size>
-			<linespacing>0.8</linespacing>
-		</font>
-		<font>
-			<name>font32</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>32</size>
-		</font>
-		<font>
-			<name>font37</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>37</size>
-		</font>
-		<font>
-			<name>font45</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>45</size>
-		</font>
-		<font>
-			<name>font60</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>60</size>
-		</font>
-		<font>
-			<name>font_clock</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>70</size>
-		</font>
-		<!-- Title Fonts -->
-		<font>
-			<name>font_flag</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>18</size>
-		</font>
-		<font>
-			<name>font20_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>20</size>
-		</font>
-		<font>
-			<name>font25_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>25</size>
-		</font>
-		<font>
-			<name>font30_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>30</size>
-		</font>
-		<font>
-			<name>font32_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>32</size>
-		</font>
-		<font>
-			<name>font36_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>36</size>
-		</font>
-		<font>
-			<name>font40_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>40</size>
-		</font>
-		<font>
-			<name>font45_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>45</size>
-		</font>
-		<font>
-			<name>font52_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>52</size>
-		</font>
-		<font>
-			<name>font_MainMenu</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>60</size>
-		</font>
-		<font>
-			<name>WeatherTemp</name>
-			<aspect>0.85</aspect>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>120</size>
-		</font>
-		<font>
-			<name>Mono26</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>26</size>
-		</font>
-		<!-- Bald type scale (docs/SPEC.md section 3) -->
-		<!-- Clock (spec 300; lightest static face is 400) -->
-		<font>
-			<name>Bald_Clock</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>132</size>
-		</font>
-		<!-- Date -->
-		<font>
-			<name>Bald_Date</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>22</size>
-		</font>
-		<!-- Caption title, line height 44 (prototype 1.1) -->
-		<font>
-			<name>Bald_CaptionTitle</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>40</size>
-			<linespacing>0.92</linespacing>
-		</font>
-		<!-- Caption meta -->
-		<font>
-			<name>Bald_CaptionMeta</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>20</size>
-		</font>
-		<!-- Accent line -->
-		<font>
-			<name>Bald_Accent</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>18</size>
-		</font>
-		<!-- Caption plot, line height 30 (natural line is ~24 px) -->
-		<font>
-			<name>Bald_CaptionPlot</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>20</size>
-			<linespacing>1.25</linespacing>
-		</font>
-		<!-- Media flag -->
-		<font>
-			<name>Bald_Flag</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>14</size>
-		</font>
-		<!-- Menu item -->
-		<font>
-			<name>Bald_MenuItem</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>46</size>
-		</font>
-		<!-- Menu note, line height 28 -->
-		<font>
-			<name>Bald_MenuNote</name>
-			<filename>InstrumentSans-Medium.ttf</filename>
-			<size>19</size>
-			<linespacing>1.23</linespacing>
-		</font>
-		<!-- Section line, action button, section heading -->
-		<font>
-			<name>Bald_Section</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>22</size>
-		</font>
-		<!-- Kodi's generated keyboard symbol layers require broader Unicode coverage than Instrument Sans. -->
-		<font>
-			<name>Bald_KeyboardKey</name>
-			<filename>NotoSans-Regular.ttf</filename>
-			<size>45</size>
-		</font>
-		<!-- Section hint, row count -->
-		<font>
-			<name>Bald_Hint</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>17</size>
-		</font>
-		<!-- Row label -->
-		<font>
-			<name>Bald_RowLabel</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>20</size>
-		</font>
-		<!-- Info title fallback -->
-		<font>
-			<name>Bald_InfoTitle</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>76</size>
-		</font>
-		<!-- Info meta -->
-		<font>
-			<name>Bald_InfoMeta</name>
-			<filename>InstrumentSans-Medium.ttf</filename>
-			<size>24</size>
-		</font>
-		<!-- Info tagline -->
-		<font>
-			<name>Bald_InfoTagline</name>
-			<filename>InstrumentSans-Medium.ttf</filename>
-			<size>30</size>
-		</font>
-		<!-- Info plot, line height 34 (natural line is ~26.4 px) -->
-		<font>
-			<name>Bald_InfoPlot</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>22</size>
-			<linespacing>1.29</linespacing>
-		</font>
-		<!-- Info genres -->
-		<font>
-			<name>Bald_InfoGenre</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>20</size>
-		</font>
-		<!-- Info media flag -->
-		<font>
-			<name>Bald_FlagL</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>16</size>
-		</font>
-		<!-- Cast name -->
-		<font>
-			<name>Bald_CastName</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>18</size>
-		</font>
-		<!-- Cast role -->
-		<font>
-			<name>Bald_CastRole</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>16</size>
-		</font>
-		<!-- Details label -->
-		<font>
-			<name>Bald_DetailLabel</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>17</size>
-		</font>
-		<!-- Details value -->
-		<font>
-			<name>Bald_DetailValue</name>
-			<filename>InstrumentSans-Medium.ttf</filename>
-			<size>21</size>
-		</font>
-		<!-- Info progress -->
-		<font>
-			<name>Bald_Progress</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>18</size>
-		</font>
-	</fontset>
-	<!-- DM Sans: the Default fontset with each Instrument Sans weight swapped for the same DM Sans weight (static
-	     opsz 14 cuts). Names and sizes stay identical to Default. DM Sans' natural line is taller (1.302 em against
+	<!-- DM Sans, the default typeface: its id is "Default", lookandfeel.font's default value in Kodi, so a fresh install
+	     and a skin switch land here (an earlier "DMSans" choice, no longer an id, falls back here too); the label comes
+	     from idloc. It is the Instrument Sans set with each weight swapped for the same DM Sans weight (static opsz 14
+	     cuts). Names and sizes stay identical to InstrumentSans. DM Sans' natural line is taller (1.302 em against
 	     1.22), so every font drawn on several lines (textboxes, wrapped labels) has its own linespacing here that
 	     brings Kodi's pixel line height back to Instrument Sans' within 0.5 px (tests/test_fonts.py). -->
-	<fontset id="DMSans" idloc="31941">
+	<fontset id="Default" idloc="31941">
         <font>
             <name>font23_narrow</name>
             <filename>special://xbmc/media/Fonts/arial.ttf</filename>
@@ -601,6 +309,300 @@
 		<font>
 			<name>Bald_Progress</name>
 			<filename>DMSans-Regular.ttf</filename>
+			<size>18</size>
+		</font>
+	</fontset>
+	<!-- Instrument Sans (Appearance > Typography). The reference set: DM Sans (Default) differs from it only in files
+	     and linespacing (tests/test_fonts.py). -->
+	<fontset id="InstrumentSans" idloc="31940">
+        <font>
+            <name>font23_narrow</name>
+            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
+            <size>21</size>
+        </font>
+        <font>
+            <name>font32</name>
+            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
+            <size>32</size>
+        </font>
+		<!-- Normal Fonts -->
+		<font>
+			<name>font10</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>23</size>
+		</font>
+		<font>
+			<name>font12</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>25</size>
+		</font>
+		<font>
+			<name>font13</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>30</size>
+		</font>
+		<font>
+			<name>font14</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>33</size>
+		</font>
+		<font>
+			<name>font23_narrow</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>23</size>
+			<linespacing>0.8</linespacing>
+		</font>
+		<font>
+			<name>font25_narrow</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>25</size>
+			<linespacing>0.8</linespacing>
+		</font>
+		<font>
+			<name>font27</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>27</size>
+		</font>
+		<font>
+			<name>font27_narrow</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>27</size>
+			<linespacing>0.8</linespacing>
+		</font>
+		<font>
+			<name>font32</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>32</size>
+		</font>
+		<font>
+			<name>font37</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>37</size>
+		</font>
+		<font>
+			<name>font45</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>45</size>
+		</font>
+		<font>
+			<name>font60</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>60</size>
+		</font>
+		<font>
+			<name>font_clock</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>70</size>
+		</font>
+		<!-- Title Fonts -->
+		<font>
+			<name>font_flag</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>18</size>
+		</font>
+		<font>
+			<name>font20_title</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>20</size>
+		</font>
+		<font>
+			<name>font25_title</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>25</size>
+		</font>
+		<font>
+			<name>font30_title</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>30</size>
+		</font>
+		<font>
+			<name>font32_title</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>32</size>
+		</font>
+		<font>
+			<name>font36_title</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>36</size>
+		</font>
+		<font>
+			<name>font40_title</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>40</size>
+		</font>
+		<font>
+			<name>font45_title</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>45</size>
+		</font>
+		<font>
+			<name>font52_title</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>52</size>
+		</font>
+		<font>
+			<name>font_MainMenu</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>60</size>
+		</font>
+		<font>
+			<name>WeatherTemp</name>
+			<aspect>0.85</aspect>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>120</size>
+		</font>
+		<font>
+			<name>Mono26</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>26</size>
+		</font>
+		<!-- Bald type scale (docs/SPEC.md section 3) -->
+		<!-- Clock (spec 300; lightest static face is 400) -->
+		<font>
+			<name>Bald_Clock</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>132</size>
+		</font>
+		<!-- Date -->
+		<font>
+			<name>Bald_Date</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>22</size>
+		</font>
+		<!-- Caption title, line height 44 (prototype 1.1) -->
+		<font>
+			<name>Bald_CaptionTitle</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>40</size>
+			<linespacing>0.92</linespacing>
+		</font>
+		<!-- Caption meta -->
+		<font>
+			<name>Bald_CaptionMeta</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>20</size>
+		</font>
+		<!-- Accent line -->
+		<font>
+			<name>Bald_Accent</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>18</size>
+		</font>
+		<!-- Caption plot, line height 30 (natural line is ~24 px) -->
+		<font>
+			<name>Bald_CaptionPlot</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>20</size>
+			<linespacing>1.25</linespacing>
+		</font>
+		<!-- Media flag -->
+		<font>
+			<name>Bald_Flag</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>14</size>
+		</font>
+		<!-- Menu item -->
+		<font>
+			<name>Bald_MenuItem</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>46</size>
+		</font>
+		<!-- Menu note, line height 28 -->
+		<font>
+			<name>Bald_MenuNote</name>
+			<filename>InstrumentSans-Medium.ttf</filename>
+			<size>19</size>
+			<linespacing>1.23</linespacing>
+		</font>
+		<!-- Section line, action button, section heading -->
+		<font>
+			<name>Bald_Section</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>22</size>
+		</font>
+		<!-- Kodi's generated keyboard symbol layers require broader Unicode coverage than Instrument Sans. -->
+		<font>
+			<name>Bald_KeyboardKey</name>
+			<filename>NotoSans-Regular.ttf</filename>
+			<size>45</size>
+		</font>
+		<!-- Section hint, row count -->
+		<font>
+			<name>Bald_Hint</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>17</size>
+		</font>
+		<!-- Row label -->
+		<font>
+			<name>Bald_RowLabel</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>20</size>
+		</font>
+		<!-- Info title fallback -->
+		<font>
+			<name>Bald_InfoTitle</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>76</size>
+		</font>
+		<!-- Info meta -->
+		<font>
+			<name>Bald_InfoMeta</name>
+			<filename>InstrumentSans-Medium.ttf</filename>
+			<size>24</size>
+		</font>
+		<!-- Info tagline -->
+		<font>
+			<name>Bald_InfoTagline</name>
+			<filename>InstrumentSans-Medium.ttf</filename>
+			<size>30</size>
+		</font>
+		<!-- Info plot, line height 34 (natural line is ~26.4 px) -->
+		<font>
+			<name>Bald_InfoPlot</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>22</size>
+			<linespacing>1.29</linespacing>
+		</font>
+		<!-- Info genres -->
+		<font>
+			<name>Bald_InfoGenre</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>20</size>
+		</font>
+		<!-- Info media flag -->
+		<font>
+			<name>Bald_FlagL</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>16</size>
+		</font>
+		<!-- Cast name -->
+		<font>
+			<name>Bald_CastName</name>
+			<filename>InstrumentSans-SemiBold.ttf</filename>
+			<size>18</size>
+		</font>
+		<!-- Cast role -->
+		<font>
+			<name>Bald_CastRole</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>16</size>
+		</font>
+		<!-- Details label -->
+		<font>
+			<name>Bald_DetailLabel</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
+			<size>17</size>
+		</font>
+		<!-- Details value -->
+		<font>
+			<name>Bald_DetailValue</name>
+			<filename>InstrumentSans-Medium.ttf</filename>
+			<size>21</size>
+		</font>
+		<!-- Info progress -->
+		<font>
+			<name>Bald_Progress</name>
+			<filename>InstrumentSans-Regular.ttf</filename>
 			<size>18</size>
 		</font>
 	</fontset>
