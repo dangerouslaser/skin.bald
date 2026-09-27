@@ -241,5 +241,16 @@ class EstuaryParityTests(unittest.TestCase):
                 self.assertLessEqual(wanted, ids)
 
 
+class SetPlotTests(unittest.TestCase):
+    def test_a_set_shows_its_plot_else_its_movies(self):
+        # As Estuary: the plot shows unless the item is a set without one, which lists its movies instead.
+        root = ET.parse(SKIN / "Includes_Bald_Browse.xml").getroot()
+        plot = next(c for c in root.iter("control") if c.get("type") == "textbox" and c.findtext("label") == "$VAR[Bald_BrowsePlot]")
+        self.assertTrue(equivalent(plot.findtext("visible"),
+                                   "Integer.Is$PARAM[p](Container.CurrentItem) + ![ListItem.IsCollection + String.IsEmpty(ListItem.Plot)]"))
+        movies = next(c for c in root.iter("control") if c.findtext("visible") == "ListItem.IsCollection + String.IsEmpty(ListItem.Plot)")
+        self.assertIsNotNone(movies.find("include[@content='InfoList']"))
+
+
 if __name__ == "__main__":
     unittest.main()
