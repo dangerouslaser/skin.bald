@@ -78,7 +78,7 @@
 			</itemlayout>
 			<focusedlayout height="62">
 				<control type="group">
-					<animation type="Conditional" condition="[!Control.HasFocus($PARAM[id])] + !$EXP[Bald_VideoBackdropOn]">
+					<animation type="Conditional" condition="!Control.HasFocus($PARAM[id])">
 						<effect type="fade" start="100" end="55" time="240" tween="sine" easing="inout" />
 					</animation>
 					<control type="image">
@@ -543,7 +543,7 @@
 		<param name="focused">false</param>
 		<definition>
 			<control type="group">
-				<animation type="Conditional" condition="[$PARAM[focused] + !Control.HasFocus(2)] + !$EXP[Bald_VideoBackdropOn]">
+				<animation type="Conditional" condition="$PARAM[focused] + !Control.HasFocus(2)">
 					<effect type="fade" start="100" end="55" time="240" tween="sine" easing="inout" />
 				</animation>
 				<control type="image">

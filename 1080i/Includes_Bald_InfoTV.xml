@@ -129,7 +129,7 @@
 			<width>1920</width>
 			<height>1080</height>
 			<texture colordiffuse="bald_field60">bald/white.png</texture>
-			<animation effect="fade" start="70" end="70" time="0" condition="[true] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
+			<animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
 
@@ -211,7 +211,7 @@
 		<param name="focus_fade">100</param>
 		<definition>
 			<control type="group">
-				<animation type="Conditional" condition="[!$EXP[Bald_InfoTVEpisodesFocused]] + !$EXP[Bald_VideoBackdropOn]">
+				<animation type="Conditional" condition="!$EXP[Bald_InfoTVEpisodesFocused]">
 					<effect type="fade" start="100" end="78" time="300" tween="sine" easing="inout" />
 				</animation>
 				<animation type="Conditional" condition="$EXP[Bald_InfoTVEpisodesFocused]">
