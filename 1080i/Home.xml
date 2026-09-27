@@ -13,6 +13,9 @@
 	     hubs list. Startup does not run on a live skin update or ReloadSkin, so Home must be able to start it too. -->
 	<!-- Startup does not run on a skin switch or ReloadSkin, so Home also turns mouse input off. -->
 	<onload condition="System.GetBool(input.enablemouse)">RunScript(skin.bald,mouse)</onload>
+	<!-- DM Sans became the Default fontset (docs/NOTES.md): an earlier choice saved as "DMSans" still works (Kodi falls
+	     back to Default) but logs a warning each load, so it is moved to Default once; Kodi then reloads the skin. -->
+	<onload condition="String.IsEqual(Skin.Font,DMSans)">RunScript(skin.bald,font,Default)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">SetProperty(Bald.HubsMigrating,1,home)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">RunScript(skin.bald,hubs)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
