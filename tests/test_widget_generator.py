@@ -1,5 +1,4 @@
 import fnmatch
-import importlib.util
 import json
 import re
 import unittest
@@ -9,19 +8,13 @@ from pathlib import Path
 from conditions import equivalent, find_value, implies, parse
 from home_screens import SCREENS as HOME_SCREENS, rows as shipped_rows
 from kodi_includes import _expand_in_place, include_definitions
+from support import load_builder
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SHORTCUTS = ROOT / "shortcuts"
 FALLBACK = ROOT / "1080i" / "Includes_Bald_HomeDefaults.xml"
 SCREENS = tuple((screen, title, base) for screen, title, base, _ in HOME_SCREENS)
-
-
-def load_builder():
-    spec = importlib.util.spec_from_file_location("build_home_defaults", ROOT / "tools" / "build_home_defaults.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def defaults(screen):

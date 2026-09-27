@@ -148,15 +148,24 @@ def atoms(text, bodies=None):
 
 class _Bdd:
     """A reduced ordered binary decision diagram, variables ordered by atom text. Two conditions mean the same when
-    they reduce to the same node, and this stays small for the or-of-rows shapes the skin's conditions have."""
+    they reduce to the same node, and this stays small for the or-of-rows shapes the skin's conditions have.
+
+    The terminals are False and True; every other node is an integer id (from 2, so never equal to a bool) into
+    `nodes`, which holds its (atom, low, high). Memo keys are then small tuples of ints, cheap to hash."""
 
     def __init__(self):
+        self.nodes = [None, None]  # ids 0 and 1 stay unused: False == 0 and True == 1
         self.unique, self.memo = {}, {}
 
     def node(self, name, low, high):
         if low == high:
             return low
-        return self.unique.setdefault((name, low, high), (name, low, high))
+        key = (name, low, high)
+        found = self.unique.get(key)
+        if found is None:
+            found = self.unique[key] = len(self.nodes)
+            self.nodes.append(key)
+        return found
 
     def build(self, tree):
         if isinstance(tree, bool):
@@ -176,7 +185,7 @@ class _Bdd:
             return not node
         key = ("not", node)
         if key not in self.memo:
-            name, low, high = node
+            name, low, high = self.nodes[node]
             self.memo[key] = self.node(name, self.negate(low), self.negate(high))
         return self.memo[key]
 
@@ -186,38 +195,67 @@ class _Bdd:
             return other if constant == (kind == "and") else constant
         if a == b:
             return a
-        key = (kind, a, b)
+        key = (kind, a, b) if a < b else (kind, b, a)  # and/or are symmetric
         if key not in self.memo:
-            name = min(a[0], b[0])
-            a_low, a_high = (a[1], a[2]) if a[0] == name else (a, a)
-            b_low, b_high = (b[1], b[2]) if b[0] == name else (b, b)
+            a_name, a_low, a_high = self.nodes[a]
+            b_name, b_low, b_high = self.nodes[b]
+            name = min(a_name, b_name)
+            if a_name != name:
+                a_low = a_high = a
+            if b_name != name:
+                b_low = b_high = b
             self.memo[key] = self.node(name, self.apply(kind, a_low, b_low), self.apply(kind, a_high, b_high))
         return self.memo[key]
 
     def restrict(self, node, name, value):
         if isinstance(node, bool):
             return node
-        if node[0] == name:
-            return node[2] if value else node[1]
-        return self.node(node[0], self.restrict(node[1], name, value), self.restrict(node[2], name, value))
+        key = ("restrict", node, name, value)
+        if key not in self.memo:
+            node_name, low, high = self.nodes[node]
+            if node_name == name:
+                self.memo[key] = high if value else low
+            else:
+                self.memo[key] = self.node(node_name, self.restrict(low, name, value),
+                                           self.restrict(high, name, value))
+        return self.memo[key]
 
 
-def _tree(condition, bodies):
-    return condition if isinstance(condition, (tuple, bool)) else parse(condition, bodies)
+_SHARED = []          # one diagram for every check, so a condition used again is not rebuilt
+_SHARED_LIMIT = 2_000_000  # nodes and memo entries; a fresh diagram past this
+
+
+def _diagram():
+    if not _SHARED or len(_SHARED[0][0].nodes) + len(_SHARED[0][0].memo) > _SHARED_LIMIT:
+        _SHARED[:] = [(_Bdd(), {})]
+    return _SHARED[0]
+
+
+def _node(diagram, condition, bodies):
+    """The condition's node in the diagram (conditions with the skin's own expressions are built once)."""
+    bdd, built = diagram
+    if isinstance(condition, (tuple, bool)):
+        return bdd.build(condition)
+    if bodies is not None:
+        return bdd.build(parse(condition, bodies))
+    if condition not in built:
+        built[condition] = bdd.build(parse(condition))
+    return built[condition]
 
 
 def implies(a, b, bodies=None, assume=None):
     """Whenever `a` holds, `b` holds. `assume` fixes atoms first ({"$PARAM[preview]": False})."""
-    bdd = _Bdd()
-    both = bdd.apply("and", bdd.build(_tree(a, bodies)), bdd.negate(bdd.build(_tree(b, bodies))))
+    diagram = _diagram()
+    bdd = diagram[0]
+    both = bdd.apply("and", _node(diagram, a, bodies), bdd.negate(_node(diagram, b, bodies)))
     for name, value in (assume or {}).items():
         both = bdd.restrict(both, re.sub(r"\s+", "", name), value)
     return both is False
 
 
 def equivalent(a, b, bodies=None):
-    bdd = _Bdd()
-    return bdd.build(_tree(a, bodies)) == bdd.build(_tree(b, bodies))
+    diagram = _diagram()
+    return _node(diagram, a, bodies) == _node(diagram, b, bodies)
 
 
 def all_of(conditions):

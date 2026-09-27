@@ -1,19 +1,16 @@
 from pathlib import Path
 import http.client
-import importlib.util
 import types
 import unittest
 import xml.etree.ElementTree as ET
 from unittest import mock
 
-from support import service
+from support import load_file, service
 
 
 MODULE = Path(__file__).resolve().parents[1] / "addons/script.bald.xcsetup/resources/lib/config.py"
 SETUP = MODULE.parents[2] / "default.py"
-SPEC = importlib.util.spec_from_file_location("bald_xc_config", MODULE)
-config = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(config)
+config = load_file("bald_xc_config", MODULE)
 
 
 class XCSetupTests(unittest.TestCase):

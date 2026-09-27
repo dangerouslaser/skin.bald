@@ -1,6 +1,5 @@
 """Startup splash: Home holds a splash over itself until every configured row has loaded (docs/NOTES.md)."""
 
-import importlib.util
 import json
 import unittest
 import xml.etree.ElementTree as ET
@@ -9,6 +8,7 @@ from pathlib import Path
 from conditions import atoms, equivalent, implies, parse, same_actions
 from home_screens import SCREENS as HOME_SCREENS, row_ids
 from skin_strings import english
+from support import load_builder
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,13 +19,6 @@ PRELOADING = "!String.IsEmpty(Window(home).Property(Bald.Preload))"
 
 def configured(screen, base):
     return row_ids(screen)
-
-
-def load_builder():
-    spec = importlib.util.spec_from_file_location("build_home_defaults", ROOT / "tools" / "build_home_defaults.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def loading_terms(text):

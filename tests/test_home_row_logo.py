@@ -1,7 +1,6 @@
 """Per-row clearlogo on the Home art frame: the row field "logo" (empty or on shows it, off hides it), the generator's
 frame-logo branches, the fallback and the widget editor's Clearlogo on artwork choice."""
 
-import importlib.util
 import re
 import unittest
 import xml.etree.ElementTree as ET
@@ -11,19 +10,13 @@ from home_screens import SCREENS as HOME_SCREENS, rows as shipped_rows
 from conditions import implies
 from kodi_includes import Skin
 from skin_strings import bald_strings
+from support import load_builder
 
 
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
 FALLBACK = XML / "Includes_Bald_HomeDefaults.xml"
 SCREENS = tuple((screen, title) for screen, title, _, _ in HOME_SCREENS)
-
-
-def load_builder():
-    spec = importlib.util.spec_from_file_location("build_home_defaults", ROOT / "tools" / "build_home_defaults.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def build(rows_by_menu):
