@@ -222,12 +222,13 @@ class Cache:
             return {"day": day, "requests": 0, "limit": None, "blocked_until": 0.0, "reason": None}
         return {"day": day, "requests": row[0], "limit": row[1], "blocked_until": row[2], "reason": row[3]}
 
-    def count_request(self, now: float, limit=None) -> None:
+    def count_request(self, now: float, limit=None, requests: int = 1) -> None:
+        """Count `requests` more (-1 gives one back), and note the account's daily limit when known."""
         day = utc_day(now)
         with self.lock:
             self.db.execute("INSERT OR IGNORE INTO quota (day, requests) VALUES (?, 0)", (day,))
-            self.db.execute("UPDATE quota SET requests = requests + 1, daily_limit = COALESCE(?, daily_limit)"
-                            " WHERE day = ?", (limit, day))
+            self.db.execute("UPDATE quota SET requests = MAX(0, requests + ?), daily_limit = COALESCE(?, daily_limit)"
+                            " WHERE day = ?", (requests, limit, day))
 
     def block(self, now: float, until: float, reason: str) -> None:
         day = utc_day(now)
@@ -248,6 +249,10 @@ class Response:
         self.status = status
         self.data = data
         self.headers = {k.lower(): v for k, v in (headers or {}).items()}
+
+    def error(self) -> str:
+        """The answer's `error` text ("" when there is none)."""
+        return str(self.data.get("error") or "") if isinstance(self.data, dict) else ""
 
     def header_number(self, name: str):
         try:
@@ -275,6 +280,14 @@ def http_get(url: str, timeout: float = TIMEOUT) -> Response:
     except (UnicodeDecodeError, ValueError):
         data = None
     return Response(status, data, headers)
+
+
+def key_rejected(response: Response) -> bool:
+    """Whether MDbList refused the API key: a 401, or an error that says the key is invalid (MDbList answers
+    "Invalid API key!" with 401, 403 or even 200). Any other 403 can come from a proxy or firewall on the way and says
+    nothing about the key."""
+    text = response.error().lower()
+    return response.status == 401 or ("invalid" in text and "key" in text)
 
 
 def redact(text: str, key: str) -> str:
@@ -338,7 +351,7 @@ class Ratings:
         self.fetch = fetch
         self.clock = clock
         self.log = log or (lambda text, error=False: None)
-        self.lock = threading.Lock()   # one request at a time
+        self.lock = threading.Lock()   # the quota check and count (never held across a request)
         self.network_until = 0.0       # in-memory back-off after a network failure
         self.rejected_key = None       # a fingerprint of a key MDbList refused (never the key itself)
 
@@ -383,54 +396,63 @@ class Ratings:
         key = self.key_source()
         if not self.key_usable(key):
             return None, "nokey"
-        with self.lock:
-            for path in ref.lookups():
-                if cancelled():
-                    return None, "cancelled"
-                now = self.clock()
-                found, values = self.cache.get(path, now)
-                if found:
-                    if values is not None:
-                        return values, "cache"
-                    continue  # known missing under this id: try the next id
-                if not self.allowed(now):
-                    return None, "quota"
-                values, how = self.request(path, key, now)
-                if how == "missing":
-                    continue
-                return values, how
+        for path in ref.lookups():
+            if cancelled():
+                return None, "cancelled"
+            now = self.clock()
+            found, values = self.cache.get(path, now)
+            if found:
+                if values is not None:
+                    return values, "cache"
+                continue  # known missing under this id: try the next id
+            if not self.reserve(now):
+                return None, "quota"
+            values, how = self.request(path, key, now)
+            if how == "missing":
+                continue
+            return values, how
         return None, "missing"
 
+    def reserve(self, now: float) -> bool:
+        """Whether a request may be made now; if so it is counted at once, so that lookups on other threads see it
+        (request() gives it back when MDbList never answers)."""
+        with self.lock:
+            if not self.allowed(now):
+                return False
+            self.cache.count_request(now)
+            return True
+
     def request(self, path: str, key: str, now: float):
+        """One lookup, already counted by reserve()."""
         url = f"{API}/{path}?{urllib.parse.urlencode({'apikey': key})}"
         response = self.fetch(url)
         if response.status == 0:
+            self.cache.count_request(now, requests=-1)  # nothing reached MDbList
             self.network_until = now + RETRY_AFTER
             self.log(f"{path}: no answer from MDbList; retrying in {RETRY_AFTER} s", error=True)
             return None, "error"
         limit = response.header_number("X-RateLimit-Limit")
-        self.cache.count_request(now, int(limit) if limit else None)
+        if limit:
+            self.cache.count_request(now, int(limit), requests=0)
+        error = response.error()
         if response.status == 200 and isinstance(response.data, dict):
             remaining = response.header_number("X-RateLimit-Remaining")
             if remaining is not None and remaining <= 0:
                 reset = response.header_number("X-RateLimit-Reset") or next_utc_midnight(now)
                 self.cache.block(now, reset, "daily")
                 self.log("MDbList daily limit reached: stopping until it resets", error=True)
-            if response.data.get("error"):  # an error answered with 200
-                self.log(f"{path}: {redact(str(response.data.get('error'))[:200], key)}", error=True)
-                return None, "error"
-            values = bald_values(response.data)
-            self.cache.put(path, values, now + ttl_for(response.data, now))
-            return values, "api"
-        if response.status == 404:
-            self.cache.put(path, None, now + TTL_MISSING)
-            return None, "missing"
-        if response.status in (401, 403):
+            if not error:
+                values = bald_values(response.data)
+                self.cache.put(path, values, now + ttl_for(response.data, now))
+                return values, "api"
+        if key_rejected(response):
             self.rejected_key = self.fingerprint(key)
             self.log("MDbList rejected the API key; online ratings stop until the key changes", error=True)
             return None, "nokey"
+        if response.status == 404:
+            self.cache.put(path, None, now + TTL_MISSING)
+            return None, "missing"
         if response.status == 429:
-            error = str((response.data or {}).get("error", "")) if isinstance(response.data, dict) else ""
             retry = response.header_number("Retry-After") or RETRY_AFTER
             if DAILY_EXCEEDED.lower() in error.lower():
                 until = response.header_number("X-RateLimit-Reset") or max(now + retry, next_utc_midnight(now))
@@ -440,8 +462,10 @@ class Ratings:
                 self.cache.block(now, now + retry, "rate")
                 self.log(f"MDbList rate limit: waiting {int(retry)} s", error=True)
             return None, "quota"
+        # Anything else, an error answered with 200 or a 403 from something in between included: back off.
         self.network_until = now + RETRY_AFTER
-        self.log(f"{path}: MDbList answered {response.status}", error=True)
+        detail = f": {redact(error[:200], key)}" if error else ""
+        self.log(f"{path}: MDbList answered {response.status}{detail}; retrying in {RETRY_AFTER} s", error=True)
         return None, "error"
 
     def key_changed(self) -> None:
@@ -459,9 +483,9 @@ def check_key(key: str, fetch=http_get) -> tuple[str, dict]:
     response = fetch(f"{API}/user?{urllib.parse.urlencode({'apikey': key.strip()})}")
     if response.status == 0:
         return "unreachable", {}
-    if response.status in (401, 403):
+    if key_rejected(response):
         return "rejected", {}
-    if response.status == 200 and isinstance(response.data, dict) and not response.data.get("error"):
+    if response.status == 200 and isinstance(response.data, dict) and not response.error():
         data = response.data
         limit = data.get("rate_limit") or data.get("api_requests") or response.header_number("X-RateLimit-Limit")
         remaining = data.get("rate_limit_remaining")
@@ -470,6 +494,4 @@ def check_key(key: str, fetch=http_get) -> tuple[str, dict]:
         return "ok", {"username": str(data.get("username") or ""),
                       "limit": int(limit) if limit else None,
                       "remaining": int(remaining) if remaining is not None else None}
-    if isinstance(response.data, dict) and "invalid" in str(response.data.get("error", "")).lower():
-        return "rejected", {}
     return "error", {"status": response.status}
