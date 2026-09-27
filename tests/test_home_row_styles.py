@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
 FALLBACK = XML / "Includes_Bald_HomeDefaults.xml"
 LANDSCAPE = ("fanart", "thumbnail", "logo")
-STYLES = LANDSCAPE + ("poster",)
+STYLES = LANDSCAPE + ("poster", "text")
 SCREENS = tuple((screen, title) for screen, title, _, _ in HOME_SCREENS)
 
 
