@@ -8,7 +8,9 @@ PO = Path(__file__).resolve().parents[1] / "language" / "resource.language.en_gb
 BALD_RANGE = range(31700, 32000)
 # Bald strings placed in the gap Estuary left (31178-31596): Home hubs and ratings (Includes_Bald_Ratings.xml).
 RATINGS_RANGE = range(31300, 31400)
-BALD_EXTRA_RANGES = (range(31200, 31300), RATINGS_RANGE)
+# Music (Includes_Bald_Music.xml and the music windows).
+MUSIC_RANGE = range(31400, 31500)
+BALD_EXTRA_RANGES = (range(31200, 31300), RATINGS_RANGE, MUSIC_RANGE)
 
 
 def is_bald(num):

@@ -25,6 +25,7 @@
 	<include file="Includes_Bald_Overlays.xml" />
 	<include file="Includes_Bald_Browse.xml" />
 	<include file="Includes_Bald_Media.xml" />
+	<include file="Includes_Bald_Music.xml" />
 	<include file="Includes_Animations.xml" />
 	<include file="Includes_Games.xml" />
 	<include file="Includes_MediaMenu.xml" />
@@ -44,6 +45,7 @@
 	<include file="View_515_Bald_PosterLow.xml" />
 	<include file="View_520_Bald_TV.xml" />
 	<include file="View_521_Bald_TV_Alternates.xml" />
+	<include file="View_550_Bald_Music.xml" />
 	<include file="View_51_Poster.xml" />
 	<include file="View_52_IconWall.xml" />
 	<include file="View_53_Shift.xml" />

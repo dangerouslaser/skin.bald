@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 XML = Path(__file__).resolve().parents[1] / "1080i"
-WINDOWS = ["Home.xml", "MyVideoNav.xml", "MyPVRGuide.xml", "Settings.xml", "SettingsCategory.xml", "SettingsProfile.xml",
+WINDOWS = ["Home.xml", "MyVideoNav.xml", "MyMusicNav.xml", "MyPVRGuide.xml", "Settings.xml", "SettingsCategory.xml", "SettingsProfile.xml",
            "SettingsSystemInfo.xml", "Custom_1115_BaldSettings.xml", "Custom_1116_BaldHomeWidgets.xml",
            "Custom_1117_BaldHomeScreens.xml", "Custom_1118_BaldAppearance.xml", "Custom_1119_BaldPlayback.xml"]
 

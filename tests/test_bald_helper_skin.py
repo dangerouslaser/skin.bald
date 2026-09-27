@@ -135,7 +135,17 @@ class FollowTests(unittest.TestCase):
                 if (call.get("content") or "").startswith("Bald_FollowContainer"):
                     params = {p.get("name"): p.text for p in call.findall("param")}
                     found.setdefault(params["window"], set()).add(params["id"])
-        self.assertEqual(set(found), {"home", "videos", "movieinformation"})
+        # The letter bar names its library window through a param (videos by default, music in MyMusicNav).
+        found.pop("$PARAM[window]", None)
+        self.assertEqual(set(found), {"home", "videos", "movieinformation", "music", "visualisation"})
+        # The music views follow through Bald_MusicViewNav, which each view calls with its own id.
+        self.assertEqual(found["music"], {"$PARAM[id]"})
+        views = ET.parse(XML / "View_550_Bald_Music.xml").getroot()
+        for view_id in ("550", "551", "552"):
+            control = views.find(f".//control[@id='{view_id}']")
+            call = control.find("include[@content='Bald_MusicViewNav']")
+            self.assertEqual(call.findtext("param[@name='id']"), view_id)
+        self.assertEqual(found["visualisation"], {"5500"})
         self.assertEqual(found["movieinformation"], {"5100"})
         self.assertLessEqual({"9101", "$PARAM[id]"}, found["home"])
         self.assertLessEqual({"510", "511", "512", "513", "514", "515", "520", "530", "540", "521", "522", "523",

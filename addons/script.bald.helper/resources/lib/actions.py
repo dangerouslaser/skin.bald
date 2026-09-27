@@ -21,7 +21,7 @@ otherwise it keeps RunScript.
 
 One worker runs the requests. The latest wins: a request that has not started yet is replaced by a newer one, and a
 running one is told through its `cancelled` check, which ends its waits early. Letter scans are cached per view,
-folder, size and sort, and the cache is dropped whenever the video library changes.
+folder, size and sort, and the cache is dropped whenever the video or music library changes.
 
 Nothing here imports xbmc at module level, so the tests drive it with stand-ins.
 """
@@ -55,6 +55,8 @@ WAKE_SECONDS = 0.05
 LIBRARY_CHANGES = frozenset((
     "VideoLibrary.OnUpdate", "VideoLibrary.OnRemove", "VideoLibrary.OnScanFinished",
     "VideoLibrary.OnCleanFinished",
+    "AudioLibrary.OnUpdate", "AudioLibrary.OnRemove", "AudioLibrary.OnScanFinished",
+    "AudioLibrary.OnCleanFinished",
 ))
 LETTER_CACHE_SIZE = 64
 

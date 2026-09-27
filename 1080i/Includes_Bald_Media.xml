@@ -349,22 +349,6 @@
 		</definition>
 	</include>
 	<!-- ============ Music ============ -->
-	<!-- Now playing lines (MusicVisualisation.xml). Album, with the disc on multi-disc releases. -->
-	<variable name="Bald_MusicAlbumLine">
-		<value condition="MusicPlayer.IsMultiDisc">$INFO[MusicPlayer.Album]$INFO[MusicPlayer.DiscNumber, · $LOCALIZE[427] ,]$INFO[MusicPlayer.DiscTitle, · ,]</value>
-		<value>$INFO[MusicPlayer.Album]</value>
-	</variable>
-	<!-- "1997 · Rock · 8/10": year, genre and the user's rating, whichever are set. -->
-	<variable name="Bald_MusicMetaLine">
-		<value condition="!String.IsEmpty(MusicPlayer.Year)">$INFO[MusicPlayer.Year]$INFO[MusicPlayer.Genre, · ,]$INFO[MusicPlayer.UserRating, · ,/10]</value>
-		<value condition="!String.IsEmpty(MusicPlayer.Genre)">$INFO[MusicPlayer.Genre]$INFO[MusicPlayer.UserRating, · ,/10]</value>
-		<value>$INFO[MusicPlayer.UserRating,,/10]</value>
-	</variable>
-	<!-- "Next: Title · Artist" while the playlist has more than one song. -->
-	<variable name="Bald_MusicNextLine">
-		<value condition="Integer.IsGreater(Playlist.Length(music),1)">$INFO[MusicPlayer.offset(1).Title,$LOCALIZE[19031]: ,]$INFO[MusicPlayer.offset(1).Artist, · ,]</value>
-		<value></value>
-	</variable>
 	<!-- Music information (DialogMusicInfo.xml). -->
 	<variable name="Bald_MusicInfoTitle">
 		<value condition="String.IsEqual(ListItem.DBType,song)">$INFO[ListItem.Title]</value>
@@ -400,7 +384,14 @@
 				<left>20</left><width>44</width><height>59</height>
 				<aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor>
 				<label>$INFO[ListItem.TrackNumber]</label>
-				<visible>Container.Content(songs)</visible>
+				<visible>Container.Content(songs) + !Integer.IsGreater(ListItem.TotalDiscs,1)</visible>
+			</control>
+			<!-- Multi-disc albums: "2-05". -->
+			<control type="label">
+				<left>8</left><width>64</width><height>59</height>
+				<aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor>
+				<label>$INFO[ListItem.DiscNumber,,-]$INFO[ListItem.TrackNumber]</label>
+				<visible>Container.Content(songs) + Integer.IsGreater(ListItem.TotalDiscs,1)</visible>
 			</control>
 			<control type="image">
 				<left>20</left><top>8</top><width>43</width><height>43</height>
@@ -418,6 +409,23 @@
 				<align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor>
 				<label>$INFO[ListItem.Label2]</label>
 			</control>
+		</definition>
+	</include>
+	<!-- An album of an artist's discography in list 50 (200 x 236): the square cover (168 px, centre-cropped, the
+	     placeholder under a missing one), the title and the year; focused, the tile ring and pop. -->
+	<include name="Bald_MusicInfoCover">
+		<param name="ink">bald_ink70</param>
+		<param name="diffuse">bald_ink70</param>
+		<param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<animation type="Focus"><effect type="zoom" start="100" end="104" center="100,92" time="280" tween="back" easing="out" /></animation>
+				<control type="image"><left>16</left><top>8</top><width>168</width><height>168</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+				<control type="image"><left>16</left><top>8</top><width>168</width><height>168</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$INFO[ListItem.Art(thumb)]</texture></control>
+				<control type="image"><left>13</left><top>5</top><width>174</width><height>174</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
+			</control>
+			<control type="label"><left>16</left><top>184</top><width>168</width><height>26</height><font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><label>$INFO[ListItem.Label]</label></control>
+			<control type="label"><left>16</left><top>210</top><width>168</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.Label2]</label></control>
 		</definition>
 	</include>
 	<!-- ============ Games ============ -->

@@ -95,7 +95,8 @@ class TVLibraryTests(unittest.TestCase):
             self.assertIn(str(control_id), registered)
 
     def test_alternate_view_cycles_stay_within_each_tv_level(self):
-        options = ET.parse(ROOT / 'View_510_Bald_Posters.xml').getroot().find("include[@name='Bald_LibraryOptions']")
+        options = ET.Element('holder')
+        options.extend(expand_call('Bald_LibraryOptions'))
         transitions = {}
         for item in options.findall('.//content/item'):
             visible = item.findtext('visible')

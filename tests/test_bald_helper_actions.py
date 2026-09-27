@@ -201,7 +201,8 @@ class DispatchTests(Case):
 class LetterCacheTests(Case):
     def test_library_changes_drop_the_cache(self):
         for method in ("VideoLibrary.OnUpdate", "VideoLibrary.OnRemove", "VideoLibrary.OnScanFinished",
-                       "VideoLibrary.OnCleanFinished"):
+                       "VideoLibrary.OnCleanFinished", "AudioLibrary.OnUpdate", "AudioLibrary.OnRemove",
+                       "AudioLibrary.OnScanFinished", "AudioLibrary.OnCleanFinished"):
             with self.subTest(method=method):
                 self.dispatcher.letters.put(("key",), ";A;")
                 self.dispatcher.notify("xbmc", method, "{}")
@@ -211,7 +212,7 @@ class LetterCacheTests(Case):
     def test_other_notifications_keep_it(self):
         self.dispatcher.letters.put(("key",), ";A;")
         self.dispatcher.notify("xbmc", "Player.OnStop", "{}")
-        self.dispatcher.notify("xbmc", "AudioLibrary.OnUpdate", "{}")
+        self.dispatcher.notify("xbmc", "AudioLibrary.OnExport", "{}")
         self.assertEqual(self.dispatcher.letters.get(("key",)), ";A;")
 
     def test_least_recently_used_goes_first(self):

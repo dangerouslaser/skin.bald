@@ -2,6 +2,8 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from kodi_includes import expand_call
+
 import home_menu
 from conditions import equivalent, implies, same_actions
 from kodi_includes import parse
@@ -22,8 +24,9 @@ class SearchUITests(unittest.TestCase):
         ]), actions)
 
     def test_library_search_launches_global_search_scoped_to_content(self):
-        root = ET.parse(ROOT / 'View_510_Bald_Posters.xml').getroot()
-        menu = root.find("include[@name='Bald_LibraryOptions']//control[@id='9150']/content")
+        root = ET.Element('holder')
+        root.extend(expand_call('Bald_LibraryOptions'))
+        menu = root.find(".//control[@id='9150']/content")
         searches = [item for item in menu.findall('item')
                     if any(node.text.startswith('RunScript(script.globalsearch') for node in item.findall('onclick'))]
         self.assertTrue(all(item.findtext('label') == '$LOCALIZE[137]' for item in searches))  # Kodi's "Search"

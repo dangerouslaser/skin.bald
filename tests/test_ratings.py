@@ -690,8 +690,9 @@ class RatingsTests(unittest.TestCase):
                 self.assertTrue(num in RATINGS_RANGE or not 31000 <= num <= 31999, num)
                 if num in RATINGS_RANGE:
                     self.assertIn(num, texts)
-        # Home hubs share Estuary's unused gap (31200-31299); every other string there is a ratings string.
-        ours = [num for num in texts if 31178 <= num <= 31596 and not 31200 <= num < 31300]
+        # Home hubs (31200-31299) and music (31400-31499) share Estuary's unused gap; every other string there is a
+        # ratings string.
+        ours = [num for num in texts if 31178 <= num <= 31596 and not 31200 <= num < 31300 and not 31400 <= num < 31500]
         self.assertTrue(ours)
         self.assertTrue(all(num in RATINGS_RANGE for num in ours), ours)
 

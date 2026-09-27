@@ -182,6 +182,11 @@ Hundreds digit 5, tens digit is the content level, units digit the layout.
   540	Episodes (View_520_Bald_TV.xml)
   541	Episodes compact (View_521_Bald_TV_Alternates.xml)
   542	Episodes wall
+550-559	Music (MyMusicNav.xml <views>; View_550_Bald_Music.xml, Includes_Bald_Music.xml). One view serves
+		several content types: Kodi keeps a view per type (musicnavartists, musicnavalbums, musicnavsongs).
+  550	Covers, 5x2 panel of square covers with the preview column (artists, albums)
+  551	Compact list with the preview column (artists, albums, songs, genres, years, roles, sources)
+  552	Artwork list with the large fanart frame (artists, albums)
 500-599	scripts/letters.py accepts only this range from RunScript(skin.bald,letters,<id>) and Bald Helper's bald.letters|<id>.
 		Each letter-mode entry passes the id of the container it sits on.
 
@@ -190,6 +195,13 @@ TV guide chrome (MyPVRGuide.xml, Bald_EpgGrid and Bald_PVRGuideTools in Includes
 9000	Tools drawer grouplist (the window's menucontrol)
 9009-9016	Drawer buttons (Bald_PVRGuideToolButton, id param): 9009 Return to guide, 9010 Jump to now,
 		9011 Channel group, 9014 Choose date, 9015 Search, 9016 Exit Live TV; 9012-9013 unused
+
+Music library (MyMusicNav.xml; CGUIWindowMusicNav, CGUIWindowMusicBase and CGUIMediaWindow, checked against xbmc
+master = Kodi 22). Kodi binds: 2 view as, 3 sort by, 4 sort order, 5 type, 7 playlists, 8 search, 9 scan, 11 rip,
+12 item count, 15 filter label, 16 party mode, 17 manual info, 19 filter, 20 update library (Estuary ships 3, 4, 8,
+16, 19 in its menu; the Bald options send clicks to 3, 4, 8, 16 and 19). The library chrome below (9000, 9150,
+9151, 9160) is the same in MyMusicNav, with 9150's items from Bald_MusicOptionItems and 9160's letters read on
+the music window. Estuary menu ids kept: 203, 612, 619, 621, 622, 624.
 
 Library chrome (MyVideoNav.xml and View_510_Bald_Posters.xml, shared by all Bald views)
 9000	Estuary side panel grouplist (non-Bald content)
@@ -449,10 +461,11 @@ LoginScreen.xml		52 profiles, 2 heading and 3 selected-profile counter (both new
 		20 power button
 SlideShow.xml		10 hidden label whose font Kodi uses for its load-error message (new in Bald)
 DialogPictureInfo.xml		5 details list; 9000 group, 60 scrollbar
-MusicVisualisation.xml		2 visualisation
+MusicVisualisation.xml		2 visualisation; 5500 the playing item as a one-item list for Bald Helper to follow
+		(Bald_NowPlayingFollowList, Includes_Bald_Music.xml; Bald.FocusContainer on the visualisation window)
 DialogMusicInfo.xml		6 Refresh, 7 Your rating, 8 Play, 10 Choose art, 12 Artist / album information,
-		50 songs / albums / artists; 41 details list, 120 fanart, 130 description button,
-		400 description label, 9000 action row
+		50 songs / albums / artists; 13 play next (albums, QueueMedia), 41 details list, 120 fanart,
+		130 description button, 400 description label, 9000 action row
 GameOSD.xml		1103 menu (one per variant group), 1101 help text; 1, 10, 20, 1000, 1100, 2000 groups,
 		2200 / 2201 scrollbars
 DialogGameControllers.xml (Includes_Games.xml)

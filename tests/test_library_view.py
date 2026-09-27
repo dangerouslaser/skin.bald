@@ -106,7 +106,9 @@ class LibraryViewTests(unittest.TestCase):
                                 group.findtext("visible")))
 
     def test_options_have_five_rows_native_actions_and_return_routes(self):
-        menu = self.view.find(".//control[@id='9150']")
+        holder = ET.Element('holder')
+        holder.extend(expand_call('Bald_LibraryOptions'))
+        menu = holder.find(".//control[@id='9150']")
         self.assertEqual((menu.findtext('left'), menu.findtext('top'), menu.findtext('width')), ('1440', '392', '420'))
         self.assertEqual(int(menu.findtext('height')), 5 * int(menu.find('itemlayout').get('height')))
         self.assertEqual(menu.findtext('scrolltime'), '0')
@@ -133,9 +135,10 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(len(view_items), 16)
         self.assertTrue(all(item.findall('onclick')[1].text == 'SetFocus(9150)' for item in view_items))
         self.assertIsNotNone(self.view.find("include[@name='Bald_LibraryOptions']//include[@content='Bald_MenuNote']"))
-        self.assertEqual(menu.findtext('itemlayout/include'), 'Bald_MenuRowUnfocused')
-        self.assertEqual(menu.findtext('focusedlayout/include'), '')
-        focused = menu.find("focusedlayout/include[@content='Bald_MenuRowFocused']")
+        raw = self.view.find(".//control[@id='9150']")
+        self.assertEqual(raw.findtext('itemlayout/include'), 'Bald_MenuRowUnfocused')
+        self.assertEqual(raw.findtext('focusedlayout/include'), '')
+        focused = raw.find("focusedlayout/include[@content='Bald_MenuRowFocused']")
         self.assertEqual(focused.findtext("param[@name='always_dot']"), 'true')
         footer = next(node for node in self.view.find("include[@name='View_510_Bald_Posters']").iter('control')
                       if node.findtext('visible') and equivalent(node.findtext('visible'), '$EXP[Bald_LibraryMenuOpen]'))
@@ -161,7 +164,9 @@ class LibraryViewTests(unittest.TestCase):
             self.assertTrue(implies(f'Control.IsVisible({view})', '$EXP[Bald_LibraryMovieView]'), view)
 
     def test_letter_mode_uses_native_jumps_and_restores_its_focus(self):
-        mode = self.view.find(".//control[@id='9160']")
+        holder = ET.Element('holder')
+        holder.extend(expand_call('Bald_LibraryLetters'))
+        mode = holder.find(".//control[@id='9160']")
         for direction, action in [('onleft', 'PrevLetter'), ('onright', 'NextLetter')]:
             actions = mode.findall(direction)
             self.assertEqual([n.text for n in actions], ['SetFocus(50)', f'Action({action})', 'SetFocus(9160)'])
