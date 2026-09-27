@@ -2,6 +2,7 @@
 with xbmc, the Home window, JSON-RPC and the MDbList API replaced by stand-ins. No test makes a network request."""
 
 import importlib.util
+import io
 import json
 import os
 import sys
@@ -373,8 +374,9 @@ class HttpTests(unittest.TestCase):
                          (200, "Jaws", 5.0))
         request = opened.call_args[0][0]
         self.assertEqual(request.get_header("Accept"), "application/json")
-        error = urllib.error.HTTPError("https://x", 429, "Too Many", {"Retry-After": "30"}, None)
-        error.read = lambda: b'{"error": "API rate limit exceeded!"}'
+        error = urllib.error.HTTPError("https://x", 429, "Too Many", {"Retry-After": "30"},
+                                       io.BytesIO(b'{"error": "API rate limit exceeded!"}'))
+        self.addCleanup(error.close)
         with mock.patch.object(mdblist.urllib.request, "urlopen", side_effect=error):
             response = mdblist.http_get("https://api.mdblist.com/x")
         self.assertEqual((response.status, response.header_number("Retry-After")), (429, 30.0))
