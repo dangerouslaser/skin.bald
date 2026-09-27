@@ -639,6 +639,30 @@ class PlayerTests(Base):
         self.assertEqual(events, ["stop", "start", "stop", "stop", "stop"])
 
 
+class StartTests(unittest.TestCase):
+    def test_start_wires_the_follower_and_the_player(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        xbmc = FakeXbmc()
+        xbmc.Monitor = lambda: types.SimpleNamespace(abortRequested=lambda: False)
+        window = Window()
+        xbmcgui = types.SimpleNamespace(Window=lambda wid: window, getCurrentWindowId=lambda: 10000)
+        xbmcvfs = types.SimpleNamespace(translatePath=lambda path: os.path.join(directory.name, "data"))
+        addon = types.SimpleNamespace(getSettingString=lambda name: KEY if name == "mdblist_key" else "")
+        xbmcaddon = types.SimpleNamespace(Addon=lambda addon_id: addon)
+        follower, watcher = ratings.start(xbmc, xbmcgui, xbmcvfs, xbmcaddon)
+        try:
+            self.assertEqual(window.get("Bald.Helper.Ratings"), "1")
+            self.assertIs(watcher.follower, follower)
+            self.assertTrue(os.path.isfile(os.path.join(directory.name, "data", "ratings.db")))
+            self.assertEqual(follower.ratings.key_source(), KEY)
+        finally:
+            follower.stop()
+            follower.ratings.cache.close()
+        self.assertEqual(window.get("Bald.Helper.Ratings"), "")
+        self.assertFalse(any(KEY in message for _level, message in xbmc.logs))
+
+
 class CastPluginTests(unittest.TestCase):
     def setUp(self):
         self.xbmc = FakeXbmc()
