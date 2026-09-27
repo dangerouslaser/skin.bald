@@ -22,7 +22,8 @@ WINDOWS = (["VideoOSD.xml", "DialogSeekBar.xml", "VideoOSDBookmarks.xml", "Custo
             "Custom_1128_OSDDetails.xml"] + list(COMPANIONS) + UPNEXT)
 # The row's buttons in order: transport, then tools.
 ROW = ["602", "600", "607", "603", "804", "70045", "70047", "70043", "70060", "70061", "70063", "70062"]
-CHAIN = ["pvrchannelguide", "pvrosdchannels", "1125", "videobookmarks", "1126"]
+# The down chain in order; the one-channel guide left it (the channel list shows each channel's now and next).
+CHAIN = ["pvrosdchannels", "1125", "videobookmarks", "1126"]
 FOCUSABLE = {"button", "radiobutton", "togglebutton", "slider", "sliderex", "spincontrol", "spincontrolex", "edit",
              "list", "fixedlist", "wraplist", "panel", "grouplist"}
 TEXTURE_TAGS = {"texture", "texturefocus", "texturenofocus", "texturebg", "lefttexture", "midtexture", "righttexture",
@@ -239,7 +240,10 @@ class ChainTests(unittest.TestCase):
         return activations(holder)
 
     def test_chain_order_and_each_stage_skips_the_ones_before(self):
-        for stage in range(5):
+        # Stage 1 (after the channels) has no include: the channels are Live TV only, the rest never are.
+        self.assertNotIn("Bald_OSDChainFrom_1", self.definitions)
+        self.assertNotIn("Bald_OSDChainFrom_4", self.definitions)
+        for stage in (0, 2, 3):
             targets = [window for _, window in self.chain(stage)]
             with self.subTest(stage=stage):
                 self.assertEqual(targets, CHAIN[stage:])
@@ -248,7 +252,7 @@ class ChainTests(unittest.TestCase):
                     self.assertEqual(condition.count("!$EXP[Bald_OSDChain"), index)
 
     def test_every_stage_can_be_switched_off(self):
-        self.assertEqual(self.bodies["Bald_OSDChainGuide"], "[false]")  # the guide left the chain
+        self.assertNotIn("Bald_OSDChainGuide", self.bodies)  # the guide left the chain
         for name, setting in (("Channels", "NoChannelsPanel"),
                               ("Playlist", "NoPlaylistPanel"), ("Bookmarks", "NoBookmarksPanel"),
                               ("Cast", "NoCastPanel")):
@@ -261,13 +265,43 @@ class ChainTests(unittest.TestCase):
             with self.subTest(button=button):
                 self.assertEqual([w for _, w in activations(osd[button])], CHAIN)
         playlist = ids(resolve_window("Custom_1125_OSDPlaylist.xml"))["8150"]
-        self.assertEqual([w for _, w in activations(playlist)], CHAIN[3:])
+        self.assertEqual([w for _, w in activations(playlist)], CHAIN[2:])
         self.assertEqual(playlist.findtext("onup"), "Dialog.Close(1125)")
         bookmarks = ids(resolve_window("VideoOSDBookmarks.xml"))
-        self.assertEqual([w for _, w in activations(bookmarks["11"])], CHAIN[4:])
+        self.assertEqual([w for _, w in activations(bookmarks["11"])], CHAIN[3:])
         self.assertEqual(bookmarks["9001"].findtext("onup"), "Dialog.Close(videobookmarks)")
-        guide = ids(resolve_window("DialogPVRChannelGuide.xml"))["11"]
-        self.assertEqual([w for _, w in activations(guide)], ["pvrosdchannels"])
+
+    def test_guide_swaps_to_the_channels_over_full_screen_live_tv(self):
+        # The guide opens from the Guide key over full-screen video, the music OSD's radio button or a channel's
+        # context menu, never from the OSD: the swap keys on full-screen video, and the hint and the header's
+        # Channels tab follow the same condition.
+        self.assertTrue(equivalent(self.bodies["Bald_PVRGuideToChannels"],
+                                   "Window.IsActive(fullscreenvideo) + $EXP[Bald_OSDChainChannels]"))
+        guide_root = resolve_window("DialogPVRChannelGuide.xml")
+        guide = ids(guide_root)["11"]
+        for tag in ("onright", "ondown"):
+            with self.subTest(tag=tag):
+                self.assertEqual(activations(guide, tag), [("$EXP[Bald_PVRGuideToChannels]", "pvrosdchannels")])
+                wraps = [n.get("condition") for n in guide.findall(tag) if n.text == "11"]
+                self.assertEqual(wraps, ["!$EXP[Bald_PVRGuideToChannels]"])
+        text = ET.tostring(guide_root, encoding="unicode")
+        self.assertNotIn("Window.IsVisible(videoosd)", text)
+        self.assertIn("$VAR[Bald_PVRGuideHint]", text)
+        hint = ET.parse(SKIN / "Includes_Bald_PVR.xml").getroot().find("variable[@name='Bald_PVRGuideHint']")
+        self.assertEqual([(v.get("condition"), v.text) for v in hint.findall("value")],
+                         [("$EXP[Bald_PVRGuideToChannels]", "$LOCALIZE[31687]"), (None, "$LOCALIZE[31669]")])
+        # Header tabs: the guide shows Channels as the other tab only when it can swap; the channel list shows no
+        # Guide tab (it cannot reach the guide).
+        labels = {name: [(n.findtext("label"), n.findtext("visible")) for n in resolve_window(name).iter("control")
+                         if n.get("type") == "label" and n.findtext("font") == "Bald_CaptionTitle"]
+                  for name in ("DialogPVRChannelGuide.xml", "DialogPVRChannelsOSD.xml")}
+        self.assertIn(("$LOCALIZE[19019]", "!String.IsEqual(guide,channels) + $EXP[Bald_PVRGuideToChannels]"),
+                      labels["DialogPVRChannelGuide.xml"])
+        channels = labels["DialogPVRChannelsOSD.xml"]
+        self.assertEqual([label for label, visible in channels if visible == "String.IsEqual(channels,channels)"],
+                         ["$LOCALIZE[19019]"])
+        self.assertEqual([visible for label, visible in channels if label == "$LOCALIZE[19069]"],
+                         ["String.IsEqual(channels,guide)"])
 
     def test_chain_panels_stop_the_auto_close(self):
         # Browsed, not glanced at: the alarm waits while a chain panel is open and comes back when it closes (focus

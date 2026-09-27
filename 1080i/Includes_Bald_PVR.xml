@@ -15,6 +15,9 @@
 	     (Includes_Bald_Spoilers.xml). -->
 	<expression name="Bald_PVRHasArt">[[!String.IsEmpty(ListItem.EpgEventIcon) | !String.IsEmpty(ListItem.Art(thumb)) | !String.IsEmpty(ListItem.Art(fanart))] + !$EXP[Bald_SpoilerEpgArt] + !$EXP[Bald_SpoilerThumb]]</expression>
 	<expression name="Bald_PVRHasStatus">[ListItem.IsRecording | ListItem.HasTimer | ListItem.HasTimerSchedule | ListItem.HasArchive | ListItem.HasReminder]</expression>
+	<!-- The one-channel guide swaps to the channel list (Right, or Down past the end) only over Live TV in full screen,
+	     with the channel list allowed (Bald_OSDChainChannels); the hint and the header's Channels tab say so then. -->
+	<expression name="Bald_PVRGuideToChannels">[Window.IsActive(fullscreenvideo) + $EXP[Bald_OSDChainChannels]]</expression>
 
 	<!-- ============ Text ============ -->
 	<!-- The programme line under a channel or item: Estuary's PVRListItemSubLabel without its colour tags, joined with
@@ -47,6 +50,10 @@
 	<variable name="Bald_PVRPlayingArea">
 		<value condition="PVR.IsPlayingRadio">$LOCALIZE[19021]</value>
 		<value>$LOCALIZE[19020]</value>
+	</variable>
+	<variable name="Bald_PVRGuideHint">
+		<value condition="$EXP[Bald_PVRGuideToChannels]">$LOCALIZE[31687]</value>
+		<value>$LOCALIZE[31669]</value>
 	</variable>
 	<variable name="Bald_PVRTimersTitle">
 		<value condition="Window.IsActive(TVTimerRules) | Window.IsActive(RadioTimerRules)">$LOCALIZE[19138]</value>
@@ -135,9 +142,8 @@
 				<left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>780</width><height>52</height>
 				<orientation>horizontal</orientation><itemgap>36</itemgap><usecontrolcoords>true</usecontrolcoords>
 				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[19069]</label><visible>String.IsEqual($PARAM[active],guide)</visible></control>
-				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink28</textcolor><label>$LOCALIZE[19069]</label><visible>!String.IsEqual($PARAM[active],guide) + $EXP[Bald_OSDChainGuide]</visible></control>
 				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[19019]</label><visible>String.IsEqual($PARAM[active],channels)</visible></control>
-				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink28</textcolor><label>$LOCALIZE[19019]</label><visible>!String.IsEqual($PARAM[active],channels) + $EXP[Bald_OSDChainChannels]</visible></control>
+				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink28</textcolor><label>$LOCALIZE[19019]</label><visible>!String.IsEqual($PARAM[active],channels) + $EXP[Bald_PVRGuideToChannels]</visible></control>
 			</control>
 			<control type="label"><left>Bald_SafeLeft</left><top>174</top><width>780</width><height>28</height><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[section]</label></control>
 			<control type="label"><left>1000</left><top>120</top><width>824</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[System.Date] · $INFO[System.Time]</label></control>

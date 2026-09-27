@@ -24,7 +24,7 @@
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<preloaditems>2</preloaditems>
 				<onup>Dialog.Close(1125)</onup>
-				<include>Bald_OSDChainFrom_3</include>
+				<include>Bald_OSDChainFrom_2</include>
 				<content target="videos">$VAR[Bald_OSDPlaylistPath]</content>
 				<itemlayout width="344" height="264">
 					<include>Bald_OSDPanelTile</include>
@@ -47,7 +47,7 @@
 			</include>
 			<include content="Bald_OSDPanelHints">
 				<param name="first">$LOCALIZE[31662]</param>
-				<param name="second">$VAR[Bald_OSDHintAfter3]</param>
+				<param name="second">$VAR[Bald_OSDHintAfter2]</param>
 			</include>
 		</control>
 	</controls>

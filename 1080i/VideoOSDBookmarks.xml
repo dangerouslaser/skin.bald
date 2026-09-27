@@ -61,7 +61,7 @@
 				<width>1752</width>
 				<height>250</height>
 				<onup>9001</onup>
-				<include>Bald_OSDChainFrom_4</include>
+				<include>Bald_OSDChainFrom_3</include>
 				<preloaditems>2</preloaditems>
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<orientation>horizontal</orientation>
@@ -136,7 +136,7 @@
 			</control>
 			<include content="Bald_OSDPanelHints">
 				<param name="first">$LOCALIZE[31619]</param>
-				<param name="second">$VAR[Bald_OSDHintAfter4]</param>
+				<param name="second">$VAR[Bald_OSDHintAfter3]</param>
 			</include>
 		</control>
 	</controls>

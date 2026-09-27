@@ -75,43 +75,31 @@
 	<expression name="Bald_OSDAutoCloses">[!String.IsEmpty(Skin.String(Bald.OSD.AutoClose)) + !String.IsEqual(Skin.String(Bald.OSD.AutoClose),0)]</expression>
 
 	<!-- ============ Down chain ============
-	     Order: PVR guide, PVR channels, playlist or episodes (1125), bookmarks, cast (1126). A panel is in the chain
-	     when its setting allows it and it applies to what is playing. Bald_OSDChainFrom_<n> sends Down to the first
-	     panel after stage n (0 = the OSD buttons). -->
-	<!-- The one-channel guide is no longer in the chain: Down on Live TV opens the channel list, whose detail pane shows
-	     each channel's now and next (DialogPVRChannelsOSD.xml). The stage stays, off, so the chain keeps its order. -->
-	<expression name="Bald_OSDChainGuide">[false]</expression>
+	     Order: PVR channels, playlist or episodes (1125), bookmarks, cast (1126). A panel is in the chain when its
+	     setting allows it and it applies to what is playing. Bald_OSDChainFrom_<n> sends Down to the first panel after
+	     stage n: 0 = the OSD buttons, 2 = the playlist, 3 = the bookmarks. The channels are Live TV only and the
+	     playlist and bookmarks never are, so nothing continues from the channels (stage 1). The one-channel guide
+	     (pvrchannelguide) left the chain: the channel list's detail pane shows each channel's now and next, and the
+	     guide opens from the Guide key or the TV guide button instead. -->
 	<expression name="Bald_OSDChainChannels">[VideoPlayer.Content(livetv) + !Skin.HasSetting(Bald.OSD.NoChannelsPanel)]</expression>
 	<expression name="Bald_OSDChainPlaylist">[!VideoPlayer.Content(livetv) + [Integer.IsGreater(Playlist.Length(video),1) | [VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TvShowDBID) + !String.IsEmpty(VideoPlayer.Season)]] + !Skin.HasSetting(Bald.OSD.NoPlaylistPanel)]</expression>
 	<expression name="Bald_OSDChainBookmarks">[!VideoPlayer.Content(livetv) + !Skin.HasSetting(Bald.OSD.NoBookmarksPanel)]</expression>
 	<expression name="Bald_OSDChainCast">[[$EXP[Bald_OSDHasTMDbHelper] | $EXP[Bald_OSDHelperCast]] + [VideoPlayer.Content(movies) | VideoPlayer.Content(episodes)] + !Skin.HasSetting(Bald.OSD.NoCastPanel)]</expression>
 	<include name="Bald_OSDChainFrom_0">
-		<ondown condition="$EXP[Bald_OSDChainGuide]">ActivateWindow(pvrchannelguide)</ondown>
-		<ondown condition="!$EXP[Bald_OSDChainGuide] + $EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</ondown>
-		<ondown condition="!$EXP[Bald_OSDChainGuide] + !$EXP[Bald_OSDChainChannels] + $EXP[Bald_OSDChainPlaylist]">ActivateWindow(1125)</ondown>
-		<ondown condition="!$EXP[Bald_OSDChainGuide] + !$EXP[Bald_OSDChainChannels] + !$EXP[Bald_OSDChainPlaylist] + $EXP[Bald_OSDChainBookmarks]">ActivateWindow(videobookmarks)</ondown>
-		<ondown condition="!$EXP[Bald_OSDChainGuide] + !$EXP[Bald_OSDChainChannels] + !$EXP[Bald_OSDChainPlaylist] + !$EXP[Bald_OSDChainBookmarks] + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
-	</include>
-	<include name="Bald_OSDChainFrom_1">
 		<ondown condition="$EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</ondown>
 		<ondown condition="!$EXP[Bald_OSDChainChannels] + $EXP[Bald_OSDChainPlaylist]">ActivateWindow(1125)</ondown>
 		<ondown condition="!$EXP[Bald_OSDChainChannels] + !$EXP[Bald_OSDChainPlaylist] + $EXP[Bald_OSDChainBookmarks]">ActivateWindow(videobookmarks)</ondown>
 		<ondown condition="!$EXP[Bald_OSDChainChannels] + !$EXP[Bald_OSDChainPlaylist] + !$EXP[Bald_OSDChainBookmarks] + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
 	</include>
 	<include name="Bald_OSDChainFrom_2">
-		<ondown condition="$EXP[Bald_OSDChainPlaylist]">ActivateWindow(1125)</ondown>
-		<ondown condition="!$EXP[Bald_OSDChainPlaylist] + $EXP[Bald_OSDChainBookmarks]">ActivateWindow(videobookmarks)</ondown>
-		<ondown condition="!$EXP[Bald_OSDChainPlaylist] + !$EXP[Bald_OSDChainBookmarks] + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
-	</include>
-	<include name="Bald_OSDChainFrom_3">
 		<ondown condition="$EXP[Bald_OSDChainBookmarks]">ActivateWindow(videobookmarks)</ondown>
 		<ondown condition="!$EXP[Bald_OSDChainBookmarks] + $EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
 	</include>
-	<include name="Bald_OSDChainFrom_4">
+	<include name="Bald_OSDChainFrom_3">
 		<ondown condition="$EXP[Bald_OSDChainCast]">ActivateWindow(1126)</ondown>
 	</include>
 	<!-- There is somewhere to go Down to from the OSD buttons (for the hint). -->
-	<expression name="Bald_OSDHasChain">[$EXP[Bald_OSDChainGuide] | $EXP[Bald_OSDChainChannels] | $EXP[Bald_OSDChainPlaylist] | $EXP[Bald_OSDChainBookmarks] | $EXP[Bald_OSDChainCast]]</expression>
+	<expression name="Bald_OSDHasChain">[$EXP[Bald_OSDChainChannels] | $EXP[Bald_OSDChainPlaylist] | $EXP[Bald_OSDChainBookmarks] | $EXP[Bald_OSDChainCast]]</expression>
 
 	<!-- ============ Auto-close ============
 	     One mechanism (it replaces Estuary's autoclosevideoosd timer): each real OSD button arms the alarm
@@ -1374,11 +1362,11 @@
 		</definition>
 	</include>
 	<!-- A panel's second hint: "Down for more" while the chain goes on after it, else "Back to close". -->
-	<variable name="Bald_OSDHintAfter3">
+	<variable name="Bald_OSDHintAfter2">
 		<value condition="$EXP[Bald_OSDChainBookmarks] | $EXP[Bald_OSDChainCast]">$LOCALIZE[31627]</value>
 		<value>$LOCALIZE[31619]</value>
 	</variable>
-	<variable name="Bald_OSDHintAfter4">
+	<variable name="Bald_OSDHintAfter3">
 		<value condition="$EXP[Bald_OSDChainCast]">$LOCALIZE[31627]</value>
 		<value>$LOCALIZE[31619]</value>
 	</variable>
