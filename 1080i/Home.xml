@@ -236,11 +236,11 @@
 			</control>
 			<control type="grouplist" id="9000">
 				<left>Bald_RightColumn</left>
-				<top>392</top>
+				<top>395</top>
 				<width>420</width>
 				<height>310</height>
 				<orientation>vertical</orientation>
-				<itemgap>0</itemgap>
+				<itemgap>6</itemgap>
 				<scrolltime tween="cubic" easing="out">320</scrolltime>
 				<!-- The ends do not wrap (with no onup/ondown the grouplist would join the last entry to the first). -->
 				<onup>noop</onup>
