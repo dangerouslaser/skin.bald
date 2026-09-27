@@ -33,7 +33,7 @@
 		<control type="group">
 			<visible>!$EXP[infodialog_active]</visible>
 			<include>Bald_OSDAnimFade</include>
-			<include>Bald_PlaybackScrimTop</include>
+			<control type="group"><include>Bald_OSDShade</include><include>Bald_PlaybackScrimTop</include></control>
 			<include>Bald_PlaybackClock</include>
 		</control>
 		<!-- The lifting block: music title, status line, times and bar. The info overlay replaces it; the Live TV lists

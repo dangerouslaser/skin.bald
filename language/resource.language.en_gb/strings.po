@@ -1778,6 +1778,7 @@ msgstr ""
 
 #: /1080i/Custom_1116_BaldHomeWidgets.xml
 #: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Includes_Bald_OSD.xml
 msgctxt "#31725"
 msgid "Off"
 msgstr ""
@@ -2956,4 +2957,10 @@ msgstr ""
 #: /1080i/DialogPlayerProcessInfo.xml
 msgctxt "#31995"
 msgid "Speaker layout"
+msgstr ""
+
+#. Bald Settings, Playback, Controls: how dark the player's background gradients are (100 %, 75 %, 50 %, 25 %, off)
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31996"
+msgid "Background shading"
 msgstr ""

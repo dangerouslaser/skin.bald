@@ -2638,6 +2638,11 @@ msgctxt "#31995"
 msgid "Speaker layout"
 msgstr "Lautsprecherbelegung"
 
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31996"
+msgid "Background shading"
+msgstr "Hintergrundabdunklung"
+
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 #~ msgstr "Keine Favoriten gefunden. Es kann jeder beliebige Eintrag aus den Medienansichten via Kontextmenü zu den Favoriten hinzugefügt werden."

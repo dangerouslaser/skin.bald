@@ -272,10 +272,28 @@
 		</animation>
 	</include>
 
+	<!-- Background shading (Bald Settings, Playback, Controls: Bald.OSD.Shade 75, 50, 25 or 0; empty is 100): the
+	     player's field gradients and panel dim fade to that share, the clock, text and buttons over them do not.
+	     Instant Conditional fades on a wrapper group, so the layers' own fades still run inside it. -->
+	<include name="Bald_OSDShade">
+		<animation type="Conditional" condition="Skin.String(Bald.OSD.Shade,75)"><effect type="fade" start="100" end="75" time="0" tween="sine" easing="inout" /></animation>
+		<animation type="Conditional" condition="Skin.String(Bald.OSD.Shade,50)"><effect type="fade" start="100" end="50" time="0" tween="sine" easing="inout" /></animation>
+		<animation type="Conditional" condition="Skin.String(Bald.OSD.Shade,25)"><effect type="fade" start="100" end="25" time="0" tween="sine" easing="inout" /></animation>
+		<animation type="Conditional" condition="Skin.String(Bald.OSD.Shade,0)"><effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" /></animation>
+	</include>
+	<variable name="Bald_OSDShadeLabel">
+		<value condition="Skin.String(Bald.OSD.Shade,75)">75%</value>
+		<value condition="Skin.String(Bald.OSD.Shade,50)">50%</value>
+		<value condition="Skin.String(Bald.OSD.Shade,25)">25%</value>
+		<value condition="Skin.String(Bald.OSD.Shade,0)">$LOCALIZE[31725]</value>
+		<value>100%</value>
+	</variable>
 	<!-- ============ Seek layer (DialogSeekBar) ============ -->
 	<!-- Bottom gradients: short with the bar alone, tall with the buttons, a panel or the info overlay, and a field dim
 	     under a bottom panel. The scrim is the info dialog's scrim_info_b in field, stretched. -->
 	<include name="Bald_OSDScrims">
+		<control type="group">
+		<include>Bald_OSDShade</include>
 		<control type="group">
 			<visible>!$EXP[Bald_OSDPVRPanelUp]</visible>
 			<include>Bald_OSDAnimFade</include>
@@ -297,6 +315,7 @@
 			<texture colordiffuse="bald_field60">bald/white.png</texture>
 			<visible>$EXP[Bald_OSDPanelUp]</visible>
 			<include>Bald_OSDAnimFade</include>
+		</control>
 		</control>
 	</include>
 	<!-- The bar's fills, 1392 px from x 264 on a 4 px track (top 930; fills 2 px higher, see Bald_PlaybackTrackFill):
