@@ -445,6 +445,7 @@
 			<width>1</width><height>1</height><texturefocus /><texturenofocus />
 			<onfocus>SetProperty(Bald.ReturnMenu,9004,home)</onfocus>
 			<onfocus>ActivateWindow(TVGuide)</onfocus>
+			<include content="Bald_BridgeReturn"><param name="menu">9004</param></include>
 		</control>
 		<!-- Startup splash: the top layer while Bald.Preload is set; fades out 600 as it lifts. -->
 		<include>Bald_Splash</include>

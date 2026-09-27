@@ -151,6 +151,15 @@ class HubSlotTests(unittest.TestCase):
         bridge = includes.find("include[@name='Bald_HubBridge']/definition/control")
         self.assertEqual(bridge.get("id"), "902$PARAM[n]")
         self.assertEqual(bridge.find("include").get("content"), "Bald_HubOpen_hub$PARAM[n]")
+        # A target that leaves Home active hands focus back to the entry: after the target, and on any key.
+        back = bridge.findall("include")[-1]
+        self.assertEqual((back.get("content"), back.findtext("param[@name='menu']")), ("Bald_BridgeReturn", "901$PARAM[n]"))
+        home = ET.parse(XML / "Home.xml").getroot()
+        live = home.find(".//control[@id='9029']/include[@content='Bald_BridgeReturn']")
+        self.assertEqual(live.findtext("param[@name='menu']"), "9004")
+        ret = includes.find("include[@name='Bald_BridgeReturn']/definition")
+        self.assertEqual([(n.tag, n.text) for n in ret],
+                         [(tag, "SetFocus($PARAM[menu])") for tag in ("onfocus", "onup", "ondown", "onleft", "onright", "onback")])
 
 
 class LiveTVRowTests(unittest.TestCase):

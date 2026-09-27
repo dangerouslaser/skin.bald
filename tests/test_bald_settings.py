@@ -178,7 +178,7 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertTrue(same_actions(home_menu.live(home_menu.actions(livetv, "onleft"), off), [("true", "Action(Select)")], off))
         self.assertTrue(same_actions(home_menu.live(home_menu.actions(livetv, "onright"), off), [("true", "9029")], off))
         self.assertEqual([n.text for n in home_menu.control(9029).findall("onfocus")],
-                         ["SetProperty(Bald.ReturnMenu,9004,home)", "ActivateWindow(TVGuide)"])
+                         ["SetProperty(Bald.ReturnMenu,9004,home)", "ActivateWindow(TVGuide)", "SetFocus(9004)"])
         live_rows = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().findtext(
             "expression[@name='Bald_LiveTVRows']")
         self.assertTrue(equivalent(live_rows, "System.HasPVRAddon + $EXP[Bald_HasRows_livetv]"))
@@ -327,10 +327,11 @@ class BaldSettingsTests(unittest.TestCase):
                          "ActivateWindow(videos,videodb://movies/titles/,return)")
         self.assertEqual(fallback.findtext("include[@name='Bald_HubOpen_hub2']/definition/onfocus"),
                          "ActivateWindow(videos,videodb://tvshows/titles/,return)")
-        # The bridge remembers its menu entry for the return to Home (Bald_ReturnToMenu), then opens the target.
+        # The bridge remembers its menu entry for the return to Home (Bald_ReturnToMenu), opens the target, then hands
+        # focus back to the entry (a target that leaves Home active would otherwise strand it on the bridge).
         self.assertEqual([n.text for n in home_menu.control(9021).findall("onfocus")],
                          ["SetProperty(Bald.ReturnMenu,9011,home)", "SetProperty(Bald.HubTitle,$ESCVAR[Bald_HubLabel_hub1],home)",
-                          "ActivateWindow(videos,videodb://movies/titles/,return)"])
+                          "ActivateWindow(videos,videodb://movies/titles/,return)", "SetFocus(9011)"])
         self.assertIsNone(fallback.find("include[@name='Bald_HubOpen_hub3']/definition/onfocus"))
         suffix = fallback.find("variable[@name='Bald_HubSuffix_hub1']/value")
         self.assertEqual((suffix.get("condition"), suffix.text), ("$EXP[Bald_HubHasOpen_hub1]", "  ›"))

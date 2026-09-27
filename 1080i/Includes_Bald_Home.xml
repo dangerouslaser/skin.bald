@@ -1596,10 +1596,26 @@
 			<control type="button" id="902$PARAM[n]">
 				<width>1</width><height>1</height><texturefocus /><texturenofocus />
 				<onfocus>SetProperty(Bald.ReturnMenu,901$PARAM[n],home)</onfocus>
-				<!-- The library heading shows the hub's name for the folder it opens (Bald_LibraryHeading). -->
+				<!-- The library heading shows the hub's name for the folder it opens (Bald_LibraryMoviesHeading). -->
 				<onfocus>SetProperty(Bald.HubTitle,$ESCVAR[Bald_HubLabel_hub$PARAM[n]],home)</onfocus>
 				<include content="Bald_HubOpen_hub$PARAM[n]" />
+				<include content="Bald_BridgeReturn"><param name="menu">901$PARAM[n]</param></include>
 			</control>
+		</definition>
+	</include>
+	<!-- A bridge hands focus back to its menu entry: after its target (a window that opened has the focus by then,
+	     so this does nothing there), and on any key. A target that leaves Home active (RunScript, RunPlugin,
+	     RunAddon, PlayMedia, a failed ActivateWindow) would otherwise leave focus on the invisible bridge until the
+	     idle timer. -->
+	<include name="Bald_BridgeReturn">
+		<param name="menu" />
+		<definition>
+			<onfocus>SetFocus($PARAM[menu])</onfocus>
+			<onup>SetFocus($PARAM[menu])</onup>
+			<ondown>SetFocus($PARAM[menu])</ondown>
+			<onleft>SetFocus($PARAM[menu])</onleft>
+			<onright>SetFocus($PARAM[menu])</onright>
+			<onback>SetFocus($PARAM[menu])</onback>
 		</definition>
 	</include>
 	<!-- Live TV's entry, with its own rows (Home Screens, Live TV), like a hub: Select (and Left) enters the rows while
