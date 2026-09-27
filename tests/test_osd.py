@@ -274,8 +274,8 @@ class HelperGuardTests(unittest.TestCase):
                                    "!Skin.HasSetting(Bald.OSD.NoCastPanel) + $EXP[Bald_OSDCastProvider]"))
 
     def test_cast_path_uses_bald_helper_for_library_items(self):
-        """Library items with Bald Helper: its plugin for cast (and for crew without TMDb Helper); TMDb Helper for
-        everything else, as before."""
+        """Library items with Bald Helper: its plugin for cast and crew, whether or not TMDb Helper is installed; TMDb
+        Helper for everything else, as before."""
         variable = ET.parse(SKIN / "Includes_Bald_OSD.xml").getroot().find("variable[@name='Bald_OSDCastPath']")
         values = [(v.get("condition"), v.text) for v in variable.findall("value")]
 
@@ -290,7 +290,7 @@ class HelperGuardTests(unittest.TestCase):
                 (True, False, False, f"plugin://script.bald.helper/?info=cast&dbtype={dbtype}&dbid=$INFO[VideoPlayer.DBID]"),
                 (True, True, False, f"plugin://script.bald.helper/?info=cast&dbtype={dbtype}&dbid=$INFO[VideoPlayer.DBID]"),
                 (True, False, True, f"plugin://script.bald.helper/?info=crew&dbtype={dbtype}&dbid=$INFO[VideoPlayer.DBID]"),
-                (True, True, True, "plugin://plugin.video.themoviedb.helper/?info=crew"),
+                (True, True, True, f"plugin://script.bald.helper/?info=crew&dbtype={dbtype}&dbid=$INFO[VideoPlayer.DBID]"),
                 (False, True, False, "plugin://plugin.video.themoviedb.helper/?info=cast"),
             ):
                 assume = {"System.HasAddon(script.bald.helper)": helper, "System.AddonIsEnabled(script.bald.helper)": helper,
