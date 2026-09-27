@@ -7,7 +7,7 @@
         <onstart>SetFocus(5100)</onstart>
         <stop>!Control.HasFocus(5150) | !Window.IsActive(movieinformation)</stop>
     </timer>
-    <!-- Video OSD auto-close (Includes_Bald_OSD.xml, Bald_OSDAutoCloseArm): the OSD buttons run the alarm
+    <!-- Video and music OSD auto-close (Includes_Bald_OSD.xml, Bald_OSDAutoCloseArm): the OSD buttons run the alarm
          bald_osd_close, which only sets Bald.OSD.Close on Home; this closes the companion panels and the OSD. Replaces
          Estuary's autoclosevideoosd timer and its OSDAutoClose settings (migrated in Startup.xml). -->
     <timer>
@@ -20,6 +20,7 @@
         <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1123,true)</onstart>
         <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1124,true)</onstart>
         <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(videoosd)</onstart>
+        <onstart condition="Window.IsVisible(musicosd)">Dialog.Close(musicosd)</onstart>
         <stop>String.IsEmpty(Window(home).Property(Bald.OSD.Close))</stop>
     </timer>
     <!-- Video OSD playlist panel (1125): once its row has loaded, move it to what plays next. Playlist.Position is

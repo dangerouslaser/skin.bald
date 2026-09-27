@@ -132,12 +132,15 @@ class PlaybackContractTests(unittest.TestCase):
                     parent = parents.get(old)
                     hoisted = parent is not None and parent.get("id") in HOISTED_GROUPS
                     for tag in ACTION_TAGS:
+                        # The OSD button body arms and cancels the auto-close alarm (Bald_OSDAutoCloseArm) on
+                        # focus and click; those are Bald's own, around Estuary's actions.
+                        mine = [(c, a) for c, a in _actions(new, tag) if "bald_osd_close" not in a]
                         if hoisted and tag == "selected":
                             # Estuary's wrapper showed state through a variable image; Bald's toggle shows it with
                             # static radio textures chosen by <selected>.
                             continue
-                        self.assertTrue(same_actions(_actions(new, tag), _actions(old, tag), bodies),
-                                        f"{tag}: {_actions(new, tag)} != {_actions(old, tag)}")
+                        self.assertTrue(same_actions(mine, _actions(old, tag), bodies),
+                                        f"{tag}: {mine} != {_actions(old, tag)}")
                     old_visible = [v.text for v in old.findall("visible")]
                     if hoisted:
                         old_visible += [v.text for v in parent.findall("visible")]
@@ -226,8 +229,21 @@ class PlaybackStyleTests(unittest.TestCase):
                 for color in estuary_colors:
                     self.assertNotRegex(text, rf'[>"]{color}[<"]|COLOR {color}\]')
 
+    def test_music_osd_buttons_are_the_video_osd_button(self):
+        root = resolve_window("MusicOSD.xml")
+        for button in root.iter("control"):
+            if button.get("type") != "radiobutton":
+                continue
+            with self.subTest(id=button.get("id")):
+                self.assertEqual((button.findtext("width"), button.findtext("height")), ("80", "96"))
+                self.assertEqual(button.findtext("texturefocus"), "bald/osd_disc.png")
+                self.assertEqual(button.findtext("radiowidth"), "48")
+        for row in ("201", "202"):
+            grouplist = root.find(f".//control[@id='{row}']")
+            self.assertEqual((grouplist.findtext("top"), grouplist.findtext("height")), ("836", "96"))
+
     def test_osd_buttons_use_the_icon_button(self):
-        for name in ("MusicOSD.xml", "PlayerControls.xml"):
+        for name in ("PlayerControls.xml",):
             root = resolve_window(name)
             for button in root.iter("control"):
                 if button.get("type") != "radiobutton" or button.get("id") is None:

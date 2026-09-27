@@ -450,44 +450,63 @@
 		<param name="enable">true</param>
 		<definition>
 			<control type="radiobutton" id="$PARAM[id]">
-				<width>80</width>
-				<height>96</height>
-				<label>$PARAM[code]</label>
-				<font>Bald_Flag</font>
-				<align>center</align>
-				<aligny>top</aligny>
-				<textoffsetx>0</textoffsetx>
-				<textoffsety>76</textoffsety>
-				<textcolor>bald_ink60</textcolor>
-				<focusedcolor>bald_ink</focusedcolor>
-				<disabledcolor>bald_ink28</disabledcolor>
-				<texturefocus colordiffuse="bald_accent">bald/osd_disc.png</texturefocus>
-				<texturenofocus />
-				<radioposx>16</radioposx>
-				<radioposy>12</radioposy>
-				<radiowidth>48</radiowidth>
-				<radioheight>48</radioheight>
-				<textureradioonfocus colordiffuse="bald_field">$PARAM[on]</textureradioonfocus>
-				<textureradioonnofocus colordiffuse="$PARAM[on_color]">$PARAM[on]</textureradioonnofocus>
-				<textureradioofffocus colordiffuse="bald_field">$PARAM[icon]</textureradioofffocus>
-				<textureradiooffnofocus colordiffuse="bald_ink70">$PARAM[icon]</textureradiooffnofocus>
-				<textureradioondisabled colordiffuse="bald_ink28">$PARAM[on]</textureradioondisabled>
-				<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradiooffdisabled>
+				<include content="Bald_OSDButtonBody">
+					<param name="id">$PARAM[id]</param>
+					<param name="icon">$PARAM[icon]</param>
+					<param name="on">$PARAM[on]</param>
+					<param name="on_color">$PARAM[on_color]</param>
+					<param name="code">$PARAM[code]</param>
+				</include>
 				<selected>$PARAM[selected]</selected>
 				<enable>$PARAM[enable]</enable>
 				<visible>$PARAM[visible]</visible>
-				<include>Bald_OSDAutoCloseArm</include>
 				<nested />
-				<animation type="Focus">
-					<effect type="zoom" start="100" end="105" center="40,36" time="280" tween="back" easing="out" />
-				</animation>
-				<animation type="Conditional" condition="Control.HasFocus($PARAM[id]) + $EXP[Bald_OSDCompanionOpen]">
-					<effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" />
-				</animation>
-				<animation type="Unfocus">
-					<effect type="zoom" start="105" end="100" center="40,36" time="220" tween="sine" easing="inout" />
-				</animation>
 			</control>
+		</definition>
+	</include>
+	<!-- The OSD button's body (size, textures, label, auto-close and motion), for a radiobutton the caller declares
+	     itself: the music OSD's buttons keep their own ids, states and actions (MusicOSD.xml). -->
+	<include name="Bald_OSDButtonBody">
+		<param name="id" />
+		<param name="icon" />
+		<param name="on" />
+		<param name="on_color">bald_ink70</param>
+		<param name="off_color">bald_ink70</param>
+		<param name="code" />
+		<definition>
+			<width>80</width>
+			<height>96</height>
+			<label>$PARAM[code]</label>
+			<font>Bald_Flag</font>
+			<align>center</align>
+			<aligny>top</aligny>
+			<textoffsetx>0</textoffsetx>
+			<textoffsety>76</textoffsety>
+			<textcolor>bald_ink60</textcolor>
+			<focusedcolor>bald_ink</focusedcolor>
+			<disabledcolor>bald_ink28</disabledcolor>
+			<texturefocus colordiffuse="bald_accent">bald/osd_disc.png</texturefocus>
+			<texturenofocus />
+			<radioposx>16</radioposx>
+			<radioposy>12</radioposy>
+			<radiowidth>48</radiowidth>
+			<radioheight>48</radioheight>
+			<textureradioonfocus colordiffuse="bald_field">$PARAM[on]</textureradioonfocus>
+			<textureradioonnofocus colordiffuse="$PARAM[on_color]">$PARAM[on]</textureradioonnofocus>
+			<textureradioofffocus colordiffuse="bald_field">$PARAM[icon]</textureradioofffocus>
+			<textureradiooffnofocus colordiffuse="$PARAM[off_color]">$PARAM[icon]</textureradiooffnofocus>
+			<textureradioondisabled colordiffuse="bald_ink28">$PARAM[on]</textureradioondisabled>
+			<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradiooffdisabled>
+			<include>Bald_OSDAutoCloseArm</include>
+			<animation type="Focus">
+				<effect type="zoom" start="100" end="105" center="40,36" time="280" tween="back" easing="out" />
+			</animation>
+			<animation type="Conditional" condition="Control.HasFocus($PARAM[id]) + $EXP[Bald_OSDCompanionOpen]">
+				<effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Unfocus">
+				<effect type="zoom" start="105" end="100" center="40,36" time="220" tween="sine" easing="inout" />
+			</animation>
 		</definition>
 	</include>
 	<!-- A companion panel's stand-in for an OSD button: same size, id and visibility (its own), drawn by the OSD

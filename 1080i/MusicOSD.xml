@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bald music OSD (docs/SPEC.md 5.16, "Other playback windows"): the video OSD's button row and seek row over the
-     visualisation; DialogSeekBar.xml draws the title, time and track. Started from Kodi 22 Estuary's MusicOSD.xml
-     (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogMusicOSD binds 500 (visualisation) and 501 (lock), which
+<!-- Bald music OSD (docs/SPEC.md 5.16, "Other playback windows"): the video OSD's buttons (Bald_OSDButtonBody, 80 x 96
+     rows at y 836, auto-close included) and a seek row over the visualisation; DialogSeekBar.xml draws the title, time
+     and track. Started from Kodi 22 Estuary's MusicOSD.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogMusicOSD binds 500 (visualisation) and 501 (lock), which
      Estuary does not draw either. Every button keeps Estuary's id, navigation and actions (200-202 rows, 600-608
      transport, 70040-70055 and 70048 tools, 87 seek button). -->
 <window>
@@ -28,19 +28,23 @@
 			<include>Bald_PlaybackHints</include>
 			<control type="grouplist" id="201">
 				<left>Bald_SafeLeft</left>
-				<width>1000</width>
-				<include>Bald_PlaybackButtonRow</include>
+				<top>836</top>
+				<width>760</width>
+				<height>96</height>
+				<orientation>horizontal</orientation>
+				<itemgap>8</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
 				<onup>87</onup>
 				<ondown>noop</ondown>
 				<onleft>70048</onleft>
 				<onright>70040</onright>
 				<control type="radiobutton" id="600">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/previous.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">600</param><param name="icon">osd/fullscreen/buttons/previous.png</param><param name="on">osd/fullscreen/buttons/previous.png</param></include>
 					<onclick>PlayerControl(Previous)</onclick>
 					<visible>Player.ChapterCount | MusicPlayer.HasPrevious | [Player.SeekEnabled + MusicPlayer.Content(livetv)]</visible>
 				</control>
 				<control type="radiobutton" id="601">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/rewind.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">601</param><param name="icon">osd/fullscreen/buttons/rewind.png</param><param name="on">osd/fullscreen/buttons/rewind.png</param></include>
 					<onclick condition="Player.Paused">PlayerControl(Play)</onclick>
 					<onclick condition="!Player.Paused">PlayerControl(Rewind)</onclick>
 					<visible>Player.SeekEnabled + !MusicPlayer.Content(livetv)</visible>
@@ -49,8 +53,8 @@
 				     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
 				<control type="radiobutton" id="602">
 					<!-- Radio textures are static in Kodi: off shows play, on (playing) shows pause. -->
-						<include content="Bald_PlaybackToggle"><param name="icon">osd/fullscreen/buttons/play.png</param><param name="on">osd/fullscreen/buttons/pause.png</param></include>
-						<selected>Player.Playing</selected>
+					<include content="Bald_OSDButtonBody"><param name="id">602</param><param name="icon">osd/fullscreen/buttons/play.png</param><param name="on">osd/fullscreen/buttons/pause.png</param></include>
+					<selected>Player.Playing</selected>
 					<onleft>601</onleft>
 					<onright>603</onright>
 					<onup>87</onup>
@@ -59,27 +63,23 @@
 					<visible>Player.PauseEnabled</visible>
 				</control>
 				<control type="radiobutton" id="603">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/stop.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">603</param><param name="icon">osd/fullscreen/buttons/stop.png</param><param name="on">osd/fullscreen/buttons/stop.png</param></include>
 					<onclick>PlayerControl(Stop)</onclick>
 				</control>
 				<control type="radiobutton" id="606">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/forward.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">606</param><param name="icon">osd/fullscreen/buttons/forward.png</param><param name="on">osd/fullscreen/buttons/forward.png</param></include>
 					<onclick condition="Player.Paused">PlayerControl(Play)</onclick>
 					<onclick condition="!Player.Paused">PlayerControl(Forward)</onclick>
 					<visible>Player.SeekEnabled + !MusicPlayer.Content(livetv)</visible>
 				</control>
 				<control type="radiobutton" id="607">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/next.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">607</param><param name="icon">osd/fullscreen/buttons/next.png</param><param name="on">osd/fullscreen/buttons/next.png</param></include>
 					<onclick>PlayerControl(Next)</onclick>
 					<visible>Player.ChapterCount | MusicPlayer.HasNext | PVR.IsTimeShift</visible>
 				</control>
 				<!-- Record: the icon turns accent while the channel is recording (not selected). -->
 				<control type="radiobutton" id="608">
-					<include content="Bald_PlaybackToggle">
-						<param name="icon">osd/fullscreen/buttons/record-white.png</param>
-						<param name="on">osd/fullscreen/buttons/record-white.png</param>
-						<param name="off_color">bald_accent</param>
-					</include>
+					<include content="Bald_OSDButtonBody"><param name="id">608</param><param name="icon">osd/fullscreen/buttons/record-white.png</param><param name="on">osd/fullscreen/buttons/record-white.png</param><param name="off_color">bald_accent</param></include>
 					<selected>!PVR.IsRecordingPlayingChannel</selected>
 					<onclick>PVR.ToggleRecordPlayingChannel</onclick>
 					<visible>PVR.CanRecordPlayingChannel</visible>
@@ -87,48 +87,52 @@
 				</control>
 			</control>
 			<control type="grouplist" id="202">
-				<left>824</left>
-				<width>1000</width>
+				<left>1064</left>
+				<top>836</top>
+				<width>760</width>
+				<height>96</height>
+				<orientation>horizontal</orientation>
+				<itemgap>8</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
 				<align>right</align>
-				<include>Bald_PlaybackButtonRow</include>
 				<onup>87</onup>
 				<ondown>noop</ondown>
 				<onleft>608</onleft>
 				<onright>600</onright>
 				<control type="radiobutton" id="70040">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/channels.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">70040</param><param name="icon">osd/fullscreen/buttons/channels.png</param><param name="on">osd/fullscreen/buttons/channels.png</param></include>
 					<onclick>Dialog.Close(MusicOSD)</onclick>
 					<onclick>ActivateWindow(PVROSDChannels)</onclick>
 					<visible>MusicPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="radiobutton" id="70041">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/guide.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">70041</param><param name="icon">osd/fullscreen/buttons/guide.png</param><param name="on">osd/fullscreen/buttons/guide.png</param></include>
 					<onclick>Dialog.Close(MusicOSD)</onclick>
 					<onclick>ActivateWindow(PVRChannelGuide)</onclick>
 					<visible>MusicPlayer.Content(LiveTV) + VideoPlayer.HasEPG</visible>
 				</control>
 				<control type="radiobutton" id="70050">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/rds.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">70050</param><param name="icon">osd/fullscreen/buttons/rds.png</param><param name="on">osd/fullscreen/buttons/rds.png</param></include>
 					<onclick>Dialog.Close(MusicOSD)</onclick>
 					<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
 					<visible>MusicPlayer.Content(LiveTV) + RDS.HasRadiotext</visible>
 				</control>
 				<control type="radiobutton" id="70051">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/playlist.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">70051</param><param name="icon">osd/fullscreen/buttons/playlist.png</param><param name="on">osd/fullscreen/buttons/playlist.png</param></include>
 					<onclick>Dialog.Close(all, true)</onclick>
 					<onclick>ActivateWindow(musicplaylist)</onclick>
 					<visible>Integer.IsGreater(Playlist.Length(music),0)</visible>
 				</control>
 				<control type="radiobutton" id="70052">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/rating.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">70052</param><param name="icon">osd/fullscreen/buttons/rating.png</param><param name="on">osd/fullscreen/buttons/rating.png</param></include>
 					<onclick>SetRating</onclick>
 				</control>
 				<!-- A direct child of the row that hides itself: a control hidden only through a parent group can still
 				     take focus (CGUIControl::CanFocus ignores parents), which stranded the remote on Live TV. -->
 				<control type="radiobutton" id="70053">
 					<!-- Radio textures are static in Kodi: off shows repeat-off, on shows repeat-all, and repeat one adds a "1" badge. -->
-						<include content="Bald_PlaybackToggle"><param name="icon">osd/fullscreen/buttons/repeat-off.png</param><param name="on">osd/fullscreen/buttons/repeat-all.png</param><param name="badge">$VAR[Bald_PlaybackRepeatBadge]</param></include>
-						<selected>Playlist.IsRepeat | Playlist.IsRepeatOne</selected>
+					<include content="Bald_OSDButtonBody"><param name="id">70053</param><param name="icon">osd/fullscreen/buttons/repeat-off.png</param><param name="on">osd/fullscreen/buttons/repeat-all.png</param><param name="code">$VAR[Bald_PlaybackRepeatBadge]</param></include>
+					<selected>Playlist.IsRepeat | Playlist.IsRepeatOne</selected>
 					<onleft>70052</onleft>
 					<onright>70054</onright>
 					<onup>87</onup>
@@ -137,16 +141,13 @@
 					<visible>![MusicPlayer.Content(LiveTV) | MusicPartyMode.Enabled]</visible>
 				</control>
 				<control type="radiobutton" id="70054">
-					<include content="Bald_PlaybackToggle">
-						<param name="icon">osd/fullscreen/buttons/random-off.png</param>
-						<param name="on">osd/fullscreen/buttons/random-on.png</param>
-					</include>
+					<include content="Bald_OSDButtonBody"><param name="id">70054</param><param name="icon">osd/fullscreen/buttons/random-off.png</param><param name="on">osd/fullscreen/buttons/random-on.png</param></include>
 					<selected>Playlist.IsRandom</selected>
 					<visible>![MusicPlayer.Content(LiveTV) | MusicPartyMode.Enabled]</visible>
 					<onclick>PlayerControl(Random)</onclick>
 				</control>
 				<control type="radiobutton" id="70055">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/settings-subtitle.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">70055</param><param name="icon">osd/fullscreen/buttons/settings-subtitle.png</param><param name="on">osd/fullscreen/buttons/settings-subtitle.png</param></include>
 					<onclick>Close</onclick>
 					<onclick condition="!String.IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
 					<onclick condition="String.IsEmpty(Skin.String(LyricScript_Path))">Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
@@ -154,7 +155,7 @@
 					<onclick condition="String.IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
 				</control>
 				<control type="radiobutton" id="70048">
-					<include content="Bald_PlaybackButton"><param name="icon">osd/fullscreen/buttons/settings.png</param></include>
+					<include content="Bald_OSDButtonBody"><param name="id">70048</param><param name="icon">osd/fullscreen/buttons/settings.png</param><param name="on">osd/fullscreen/buttons/settings.png</param></include>
 					<onclick>SetProperty(settingsdialog_content,musicsettings,home)</onclick>
 					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[5],home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
