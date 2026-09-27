@@ -361,8 +361,9 @@
 		<value>$INFO[MusicPlayer.Album]$INFO[MusicPlayer.Year, · ,]</value>
 	</variable>
 	<!-- The background: the field, then the blur of the playing item (Bald Helper follows list 5500), or without a
-	     blur the sharp fanart at the backdrop brightness under a 60% field layer (docs/SPEC.md 5.19). Artwork off
-	     (Appearance, "fanart behind other library pages") leaves the field. -->
+	     blur the sharp fanart at the backdrop brightness under a 60% field layer (docs/SPEC.md 5.19). The music
+	     OSD's settings switch "Show Fanart background" off (Estuary's hide_background_fanart, which also keeps Artist
+	     Slideshow from starting, MusicVisualisation.xml) and it leaves the field. -->
 	<include name="Bald_NowPlayingBackdrop">
 		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
 		<control type="group">

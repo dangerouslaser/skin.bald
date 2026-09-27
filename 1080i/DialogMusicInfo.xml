@@ -127,12 +127,12 @@
 					<param name="id">8</param>
 					<param name="label">$LOCALIZE[208]</param>
 				</include>
-				<!-- Play next: the album after the song that is playing (Kodi's QueueMedia inserts it next, or plays it when
-				     nothing plays). -->
+				<!-- Play next: the album right after the song that is playing (QueueMedia's playnext; without it Kodi
+				     appends the album to the end of the queue). -->
 				<include content="Bald_MediaAction">
 					<param name="id">13</param>
 					<param name="label">$LOCALIZE[10008]</param>
-					<param name="onclick">QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/,isdir)</param>
+					<param name="onclick">QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/,isdir,playnext)</param>
 					<param name="visible">String.IsEqual(ListItem.DBType,album) + !String.IsEmpty(ListItem.DBID)</param>
 				</include>
 				<include content="Bald_MediaAction">
