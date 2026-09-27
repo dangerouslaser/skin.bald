@@ -80,6 +80,25 @@ class LetterAvailabilityTests(unittest.TestCase):
         self.assertIsNone(view_container('499'))
         self.assertIsNone(view_container('600'))
 
+    def test_music_library_publishes_on_the_music_window(self):
+        xbmc, gui, props = fake_kodi(550, 'M')
+        active = {'Window.IsActive(videos)': False, 'Window.IsActive(music)': True}
+        base = xbmc.getCondVisibility.side_effect
+        xbmc.getCondVisibility.side_effect = lambda condition: active.get(condition, base(condition))
+        publish(xbmc, gui, '550')
+        gui.Window.assert_called_once_with(10502)
+        self.assertEqual(props['Bald.AvailableLetters'], ';M;')
+        final = [c.args[0] for c in xbmc.getCondVisibility.call_args_list][-1]
+        self.assertTrue(final.startswith('Window.IsActive(music) + Control.IsVisible(550)'))
+
+    def test_no_library_window_no_scan(self):
+        xbmc, gui, props = fake_kodi(510, 'A')
+        base = xbmc.getCondVisibility.side_effect
+        xbmc.getCondVisibility.side_effect = lambda c: False if c.startswith('Window.IsActive') else base(c)
+        publish(xbmc, gui, '510')
+        gui.Window.assert_not_called()
+        self.assertNotIn('Bald.AvailableLetters', props)
+
     def test_no_scan_when_container_is_hidden(self):
         xbmc, gui, _ = fake_kodi(510, 'A', visible=False)
         publish(xbmc, gui, '510')

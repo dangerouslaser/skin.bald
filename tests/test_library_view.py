@@ -161,7 +161,9 @@ class LibraryViewTests(unittest.TestCase):
             self.assertTrue(implies(f'Control.IsVisible({view})', '$EXP[Bald_LibraryMovieView]'), view)
 
     def test_letter_mode_uses_native_jumps_and_restores_its_focus(self):
-        mode = self.view.find(".//control[@id='9160']")
+        holder = ET.Element('holder')
+        holder.extend(expand_call('Bald_LibraryLetters'))
+        mode = holder.find(".//control[@id='9160']")
         for direction, action in [('onleft', 'PrevLetter'), ('onright', 'NextLetter')]:
             actions = mode.findall(direction)
             self.assertEqual([n.text for n in actions], ['SetFocus(50)', f'Action({action})', 'SetFocus(9160)'])
