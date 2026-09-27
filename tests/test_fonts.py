@@ -16,8 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 FONT_XML = ROOT / "1080i" / "Font.xml"
 # Non-Latin fallback; it keeps Estuary's own list rather than Bald's names.
 UNICODE_FONTSETS = {"Arial"}
-# Fontsets Bald offers, with the file prefix of each typeface.
-TYPEFACES = {"Default": "InstrumentSans-", "DMSans": "DMSans-"}
+# Fontsets Bald offers, with the file prefix of each typeface. DM Sans is Default (lookandfeel.font's default value);
+# Instrument Sans is the reference set the others are compared with.
+TYPEFACES = {"InstrumentSans": "InstrumentSans-", "Default": "DMSans-"}
+BASE = "InstrumentSans"
 
 
 def fontsets():
@@ -69,13 +71,13 @@ class FontsetTests(unittest.TestCase):
     def test_latin_fontsets_differ_from_default_only_in_typeface_file_and_linespacing(self):
         sets = fontsets()
         self.assertEqual(set(sets) - UNICODE_FONTSETS, set(TYPEFACES))
-        default = entries(sets["Default"])
+        default = entries(sets[BASE])
         for fontset_id, prefix in TYPEFACES.items():
             with self.subTest(fontset=fontset_id):
                 swapped = []
                 for name, fields in default:
                     fields = dict(fields)
-                    fields["filename"] = fields["filename"].replace(TYPEFACES["Default"], prefix)
+                    fields["filename"] = fields["filename"].replace(TYPEFACES[BASE], prefix)
                     fields.pop("linespacing", None)
                     swapped.append((name, fields))
                 ours = [(name, {k: v for k, v in fields.items() if k != "linespacing"})
@@ -84,7 +86,7 @@ class FontsetTests(unittest.TestCase):
 
     def test_a_changed_linespacing_keeps_defaults_pixel_line_height(self):
         sets = fontsets()
-        default = entries(sets["Default"])
+        default = entries(sets[BASE])
         changed = 0
         for fontset_id in TYPEFACES:
             for (name, base), (_, fields) in zip(default, entries(sets[fontset_id])):
@@ -93,7 +95,7 @@ class FontsetTests(unittest.TestCase):
                 changed += 1
                 with self.subTest(fontset=fontset_id, font=name):
                     self.assertAlmostEqual(line_height(fields), line_height(base), delta=0.5)
-        self.assertTrue(changed, "DMSans matches Instrument Sans' line heights through linespacing")
+        self.assertTrue(changed, "DM Sans matches Instrument Sans' line heights through linespacing")
 
     def test_multi_line_fonts_keep_their_line_height_in_every_fontset(self):
         # Fonts of textboxes and wrapped labels: their line pitch is layout, so DM Sans must match it.
@@ -102,7 +104,7 @@ class FontsetTests(unittest.TestCase):
                       "font14", "font27", "font27_narrow", "font30_title", "font32_title", "font36_title", "font37",
                       "font45_title"}
         sets = fontsets()
-        default = entries(sets["Default"])
+        default = entries(sets[BASE])
         for fontset_id in TYPEFACES:
             for (name, base), (_, fields) in zip(default, entries(sets[fontset_id])):
                 if name in multi_line and "/" not in fields["filename"]:

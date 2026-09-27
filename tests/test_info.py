@@ -373,7 +373,7 @@ class MouseInputTests(unittest.TestCase):
         self.assertEqual(request['params'], {'setting': 'input.enablemouse', 'value': False})
 
     def test_font_action_sets_kodis_fontset_setting(self):
-        for fontset in ('Default', 'DMSans'):
+        for fontset in ('Default', 'InstrumentSans'):
             with self.subTest(fontset=fontset):
                 xbmc = Mock()
                 xbmc.executeJSONRPC.return_value = json.dumps({'jsonrpc': '2.0', 'id': 1, 'result': True})
@@ -384,7 +384,7 @@ class MouseInputTests(unittest.TestCase):
                 self.assertEqual(request['params'], {'setting': 'lookandfeel.font', 'value': fontset})
 
     def test_font_action_rejects_unknown_fontsets(self):
-        for fontset in ('', 'Arial', 'dmsans', 'DMSans,Default'):
+        for fontset in ('', 'Arial', 'DMSans', 'instrumentsans', 'InstrumentSans,Default'):
             with self.subTest(fontset=fontset):
                 xbmc = Mock()
                 with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
@@ -397,7 +397,7 @@ class MouseInputTests(unittest.TestCase):
         xbmc.executeJSONRPC.return_value = json.dumps({'jsonrpc': '2.0', 'id': 1, 'error': {'code': -32602}})
         with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
             with self.assertRaises(RuntimeError):
-                info.run('font', 'DMSans')
+                info.run('font', 'InstrumentSans')
 
     def test_font_choices_are_font_xml_fontsets(self):
         import xml.etree.ElementTree as ET

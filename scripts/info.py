@@ -4,7 +4,7 @@ RunScript(skin.bald,recommendations,movie,123)
 RunScript(skin.bald,open,movie,456)
 RunScript(skin.bald,tvinfo,episode,789)
 RunScript(skin.bald,play,episode,789)
-RunScript(skin.bald,font,DMSans)
+RunScript(skin.bald,font,InstrumentSans)
 RunScript(skin.bald,hubs)  (one-time Home hubs migration, see hubs.py)
 No network requests, library writes, or long-running service.
 """
@@ -314,8 +314,8 @@ def disable_mouse(xbmc):
         raise RuntimeError("Could not disable mouse input: {}".format(response["error"]))
 
 
-# Font.xml fontset ids Bald Settings > Appearance offers (Default is Instrument Sans, lookandfeel.font's default).
-FONTSETS = ("Default", "DMSans")
+# Font.xml fontset ids Bald Settings > Appearance offers (Default is DM Sans, lookandfeel.font's default).
+FONTSETS = ("Default", "InstrumentSans")
 
 
 def set_fontset(xbmc, fontset):
