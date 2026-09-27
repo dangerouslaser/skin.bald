@@ -4,6 +4,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import home_menu
+from kodi_includes import expand_call
 from conditions import atoms, equivalent, has_action, implies, shows_for_content
 
 
@@ -133,6 +134,94 @@ class TVLibraryTests(unittest.TestCase):
         rail = view.find(".//control[@id='523']")
         self.assertEqual(rail.findtext('width'), '1248')
         self.assertTrue(any(node.find("param[@name='w']").text == '1248' for node in view.findall(".//include[@content='Bald_BackdropWindow']") if node.find("param[@name='w']") is not None))
+
+
+class SeriesPageTests(unittest.TestCase):
+    """View 532: the Seasons level drawn as the TV info page (docs/SPEC.md 5.12)."""
+
+    def setUp(self):
+        self.alternates = ET.parse(ROOT / 'View_521_Bald_TV_Alternates.xml').getroot()
+        self.view = self.alternates.find("include[@name='View_532_Bald_SeriesPage']")
+        self.nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
+        self.tabs = self.view.find(".//control[@id='532']")
+        self.row = self.view.find(".//control[@id='5302']")
+        self.built = expand_call('View_532_Bald_SeriesPage')[0]
+
+    def test_series_page_is_a_registered_seasons_view(self):
+        self.assertEqual(self.tabs.get('type'), 'list')
+        self.assertTrue(shows_for_content(self.tabs.findtext('visible'), 'seasons'))
+        self.assertEqual(self.tabs.find('viewtype').get('label'), '31846')
+        self.assertIn('532', self.nav.findtext('views').split(','))
+        self.assertIn('View_532_Bald_SeriesPage', [n.text for n in self.nav.iter('include')])
+        # Kodi's own seasons container: no content provider of its own.
+        self.assertIsNone(self.tabs.find('content'))
+        for expression in ('$EXP[Bald_LibrarySeasonView]', '$EXP[Bald_LibraryViewActive]'):
+            self.assertTrue(implies('Control.IsVisible(532)', expression), expression)
+        self.assertTrue(equivalent(self.view.find('control').findtext('visible'), 'Control.IsVisible(532)'))
+
+    def test_series_page_reuses_the_info_page_parts(self):
+        calls = {n.get('content') or n.text: {p.get('name'): p.text for p in n.findall('param')}
+                 for n in self.view.iter('include')}
+        for name in ('Bald_InfoTVHeader', 'Bald_InfoScrims', 'Bald_InfoTVDim', 'Bald_InfoTVEpisodeSwap',
+                     'Bald_InfoTVEpisodeRowLayout', 'Bald_InfoTVEpisodeDetail'):
+            self.assertIn(name, calls)
+        self.assertEqual(calls['Bald_InfoTVTabsLayout'], {'tabs': '532'})
+        # The library's own ratings setting governs the episode line; the header has no show item to rate.
+        self.assertEqual(calls['Bald_InfoTVEpisodeDetail']['ratings'], '$EXP[Bald_RatingsLibrary]')
+        self.assertNotIn('ratings', calls['Bald_InfoTVHeader'])
+        self.assertEqual(calls['Bald_InfoTVHeader']['plot'], '$INFO[Container.ShowPlot]')
+        # The underline follows the view list's focus, and Kodi's parent item gets none.
+        underline = self.built.find(".//control[@id='532']/focusedlayout/control[@type='group']")
+        self.assertTrue(implies(underline.findtext('visible'), 'Control.HasFocus(532)'))
+        self.assertTrue(implies(underline.findtext('visible'), '!ListItem.IsParentFolder'))
+        # Same cards and row geometry as the info page's row.
+        row = self.built.find(".//control[@id='5302']")
+        self.assertEqual((row.get('type'), row.findtext('focusposition'), row.findtext('top')), ('fixedlist', '2', '670'))
+        self.assertEqual(row.find('itemlayout').get('width'), '344')
+
+    def test_episode_row_follows_the_focused_season(self):
+        content = self.row.find('content')
+        self.assertEqual(content.text, '$VAR[Bald_SeriesPageEpisodesPath]')
+        self.assertEqual((content.get('sortby'), content.get('sortorder')), ('episode', 'ascending'))
+        self.assertGreater(int(content.get('limit')), 0)
+        values = self.alternates.find("variable[@name='Bald_SeriesPageEpisodesPath']").findall('value')
+        self.assertTrue(values)
+        for value in values:
+            self.assertEqual(value.text, '$INFO[Container(532).ListItem.FolderPath]')
+            # Never the parent item's folder, which is the whole show list.
+            self.assertTrue(implies(value.get('condition') or 'true', '!Container(532).ListItem.IsParentFolder'))
+
+    def test_navigation_contract(self):
+        self.assertEqual(self.tabs.findtext('onup'), '9150')
+        self.assertEqual((self.tabs.findtext('onleft'), self.tabs.findtext('onright')), ('noop', 'noop'))
+        down = [(n.get('condition') or 'true', n.text) for n in self.built.find(".//control[@id='532']").findall('ondown')]
+        self.assertTrue(down)
+        for condition, action in down:
+            self.assertTrue(action.startswith('SetFocus(5302'), action)
+            self.assertTrue(implies(condition, '$EXP[Bald_InfoTVHasEpisodes]'), condition)
+        # A new season starts at its first unwatched episode (the watched count) or its first episode.
+        self.assertTrue(any('ListItem.Property(WatchedEpisodes)' in a for _, a in down))
+        self.assertIn('SetFocus(5302,0,absolute)', [a for _, a in down])
+        self.assertEqual(self.row.findtext('onup'), 'SetFocus(532)')
+        self.assertEqual([n.text for n in self.row.findall('onback')], ['SetFocus(532)', 'Action(Back)'])
+        for key in ('ondown', 'onleft', 'onright'):
+            self.assertEqual(self.row.findtext(key), 'noop')
+        built_row = self.built.find(".//control[@id='5302']")
+        self.assertEqual(built_row.findtext('onclick'),
+                         'RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])')
+        self.assertIn('SetProperty(Bald.Series.RowFor,$ESCINFO[Container(532).ListItem.FolderPath],videos)',
+                      [n.text for n in self.row.findall('onfocus')])
+
+    def test_show_header_line_comes_from_the_script(self):
+        actions = [(n.get('condition'), n.text) for n in self.tabs.findall('onfocus')]
+        self.assertTrue(has_action(actions, '!$EXP[Bald_SeriesPageMetaReady]', 'RunScript(skin.bald,seriesmeta)'))
+        ready = self.alternates.findtext("expression[@name='Bald_SeriesPageMetaReady']")
+        self.assertIn('Window(videos).Property(Bald.Series.For)', ready)
+        self.assertIn('Container.FolderPath', ready)
+        # The script reads the show from this list, and plays from this window.
+        from scripts import info
+        self.assertEqual(self.tabs.get('id'), str(info.SERIES_PAGE))
+        self.assertIn('Window.IsActive(videos)', info.PLAY_WINDOWS)
 
 
 if __name__ == '__main__':

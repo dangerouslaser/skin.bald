@@ -174,6 +174,10 @@ Hundreds digit 5, tens digit is the content level, units digit the layout.
 		also defines scrollbar 531, the pagecontrol and onright target of Estuary views 52, 55,
 		500, 501 and 504. Keep view 531 (Container.SetViewMode, letters.py); see docs/NOTES.md,
 		"Control ID 531 is used twice".
+  532	Series page (View_521_Bald_TV_Alternates.xml): the view list is drawn as the TV info page's
+		season tabs. Its episode row is 5302, the same id as the info page's row (ids are per window),
+		so the shared Includes_Bald_InfoTV.xml row, cards and detail work unchanged in MyVideoNav.
+		scripts/info.py (seriesmeta) reads the show from 532 (SERIES_PAGE).
 540-549	TV episodes
   540	Episodes (View_520_Bald_TV.xml)
   541	Episodes compact (View_521_Bald_TV_Alternates.xml)
@@ -270,6 +274,7 @@ VIDEO INFORMATION PAGES (DialogVideoInfo.xml, Includes_Bald_InfoPages.xml, Inclu
 5301	TV season tabs list (videodb://tvshows/titles/<id>/)
 5302	TV episode row (fixedlist; follows the selected tab's folder path)
 		scripts/info.py (tvinfo) selects the opening season and episode in 5301 and 5302.
+		Both ids are shared with the library Series page, where 5302 is MyVideoNav's episode row.
 5303-5999	Free for new info-page IDs; record them above.
 
 
