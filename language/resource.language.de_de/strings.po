@@ -2534,8 +2534,8 @@ msgstr "Was die Info-Taste und das Pausieren im Modus „Info anzeigen“ zeigen
 #: /1080i/Custom_1119_BaldPlayback.xml
 #. Playback settings category
 msgctxt "#31975"
-msgid "Down from the controls"
-msgstr "Runter aus der Steuerung"
+msgid "Panels"
+msgstr "Panels"
 
 #: /1080i/Custom_1119_BaldPlayback.xml
 #. Playback settings: note for Down from the controls

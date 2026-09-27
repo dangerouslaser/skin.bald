@@ -2962,7 +2962,7 @@ msgstr ""
 #: /1080i/Custom_1119_BaldPlayback.xml
 #. Playback settings category
 msgctxt "#31975"
-msgid "Down from the controls"
+msgid "Panels"
 msgstr ""
 
 #: /1080i/Custom_1119_BaldPlayback.xml
