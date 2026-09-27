@@ -142,3 +142,21 @@ class StaticItemNumberTests(unittest.TestCase):
                     value = (prop.text or '').strip()
                     with self.subTest(file=path.name, property=prop.get('name')):
                         self.assertFalse(value.isdigit() or re.fullmatch(r'\$PARAM\[\w+\]', value), value)
+
+
+class MapOrderTests(unittest.TestCase):
+    """Kodi resolves a skin map's ref when it loads the map (CSkinMapManager::LoadMaps logs "references unknown map"
+    otherwise), so a file whose map extends another must be included after the file that defines it."""
+
+    def test_referenced_maps_load_first(self):
+        order = [node.get('file') for node in ET.parse(SKIN / 'Includes.xml').getroot().findall('include')]
+        defined = {}
+        for position, name in enumerate(order):
+            for node in ET.parse(SKIN / name).getroot().iter('map'):
+                defined[node.get('name')] = position
+        for position, name in enumerate(order):
+            for node in ET.parse(SKIN / name).getroot().iter('map'):
+                if node.get('ref'):
+                    with self.subTest(map=node.get('name')):
+                        self.assertLess(defined[node.get('ref')], position + (node.get('ref') in
+                                        {m.get('name') for m in ET.parse(SKIN / name).getroot().iter('map')}))

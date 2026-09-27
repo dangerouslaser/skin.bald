@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+	<!-- First: other files' maps extend these (e.g. Bald_AudioCodec ref="DefaultCodecMap"), and Kodi resolves a
+	     map's ref when it loads, so the referenced map must already exist. -->
+	<include file="Includes_Maps.xml" />
 	<include file="Defaults.xml" />
 	<include file="Includes_Weather.xml" />
 	<include file="Includes_Bald_Constants.xml" />
@@ -26,7 +29,6 @@
 	<include file="Includes_MediaMenu.xml" />
 	<include file="Includes_Buttons.xml" />
 	<include file="Includes_DialogSelect.xml" />
-	<include file="Includes_Maps.xml" />
 	<include file="Includes_MusicInfo.xml" />
 	<include file="Includes_PVR.xml" />
 	<include file="Includes_Bald_PVR.xml" />
