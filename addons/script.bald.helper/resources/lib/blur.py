@@ -30,23 +30,8 @@ import threading
 import time
 from urllib.parse import unquote
 
-try:
-    from . import follow
-except ImportError:  # loaded by file path (the tests): load the sibling module the same way
-    import importlib.util as _util
-
-    _spec = _util.spec_from_file_location("bald_helper_follow", os.path.join(os.path.dirname(__file__), "follow.py"))
-    follow = _util.module_from_spec(_spec)
-    _spec.loader.exec_module(follow)
-
-# Which item to follow is shared with the ratings follower (follow.py).
-HOLD, INFO_DIALOG, MEDIA_WINDOW = follow.HOLD, follow.INFO_DIALOG, follow.MEDIA_WINDOW
-FOCUS_CONTAINER, INFO_WINDOW = follow.FOCUS_CONTAINER, follow.INFO_WINDOW
-follow_prefix = follow.follow_prefix
-
-ADDON_ID = "script.bald.helper"
-SKIN_ID = "skin.bald"
-HOME_WINDOW = 10000
+from . import common, follow
+from .common import ADDON_ID, HOME_WINDOW, SKIN_ID
 
 # Output: a cover-cropped 480 x 270 copy (a quarter of 1080p, drawn stretched to 1920 x 1080) blurred at RADIUS.
 SIZE = (480, 270)
@@ -250,7 +235,7 @@ class Blurrer:
             return None
         data = self.read(source)
         if not data:
-            self.log(f"cannot read {source}", getattr(self.xbmc, "LOGWARNING", None))
+            self.log(f"cannot read {common.log_safe(source)}", getattr(self.xbmc, "LOGWARNING", None))
             return None
         blurred = self.render(data)
         os.makedirs(self.cache_dir, exist_ok=True)
@@ -265,17 +250,19 @@ class Blurrer:
         return path
 
 
-class Follower:
+class Follower(common.Threads):
     """Polls the item Bald's background shows and publishes its blur (see the module docstring)."""
+
+    NAME = "blur"
+    POLL_SECONDS, IDLE_SECONDS = POLL_SECONDS, IDLE_SECONDS
 
     def __init__(self, xbmc, xbmcvfs, xbmcgui=None, blurrer: Blurrer | None = None, window=None,
                  clock=time.monotonic, threaded: bool = True, current_window=None):
-        self.xbmc = xbmc
+        self.init_threads(xbmc)
         self.window = window if window is not None else xbmcgui.Window(HOME_WINDOW)
         self.current_window = current_window or xbmcgui.getCurrentWindowId
         self.clock = clock
         self.threaded = threaded
-        self._logged = set()
         self.blurrer = blurrer or Blurrer(xbmc, xbmcvfs)
         self.blurrer.log = self.log_once
         self.lock = threading.Lock()
@@ -284,22 +271,6 @@ class Follower:
         self.published = None   # the source Bald.Blur was last published for
         self.wanted = None      # the source being blurred on the worker
         self._job = None
-        self._job_ready = threading.Condition()
-        self._stop = threading.Event()
-        self._threads = []
-
-    # --- logging ---
-    def log(self, text: str, level=None) -> None:
-        self.xbmc.log(f"{ADDON_ID}: blur: {text}", self.xbmc.LOGDEBUG if level is None else level)
-
-    def log_once(self, text: str, level=None) -> None:
-        """Each distinct problem once per session (bounded, so a long session cannot grow it without limit)."""
-        if text in self._logged:
-            return
-        if len(self._logged) > 200:
-            self._logged.clear()
-        self._logged.add(text)
-        self.log(text, self.xbmc.LOGERROR if level is None else level)
 
     # --- reading Kodi ---
     def resting(self) -> bool:
@@ -380,9 +351,9 @@ class Follower:
         if not self.threaded:
             self.work(source)
             return
-        with self._job_ready:
+        with self.condition:
             self._job = source
-            self._job_ready.notify()
+            self.condition.notify()
 
     def work(self, source: str) -> None:
         """Blur one source (on the worker) and publish it if it is still the one wanted."""
@@ -400,46 +371,15 @@ class Follower:
             self.publish(source, path or "")
 
     # --- threads ---
-    def _worker(self) -> None:
-        while not self._stop.is_set():
-            with self._job_ready:
-                while self._job is None and not self._stop.is_set():
-                    self._job_ready.wait(1.0)
-                source, self._job = self._job, None
-            if source is not None and not self._stop.is_set():
-                self.work(source)
+    def next_job(self):
+        source, self._job = self._job, None
+        return source
 
-    def _poller(self, monitor) -> None:
+    def before_polling(self) -> None:
         try:
             self.blurrer.prune()
         except Exception as error:  # noqa: BLE001
             self.log_once(f"prune: {type(error).__name__}: {error}")
-        wait = POLL_SECONDS
-        while not self._stop.is_set() and not monitor.abortRequested():
-            try:
-                wait = self.tick()
-            except Exception as error:  # noqa: BLE001 - the follower outlives any single failure
-                self.log_once(f"{type(error).__name__}: {error}")
-                wait = IDLE_SECONDS
-            if self._stop.wait(wait):
-                break
-
-    def start(self, monitor=None) -> None:
-        monitor = monitor or self.xbmc.Monitor()
-        for target, args in ((self._worker, ()), (self._poller, (monitor,))):
-            thread = threading.Thread(target=target, args=args, name=f"{ADDON_ID}.blur", daemon=True)
-            thread.start()
-            self._threads.append(thread)
-        self.log("started")
-
-    def stop(self) -> None:
-        self._stop.set()
-        with self._job_ready:
-            self._job_ready.notify_all()
-        for thread in self._threads:
-            thread.join(2.0)
-        self._threads = []
-        self.log("stopped")
 
 
 class Warmer:

@@ -1,19 +1,18 @@
 """Bald Helper's spoiler stills (addons/script.bald.helper/resources/lib/spoilers.py), with xbmc, the library and the
 Home window replaced by stand-ins and real Pillow images."""
 
-import importlib.util
 import io
 import json
 import os
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 
+from support import Clock, FakeWindow, helper
+
 ROOT = Path(__file__).resolve().parents[1]
-LIB = ROOT / "addons" / "script.bald.helper" / "resources" / "lib"
-SPEC = importlib.util.spec_from_file_location("bald_helper_spoilers", LIB / "spoilers.py")
-spoilers = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(spoilers)
+spoilers = helper("spoilers", "spoilers")
 
 try:
     from PIL import Image, ImageFilter, ImageOps
@@ -63,20 +62,6 @@ class FakeVfs:
         return os.path.join(cls.root, "spoilers") + os.sep
 
 
-class FakeWindow:
-    def __init__(self):
-        self.properties = {}
-
-    def setProperty(self, key, value):
-        self.properties[key] = value
-
-    def clearProperty(self, key):
-        self.properties.pop(key, None)
-
-    def getProperty(self, key):
-        return self.properties.get(key, "")
-
-
 class FakeReader:
     """The blur module's Blurrer stand-in: images by source, and Pillow."""
 
@@ -115,17 +100,6 @@ class FakeLibrary:
 
     def episode(self, episode_id):
         return self._answer("episode", episode_id)
-
-
-class Clock:
-    def __init__(self):
-        self.now = 100.0
-
-    def __call__(self):
-        return self.now
-
-    def advance(self, seconds):
-        self.now += seconds
 
 
 def episode(episode_id, thumb=None, playcount=0, position=0):
@@ -283,6 +257,57 @@ class ServiceTests(Case):
         self.service.tick()
         self.assertFalse(os.path.exists(self.folder))
 
+    def test_off_while_a_still_is_being_made_leaves_nothing_behind(self):
+        # The worker is reading a thumb when the protection goes off: the folder goes after that still, not before.
+        reading, release = threading.Event(), threading.Event()
+        read = self.reader.read
+
+        def slow_read(source):
+            reading.set()
+            release.wait(5)
+            return read(source)
+
+        self.reader.read = slow_read
+        self.reader.images["image://still1.jpg/"] = jpeg()
+        self.library.answers[("recent",)] = [episode(1)]
+        idle, work = threading.Event(), self.service.work
+
+        def tracked(job):
+            work(job)
+            with self.service.condition:
+                if not self.service.jobs:
+                    idle.set()
+
+        self.service.work = tracked
+        self.service.threaded = True
+        self.service.tick()  # on: the warm-up is queued
+        worker = threading.Thread(target=self.service._worker)
+        worker.start()
+        try:
+            self.assertTrue(reading.wait(5))
+            self.xbmc.conditions[spoilers.ACTIVE] = False
+            self.service.tick()  # off, mid-still
+            release.set()
+            self.assertTrue(idle.wait(5))
+        finally:
+            release.set()
+            self.service.stop()
+            worker.join(5)
+        self.assertFalse(os.path.exists(self.folder), self.files())
+
+    def test_on_again_before_the_folder_went_keeps_the_stills(self):
+        self.library.answers[("recent",)] = [episode(1)]
+        self.reader.images["image://still1.jpg/"] = jpeg()
+        self.service.tick()
+        self.service.threaded = True  # jobs wait for a worker
+        self.xbmc.conditions[spoilers.ACTIVE] = False
+        self.service.tick()
+        self.xbmc.conditions[spoilers.ACTIVE] = True
+        self.service.tick()
+        self.assertNotIn(spoilers.CLEAR, self.service.jobs)
+        self.service.run_jobs()
+        self.assertIn("1.jpg", self.files())
+
     def test_another_skin_pauses_without_deleting(self):
         self.library.answers[("recent",)] = [episode(1)]
         self.reader.images["image://still1.jpg/"] = jpeg()
@@ -317,7 +342,7 @@ class ServiceTests(Case):
 
     def test_the_information_dialogs_own_item(self):
         self.service.tick()
-        self.xbmc.conditions[spoilers.INFO_DIALOG] = True
+        self.xbmc.conditions[spoilers.follow.INFO_DIALOG] = True
         self.xbmc.labels = {"ListItem.DBType": "tvshow", "ListItem.DBID": "44"}
         self.settle(4)
         self.assertIn(("show", 44), self.library.calls)

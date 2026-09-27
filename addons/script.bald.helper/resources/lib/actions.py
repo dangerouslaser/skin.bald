@@ -35,9 +35,7 @@ import threading
 import time
 from collections import OrderedDict, namedtuple
 
-ADDON_ID = "script.bald.helper"
-SKIN_ID = "skin.bald"
-HOME_WINDOW = 10000
+from .common import ADDON_ID, HOME_WINDOW, SKIN_ID
 
 SENDER = SKIN_ID
 PREFIX = "Other.bald."

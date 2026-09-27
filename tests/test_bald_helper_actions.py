@@ -2,9 +2,7 @@
 their parsing, latest-wins dispatch, the letter cache and the ready property, with xbmc replaced by stand-ins.
 The skin's call sites are checked in test_bald_helper_actions_skin.py."""
 
-import importlib.util
 import os
-import sys
 import tempfile
 import threading
 import types
@@ -12,30 +10,14 @@ import unittest
 from pathlib import Path
 from unittest.mock import Mock
 
+from support import FakeWindow, helper, service
+
 ROOT = Path(__file__).resolve().parents[1]
 ADDON = ROOT / "addons" / "script.bald.helper"
-SPEC = importlib.util.spec_from_file_location("bald_helper_actions", ADDON / "resources" / "lib" / "actions.py")
-actions = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(actions)
-KEYMAP_SPEC = importlib.util.spec_from_file_location("bald_helper_keymap_run", ADDON / "resources" / "lib" / "keymap.py")
-keymap = importlib.util.module_from_spec(KEYMAP_SPEC)
-KEYMAP_SPEC.loader.exec_module(keymap)
+actions = helper("actions", "actions")
+keymap = helper("keymap", "actions")
 
 Request = actions.Request
-
-
-class FakeWindow:
-    def __init__(self):
-        self.properties = {}
-
-    def getProperty(self, key):
-        return self.properties.get(key, "")
-
-    def setProperty(self, key, value):
-        self.properties[key] = value
-
-    def clearProperty(self, key):
-        self.properties.pop(key, None)
 
 
 class FakeXbmc:
@@ -343,27 +325,10 @@ class ServiceEntryTests(unittest.TestCase):
         fake.log = lambda message, level: fake.logs.append((level, message))
         modules = {"xbmc": fake, "xbmcgui": types.SimpleNamespace(), "xbmcvfs": types.SimpleNamespace(),
                    "xbmcaddon": types.SimpleNamespace()}
-        names = ("resources", "resources.lib", "resources.lib.keymap", "resources.lib.actions")
-        saved = {name: sys.modules.get(name) for name in (*modules, *names)}
-        sys.modules.update(modules)
-        sys.path.insert(0, str(ADDON))
-        try:
-            for name in names:
-                sys.modules.pop(name, None)
-            spec = importlib.util.spec_from_file_location("bald_helper_service_actions", ADDON / "service.py")
-            service = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(service)
-            self.assertEqual(service.start_actions(), (None, None))  # no Window in the stand-in xbmcgui
-            self.assertEqual(len(fake.logs), 1)
-            self.assertTrue(fake.logs[0][1].startswith("script.bald.helper: actions did not start: "))
-        finally:
-            sys.path.remove(str(ADDON))
-            for name, module in saved.items():
-                if module is None:
-                    sys.modules.pop(name, None)
-                else:
-                    sys.modules[name] = module
-
+        with service(modules) as entry:
+            self.assertEqual(entry.start_actions(), (None, None))  # no Window in the stand-in xbmcgui
+        self.assertEqual(len(fake.logs), 1)
+        self.assertTrue(fake.logs[0][1].startswith("script.bald.helper: actions did not start: "))
 
 if __name__ == "__main__":
     unittest.main()

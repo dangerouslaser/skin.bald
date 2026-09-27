@@ -39,11 +39,10 @@ import threading
 import time
 from collections import deque
 
-ADDON_ID = "script.bald.helper"
-SKIN_ID = "skin.bald"
-HOME_WINDOW = 10000
+from . import blur, common, follow
+from .common import HOME_WINDOW, SKIN_ID
 
-CACHE_DIR = "special://profile/addon_data/script.bald.helper/spoilers/"
+CACHE_DIR = f"{common.DATA_DIR}/spoilers/"
 INDEX = "index.json"
 SIZE = (320, 180)
 FIELD = (16, 9)  # the colour field the still is reduced to before the blur: no shape survives it
@@ -58,12 +57,6 @@ PROPERTY_PATH = "Bald.Spoilers.Path"
 ACTIVE = ("[Skin.HasSetting(Bald.Spoilers) + !Skin.HasSetting(Bald.Spoilers.ShowThumbs)]"
           " | System.Setting(hideunwatchedepisodethumbs)")
 REST = "Window.IsActive(fullscreenvideo) | System.ScreenSaverActive"
-# While a dialog other than the information dialog is over the window, keep the last scope (as the blur does).
-HOLD = "System.HasActiveModalDialog + !Window.IsModalDialogTopmost(movieinformation)"
-INFO_DIALOG = "Window.IsModalDialogTopmost(movieinformation)"
-MEDIA_WINDOW = "Window.IsMedia"
-FOCUS_CONTAINER = "Window({}).Property(Bald.FocusContainer)"
-INFO_WINDOW = "movieinformation"
 
 POLL_SECONDS = 0.4
 IDLE_SECONDS = 1.0
@@ -80,11 +73,12 @@ SEASON_LIMIT = 200
 UNWATCHED = {"field": "playcount", "operator": "is", "value": "0"}
 # Kodi 22's VideoLibrary episode fields have no "thumb": the still is art["thumb"] (with "thumbnail" as a fallback).
 PROPERTIES = ["art", "thumbnail", "playcount", "resume", "tvshowid", "season"]
+CLEAR = ("clear",)  # the job that deletes the folder once the protection is off
+LIBRARY_SCANS = frozenset(("VideoLibrary.OnScanFinished", "VideoLibrary.OnCleanFinished"))
 
 
 def still_source(episode: dict) -> str:
     return (episode.get("art") or {}).get("thumb") or episode.get("thumbnail") or ""
-LIBRARY_SCANS = frozenset(("VideoLibrary.OnScanFinished", "VideoLibrary.OnCleanFinished"))
 
 
 def still_name(episode_id: int) -> str:
@@ -142,21 +136,6 @@ def render(pil, data: bytes) -> bytes:
     return out.getvalue()
 
 
-def _blur_module():
-    """Bald Helper's blur module (for its image reader and the focus rules), however this module was loaded."""
-    try:
-        from resources.lib import blur  # noqa: PLC0415 - the service's package
-        return blur
-    except ImportError:
-        import importlib.util  # noqa: PLC0415
-
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "blur.py")
-        spec = importlib.util.spec_from_file_location("bald_helper_blur_for_spoilers", path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module
-
-
 class Stills:
     """The still files and their index (episode id -> the thumb they were made from)."""
 
@@ -203,7 +182,7 @@ class Stills:
             return False
         data = self.reader.read(source)
         if not data:
-            self.log(f"cannot read {source}")
+            self.log(f"cannot read {common.log_safe(source)}")
             return False
         still = render(pil, data)
         os.makedirs(self.folder, exist_ok=True)
@@ -280,11 +259,7 @@ class Library:
         self.xbmc = xbmc
 
     def call(self, method: str, params: dict) -> dict:
-        request = {"jsonrpc": "2.0", "id": 1, "method": method, "params": params}
-        reply = json.loads(self.xbmc.executeJSONRPC(json.dumps(request)))
-        if "error" in reply:
-            raise RuntimeError(f"{method}: {reply['error'].get('message', reply['error'])}")
-        return reply.get("result") or {}
+        return common.jsonrpc(self.xbmc, method, params, strict=True)
 
     def episodes(self, params: dict) -> list:
         params = dict(params, properties=PROPERTIES)
@@ -317,12 +292,16 @@ class Library:
         return [details] if details and unwatched(details) else []
 
 
-class Spoilers:
+class Spoilers(common.Threads):
     """Keeps the stills for what the viewer is about to see, while Bald is the skin and the protection is on."""
+
+    NAME = "spoilers"
+    POLL_SECONDS, IDLE_SECONDS = POLL_SECONDS, IDLE_SECONDS
+    ONCE_LEVEL = "LOGWARNING"
 
     def __init__(self, xbmc, xbmcvfs, xbmcgui=None, stills: Stills | None = None, library: Library | None = None,
                  window=None, current_window=None, clock=time.monotonic, threaded: bool = True):
-        self.xbmc = xbmc
+        self.init_threads(xbmc)
         self.window = window if window is not None else xbmcgui.Window(HOME_WINDOW)
         self.current_window = current_window or xbmcgui.getCurrentWindowId
         self.clock = clock
@@ -331,7 +310,6 @@ class Spoilers:
         folder = xbmcvfs.translatePath(CACHE_DIR)
         self.native = folder if folder.endswith(os.sep) else folder + os.sep
         if stills is None:
-            blur = _blur_module()
             stills = Stills(self.native, blur.Blurrer(xbmc, xbmcvfs, cache_dir=self.native, log=self.log_once))
         self.stills = stills
         self.library = library or Library(xbmc)
@@ -340,26 +318,10 @@ class Spoilers:
         self.candidate = None    # the scope seen on the last tick
         self.since = 0.0
         self.done = {}           # scope -> when it was fetched
-        self.jobs = deque()      # newest first
-        self.condition = threading.Condition()
+        self.jobs = deque()      # newest first, guarded by self.condition
         self.dirty = False       # new stills since the path last switched
         self.switched = 0.0
         self.path = ""
-        self._stop = threading.Event()
-        self._threads = []
-        self._logged = set()
-
-    # --- logging ---
-    def log(self, text: str, level=None) -> None:
-        self.xbmc.log(f"{ADDON_ID}: spoilers: {text}", self.xbmc.LOGDEBUG if level is None else level)
-
-    def log_once(self, text: str, level=None) -> None:
-        if text in self._logged:
-            return
-        if len(self._logged) > 200:
-            self._logged.clear()
-        self._logged.add(text)
-        self.log(text, getattr(self.xbmc, "LOGWARNING", None) if level is None else level)
 
     # --- the skin's property ---
     def publish(self, path: str) -> None:
@@ -389,6 +351,9 @@ class Spoilers:
         self.publish(self.special)
         self.switched = self.clock()
         self.done.clear()
+        with self.condition:
+            if CLEAR in self.jobs:
+                self.jobs.remove(CLEAR)  # back on before the stills went: keep them
         self.enqueue(("warm",))
         self.log("on", self.xbmc.LOGINFO)
 
@@ -399,27 +364,18 @@ class Spoilers:
             with self.condition:
                 self.jobs.clear()
         # Reversible: under Bald with the protection off, nothing is left behind (once per switch-off, and at
-        # startup). Another skin only pauses.
+        # startup). Another skin only pauses. The worker deletes the folder, after any still it is making.
         if not self.cleared and self.xbmc.getSkinDir() == SKIN_ID:
             self.cleared = True
-            removed = self.stills.clear()
-            if removed:
-                self.log(f"off: removed {removed} files", self.xbmc.LOGINFO)
+            self.enqueue(CLEAR)
 
     # --- polling (the poller thread) ---
     def focused_scope(self):
-        if self.xbmc.getCondVisibility(HOLD):
-            return self.candidate
-        info = bool(self.xbmc.getCondVisibility(INFO_DIALOG))
-        container = self.xbmc.getInfoLabel(FOCUS_CONTAINER.format(INFO_WINDOW if info else self.current_window()))
-        container = container.strip()
-        if container.isdigit():
-            prefix = f"Container({container}).ListItem."
-        elif info:
-            prefix = "ListItem."
-        elif self.xbmc.getCondVisibility(MEDIA_WINDOW):
-            prefix = "Container.ListItem."
-        else:
+        located = follow.locate(self.xbmc, self.current_window)
+        if located is follow.HELD:
+            return self.candidate  # a dialog is over the window: keep the last scope
+        prefix, _ = located
+        if prefix is None:
             return None
         label = self.xbmc.getInfoLabel
         return scope_for(label(prefix + "DBType"), label(prefix + "DBID"), label(prefix + "TvShowDBID"),
@@ -494,6 +450,12 @@ class Spoilers:
 
     def run(self, job) -> int:
         """One job. Returns how many stills were written."""
+        if job == CLEAR:
+            if not self.active:
+                removed = self.stills.clear()
+                if removed:
+                    self.log(f"off: removed {removed} files", self.xbmc.LOGINFO)
+            return 0
         if job[0] == "watched":
             if self.stills.remove(job[1]):
                 self.stills.save()
@@ -517,55 +479,26 @@ class Spoilers:
             self.log(f"{job}: {made} stills")
         return made
 
+    def work(self, job) -> None:
+        try:
+            self.run(job)
+        except Exception as error:  # noqa: BLE001 - the worker outlives any single failure
+            self.log_once(f"{job[0]}: {type(error).__name__}: {error}")
+
     def run_jobs(self) -> None:
         while not self._stop.is_set():
             with self.condition:
-                if not self.jobs:
-                    return
-                job = self.jobs.popleft()
-            try:
-                self.run(job)
-            except Exception as error:  # noqa: BLE001 - the worker outlives any single failure
-                self.log_once(f"{job[0]}: {type(error).__name__}: {error}")
+                job = self.next_job()
+            if job is None:
+                return
+            self.work(job)
 
-    def _worker(self) -> None:
-        while not self._stop.is_set():
-            with self.condition:
-                while not self.jobs and not self._stop.is_set():
-                    self.condition.wait(1.0)
-            self.run_jobs()
+    # --- threads ---
+    def next_job(self):
+        return self.jobs.popleft() if self.jobs else None
 
-    def _poller(self, monitor) -> None:
-        wait = POLL_SECONDS
-        while not self._stop.is_set() and not monitor.abortRequested():
-            try:
-                wait = self.tick()
-            except Exception as error:  # noqa: BLE001
-                self.log_once(f"{type(error).__name__}: {error}")
-                wait = IDLE_SECONDS
-            if self._stop.wait(wait):
-                break
-
-    def start(self, monitor=None) -> None:
-        monitor = monitor or self.xbmc.Monitor()
-        for target, args in ((self._worker, ()), (self._poller, (monitor,))):
-            thread = threading.Thread(target=target, args=args, name=f"{ADDON_ID}.spoilers", daemon=True)
-            thread.start()
-            self._threads.append(thread)
-        self.log("started")
-
-    def stop(self) -> None:
-        self._stop.set()
-        with self.condition:
-            self.condition.notify_all()
-        for thread in self._threads:
-            thread.join(2.0)
-        self._threads = []
-        try:
-            self.window.clearProperty(PROPERTY_PATH)
-        except Exception:  # noqa: BLE001 - shutting down
-            pass
-        self.log("stopped")
+    def after_stop(self) -> None:
+        self.window.clearProperty(PROPERTY_PATH)
 
 
 def make_monitor(xbmc, spoilers: Spoilers):

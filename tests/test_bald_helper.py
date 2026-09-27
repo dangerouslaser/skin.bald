@@ -4,7 +4,6 @@ retired PVR keymap is removed. The blurred backgrounds are tested in test_bald_h
 The helper's keymap maps Select in <videos> to Skin.TimerStart(bald_library_select); the skin timer runs Info on a
 focused library TV show and Select otherwise; Appearance, Behavior holds the switch (docs/NOTES.md)."""
 
-import importlib.util
 import os
 import re
 import tempfile
@@ -13,13 +12,12 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from skin_strings import english
+from support import helper, load_file
 
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
 ADDON = ROOT / "addons" / "script.bald.helper"
-SPEC = importlib.util.spec_from_file_location("bald_helper_keymap", ADDON / "resources" / "lib" / "keymap.py")
-keymap = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(keymap)
+keymap = helper("keymap", "keymap")
 
 
 class FakeXbmc:
@@ -218,6 +216,14 @@ class ServiceDecisionTests(unittest.TestCase):
         self.assertFalse(os.path.exists(service.path))
 
 
+    def test_each_step_keeps_its_own_last_error(self):
+        # A step that keeps failing is logged once, even while another step succeeds between its failures.
+        xbmc, service = self.service(setting=True)
+        xbmc.fail = RuntimeError("boom")
+        service.run(FakeMonitor(xbmc, [lambda fake: None] * 3), each=lambda: None)
+        errors = [text for level, text in xbmc.logs if level == xbmc.LOGERROR]
+        self.assertEqual(errors.count("script.bald.helper: RuntimeError: boom"), 1, errors)
+
 class AddonTests(unittest.TestCase):
     def test_addon_xml(self):
         root = ET.parse(ADDON / "addon.xml").getroot()
@@ -244,9 +250,7 @@ class AddonTests(unittest.TestCase):
 
     def test_the_repository_publishes_it(self):
         path = ROOT / "packaging" / "repository.bald" / "build_repository.py"
-        spec = importlib.util.spec_from_file_location("bald_build_repository", path)
-        build = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(build)
+        build = load_file("bald_build_repository", path)
         self.assertIn("addons/script.bald.helper", build.BUNDLED_ADDONS)
         checks = (ROOT / "packaging" / "repository.bald" / "test_repository.py").read_text()
         self.assertIn('"script.bald.helper/service.py" in names', checks)
