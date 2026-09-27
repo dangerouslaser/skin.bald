@@ -24,6 +24,7 @@
 				<param name="info">Fake</param>
 				<param name="audio">Fake</param>
 				<param name="subtitles">Fake</param>
+				<param name="ppi">Fake</param>
 				<param name="video">Panel</param>
 			</include>
 			<include>Bald_OSDHints</include>
