@@ -15,8 +15,8 @@ REPO = ROOT.parent
 class PVRGuideTests(unittest.TestCase):
     def test_home_live_tv_opens_native_guide(self):
         item = home_menu.entry(preview='livetv')
-        self.assertEqual(home_menu.select_actions(item), [(None, 'SetProperty(Bald.ReturnMenu,9004,home)'),
-                                                          (None, 'ActivateWindow(TVGuide)')])
+        # Without Live TV rows (or a PVR add-on) Select opens the guide; Right always does (bridge 9029).
+        self.assertIn(('!$EXP[Bald_LiveTVRows]', 'ActivateWindow(TVGuide)'), home_menu.select_actions(item))
         self.assertTrue(equivalent(item.findtext("visible"), '!Skin.HasSetting(Bald.Screen.HideLiveTV)'))
 
     def test_primary_guide_preserves_native_contract(self):

@@ -970,8 +970,9 @@
 	<!-- Fanart + logo: the item's clearlogo (else the show's, Bald_ItemLogo) at the tile's bottom left, 8 px in, at most
 	     100 x 34, over the logo scrim clipped to the tile's corners. Hidden without a logo or with clearlogos turned off
 	     (Appearance). -->
-	<!-- The item's name inside a text-style tile (the tile is 176 x 99 at 10,10): up to two lines, 12 px in. Its colour
-	     is the tile's diffuse, dim unfocused and full ink focused, like the art on other tiles. -->
+	<!-- The item's name inside a text-style tile (the tile is 176 x 99 at 10,10): centred, up to two lines, 12 px in,
+	     in the row label's semibold. Its colour is the tile's diffuse, dim unfocused and full ink focused, like the art
+	     on other tiles. -->
 	<include name="Bald_TileText">
 		<param name="diffuse">bald_tile_dim</param>
 		<definition>
@@ -980,9 +981,10 @@
 				<top>10</top>
 				<width>152</width>
 				<height>99</height>
+				<align>center</align>
 				<aligny>center</aligny>
 				<wrapmultiline>true</wrapmultiline>
-				<font>Bald_CaptionMeta</font>
+				<font>Bald_RowLabel</font>
 				<textcolor>$PARAM[diffuse]</textcolor>
 				<label>$INFO[ListItem.Label]</label>
 			</control>
@@ -1275,8 +1277,8 @@
 			</control>
 		</definition>
 	</include>
-	<!-- Live TV's entry, with its own rows (Home Screens, Live TV). Select and Right open the guide as before; Left
-	     enters the rows while there are rows and a PVR add-on, else Left does what Select does. -->
+	<!-- Live TV's entry, with its own rows (Home Screens, Live TV), like a hub: Select (and Left) enters the rows while
+	     there are rows and a PVR add-on, else opens the guide; Right opens the guide (bridge 9029). -->
 	<include name="Bald_HomeMenuLiveTV">
 		<definition>
 			<include content="Bald_HomeMenuButton">
@@ -1284,16 +1286,17 @@
 				<param name="label">$LOCALIZE[31700]</param>
 				<param name="preview">livetv</param>
 				<param name="visible">!Skin.HasSetting(Bald.Screen.HideLiveTV)</param>
+				<!-- The disclosure cue hubs with a target show: Right opens the guide. -->
+				<param name="suffix">  ›</param>
 				<param name="right">9029</param>
-				<param name="left_if">!$EXP[Bald_LiveTVRows]</param>
 				<onfocus condition="$EXP[Bald_LiveTVRows]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.livetv)],home)</onfocus>
-				<onclick>SetProperty(Bald.ReturnMenu,9004,home)</onclick>
-				<onclick>ActivateWindow(TVGuide)</onclick>
-				<onleft condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Screen,livetv,home)</onleft>
-				<onleft condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.livetv)],home)</onleft>
-				<onleft condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_livetv],home)</onleft>
-				<onleft condition="$EXP[Bald_LiveTVRows]">ClearProperty(Bald.Menu,home)</onleft>
-				<onleft condition="$EXP[Bald_LiveTVRows]">SetFocus($INFO[Window(home).Property(Bald.Row.livetv)])</onleft>
+				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Screen,livetv,home)</onclick>
+				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.livetv)],home)</onclick>
+				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_livetv],home)</onclick>
+				<onclick condition="$EXP[Bald_LiveTVRows]">ClearProperty(Bald.Menu,home)</onclick>
+				<onclick condition="$EXP[Bald_LiveTVRows]">SetFocus($INFO[Window(home).Property(Bald.Row.livetv)])</onclick>
+				<onclick condition="!$EXP[Bald_LiveTVRows]">SetProperty(Bald.ReturnMenu,9004,home)</onclick>
+				<onclick condition="!$EXP[Bald_LiveTVRows]">ActivateWindow(TVGuide)</onclick>
 			</include>
 		</definition>
 	</include>

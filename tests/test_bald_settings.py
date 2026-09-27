@@ -153,20 +153,22 @@ class BaldSettingsTests(unittest.TestCase):
                 home_menu.actions(home_menu.entry(preview=screen), "onfocus"), None,
                 f"SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.{screen})],home)"))
 
-    def test_live_tv_select_opens_the_guide_and_left_enters_its_rows(self):
+    def test_live_tv_select_enters_its_rows_and_right_opens_the_guide(self):
+        # Like a hub: Select (and Left, which does what Select does) enters the rows while there are rows and a PVR
+        # add-on, else opens the guide; Right opens the guide through bridge 9029.
         livetv = home_menu.entry(preview="livetv")
-        self.assertEqual(home_menu.select_actions(livetv), [(None, "SetProperty(Bald.ReturnMenu,9004,home)"),
-                                                            (None, "ActivateWindow(TVGuide)")])
-        left = home_menu.actions(livetv, "onleft")
         rows = "$EXP[Bald_LiveTVRows]"
-        self.assertTrue(same_actions(left, [
+        select = home_menu.select_actions(livetv)
+        self.assertTrue(same_actions(select, [
             (rows, "SetProperty(Bald.Screen,livetv,home)"),
             (rows, "SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.livetv)],home)"),
             (rows, "SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_livetv],home)"),
             (rows, "ClearProperty(Bald.Menu,home)"),
             (rows, "SetFocus($INFO[Window(home).Property(Bald.Row.livetv)])"),
-            (f"!{rows}", "Action(Select)"),
-        ]), left)
+            (f"!{rows}", "SetProperty(Bald.ReturnMenu,9004,home)"),
+            (f"!{rows}", "ActivateWindow(TVGuide)"),
+        ]), select)
+        self.assertEqual(home_menu.actions(livetv, "onleft"), [("true", "Action(Select)")])
         self.assertEqual(home_menu.actions(livetv, "onright"), [("true", "9029")])
         self.assertEqual([n.text for n in home_menu.control(9029).findall("onfocus")],
                          ["SetProperty(Bald.ReturnMenu,9004,home)", "ActivateWindow(TVGuide)"])
