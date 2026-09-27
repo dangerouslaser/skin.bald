@@ -714,6 +714,225 @@ msgctxt "#31177"
 msgid "Choose weather icon pack"
 msgstr "Icon-Pack für Wetterbedingungen auswählen"
 
+#: /1080i/Includes_Bald_HomeDefaults.xml
+msgctxt "#31201"
+msgid "No rows yet. Select or Right opens it."
+msgstr "Noch keine Zeilen. OK oder Rechts öffnet das Ziel."
+
+#: /1080i/Includes_Bald_HomeDefaults.xml
+msgctxt "#31202"
+msgid "No rows yet. Add them in Home Screens."
+msgstr "Noch keine Zeilen. Sie lassen sich unter „Startbildschirme“ hinzufügen."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31203"
+msgid "Opens"
+msgstr "Öffnet"
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31204"
+msgid "One of your hubs. Right in the main menu opens its target, and so does Select while it has no rows."
+msgstr "Ein eigener Hub. Rechts im Hauptmenü öffnet sein Ziel, ebenso OK, solange er keine Zeilen hat."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31205"
+msgid "Show Live TV in the main menu. Select and Right open the guide; Left enters its rows."
+msgstr "Live-TV im Hauptmenü anzeigen. OK und Rechts öffnen den TV-Guide, Links führt zu seinen Zeilen."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31206"
+msgid "Add a hub of your own: choose the library node, playlist or add-on it opens, then rename it and add rows."
+msgstr "Eigenen Hub hinzufügen: Bibliotheksknoten, Wiedergabeliste oder Addon als Ziel wählen, dann umbenennen und Zeilen hinzufügen."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31207"
+msgid "Add hub"
+msgstr "Hub hinzufügen"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31208"
+msgid "Remove hub"
+msgstr "Hub entfernen"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31209"
+msgid "Clear target"
+msgstr "Ziel entfernen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance category: ratings in media views
+msgctxt "#31300"
+msgid "Ratings"
+msgstr "Bewertungen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: category description
+msgctxt "#31301"
+msgid "Choose which ratings Bald shows and where. Your library's come from NFO files or scrapers. With TMDb Helper, online ratings fill the gaps: enter an MDbList (or OMDb) API key in its settings and keep its \"Use online ratings in details monitor\" on."
+msgstr "Festlegen, welche Bewertungen Bald wo anzeigt. Die Bewertungen der Bibliothek stammen aus NFO-Dateien oder Scrapern. Mit TMDb Helper füllen Online-Bewertungen die Lücken: In dessen Einstellungen einen MDbList- (oder OMDb-)API-Schlüssel eingeben und „Use online ratings in details monitor“ eingeschaltet lassen."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: master switch
+msgctxt "#31302"
+msgid "Show ratings"
+msgstr "Bewertungen anzeigen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source: setting row and Default rating source value (proper name)
+msgctxt "#31303"
+msgid "IMDb"
+msgstr "IMDb"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source: setting row and Default rating source value (proper name)
+msgctxt "#31304"
+msgid "TMDb"
+msgstr "TMDb"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source: setting row and Default rating source value (proper name)
+msgctxt "#31307"
+msgid "Metacritic"
+msgstr "Metacritic"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source: setting row and Default rating source value (proper name)
+msgctxt "#31308"
+msgid "Trakt"
+msgstr "Trakt"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Rating source: setting row (proper name)
+msgctxt "#31309"
+msgid "TVDb"
+msgstr "TVDb"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: source setting, and a Default rating source value
+msgctxt "#31311"
+msgid "Rotten Tomatoes critics"
+msgstr "Rotten Tomatoes Kritiker"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: source setting, and a Default rating source value
+msgctxt "#31312"
+msgid "Rotten Tomatoes audience"
+msgstr "Rotten Tomatoes Publikum"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: Kodi's default rating, shown only when no named source has one
+msgctxt "#31313"
+msgid "Default rating when no source is named"
+msgstr "Standardbewertung ohne angegebene Quelle"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31314"
+msgid "On information screens"
+msgstr "Auf Informationsseiten"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31315"
+msgid "On Home"
+msgstr "Auf dem Startbildschirm"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31316"
+msgid "In library views"
+msgstr "In Bibliotheksansichten"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31317"
+msgid "On the player's info overlay"
+msgstr "Im Info-Overlay des Players"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: show the number of votes after each rating
+msgctxt "#31318"
+msgid "Vote counts"
+msgstr "Anzahl der Stimmen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: which service the library's unnamed default rating came from (sets its icon and format)
+msgctxt "#31319"
+msgid "Default rating source"
+msgstr "Standard-Bewertungsquelle"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: no particular service (a star icon)
+msgctxt "#31320"
+msgid "Generic"
+msgstr "Allgemein"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: the Jellyfin media server (brand name)
+msgctxt "#31321"
+msgid "Jellyfin"
+msgstr "Jellyfin"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: Kodi itself (brand name)
+msgctxt "#31322"
+msgid "Kodi"
+msgstr "Kodi"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: TMDb Helper's online ratings switch
+msgctxt "#31323"
+msgid "Online ratings from TMDb Helper"
+msgstr "Online-Bewertungen von TMDb Helper"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: opens TMDb Helper's add-on settings
+msgctxt "#31324"
+msgid "TMDb Helper settings"
+msgstr "TMDb-Helper-Einstellungen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings > TMDb Helper settings: what is entered there
+msgctxt "#31325"
+msgid "MDbList or OMDb API key"
+msgstr "MDbList- oder OMDb-API-Schlüssel"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source (brand name)
+msgctxt "#31326"
+msgid "Letterboxd"
+msgstr "Letterboxd"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, Metacritic's user score
+msgctxt "#31327"
+msgid "Metacritic users"
+msgstr "Metacritic Nutzer"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source (brand name)
+msgctxt "#31328"
+msgid "MyAnimeList"
+msgstr "MyAnimeList"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, Roger Ebert's star rating
+msgctxt "#31329"
+msgid "Roger Ebert"
+msgstr "Roger Ebert"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, MDbList's own combined score
+msgctxt "#31330"
+msgid "MDbList score"
+msgstr "MDbList-Wertung"
+
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window
 msgctxt "#31597"
@@ -810,6 +1029,1585 @@ msgstr "Untertitelcodec"
 msgctxt "#31615"
 msgid "Subtitle language"
 msgstr "Untertitelsprache"
+
+#: /1080i/Includes_Bald_Playback.xml
+#. Seek row hint while playing
+msgctxt "#31616"
+msgid "Left and right to skip"
+msgstr "Links und Rechts zum Springen"
+
+#: /1080i/Includes_Bald_Playback.xml
+#. Seek row hint while paused
+msgctxt "#31617"
+msgid "Right for the next frame"
+msgstr "Rechts für das nächste Bild"
+
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
+#. OSD hint: the seek row is above the buttons
+msgctxt "#31618"
+msgid "Up to seek"
+msgstr "Hoch zum Spulen"
+
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/VideoOSDBookmarks.xml
+#. OSD hint when there is no seek row
+msgctxt "#31619"
+msgid "Back to close"
+msgstr "Zurück zum Schließen"
+
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
+#. OSD stop button
+msgctxt "#31620"
+msgid "Stop"
+msgstr "Stopp"
+
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. OSD play/pause button while playing
+msgctxt "#31621"
+msgid "Pause"
+msgstr "Pause"
+
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
+#. Prefix of the next item on the info overlay
+msgctxt "#31622"
+msgid "Up next"
+msgstr "Als Nächstes"
+
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
+#. Seek row hint: the buttons are below
+msgctxt "#31623"
+msgid "Down for controls"
+msgstr "Runter für Steuerung"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD status line: playing normally
+msgctxt "#31624"
+msgid "Playing"
+msgstr "Wiedergabe"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD back button with an earlier chapter
+msgctxt "#31625"
+msgid "Previous chapter"
+msgstr "Vorheriges Kapitel"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD forward button with a later chapter
+msgctxt "#31626"
+msgid "Next chapter"
+msgstr "Nächstes Kapitel"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD hint: Down opens the panels under the controls
+msgctxt "#31627"
+msgid "Down for more"
+msgstr "Runter für mehr"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD: the seek slider over the bar
+msgctxt "#31628"
+msgid "Seek"
+msgstr "Spulen"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD cast panel heading while it lists the crew
+msgctxt "#31629"
+msgid "Crew"
+msgstr "Crew"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD cast panel hint
+msgctxt "#31630"
+msgid "Down for crew"
+msgstr "Runter für Crew"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD cast panel hint while it lists the crew
+msgctxt "#31631"
+msgid "Up for cast"
+msgstr "Hoch für Besetzung"
+
+#: /1080i/Custom_1126_OSDCast.xml
+#. Video OSD cast panel hint
+msgctxt "#31632"
+msgid "Select for the biography"
+msgstr "OK für die Biografie"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD hint on the audio and subtitle buttons: Up focuses the stream list
+msgctxt "#31633"
+msgid "Up to choose"
+msgstr "Hoch zum Auswählen"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD playlist panel: marks the item that is playing
+msgctxt "#31634"
+msgid "Now playing"
+msgstr "Gerade läuft"
+
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
+#. Up Next add-on window: play the next episode now
+msgctxt "#31635"
+msgid "Watch now"
+msgstr "Jetzt ansehen"
+
+#: /1080i/script-upnext-stillwatching-simple.xml
+#: /1080i/script-upnext-stillwatching.xml
+#. Up Next add-on window heading
+msgctxt "#31636"
+msgid "Still watching?"
+msgstr "Noch dabei?"
+
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/script-upnext-stillwatching-simple.xml
+#: /1080i/script-upnext-stillwatching.xml
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
+#. Unit after a number of seconds, for example '5 seconds'. Shown inside $INFO, so no comma
+msgctxt "#31637"
+msgid "seconds"
+msgstr "Sekunden"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: the cast panel under the controls
+msgctxt "#31638"
+msgid "Cast and crew"
+msgstr "Besetzung und Crew"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: the playlist or season panel under the controls
+msgctxt "#31639"
+msgid "Playlist and episodes"
+msgstr "Wiedergabeliste und Folgen"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, When paused: the seek bar leaves after the delay
+msgctxt "#31640"
+msgid "Hide the bar"
+msgstr "Leiste ausblenden"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, When paused: the info overlay appears after the delay
+msgctxt "#31641"
+msgid "Show info"
+msgstr "Info anzeigen"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31642"
+msgid "Elapsed and total"
+msgstr "Vergangen und gesamt"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31643"
+msgid "Remaining and total"
+msgstr "Verbleibend und gesamt"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31644"
+msgid "Elapsed and remaining"
+msgstr "Vergangen und verbleibend"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD video panel: the play speed row
+msgctxt "#31645"
+msgid "Left and right to change speed"
+msgstr "Links und Rechts ändern die Geschwindigkeit"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: what the times either side of the bar show
+msgctxt "#31646"
+msgid "Time display"
+msgstr "Zeitanzeige"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31880"
+msgid "Clearlogo on the controls"
+msgstr "Clearlogo in der Steuerung"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31881"
+msgid "Media flags on the controls"
+msgstr "Medienflags in der Steuerung"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31882"
+msgid "Plot on the controls"
+msgstr "Handlung in der Steuerung"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings, Info overlay: the landscape art with its progress line
+msgctxt "#31648"
+msgid "Artwork"
+msgstr "Artwork"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Bald Settings: note under Playback
+msgctxt "#31649"
+msgid "Controls, seek bar and pause"
+msgstr "Steuerung, Suchleiste und Pause"
+
+#: /1080i/Includes_Bald_Overlays.xml
+#. Volume bar label while the sound is muted
+msgctxt "#31650"
+msgid "Muted"
+msgstr "Stumm"
+
+#: /1080i/Includes_Bald_PVR.xml
+msgctxt "#31660"
+msgid "Live TV options"
+msgstr "Live-TV-Optionen"
+
+#: /1080i/Includes_Bald_PVR.xml
+msgctxt "#31661"
+msgid "Left for options"
+msgstr "Links für Optionen"
+
+#: /1080i/DialogPVRChannelsOSD.xml
+#: /1080i/MyPVRChannels.xml
+#: /1080i/Custom_1125_OSDPlaylist.xml
+msgctxt "#31662"
+msgid "Select to watch"
+msgstr "OK zum Ansehen"
+
+#: /1080i/Includes_Bald_PVR.xml
+#: /1080i/MyPVRRecordings.xml
+msgctxt "#31663"
+msgid "Select to play"
+msgstr "OK zum Abspielen"
+
+#: /1080i/Includes_Bald_PVR.xml
+msgctxt "#31664"
+msgid "Info for details"
+msgstr "Info für Details"
+
+#: /1080i/MyPVRTimers.xml
+msgctxt "#31665"
+msgid "Select to edit"
+msgstr "OK zum Bearbeiten"
+
+#: /1080i/MyPVRProviders.xml
+#: /1080i/MyPVRSearch.xml
+msgctxt "#31666"
+msgid "Select to open"
+msgstr "OK zum Öffnen"
+
+#: /1080i/DialogPVRChannelsOSD.xml
+msgctxt "#31667"
+msgid "Left or right for channel groups"
+msgstr "Links oder Rechts für Sendergruppen"
+
+#: /1080i/DialogPVRChannelGuide.xml
+msgctxt "#31668"
+msgid "Select for details"
+msgstr "OK für Details"
+
+#: /1080i/DialogPVRChannelGuide.xml
+#: /1080i/DialogPVRInfo.xml
+msgctxt "#31669"
+msgid "Back to close"
+msgstr "Zurück zum Schließen"
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the first programme or channel
+msgctxt "#31670"
+msgid "First"
+msgstr "Erste"
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the last programme or channel
+msgctxt "#31671"
+msgid "Last"
+msgstr "Letzte"
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the channel that is playing
+msgctxt "#31672"
+msgid "Playing"
+msgstr "Aktuell"
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: the next channel group
+msgctxt "#31673"
+msgid "Next"
+msgstr "Nächste"
+
+#: /1080i/DialogPVRInfo.xml
+msgctxt "#31678"
+msgid "Up for the full plot"
+msgstr "Hoch für die ganze Handlung"
+
+#: /1080i/DialogPVRInfo.xml
+msgctxt "#31679"
+msgid "Left or right to choose"
+msgstr "Links oder Rechts zum Auswählen"
+
+#: /1080i/Includes.xml
+msgctxt "#31685"
+msgid "Left for options"
+msgstr "Links für Optionen"
+
+#: /1080i/EventLog.xml
+msgctxt "#31686"
+msgid "Right for options"
+msgstr "Rechts für Optionen"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/MyPVRGuide.xml
+msgctxt "#31700"
+msgid "Live TV"
+msgstr "Live-TV"
+
+#: /1080i/Home.xml
+msgctxt "#31702"
+msgid "Back for menu"
+msgstr "Zurück für Menü"
+
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31705"
+msgid "Select to open the guide."
+msgstr "OK öffnet den TV-Guide."
+
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31706"
+msgid "Select to search your library."
+msgstr "OK durchsucht die Bibliothek."
+
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31707"
+msgid "Configure Kodi, manage media sources, or change the skin."
+msgstr "Kodi konfigurieren, Medienquellen verwalten oder den Skin wechseln."
+
+#: /1080i/Includes_Bald_Home.xml
+#. Row position counter, "3 of 12"
+msgctxt "#31708"
+msgid "of"
+msgstr "von"
+
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/Includes_Bald_InfoTV.xml
+#: /1080i/Includes_Bald_LibraryList.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /1080i/script-globalsearch.xml
+#: /1080i/Includes_Bald_Browse.xml
+#: /1080i/Includes_Bald_OSD.xml
+#. Runtime unit after a number of minutes, "52 min"
+msgctxt "#31710"
+msgid "min"
+msgstr "Min."
+
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /scripts/info.py
+#. Season count of a show with one season
+msgctxt "#31711"
+msgid "1 season"
+msgstr "1 Staffel"
+
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /scripts/info.py
+#. Follows a season count, "4 seasons"
+msgctxt "#31712"
+msgid "seasons"
+msgstr "Staffeln"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Follows "watched / total", "10 / 24 episodes watched"
+msgctxt "#31713"
+msgid "episodes watched"
+msgstr "Folgen gesehen"
+
+#: /1080i/Includes_Bald_Info.xml
+#. Follows an audio channel count, "6 channels"
+msgctxt "#31714"
+msgid "channels"
+msgstr "Kanäle"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+#: /1080i/Includes_Bald_InfoTV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Lowercase watched state inside a metadata line, "52 min, watched" or "70% watched"
+msgctxt "#31715"
+msgid "watched"
+msgstr "gesehen"
+
+#: /1080i/Includes_Bald_InfoTV.xml
+#. Lowercase resume state inside a metadata line, "52 min, in progress"
+msgctxt "#31716"
+msgid "in progress"
+msgstr "begonnen"
+
+#: /1080i/Includes_Bald_InfoTV.xml
+#. Precedes an air date, "aired 3 March 2024"
+msgctxt "#31717"
+msgid "aired"
+msgstr "ausgestrahlt"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Follows an episode count, "24 episodes"
+msgctxt "#31718"
+msgid "episodes"
+msgstr "Folgen"
+
+#: /scripts/info.py
+#. Joins the first and last year a show aired, "2019 to 2024"
+msgctxt "#31719"
+msgid "to"
+msgstr "bis"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Home row style names (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
+msgctxt "#31720"
+msgid "Fanart"
+msgstr "Fanart"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31721"
+msgid "Thumbnail"
+msgstr "Vorschaubild"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31722"
+msgid "Fanart with logo"
+msgstr "Fanart mit Logo"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31723"
+msgid "Poster"
+msgstr "Poster"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Row clearlogo on the art frame (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
+msgctxt "#31724"
+msgid "On"
+msgstr "Ein"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31725"
+msgid "Off"
+msgstr "Aus"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Bald Appearance, Behavior: hold a splash at startup until every Home row has loaded.
+msgctxt "#31726"
+msgid "Preload Home at startup"
+msgstr "Startbildschirm beim Start vorladen"
+
+#: /1080i/Includes_Bald_Home.xml
+#. The skin's name as the startup splash wordmark, with its full stop; keep as is.
+msgctxt "#31727"
+msgid "Bald."
+msgstr "Bald."
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Widget editor: row style whose tiles show the item's name (channel groups, genres, folders)
+msgctxt "#31728"
+msgid "Text"
+msgstr "Text"
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+msgctxt "#31730"
+msgid "Bald Settings"
+msgstr "Bald-Einstellungen"
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31731"
+msgid "Customization"
+msgstr "Anpassung"
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31732"
+msgid "Configure Home, Movies, and TV Shows screens and their widgets."
+msgstr "Startbildschirm, Filme und Serien sowie deren Widgets konfigurieren."
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31733"
+msgid "Artwork, media information, motion, navigation hints, and the settings of windows that still use Estuary's design."
+msgstr "Artwork, Medieninformationen, Bewegung, Navigationshinweise und die Einstellungen der Fenster, die noch das Estuary-Design verwenden."
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+msgctxt "#31734"
+msgid "Open CoreELEC service and hardware settings."
+msgstr "CoreELEC-Dienste und -Hardwareeinstellungen öffnen."
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+msgctxt "#31735"
+msgid "Open LibreELEC service and hardware settings."
+msgstr "LibreELEC-Dienste und -Hardwareeinstellungen öffnen."
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31736"
+msgid "Services & Helpers"
+msgstr "Dienste & Helfer"
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+msgctxt "#31737"
+msgid "Manage installed add-ons and their settings."
+msgstr "Installierte Addons und deren Einstellungen verwalten."
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/SettingsCategory.xml
+#: /1080i/SettingsProfile.xml
+#: /1080i/SettingsSystemInfo.xml
+msgctxt "#31738"
+msgid "Back for settings"
+msgstr "Zurück für Einstellungen"
+
+#: /1080i/DialogVideoInfo.xml
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31739"
+msgid "Select to open"
+msgstr "OK zum Öffnen"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31740"
+msgid "Home Screens"
+msgstr "Startbildschirme"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31741"
+msgid "The default screen. Home cannot be removed."
+msgstr "Der Standardbildschirm. Der Startbildschirm kann nicht entfernt werden."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31745"
+msgid "Configure widgets"
+msgstr "Widgets konfigurieren"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31746"
+msgid "Back for Bald settings"
+msgstr "Zurück für Bald-Einstellungen"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/SettingsCategory.xml
+#: /1080i/SettingsProfile.xml
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/Includes.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31747"
+msgid "Select to change"
+msgstr "OK zum Ändern"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#. Follows a screen name as a window title, "Movies Widgets"
+msgctxt "#31748"
+msgid "Widgets"
+msgstr "Widgets"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31749"
+msgid "Choose content"
+msgstr "Inhalt auswählen"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31750"
+msgid "Items per row"
+msgstr "Einträge pro Zeile"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31751"
+msgid "Add widget"
+msgstr "Widget hinzufügen"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31752"
+msgid "Remove widget"
+msgstr "Widget entfernen"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31753"
+msgid "Back to save and apply"
+msgstr "Zurück zum Speichern und Übernehmen"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31754"
+msgid "Left for widgets"
+msgstr "Links für Widgets"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31755"
+msgid "Choose how artwork and its background treatment appear throughout Bald."
+msgstr "Festlegen, wie Artwork und die Hintergrundgestaltung in Bald dargestellt werden."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31756"
+msgid "Choose which details Bald shows with titles, in list views and in page headers."
+msgstr "Festlegen, welche Details Bald zu Titeln, in Listenansichten und in Seitenköpfen anzeigt."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31757"
+msgid "Behavior"
+msgstr "Verhalten"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31758"
+msgid "Configure idle motion, navigation help, plot scrolling and startup."
+msgstr "Bewegung im Leerlauf, Navigationshilfe, Scrollen der Handlung und Programmstart konfigurieren."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31761"
+msgid "Clearlogos on artwork"
+msgstr "Clearlogos auf Artwork"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31762"
+msgid "Blurred fanart backgrounds"
+msgstr "Unscharfe Fanart-Hintergründe"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31763"
+msgid "Media flags"
+msgstr "Medienflags"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31764"
+msgid "Ambient movement when idle"
+msgstr "Bewegung im Leerlauf"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31765"
+msgid "Always show navigation hints"
+msgstr "Navigationshinweise immer anzeigen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31766"
+msgid "Reset navigation hint"
+msgstr "Navigationshinweis zurücksetzen"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31767"
+msgid "Style"
+msgstr "Stil"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#. The row's own clearlogo on the Home art frame, not the tile logo of the Fanart with logo style.
+msgctxt "#31768"
+msgid "Clearlogo on artwork"
+msgstr "Clearlogo auf Artwork"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31769"
+msgid "Show item count in rows"
+msgstr "Anzahl der Einträge in Zeilen anzeigen"
+
+#: /1080i/Includes_Bald_Info.xml
+msgctxt "#31770"
+msgid "Overview"
+msgstr "Übersicht"
+
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31771"
+msgid "Cast & details"
+msgstr "Besetzung & Details"
+
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31772"
+msgid "More like this"
+msgstr "Ähnliche Titel"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31773"
+msgid "Start over"
+msgstr "Von vorne beginnen"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31774"
+msgid "No cast information available."
+msgstr "Keine Besetzungsinformationen verfügbar."
+
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31775"
+msgid "Directed by"
+msgstr "Regie"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31776"
+msgid "Written by"
+msgstr "Drehbuch"
+
+#: /1080i/Includes_Bald_Info.xml
+msgctxt "#31777"
+msgid "Loading recommendations…"
+msgstr "Empfehlungen werden geladen …"
+
+#: /1080i/Includes_Bald_Info.xml
+msgctxt "#31778"
+msgid "No related titles in your library."
+msgstr "Keine ähnlichen Titel in der Bibliothek."
+
+#: /1080i/DialogVideoInfo.xml
+#: /1080i/Includes_Bald_InfoTV.xml
+msgctxt "#31779"
+msgid "Down for cast & details"
+msgstr "Runter für Besetzung & Details"
+
+#: /1080i/DialogVideoInfo.xml
+msgctxt "#31780"
+msgid "Up for overview"
+msgstr "Hoch für Übersicht"
+
+#: /1080i/DialogVideoInfo.xml
+msgctxt "#31781"
+msgid "Down for more like this"
+msgstr "Runter für ähnliche Titel"
+
+#: /1080i/DialogVideoInfo.xml
+msgctxt "#31782"
+msgid "Up for cast & details"
+msgstr "Hoch für Besetzung & Details"
+
+#: /1080i/Includes_Bald_InfoTV.xml
+msgctxt "#31783"
+msgid "All seasons"
+msgstr "Alle Staffeln"
+
+#: /1080i/Includes_Bald_InfoTV.xml
+msgctxt "#31784"
+msgid "Select to play"
+msgstr "OK zum Abspielen"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+#. Precedes the title that "More like this" recommendations are based on, "For Alien"
+msgctxt "#31785"
+msgid "For"
+msgstr "Passend zu"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31800"
+msgid "Library options"
+msgstr "Bibliotheksoptionen"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31801"
+msgid "View"
+msgstr "Ansicht"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31802"
+msgid "Sort by"
+msgstr "Sortieren nach"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31803"
+msgid "Order"
+msgstr "Reihenfolge"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31804"
+msgid "Watched status"
+msgstr "Gesehen-Status"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31805"
+msgid "Search your movie library."
+msgstr "Die Filmbibliothek durchsuchen."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31806"
+msgid "Search your TV-show library."
+msgstr "Die Serienbibliothek durchsuchen."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31807"
+msgid "Search your episode library."
+msgstr "Die Folgenbibliothek durchsuchen."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31808"
+msgid "Narrow the items shown by genre, year, rating and other library details."
+msgstr "Die angezeigten Einträge nach Genre, Jahr, Bewertung und weiteren Bibliotheksdetails eingrenzen."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31809"
+msgid "Narrow the items shown by matching their titles."
+msgstr "Die angezeigten Einträge über passende Titel eingrenzen."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31810"
+msgid "Update library"
+msgstr "Bibliothek aktualisieren"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31811"
+msgid "Scan your configured video sources for new or changed items."
+msgstr "Die eingerichteten Videoquellen nach neuen oder geänderten Einträgen durchsuchen."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31812"
+msgid "Stop update"
+msgstr "Aktualisierung stoppen"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31813"
+msgid "Stop the current video-library scan."
+msgstr "Die laufende Durchsuchung der Videobibliothek stoppen."
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Followed by the current layout name and a full stop
+msgctxt "#31814"
+msgid "Current view:"
+msgstr "Aktuelle Ansicht:"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31815"
+msgid "Select to switch to the next library layout."
+msgstr "OK wechselt zur nächsten Bibliotheksansicht."
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Followed by the current sort method and a full stop
+msgctxt "#31816"
+msgid "Currently sorted by"
+msgstr "Aktuell sortiert nach"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31817"
+msgid "Choose how items are arranged."
+msgstr "Festlegen, wie die Einträge angeordnet werden."
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Followed by the current sort order and a full stop
+msgctxt "#31818"
+msgid "Current order:"
+msgstr "Aktuelle Reihenfolge:"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31819"
+msgid "Select to reverse it."
+msgstr "OK kehrt sie um."
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Followed by the current watched filter and a full stop
+msgctxt "#31820"
+msgid "Showing:"
+msgstr "Angezeigt:"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31821"
+msgid "Cycle all movies, unwatched and watched."
+msgstr "Wechselt zwischen allen, ungesehenen und gesehenen Filmen."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31822"
+msgid "Choose Title sort in options"
+msgstr "In den Optionen nach Titel sortieren"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31823"
+msgid "No movies to browse"
+msgstr "Keine Filme zum Durchstöbern"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31824"
+msgid "Browse by letter"
+msgstr "Nach Buchstaben durchstöbern"
+
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+msgctxt "#31825"
+msgid "No movies to display. Open options to adjust your filters."
+msgstr "Keine Filme vorhanden. In den Optionen die Filter anpassen."
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+msgctxt "#31826"
+msgid "Down for letters"
+msgstr "Runter für Buchstaben"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/Includes.xml
+#: /1080i/EventLog.xml
+msgctxt "#31827"
+msgid "Info for details"
+msgstr "Info für Details"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+msgctxt "#31828"
+msgid "Up for options"
+msgstr "Hoch für Optionen"
+
+#: /1080i/View_511_Bald_Wall.xml
+msgctxt "#31829"
+msgid "Menu for options"
+msgstr "Menü für Optionen"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+msgctxt "#31830"
+msgid "Left / Right to jump letters"
+msgstr "Links / Rechts springt zwischen Buchstaben"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+msgctxt "#31831"
+msgid "Up / Select / Back to browse"
+msgstr "Hoch / OK / Zurück zum Durchstöbern"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/Includes.xml
+msgctxt "#31832"
+msgid "Left / Back to browse"
+msgstr "Links / Zurück zum Durchstöbern"
+
+#: /1080i/View_511_Bald_Wall.xml
+msgctxt "#31833"
+msgid "Right edge for letters"
+msgstr "Rechter Rand für Buchstaben"
+
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_514_Bald_ArtworkList.xml
+msgctxt "#31834"
+msgid "Right for letters"
+msgstr "Rechts für Buchstaben"
+
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31835"
+msgid "Select for seasons"
+msgstr "OK für Staffeln"
+
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31836"
+msgid "Select for episodes"
+msgstr "OK für Folgen"
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31850"
+msgid "Bald posters"
+msgstr "Bald Poster"
+
+#: /1080i/View_511_Bald_Wall.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31851"
+msgid "Bald poster wall"
+msgstr "Bald Posterwand"
+
+#: /1080i/View_512_Bald_WallPreview.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31852"
+msgid "Bald wall with preview"
+msgstr "Bald Wand mit Vorschau"
+
+#: /1080i/View_513_Bald_CompactList.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31853"
+msgid "Bald compact list"
+msgstr "Bald kompakte Liste"
+
+#: /1080i/View_514_Bald_ArtworkList.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31854"
+msgid "Bald artwork list"
+msgstr "Bald Artwork-Liste"
+
+#: /1080i/View_515_Bald_PosterLow.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31855"
+msgid "Bald poster low"
+msgstr "Bald Poster niedrig"
+
+#: /1080i/View_520_Bald_TV.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31856"
+msgid "Bald series posters"
+msgstr "Bald Serienposter"
+
+#: /1080i/View_520_Bald_TV.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31857"
+msgid "Bald seasons"
+msgstr "Bald Staffeln"
+
+#: /1080i/View_520_Bald_TV.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31858"
+msgid "Bald episodes"
+msgstr "Bald Folgen"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31859"
+msgid "Bald series wall"
+msgstr "Bald Serienwand"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31860"
+msgid "Bald series compact"
+msgstr "Bald Serien kompakt"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31861"
+msgid "Bald series poster low"
+msgstr "Bald Serienposter niedrig"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31862"
+msgid "Bald seasons compact"
+msgstr "Bald Staffeln kompakt"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31863"
+msgid "Bald episodes compact"
+msgstr "Bald Folgen kompakt"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31864"
+msgid "Bald episode wall"
+msgstr "Bald Folgenwand"
+
+#: /1080i/script-globalsearch.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31865"
+msgid "Bald search list"
+msgstr "Bald Suchliste"
+
+#: /1080i/Includes_PVR.xml
+#. Heading of the Live TV guide tools panel, shown in capitals
+msgctxt "#31870"
+msgid "GUIDE TOOLS"
+msgstr "GUIDE-WERKZEUGE"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31871"
+msgid "Jump to live programming, change group or date, search the guide, or return to Home."
+msgstr "Zum laufenden Programm springen, Gruppe oder Datum wechseln, den TV-Guide durchsuchen oder zum Startbildschirm zurückkehren."
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31872"
+msgid "Return to guide"
+msgstr "Zurück zum TV-Guide"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31873"
+msgid "Jump to now"
+msgstr "Zu jetzt springen"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31874"
+msgid "Choose channel group"
+msgstr "Sendergruppe auswählen"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31875"
+msgid "Choose date"
+msgstr "Datum auswählen"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31876"
+msgid "Exit Live TV"
+msgstr "Live-TV beenden"
+
+#: /1080i/MyPVRGuide.xml
+msgctxt "#31877"
+msgid "No programme information"
+msgstr "Keine Programminformationen"
+
+#: /1080i/MyPVRGuide.xml
+msgctxt "#31878"
+msgid "The selected channel has no matching guide data."
+msgstr "Für den ausgewählten Sender sind keine passenden Guide-Daten vorhanden."
+
+#: /1080i/MyPVRGuide.xml
+msgctxt "#31879"
+msgid "Back for guide tools · Select for programme actions"
+msgstr "Zurück für Guide-Werkzeuge · OK für Sendungsaktionen"
+
+#: /1080i/script-globalsearch.xml
+msgctxt "#31890"
+msgid "Series / artist"
+msgstr "Serie / Interpret"
+
+#: /1080i/script-globalsearch.xml
+msgctxt "#31891"
+msgid "Search options"
+msgstr "Suchoptionen"
+
+#: /1080i/script-globalsearch.xml
+msgctxt "#31892"
+msgid "New search"
+msgstr "Neue Suche"
+
+#: /1080i/script-globalsearch.xml
+msgctxt "#31893"
+msgid "Up / Left for options · Info for details · Back to close"
+msgstr "Hoch / Links für Optionen · Info für Details · Zurück zum Schließen"
+
+#: /1080i/script-globalsearch.xml
+#. Precedes the search text in quotes, "Results for “alien”"
+msgctxt "#31894"
+msgid "Results for"
+msgstr "Ergebnisse für"
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31900"
+msgid "Play the selected item."
+msgstr "Den ausgewählten Eintrag abspielen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31901"
+msgid "Start playback from the beginning."
+msgstr "Die Wiedergabe von Anfang an starten."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31902"
+msgid "Continue watching this series from your current progress."
+msgstr "Die Serie ab dem aktuellen Fortschritt weiterschauen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31903"
+msgid "Play from this item onward in the current list."
+msgstr "Ab diesem Eintrag in der aktuellen Liste abspielen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31904"
+msgid "Play this item without continuing through the list."
+msgstr "Nur diesen Eintrag abspielen, ohne die Liste fortzusetzen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31905"
+msgid "Continue from where you stopped watching."
+msgstr "Dort fortsetzen, wo die Wiedergabe beendet wurde."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31906"
+msgid "Play this next, after the current item."
+msgstr "Als Nächstes nach dem aktuellen Eintrag abspielen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31907"
+msgid "Add this item to the end of the playback queue."
+msgstr "Diesen Eintrag am Ende der Wiedergabewarteschlange hinzufügen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31908"
+msgid "Choose which player to use for this item."
+msgstr "Den Player für diesen Eintrag auswählen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31909"
+msgid "View the synopsis, cast and media details."
+msgstr "Handlung, Besetzung und Mediendetails anzeigen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31910"
+msgid "Mark this item as watched in your library."
+msgstr "Diesen Eintrag in der Bibliothek als gesehen markieren."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31911"
+msgid "Mark this item as unwatched in your library."
+msgstr "Diesen Eintrag in der Bibliothek als ungesehen markieren."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31912"
+msgid "Save a shortcut to this item in Favourites."
+msgstr "Eine Verknüpfung zu diesem Eintrag in den Favoriten speichern."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31913"
+msgid "Remove this item's shortcut from Favourites."
+msgstr "Die Verknüpfung zu diesem Eintrag aus den Favoriten entfernen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31914"
+msgid "Open the available library management actions."
+msgstr "Die verfügbaren Aktionen zur Bibliotheksverwaltung öffnen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31915"
+msgid "Choose artwork for this item."
+msgstr "Artwork für diesen Eintrag auswählen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31916"
+msgid "Change this item's title in the library."
+msgstr "Den Titel dieses Eintrags in der Bibliothek ändern."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31917"
+msgid "Change the title used to sort this item."
+msgstr "Den Titel ändern, nach dem dieser Eintrag sortiert wird."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31918"
+msgid "Associate this movie with a TV show."
+msgstr "Diesen Film mit einer Serie verknüpfen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31919"
+msgid "Choose the movie set this title belongs to."
+msgstr "Die Filmreihe auswählen, zu der dieser Titel gehört."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31920"
+msgid "Manage the available versions of this movie."
+msgstr "Die verfügbaren Versionen dieses Films verwalten."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31921"
+msgid "Remove this item from Kodi's library."
+msgstr "Diesen Eintrag aus der Kodi-Bibliothek entfernen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31922"
+msgid "Refresh this item's information."
+msgstr "Die Informationen zu diesem Eintrag aktualisieren."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31923"
+msgid "Look for new media in this source."
+msgstr "Diese Quelle nach neuen Medien durchsuchen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31924"
+msgid "Add this item's information to the library."
+msgstr "Die Informationen zu diesem Eintrag zur Bibliothek hinzufügen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31925"
+msgid "Open this item to browse its contents."
+msgstr "Diesen Eintrag öffnen, um seinen Inhalt zu durchstöbern."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31926"
+msgid "Open Jellyfin's actions for this item."
+msgstr "Die Jellyfin-Aktionen für diesen Eintrag öffnen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31927"
+msgid "Play this item with server-side transcoding."
+msgstr "Diesen Eintrag mit serverseitiger Transkodierung abspielen."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+#. Context menu note: Select to use “<button label>” for this item.
+msgctxt "#31928"
+msgid "Select to use"
+msgstr "OK, um"
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+#. Context menu note: Select to use “<button label>” for this item.
+msgctxt "#31929"
+msgid "for this item."
+msgstr "für diesen Eintrag zu verwenden."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31930"
+msgid "Select an action for this item."
+msgstr "Eine Aktion für diesen Eintrag auswählen."
+
+#: /1080i/Font.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Font set names: Kodi's Interface > Skin > Fonts list and Bald Settings > Appearance > Typography
+msgctxt "#31940"
+msgid "Instrument Sans"
+msgstr "Instrument Sans"
+
+#: /1080i/Font.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31941"
+msgid "DM Sans"
+msgstr "DM Sans"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31942"
+msgid "Typography"
+msgstr "Typografie"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31943"
+msgid "Choose the typeface Bald uses on every screen. Changing it reloads the skin."
+msgstr "Die Schriftart auswählen, die Bald auf allen Bildschirmen verwendet. Eine Änderung lädt den Skin neu."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31944"
+msgid "Font"
+msgstr "Schriftart"
+
+#: /1080i/SettingsCategory.xml
+msgctxt "#31950"
+msgid "Settings level"
+msgstr "Einstellungsstufe"
+
+#: /1080i/Settings.xml
+msgctxt "#31951"
+msgid "Home screens, widgets, and Bald's appearance."
+msgstr "Startbildschirme, Widgets und das Erscheinungsbild von Bald."
+
+#: /1080i/Settings.xml
+msgctxt "#31952"
+msgid "Playback of videos, music, discs, and pictures, with language and subtitle choices."
+msgstr "Wiedergabe von Videos, Musik, Discs und Bildern, mit Sprach- und Untertitelauswahl."
+
+#: /1080i/Settings.xml
+msgctxt "#31953"
+msgid "Library, media sources, and how media is shown and browsed."
+msgstr "Bibliothek, Medienquellen und wie Medien angezeigt und durchstöbert werden."
+
+#: /1080i/Settings.xml
+msgctxt "#31954"
+msgid "Live TV clients, the guide, channels, and recordings."
+msgstr "PVR-Clients, TV-Guide, Sender und Aufnahmen."
+
+#: /1080i/Settings.xml
+msgctxt "#31955"
+msgid "Remote control, UPnP, AirPlay, file sharing, and weather."
+msgstr "Fernbedienung, UPnP, AirPlay, Dateifreigabe und Wetter."
+
+#: /1080i/Settings.xml
+msgctxt "#31956"
+msgid "Game add-ons, controllers, and emulation."
+msgstr "Spiele-Addons, Controller und Emulation."
+
+#: /1080i/Settings.xml
+msgctxt "#31957"
+msgid "Skin, language and region, screensaver, and master lock."
+msgstr "Skin, Sprache und Region, Bildschirmschoner und Master-Sperre."
+
+#: /1080i/Settings.xml
+msgctxt "#31958"
+msgid "User profiles and the login screen."
+msgstr "Benutzerprofile und der Anmeldebildschirm."
+
+#: /1080i/Settings.xml
+msgctxt "#31959"
+msgid "Display, audio, input, internet access, power saving, and add-on updates."
+msgstr "Anzeige, Audio, Eingabe, Internetzugang, Energiesparen und Addon-Updates."
+
+#: /1080i/Settings.xml
+msgctxt "#31960"
+msgid "Browse, copy, and delete files on your sources."
+msgstr "Dateien in den Quellen durchstöbern, kopieren und löschen."
+
+#: /1080i/Settings.xml
+msgctxt "#31961"
+msgid "Hardware, storage, network, and version details."
+msgstr "Hardware, Speicher, Netzwerk und Versionsdetails."
+
+#: /1080i/Settings.xml
+msgctxt "#31962"
+msgid "Recent notifications and events from Kodi and its add-ons."
+msgstr "Aktuelle Benachrichtigungen und Ereignisse von Kodi und seinen Addons."
+
+#: /1080i/Settings.xml
+msgctxt "#31963"
+msgid "Back to return"
+msgstr "Zurück zum Zurückkehren"
+
+#: /1080i/SettingsProfile.xml
+msgctxt "#31964"
+msgid "Choose whether Kodi starts at the login screen, and which profile loads automatically."
+msgstr "Festlegen, ob Kodi mit dem Anmeldebildschirm startet und welches Profil automatisch geladen wird."
+
+#: /1080i/SettingsProfile.xml
+msgctxt "#31965"
+msgid "Select a profile to edit it, or add a new one."
+msgstr "Ein Profil zum Bearbeiten auswählen oder ein neues hinzufügen."
+
+#: /1080i/DialogPictureInfo.xml
+#: /1080i/MyWeather.xml
+#: /1080i/SettingsSystemInfo.xml
+msgctxt "#31966"
+msgid "Up and down to browse"
+msgstr "Hoch und Runter zum Durchstöbern"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings category
+msgctxt "#31970"
+msgid "Controls"
+msgstr "Steuerung"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Controls
+msgctxt "#31971"
+msgid "How long the controls stay up and what they show."
+msgstr "Wie lange die Steuerung sichtbar bleibt und was sie anzeigt."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Pause
+msgctxt "#31972"
+msgid "What the seek bar does when you pause."
+msgstr "Was die Suchleiste beim Pausieren tut."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings category
+msgctxt "#31973"
+msgid "Info overlay"
+msgstr "Info-Overlay"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Info overlay
+msgctxt "#31974"
+msgid "What the Info key and pausing in Show info mode show."
+msgstr "Was die Info-Taste und das Pausieren im Modus „Info anzeigen“ zeigen."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings category
+msgctxt "#31975"
+msgid "Down from the controls"
+msgstr "Runter aus der Steuerung"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Down from the controls
+msgctxt "#31976"
+msgid "The panels Down opens from the controls, in this order. Each one opens only when it applies."
+msgstr "Die Bereiche, die Runter aus der Steuerung öffnet, in dieser Reihenfolge. Jeder öffnet sich nur, wenn er zutrifft."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: OSD auto-close time
+msgctxt "#31977"
+msgid "Close the controls after"
+msgstr "Steuerung schließen nach"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: pause behaviour
+msgctxt "#31978"
+msgid "When paused"
+msgstr "Bei Pause"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: seconds before the pause behaviour starts
+msgctxt "#31979"
+msgid "Pause delay"
+msgstr "Pausenverzögerung"
+
+#: /1080i/LoginScreen.xml
+msgctxt "#31980"
+msgid "Select to log in"
+msgstr "OK zum Anmelden"
+
+#: /1080i/LoginScreen.xml
+msgctxt "#31981"
+msgid "Down for power options"
+msgstr "Runter für Energieoptionen"
+
+#: /1080i/DialogPictureInfo.xml
+msgctxt "#31982"
+msgid "Left and right to change picture"
+msgstr "Links und Rechts wechseln das Bild"
+
+#: /1080i/DialogMusicInfo.xml
+msgctxt "#31983"
+msgid "Details"
+msgstr "Details"
+
+#: /1080i/MyWeather.xml
+msgctxt "#31984"
+msgid "Menu for weather settings"
+msgstr "Menü für Wettereinstellungen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: fanart behind library pages outside the Bald views
+msgctxt "#31985"
+msgid "Fanart behind other library pages"
+msgstr "Fanart hinter anderen Bibliotheksseiten"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: music videos as posters in the wall views
+msgctxt "#31986"
+msgid "Posters for music videos"
+msgstr "Poster für Musikvideos"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: image pack for genre backgrounds
+msgctxt "#31987"
+msgid "Genre background pack"
+msgstr "Genre-Hintergrundpaket"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: image pack for the weather page's background
+msgctxt "#31988"
+msgid "Weather background pack"
+msgstr "Wetter-Hintergrundpaket"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: image pack for weather icons
+msgctxt "#31989"
+msgid "Weather icon pack"
+msgstr "Wetter-Iconpaket"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: how list views show a title's original title
+msgctxt "#31990"
+msgid "Titles in list views"
+msgstr "Titel in Listenansichten"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: profile name on the library page header
+msgctxt "#31991"
+msgid "Profile name in page headers"
+msgstr "Profilname in Seitenköpfen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: current temperature on the library page header
+msgctxt "#31992"
+msgid "Temperature in page headers"
+msgstr "Temperatur in Seitenköpfen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Behavior: long plots scroll on their own
+msgctxt "#31993"
+msgid "Scroll long plots"
+msgstr "Lange Handlungen scrollen"
 
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
