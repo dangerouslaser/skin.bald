@@ -450,3 +450,15 @@ class ReturnDefaultFocusTests(unittest.TestCase):
                        "SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)", "SetProperty(Bald.RowStyle,$PARAM[style],home)"):
             with self.subTest(action=action):
                 self.assertEqual(guarded[action], "!$EXP[Bald_ReturningToMenu]")
+
+
+class ContentPickerTests(unittest.TestCase):
+    """The widget editor's Choose content browser (Skin Variables' grouping://shortcuts/) offers the library, Bald's
+    playlists, video add-ons and the PVR channel groups; a chosen group becomes a row of its channels, with the grouping
+    entry's node as the row's target (the editor passes use_rawpath)."""
+
+    def test_channel_groups_can_be_chosen_as_rows(self):
+        config = json.loads((Path(__file__).resolve().parents[1] / "shortcuts" / "skinvariables-shortcut-config.json").read_text())
+        entries = {e["path"]: e for e in config["grouping://shortcuts/"]}
+        self.assertEqual((entries["pvr://channels/tv/"]["node"], entries["pvr://channels/tv/"]["link"]), ("tvchannels", "false"))
+        self.assertEqual((entries["pvr://channels/radio/"]["node"], entries["pvr://channels/radio/"]["link"]), ("radiochannels", "false"))
