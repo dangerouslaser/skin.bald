@@ -3,7 +3,7 @@
      DialogExtendedProgressBar.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Kodi (CGUIDialogExtendedProgressBar)
      binds label 30 (the task's title, "(n) " prefixed when several run), label 31 (its current step) and progress 32
      (shown once the task reports a percentage).
-     Bald: one line in the overlay band above the page, ending on the right safe edge: pulsing dots, the title at 80%
+     Bald: one line in the status band under the hint line, ending on the right safe edge: pulsing dots, the title at 80%
      ink and the step at 45% after a dot separator, with a 4 px accent bar under it. The step is left out when empty or
      when the title already says it, and the percentage is shown by the bar only (Estuary printed it after the title as
      well, so PVR startup read as two near-identical lines beside its spinner). Faded out over fullscreen video and games,
@@ -11,13 +11,13 @@
 <window>
 	<zorder>3</zorder>
 	<include content="Bald_OverlayOpenClose">
-		<param name="offset" value="0,-14" />
+		<param name="offset" value="0,14" />
 	</include>
 	<controls>
 		<control type="group">
 			<depth>DepthBars</depth>
 			<left>1224</left>
-			<top>Bald_OverlayBandTop</top>
+			<top>Bald_StatusBandTop</top>
 			<width>600</width>
 			<height>40</height>
 			<animation effect="fade" start="100" end="0" time="240" tween="sine" easing="inout" condition="Window.IsVisible(fullscreenvideo) | Window.IsVisible(FullscreenGame)">Conditional</animation>

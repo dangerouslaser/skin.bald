@@ -4,10 +4,14 @@
      caption sizes, ink for text and the accent only for progress. Motion is a short fade with a 14 px slide (docs/SPEC.md
      section 4 curves: move = cubic out, fade = sine inout). Constants and ids: see 1080i/IDs, "Global overlays". -->
 <includes>
-	<!-- Overlay band above the page content (half the safe margin), used by background progress and the volume bar,
-	     which can stay up for minutes and must not cover titles or the Home clock. Toasts use the safe margin. -->
+	<!-- Overlay band above the page content (half the safe margin), used by the volume bar, which must not cover
+	     titles or the Home clock. Status (toasts and background progress) sits at the bottom right: the toast card's
+	     foot 14 px above the hint line (954 - 14 - 104), clear of Home's screen name and the hints, and background
+	     progress, which can stay up for minutes, in the band under the hint line (1080 - 48 - 32), so the two never
+	     overlap. -->
 	<constant name="Bald_OverlayBandTop">48</constant>
-	<constant name="Bald_ToastTop">96</constant>
+	<constant name="Bald_ToastTop">836</constant>
+	<constant name="Bald_StatusBandTop">1000</constant>
 
 	<!-- Surface: opaque field with a 10% ink wash, so the chrome separates from dark backdrops and bright video
 	     alike. texture/border allow the pill capsule (bald/pill.png, 9-slice 27) as well as the plain panel. -->

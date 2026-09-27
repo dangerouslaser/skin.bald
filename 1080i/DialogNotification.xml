@@ -3,7 +3,7 @@
      LICENSE-Estuary.txt). Kodi (CGUIDialogKaiToast) binds image 400 (the toast's icon: an add-on's art or Kodi's
      DefaultIconInfo/Warning/Error), label 401 (caption) and fadelabel 402 (message; Kodi keeps the toast up until a
      fadelabel has scrolled through, so 402 stays a fadelabel).
-     Bald: a 560 x 104 field card on the right safe edge at the safe top, icon at 64 px (not tinted: it is usually an
+     Bald: a 560 x 104 field card at the bottom right, on the right and bottom safe edges, icon at 64 px (not tinted: it is usually an
      add-on's own artwork), caption in the section face at full ink, message at 60%. Fades in with a 24 px slide from the
      right. -->
 <window>
