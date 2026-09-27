@@ -38,7 +38,7 @@
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>624</width><height>616</height><orientation>vertical</orientation>
 				<viewtype label="31854">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,514,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">514</param><param name="window">videos</param></include><include content="Bald_UnfollowContainer"><param name="window">videos</param></include>
-				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright>RunScript(skin.bald,letters,514)</onright><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,514)</ondown>
+				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|514)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,514)</onright><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|514)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,514)</ondown>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
 				<itemlayout width="624" height="88"><include>Bald_ArtworkMovieRow</include></itemlayout>
 				<focusedlayout width="624" height="88">

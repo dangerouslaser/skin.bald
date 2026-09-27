@@ -138,7 +138,9 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(row.findtext("content"), "$INFO[Container(5301).ListItem.FolderPath]")
         scroll = row.find("scrolltime")
         self.assertEqual((scroll.text, scroll.get("tween"), scroll.get("easing")), ("440", "cubic", "out"))
-        self.assertEqual(row.findtext("onclick"), "RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])")
+        self.assertEqual([(n.get("condition"), n.text) for n in row.findall("onclick")], [
+            ("$EXP[Bald_HelperActions]", "NotifyAll(skin.bald,bald.play|episode|$INFO[Container(5302).ListItem.DBID])"),
+            ("!$EXP[Bald_HelperActions]", "RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])")])
         self.assertIn("Bald_InfoActionToCast", [n.text for n in self.source("5302").findall("include")])
         # The season change fades the row out 140 while it updates, then in 340 / rises 420.
         group = next(g for g in self.built.iter("control") if g.find("control[@id='5302']") is not None)

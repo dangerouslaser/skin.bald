@@ -46,7 +46,7 @@ class TVLibraryTests(unittest.TestCase):
         series = self.root.find(".//control[@id='520']")
         seasons = self.root.find(".//control[@id='530']")
         episodes = self.root.find(".//control[@id='540']")
-        self.assertEqual([n.text for n in series.findall('ondown')], ['SetFocus(9160)', 'RunScript(skin.bald,letters,520)'])
+        self.assertEqual([n.text for n in series.findall('ondown')], ['SetFocus(9160)', 'NotifyAll(skin.bald,bald.letters|520)', 'RunScript(skin.bald,letters,520)'])
         self.assertEqual(seasons.findtext('ondown'), 'noop')
         self.assertIsNone(episodes.find('ondown'))
 
@@ -207,14 +207,18 @@ class SeriesPageTests(unittest.TestCase):
         for key in ('ondown', 'onleft', 'onright'):
             self.assertEqual(self.row.findtext(key), 'noop')
         built_row = self.built.find(".//control[@id='5302']")
-        self.assertEqual(built_row.findtext('onclick'),
-                         'RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])')
+        self.assertEqual([n.text for n in built_row.findall('onclick')],
+                         ['NotifyAll(skin.bald,bald.play|episode|$INFO[Container(5302).ListItem.DBID])',
+                          'RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])'])
         self.assertIn('SetProperty(Bald.Series.RowFor,$ESCINFO[Container(532).ListItem.FolderPath],videos)',
                       [n.text for n in self.row.findall('onfocus')])
 
     def test_show_header_line_comes_from_the_script(self):
         actions = [(n.get('condition'), n.text) for n in self.tabs.findall('onfocus')]
-        self.assertTrue(has_action(actions, '!$EXP[Bald_SeriesPageMetaReady]', 'RunScript(skin.bald,seriesmeta)'))
+        self.assertTrue(has_action(actions, '!$EXP[Bald_SeriesPageMetaReady] + !$EXP[Bald_HelperActions]',
+                                   'RunScript(skin.bald,seriesmeta)'))
+        self.assertTrue(has_action(actions, '!$EXP[Bald_SeriesPageMetaReady] + $EXP[Bald_HelperActions]',
+                                   'NotifyAll(skin.bald,bald.seriesmeta)'))
         ready = self.alternates.findtext("expression[@name='Bald_SeriesPageMetaReady']")
         self.assertIn('Window(videos).Property(Bald.Series.For)', ready)
         self.assertIn('Container.FolderPath', ready)

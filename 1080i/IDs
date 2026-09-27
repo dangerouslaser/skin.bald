@@ -182,7 +182,7 @@ Hundreds digit 5, tens digit is the content level, units digit the layout.
   540	Episodes (View_520_Bald_TV.xml)
   541	Episodes compact (View_521_Bald_TV_Alternates.xml)
   542	Episodes wall
-500-599	scripts/letters.py accepts only this range from RunScript(skin.bald,letters,<id>).
+500-599	scripts/letters.py accepts only this range from RunScript(skin.bald,letters,<id>) and Bald Helper's bald.letters|<id>.
 		Each letter-mode entry passes the id of the container it sits on.
 
 TV guide chrome (MyPVRGuide.xml, Bald_EpgGrid and Bald_PVRGuideTools in Includes_PVR.xml)
