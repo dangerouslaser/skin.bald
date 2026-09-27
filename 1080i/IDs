@@ -452,3 +452,6 @@ MyWeather.xml		Kodi binds none that Estuary or Bald ship. 2000 page grouplist, 5
 		(700N0 button ... 700N9 heading), 20000 / 20001 end bumps, 10000 Menu to weather settings
 MyPics.xml		6 slideshow, 7 recursive slideshow, 9 shuffle (Estuary side panel, unchanged)
 MyMusicPlaylistEditor.xml	6 load, 7 save, 8 clear, 50 files, 100 playlist; 60 / 61 scrollbars, 9000 actions
+
+Custom_1129_BaldCurtain.xml (window 1129, modeless dialog; curtain prototype)
+		No ids: a field and the held blur, shown while Home and the video library change places.

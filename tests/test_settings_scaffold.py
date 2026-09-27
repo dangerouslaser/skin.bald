@@ -131,7 +131,9 @@ class SettingsScaffoldTests(unittest.TestCase):
             textures = [image.findtext("texture") for image in images]
             self.assertIn("bald/white.png", textures[0], name)
             self.assertIn("TMDbHelper.ListItem.BlurImage", textures[1], f"{name} has no Bald backdrop")
-            self.assertEqual(images[2].findtext("width"), "590", name)
+            # The backdrop is a still and a crossfading copy of the blur, then the sidebar.
+            self.assertIn("TMDbHelper.ListItem.BlurImage", textures[2], name)
+            self.assertEqual(images[3].findtext("width"), "590", name)
             title = controls.find("control[@type='label']")
             self.assertEqual((title.findtext("left"), title.findtext("top")), ("96", "96"), name)
 

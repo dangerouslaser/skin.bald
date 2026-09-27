@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Curtain (prototype, branch curtain-prototype): a true crossfade between Home and the video library.
+     Kodi never draws two full windows at once: it plays the old window's WindowClose, then initializes the new one
+     (MyVideoNav fetches its first folder before drawing anything), so the change showed a few frames of bare
+     background and a colour cut. A modeless dialog keeps drawing through that swap, so this one covers it:
+       - it shows as soon as the change starts (Window.Next, valid only while windows are changing) and fades in over
+         the outgoing window's close, holding the blurred background as it was when it opened (Bald.CurtainBlur);
+       - the outgoing window's onunload sets Bald.Curtain, which keeps it up once Window.Next has been reset;
+       - the incoming window skips its own WindowOpen while Bald.Curtain is set (Bald_AnimWindowDepth), so it is fully
+         drawn underneath, and clears Bald.Curtain in its onload; the curtain then fades away over it.
+     No focus: a dialog with a <visible> condition is modeless and takes no input. -->
+<window type="dialog" id="1129">
+	<visible>[Window.IsActive(home) + Window.Next(videos)] | [Window.IsActive(videos) + Window.Next(home)] | !String.IsEmpty(Window(home).Property(Bald.Curtain))</visible>
+	<zorder>0</zorder>
+	<onload>SetProperty(Bald.CurtainBlur,$ESCINFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)],home)</onload>
+	<onunload>ClearProperty(Bald.CurtainBlur,home)</onunload>
+	<animation type="WindowOpen">
+		<effect type="fade" start="0" end="100" time="140" tween="sine" easing="inout" />
+	</animation>
+	<animation type="WindowClose">
+		<effect type="fade" start="100" end="0" delay="150" time="360" tween="sine" easing="inout" />
+	</animation>
+	<controls>
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="bald_field">bald/white.png</texture>
+		</control>
+		<!-- The blur as the curtain opened; no fadetime and not loaded in the background, so it is there at once. -->
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<aspectratio>scale</aspectratio>
+			<texture>$VAR[Bald_CurtainBlur]</texture>
+			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
+			<colordiffuse>bald_backdrop</colordiffuse>
+		</control>
+	</controls>
+</window>
