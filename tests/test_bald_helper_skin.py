@@ -82,7 +82,9 @@ class BlurSourceTests(unittest.TestCase):
                       .find(".//control[@type='image'][texture='$VAR[Bald_CurtainBlur]']").findtext("visible"))
         self.assertEqual(len(layers), 3)
         for visible in layers:
-            self.assertTrue(equivalent(visible, "$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur]"), visible)
+            # Background video takes the blur's place (Bald_VideoBackdropOn).
+            self.assertTrue(equivalent(visible, "$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur] + !$EXP[Bald_VideoBackdropOn]"),
+                            visible)
         on = "$EXP[Bald_BlurOn]"
         self.assertTrue(equivalent(on, f"!Skin.HasSetting(Bald.DisableBlur) + [{HELPER} | {TMDB}]"))
         self.assertTrue(implies(f"{HELPER} + !{TMDB} + !Skin.HasSetting(Bald.DisableBlur)", on))
@@ -171,7 +173,7 @@ class FollowTests(unittest.TestCase):
         self.assertEqual(chosen(variable, HELPER), "$INFO[Window(home).Property(Bald.Blur)]")
         self.assertEqual(chosen(variable, f"!{HELPER}"), "$INFO[Window.Property(TMDbHelper.ListItem.BlurImage)]")
         visible = image.findtext("visible")
-        self.assertTrue(implies(f"{HELPER} + !Skin.HasSetting(Bald.DisableBlur) + "
+        self.assertTrue(implies(f"{HELPER} + !Skin.HasSetting(Bald.DisableBlur) + !$EXP[Bald_VideoBackdropOn] + "
                                 "!String.IsEmpty(Window(home).Property(Bald.Blur))", visible))
         self.assertTrue(implies(visible, "!Skin.HasSetting(Bald.DisableBlur)"))
 

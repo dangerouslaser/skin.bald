@@ -48,7 +48,7 @@
 	<include name="View_515_Bald_PosterLow">
 		<control type="group">
 			<visible>Control.IsVisible(515)</visible>
-			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+			<include>Bald_Field</include>
 			<include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_RightColumn</left><top>120</top><width>384</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="group">
@@ -83,7 +83,7 @@
 				<focusedlayout width="156" height="234"><include content="Bald_PosterLowTile"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(515) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
 			<!-- Letter mode deliberately covers the low row; otherwise the full alphabet collides with poster art. -->
-			<control type="group"><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">730</param><param name="w">1248</param><param name="h">242</param></include></control>
+			<control type="group"><visible>$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_BackdropWindow"><param name="panel">true</param><param name="x">96</param><param name="y">730</param><param name="w">1248</param><param name="h">242</param></include></control>
 			<control type="label"><left>110</left><top>768</top><width>1228</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$LOCALIZE[31825]</label><visible>Integer.IsEqual(Container(515).NumItems,0)</visible></control>
 			<include>Bald_PosterLowFooter</include>
 		</control>

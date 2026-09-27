@@ -10,6 +10,30 @@
 	<expression name="Bald_HasTMDbHelper">[System.HasAddon(plugin.video.themoviedb.helper)]</expression>
 	<!-- Bald Helper (addons/script.bald.helper) is installed and enabled: it blurs the backgrounds (Bald.Blur) and owns
 	     Bald's keymaps. TMDb Helper's blur is the fallback without it. -->
+	<!-- Background video (Playback › Background video, on unless Bald.OSD.NoBackgroundVideo): while video plays behind
+	     Bald's windows, it shows full screen and dimmed in place of the field and the blurred backdrop. Bald_Field is
+	     the field that gives way to it; Bald_VideoBackdrop draws it (a window's first layer, or the curtain). -->
+	<expression name="Bald_VideoBackdropOn">[Player.HasVideo + !Skin.HasSetting(Bald.OSD.NoBackgroundVideo)]</expression>
+	<include name="Bald_VideoBackdrop">
+		<control type="group">
+			<visible>$EXP[Bald_VideoBackdropOn]</visible>
+			<control type="videowindow"><width>1920</width><height>1080</height></control>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_video_dim">bald/white.png</texture></control>
+		</control>
+	</include>
+	<include name="Bald_Field">
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="bald_field">bald/white.png</texture>
+			<visible>!$EXP[Bald_VideoBackdropOn]</visible>
+		</control>
+	</include>
+	<!-- A window's base: the field, or the dimmed video behind it. -->
+	<include name="Bald_WindowBase">
+		<include>Bald_Field</include>
+		<include>Bald_VideoBackdrop</include>
+	</include>
 	<expression name="Bald_HasHelper">[System.HasAddon(script.bald.helper) + System.AddonIsEnabled(script.bald.helper)]</expression>
 	<!-- Bald Helper is running and serves the skin's latency-sensitive actions (its service sets the property once it
 	     has loaded scripts/info.py and clears it when it stops). Call sites send NotifyAll(skin.bald,bald.<action>|...)
@@ -227,20 +251,21 @@
 		<param name="back_out">false</param>
 		<definition>
 			<!-- Not under the Home <-> library curtain (Custom_1129_BaldCurtain.xml): the window is already fully drawn
-			     when the curtain fades away. The condition is read when the open is queued, before the onload clears it. -->
-			<animation type="WindowOpen" condition="![$PARAM[back_in]] + String.IsEmpty(Window(home).Property(Bald.Curtain))">
+			     when the curtain fades away. The condition is read when the open is queued, before the onload clears it.
+			     None with background video: windows change at once over the playing video (Bald_VideoBackdropOn). -->
+			<animation type="WindowOpen" condition="![$PARAM[back_in]] + String.IsEmpty(Window(home).Property(Bald.Curtain)) + !$EXP[Bald_VideoBackdropOn]">
 				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 				<effect type="slide" start="40,0" end="0,0" time="480" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowOpen" condition="$PARAM[back_in] + String.IsEmpty(Window(home).Property(Bald.Curtain))">
+			<animation type="WindowOpen" condition="$PARAM[back_in] + String.IsEmpty(Window(home).Property(Bald.Curtain)) + !$EXP[Bald_VideoBackdropOn]">
 				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 				<effect type="slide" start="-40,0" end="0,0" time="480" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowClose" condition="![$PARAM[back_out]]">
+			<animation type="WindowClose" condition="![$PARAM[back_out]] + !$EXP[Bald_VideoBackdropOn]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="-40,0" time="180" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowClose" condition="$PARAM[back_out]">
+			<animation type="WindowClose" condition="$PARAM[back_out] + !$EXP[Bald_VideoBackdropOn]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
 			</animation>

@@ -49,6 +49,8 @@
 					<onclick condition="Skin.String(Bald.OSD.Shade,25)">Skin.SetString(Bald.OSD.Shade,0)</onclick>
 					<onclick condition="Skin.String(Bald.OSD.Shade,0)">Skin.Reset(Bald.OSD.Shade)</onclick>
 				</control>
+				<!-- Background video: playing video shows, dimmed, behind Bald's windows (on unless Bald.OSD.NoBackgroundVideo). -->
+				<control type="radiobutton" id="9807"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31997]</label><selected>!Skin.HasSetting(Bald.OSD.NoBackgroundVideo)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoBackgroundVideo)</onclick></control>
 				<!-- Pause: none, hide the bar or show info, after a 0-3 s delay (empty = 3 s). -->
 				<control type="button" id="9811"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">2</param></include><label>$LOCALIZE[31978]</label><label2>$VAR[Bald_OSDPauseModeLabel]</label2>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.OSD.PauseMode))">Skin.SetString(Bald.OSD.PauseMode,hide)</onclick>

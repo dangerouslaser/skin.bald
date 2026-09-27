@@ -19,10 +19,11 @@
 	<onload>AlarmClock(bald_curtain,ClearProperty(Bald.Curtain,home),00:02,silent)</onload>
 	<onunload>CancelAlarm(bald_curtain,true)</onunload>
 	<onunload>ClearProperty(Bald.CurtainBlur,home)</onunload>
-	<animation type="WindowOpen">
+	<!-- With background video the curtain is the same dimmed video as the windows it covers: no fades. -->
+	<animation type="WindowOpen" condition="!$EXP[Bald_VideoBackdropOn]">
 		<effect type="fade" start="0" end="100" time="140" tween="sine" easing="inout" />
 	</animation>
-	<animation type="WindowClose">
+	<animation type="WindowClose" condition="!$EXP[Bald_VideoBackdropOn]">
 		<effect type="fade" start="100" end="0" delay="150" time="360" tween="sine" easing="inout" />
 	</animation>
 	<controls>
@@ -30,14 +31,17 @@
 			<width>1920</width>
 			<height>1080</height>
 			<texture colordiffuse="bald_field">bald/white.png</texture>
+			<visible>!$EXP[Bald_VideoBackdropOn]</visible>
 		</control>
+		<!-- With background video the curtain is the dimmed video itself, so window changes still never show a bare frame. -->
+		<include>Bald_VideoBackdrop</include>
 		<!-- The blur as the curtain opened; no fadetime and not loaded in the background, so it is there at once. -->
 		<control type="image">
 			<width>1920</width>
 			<height>1080</height>
 			<aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_CurtainBlur]</texture>
-			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur]</visible>
+			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</controls>

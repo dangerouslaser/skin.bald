@@ -80,6 +80,8 @@
 	     going back to a landscape row. The row swap runs meanwhile (out 140, in 360 / 440 after 170).
 	     Paired non-reversible Conditionals, as in Bald_AnimInfoFrame: the animation whose condition drops is reset
 	     (no transform), and the one whose condition rises starts from the state the other ended in. -->
+	<!-- A poster row's frame over background video: art layers of their own, 576 tall (Home.xml). -->
+	<expression name="Bald_VideoPosterFrame">[$EXP[Bald_VideoBackdropOn] + $EXP[Bald_PosterRow] + !$EXP[Bald_InfoOpen]]</expression>
 	<expression name="Bald_PosterRow">[String.IsEqual(Window(home).Property(Bald.RowStyle),poster) | String.IsEqual(Window(home).Property(Bald.RowStyle),square)]</expression>
 	<!-- The art layers (the art frame group, which also zooms for info). While info is open the nudge is undone in step
 	     with the zoom (640 move after 40), so the zoom about 274,343 maps the whole 1248 x 702 art to the screen exactly
@@ -145,7 +147,7 @@
 			<height>1080</height>
 			<aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_BlurImage]</texture>
-			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur]</visible>
+			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 		<control type="image">
@@ -155,7 +157,7 @@
 			<fadetime>800</fadetime>
 			<texture background="true">$VAR[Bald_BlurImage]</texture>
 			<!-- Optional enhancement: the field underneath is the supported no-helper fallback. -->
-			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur]</visible>
+			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</include>
@@ -207,14 +209,18 @@
 		</definition>
 	</include>
 	<!-- A window onto the background at x,y w x h: a grouplist clips to its bounds, and the full-screen image inside is
-	     offset back to 0,0, so it lines up exactly with the background. Used to mask the art frame's zoom overflow. -->
+	     offset back to 0,0, so it lines up exactly with the background. Used to mask the art frame's zoom overflow.
+	     Video cannot be copied into it, so with background video a frame mask is not drawn (the settle zoom is off
+	     then, Bald_ArtLayer); `panel` masks, which cover content under an overlay, stay as a plain field panel. -->
 	<include name="Bald_BackdropWindow">
 		<param name="x" />
 		<param name="y" />
 		<param name="w" />
 		<param name="h" />
+		<param name="panel">false</param>
 		<definition>
 			<control type="grouplist">
+				<visible>!$EXP[Bald_VideoBackdropOn] | $PARAM[panel]</visible>
 				<left>$PARAM[x]</left>
 				<top>$PARAM[y]</top>
 				<width>$PARAM[w]</width>
@@ -662,7 +668,8 @@
 		</definition>
 	</include>
 	<!-- The current row item's clearlogo (clearlogo, else the show's). -->
-	<!-- Fanart layer for one parity. The incoming layer fades in (700) while settling from 1.05 (1500); the outgoing
+	<!-- Fanart layer for one parity. The incoming layer fades in (700) while settling from 1.05 (1500; not with background
+	     video, see Bald_BackdropWindow); the outgoing
 	     layer fades out (700) still showing the old art. A row swap that keeps the parity changes the visible
 	     layer's texture instead, which <fadetime> crossfades (it waits until the new image has loaded). -->
 	<include name="Bald_ArtLayer">
@@ -677,9 +684,13 @@
 				<fadetime>700</fadetime>
 				<texture background="true">$PARAM[texture]</texture>
 				<visible>$PARAM[visible]</visible>
-				<animation type="Visible">
+				<animation type="Visible" condition="!$EXP[Bald_VideoBackdropOn]">
 					<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
 					<effect type="zoom" start="105" end="100" center="$PARAM[center]" time="1500" tween="cubic" easing="out" />
+				</animation>
+				<!-- Background video: no settle zoom, which the frame masks (not drawn over video) would have to hide. -->
+				<animation type="Visible" condition="$EXP[Bald_VideoBackdropOn]">
+					<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
 				</animation>
 				<animation type="Hidden">
 					<effect type="fade" start="100" end="0" time="700" tween="sine" easing="inout" />
@@ -1414,7 +1425,9 @@
 				<nested />
 				<onleft condition="$PARAM[left_if]">Action(Select)</onleft>
 				<onright condition="$PARAM[right_if]">$PARAM[right]</onright>
-				<onback condition="$EXP[Bald_HasRow]">ClearProperty(Bald.Menu,home)</onback><onback condition="$EXP[Bald_HasRow]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
+				<!-- With background video, Back from the menu returns to the playing video (fullscreen); otherwise to the row. -->
+				<onback condition="$EXP[Bald_VideoBackdropOn]">Action(FullScreen)</onback>
+				<onback condition="$EXP[Bald_HasRow] + !$EXP[Bald_VideoBackdropOn]">ClearProperty(Bald.Menu,home)</onback><onback condition="$EXP[Bald_HasRow] + !$EXP[Bald_VideoBackdropOn]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onback>
 			</control>
 		</definition>
 	</include>

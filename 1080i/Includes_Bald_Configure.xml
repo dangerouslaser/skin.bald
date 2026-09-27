@@ -29,11 +29,7 @@
 		<!-- Kodi's settings windows fill their heading label by id (SettingsCategory: 2). -->
 		<param name="title_id">0</param>
 		<definition>
-			<control type="image">
-				<width>1920</width>
-				<height>1080</height>
-				<texture colordiffuse="bald_field">bald/white.png</texture>
-			</control>
+			<include>Bald_WindowBase</include>
 			<include>Bald_Backdrop</include>
 			<control type="image">
 				<width>590</width>

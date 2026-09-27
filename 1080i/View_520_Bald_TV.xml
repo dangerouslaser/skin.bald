@@ -44,7 +44,7 @@
 	</include>
 	<include name="View_520_Bald_Series">
 		<control type="group"><visible>Control.IsVisible(520)</visible><animation type="Visible"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
-			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control><include>Bald_BackdropImage</include>
+			<include>Bald_Field</include><include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_LibraryShowsHeading]</label></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
 			<control type="list" id="520"><left>84</left><top>210</top><width>1152</width><height>648</height><orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems><viewtype label="31856">icon</viewtype><visible>Container.Content(tvshows)</visible>
@@ -56,7 +56,7 @@
 	</include>
 	<include name="View_530_Bald_Seasons">
 		<control type="group"><visible>Control.IsVisible(530)</visible>
-			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control><include>Bald_BackdropImage</include>
+			<include>Bald_Field</include><include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container.ShowTitle]</label></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[33054] · $INFO[Container.SortOrder]</label></control>
 			<control type="list" id="530"><left>84</left><top>210</top><width>1152</width><height>648</height><orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems><viewtype label="31857">icon</viewtype><visible>Container.Content(seasons)</visible>
@@ -68,7 +68,7 @@
 	</include>
 	<include name="View_540_Bald_Episodes">
 		<control type="group"><visible>Control.IsVisible(540)</visible>
-			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control><include>Bald_BackdropImage</include>
+			<include>Bald_Field</include><include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>624</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container.ShowTitle]</label></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[20360] · $INFO[Container.SortOrder]</label></control>
 			<control type="list" id="540"><left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>624</width><height>616</height><orientation>vertical</orientation><viewtype label="31858">list</viewtype><visible>Container.Content(episodes)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>

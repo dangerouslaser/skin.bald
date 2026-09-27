@@ -30,6 +30,7 @@
 			<onfocus condition="!$EXP[Bald_LibraryViewActive]">SetFocus(9000)</onfocus>
 		</control>
 		<include>DefaultBackground</include>
+		<include>Bald_VideoBackdrop</include>
 		<control type="group">
 			<!-- Entered from Home (in from the right); returned to from anything deeper, such as playback. Leaving for Home
 			     is back (out to the right). -->

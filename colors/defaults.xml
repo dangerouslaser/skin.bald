@@ -41,6 +41,8 @@
 	     Playback › Background shading scales them (Bald_OSDShade). -->
 	<color name="bald_scrim">FF000000</color>
 	<color name="bald_scrim60">99000000</color>
+	<!-- Background video (playing video behind Bald's windows): darkened to 35% so rows and text stay readable. -->
+	<color name="bald_video_dim">A6000000</color>
 	<!-- Unfocused tiles and posters: 55% (SPEC 5.1 row behavior). -->
 	<color name="bald_tile_dim">8CFFFFFF</color>
 	<color name="bald_poster_dim">8CECEEF2</color>

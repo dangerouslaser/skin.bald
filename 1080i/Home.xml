@@ -79,12 +79,9 @@
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<include>Bald_CurtainHandoff</include>
 	<controls>
-		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_Backdrop). -->
-		<control type="image">
-			<width>1920</width>
-			<height>1080</height>
-			<texture colordiffuse="bald_field">bald/white.png</texture>
-		</control>
+		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_Backdrop); or the playing video,
+		     dimmed (Bald_WindowBase). -->
+		<include>Bald_WindowBase</include>
 		<include content="Bald_Backdrop" />
 
 		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). -->
@@ -109,10 +106,34 @@
 				<height>702</height>
 				<control type="image">
 					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
+					<visible>!$EXP[Bald_VideoPosterFrame]</visible>
 				</control>
 				<!-- Fanart: two parity layers (see Bald_ArtLayer). -->
-				<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param></include>
-				<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param></include>
+				<control type="group">
+					<visible>!$EXP[Bald_VideoPosterFrame]</visible>
+					<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param></include>
+					<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param></include>
+				</control>
+				<!-- Poster rows with background video: the frame's bottom mask cannot be drawn over video, so the art is a
+				     1248 x 576 copy, 63 px down in the nudged group: the same 120-696 frame the mask would leave. -->
+				<control type="group">
+					<visible>$EXP[Bald_VideoPosterFrame]</visible>
+					<top>63</top>
+					<control type="image">
+						<width>1248</width>
+						<height>576</height>
+						<texture colordiffuse="bald_placeholder">bald/white.png</texture>
+					</control>
+					<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param><param name="height">576</param><param name="center">624,288</param></include>
+					<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param><param name="height">576</param><param name="center">624,288</param></include>
+					<control type="image">
+						<width>1248</width>
+						<height>576</height>
+						<aspectratio>scale</aspectratio>
+						<texture background="true">$VAR[Bald_Fanart]</texture>
+						<visible>$EXP[Bald_DialogOver]</visible>
+					</control>
+				</control>
 				<!-- Dialog art. Kodi evaluates <visible> and animation conditions without a window context
 				     (CGUIControl::UpdateVisibility), so with a modal dialog over Home, Container(9101..9103) in them
 				     resolves against the dialog and the parity layers above flip or blank. Textures and variables are
@@ -124,7 +145,7 @@
 					<height>702</height>
 					<aspectratio>scale</aspectratio>
 					<texture background="true">$VAR[Bald_Fanart]</texture>
-					<visible>$EXP[Bald_DialogOver]</visible>
+					<visible>$EXP[Bald_DialogOver] + !$EXP[Bald_VideoPosterFrame]</visible>
 					<animation type="Hidden">
 						<effect type="fade" start="100" end="0" time="250" delay="900" tween="sine" easing="inout" />
 					</animation>

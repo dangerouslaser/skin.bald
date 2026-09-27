@@ -48,8 +48,11 @@ class HomeZeroRowsTests(unittest.TestCase):
         for tag in ("onup", "ondown", "onleft", "onright", "onclick", "onback"):
             self.assertEqual(wake.findtext(tag), "SetFocus($VAR[Bald_RowFocus])")
         button = includes.find("include[@name='Bald_HomeMenuButton']/definition/control")
-        for node in button.findall("onback"):
-            self.assertTrue(equivalent(node.get("condition"), HAS_ROW))
+        backs = button.findall("onback")
+        # With background video, Back from the menu returns to the video; otherwise to the row.
+        self.assertEqual((backs[0].get("condition"), backs[0].text), ("$EXP[Bald_VideoBackdropOn]", "Action(FullScreen)"))
+        for node in backs[1:]:
+            self.assertTrue(equivalent(node.get("condition"), f"{HAS_ROW} + !$EXP[Bald_VideoBackdropOn]"))
         # Timers.xml keeps the literal (docs/NOTES.md: $EXP in a timer condition did not trigger).
         timers = ET.parse(XML / "Timers.xml").getroot()
         ambient = next(t for t in timers.findall("timer") if t.findtext("name") == "bald_ambient")

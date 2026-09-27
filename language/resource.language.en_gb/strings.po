@@ -3080,3 +3080,9 @@ msgstr ""
 msgctxt "#31996"
 msgid "Background shading"
 msgstr ""
+
+#. Bald Settings, Playback, Controls: playing video shows, dimmed, behind Bald's windows
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31997"
+msgid "Background video"
+msgstr ""

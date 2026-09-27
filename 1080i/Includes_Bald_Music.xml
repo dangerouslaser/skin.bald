@@ -52,20 +52,17 @@
 	<!-- Field, then the blur twice as Bald_BackdropImage draws it: a still copy that is complete on the first frame
 	     (the curtain lifts onto it) and a copy that crossfades between items (800 FADE). -->
 	<include name="Bald_MusicBackdrop">
-		<control type="image">
-			<width>1920</width><height>1080</height>
-			<texture colordiffuse="bald_field">bald/white.png</texture>
-		</control>
+		<include>Bald_Field</include>
 		<control type="image">
 			<width>1920</width><height>1080</height><aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_MusicBlur]</texture>
-			<visible>$EXP[Bald_MusicHasBlur]</visible>
+			<visible>$EXP[Bald_MusicHasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 		<control type="image">
 			<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>800</fadetime>
 			<texture background="true">$VAR[Bald_MusicBlur]</texture>
-			<visible>$EXP[Bald_MusicHasBlur]</visible>
+			<visible>$EXP[Bald_MusicHasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</include>

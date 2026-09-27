@@ -32,7 +32,7 @@
 	<include name="View_511_Bald_Wall">
 		<control type="group">
 			<visible>Control.IsVisible(511)</visible>
-			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+			<include>Bald_Field</include>
 			<include>Bald_BackdropImage</include>
 			<include content="Bald_WallHeader"><param name="p">Odd</param></include>
 			<include content="Bald_WallHeader"><param name="p">Even</param></include>
@@ -47,7 +47,7 @@
 				<focusedlayout width="216" height="312"><include content="Bald_WallPoster"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(511) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
 			<!-- Opaque screen-space backdrop keeps the right-side menu legible without fading compound masks. -->
-			<control type="group"><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_BackdropWindow"><param name="x">1380</param><param name="y">210</param><param name="w">480</param><param name="h">640</param></include></control>
+			<control type="group"><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_BackdropWindow"><param name="panel">true</param><param name="x">1380</param><param name="y">210</param><param name="w">480</param><param name="h">640</param></include></control>
 			<include content="Bald_WallFooter"><param name="c">511</param></include>
 		</control>
 	</include>
