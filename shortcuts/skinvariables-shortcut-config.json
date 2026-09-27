@@ -20,6 +20,20 @@
             "icon": "DefaultAddonVideo.png",
             "link": "false",
             "node": "videos"
+        },
+        {
+            "name": "Live TV channel groups",
+            "path": "pvr://channels/tv/",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "tvchannels"
+        },
+        {
+            "name": "Radio channel groups",
+            "path": "pvr://channels/radio/",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "false",
+            "node": "radiochannels"
         }
     ]
 }
