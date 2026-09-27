@@ -2247,7 +2247,7 @@ msgstr ""
 #: /scripts/recommended.py
 #. Recommended Kodi settings dialog: what changes; [CR] is a line break
 msgctxt "#31838"
-msgid "Bald works best with two of Kodi's own settings:[CR]- no parent folder item (\"..\") at the top of lists[CR]- selecting a movie or episode shows its information first[CR][CR]Apply them now? You can change them back in Kodi's settings."
+msgid "Bald works best with three of Kodi's own settings:[CR]- no parent folder item (\"..\") at the top of lists[CR]- selecting a movie or episode shows its information first[CR]- shows always open on their seasons, even with only one, so the series page is available[CR][CR]Apply them now? You can change them back in Kodi's settings."
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml

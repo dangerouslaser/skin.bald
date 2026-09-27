@@ -7,11 +7,14 @@ Both change core settings through JSON-RPC (Settings.GetSettingValue / SetSettin
 """
 import json
 
-# (setting id, recommended value). Values checked against Kodi 22's settings.xml and the video select action enum
-# (KODI::VIDEO::GUILIB::Action: 0 choose, 3 show information, 7 queue, 8 play).
+# (setting id, recommended value). Values checked against Kodi 22's settings.xml (flattentvshows: 0 never, 1 if only one
+# season, 2 always) and the video select action enum (KODI::VIDEO::GUILIB::Action: 0 choose, 3 show information, 7 queue,
+# 8 play).
 RECOMMENDED = (
     ("filelists.showparentdiritems", False),  # No ".." item at the top of every list
     ("myvideos.selectaction", 3),             # Select on a movie or episode shows its information
+    ("videolibrary.flattentvshows", 0),       # Never skip a show's seasons, so the Series page view (532) is reached
+                                              # for one-season shows too (Kodi's default, 1, skips them)
 )
 # Bald's en_gb strings (31837-31841).
 TITLE, PROMPT, APPLY, ALREADY, DONE = 31837, 31838, 31839, 31840, 31841
