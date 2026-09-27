@@ -86,14 +86,7 @@
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),sort) + !String.IsEmpty(Container.SortMethod)">$LOCALIZE[31816] $INFO[Container.SortMethod]. $LOCALIZE[31817]</value>
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),order) + !String.IsEmpty(Container.SortOrder)">$LOCALIZE[31818] $INFO[Container.SortOrder]. $LOCALIZE[31819]</value>
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),watched) + !String.IsEmpty(Control.GetLabel(10))">$LOCALIZE[31820] $INFO[Control.GetLabel(10)]. $LOCALIZE[31821]</value>
-		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),shows)">$LOCALIZE[31843] $VAR[Bald_ShowsOpenName]. $LOCALIZE[31844]</value>
 		<value>$INFO[Container(9150).ListItem.Property(note)]</value>
-	</variable>
-	<!-- What Select does on a TV show in the series views (options menu, Open shows as): its seasons (Kodi's default),
-	     or its series page, the tabbed TV information (Action(Info), as from a Home row). -->
-	<variable name="Bald_ShowsOpenName">
-		<value condition="Skin.HasSetting(Bald.ShowsOpenSeriesPage)">$LOCALIZE[31845]</value>
-		<value>$LOCALIZE[33054]</value>
 	</variable>
 	<include name="Bald_LibraryOptions">
 		<control type="group">
@@ -126,7 +119,6 @@
 				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(540)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(542)</visible></item>
 				<item><label>$LOCALIZE[31802]</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
 				<item><label>$LOCALIZE[31803]</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
-				<item><label>$LOCALIZE[31842]</label><property name="option">shows</property><onclick>Skin.ToggleSetting(Bald.ShowsOpenSeriesPage)</onclick><visible>$EXP[Bald_LibrarySeriesView]</visible></item>
 				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31805]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,movies=true)</onclick><visible>$EXP[Bald_LibraryMovieView]</visible></item>
 				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31806]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,tvshows=true)</onclick><visible>$EXP[Bald_LibrarySeriesView] | $EXP[Bald_LibrarySeasonView]</visible></item>
 				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31807]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,episodes=true)</onclick><visible>$EXP[Bald_LibraryEpisodeView]</visible></item>
