@@ -320,7 +320,8 @@ class BaldSettingsTests(unittest.TestCase):
                          "ActivateWindow(videos,videodb://tvshows/titles/,return)")
         # The bridge remembers its menu entry for the return to Home (Bald_ReturnToMenu), then opens the target.
         self.assertEqual([n.text for n in home_menu.control(9021).findall("onfocus")],
-                         ["SetProperty(Bald.ReturnMenu,9011,home)", "ActivateWindow(videos,videodb://movies/titles/,return)"])
+                         ["SetProperty(Bald.ReturnMenu,9011,home)", "SetProperty(Bald.HubTitle,$ESCVAR[Bald_HubLabel_hub1],home)",
+                          "ActivateWindow(videos,videodb://movies/titles/,return)"])
         self.assertIsNone(fallback.find("include[@name='Bald_HubOpen_hub3']/definition/onfocus"))
         suffix = fallback.find("variable[@name='Bald_HubSuffix_hub1']/value")
         self.assertEqual((suffix.get("condition"), suffix.text), ("$EXP[Bald_HubHasOpen_hub1]", "  ›"))
