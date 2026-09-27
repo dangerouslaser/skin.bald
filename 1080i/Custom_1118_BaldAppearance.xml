@@ -117,6 +117,8 @@
 				<control type="radiobutton" id="9624"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31726]</label><selected>!Skin.HasSetting(Bald.DisablePreload)</selected><onclick>Skin.ToggleSetting(Bald.DisablePreload)</onclick></control>
 				<!-- Long plots in the library previews and Estuary's list views scroll on their own after 10 s. -->
 				<control type="radiobutton" id="9625"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31993]</label><selected>Skin.HasSetting(Bald.ScrollPlots)</selected><onclick>Skin.ToggleSetting(Bald.ScrollPlots)</onclick></control>
+				<!-- Kodi settings Bald recommends (scripts/recommended.py): hide parent folder items, Select shows information. -->
+				<control type="button" id="9626"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31839]</label><onclick>RunScript(skin.bald,recommended)</onclick></control>
 			</control>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>

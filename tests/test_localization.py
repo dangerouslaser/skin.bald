@@ -98,6 +98,8 @@ class LocalizationTests(unittest.TestCase):
             for num in skin_ids(path.read_text(encoding="utf-8")):
                 cls.uses.setdefault(num, set()).add(path.name)
         cls.script_uses = {num for num in info.STRINGS if is_bald(num)}
+        from scripts import recommended
+        cls.recommended_uses = set(recommended.STRING_IDS)
 
     def test_every_skin_string_the_xml_shows_is_defined(self):
         missing = sorted(num for num in self.uses if num not in self.strings)
@@ -105,7 +107,8 @@ class LocalizationTests(unittest.TestCase):
 
     def test_bald_strings_are_used_unique_and_cite_their_sources(self):
         self.assertTrue(self.bald, "no Bald strings in en_gb")
-        unused = sorted(num for num in self.bald if num not in self.uses and num not in self.script_uses)
+        unused = sorted(num for num in self.bald
+                        if num not in self.uses and num not in self.script_uses and num not in self.recommended_uses)
         self.assertEqual(unused, [], "unused Bald strings")
         texts = list(self.bald.values())
         self.assertEqual(sorted({t for t in texts if texts.count(t) > 1}), [], "one id per Bald string")
@@ -114,6 +117,8 @@ class LocalizationTests(unittest.TestCase):
             cited = set(re.findall(r"^#: /1080i/(\S+)$", block, re.M))
             self.assertEqual(cited, self.uses.get(num, set()), f"#{num} source comments")
             self.assertEqual("#: /scripts/info.py" in block.split("\n"), num in self.script_uses, f"#{num} script source")
+            self.assertEqual("#: /scripts/recommended.py" in block.split("\n"), num in self.recommended_uses,
+                             f"#{num} recommended.py source")
 
     def test_script_text_matches_en_gb(self):
         for num in self.script_uses:
