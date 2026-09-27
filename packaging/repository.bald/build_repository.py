@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 REPOSITORY_SOURCE = Path(__file__).resolve().parent
-BUNDLED_ADDONS = ("addons/script.bald.xcsetup",)
+BUNDLED_ADDONS = ("addons/script.bald.xcsetup", "addons/script.bald.helper")
 # Skin Variables writes the Home rows per install; releases ship 1080i/Includes_Bald_HomeDefaults.xml instead.
 PER_INSTALL_FILES = ("1080i/script-skinvariables-generator-includes",)
 
@@ -93,6 +93,13 @@ def zip_bundled_addon(output: Path, revision: str, source: str) -> ET.Element:
         for relative_path in git_tree_files(revision, source):
             archive_path = f"{addon_id}/{relative_path.removeprefix(prefix)}"
             archive.writestr(archive_path, git_file(revision, relative_path))
+    # Declared assets (icon, fanart, screenshots) beside the zip too, where Kodi's add-on browser reads them.
+    assets = root.find("./extension[@point='xbmc.addon.metadata']/assets")
+    for asset in [] if assets is None else assets:
+        if asset.text:
+            target = output / addon_id / asset.text.strip()
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(git_file(revision, f"{source}/{asset.text.strip()}"))
     return root
 
 
