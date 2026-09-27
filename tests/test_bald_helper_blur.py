@@ -1,10 +1,8 @@
 """Bald Helper's blurred backgrounds (addons/script.bald.helper/resources/lib/blur.py), with xbmc, xbmcvfs and the Home
 window replaced by stand-ins and real Pillow images. Also a benchmark: BALD_BLUR_BENCH=1 prints ms per image."""
 
-import importlib.util
 import io
 import os
-import sys
 import tempfile
 import time
 import types
@@ -12,11 +10,10 @@ import unittest
 import zlib
 from pathlib import Path
 
+from support import Clock, helper, service
+
 ROOT = Path(__file__).resolve().parents[1]
-ADDON = ROOT / "addons" / "script.bald.helper"
-SPEC = importlib.util.spec_from_file_location("bald_helper_blur", ADDON / "resources" / "lib" / "blur.py")
-blur = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(blur)
+blur = helper("blur", "blur")
 
 try:
     from PIL import Image
@@ -102,17 +99,6 @@ class FakeWindow:
         return self.properties.get(key, "")
 
 
-class Clock:
-    def __init__(self):
-        self.now = 100.0
-
-    def __call__(self):
-        return self.now
-
-    def advance(self, seconds):
-        self.now += seconds
-
-
 class Case(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
@@ -163,16 +149,16 @@ class NamingTests(unittest.TestCase):
 
     def test_follow_prefix_per_window(self):
         # Home rows, library views, More like this (5100), Global Search (50): the container the skin names.
-        self.assertEqual(blur.follow_prefix("9101", False, False),
+        self.assertEqual(blur.follow.follow_prefix("9101", False, False),
                          ("Container(9101).ListItem.", "Container(9101).Scrolling"))
-        self.assertEqual(blur.follow_prefix("5100", True, False)[0], "Container(5100).ListItem.")
+        self.assertEqual(blur.follow.follow_prefix("5100", True, False)[0], "Container(5100).ListItem.")
         # The information dialog's own item.
-        self.assertEqual(blur.follow_prefix("", True, False), ("ListItem.", None))
+        self.assertEqual(blur.follow.follow_prefix("", True, False), ("ListItem.", None))
         # A media window's view.
-        self.assertEqual(blur.follow_prefix("", False, True), ("Container.ListItem.", "Container.Scrolling"))
+        self.assertEqual(blur.follow.follow_prefix("", False, True), ("Container.ListItem.", "Container.Scrolling"))
         # Settings and other windows: nothing (the skin shows Bald.Blur.Last there).
-        self.assertEqual(blur.follow_prefix("", False, False), (None, None))
-        self.assertEqual(blur.follow_prefix("$INFO[x]", False, False), (None, None))
+        self.assertEqual(blur.follow.follow_prefix("", False, False), (None, None))
+        self.assertEqual(blur.follow.follow_prefix("$INFO[x]", False, False), (None, None))
 
 
 @needs_pillow
@@ -227,6 +213,25 @@ class PipelineTests(Case):
         self.assertIsNone(self.blurrer.make("/missing.jpg"))
         self.assertFalse(os.path.exists(self.cache) and os.listdir(self.cache))
 
+
+    def test_log_lines_never_carry_credentials(self):
+        for source in ("smb://user:secret@nas/movies/fanart.jpg",
+                       "image://smb%3a%2f%2fuser%3asecret%40nas%2fmovies%2ffanart.jpg/"):
+            with self.subTest(source=source):
+                self.xbmc.logs.clear()
+                self.blurrer.log = lambda text, level=None: self.xbmc.logs.append((level, text))
+                self.assertIsNone(self.blurrer.make(source))
+                self.assertTrue(self.xbmc.logs)
+                self.assertFalse(any("secret" in text or "user" in text for _, text in self.xbmc.logs), self.xbmc.logs)
+
+    def test_log_safe(self):
+        safe = blur.common.log_safe
+        self.assertEqual(safe("smb://user:pass@nas/a.jpg"), "smb://nas/a.jpg")
+        self.assertEqual(safe("image://smb%3a%2f%2fuser%3apass%40nas%2fa.jpg/"), "image://smb%3a%2f%2fnas%2fa.jpg/")
+        self.assertEqual(safe("image://https%3a%2f%2fimage.tmdb.org%2fa%40b.jpg/"),
+                         "image://https%3a%2f%2fimage.tmdb.org%2fa%40b.jpg/")  # an @ in the path is not a login
+        self.assertEqual(safe("/storage/a@b/fanart.jpg"), "/storage/a@b/fanart.jpg")
+        self.assertEqual(safe("nfs://nas/export/a.jpg"), "nfs://nas/export/a.jpg")
 
 class PruneTests(Case):
     def fill(self, count, size=1000):
@@ -411,7 +416,7 @@ class FollowerTests(Case):
     def test_info_dialog_reads_its_own_container(self):
         # More like this (5100) names its container on the dialog; the window below names another.
         FakeFile.files.update({"/similar.jpg": jpeg(), "/row.jpg": jpeg()})
-        self.xbmc.conditions = {blur.INFO_DIALOG: True}
+        self.xbmc.conditions = {blur.follow.INFO_DIALOG: True}
         self.xbmc.labels = {"Window(movieinformation).Property(Bald.FocusContainer)": "5100",
                             "Window(10000).Property(Bald.FocusContainer)": "9101",
                             "Container(5100).ListItem.Art(fanart)": "/similar.jpg",
@@ -444,10 +449,10 @@ class FollowerTests(Case):
     def test_info_dialog_and_media_window_fallbacks(self):
         FakeFile.files.update({"/info.jpg": jpeg(), "/view.jpg": jpeg()})
         self.xbmc.labels = {"ListItem.Art(fanart)": "/info.jpg", "Container.ListItem.Art(fanart)": "/view.jpg"}
-        self.xbmc.conditions = {blur.INFO_DIALOG: True, blur.MEDIA_WINDOW: True}
+        self.xbmc.conditions = {blur.follow.INFO_DIALOG: True, blur.follow.MEDIA_WINDOW: True}
         self.settle()
         self.assertEqual(self.window.get("Bald.Blur.For"), "/info.jpg")
-        self.xbmc.conditions = {blur.MEDIA_WINDOW: True}
+        self.xbmc.conditions = {blur.follow.MEDIA_WINDOW: True}
         self.settle()
         self.assertEqual(self.window.get("Bald.Blur.For"), "/view.jpg")
         # Settings: nothing to follow.
@@ -462,7 +467,7 @@ class FollowerTests(Case):
         self.settle()
         writes = list(self.window.writes)
         # A context menu: Container(9101) would resolve in the dialog and read empty.
-        self.xbmc.conditions[blur.HOLD] = True
+        self.xbmc.conditions[blur.follow.HOLD] = True
         self.xbmc.labels = {}
         self.settle(5)
         self.assertEqual(self.window.writes, writes)
@@ -499,18 +504,16 @@ class FollowerTests(Case):
 
     def test_errors_are_logged_once_and_do_not_stop_the_poller(self):
         self.xbmc.fail = RuntimeError("boom")
-        idle, blur.IDLE_SECONDS = blur.IDLE_SECONDS, 0
-        try:
-            class Monitor:
-                count = 0
+        self.follower.IDLE_SECONDS = 0
 
-                def abortRequested(self):
-                    Monitor.count += 1
-                    return Monitor.count > 4
+        class Monitor:
+            count = 0
 
-            self.follower._poller(Monitor())
-        finally:
-            blur.IDLE_SECONDS = idle
+            def abortRequested(self):
+                Monitor.count += 1
+                return Monitor.count > 4
+
+        self.follower._poller(Monitor())
         errors = [text for level, text in self.xbmc.logs if level == self.xbmc.LOGERROR]
         self.assertEqual(errors, ["script.bald.helper: blur: RuntimeError: boom"])
 
@@ -546,31 +549,15 @@ class ServiceEntryTests(unittest.TestCase):
         fake.log = lambda message, level: fake.logs.append((level, message))
         modules = {"xbmc": fake, "xbmcgui": types.SimpleNamespace(), "xbmcvfs": types.SimpleNamespace(),
                    "xbmcaddon": types.SimpleNamespace()}
-        saved = {name: sys.modules.get(name) for name in (*modules, "resources", "resources.lib",
-                                                          "resources.lib.keymap", "resources.lib.blur")}
-        sys.modules.update(modules)
-        sys.path.insert(0, str(ADDON))
-        try:
-            for name in ("resources", "resources.lib", "resources.lib.keymap", "resources.lib.blur"):
-                sys.modules.pop(name, None)
-            spec = importlib.util.spec_from_file_location("bald_helper_service", ADDON / "service.py")
-            service = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(service)
+        with service(modules) as entry:
             import resources.lib.blur as live_blur
 
             def broken(*args, **kwargs):
                 raise RuntimeError("no window")
 
             live_blur.Follower = broken
-            self.assertIsNone(service.start_blur())
-            self.assertEqual(fake.logs, [(4, "script.bald.helper: blur did not start: RuntimeError: no window")])
-        finally:
-            sys.path.remove(str(ADDON))
-            for name, module in saved.items():
-                if module is None:
-                    sys.modules.pop(name, None)
-                else:
-                    sys.modules[name] = module
+            self.assertIsNone(entry.start_blur())
+        self.assertEqual(fake.logs, [(4, "script.bald.helper: blur did not start: RuntimeError: no window")])
 
 
 @needs_pillow

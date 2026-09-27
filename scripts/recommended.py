@@ -5,7 +5,10 @@ RunScript(skin.bald,recommended,prompt)  Home, once: offer them only if any diff
 
 Both change core settings through JSON-RPC (Settings.GetSettingValue / SetSettingValue) and only after a yes.
 """
-import json
+try:
+    from info import rpc  # RunScript: scripts/ is on sys.path
+except ImportError:  # the tests import it as scripts.recommended
+    from scripts.info import rpc
 
 # (setting id, recommended value). Values checked against Kodi 22's settings.xml (flattentvshows: 0 never, 1 if only one
 # season, 2 always) and the video select action enum (KODI::VIDEO::GUILIB::Action: 0 choose, 3 show information, 7 queue,
@@ -21,17 +24,10 @@ TITLE, PROMPT, APPLY, ALREADY, DONE = 31837, 31838, 31839, 31840, 31841
 STRING_IDS = (TITLE, PROMPT, APPLY, ALREADY, DONE)
 
 
-def rpc(xbmc, method, params):
-    response = json.loads(xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0", "id": 1, "method": method, "params": params})))
-    if "error" in response:
-        raise RuntimeError("{} failed: {}".format(method, response["error"]))
-    return response.get("result")
-
-
 def pending(xbmc):
     """The recommended settings Kodi does not have yet, as (id, value)."""
     return [(setting, value) for setting, value in RECOMMENDED
-            if rpc(xbmc, "Settings.GetSettingValue", {"setting": setting}).get("value") != value]
+            if (rpc(xbmc, "Settings.GetSettingValue", {"setting": setting}) or {}).get("value") != value]
 
 
 def apply(xbmc, xbmcgui, mode=""):

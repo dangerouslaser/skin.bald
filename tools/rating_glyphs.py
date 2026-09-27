@@ -53,7 +53,7 @@ def fetch():
     for svg, slug in GLYPHS.values():
         if slug:
             url = f"https://cdn.jsdelivr.net/npm/simple-icons@{SIMPLE_ICONS}/icons/{slug}.svg"
-            with urllib.request.urlopen(url) as response:
+            with urllib.request.urlopen(url, timeout=30) as response:
                 (SRC / svg).write_bytes(response.read())
             print(f"fetched {slug} -> {svg}")
 

@@ -13,8 +13,8 @@ from __future__ import annotations
 import os
 import xml.etree.ElementTree as ET
 
-ADDON_ID = "script.bald.helper"
-SKIN_ID = "skin.bald"
+from .common import ADDON_ID, SKIN_ID
+
 SETTING = "Bald.ShowsOpenInfo"
 TIMER = "bald_library_select"
 ACTION = f"Skin.TimerStart({TIMER})"
@@ -70,7 +70,7 @@ class Service:
         self.keymap_dir = keymap_dir or xbmcvfs.translatePath(KEYMAP_DIR)
         self.path = os.path.join(self.keymap_dir, KEYMAP_FILE)
         self.content = build_keymap()
-        self._last_error = None
+        self._last_errors = {}  # step name -> its last error, so each step logs its own errors once
 
     def log(self, message: str, level=None) -> None:
         self.xbmc.log(f"{ADDON_ID}: {message}", self.xbmc.LOGDEBUG if level is None else level)
@@ -131,15 +131,16 @@ class Service:
         return self.remove(f"skin {skin_dir}" if skin_dir != SKIN_ID else "setting off")
 
     def safe(self, step, *args) -> None:
-        """Run a step without letting an error end the service; log each distinct error once."""
+        """Run a step without letting an error end the service; log each step's distinct errors once in a row."""
+        name = getattr(step, "__name__", repr(step))
         try:
             step(*args)
-            self._last_error = None
+            self._last_errors.pop(name, None)
         except Exception as error:  # noqa: BLE001 - a service must outlive any single failure
             text = f"{type(error).__name__}: {error}"
-            if text != self._last_error:
+            if text != self._last_errors.get(name):
                 self.log(text, self.xbmc.LOGERROR)
-                self._last_error = text
+                self._last_errors[name] = text
 
     def run(self, monitor=None, wake: float = POLL_SECONDS, each=None) -> None:
         """Sync about every POLL_SECONDS until Kodi exits. `wake` is how often the loop waits out a slice of that

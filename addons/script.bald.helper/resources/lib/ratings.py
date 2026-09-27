@@ -26,30 +26,12 @@ Nothing here imports xbmc at module level, so the tests drive it with stand-ins.
 
 from __future__ import annotations
 
-import json
 import os
 import threading
 import time
 
-try:
-    from . import follow, mdblist
-except ImportError:  # loaded by file path (the tests): load the siblings the same way
-    import importlib.util as _util
-
-    def _sibling(name):
-        spec = _util.spec_from_file_location(f"bald_helper_{name}", os.path.join(os.path.dirname(__file__), f"{name}.py"))
-        module = _util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module
-
-    follow, mdblist = _sibling("follow"), _sibling("mdblist")
-
-ADDON_ID = "script.bald.helper"
-SKIN_ID = "skin.bald"
-HOME_WINDOW = 10000
-DATA_DIR = "special://profile/addon_data/script.bald.helper"
-DATABASE = "ratings.db"
-KEY_SETTING = "mdblist_key"
+from . import common, follow, mdblist
+from .common import ADDON_ID, DATA_DIR, DATABASE, HOME_WINDOW, KEY_SETTING, SKIN_ID
 
 POLL_SECONDS = 0.15
 IDLE_SECONDS = 1.0
@@ -107,12 +89,15 @@ class Publisher:
                 self.window.clearProperty(self.name(suffix))
 
 
-class Follower:
+class Follower(common.Threads):
     """Polls the item Bald shows and publishes its ratings (see the module docstring)."""
+
+    NAME = "ratings"
+    POLL_SECONDS, IDLE_SECONDS = POLL_SECONDS, IDLE_SECONDS
 
     def __init__(self, xbmc, ratings: mdblist.Ratings, window, key_reader, current_window,
                  clock=time.monotonic, threaded: bool = True):
-        self.xbmc = xbmc
+        self.init_threads(xbmc)
         self.ratings = ratings
         self.window = window
         self.key_reader = key_reader          # () -> the API key setting, read fresh
@@ -131,22 +116,10 @@ class Follower:
         self.wanted = None      # the item being looked up on the worker
         self.dirty = False      # something may be published (cleared when resting off)
         self._job = None
-        self._job_ready = threading.Condition()
-        self._stop = threading.Event()
-        self._threads = []
-        self._logged = set()
 
     # --- logging ---
-    def log(self, text: str, level=None) -> None:
-        self.xbmc.log(f"{ADDON_ID}: ratings: {text}", self.xbmc.LOGDEBUG if level is None else level)
-
-    def log_once(self, text: str, level=None) -> None:
-        if text in self._logged:
-            return
-        if len(self._logged) > 200:
-            self._logged.clear()
-        self._logged.add(text)
-        self.log(text, self.xbmc.LOGERROR if level is None else level)
+    def describe(self, error: Exception) -> str:
+        return mdblist.redact(f"{type(error).__name__}: {error}", self.key)
 
     def api_log(self, text: str, error: bool = False) -> None:
         text = mdblist.redact(text, self.key)
@@ -268,16 +241,16 @@ class Follower:
         if not self.threaded:
             self.work(ref)
             return
-        with self._job_ready:
+        with self.condition:
             self._job = ref
-            self._job_ready.notify()
+            self.condition.notify()
 
     def work(self, ref) -> None:
         started = self.clock()
         try:
             values, how = self.ratings.get(ref, cancelled=lambda: self.wanted != ref or self._stop.is_set())
         except Exception as error:  # noqa: BLE001 - one bad answer must not end the worker
-            self.log_once(mdblist.redact(f"{type(error).__name__}: {error}", self.key))
+            self.log_once(self.describe(error))
             values, how = None, "error"
         with self.lock:
             if self.wanted != ref:
@@ -287,57 +260,13 @@ class Follower:
         self.log(f"{ref!r}: {how}")
 
     # --- threads ---
-    def _worker(self) -> None:
-        while not self._stop.is_set():
-            with self._job_ready:
-                while self._job is None and not self._stop.is_set():
-                    self._job_ready.wait(1.0)
-                ref, self._job = self._job, None
-            if ref is not None and not self._stop.is_set():
-                self.work(ref)
+    def next_job(self):
+        ref, self._job = self._job, None
+        return ref
 
-    def _poller(self, monitor) -> None:
-        wait = POLL_SECONDS
-        while not self._stop.is_set() and not monitor.abortRequested():
-            try:
-                wait = self.tick()
-            except Exception as error:  # noqa: BLE001 - the follower outlives any single failure
-                self.log_once(mdblist.redact(f"{type(error).__name__}: {error}", self.key))
-                wait = IDLE_SECONDS
-            if self._stop.wait(wait):
-                break
-
-    def start(self, monitor=None) -> None:
-        monitor = monitor or self.xbmc.Monitor()
-        for target, args in ((self._worker, ()), (self._poller, (monitor,))):
-            thread = threading.Thread(target=target, args=args, name=f"{ADDON_ID}.ratings", daemon=True)
-            thread.start()
-            self._threads.append(thread)
-        self.log("started")
-
-    def stop(self) -> None:
-        self._stop.set()
-        with self._job_ready:
-            self._job_ready.notify_all()
-        for thread in self._threads:
-            thread.join(2.0)
-        self._threads = []
-        try:
-            self.window.clearProperty(PROPERTY_READY)
-            self.publisher.clear()
-        except Exception:  # noqa: BLE001 - shutting down
-            pass
-        self.log("stopped")
-
-
-def jsonrpc(xbmc, method: str, params: dict) -> dict:
-    """One JSON-RPC call through Kodi; {} on any error."""
-    try:
-        answer = json.loads(xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0", "id": 1, "method": method,
-                                                            "params": params})))
-    except (TypeError, ValueError):
-        return {}
-    return answer.get("result") or {} if isinstance(answer, dict) else {}
+    def after_stop(self) -> None:
+        self.window.clearProperty(PROPERTY_READY)
+        self.publisher.clear()
 
 
 class PlayerRatings:
@@ -365,7 +294,7 @@ class PlayerRatings:
             return None
         dbid = self.xbmc.getInfoLabel("VideoPlayer.DBID").strip()
         if dbid.isdigit() and int(dbid) > 0:
-            details = jsonrpc(self.xbmc, "VideoLibrary.GetMovieDetails",
+            details = common.jsonrpc(self.xbmc, "VideoLibrary.GetMovieDetails",
                               {"movieid": int(dbid), "properties": ["uniqueid"]}).get("moviedetails") or {}
             ids = details.get("uniqueid") or {}
             ref = mdblist.make_ref("movie", dbid, str(ids.get("imdb") or ""), str(ids.get("tmdb") or ""))

@@ -1,6 +1,5 @@
 """Ratings in media views (Includes_Bald_Ratings.xml) and their settings in Appearance > Ratings (window 1118)."""
 
-import importlib.util
 import re
 import unittest
 import xml.etree.ElementTree as ET
@@ -8,6 +7,7 @@ import xml.etree.ElementTree as ET
 from conditions import atoms, equivalent, implies
 from kodi_includes import SKIN, expand_call, expand_follow, include_definitions, resolve_window
 from skin_strings import RATINGS_RANGE, strings
+from support import load_file
 
 ROOT = SKIN.parent
 RATINGS = SKIN / "Includes_Bald_Ratings.xml"
@@ -153,10 +153,7 @@ def pills(nodes):
 
 
 def glyph_names():
-    spec = importlib.util.spec_from_file_location("rating_glyphs", ROOT / "tools" / "rating_glyphs.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    return load_file("rating_glyphs", ROOT / "tools" / "rating_glyphs.py")
 
 
 class RatingsTests(unittest.TestCase):

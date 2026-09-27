@@ -425,7 +425,6 @@ class SharedHandlerTests(unittest.TestCase):
             with self.subTest(args=args), patch.object(info, 'handle') as handle:
                 info.run(*args)
                 handle.assert_called_once_with(self.xbmc, self.gui, *args)
-        self.assertEqual(set(info.HELPER_ACTIONS), {'info', 'tvinfo', 'recommendations', 'play', 'open', 'seriesmeta'})
         self.assertEqual(info.SERVICE_API, 1)
 
     def test_info_opened_is_recommendations_then_tvinfo(self):

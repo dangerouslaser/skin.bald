@@ -2,7 +2,6 @@
 Skin Variables hubs menu, Live TV rows, and the one-time migration of the old Movies and TV shows screens."""
 
 import collections
-import importlib.util
 import json
 import re
 import tempfile
@@ -16,19 +15,13 @@ from home_screens import HUB_SLOTS, SCREENS, hubs, rows
 from kodi_includes import Skin, expand_follow, resolve_window
 
 from scripts import hubs as migration
+from support import load_builder
 
 
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
 FALLBACK = XML / "Includes_Bald_HomeDefaults.xml"
 HUBS = [f"hub{n}" for n in range(1, HUB_SLOTS + 1)]
-
-
-def load_builder():
-    spec = importlib.util.spec_from_file_location("build_home_defaults", ROOT / "tools" / "build_home_defaults.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def build(menus):

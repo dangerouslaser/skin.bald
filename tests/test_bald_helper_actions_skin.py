@@ -2,20 +2,17 @@
 serves ($EXP[Bald_HelperActions]) and keeps its RunScript otherwise; the requests carry only safe values and parse
 as the service expects. The service itself is tested in test_bald_helper_actions.py."""
 
-import importlib.util
 import re
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from conditions import equivalent, implies
+from support import helper
 
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
-SPEC = importlib.util.spec_from_file_location(
-    "bald_helper_actions_for_skin", ROOT / "addons" / "script.bald.helper" / "resources" / "lib" / "actions.py")
-actions = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(actions)
+actions = helper("actions", "actions_skin")
 
 SERVES = "$EXP[Bald_HelperActions]"
 MOVED = ("tvinfo", "recommendations", "play", "open", "seriesmeta", "letters")

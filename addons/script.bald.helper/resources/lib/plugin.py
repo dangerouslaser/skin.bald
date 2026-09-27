@@ -14,23 +14,11 @@ Nothing here imports xbmc at module level, so the tests drive it with stand-ins.
 
 from __future__ import annotations
 
-import json
 import os
 from urllib.parse import parse_qsl
 
-try:
-    from . import mdblist
-except ImportError:  # loaded by file path (the tests)
-    import importlib.util as _util
-
-    _spec = _util.spec_from_file_location("bald_helper_mdblist", os.path.join(os.path.dirname(__file__), "mdblist.py"))
-    mdblist = _util.module_from_spec(_spec)
-    _spec.loader.exec_module(mdblist)
-
-ADDON_ID = "script.bald.helper"
-DATA_DIR = "special://profile/addon_data/script.bald.helper"
-DATABASE = "ratings.db"
-KEY_SETTING = "mdblist_key"
+from . import common, mdblist
+from .common import ADDON_ID, DATA_DIR, DATABASE, KEY_SETTING
 ACTOR_ICON = "DefaultActor.png"
 DIRECTOR, WRITER = 20339, 20417  # Kodi's own "Director" and "Writer"
 
@@ -60,18 +48,9 @@ def parse(argument: str) -> dict:
     return dict(parse_qsl(argument.lstrip("?")))
 
 
-def jsonrpc(xbmc, method: str, params: dict) -> dict:
-    try:
-        answer = json.loads(xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0", "id": 1, "method": method,
-                                                            "params": params})))
-    except (TypeError, ValueError):
-        return {}
-    return (answer.get("result") or {}) if isinstance(answer, dict) else {}
-
-
 def details(xbmc, dbtype: str, dbid: int, properties: list[str]) -> dict:
     method, id_name, result = DETAILS[dbtype]
-    return jsonrpc(xbmc, method, {id_name: dbid, "properties": properties}).get(result) or {}
+    return common.jsonrpc(xbmc, method, {id_name: dbid, "properties": properties}).get(result) or {}
 
 
 def _ordered(cast) -> list[dict]:

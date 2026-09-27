@@ -1,12 +1,11 @@
 """Bald Helper's online ratings (resources/lib/mdblist.py, ratings.py) and its cast plugin (resources/lib/plugin.py),
 with xbmc, the Home window, JSON-RPC and the MDbList API replaced by stand-ins. No test makes a network request."""
 
-import importlib.util
 import io
 import json
 import os
-import sys
 import tempfile
+import threading
 import time
 import types
 import unittest
@@ -15,21 +14,15 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from unittest import mock
 
+from support import Clock as _Clock, helper
+
 ROOT = Path(__file__).resolve().parents[1]
 ADDON = ROOT / "addons" / "script.bald.helper"
-LIB = ADDON / "resources" / "lib"
 
 
-def load(name):
-    spec = importlib.util.spec_from_file_location(f"bald_helper_{name}_test", LIB / f"{name}.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-ratings = load("ratings")
+ratings = helper("ratings", "ratings")
 mdblist = ratings.mdblist  # the same module object ratings.py uses
-plugin = load("plugin")
+plugin = helper("plugin", "ratings")
 
 KEY = "k3y-SECRET-0123456789"
 DAY = 24 * 60 * 60
@@ -89,15 +82,9 @@ class Fetch:
         return [u.split("api.mdblist.com/", 1)[1].split("?", 1)[0] for u in self.urls]
 
 
-class Clock:
+class Clock(_Clock):
     def __init__(self, now=NOW):
-        self.now = now
-
-    def __call__(self):
-        return self.now
-
-    def advance(self, seconds):
-        self.now += seconds
+        super().__init__(now)
 
 
 class Window:
@@ -340,6 +327,62 @@ class QuotaTests(Base):
         self.assertTrue(self.ratings.key_usable(self.key))
         self.fetch.answers["imdb/movie/tt0073195"] = [mdblist.Response(200, JAWS)]
         self.assertEqual(self.ratings.get(self.ref)[1], "api")
+
+    def test_an_invalid_key_answered_with_200_or_403_is_refused(self):
+        for status in (200, 403):
+            with self.subTest(status=status):
+                self.ratings.key_changed()
+                self.fetch.answers["imdb/movie/tt0073195"] = [mdblist.Response(status, {"error": "Invalid API key!"})]
+                self.assertEqual(self.ratings.get(self.ref), (None, "nokey"))
+                self.assertFalse(self.ratings.key_usable(KEY))
+
+    def test_other_errors_back_off_and_keep_the_key(self):
+        # A 403 from a proxy or firewall, and an error answered with 200, say nothing about the key.
+        for status, data in ((403, None), (403, {"error": "Forbidden"}), (200, {"error": "Service unavailable"})):
+            with self.subTest(status=status, data=data):
+                self.ratings.key_changed()
+                self.clock.advance(mdblist.RETRY_AFTER + 1)
+                self.fetch.answers["imdb/movie/tt0073195"] = [mdblist.Response(status, data)]
+                self.assertEqual(self.ratings.get(self.ref), (None, "error"))
+                self.assertTrue(self.ratings.key_usable(KEY))
+                calls = len(self.fetch.urls)
+                self.assertEqual(self.ratings.get(self.ref), (None, "quota"))  # backing off: no request
+                self.assertEqual(len(self.fetch.urls), calls)
+        self.clock.advance(mdblist.RETRY_AFTER + 1)
+        self.fetch.answers["imdb/movie/tt0073195"] = [mdblist.Response(200, JAWS)]
+        self.assertEqual(self.ratings.get(self.ref)[1], "api")
+
+    def test_a_slow_lookup_does_not_hold_up_another(self):
+        started, release = threading.Event(), threading.Event()
+        slow = mdblist.make_ref("movie", "13", "tt0000002")
+
+        def fetch(url):
+            if "tt0000002" in url:
+                started.set()
+                release.wait(5)
+                return mdblist.Response(200, JAWS)
+            return self.fetch(url)
+
+        self.ratings.fetch = fetch
+        self.fetch.add("imdb/movie/tt0073195", data=JAWS)
+        thread = threading.Thread(target=self.ratings.get, args=(slow,))
+        thread.start()
+        try:
+            self.assertTrue(started.wait(5))
+            self.assertEqual(self.ratings.get(self.ref)[1], "api")  # while the other request is still out
+            self.assertTrue(thread.is_alive())
+            self.assertEqual(self.cache.quota(NOW)["requests"], 2)   # both counted
+        finally:
+            release.set()
+            thread.join(5)
+
+    def test_check_key_classifies_like_lookups(self):
+        fetch = Fetch()
+        for status, data, result in ((401, None, "rejected"), (403, {"error": "Invalid API key!"}, "rejected"),
+                                     (200, {"error": "Invalid API key!"}, "rejected"), (403, None, "error")):
+            with self.subTest(status=status, data=data):
+                fetch.answers["user"] = [mdblist.Response(status, data)]
+                self.assertEqual(mdblist.check_key(KEY, fetch)[0], result)
 
     def test_the_key_is_only_in_the_request(self):
         self.fetch.add("imdb/movie/tt0073195", status=500, data={"error": f"bad key {KEY}"})

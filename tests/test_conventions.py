@@ -151,7 +151,9 @@ class MapOrderTests(unittest.TestCase):
     def test_referenced_maps_load_first(self):
         files = [node.get('file') for node in ET.parse(SKIN / 'Includes.xml').getroot().findall('include')
                  if node.get('file')]
+        # Skin Variables builds its includes per install, so a fresh checkout does not have them.
         maps = [(node.get('name'), node.get('ref')) for name in files
+                if (SKIN / name).exists() or not name.startswith('script-skinvariables')
                 for node in ET.parse(SKIN / name).getroot().iter('map')]
         loaded = set()
         for name, ref in maps:

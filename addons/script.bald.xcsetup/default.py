@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import glob
+import http.client
 import json
 import os
 import shutil
@@ -101,7 +102,7 @@ def _xc_data(server: str, username: str, password: str, action: str) -> list[dic
     try:
         with urllib.request.urlopen(request, timeout=30) as response:
             payload = json.load(response)
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, http.client.HTTPException) as exc:  # HTTPException: a cut-off answer
         raise ConfigError(f"Could not read XC {action.replace('_', ' ')}: {exc}") from exc
     if not isinstance(payload, list):
         raise ConfigError(f"The XC {action.replace('_', ' ')} response was not a list.")

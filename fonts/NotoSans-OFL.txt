@@ -1,8 +1,9 @@
-Copyright 2022 The Instrument Sans Project Authors (https://github.com/Instrument/instrument-sans)
+Copyright 2015 Google Inc. All Rights Reserved.
+Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)
 
-The letters U+02B0-02FF, U+1D00-1DBF and U+2070-209F that Instrument Sans lacks were added to these files from Noto Sans
-(Copyright 2015 Google Inc.; Copyright 2022 The Noto Project Authors), also under the SIL Open Font License 1.1:
-see NotoSans-OFL.txt.
+Noto Sans (NotoSans-Regular.ttf, as bundled with Kodi's Estuary). Bald also copies its modifier, superscript and
+small-capital letters (U+02B0-02FF, U+1D00-1DBF, U+2070-209F) into the DM Sans and Instrument Sans files here
+(tools/add_superscripts.py).
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

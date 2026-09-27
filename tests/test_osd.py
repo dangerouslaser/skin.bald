@@ -62,7 +62,8 @@ class OSDContractTests(unittest.TestCase):
         for name in UPNEXT:
             wanted[name] = {"3012": "button", "3013": "button", "3014": "progress"}
         for name, table in wanted.items():
-            found = ids(self.windows.get(name) or resolve_window(name))
+            window = self.windows.get(name)
+            found = ids(resolve_window(name) if window is None else window)
             for control_id, kind in table.items():
                 with self.subTest(window=name, id=control_id):
                     self.assertIn(control_id, found)

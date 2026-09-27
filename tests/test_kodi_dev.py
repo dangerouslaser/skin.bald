@@ -1,5 +1,4 @@
 """Checks for reliable runtime evidence without requiring a running Kodi."""
-import importlib.util
 import io
 from pathlib import Path
 import sys
@@ -7,11 +6,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from support import load_file
+
 TOOLS = Path(__file__).resolve().parents[1] / "tools"
 sys.path.insert(0, str(TOOLS))
-spec = importlib.util.spec_from_file_location("kodi_dev", TOOLS / "kodi_dev.py")
-dev = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(dev)
+dev = load_file("kodi_dev", TOOLS / "kodi_dev.py")
 
 
 class KodiDevTests(unittest.TestCase):

@@ -1,6 +1,5 @@
 """Per-row display styles on Home: each style's tiles, the generator's style field and the widget editor's Style action."""
 
-import importlib.util
 import re
 import unittest
 import xml.etree.ElementTree as ET
@@ -10,6 +9,7 @@ from home_screens import SCREENS as HOME_SCREENS, rows as shipped_rows
 from conditions import equivalent, implies
 from kodi_includes import Skin, expand_call, include_definitions
 from skin_strings import bald_strings
+from support import load_builder
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,13 +18,6 @@ FALLBACK = XML / "Includes_Bald_HomeDefaults.xml"
 LANDSCAPE = ("fanart", "thumbnail", "logo")
 STYLES = LANDSCAPE + ("poster", "square", "text")
 SCREENS = tuple((screen, title) for screen, title, _, _ in HOME_SCREENS)
-
-
-def load_builder():
-    spec = importlib.util.spec_from_file_location("build_home_defaults", ROOT / "tools" / "build_home_defaults.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def row_calls(root, title):

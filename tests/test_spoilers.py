@@ -2,7 +2,6 @@
 point), and every place Bald shows a plot or an episode still honouring it. Bald Helper's side is
 tests/test_bald_helper_spoilers.py; here only the names the two share."""
 
-import importlib.util
 import re
 import unittest
 import xml.etree.ElementTree as ET
@@ -11,12 +10,10 @@ from pathlib import Path
 from conditions import equivalent, implies
 from kodi_includes import NATIVE, SKIN, expressions, resolve_window
 from skin_strings import loc
+from support import helper as load_helper
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location(
-    "bald_helper_spoilers_names", ROOT / "addons" / "script.bald.helper" / "resources" / "lib" / "spoilers.py")
-helper = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(helper)
+helper = load_helper("spoilers", "spoilers_names")
 
 SPOILERS = ET.parse(SKIN / "Includes_Bald_Spoilers.xml").getroot()
 PLOT_ATOMS = ("Skin.HasSetting(Bald.Spoilers)", "Skin.HasSetting(Bald.Spoilers.ShowPlots)",

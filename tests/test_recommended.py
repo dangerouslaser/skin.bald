@@ -59,5 +59,14 @@ class RecommendedTests(unittest.TestCase):
         xbmcgui.Dialog.return_value.notification.assert_called_once()
 
 
+    def test_an_answer_without_a_result_counts_as_not_set(self):
+        xbmc = Mock()
+        xbmc.executeJSONRPC.return_value = json.dumps({"id": 1})
+        self.assertEqual(recommended.pending(xbmc), list(recommended.RECOMMENDED))
+
+    def test_uses_the_skins_one_json_rpc_helper(self):
+        from scripts import info
+        self.assertIs(recommended.rpc, info.rpc)
+
 if __name__ == "__main__":
     unittest.main()
