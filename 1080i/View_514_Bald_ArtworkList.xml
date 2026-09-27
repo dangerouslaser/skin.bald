@@ -52,7 +52,7 @@
 				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
 				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
 				<control type="group"><left>816</left><top>180</top>
-					<include content="Bald_ArtPlaceholder"><param name="width">1008</param><param name="height">567</param></include>
+					<control type="image"><width>1008</width><height>567</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 					<include content="Bald_ArtworkListArt"><param name="p">Odd</param></include>
 					<include content="Bald_ArtworkListArt"><param name="p">Even</param></include>
 					<control type="image"><width>1008</width><height>567</height><texture>bald/scrim_logo.png</texture><visible>!String.IsEmpty(Container(514).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(514).ListItem.Art(tvshow.clearlogo))</visible><animation effect="fade" start="0" end="100" time="500" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="150" tween="sine" easing="inout">Hidden</animation></control>

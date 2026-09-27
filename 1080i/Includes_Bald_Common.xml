@@ -130,28 +130,4 @@
 			</animation>
 		</definition>
 	</include>
-	<!-- The faint fill under an art frame's parity layers (Bald_ArtLayer), shown where an item has no art.
-	     Kodi resets every non-constant image texture when a window closes (CGUIImage::FreeTextures, from
-	     CGUIWindow::FreeResources on window deinit) and a <fadetime> image always fades its first picture in from
-	     nothing, so on every window open the art above this fill fades in over its fadetime (700) and the fill would
-	     show through as a dark box. It therefore arrives only after that fade: 380 FADE after 700 (docs/NOTES.md,
-	     Dark frame between Home and the library). -->
-	<include name="Bald_ArtPlaceholder">
-		<param name="width" />
-		<param name="height" />
-		<param name="left">0</param>
-		<param name="top">0</param>
-		<definition>
-			<control type="image">
-				<left>$PARAM[left]</left>
-				<top>$PARAM[top]</top>
-				<width>$PARAM[width]</width>
-				<height>$PARAM[height]</height>
-				<texture colordiffuse="bald_placeholder">bald/white.png</texture>
-				<animation type="WindowOpen">
-					<effect type="fade" start="0" end="100" time="380" delay="700" tween="sine" easing="inout" />
-				</animation>
-			</control>
-		</definition>
-	</include>
 </includes>
