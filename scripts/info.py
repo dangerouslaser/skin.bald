@@ -38,10 +38,9 @@ PLAY_WINDOWS = "Window.IsActive(movieinformation) | Window.IsActive(videos)"
 # ids resolve through xbmc.getLocalizedString; the en_gb wording here is the default when no Kodi is present.
 RESUME, PLAY, ONE_SEASON, SEASONS_WORD, YEARS_TO = 13404, 208, 31711, 31712, 31719
 STRINGS = {RESUME: "Resume", PLAY: "Play", ONE_SEASON: "1 season", SEASONS_WORD: "seasons", YEARS_TO: "to"}
-# Bald Helper's contract with this file: handle(xbmc, xbmcgui, action, media_type, dbid, cancelled=, show=) for
-# HELPER_ACTIONS, and letters.publish(xbmc, xbmcgui, container, cache=, cancelled=).
+# Bald Helper's contract with this file: handle(xbmc, xbmcgui, action, media_type, dbid, cancelled=, show=) for the
+# actions handle() takes, and letters.publish(xbmc, xbmcgui, container, cache=, cancelled=).
 SERVICE_API = 1
-HELPER_ACTIONS = ("info", "tvinfo", "recommendations", "play", "open", "seriesmeta")
 
 
 def never():
@@ -66,15 +65,20 @@ def recommendation_path(media_type, title, genres):
     )
 
 
-def get_details(xbmc, media_type, dbid, properties):
-    method, key, result_key, _ = MEDIA[media_type]
+def rpc(xbmc, method, params):
+    """One JSON-RPC call through Kodi: its result (None when it has none). An error answer raises RuntimeError.
+    The skin's scripts share this one (recommended.py imports it)."""
     response = json.loads(xbmc.executeJSONRPC(json.dumps({
-        "jsonrpc": "2.0", "id": 1, "method": method,
-        "params": {key: dbid, "properties": properties},
+        "jsonrpc": "2.0", "id": 1, "method": method, "params": params,
     })))
     if "error" in response:
-        raise RuntimeError("Library lookup failed: {}".format(response["error"]))
-    return response["result"][result_key]
+        raise RuntimeError("{} failed: {}".format(method, response["error"]))
+    return response.get("result")
+
+
+def get_details(xbmc, media_type, dbid, properties):
+    method, key, result_key, _ = MEDIA[media_type]
+    return rpc(xbmc, method, {key: dbid, "properties": properties})[result_key]
 
 
 def recommendation_subject(xbmc, media_type, dbid):
@@ -83,25 +87,11 @@ def recommendation_subject(xbmc, media_type, dbid):
         return media_type, get_details(xbmc, media_type, dbid, ["title", "genre"])
     if media_type != "episode":
         return "", {}
-    response = json.loads(xbmc.executeJSONRPC(json.dumps({
-        "jsonrpc": "2.0", "id": 1, "method": "VideoLibrary.GetEpisodeDetails",
-        "params": {"episodeid": dbid, "properties": ["tvshowid"]},
-    })))
-    if "error" in response:
-        raise RuntimeError("Episode parent lookup failed: {}".format(response["error"]))
-    tvshowid = response["result"]["episodedetails"].get("tvshowid", 0)
+    episode = rpc(xbmc, "VideoLibrary.GetEpisodeDetails", {"episodeid": dbid, "properties": ["tvshowid"]})
+    tvshowid = episode["episodedetails"].get("tvshowid", 0)
     if not isinstance(tvshowid, int) or tvshowid <= 0:
         return "", {}
     return "tvshow", get_details(xbmc, "tvshow", tvshowid, ["title", "genre"])
-
-
-def rpc(xbmc, method, params):
-    response = json.loads(xbmc.executeJSONRPC(json.dumps({
-        "jsonrpc": "2.0", "id": 1, "method": method, "params": params,
-    })))
-    if "error" in response:
-        raise RuntimeError("{} failed: {}".format(method, response["error"]))
-    return response["result"]
 
 
 def episode_order(episode):
@@ -366,12 +356,7 @@ def make_item(xbmc, xbmcgui, media_type, dbid, details):
 
 def disable_mouse(xbmc):
     """Bald is remote-only: hover focus and clicks break its focus model, so turn Kodi's mouse input off."""
-    response = json.loads(xbmc.executeJSONRPC(json.dumps({
-        "jsonrpc": "2.0", "id": 1, "method": "Settings.SetSettingValue",
-        "params": {"setting": "input.enablemouse", "value": False},
-    })))
-    if "error" in response:
-        raise RuntimeError("Could not disable mouse input: {}".format(response["error"]))
+    rpc(xbmc, "Settings.SetSettingValue", {"setting": "input.enablemouse", "value": False})
 
 
 # Font.xml fontset ids Bald Settings > Appearance offers (Default is DM Sans, lookandfeel.font's default).
@@ -382,12 +367,7 @@ def set_fontset(xbmc, fontset):
     """Select a Font.xml fontset; Kodi reloads the skin itself when lookandfeel.font changes."""
     if fontset not in FONTSETS:
         raise ValueError("Unknown fontset: {!r}".format(fontset))
-    response = json.loads(xbmc.executeJSONRPC(json.dumps({
-        "jsonrpc": "2.0", "id": 1, "method": "Settings.SetSettingValue",
-        "params": {"setting": "lookandfeel.font", "value": fontset},
-    })))
-    if "error" in response:
-        raise RuntimeError("Could not set the font: {}".format(response["error"]))
+    rpc(xbmc, "Settings.SetSettingValue", {"setting": "lookandfeel.font", "value": fontset})
 
 
 def run(action="", media_type="", dbid=""):
