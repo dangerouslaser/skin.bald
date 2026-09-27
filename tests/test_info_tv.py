@@ -133,7 +133,7 @@ class InfoTvTests(unittest.TestCase):
     def test_episode_row_follows_the_focused_season(self):
         row = self.control("5302")
         self.assertEqual(row.get("type"), "fixedlist")
-        self.assertEqual((row.findtext("focusposition"), row.findtext("movement")), ("2", "2"))
+        self.assertEqual((row.findtext("focusposition"), row.findtext("movement")), ("0", "2"))  # every season starts at the left edge
         self.assertEqual(row.findtext("content"), "$INFO[Container(5301).ListItem.FolderPath]")
         scroll = row.find("scrolltime")
         self.assertEqual((scroll.text, scroll.get("tween"), scroll.get("easing")), ("440", "cubic", "out"))

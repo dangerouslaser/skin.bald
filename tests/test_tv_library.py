@@ -176,7 +176,7 @@ class SeriesPageTests(unittest.TestCase):
         self.assertTrue(implies(underline.findtext('visible'), '!ListItem.IsParentFolder'))
         # Same cards and row geometry as the info page's row.
         row = self.built.find(".//control[@id='5302']")
-        self.assertEqual((row.get('type'), row.findtext('focusposition'), row.findtext('top')), ('fixedlist', '2', '670'))
+        self.assertEqual((row.get('type'), row.findtext('focusposition'), row.findtext('top')), ('fixedlist', '0', '670'))
         self.assertEqual(row.find('itemlayout').get('width'), '344')
 
     def test_episode_row_follows_the_focused_season(self):
