@@ -89,8 +89,9 @@
 				<top>120</top>
 				<width>1248</width>
 				<height>702</height>
-				<!-- The fill for items without art; it arrives after the layers' first fade (see Bald_ArtPlaceholder). -->
-				<include content="Bald_ArtPlaceholder"><param name="width">1248</param><param name="height">702</param></include>
+				<control type="image">
+					<texture colordiffuse="bald_placeholder">bald/white.png</texture>
+				</control>
 				<!-- Fanart: two parity layers (see Bald_ArtLayer). -->
 				<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param></include>
 				<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param></include>
@@ -135,11 +136,6 @@
 				<include>Bald_AnimInfoArtOverlay</include>
 				<!-- Poster rows: up 126 px with the frame's bottom edge. -->
 				<include>Bald_AnimPosterEdge</include>
-				<!-- On a window open the art fades in from nothing (see Bald_ArtPlaceholder), so the scrim and logo come
-				     in as they do after an item change: 520 FADE, 380 after the art starts (Bald_AnimLogoIn). -->
-				<animation type="WindowOpen">
-					<effect type="fade" start="0" end="100" time="520" delay="380" tween="sine" easing="inout" />
-				</animation>
 				<left>Bald_SafeLeft</left>
 				<top>120</top>
 				<width>1248</width>

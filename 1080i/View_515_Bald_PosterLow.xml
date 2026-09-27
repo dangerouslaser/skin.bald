@@ -55,15 +55,12 @@
 				<visible>!Container(515).ListItem.IsParentFolder + !String.IsEmpty(Container(515).ListItem.Title)</visible>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
 				<control type="group"><left>Bald_SafeLeft</left><top>120</top>
-					<include content="Bald_ArtPlaceholder"><param name="width">1248</param><param name="height">576</param></include>
+					<control type="image"><width>1248</width><height>576</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 					<include content="Bald_PosterLowArt"><param name="p">Odd</param></include>
 					<include content="Bald_PosterLowArt"><param name="p">Even</param></include>
-					<!-- Scrim and logos come in after the art's first fade (see Bald_ArtPlaceholder). -->
-					<control type="group"><animation type="WindowOpen"><effect type="fade" start="0" end="100" time="520" delay="380" tween="sine" easing="inout" /></animation>
 					<control type="image"><width>1248</width><height>576</height><texture>bald/scrim_logo.png</texture><visible>!String.IsEmpty(Container(515).ListItem.Art(clearlogo)) | !String.IsEmpty(Container(515).ListItem.Art(tvshow.clearlogo))</visible><animation effect="fade" start="0" end="100" time="500" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="150" tween="sine" easing="inout">Hidden</animation></control>
 					<include content="Bald_PosterLowLogo"><param name="p">Odd</param></include>
 					<include content="Bald_PosterLowLogo"><param name="p">Even</param></include>
-					</control>
 				</control>
 			</control>
 			<control type="group"><visible>!$EXP[Bald_LibraryMenuOpen]</visible>

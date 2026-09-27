@@ -134,23 +134,8 @@
 
 	<!-- ============ Background ============ -->
 	<!-- The current row item's fanart, blurred by TMDb Helper (Gaussian radius 40 on a 480 px copy, cached), darkened
-	     for the OLED with colordiffuse. <fadetime> crossfades between titles and waits until the new image has loaded.
-	     Two layers of the same picture. Kodi resets every non-constant image texture when a window closes
-	     (CGUIImage::FreeTextures) and a <fadetime> image fades its first picture in from nothing, so the crossfading
-	     layer alone left the field bare for 800 ms on every window open. The still layer under it has no fadetime and
-	     loads in the foreground (a 480 px JPEG on local storage, which CGUITextureManager loads synchronously), so
-	     the backdrop is there on the first frame and holds across a window change; the crossfading layer takes over
-	     invisibly once its fade completes, and still dissolves between titles (docs/NOTES.md, Dark frame between
-	     Home and the library). -->
+	     for the OLED with colordiffuse. <fadetime> crossfades between titles and waits until the new image has loaded. -->
 	<include name="Bald_BackdropImage">
-		<control type="image">
-			<width>1920</width>
-			<height>1080</height>
-			<aspectratio>scale</aspectratio>
-			<texture>$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</texture>
-			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
-			<colordiffuse>bald_backdrop</colordiffuse>
-		</control>
 		<control type="image">
 			<width>1920</width>
 			<height>1080</height>
