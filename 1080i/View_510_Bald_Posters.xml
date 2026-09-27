@@ -88,6 +88,14 @@
 		</definition>
 	</include>
 	<expression name="Bald_LibraryMenuOpen">[Control.HasFocus(9150)]</expression>
+	<!-- Library views dim (to 72%, or <end>) while the options menu is open, as Bald_BrowseDim; not over background
+	     video, where a partial fade would let the video through. -->
+	<include name="Bald_LibraryDim">
+		<param name="end">72</param>
+		<definition>
+			<animation effect="fade" start="100" end="$PARAM[end]" time="180" tween="sine" easing="inout" condition="[$EXP[Bald_LibraryMenuOpen]] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
+		</definition>
+	</include>
 	<variable name="Bald_LibraryMenuNote">
 		<!-- Sentences stay whole strings around the live value; the IsEmpty guards keep the old $INFO rule that an
 		     empty value shows no note (the fallback below is empty for these option items). -->
@@ -240,7 +248,7 @@
 				<onfocus>SetProperty(Bald.LibraryContainer,510,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">510</param><param name="window">videos</param></include>
 				<include content="Bald_UnfollowContainer"><param name="window">videos</param></include>
 				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|510)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,510)</ondown><onleft>noop</onleft><onright>noop</onright>
-				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="[$EXP[Bald_LibraryMenuOpen]] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
+				<include>Bald_LibraryDim</include>
 				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
 				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
