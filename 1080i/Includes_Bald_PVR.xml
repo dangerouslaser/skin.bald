@@ -90,11 +90,9 @@
 	<include name="Bald_PVRAnimOverlay">
 		<animation type="WindowOpen">
 			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
-			<effect type="slide" start="-40,0" end="0,0" time="480" tween="cubic" easing="out" />
 		</animation>
 		<animation type="WindowClose">
 			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
-			<effect type="slide" start="0,0" end="-40,0" time="180" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<!-- A window's content steps aside while Kodi's programme or recording information is open over it. -->
@@ -109,9 +107,13 @@
 		<include>Bald_WindowBase</include>
 	</include>
 	<!-- Scrims for chrome over live video: field from the left edge and from the bottom. -->
+	<!-- Over live video: the playback scrims' black, scaled by Playback › Background shading (Bald_OSDShade). -->
 	<include name="Bald_PVRScrims">
-		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_h.png</texture></control>
-		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_b.png</texture></control>
+		<control type="group">
+			<include>Bald_OSDShade</include>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_scrim">bald/scrim_info_h.png</texture></control>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_scrim">bald/scrim_info_b.png</texture></control>
+		</control>
 	</include>
 	<!-- Page title, the accent section line under it and, optionally, the date and time on the right. -->
 	<include name="Bald_PVRHeader">

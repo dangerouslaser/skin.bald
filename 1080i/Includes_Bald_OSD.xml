@@ -250,7 +250,6 @@
 	<include name="Bald_OSDAnimPanel">
 		<animation type="WindowOpen" reversible="false">
 			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
-			<effect type="slide" start="0,40" end="0,0" time="480" tween="cubic" easing="out" />
 		</animation>
 		<animation type="WindowClose" reversible="false">
 			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
@@ -260,7 +259,6 @@
 	<include name="Bald_OSDAnimCompanion">
 		<animation type="WindowOpen" reversible="false">
 			<effect type="fade" start="0" end="100" time="300" delay="80" tween="sine" easing="inout" />
-			<effect type="slide" start="0,24" end="0,0" time="420" delay="80" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<include name="Bald_OSDAnimFade">

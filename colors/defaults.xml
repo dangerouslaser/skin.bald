@@ -55,6 +55,8 @@
 	     through): unfocused wall posters, music covers and icons. -->
 	<color name="bald_art70">FFA5A7A9</color>
 	<color name="bald_art45">FF6A6B6D</color>
-	<color name="bald_placeholder">14808080</color>
-	<color name="bald_tile_placeholder">26808080</color>
+	<!-- Placeholder boxes under artwork (and behind channel logos): the tint they had over the field, at full opacity,
+	     so a tile stays solid over background video. -->
+	<color name="bald_placeholder">FF141519</color>
+	<color name="bald_tile_placeholder">FF1D1E22</color>
 </colors>
