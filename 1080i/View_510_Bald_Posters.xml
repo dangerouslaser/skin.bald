@@ -181,7 +181,7 @@
 				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
 				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
 				<control type="group"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top>
-					<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+					<include content="Bald_ArtPlaceholder"><param name="width">528</param><param name="height">297</param></include>
 					<include content="Bald_LibraryArt"><param name="c">$PARAM[c]</param><param name="p">Odd</param></include>
 					<include content="Bald_LibraryArt"><param name="c">$PARAM[c]</param><param name="p">Even</param></include>
 					<control type="group"><visible>$PARAM[show_logo]</visible>
