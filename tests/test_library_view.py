@@ -130,7 +130,7 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual(movie_view_actions, [f'Container.SetViewMode({view})' for view in (511, 512, 513, 514, 515, 510)])
         view_items = [item for item in menu.findall('content/item') if item.findtext("property[@name='option']") == 'view']
         self.assertTrue(all(item.findtext('label') == loc('View') for item in view_items))
-        self.assertEqual(len(view_items), 15)
+        self.assertEqual(len(view_items), 16)
         self.assertTrue(all(item.findall('onclick')[1].text == 'SetFocus(9150)' for item in view_items))
         self.assertIsNotNone(self.view.find("include[@name='Bald_LibraryOptions']//include[@content='Bald_MenuNote']"))
         self.assertEqual(menu.findtext('itemlayout/include'), 'Bald_MenuRowUnfocused')

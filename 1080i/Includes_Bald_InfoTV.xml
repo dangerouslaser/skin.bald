@@ -56,6 +56,8 @@
 	<!-- Tab labels are built here so the underline widths below are known; those widths are measured for the
 	     English strings, so a translation keeps the label but not an exact-fit underline. -->
 	<variable name="Bald_InfoTVSeasonLabel">
+		<!-- Kodi's parent item ("..") only appears in the library Series page (view 532, Kodi's own seasons list). -->
+		<value condition="ListItem.IsParentFolder">..</value>
 		<value condition="String.IsEmpty(ListItem.Season)">$LOCALIZE[31783]</value>
 		<value condition="String.IsEqual(ListItem.Season,0)">$LOCALIZE[20381]</value>
 		<value>$LOCALIZE[20373] $INFO[ListItem.Season]</value>
@@ -136,6 +138,8 @@
 	     that fontset is selected. -->
 	<include name="Bald_InfoTVSeasonTab">
 		<param name="selected">false</param>
+		<!-- The tabs list: 5301 here, the library Series page's view list (532) there. -->
+		<param name="tabs">5301</param>
 		<definition>
 			<control type="label">
 				<width>131</width>
@@ -156,7 +160,7 @@
 				<visible>$PARAM[selected]</visible>
 			</control>
 			<control type="group">
-				<visible>$PARAM[selected] + Control.HasFocus(5301)</visible>
+				<visible>$PARAM[selected] + Control.HasFocus($PARAM[tabs]) + !ListItem.IsParentFolder</visible>
 				<animation type="Focus">
 					<effect type="zoom" start="1,100" end="100,100" center="0,37" time="300" tween="cubic" easing="out" />
 				</animation>
@@ -287,21 +291,41 @@
 		</definition>
 	</include>
 
-	<!-- ============ Page ============ -->
-	<include name="Bald_InfoTVOverview">
-		<control type="group">
-			<include content="Bald_InfoPage"><param name="page">0</param></include>
-			<!-- Header: stagger 0, 60, 100, 180 after the 380 base (the prototype's i0, i1, i2, i4). -->
+	<!-- ============ Shared page parts ============ -->
+	<!-- The Overview below and the library Series page (view 532, View_521_Bald_TV_Alternates.xml) are the same page:
+	     these parts take what differs (where the show's labels come from, the tabs list, navigation) as params. -->
+	<!-- An include for `anim` that adds nothing: the library page has no window-open stagger. -->
+	<include name="Bald_InfoTVStill">
+		<param name="delay" />
+		<definition />
+	</include>
+	<!-- Header: logo (or the title when there is none or logos are off), "years, N seasons, certificate" with the show's
+	     ratings on the same line (SPEC 5.3), genres, and a two-line plot. `anim` is an include taking `delay`. -->
+	<include name="Bald_InfoTVHeader">
+		<param name="logo" />
+		<param name="title" />
+		<param name="title_visible" />
+		<param name="meta" />
+		<param name="genre" />
+		<param name="plot" />
+		<param name="ratings">false</param>
+		<param name="anim">Bald_AnimInfoIn</param>
+		<param name="logo_y">150</param>
+		<param name="meta_y">346</param>
+		<param name="genre_y">384</param>
+		<param name="plot_y">424</param>
+		<definition>
+			<!-- Stagger 0, 60, 100, 180 after the 380 base (the prototype's i0, i1, i2, i4). -->
 			<control type="group">
 				<left>Bald_SafeLeft</left>
-				<top>150</top>
+				<top>$PARAM[logo_y]</top>
 				<height>170</height>
-				<include content="Bald_AnimInfoIn"><param name="delay">380</param></include>
+				<include content="$PARAM[anim]"><param name="delay">380</param></include>
 				<control type="image">
 					<width>700</width>
 					<height>170</height>
 					<aspectratio align="left" aligny="bottom">keep</aspectratio>
-					<texture background="true">$VAR[Bald_ItemLogo]</texture>
+					<texture background="true">$PARAM[logo]</texture>
 					<visible>$EXP[Bald_ShowClearlogo]</visible>
 				</control>
 				<control type="label">
@@ -310,56 +334,183 @@
 					<height>90</height>
 					<font>Bald_InfoTitle</font>
 					<textcolor>bald_ink</textcolor>
-					<label>$VAR[Bald_InfoTVTitle]</label>
-					<visible>!$EXP[Bald_ShowClearlogo] | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
+					<label>$PARAM[title]</label>
+					<visible>$PARAM[title_visible]</visible>
 				</control>
 			</control>
-			<!-- "years, N seasons, certificate" then the show's ratings on the same line (SPEC 5.3 header). -->
 			<control type="grouplist">
 				<left>Bald_SafeLeft</left>
-				<top>346</top>
+				<top>$PARAM[meta_y]</top>
 				<width>1400</width>
 				<height>30</height>
 				<orientation>horizontal</orientation>
 				<itemgap>14</itemgap>
-				<include content="Bald_AnimInfoIn"><param name="delay">440</param></include>
+				<include content="$PARAM[anim]"><param name="delay">440</param></include>
 				<control type="label">
 					<width>auto</width>
 					<height>30</height>
 					<font>Bald_InfoMeta</font>
 					<textcolor>bald_ink</textcolor>
-					<label>$VAR[Bald_InfoTVMeta]</label>
+					<label>$PARAM[meta]</label>
 				</control>
-				<!-- Only for the show itself: a season or episode keeps the show's line, and its own ratings are the episode's. -->
 				<include content="Bald_Ratings">
-					<param name="visible">$EXP[Bald_RatingsInfo] + $EXP[Bald_InfoTVIsShow]</param>
+					<param name="visible">$PARAM[ratings]</param>
 					<param name="height">30</param>
 					<param name="font">Bald_FlagL</param>
 				</include>
 			</control>
 			<control type="label">
 				<left>Bald_SafeLeft</left>
-				<top>384</top>
+				<top>$PARAM[genre_y]</top>
 				<width>1400</width>
 				<height>26</height>
 				<font>Bald_InfoGenre</font>
 				<textcolor>bald_accent</textcolor>
-				<label>$VAR[Bald_InfoTVGenre]</label>
-				<include content="Bald_AnimInfoIn"><param name="delay">480</param></include>
+				<label>$PARAM[genre]</label>
+				<include content="$PARAM[anim]"><param name="delay">480</param></include>
 			</control>
 			<!-- Plot: 2 lines of 34 px (Kodi draws ceil(height / line height) lines). -->
 			<control type="label">
 				<left>Bald_SafeLeft</left>
-				<top>424</top>
+				<top>$PARAM[plot_y]</top>
 				<width>780</width>
 				<height>68</height>
 				<wrapmultiline>true</wrapmultiline>
 				<aligny>top</aligny>
 				<font>Bald_InfoPlot</font>
 				<textcolor>bald_ink80</textcolor>
-				<label>$VAR[Bald_InfoTVPlot]</label>
-				<include content="Bald_AnimInfoIn"><param name="delay">560</param></include>
+				<label>$PARAM[plot]</label>
+				<include content="$PARAM[anim]"><param name="delay">560</param></include>
 			</control>
+		</definition>
+	</include>
+	<!-- Season tabs, 34 px between labels: geometry and layouts. The caller gives the list its id, top, navigation and
+	     (for 5301) its content; the library view's list is Kodi's own seasons container and has none. -->
+	<include name="Bald_InfoTVTabsLayout">
+		<param name="tabs">5301</param>
+		<definition>
+			<left>Bald_SafeLeft</left>
+			<width>1728</width>
+			<height>40</height>
+			<orientation>horizontal</orientation>
+			<scrolltime tween="cubic" easing="out">440</scrolltime>
+			<itemlayout width="135" height="40"><include content="Bald_InfoTVSeasonTab"><param name="tabs">$PARAM[tabs]</param></include></itemlayout>
+			<focusedlayout width="135" height="40"><include content="Bald_InfoTVSeasonTab"><param name="selected">true</param><param name="tabs">$PARAM[tabs]</param></include></focusedlayout>
+		</definition>
+	</include>
+	<!-- Episode row (always id 5302, in either window): fixedlist geometry, focus travel to slot 2, scrolling, Select to
+	     play (resuming, through the script) and the cards. The caller gives it its top, navigation and content. -->
+	<include name="Bald_InfoTVEpisodeRowLayout">
+		<definition>
+			<left>84</left>
+			<width>1740</width>
+			<height>204</height>
+			<orientation>horizontal</orientation>
+			<focusposition>2</focusposition>
+			<movement>2</movement>
+			<scrolltime tween="cubic" easing="out">440</scrolltime>
+			<onclick>RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])</onclick>
+			<itemlayout width="344" height="204"><include>Bald_InfoTVEpisodeCard</include></itemlayout>
+			<focusedlayout width="344" height="204">
+				<include content="Bald_InfoTVEpisodeCard"><param name="ring">$EXP[Bald_InfoTVEpisodesFocused]</param><param name="focus_fade">100</param></include>
+			</focusedlayout>
+		</definition>
+	</include>
+	<!-- A season change reloads the row: out 140 while it updates, in 340 fade / 420 rise once loaded (docs/SPEC.md 4).
+	     Conditional animations, not <visible>, because Kodi does not process a hidden list, so it would never finish
+	     loading. For the group around the row. -->
+	<include name="Bald_InfoTVEpisodeSwap">
+		<animation type="Conditional" condition="Container(5302).IsUpdating" reversible="false">
+			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="0,14" time="140" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Conditional" condition="!Container(5302).IsUpdating" reversible="false">
+			<effect type="fade" start="0" end="100" time="340" tween="sine" easing="inout" />
+			<effect type="slide" start="0,14" end="0,0" time="420" tween="cubic" easing="out" />
+		</animation>
+	</include>
+	<!-- The focused episode's detail: code and title 24, then runtime / air date / state 18 at 70%, its ratings and media
+	     flags, baselines aligned; one-line synopsis (a single-line label ends with an ellipsis). Kodi's "show plots of
+	     unwatched items" setting applies to ListItem.Plot itself. `ratings` is the surface's ratings setting. -->
+	<include name="Bald_InfoTVEpisodeDetail">
+		<param name="ratings">$EXP[Bald_RatingsInfo]</param>
+		<param name="detail_y">894</param>
+		<param name="synopsis_y">934</param>
+		<definition>
+			<control type="grouplist">
+				<left>Bald_SafeLeft</left>
+				<top>$PARAM[detail_y]</top>
+				<width>1300</width>
+				<height>30</height>
+				<orientation>horizontal</orientation>
+				<itemgap>18</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<visible>$EXP[Bald_InfoTVHasEpisodes]</visible>
+				<control type="label">
+					<width>auto</width>
+					<height>30</height>
+					<aligny>top</aligny>
+					<font>Bald_InfoMeta</font>
+					<textcolor>bald_ink</textcolor>
+					<label>S$INFO[Container(5302).ListItem.Season] E$INFO[Container(5302).ListItem.Episode]  $INFO[Container(5302).ListItem.Title]</label>
+				</control>
+				<control type="label">
+					<top>6</top>
+					<width>auto</width>
+					<height>24</height>
+					<aligny>top</aligny>
+					<font>Bald_Progress</font>
+					<textcolor>bald_ink70</textcolor>
+					<label>$VAR[Bald_InfoTVEpisodeMeta]</label>
+				</control>
+				<!-- The focused episode's ratings. TMDb Helper's monitor follows the dialog's item (the show), so the guard keeps
+				     its values off the episode line. -->
+				<include content="Bald_Ratings">
+					<param name="container">Container(5302).</param>
+					<param name="visible">$PARAM[ratings]</param>
+					<param name="top">2</param>
+				</include>
+				<control type="grouplist">
+					<top>2</top>
+					<width>600</width>
+					<height>26</height>
+					<orientation>horizontal</orientation>
+					<itemgap>8</itemgap>
+					<include content="Bald_MediaFlags"><param name="container">Container(5302).</param></include>
+				</control>
+			</control>
+			<control type="label">
+				<left>Bald_SafeLeft</left>
+				<top>$PARAM[synopsis_y]</top>
+				<width>1100</width>
+				<height>30</height>
+				<font>Bald_CaptionPlot</font>
+				<textcolor>bald_ink80</textcolor>
+				<label>$INFO[Container(5302).ListItem.Plot]</label>
+				<visible>$EXP[Bald_InfoTVHasEpisodes]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- The Overview's directional scrims over the art; the library Series page draws the same pair. -->
+	<include name="Bald_InfoScrims">
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_h.png</texture></control>
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_b.png</texture></control>
+	</include>
+
+	<!-- ============ Page ============ -->
+	<include name="Bald_InfoTVOverview">
+		<control type="group">
+			<include content="Bald_InfoPage"><param name="page">0</param></include>
+			<include content="Bald_InfoTVHeader">
+				<param name="logo">$VAR[Bald_ItemLogo]</param>
+				<param name="title">$VAR[Bald_InfoTVTitle]</param>
+				<param name="title_visible">!$EXP[Bald_ShowClearlogo] | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</param>
+				<param name="meta">$VAR[Bald_InfoTVMeta]</param>
+				<param name="genre">$VAR[Bald_InfoTVGenre]</param>
+				<param name="plot">$VAR[Bald_InfoTVPlot]</param>
+				<!-- Only for the show itself: a season or episode keeps the show's line, and its own ratings are the episode's. -->
+				<param name="ratings">$EXP[Bald_RatingsInfo] + $EXP[Bald_InfoTVIsShow]</param>
+			</include>
 			<!-- Actions (i5). An opened episode plays itself natively (8, or 9 to resume); a show or season plays
 			     the script's next episode. -->
 			<control type="grouplist" id="5000">
@@ -399,46 +550,25 @@
 					<param name="down">Bald_InfoTVActionDown</param>
 				</include>
 			</control>
-			<!-- Season tabs (i6): 34 px between labels. -->
+			<!-- Season tabs (i6). -->
 			<control type="list" id="5301">
-				<left>Bald_SafeLeft</left>
 				<top>620</top>
-				<width>1728</width>
-				<height>40</height>
-				<orientation>horizontal</orientation>
-				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<include>Bald_InfoTVTabsLayout</include>
 				<include content="Bald_AnimInfoIn"><param name="delay">650</param></include>
 				<include>Bald_InfoTVOnOverview</include>
 				<onup>SetFocus(5000)</onup>
 				<include>Bald_InfoTVSeasonsDown</include>
 				<onleft>noop</onleft>
 				<onright>noop</onright>
-				<itemlayout width="135" height="40"><include>Bald_InfoTVSeasonTab</include></itemlayout>
-				<focusedlayout width="135" height="40"><include content="Bald_InfoTVSeasonTab"><param name="selected">true</param></include></focusedlayout>
 				<content target="videos" browse="never">$VAR[Bald_InfoTVSeasonsPath]</content>
 			</control>
-			<!-- Episodes (i7) and the focused episode's detail. A season change reloads the row: out 140 while it
-			     updates, in 340 fade / 420 rise once loaded (docs/SPEC.md 4). Conditional animations, not <visible>,
-			     because Kodi does not process a hidden list, so it would never finish loading. -->
+			<!-- Episodes (i7) and the focused episode's detail. -->
 			<control type="group">
 				<include content="Bald_AnimInfoIn"><param name="delay">690</param></include>
-				<animation type="Conditional" condition="Container(5302).IsUpdating" reversible="false">
-					<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
-					<effect type="slide" start="0,0" end="0,14" time="140" tween="sine" easing="inout" />
-				</animation>
-				<animation type="Conditional" condition="!Container(5302).IsUpdating" reversible="false">
-					<effect type="fade" start="0" end="100" time="340" tween="sine" easing="inout" />
-					<effect type="slide" start="0,14" end="0,0" time="420" tween="cubic" easing="out" />
-				</animation>
+				<include>Bald_InfoTVEpisodeSwap</include>
 				<control type="fixedlist" id="5302">
-					<left>84</left>
 					<top>670</top>
-					<width>1740</width>
-					<height>204</height>
-					<orientation>horizontal</orientation>
-					<focusposition>2</focusposition>
-					<movement>2</movement>
-					<scrolltime tween="cubic" easing="out">440</scrolltime>
+					<include>Bald_InfoTVEpisodeRowLayout</include>
 					<include>Bald_InfoTVOnOverview</include>
 					<onfocus>SetProperty(Bald.TV.RowFor,$INFO[Container(5301).CurrentItem],movieinformation)</onfocus>
 					<onup condition="$EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</onup>
@@ -446,67 +576,9 @@
 					<include>Bald_InfoActionToCast</include>
 					<onleft>noop</onleft>
 					<onright>noop</onright>
-					<onclick>RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])</onclick>
-					<itemlayout width="344" height="204"><include>Bald_InfoTVEpisodeCard</include></itemlayout>
-					<focusedlayout width="344" height="204">
-						<include content="Bald_InfoTVEpisodeCard"><param name="ring">$EXP[Bald_InfoTVEpisodesFocused]</param><param name="focus_fade">100</param></include>
-					</focusedlayout>
 					<content target="videos" browse="never">$INFO[Container(5301).ListItem.FolderPath]</content>
 				</control>
-				<!-- Detail: code and title 24, then runtime / air date / state 18 at 70% and the episode's media flags,
-				     baselines aligned; one-line synopsis (a single-line label ends with an ellipsis). -->
-				<control type="grouplist">
-					<left>Bald_SafeLeft</left>
-					<top>894</top>
-					<width>1300</width>
-					<height>30</height>
-					<orientation>horizontal</orientation>
-					<itemgap>18</itemgap>
-					<usecontrolcoords>true</usecontrolcoords>
-					<visible>$EXP[Bald_InfoTVHasEpisodes]</visible>
-					<control type="label">
-						<width>auto</width>
-						<height>30</height>
-						<aligny>top</aligny>
-						<font>Bald_InfoMeta</font>
-						<textcolor>bald_ink</textcolor>
-						<label>S$INFO[Container(5302).ListItem.Season] E$INFO[Container(5302).ListItem.Episode]  $INFO[Container(5302).ListItem.Title]</label>
-					</control>
-					<control type="label">
-						<top>6</top>
-						<width>auto</width>
-						<height>24</height>
-						<aligny>top</aligny>
-						<font>Bald_Progress</font>
-						<textcolor>bald_ink70</textcolor>
-						<label>$VAR[Bald_InfoTVEpisodeMeta]</label>
-					</control>
-					<!-- The focused episode's ratings. TMDb Helper's monitor follows the dialog's item (the show), so the guard keeps
-					     its values off the episode line. -->
-					<include content="Bald_Ratings">
-						<param name="container">Container(5302).</param>
-						<param name="visible">$EXP[Bald_RatingsInfo]</param>
-						<param name="top">2</param>
-					</include>
-					<control type="grouplist">
-						<top>2</top>
-						<width>600</width>
-						<height>26</height>
-						<orientation>horizontal</orientation>
-						<itemgap>8</itemgap>
-						<include content="Bald_MediaFlags"><param name="container">Container(5302).</param></include>
-					</control>
-				</control>
-				<control type="label">
-					<left>Bald_SafeLeft</left>
-					<top>934</top>
-					<width>1100</width>
-					<height>30</height>
-					<font>Bald_CaptionPlot</font>
-					<textcolor>bald_ink80</textcolor>
-					<label>$INFO[Container(5302).ListItem.Plot]</label>
-					<visible>$EXP[Bald_InfoTVHasEpisodes]</visible>
-				</control>
+				<include>Bald_InfoTVEpisodeDetail</include>
 			</control>
 		</control>
 	</include>

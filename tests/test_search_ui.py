@@ -40,7 +40,7 @@ class SearchUITests(unittest.TestCase):
             [(shown_for(item.findtext('visible')), [node.text for node in item.findall('onclick')]) for item in searches],
             [
                 (['510', '511', '512', '513', '514', '515'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,movies=true)']),
-                (['520', '521', '522', '523', '530', '531'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,tvshows=true)']),
+                (['520', '521', '522', '523', '530', '531', '532'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,tvshows=true)']),
                 (['540', '541', '542'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,episodes=true)']),
             ],
         )

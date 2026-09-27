@@ -65,6 +65,120 @@
 		<control type="list" id="531"><left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height><orientation>vertical</orientation><viewtype label="31862">list</viewtype><visible>Container.Content(seasons)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime><onfocus>SetProperty(Bald.LibraryContainer,531,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,531,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus><onup>9150</onup><onleft>9150</onleft><onright>noop</onright><animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation><itemlayout width="1140" height="48"><include>Bald_TVSeasonCompactRow</include></itemlayout><focusedlayout width="1140" height="48"><control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control><include content="Bald_TVSeasonCompactRow"><param name="ink">bald_ink</param></include></focusedlayout></control>
 		<include content="Bald_LibraryPreview"><param name="c">531</param><param name="show_logo">true</param></include><include content="Bald_TVFooter"><param name="c">531</param><param name="select_hint">$LOCALIZE[31836]</param></include>
 	</control></include>
+	<!-- ============ Series page (532, Seasons) ============
+	     The TV info page (Includes_Bald_InfoTV.xml, docs/SPEC.md 5.3) in the library: the view list is Kodi's own seasons
+	     container drawn as the season tabs, and the episode row (5302, as on the info page) lists the focused season's
+	     folder. Kodi remembers it per content type like any view; Select on a tab still opens that season natively.
+	     Window(videos) properties: Bald.Series.For/Meta/Genre from RunScript(skin.bald,seriesmeta), keyed by the
+	     folder path they describe; Bald.Series.RowFor is the season folder the row was last entered for. -->
+	<expression name="Bald_SeriesPageMetaReady">[String.IsEqual(Window(videos).Property(Bald.Series.For),Container.FolderPath)]</expression>
+	<expression name="Bald_SeriesPageRowKept">[String.IsEqual(Window(videos).Property(Bald.Series.RowFor),Container(532).ListItem.FolderPath)]</expression>
+	<!-- The seasons folder carries the show's art as tvshow.*; its items carry it too. -->
+	<variable name="Bald_SeriesPageLogo">
+		<value condition="!String.IsEmpty(Container.Art(tvshow.clearlogo))">$INFO[Container.Art(tvshow.clearlogo)]</value>
+		<value>$INFO[Container(532).ListItem.Art(tvshow.clearlogo)]</value>
+	</variable>
+	<variable name="Bald_SeriesPageFanart">
+		<value condition="!String.IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
+		<value condition="!String.IsEmpty(Container(532).ListItem.Art(tvshow.fanart))">$INFO[Container(532).ListItem.Art(tvshow.fanart)]</value>
+		<value>$INFO[Container.Art(fanart)]</value>
+	</variable>
+	<!-- "years, N seasons, certificate" once the script has read this show; until then the show's certificate, which
+	     every season item carries. -->
+	<variable name="Bald_SeriesPageMeta">
+		<value condition="$EXP[Bald_SeriesPageMetaReady]">$INFO[Window(videos).Property(Bald.Series.Meta)]</value>
+		<value>$INFO[Container(532).ListItem.MPAA]</value>
+	</variable>
+	<variable name="Bald_SeriesPageGenre">
+		<value condition="$EXP[Bald_SeriesPageMetaReady]">$INFO[Window(videos).Property(Bald.Series.Genre)]</value>
+		<value>$INFO[Container(532).ListItem.Genre]</value>
+	</variable>
+	<!-- The focused tab's own folder ("All seasons" included); none for Kodi's parent item, whose folder is the show list. -->
+	<variable name="Bald_SeriesPageEpisodesPath">
+		<value condition="!Container(532).ListItem.IsParentFolder + Container(532).ListItem.IsFolder">$INFO[Container(532).ListItem.FolderPath]</value>
+	</variable>
+	<!-- Tabs: Down enters the episode row. Straight back to the season the row was last entered for keeps its episode;
+	     otherwise the row starts at the season's first unwatched episode, taken as the watched count (exact when a
+	     season is watched in order), or at the first episode when all or none are watched. Kodi clamps the index to
+	     the last item. Conditions are evaluated before any action runs. -->
+	<include name="Bald_SeriesPageTabsDown">
+		<ondown condition="$EXP[Bald_InfoTVHasEpisodes] + $EXP[Bald_SeriesPageRowKept]">SetFocus(5302)</ondown>
+		<ondown condition="$EXP[Bald_InfoTVHasEpisodes] + !$EXP[Bald_SeriesPageRowKept] + Integer.IsGreater(Container(532).ListItem.Property(UnWatchedEpisodes),0)">SetFocus(5302,$INFO[Container(532).ListItem.Property(WatchedEpisodes)],absolute)</ondown>
+		<ondown condition="$EXP[Bald_InfoTVHasEpisodes] + !$EXP[Bald_SeriesPageRowKept] + !Integer.IsGreater(Container(532).ListItem.Property(UnWatchedEpisodes),0)">SetFocus(5302,0,absolute)</ondown>
+	</include>
+	<include name="View_532_Bald_SeriesPage"><control type="group"><visible>Control.IsVisible(532)</visible>
+		<!-- The info page's own backdrop from the library: field, the show's sharp fanart, the Overview scrims and dim. -->
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
+		<control type="image"><width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>380</fadetime><texture background="true">$VAR[Bald_SeriesPageFanart]</texture></control>
+		<include>Bald_InfoScrims</include>
+		<include>Bald_InfoTVDim</include>
+		<!-- Header: the info page's, 50 px lower because the library page has no action row. -->
+		<control type="group">
+			<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
+			<include content="Bald_InfoTVHeader">
+				<param name="logo">$VAR[Bald_SeriesPageLogo]</param>
+				<param name="title">$INFO[Container.ShowTitle]</param>
+				<param name="title_visible">!$EXP[Bald_ShowClearlogo] | [String.IsEmpty(Container.Art(tvshow.clearlogo)) + String.IsEmpty(Container(532).ListItem.Art(tvshow.clearlogo))]</param>
+				<param name="meta">$VAR[Bald_SeriesPageMeta]</param>
+				<param name="genre">$VAR[Bald_SeriesPageGenre]</param>
+				<param name="plot">$INFO[Container.ShowPlot]</param>
+				<param name="anim">Bald_InfoTVStill</param>
+				<param name="logo_y">200</param>
+				<param name="meta_y">396</param>
+				<param name="genre_y">434</param>
+				<param name="plot_y">474</param>
+			</include>
+		</control>
+		<control type="list" id="532">
+			<top>620</top>
+			<include content="Bald_InfoTVTabsLayout"><param name="tabs">532</param></include>
+			<viewtype label="31846">list</viewtype>
+			<visible>Container.Content(seasons)</visible>
+			<preloaditems>2</preloaditems>
+			<onfocus>SetProperty(Bald.LibraryContainer,532,videos)</onfocus>
+			<onfocus>SetProperty(TMDbHelper.WidgetContainer,532,videos)</onfocus>
+			<onfocus condition="!$EXP[Bald_SeriesPageMetaReady]">RunScript(skin.bald,seriesmeta)</onfocus>
+			<onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
+			<onup>9150</onup>
+			<onleft>noop</onleft>
+			<onright>noop</onright>
+			<include>Bald_SeriesPageTabsDown</include>
+			<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
+		</control>
+		<!-- Episodes and the focused episode's detail; out of the way while the options menu covers the right column. -->
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
+			<control type="group">
+				<include>Bald_InfoTVEpisodeSwap</include>
+				<control type="fixedlist" id="5302">
+					<top>670</top>
+					<include>Bald_InfoTVEpisodeRowLayout</include>
+					<onfocus>SetProperty(Bald.Series.RowFor,$ESCINFO[Container(532).ListItem.FolderPath],videos)</onfocus>
+					<onfocus>SetProperty(TMDbHelper.WidgetContainer,5302,videos)</onfocus>
+					<onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
+					<onup>SetFocus(532)</onup>
+					<ondown>noop</ondown>
+					<onleft>noop</onleft>
+					<onright>noop</onright>
+					<!-- Back is Kodi's parent navigation (the show list) from the view list, as in every other view. -->
+					<onback>SetFocus(532)</onback>
+					<onback>Action(Back)</onback>
+					<content target="videos" browse="never" sortby="episode" sortorder="ascending" limit="500">$VAR[Bald_SeriesPageEpisodesPath]</content>
+				</control>
+				<include content="Bald_InfoTVEpisodeDetail"><param name="ratings">$EXP[Bald_RatingsLibrary]</param></include>
+			</control>
+		</control>
+		<!-- Right-hand hints, as on the info page. -->
+		<control type="group"><left>Bald_RightColumn</left><top>Bald_HintTop</top><visible>Control.HasFocus(532)</visible>
+			<include content="Bald_InfoHintPair"><param name="first">$LOCALIZE[31847]</param><param name="second">$LOCALIZE[31828]</param></include>
+		</control>
+		<control type="group"><left>Bald_RightColumn</left><top>Bald_HintTop</top><visible>$EXP[Bald_InfoTVEpisodesFocused]</visible>
+			<include content="Bald_InfoHintPair"><param name="first">$LOCALIZE[31784]</param><param name="second">$LOCALIZE[31827]</param></include>
+		</control>
+		<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
+			<include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">$LOCALIZE[31832]</param><param name="second">$LOCALIZE[31747]</param></include>
+		</control>
+	</control></include>
 	<include name="View_541_Bald_EpisodesCompact"><control type="group"><visible>Control.IsVisible(541)</visible>
 		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control><include>Bald_BackdropImage</include><control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container.ShowTitle]</label></control>
 		<control type="list" id="541"><left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height><orientation>vertical</orientation><viewtype label="31863">list</viewtype><visible>Container.Content(episodes)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime><onfocus>SetProperty(Bald.LibraryContainer,541,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,541,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus><onup>9150</onup><onleft>9150</onleft><onright>noop</onright><animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation><itemlayout width="1140" height="48"><include>Bald_TVEpisodeCompactRow</include></itemlayout><focusedlayout width="1140" height="48"><control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control><include content="Bald_TVEpisodeCompactRow"><param name="ink">bald_ink</param></include></focusedlayout></control>
