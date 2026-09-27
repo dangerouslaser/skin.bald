@@ -107,7 +107,7 @@ class TVLibraryTests(unittest.TestCase):
                     re.fullmatch(r'Container\.SetViewMode\((\d+)\)', actions[0]).group(1))
                 self.assertEqual(actions[-1], 'SetFocus(9150)')
         self.assertEqual([transitions[n] for n in (520, 521, 522, 523)], [521, 522, 523, 520])
-        self.assertEqual([transitions[n] for n in (530, 531)], [531, 530])
+        self.assertEqual([transitions[n] for n in (530, 531, 532)], [531, 532, 530])
         self.assertEqual([transitions[n] for n in (540, 541, 542)], [541, 542, 540])
 
     def test_episode_wall_uses_cropped_sixteen_by_nine_thumbnails(self):

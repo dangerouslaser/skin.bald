@@ -4,6 +4,7 @@ RunScript(skin.bald,recommendations,movie,123)
 RunScript(skin.bald,open,movie,456)
 RunScript(skin.bald,tvinfo,episode,789)
 RunScript(skin.bald,play,episode,789)
+RunScript(skin.bald,seriesmeta)  (library Series page, view 532)
 RunScript(skin.bald,font,InstrumentSans)
 RunScript(skin.bald,hubs)  (one-time Home hubs migration, see hubs.py)
 RunScript(skin.bald,recommended[,prompt])  (Kodi settings Bald recommends, see recommended.py)
@@ -24,6 +25,10 @@ TV_TYPES = ("tvshow", "season", "episode")
 # Native lists in Includes_Bald_InfoTV.xml, and the primary actions shown for an opened episode.
 SEASONS, EPISODES = 5301, 5302
 EPISODE_ACTIONS = "Control.HasFocus(5001) | Control.HasFocus(5002)"
+# The library Series page (View_521_Bald_TV_Alternates.xml): the seasons view list in the video library window.
+SERIES_PAGE, VIDEO_NAV = 532, 10025
+# Windows whose episode rows play through RunScript(skin.bald,play,episode,<id>).
+PLAY_WINDOWS = "Window.IsActive(movieinformation) | Window.IsActive(videos)"
 # Text this script shows, as string ids: Kodi core (Resume, Play) and Bald's en_gb strings.po block. In Kodi the
 # ids resolve through xbmc.getLocalizedString; the en_gb wording here is the default when no Kodi is present.
 RESUME, PLAY, ONE_SEASON, SEASONS_WORD, YEARS_TO = 13404, 208, 31711, 31712, 31719
@@ -185,6 +190,47 @@ def tv_publish(xbmc, window, identity, media_type, dbid):
     if season is None:
         season = upcoming["season"] if upcoming else None
     return None if season is None else (season, episodeid)
+
+
+def series_publish(xbmc, window, timeout=3.0):
+    """Publish the Series page header line ("years, N seasons, rating") for the seasons folder in view.
+
+    Kodi's seasons listing has the show's title, plot and art but no show years or season count. The show comes
+    from the view's own items (TVShowDBID); the values are keyed by the folder path they were read for
+    (Bald.Series.For, written last), and nothing is written if the folder changes meanwhile."""
+    label = xbmc.getInfoLabel
+    folder = label("Container.FolderPath")
+    if not folder or not xbmc.getCondVisibility("Container.Content(seasons)"):
+        return False
+    monitor = xbmc.Monitor()
+    deadline = time.monotonic() + timeout
+
+    def show_id():
+        count = label("Container({}).NumItems".format(SERIES_PAGE))
+        for index in range(min(int(count), 4) if count.isdecimal() else 0):
+            value = label("Container({}).ListItemAbsolute({}).TVShowDBID".format(SERIES_PAGE, index))
+            if value.isdecimal() and int(value) > 0:
+                return int(value)
+        return 0
+
+    tvshowid = show_id()
+    while not tvshowid:
+        if (label("Container.FolderPath") != folder or time.monotonic() >= deadline
+                or monitor.waitForAbort(0.05)):
+            return False
+        tvshowid = show_id()
+    show = rpc(xbmc, "VideoLibrary.GetTVShowDetails", {
+        "tvshowid": tvshowid, "properties": ["year", "genre", "mpaa", "season"]})["tvshowdetails"]
+    episodes = rpc(xbmc, "VideoLibrary.GetEpisodes", {
+        "tvshowid": tvshowid, "properties": ["firstaired"]}).get("episodes", [])
+    if label("Container.FolderPath") != folder:
+        return False
+    years = years_label(show.get("year", 0), episodes, xbmc.getLocalizedString)
+    window.setProperty("Bald.Series.Meta",
+                       tv_meta(years, show.get("season", 0), show.get("mpaa", ""), xbmc.getLocalizedString))
+    window.setProperty("Bald.Series.Genre", " / ".join(show.get("genre", [])))
+    window.setProperty("Bald.Series.For", folder)
+    return True
 
 
 def tv_position(xbmc, window, identity, season, episodeid, focus_episode, timeout=5.0):
@@ -352,6 +398,9 @@ def run(action="", media_type="", dbid=""):
         from recommended import apply
         apply(xbmc, xbmcgui, media_type)
         return
+    if action == "seriesmeta":
+        series_publish(xbmc, xbmcgui.Window(VIDEO_NAV))
+        return
     if action == "font":
         # RunScript(skin.bald,font,<fontset id>): the id arrives in the second argument.
         set_fontset(xbmc, media_type)
@@ -368,7 +417,7 @@ def run(action="", media_type="", dbid=""):
             tv_position(xbmc, window, identity, target[0], target[1], media_type == "episode")
         return
     if action == "play":
-        if media_type != "episode" or not valid_id or not xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
+        if media_type != "episode" or not valid_id or not xbmc.getCondVisibility(PLAY_WINDOWS):
             return
         home = xbmcgui.Window(10000)
         # Repeat Select while info closes must not start a second playback.
