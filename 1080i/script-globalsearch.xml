@@ -6,9 +6,9 @@
 	     cannot be used: a SetProperty with an empty window names no window). Blur: Bald Helper's, else TMDb Helper's,
 	     never both (Home.xml). -->
 	<onload>SetProperty(Bald.FocusContainer,50)</onload>
-	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.UseLocalWidgetContainer)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb))</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper] + $EXP[Bald_TMDbHelperFollows]">SetProperty(TMDbHelper.WidgetContainer,50)</onload>
 	<onunload>ClearProperty(Bald.FocusContainer)</onunload>

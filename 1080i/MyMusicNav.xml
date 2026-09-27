@@ -16,9 +16,9 @@
 	<onload condition="Window.Previous(home)">SetProperty(Bald.HubPath,$ESCINFO[Container.FolderPath],home)</onload>
 	<include content="Bald_UnfollowContainerOnUnload"><param name="window">music</param></include>
 	<include>Bald_CurtainHandoff</include>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.UseLocalWidgetContainer)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<!-- Blur: Bald Helper's, else TMDb Helper's, never both (Home.xml). -->
-	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
 	<!-- Library content always enters a Bald view, even where an Estuary view was saved for it before: artists and
 	     albums the covers, songs and the plain lists the compact list. -->

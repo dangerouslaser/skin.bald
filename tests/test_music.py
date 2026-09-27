@@ -131,7 +131,7 @@ class MusicLibraryTests(unittest.TestCase):
 
     def test_tmdb_blur_only_without_the_helper(self):
         loads = [(n.get("condition"), n.text) for n in self.nav.findall("onload")]
-        self.assertIn(("$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]", "Skin.SetBool(TMDbHelper.EnableBlur)"), loads)
+        self.assertIn(("$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)", "Skin.SetBool(TMDbHelper.EnableBlur)"), loads)
         self.assertIn(("$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)", "Skin.Reset(TMDbHelper.EnableBlur)"), loads)
 
 

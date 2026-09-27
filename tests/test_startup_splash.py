@@ -172,6 +172,9 @@ class SplashTests(unittest.TestCase):
         self.assertTrue(same_actions(actions, [
             (None, "ClearProperty(Bald.Preload,home)"),
             (None, "CancelAlarm(bald_preload,silent)"),
+            # The recommended-settings offer Home's onload skipped behind the splash (once).
+            ("!Skin.HasSetting(Bald.RecommendedOffered)", "RunScript(skin.bald,recommended,prompt)"),
+            ("!Skin.HasSetting(Bald.RecommendedOffered)", "Skin.SetBool(Bald.RecommendedOffered)"),
             (f"!{hidden} + $EXP[Bald_HasRows_home]", "SetFocus(9101)"),
             (f"{hidden} + {start_rows}", "SetProperty(Bald.Row,$VAR[Bald_StartRow],home)"),
             (f"{hidden} + {start_rows}", "SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)"),

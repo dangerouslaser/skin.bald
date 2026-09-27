@@ -11,7 +11,7 @@
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<include content="Bald_UnfollowContainerOnLoad"><param name="window">movieinformation</param></include>
 	<include>Bald_InfoTVClear</include>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.UseLocalWidgetContainer)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<!-- Bald Helper's bald.info does both recommendations and (TV items) tvinfo; without it, two scripts. -->
 	<onload condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.info|$INFO[ListItem.DBType]|$INFO[ListItem.DBID])</onload>
 	<onload condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,recommendations,$INFO[ListItem.DBType],$INFO[ListItem.DBID])</onload>

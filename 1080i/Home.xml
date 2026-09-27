@@ -7,7 +7,7 @@
 	<!-- Build the Home rows (Skin Variables, shortcuts/skinvariables-generator.json). It hashes these arguments, its
 	     config (with the generator's build version) and the current output, and returns at once when none changed;
 	     after writing it reloads the skin. So it builds on first run, after a skin update that changed the generator,
-	     and after the widget editor or Home Screens closes (Custom_1116 and 1117 stamp Bald.WidgetsStamp).
+	     and after the widget editor or Home Screens closes with a change (Custom_1116 and 1117 stamp Bald.WidgetsStamp).
 	     Not before the hubs migration has run (docs/NOTES.md, Home hubs): until Bald.HubsMigrated is set, Home starts
 	     it instead (unless Startup.xml already has, Bald.HubsMigrating), and the script builds when it has written the
 	     hubs list. Startup does not run on a live skin update or ReloadSkin, so Home must be able to start it too. -->
@@ -17,7 +17,8 @@
 	     back to Default) but logs a warning each load, so it is moved to Default once; Kodi then reloads the skin. -->
 	<onload condition="String.IsEqual(Skin.Font,DMSans)">RunScript(skin.bald,font,Default)</onload>
 	<!-- Offer Bald's recommended Kodi settings once, after the startup splash (scripts/recommended.py; it says nothing
-	     when they are already in place). Bald Settings > Appearance > Behavior offers them again any time. -->
+	     when they are already in place): here without the splash, else as it lifts (9195). Bald Settings > Appearance >
+	     Behavior offers them again any time. -->
 	<onload condition="!Skin.HasSetting(Bald.RecommendedOffered) + !$EXP[Bald_Preloading]">RunScript(skin.bald,recommended,prompt)</onload>
 	<onload condition="!Skin.HasSetting(Bald.RecommendedOffered) + !$EXP[Bald_Preloading]">Skin.SetBool(Bald.RecommendedOffered)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">SetProperty(Bald.HubsMigrating,1,home)</onload>
@@ -47,7 +48,7 @@
 	     lookups). Never both: with Bald Helper, TMDb Helper's blur is switched off. -->
 	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.UseLocalWidgetContainer)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<!-- Online ratings (Appearance > Ratings): TMDb Helper's ListItem monitor, which publishes the followed item's
 	     ratings, runs only while the skin sets TMDbHelper.Service. On with the setting, off without it
 	     (Includes_Bald_Ratings.xml, Bald_RatingsOnline). -->
@@ -411,6 +412,9 @@
 			<texturenofocus />
 			<onfocus>ClearProperty(Bald.Preload,home)</onfocus>
 			<onfocus>CancelAlarm(bald_preload,silent)</onfocus>
+			<!-- The recommended-settings offer Home's onload skips behind the splash comes as it lifts. -->
+			<onfocus condition="!Skin.HasSetting(Bald.RecommendedOffered)">RunScript(skin.bald,recommended,prompt)</onfocus>
+			<onfocus condition="!Skin.HasSetting(Bald.RecommendedOffered)">Skin.SetBool(Bald.RecommendedOffered)</onfocus>
 			<!-- Home's default: row 1 (its onfocus makes it the current row), or the menu with no Home rows; while Home is
 			     hidden, the start screen's first row or the menu (Bald_StartRow, Bald_StartMenuEntry). -->
 			<onfocus condition="!$EXP[Bald_HomeHidden] + $EXP[Bald_HasRows_home]">SetFocus(9101)</onfocus>
