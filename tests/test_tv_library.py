@@ -69,15 +69,17 @@ class TVLibraryTests(unittest.TestCase):
     def test_legacy_video_views_route_tv_levels_to_bald_views(self):
         files = ('View_50_List.xml', 'View_51_Poster.xml', 'View_52_IconWall.xml', 'View_53_Shift.xml', 'View_54_InfoWall.xml', 'View_55_WideList.xml', 'View_500_Wall.xml', 'View_501_Banner.xml', 'View_504_MediaList.xml')
         expected = {
+            'Container.Content(movies)': 'Container.SetViewMode(510)',
             'Container.Content(tvshows)': 'Container.SetViewMode(520)',
             'Container.Content(seasons)': 'Container.SetViewMode(530)',
             'Container.Content(episodes)': 'Container.SetViewMode(540)',
         }
         for filename in files:
             root = ET.parse(ROOT / filename).getroot()
-            actions = [(node.get('condition'), node.text) for node in root.findall('.//onfocus')]
-            for condition, action in expected.items():
-                self.assertTrue(has_action(actions, condition, action), (filename, action))
+            self.assertIn('Bald_BaldViewRedirect', [node.text for node in root.iter('include')], filename)
+        actions = [(node.get('condition'), node.text) for node in expand_call('Bald_BaldViewRedirect')]
+        for condition, action in expected.items():
+            self.assertTrue(has_action(actions, condition, action), action)
 
     def test_shared_logo_has_container_tvshow_fallback(self):
         shared = ET.parse(ROOT / 'Includes_Bald_Home.xml').getroot()

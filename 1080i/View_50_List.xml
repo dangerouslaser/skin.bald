@@ -70,7 +70,7 @@
 		<param name="state_left">1020</param>
 		<definition>
 			<control type="list" id="$PARAM[list_id]">
-				<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
+				<include>Bald_BaldViewRedirect</include>
 				<left>$PARAM[left]</left>
 				<top>Bald_ContentTop</top>
 				<width>$PARAM[width]</width>

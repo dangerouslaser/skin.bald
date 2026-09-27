@@ -69,6 +69,16 @@
 		<value>$LOCALIZE[24170]</value>
 	</variable>
 
+	<!-- Movies and TV always show in a Bald view (MyVideoNav.xml's onload sets it on entry): an Estuary view that
+	     gets focus on movie or TV content (a folder change within the window) hands over to the Bald view for it. Used
+	     by every Estuary view the video library lists. -->
+	<include name="Bald_BaldViewRedirect">
+		<onfocus condition="Container.Content(movies)">Container.SetViewMode(510)</onfocus>
+		<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus>
+		<onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus>
+		<onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
+	</include>
+
 	<!-- ============ Motion ============ -->
 	<!-- Views dim to 72% while the options menu covers the preview column (SPEC 5.5). -->
 	<include name="Bald_BrowseDim">

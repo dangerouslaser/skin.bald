@@ -12,7 +12,7 @@
 				<visible>Control.IsVisible(55)</visible>
 				<include>Bald_BrowseViewIn</include>
 				<control type="list" id="55">
-					<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
+					<include>Bald_BaldViewRedirect</include>
 					<left>Bald_SafeLeft</left>
 					<top>Bald_ContentTop</top>
 					<width>1140</width>

@@ -17,7 +17,8 @@
 	<!-- Blur: Bald Helper's, else TMDb Helper's, never both (Home.xml). -->
 	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
-	<!-- Estuary remains a fallback for content we have not redesigned; movie libraries always enter a Bald view. -->
+	<!-- Estuary remains a fallback for content we have not redesigned; movie and TV libraries always enter a Bald view
+	     (here on entry, and from an Estuary view on a folder change, Bald_BaldViewRedirect). -->
 	<onload condition="Container.Content(movies) + !$EXP[Bald_LibraryMovieView]">Container.SetViewMode(510)</onload>
 	<onload condition="Container.Content(tvshows) + !$EXP[Bald_LibrarySeriesView]">Container.SetViewMode(520)</onload>
 	<onload condition="Container.Content(seasons) + !$EXP[Bald_LibrarySeasonView]">Container.SetViewMode(530)</onload>
