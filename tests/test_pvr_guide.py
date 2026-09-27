@@ -15,7 +15,10 @@ class PVRGuideTests(unittest.TestCase):
     def test_home_live_tv_opens_native_guide(self):
         item = home_menu.entry(preview='livetv')
         # Without Live TV rows (or a PVR add-on) Select opens the guide; Right always does (bridge 9029).
-        self.assertIn(('!$EXP[Bald_LiveTVRows]', 'ActivateWindow(TVGuide)'), home_menu.select_actions(item))
+        # (With Appearance > Behavior "Select on a hub opens its library" on, Select opens it with rows too.)
+        from conditions import has_action
+        self.assertTrue(has_action(home_menu.select_actions(item), '!$EXP[Bald_LiveTVRows]', 'ActivateWindow(TVGuide)',
+                                   home_menu.setting(False)))
         self.assertTrue(equivalent(item.findtext("visible"), '!Skin.HasSetting(Bald.Screen.HideLiveTV)'))
 
     def test_primary_guide_preserves_native_contract(self):

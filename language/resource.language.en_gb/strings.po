@@ -910,12 +910,12 @@ msgstr ""
 
 #: /1080i/Includes_Bald_Configure.xml
 msgctxt "#31204"
-msgid "One of your hubs. Right in the main menu opens its target, and so does Select while it has no rows."
+msgid "One of your hubs. Select in the main menu enters its rows and Right opens its target (Appearance > Behavior can swap the two); without rows, Select opens the target."
 msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31205"
-msgid "Show Live TV in the main menu. Select and Right open the guide; Left enters its rows."
+msgid "Show Live TV in the main menu. Select enters its rows and Right opens the guide (Appearance > Behavior can swap the two); without rows, Select opens the guide."
 msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
@@ -936,6 +936,11 @@ msgstr ""
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31209"
 msgid "Clear target"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31210"
+msgid "Select on a hub opens its library"
 msgstr ""
 
 # Bald spoiler protection strings: 31260-31279 (Includes_Bald_Spoilers.xml, Appearance > Information).
@@ -1963,7 +1968,7 @@ msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31741"
-msgid "The default screen. Home cannot be removed."
+msgid "Your everyday rows, mixed from all your libraries, and the screen Bald starts on. Turn it off to start on your first hub instead; Home comes back whenever no hub is shown."
 msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml

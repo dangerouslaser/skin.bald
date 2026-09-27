@@ -265,10 +265,12 @@ HOME (Home.xml, Includes_Bald_Home.xml)
 		(tools/build_home_defaults.py) stands in until the first build. An empty slot
 		builds no controls. None of these ranges meets another: 9001-9029 menu and
 		bridges, 9051-9070, 9101-9120, then x01-x20 per hundred up to 9920, and the fixed
-		9180 and 9194-9199 below sit above 9120.
+		9180 and 9193-9199 below sit above 9120.
 9180	Startup splash: hidden list of random fanart that drives the background
+9193	Home hidden: shows while focus is stranded on one of Home's rows (Timers.xml bald_home_start reads it)
 9194	Startup splash: shows once every row has loaded (Timers.xml bald_preload reads it)
-9195	Startup splash: focus lifts the splash and moves on to row 1 (or the menu)
+9195	Startup splash: focus lifts the splash and moves on to row 1 (or the menu), or while Home is hidden to
+		the start screen's first row; bald_home_start also focuses it
 9198	Startup splash: holds focus and ignores keys while the splash shows
 9199	Idle-wake button: the idle timer parks focus here, any key returns to the row
 0		Bald_MenuNote label default (no id)
@@ -410,6 +412,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 9621-9628	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
 		scroll long plots, recommended Kodi settings; 9627 open TV shows on their info page (Bald Helper
 		enabled), 9628 the same row while Bald Helper is missing or disabled (installs or enables it)
+9629	Behavior: Select on a hub opens its library (Bald.HubSelectOpens; listed after 9623)
 9631	Typography: font (fontset)
 9641-9663	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; 9657 online ratings from TMDb Helper,
 		9658 TMDb Helper settings (both listed after 9641); sources 9642 IMDb, 9643 TMDb,

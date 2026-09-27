@@ -5,9 +5,11 @@ from pathlib import Path
 from conditions import equivalent, implies, parse, same_actions
 from skin_strings import loc
 
+import home_menu
+
 
 XML = Path(__file__).resolve().parents[1] / "1080i"
-NO_ROWS = "!$EXP[Bald_HasRows_home]"
+NO_ROWS = "!$EXP[Bald_StartHasRows]"
 HAS_ROW = "!String.IsEmpty(Window(home).Property(Bald.Row))"
 
 
@@ -26,16 +28,21 @@ class HomeZeroRowsTests(unittest.TestCase):
         def position(condition, action):
             return next(i for i, pair in enumerate(onload) if same_actions([pair], [(condition, action)]))
 
-        clear, focus = position(NO_ROWS, "ClearProperty(Bald.Row,home)"), position(NO_ROWS, "SetFocus(9001)")
+        clear = position(NO_ROWS, "ClearProperty(Bald.Row,home)")
+        focus = position(NO_ROWS, "SetFocus($VAR[Bald_StartMenuEntry])")
+        # With Home shown that is Home's own test and entry (Bald_StartHasRows, Bald_StartMenuEntry).
+        self.assertTrue(home_menu.same_under(NO_ROWS, "!$EXP[Bald_HasRows_home]", home_menu.HOME_SHOWN))
+        self.assertEqual(home_menu.variable_value("Bald_StartMenuEntry", home_menu.HOME_SHOWN), "9001")
         # After the current-row setup (skipped only when returning to a menu entry), before Search's own return focus.
-        self.assertLess(position("!$EXP[Bald_ReturningToMenu]", "SetProperty(Bald.Row,9101,home)"), clear)
+        self.assertLess(position("!$EXP[Bald_ReturningToMenu]", "SetProperty(Bald.Row,$VAR[Bald_StartRow],home)"), clear)
         search_focus = next(i for i, (_, action) in enumerate(onload) if action == "SetFocus(9005)")
         self.assertLess(focus, search_focus)
 
     def test_focus_returns_to_the_menu_when_there_is_no_current_row(self):
         includes = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         values = [(value.get("condition"), value.text) for value in includes.findall("variable[@name='Bald_RowFocus']/value")]
-        self.assertTrue(same_actions(values, [(HAS_ROW, "$INFO[Window(home).Property(Bald.Row)]"), (None, "9001")]))
+        self.assertTrue(same_actions(values, [(HAS_ROW, "$INFO[Window(home).Property(Bald.Row)]"),
+                                              ("$EXP[Bald_HomeHidden]", "$VAR[Bald_StartMenuEntry]"), (None, "9001")]))
         self.assertIsNone(values[-1][0])
         wake = ET.parse(XML / "Home.xml").getroot().find(".//control[@id='9199']")
         for tag in ("onup", "ondown", "onleft", "onright", "onclick", "onback"):

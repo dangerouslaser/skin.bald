@@ -92,8 +92,9 @@ class PreloadRowsTests(unittest.TestCase):
                 self.assertIn(f"Container({row}).IsUpdating", mentioned)
         # Under a modal dialog Container(...) reads the dialog, so the rows never count as loaded then.
         self.assertTrue(implies(text, "!System.HasActiveModalDialog"))
-        # A Home row still loading keeps the splash up.
-        self.assertTrue(implies("Container(9101).IsUpdating", "!" + text))
+        # A Home row still loading keeps the splash up (while Home is shown; hidden, its rows do not load).
+        self.assertTrue(implies("Container(9101).IsUpdating", "!" + text,
+                                assume={"Skin.HasSetting(Bald.Screen.HideHome)": False}))
 
 
 def timer(name):
@@ -164,12 +165,21 @@ class SplashTests(unittest.TestCase):
                     self.assertTrue(implies(node.get("condition"), "!" + PRELOADING), tag)
         lift = self.home.find(".//control[@id='9195']")
         actions = [(node.get("condition"), node.text) for node in lift.findall("onfocus")]
+        import home_menu
+        hidden, start_rows = "$EXP[Bald_HomeHidden]", "$EXP[Bald_StartHasRows]"
+        # Home shown: row 1, or without Home rows the menu's first entry (Home's, Bald_StartMenuEntry). Home hidden: the
+        # start screen's first row (tests/test_home_hidden.py), or the menu's first shown hub.
         self.assertTrue(same_actions(actions, [
             (None, "ClearProperty(Bald.Preload,home)"),
             (None, "CancelAlarm(bald_preload,silent)"),
-            ("$EXP[Bald_HasRows_home]", "SetFocus(9101)"),
-            ("!$EXP[Bald_HasRows_home]", "SetFocus(9001)"),
-        ]))
+            (f"!{hidden} + $EXP[Bald_HasRows_home]", "SetFocus(9101)"),
+            (f"{hidden} + {start_rows}", "SetProperty(Bald.Row,$VAR[Bald_StartRow],home)"),
+            (f"{hidden} + {start_rows}", "SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)"),
+            (f"{hidden} + {start_rows}", "SetFocus($INFO[Window(home).Property(Bald.Row)])"),
+            (f"!{start_rows}", "SetFocus($VAR[Bald_StartMenuEntry])"),
+        ]), actions)
+        self.assertTrue(home_menu.same_under(f"!{start_rows}", "!$EXP[Bald_HasRows_home]", home_menu.HOME_SHOWN))
+        self.assertEqual(home_menu.variable_value("Bald_StartMenuEntry", home_menu.HOME_SHOWN), "9001")
 
     def test_timer_lifts_when_rows_have_loaded_or_the_alarm_ran_out(self):
         marker = self.home.find(".//control[@id='9194']")

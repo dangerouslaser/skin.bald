@@ -85,7 +85,7 @@ class BaldSettingsTests(unittest.TestCase):
         expected = {
             "9401": f"RunPlugin({url}&func=do_toggle&&disabled)",
             "9403": f"RunPlugin({url}&func=do_edit&&label)",
-            "9404": f"RunPlugin({url}&func=do_action&&use_rawpath::True)",
+            "9404": f"RunPlugin({url}&func=do_action&&grouping::grouping://hubs/&&use_rawpath::True)",
             "9405": f"RunPlugin({url}&func=do_edit&&path&&null)",
             "9406": f"RunPlugin({url}&func=do_move&&-1)",
             "9407": f"RunPlugin({url}&func=do_move&&1)",
@@ -148,7 +148,10 @@ class BaldSettingsTests(unittest.TestCase):
             if screen != "home":
                 # A hub without rows opens its target instead (bridge 902n, as Right does).
                 entering.append((f"!{has_rows} + $EXP[Bald_HubHasOpen_{screen}]", f"SetFocus(902{screen[3:]})"))
-            self.assertTrue(same_actions(actions, entering), actions)
+            # With Appearance > Behavior "Select on a hub opens its library" off (the default); tests/test_hub_select.py
+            # covers it on.
+            off = home_menu.setting(False)
+            self.assertTrue(same_actions(home_menu.live(actions, off), entering, off), actions)
             # The background follows the screen's remembered row while it is previewed (Bald_FollowContainer).
             onfocus = home_menu.actions(home_menu.entry(preview=screen), "onfocus")
             row = f"$INFO[Window(home).Property(Bald.Row.{screen})]"
@@ -161,7 +164,8 @@ class BaldSettingsTests(unittest.TestCase):
         # add-on, else opens the guide; Right opens the guide through bridge 9029.
         livetv = home_menu.entry(preview="livetv")
         rows = "$EXP[Bald_LiveTVRows]"
-        select = home_menu.select_actions(livetv)
+        off = home_menu.setting(False)
+        select = home_menu.live(home_menu.select_actions(livetv), off)
         self.assertTrue(same_actions(select, [
             (rows, "SetProperty(Bald.Screen,livetv,home)"),
             (rows, "SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.livetv)],home)"),
@@ -170,9 +174,9 @@ class BaldSettingsTests(unittest.TestCase):
             (rows, "SetFocus($INFO[Window(home).Property(Bald.Row.livetv)])"),
             (f"!{rows}", "SetProperty(Bald.ReturnMenu,9004,home)"),
             (f"!{rows}", "ActivateWindow(TVGuide)"),
-        ]), select)
-        self.assertEqual(home_menu.actions(livetv, "onleft"), [("true", "Action(Select)")])
-        self.assertEqual(home_menu.actions(livetv, "onright"), [("true", "9029")])
+        ], off), select)
+        self.assertTrue(same_actions(home_menu.live(home_menu.actions(livetv, "onleft"), off), [("true", "Action(Select)")], off))
+        self.assertTrue(same_actions(home_menu.live(home_menu.actions(livetv, "onright"), off), [("true", "9029")], off))
         self.assertEqual([n.text for n in home_menu.control(9029).findall("onfocus")],
                          ["SetProperty(Bald.ReturnMenu,9004,home)", "ActivateWindow(TVGuide)"])
         live_rows = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().findtext(
@@ -312,7 +316,9 @@ class BaldSettingsTests(unittest.TestCase):
             entry = home_menu.entry(preview=hub)
             self.assertEqual(entry.findtext("label"), f"$VAR[Bald_HubLabel_{hub}]$VAR[Bald_HubSuffix_{hub}]")
             # Right navigates to the bridge only when the hub has a target (a conditional numeric onright).
-            self.assertEqual(home_menu.actions(entry, "onright"), [(f"$EXP[Bald_HubHasOpen_{hub}]", f"902{n}")])
+            off = home_menu.setting(False)
+            self.assertTrue(same_actions(home_menu.live(home_menu.actions(entry, "onright"), off),
+                                         [(f"$EXP[Bald_HubHasOpen_{hub}]", f"902{n}")], off))
             bridge = home_menu.control(f"902{n}")
             self.assertEqual(bridge.get("type"), "button")
         # The seeded Movies and TV shows hubs open the libraries the old 9197 and 9196 bridges opened.

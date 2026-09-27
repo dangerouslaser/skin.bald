@@ -10,7 +10,7 @@ without a build).
 This script renders the same generator config from the shipped row defaults
 (shortcuts/skinvariables-shortcut-<menu>.json: homewidgets, livetvwidgets, and hubs with each hub's rows in its
 "widgets" list), following Skin Variables 2.2.4's template rules for the features
-Bald's generator files use: datafiles, <lists>, <items menu item mode> loops (menu nodes as get_menunode walks them), <value>, <rules>, <condition> with a==b / a!=b,
+Bald's generator files use: datafiles, <lists>, <items menu item mode> loops (menu nodes as get_menunode walks them), <value>, <rules>, <condition> with a==b / a!=b / a>>b / a<<b / a!>b / a!<b,
 $MATH[] (space separated, evaluated left to right) and {name} fields. It also stamps "buildv" in the generator
 config with a digest of the generator inputs, so a skin update that changes them makes Skin Variables rebuild
 (its build hash covers the config file text, not the files it loads).
@@ -89,6 +89,12 @@ def holds(condition):
     if "!=" in condition:
         left, right = condition.split("!=")
         return left != right
+    # Containment, in Skin Variables' order: a>>b "a is in b", a<<b "b is in a", a!>b and a!<b their negations.
+    for operator, test in ((">>", lambda a, b: a in b), ("<<", lambda a, b: b in a),
+                           ("!>", lambda a, b: a not in b), ("!<", lambda a, b: b not in a)):
+        if operator in condition:
+            left, right = condition.split(operator)
+            return test(left, right)
     if condition.strip().lower() in {"true", ""}:
         return True
     if condition.strip().lower() == "false":

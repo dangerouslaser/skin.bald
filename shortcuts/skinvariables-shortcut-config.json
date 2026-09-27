@@ -1,5 +1,58 @@
 {
     "grouping://shortcuts/": [
+        "grouping://bald/video/",
+        "grouping://bald/music/",
+        {
+            "name": "Favourites",
+            "path": "favourites://",
+            "icon": "DefaultFavourites.png",
+            "link": "false",
+            "node": "favouritesbrowser"
+        },
+        "grouping://bald/pvr/"
+    ],
+    "grouping://hubs/": [
+        "grouping://bald/video/",
+        "grouping://bald/music/",
+        {
+            "name": "Favourites",
+            "path": "ActivateWindow(FavouritesBrowser)",
+            "icon": "DefaultFavourites.png",
+            "link": "true"
+        },
+        {
+            "name": "Pictures",
+            "path": "ActivateWindow(Pictures)",
+            "icon": "DefaultPicture.png",
+            "link": "true"
+        },
+        {
+            "name": "Programs",
+            "path": "ActivateWindow(Programs)",
+            "icon": "DefaultProgram.png",
+            "link": "true"
+        },
+        {
+            "name": "Add-ons",
+            "path": "ActivateWindow(AddonBrowser)",
+            "icon": "DefaultAddon.png",
+            "link": "true"
+        },
+        {
+            "name": "Weather",
+            "path": "ActivateWindow(Weather)",
+            "icon": "DefaultAddonWeather.png",
+            "link": "true"
+        },
+        {
+            "name": "Radio",
+            "path": "ActivateWindow(RadioChannels)",
+            "icon": "DefaultAddonPVRClient.png",
+            "link": "true"
+        },
+        "grouping://bald/pvr/"
+    ],
+    "grouping://bald/video/": [
         {
             "name": "Video library",
             "path": "library://video/",
@@ -20,7 +73,62 @@
             "icon": "DefaultAddonVideo.png",
             "link": "false",
             "node": "videos"
+        }
+    ],
+    "grouping://bald/music/": [
+        {
+            "name": "Music library",
+            "path": "library://music/",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "false",
+            "node": "music"
         },
+        {
+            "name": "Bald music playlists",
+            "path": "grouping://bald/musicplaylists/",
+            "icon": "DefaultMusicPlaylists.png",
+            "link": "false",
+            "node": "music"
+        },
+        {
+            "name": "Music add-ons",
+            "path": "addons://sources/audio/",
+            "icon": "DefaultAddonMusic.png",
+            "link": "false",
+            "node": "music"
+        }
+    ],
+    "grouping://bald/musicplaylists/": [
+        {
+            "name": "Random albums",
+            "path": "special://skin/playlists/random_albums.xsp",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "false",
+            "node": "music"
+        },
+        {
+            "name": "Unplayed albums",
+            "path": "special://skin/playlists/unplayed_albums.xsp",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "false",
+            "node": "music"
+        },
+        {
+            "name": "Most played albums",
+            "path": "special://skin/playlists/mostplayed_albums.xsp",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "false",
+            "node": "music"
+        },
+        {
+            "name": "Random artists",
+            "path": "special://skin/playlists/random_artists.xsp",
+            "icon": "DefaultMusicArtists.png",
+            "link": "false",
+            "node": "music"
+        }
+    ],
+    "grouping://bald/pvr/": [
         {
             "name": "Live TV channel groups",
             "path": "pvr://channels/tv/",

@@ -24,6 +24,8 @@ BALD_FILES = sorted(
 )
 # Names that are the same in every language.
 PROPER_NOUNS = ("CoreELEC", "LibreELEC", "Dolby Vision", "HDR10+", "HDR10", "HLG", "SDR", "Jellyfin")
+# Variables whose values are state for SetProperty (window property values), never shown.
+STATE_VARIABLES = {"Bald_StartScreen"}
 TEXT_PARAMS = re.compile(r"^(label|label2|title|first|second|third|note|hint|[a-z_]+_hint)$")
 TOKEN = re.compile(r"\$(INFO|ESCINFO|VAR|ESCVAR|EXP|PARAM|LOCALIZE|ADDON|NUMBER|MAP)\[")
 
@@ -63,7 +65,10 @@ def literal_text(text):
 
 def shown_texts(root):
     """(where, text) for every element whose text Kodi renders as a label."""
+    state = {id(value) for var in root.iter("variable") if var.get("name") in STATE_VARIABLES for value in var}
     for node in root.iter():
+        if id(node) in state:
+            continue
         text = (node.text or "").strip()
         if node.tag == "param":
             name = node.get("name", "")

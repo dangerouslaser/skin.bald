@@ -146,7 +146,8 @@ class HubSlotTests(unittest.TestCase):
         includes = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         hub = includes.find("include[@name='Bald_HomeMenuHub']/definition/include[@content='Bald_HomeMenuButton']")
         self.assertEqual(hub.findtext("param[@name='right']"), "902$PARAM[n]")
-        self.assertEqual(hub.findtext("param[@name='right_if']"), "$EXP[Bald_HubHasOpen_hub$PARAM[n]]")
+        self.assertEqual(hub.findtext("param[@name='right_if']"),
+                         "$EXP[Bald_HubHasOpen_hub$PARAM[n]] + !$EXP[Bald_HubSwap_hub$PARAM[n]]")
         bridge = includes.find("include[@name='Bald_HubBridge']/definition/control")
         self.assertEqual(bridge.get("id"), "902$PARAM[n]")
         self.assertEqual(bridge.find("include").get("content"), "Bald_HubOpen_hub$PARAM[n]")
@@ -419,10 +420,12 @@ class ReturnKeepsStateTests(unittest.TestCase):
     """Returning to a menu entry keeps the state Home was left in: Kodi starts each control's animations from the
     properties as they were, so resetting and restoring them would animate the art frame away and back."""
 
-    RESETS = ["SetProperty(Bald.Row,9101,home)", "SetProperty(Bald.Row.home,9101,home)",
+    # Home's start state goes through Bald_Start* (Home, or while Home is hidden the screen it starts on); with Home
+    # shown they are Home's own values (tests/test_home_hidden.py).
+    RESETS = ["SetProperty(Bald.Row,$VAR[Bald_StartRow],home)", "SetProperty(Bald.Row.home,9101,home)",
               "SetProperty(Bald.Row.livetv,9051,home)"] + [f"SetProperty(Bald.Row.hub{n},9{n + 1}01,home)" for n in range(1, 9)] + [
-              "SetProperty(Bald.Screen,home,home)", "SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)",
-              "SetProperty(Bald.FocusContainer,9101,home)", "ClearProperty(Bald.Menu,home)"]
+              "SetProperty(Bald.Screen,$VAR[Bald_StartScreen],home)", "SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)",
+              "SetProperty(Bald.FocusContainer,$VAR[Bald_StartRow],home)", "ClearProperty(Bald.Menu,home)"]
 
     def test_state_resets_are_skipped_on_return_to_a_menu_entry(self):
         loads = [n for n in expand_follow(ET.parse(XML / "Home.xml").getroot()) if n.tag == "onload"]
@@ -430,7 +433,7 @@ class ReturnKeepsStateTests(unittest.TestCase):
         for action in self.RESETS:
             with self.subTest(action=action):
                 self.assertTrue(equivalent(onload[action], "!$EXP[Bald_ReturningToMenu]"), onload[action])
-        self.assertTrue(equivalent(onload["SetProperty(TMDbHelper.WidgetContainer,9101,home)"],
+        self.assertTrue(equivalent(onload["SetProperty(TMDbHelper.WidgetContainer,$VAR[Bald_StartRow],home)"],
                                    "!$EXP[Bald_ReturningToMenu] + $EXP[Bald_TMDbHelperFollows]"))
 
     def test_returning_matches_the_restored_entries(self):
@@ -449,12 +452,13 @@ class ReturnDefaultFocusTests(unittest.TestCase):
         home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         row = next(c for c in home.iter("control") if c.get("type") == "fixedlist" and c.get("id") == "$PARAM[id]")
         guarded = {n.text: n.get("condition") for n in expand_follow(row) if n.tag == "onfocus"}
+        # Nor from a disabled row ($PARAM[enabled]: Home's rows while Home is hidden get the same default focus).
         for action in ("SetProperty(Bald.Row,$PARAM[id],home)", "SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)",
                        "SetProperty(Bald.FocusContainer,$PARAM[id],home)", "SetProperty(Bald.RowStyle,$PARAM[style],home)"):
             with self.subTest(action=action):
-                self.assertTrue(equivalent(guarded[action], "!$EXP[Bald_ReturningToMenu]"), guarded[action])
+                self.assertTrue(equivalent(guarded[action], "!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]"), guarded[action])
         self.assertTrue(equivalent(guarded["SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)"],
-                                   "!$EXP[Bald_ReturningToMenu] + $EXP[Bald_TMDbHelperFollows]"))
+                                   "!$EXP[Bald_ReturningToMenu] + $PARAM[enabled] + $EXP[Bald_TMDbHelperFollows]"))
 
 
 class ContentPickerTests(unittest.TestCase):
@@ -463,8 +467,8 @@ class ContentPickerTests(unittest.TestCase):
     entry's node as the row's target (the editor passes use_rawpath)."""
 
     def test_channel_groups_can_be_chosen_as_rows(self):
-        config = json.loads((Path(__file__).resolve().parents[1] / "shortcuts" / "skinvariables-shortcut-config.json").read_text())
-        entries = {e["path"]: e for e in config["grouping://shortcuts/"]}
+        from test_hub_targets import grouping_entries
+        entries = {e["path"]: e for e in grouping_entries("grouping://shortcuts/")}
         self.assertEqual((entries["pvr://channels/tv/"]["node"], entries["pvr://channels/tv/"]["link"]), ("tvchannels", "false"))
         self.assertEqual((entries["pvr://channels/radio/"]["node"], entries["pvr://channels/radio/"]["link"]), ("radiochannels", "false"))
 
@@ -479,7 +483,7 @@ class ChannelGroupSelectTests(unittest.TestCase):
         self.assertEqual(clicks, [
             ("$EXP[Bald_TVChannelGroupItem]", "ActivateWindow(TVGuide,$ESCINFO[ListItem.FolderPath],return)"),
             ("$EXP[Bald_RadioChannelGroupItem]", "ActivateWindow(RadioGuide,$ESCINFO[ListItem.FolderPath],return)"),
-            ("!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem]", "Action(Info)")])
+            ("!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem] + !$EXP[Bald_FavouriteItem]", "Action(Info)")])
         self.assertEqual(home.findtext("expression[@name='Bald_TVChannelGroupItem']"),
                          "[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/tv/)]")
 

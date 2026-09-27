@@ -230,13 +230,14 @@
 		<value condition="!String.IsEmpty(Container(9300).ListItem.Property(path))">$INFO[Container(9300).ListItem.Property(path)]</value>
 		<value>$LOCALIZE[231]</value>
 	</variable>
-	<!-- Add hub: Skin Variables' browser picks what the hub opens (library node, Bald playlist or video add-on folder)
-	     and names the hub after it. With hubs, do_new appends after position 98 (Python's insert past the end appends);
+	<!-- Add hub: Skin Variables' browser over grouping://hubs/ (shortcuts/skinvariables-shortcut-config.json: video and
+	     music library nodes, Bald playlists, add-ons, channel groups, and the builtins Favourites, Pictures, Programs,
+	     Add-ons, Weather and Radio) picks what the hub opens and names the hub after it. With hubs, do_new appends after position 98 (Python's insert past the end appends);
 	     with none, the list holds only Skin Variables' placeholder, and do_choose on item 0 fills it rather than adding
 	     a second entry. -->
 	<include name="Bald_AddHubActions">
-		<onclick condition="!String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank))">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=0&amp;func=do_choose&amp;&amp;use_rawpath::True)</onclick>
-		<onclick condition="String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank)) + !$EXP[Bald_HubsFull]">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=98&amp;func=do_new&amp;&amp;use_rawpath::True)</onclick>
+		<onclick condition="!String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank))">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=0&amp;func=do_choose&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
+		<onclick condition="String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank)) + !$EXP[Bald_HubsFull]">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=98&amp;func=do_new&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
 	</include>
 
 	<!-- Appearance > Typography (1118): the current fontset (Skin.Font is lookandfeel.font, a Font.xml fontset id). -->

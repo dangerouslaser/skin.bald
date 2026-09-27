@@ -47,12 +47,15 @@
 			<param name="heading">$INFO[Container(9300).ListItem.Label]</param>
 			<param name="note">$INFO[Container(9300).ListItem.Property(note)]</param>
 			<control type="grouplist" id="9400"><include content="Bald_SettingsRows"><param name="left">9300</param></include>
-				<!-- Show in the main menu: a hub's "disabled" field (Skin Variables do_toggle), Live TV's skin bool. -->
+				<!-- Show in the main menu: a hub's "disabled" field (Skin Variables do_toggle), Live TV's and Home's skin bools.
+				     Home hidden starts Home on the first shown hub's rows; with no hub shown, Home shows anyway
+				     (Includes_Bald_Home.xml, Bald_HomeHidden). -->
 				<control type="radiobutton" id="9401"><include>Bald_ConfigureButton</include><label>$LOCALIZE[305]</label>
-					<selected>[$EXP[Bald_HubCategorySelected] + String.IsEmpty(Container(9300).ListItem.Property(disabled))] | [String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)]</selected>
-					<visible>$EXP[Bald_HubCategorySelected] | String.IsEqual(Container(9300).ListItem.Property(kind),livetv)</visible>
+					<selected>[$EXP[Bald_HubCategorySelected] + String.IsEmpty(Container(9300).ListItem.Property(disabled))] | [String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)] | [String.IsEqual(Container(9300).ListItem.Property(kind),home) + !Skin.HasSetting(Bald.Screen.HideHome)]</selected>
+					<visible>$EXP[Bald_HubCategorySelected] | String.IsEqual(Container(9300).ListItem.Property(kind),livetv) | String.IsEqual(Container(9300).ListItem.Property(kind),home)</visible>
 					<onclick condition="$EXP[Bald_HubCategorySelected]">RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_toggle&amp;&amp;disabled)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv)">Skin.ToggleSetting(Bald.Screen.HideLiveTV)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">Skin.ToggleSetting(Bald.Screen.HideHome)</onclick>
 				</control>
 				<!-- Rows: the widget editor (1116) on Home's, Live TV's or this hub's row list. -->
 				<control type="button" id="9402"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31745]</label>
@@ -72,11 +75,12 @@
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
 					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;label)</onclick>
 				</control>
-				<!-- What Right (and Select without rows) opens: Skin Variables' Browse (library nodes, Bald playlists, video
-				     add-ons) or Edit (a path or a builtin such as ActivateWindow(Weather)). -->
+				<!-- What Right (and Select without rows) opens: Skin Variables' Browse over grouping://hubs/ (video and music
+				     library nodes, Bald playlists, add-ons, Favourites, Pictures, Programs, Weather, Radio, channel groups) or Edit
+				     (a path or a builtin such as ActivateWindow(Weather)). The generator picks the window (Bald_HubOpen_<screen>). -->
 				<control type="button" id="9404"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31203]</label><label2>$VAR[Bald_HubTargetLabel]</label2>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
-					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_action&amp;&amp;use_rawpath::True)</onclick>
+					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_action&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
 				</control>
 				<control type="button" id="9405"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31209]</label>
 					<visible>$EXP[Bald_HubCategorySelected] + !String.IsEmpty(Container(9300).ListItem.Property(path))</visible>

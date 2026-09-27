@@ -27,7 +27,7 @@ class HomeResolvesTests(unittest.TestCase):
     def test_resolved_rows_and_menu_carry_their_actions(self):
         home = Skin().window("Home.xml")
         movies = control(home, 9011)
-        self.assertEqual([node.text for node in movies.findall("onleft")], ["Action(Select)"])
+        self.assertEqual([node.text for node in movies.findall("onleft")][-1], "Action(Select)")
         self.assertIn("SetProperty(Bald.Screen,hub1,home)", [node.text for node in movies.findall("onclick")])
         row = control(home, 9102)
         self.assertEqual(len(row.findall("content")), 2)

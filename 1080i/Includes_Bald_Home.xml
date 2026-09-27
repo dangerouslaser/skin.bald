@@ -289,7 +289,7 @@
 	     need a PVR add-on (their Bald_Row enabled parameter), so without one they neither preload nor count. Under a
 	     modal dialog Container(...) here resolves against the dialog, so the splash waits for it to close. -->
 	<expression name="Bald_Preloading">[!String.IsEmpty(Window(home).Property(Bald.Preload))]</expression>
-	<expression name="Bald_RowsLoading">[$EXP[Bald_RowsLoading_home] | [System.HasPVRAddon + !Skin.HasSetting(Bald.Screen.HideLiveTV) + $EXP[Bald_RowsLoading_livetv]] | [$EXP[Bald_HubShown_hub1] + $EXP[Bald_RowsLoading_hub1]] | [$EXP[Bald_HubShown_hub2] + $EXP[Bald_RowsLoading_hub2]] | [$EXP[Bald_HubShown_hub3] + $EXP[Bald_RowsLoading_hub3]] | [$EXP[Bald_HubShown_hub4] + $EXP[Bald_RowsLoading_hub4]] | [$EXP[Bald_HubShown_hub5] + $EXP[Bald_RowsLoading_hub5]] | [$EXP[Bald_HubShown_hub6] + $EXP[Bald_RowsLoading_hub6]] | [$EXP[Bald_HubShown_hub7] + $EXP[Bald_RowsLoading_hub7]] | [$EXP[Bald_HubShown_hub8] + $EXP[Bald_RowsLoading_hub8]]]</expression>
+	<expression name="Bald_RowsLoading">[[!$EXP[Bald_HomeHidden] + $EXP[Bald_RowsLoading_home]] | [System.HasPVRAddon + !Skin.HasSetting(Bald.Screen.HideLiveTV) + $EXP[Bald_RowsLoading_livetv]] | [$EXP[Bald_HubShown_hub1] + $EXP[Bald_RowsLoading_hub1]] | [$EXP[Bald_HubShown_hub2] + $EXP[Bald_RowsLoading_hub2]] | [$EXP[Bald_HubShown_hub3] + $EXP[Bald_RowsLoading_hub3]] | [$EXP[Bald_HubShown_hub4] + $EXP[Bald_RowsLoading_hub4]] | [$EXP[Bald_HubShown_hub5] + $EXP[Bald_RowsLoading_hub5]] | [$EXP[Bald_HubShown_hub6] + $EXP[Bald_RowsLoading_hub6]] | [$EXP[Bald_HubShown_hub7] + $EXP[Bald_RowsLoading_hub7]] | [$EXP[Bald_HubShown_hub8] + $EXP[Bald_RowsLoading_hub8]]]</expression>
 	<expression name="Bald_RowsLoaded">[!$EXP[Bald_DialogOver] + !$EXP[Bald_RowsLoading]]</expression>
 	<!-- The splash: random library fanart, darkened like Home's backdrop, crossfading (1000) every 4.5 s, with the
 	     wordmark centred. List 9180 drives it: random movies then random shows, ten each, auto-advancing. It sits inside
@@ -486,9 +486,95 @@
 		<value>$LOCALIZE[10000]</value>
 	</variable>
 
-	<!-- Where focus goes back to the rows (idle wake): the current row, or with no Home rows the menu's Home entry. -->
+	<!-- ============ Home hidden (Home Screens > Home > Show in the main menu) ============ -->
+	<!-- Bald.Screen.HideHome takes Home out of the menu, but only while some hub is shown: Home never hides with nothing
+	     else to show. Its rows are then disabled (screens.xml "enabled": not shown, not preloaded, not waited for, and
+	     their onfocus sets no state, so the default control 9101, which Kodi still focuses first, changes nothing).
+	     Home's onload starts where Home would have been (docs/NOTES.md, Home hidden):
+	       the first shown hub with rows (menu order), else Live TV's rows (shown, a PVR add-on and rows), else the menu
+	       open on the first shown hub.
+	     Bald_Start* name that start: the screen, its first row, that row's style and the menu entry; with Home shown
+	     they are exactly Home's (home, 9101, Bald_RowStyle_home, 9001). -->
+	<expression name="Bald_HomeHidden">[Skin.HasSetting(Bald.Screen.HideHome) + [$EXP[Bald_HubShown_hub1] | $EXP[Bald_HubShown_hub2] | $EXP[Bald_HubShown_hub3] | $EXP[Bald_HubShown_hub4] | $EXP[Bald_HubShown_hub5] | $EXP[Bald_HubShown_hub6] | $EXP[Bald_HubShown_hub7] | $EXP[Bald_HubShown_hub8]]]</expression>
+	<expression name="Bald_HubShownRows_hub1">[$EXP[Bald_HubShown_hub1] + $EXP[Bald_HasRows_hub1]]</expression>
+	<expression name="Bald_HubShownRows_hub2">[$EXP[Bald_HubShown_hub2] + $EXP[Bald_HasRows_hub2]]</expression>
+	<expression name="Bald_HubShownRows_hub3">[$EXP[Bald_HubShown_hub3] + $EXP[Bald_HasRows_hub3]]</expression>
+	<expression name="Bald_HubShownRows_hub4">[$EXP[Bald_HubShown_hub4] + $EXP[Bald_HasRows_hub4]]</expression>
+	<expression name="Bald_HubShownRows_hub5">[$EXP[Bald_HubShown_hub5] + $EXP[Bald_HasRows_hub5]]</expression>
+	<expression name="Bald_HubShownRows_hub6">[$EXP[Bald_HubShown_hub6] + $EXP[Bald_HasRows_hub6]]</expression>
+	<expression name="Bald_HubShownRows_hub7">[$EXP[Bald_HubShown_hub7] + $EXP[Bald_HasRows_hub7]]</expression>
+	<expression name="Bald_HubShownRows_hub8">[$EXP[Bald_HubShown_hub8] + $EXP[Bald_HasRows_hub8]]</expression>
+	<expression name="Bald_LiveTVStarts">[!Skin.HasSetting(Bald.Screen.HideLiveTV) + $EXP[Bald_LiveTVRows]]</expression>
+	<expression name="Bald_StartHasRows">[[!$EXP[Bald_HomeHidden] + $EXP[Bald_HasRows_home]] | [$EXP[Bald_HomeHidden] + [$EXP[Bald_HubShownRows_hub1] | $EXP[Bald_HubShownRows_hub2] | $EXP[Bald_HubShownRows_hub3] | $EXP[Bald_HubShownRows_hub4] | $EXP[Bald_HubShownRows_hub5] | $EXP[Bald_HubShownRows_hub6] | $EXP[Bald_HubShownRows_hub7] | $EXP[Bald_HubShownRows_hub8] | $EXP[Bald_LiveTVStarts]]]]</expression>
+	<variable name="Bald_StartScreen">
+		<value condition="!$EXP[Bald_HomeHidden]">home</value>
+		<value condition="$EXP[Bald_HubShownRows_hub1]">hub1</value>
+		<value condition="$EXP[Bald_HubShownRows_hub2]">hub2</value>
+		<value condition="$EXP[Bald_HubShownRows_hub3]">hub3</value>
+		<value condition="$EXP[Bald_HubShownRows_hub4]">hub4</value>
+		<value condition="$EXP[Bald_HubShownRows_hub5]">hub5</value>
+		<value condition="$EXP[Bald_HubShownRows_hub6]">hub6</value>
+		<value condition="$EXP[Bald_HubShownRows_hub7]">hub7</value>
+		<value condition="$EXP[Bald_HubShownRows_hub8]">hub8</value>
+		<value condition="$EXP[Bald_LiveTVStarts]">livetv</value>
+		<value condition="$EXP[Bald_HubShown_hub1]">hub1</value>
+		<value condition="$EXP[Bald_HubShown_hub2]">hub2</value>
+		<value condition="$EXP[Bald_HubShown_hub3]">hub3</value>
+		<value condition="$EXP[Bald_HubShown_hub4]">hub4</value>
+		<value condition="$EXP[Bald_HubShown_hub5]">hub5</value>
+		<value condition="$EXP[Bald_HubShown_hub6]">hub6</value>
+		<value condition="$EXP[Bald_HubShown_hub7]">hub7</value>
+		<value condition="$EXP[Bald_HubShown_hub8]">hub8</value>
+		<value>home</value>
+	</variable>
+	<variable name="Bald_StartRow">
+		<value condition="!$EXP[Bald_HomeHidden]">9101</value>
+		<value condition="$EXP[Bald_HubShownRows_hub1]">9201</value>
+		<value condition="$EXP[Bald_HubShownRows_hub2]">9301</value>
+		<value condition="$EXP[Bald_HubShownRows_hub3]">9401</value>
+		<value condition="$EXP[Bald_HubShownRows_hub4]">9501</value>
+		<value condition="$EXP[Bald_HubShownRows_hub5]">9601</value>
+		<value condition="$EXP[Bald_HubShownRows_hub6]">9701</value>
+		<value condition="$EXP[Bald_HubShownRows_hub7]">9801</value>
+		<value condition="$EXP[Bald_HubShownRows_hub8]">9901</value>
+		<value condition="$EXP[Bald_LiveTVStarts]">9051</value>
+		<value />
+	</variable>
+	<variable name="Bald_StartRowStyle">
+		<value condition="!$EXP[Bald_HomeHidden]">$VAR[Bald_RowStyle_home]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub1]">$VAR[Bald_RowStyle_hub1]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub2]">$VAR[Bald_RowStyle_hub2]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub3]">$VAR[Bald_RowStyle_hub3]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub4]">$VAR[Bald_RowStyle_hub4]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub5]">$VAR[Bald_RowStyle_hub5]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub6]">$VAR[Bald_RowStyle_hub6]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub7]">$VAR[Bald_RowStyle_hub7]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub8]">$VAR[Bald_RowStyle_hub8]</value>
+		<value condition="$EXP[Bald_LiveTVStarts]">$VAR[Bald_RowStyle_livetv]</value>
+		<value />
+	</variable>
+	<variable name="Bald_StartMenuEntry">
+		<value condition="!$EXP[Bald_HomeHidden]">9001</value>
+		<value condition="$EXP[Bald_HubShown_hub1]">9011</value>
+		<value condition="$EXP[Bald_HubShown_hub2]">9012</value>
+		<value condition="$EXP[Bald_HubShown_hub3]">9013</value>
+		<value condition="$EXP[Bald_HubShown_hub4]">9014</value>
+		<value condition="$EXP[Bald_HubShown_hub5]">9015</value>
+		<value condition="$EXP[Bald_HubShown_hub6]">9016</value>
+		<value condition="$EXP[Bald_HubShown_hub7]">9017</value>
+		<value condition="$EXP[Bald_HubShown_hub8]">9018</value>
+		<value>9001</value>
+	</variable>
+	<!-- Focus left on a Home row while Home is hidden: only the default control 9101 at load, before the onload's
+	     SetFocus reaches the start row (a list that has never been shown has no items and cannot take focus yet), or a
+	     key pressed in that moment. Marker 9193 shows then, and Timers.xml bald_home_start moves focus on through 9195. -->
+	<expression name="Bald_HomeRowStranded">[$EXP[Bald_HomeHidden] + !$EXP[Bald_Preloading] + Integer.IsGreater(System.CurrentControlID,9100) + Integer.IsLess(System.CurrentControlID,9121)]</expression>
+
+	<!-- Where focus goes back to the rows (idle wake): the current row, or with no current row the menu's first entry
+	     (Home, or the first shown hub while Home is hidden). -->
 	<variable name="Bald_RowFocus">
 		<value condition="$EXP[Bald_HasRow]">$INFO[Window(home).Property(Bald.Row)]</value>
+		<value condition="$EXP[Bald_HomeHidden]">$VAR[Bald_StartMenuEntry]</value>
 		<value>9001</value>
 	</variable>
 	<variable name="Bald_NudgeLNext">
@@ -741,6 +827,17 @@
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Year]$INFO[Container($PARAM[c]).ListItem.Duration(mins),$COMMA , $LOCALIZE[31710]]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,movie) + !Integer.IsGreaterOrEqual(Container($PARAM[c]).ListItem.Duration(mins),60)</param>
 					</include>
+					<!-- Music (a music row): an album's artist and year, a song's artist and album. -->
+					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Artist]$INFO[Container($PARAM[c]).ListItem.Year,$COMMA ,]</param>
+						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,album)</param>
+					</include>
+					<include content="Bald_CaptionMeta">
+						<param name="width">$PARAM[width]</param><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Artist]$INFO[Container($PARAM[c]).ListItem.Album,$COMMA ,]</param>
+						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,song)</param>
+					</include>
 					<!-- Media flags: movies only -->
 					<control type="grouplist">
 						<top>10</top>
@@ -920,14 +1017,15 @@
 	<!-- Text: fanart-sized tiles that show the item's name instead of art (channel groups, genres, folders); the big art
 	     frame is unchanged. The tile is the empty-art placeholder box with Bald_TileText over it. -->
 	<include name="Bald_RowTiles_text">
-		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param></include>
+		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param><param name="cover">false</param></include>
 	</include>
 	<!-- Landscape row: 176 x 99 tiles in 192 px slots. art is the tile texture; overlay names an include drawn over each
-	     tile (it gets the tile's diffuse). -->
+	     tile (it gets the tile's diffuse); cover shows an album's or song's square cover over the tile (Bald_TileCover). -->
 	<include name="Bald_RowLandscape">
-		<param name="art">$VAR[Bald_ItemFanart]</param>
+		<param name="art">$VAR[Bald_RowItemArt]</param>
 		<param name="spoiler">false</param>
 		<param name="overlay">Bald_TileOverlayNone</param>
+		<param name="cover">true</param>
 		<definition>
 			<left>86</left>
 			<top>884</top>
@@ -936,6 +1034,7 @@
 			<itemlayout width="192" height="119">
 				<include content="Bald_LandscapeTile"><param name="art">$PARAM[art]</param><param name="spoiler">$PARAM[spoiler]</param></include>
 				<include content="$PARAM[overlay]" />
+				<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param></include>
 			</itemlayout>
 			<focusedlayout width="192" height="119">
 				<control type="group">
@@ -955,6 +1054,7 @@
 						<param name="ring">!$EXP[Bald_OverlayOpen]</param>
 					</include>
 					<include content="$PARAM[overlay]"><param name="diffuse">FFFFFFFF</param></include>
+					<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param><param name="diffuse">FFFFFFFF</param></include>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -1004,6 +1104,33 @@
 	</include>
 	<include name="Bald_TileOverlayNone">
 		<definition />
+	</include>
+	<!-- Music in a landscape row. Tile art: the item's fanart, the show's, then (albums and songs) the artist's
+	     fanart, else the thumb (an album's cover, an artist's photo); Bald_ItemFanart without the artist step is
+	     shared with the library views. An album or song also shows its square cover, 99 x 99, centred over the tile
+	     (the cover alone would be cropped to a strip by the 16:9 tile); artists keep their fanart. Not on Text rows. -->
+	<variable name="Bald_RowItemArt">
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(artist.fanart))">$INFO[ListItem.Art(artist.fanart)]</value>
+		<value condition="$EXP[Bald_SpoilerThumb]">$VAR[Bald_SpoilerArt]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+	<expression name="Bald_MusicCoverItem">[[String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)] + !String.IsEmpty(ListItem.Art(thumb))]</expression>
+	<include name="Bald_TileCover">
+		<param name="shown">true</param>
+		<param name="diffuse">bald_tile_dim</param>
+		<definition>
+			<control type="image">
+				<left>49</left>
+				<top>10</top>
+				<width>99</width>
+				<height>99</height>
+				<aspectratio>scale</aspectratio>
+				<texture colordiffuse="$PARAM[diffuse]" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<visible>$PARAM[shown] + $EXP[Bald_MusicCoverItem]</visible>
+			</control>
+		</definition>
 	</include>
 	<!-- Fanart + logo: the item's clearlogo (else the show's, Bald_ItemLogo) at the tile's bottom left, 8 px in, at most
 	     100 x 34, over the logo scrim clipped to the tile's corners. Hidden without a logo or with clearlogos turned off
@@ -1157,11 +1284,13 @@
 				     controls' initial animation states and before the onload runs (CGUIWindow::OnInitWindow), so this focus
 				     would make row 1's state the frame's starting shape, and the return to a hub of another style would
 				     then resize it. -->
-				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
-				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
-				<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">home</param><param name="condition">!$EXP[Bald_ReturningToMenu]</param></include>
+				<!-- Nor from a disabled row: Home's rows while Home is hidden get that same default focus, and must not make
+				     themselves the current row over the screen Home starts on (Bald_HomeHidden). -->
+				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
+				<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">home</param><param name="condition">!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]</param></include>
 				<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
-				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
 				<!-- Row start: a fixedlist first selects item slot + 1 (start) at its focus slot. The row above moves this one back while
 				     it is hidden (generated onfocus, see shortcuts/generator/screen.xml) and Timers.xml covers the rows shown
 				     before they are focused; if the row is still pristine when it gains focus, move it here. Loaded rows are
@@ -1190,7 +1319,10 @@
 				     (CGUIWindowPVRGuideBase::OnMessage, SetChannelGroupPath). Everything else opens its information. -->
 				<onclick condition="$EXP[Bald_TVChannelGroupItem]">ActivateWindow(TVGuide,$ESCINFO[ListItem.FolderPath],return)</onclick>
 				<onclick condition="$EXP[Bald_RadioChannelGroupItem]">ActivateWindow(RadioGuide,$ESCINFO[ListItem.FolderPath],return)</onclick>
-				<onclick condition="!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem]">Action(Info)</onclick>
+				<!-- A favourite (a "favourites://" row) runs itself: with no onclick condition true, Kodi hands the click to the
+				     list provider (CGUIBaseContainer::OnClick), which resolves and executes the favourite
+				     (CDirectoryProvider::OnClick). -->
+				<onclick condition="!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem] + !$EXP[Bald_FavouriteItem]">Action(Info)</onclick>
 				<nested />
 			</control>
 		</definition>
@@ -1200,6 +1332,8 @@
 	<!-- The focused row item is a PVR channel group (a folder under pvr://channels/). -->
 	<expression name="Bald_TVChannelGroupItem">[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/tv/)]</expression>
 	<expression name="Bald_RadioChannelGroupItem">[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/radio/)]</expression>
+	<!-- The focused row item is one of Kodi's favourites (a row on favourites://; CFavouritesURL paths). -->
+	<expression name="Bald_FavouriteItem">[String.StartsWith(ListItem.FolderPath,favourites://)]</expression>
 	<!-- One entry of the Home menu (grouplist 9000). Pass what Select does as <onclick> children (nested), or
 	     Bald_HomeMenuScreen for a screen with rows. Up and Down are the grouplist's: CGUIControlGroupList::AddControl
 	     points each entry at its neighbours (replacing any onup/ondown here) and CGUIWindow::OnMove passes over hidden
@@ -1282,23 +1416,75 @@
 			<onload>ClearProperty(Bald.ReturnMenu,home)</onload>
 		</definition>
 	</include>
+	<!-- Appearance > Behavior, "Select on a hub opens its library" (9629). Off (unset, the default): Select on a hub or
+	     Live TV enters its rows and Right opens its library (or the guide). On: the two swap for an entry that has both
+	     rows and a target; an entry with only one of them behaves as before. Left always goes where the rows are
+	     reached from when they swap (the rows lie left of the menu), else does what Select does. -->
+	<expression name="Bald_SelectOpens">[Skin.HasSetting(Bald.HubSelectOpens)]</expression>
+	<!-- The swap for each hub slot (Includes cannot name an expression from a parameter inside another expression, so
+	     one per slot) and for Live TV, which always has a target (the guide). -->
+	<expression name="Bald_HubSwap_hub1">[$EXP[Bald_SelectOpens] + $EXP[Bald_HubHasOpen_hub1] + $EXP[Bald_HasRows_hub1]]</expression>
+	<expression name="Bald_HubSwap_hub2">[$EXP[Bald_SelectOpens] + $EXP[Bald_HubHasOpen_hub2] + $EXP[Bald_HasRows_hub2]]</expression>
+	<expression name="Bald_HubSwap_hub3">[$EXP[Bald_SelectOpens] + $EXP[Bald_HubHasOpen_hub3] + $EXP[Bald_HasRows_hub3]]</expression>
+	<expression name="Bald_HubSwap_hub4">[$EXP[Bald_SelectOpens] + $EXP[Bald_HubHasOpen_hub4] + $EXP[Bald_HasRows_hub4]]</expression>
+	<expression name="Bald_HubSwap_hub5">[$EXP[Bald_SelectOpens] + $EXP[Bald_HubHasOpen_hub5] + $EXP[Bald_HasRows_hub5]]</expression>
+	<expression name="Bald_HubSwap_hub6">[$EXP[Bald_SelectOpens] + $EXP[Bald_HubHasOpen_hub6] + $EXP[Bald_HasRows_hub6]]</expression>
+	<expression name="Bald_HubSwap_hub7">[$EXP[Bald_SelectOpens] + $EXP[Bald_HubHasOpen_hub7] + $EXP[Bald_HasRows_hub7]]</expression>
+	<expression name="Bald_HubSwap_hub8">[$EXP[Bald_SelectOpens] + $EXP[Bald_HubHasOpen_hub8] + $EXP[Bald_HasRows_hub8]]</expression>
+	<expression name="Bald_LiveTVSwap">[$EXP[Bald_SelectOpens] + $EXP[Bald_LiveTVRows]]</expression>
+	<!-- Enter a screen's rows on its remembered row (Bald.Row.<screen>), closing the menu. One include per event, as an
+	     include cannot choose its tag. -->
+	<include name="Bald_HomeMenuEnterOnClick">
+		<param name="screen" />
+		<param name="condition" />
+		<definition>
+			<onclick condition="$PARAM[condition]">SetProperty(Bald.Screen,$PARAM[screen],home)</onclick>
+			<onclick condition="$PARAM[condition]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onclick>
+			<onclick condition="$PARAM[condition]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_$PARAM[screen]],home)</onclick>
+			<onclick condition="$PARAM[condition]">ClearProperty(Bald.Menu,home)</onclick>
+			<onclick condition="$PARAM[condition]">SetFocus($INFO[Window(home).Property(Bald.Row.$PARAM[screen])])</onclick>
+		</definition>
+	</include>
+	<include name="Bald_HomeMenuEnterOnRight">
+		<param name="screen" />
+		<param name="condition" />
+		<definition>
+			<onright condition="$PARAM[condition]">SetProperty(Bald.Screen,$PARAM[screen],home)</onright>
+			<onright condition="$PARAM[condition]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onright>
+			<onright condition="$PARAM[condition]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_$PARAM[screen]],home)</onright>
+			<onright condition="$PARAM[condition]">ClearProperty(Bald.Menu,home)</onright>
+			<onright condition="$PARAM[condition]">SetFocus($INFO[Window(home).Property(Bald.Row.$PARAM[screen])])</onright>
+		</definition>
+	</include>
+	<include name="Bald_HomeMenuEnterOnLeft">
+		<param name="screen" />
+		<param name="condition" />
+		<definition>
+			<onleft condition="$PARAM[condition]">SetProperty(Bald.Screen,$PARAM[screen],home)</onleft>
+			<onleft condition="$PARAM[condition]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onleft>
+			<onleft condition="$PARAM[condition]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_$PARAM[screen]],home)</onleft>
+			<onleft condition="$PARAM[condition]">ClearProperty(Bald.Menu,home)</onleft>
+			<onleft condition="$PARAM[condition]">SetFocus($INFO[Window(home).Property(Bald.Row.$PARAM[screen])])</onleft>
+		</definition>
+	</include>
 	<!-- A screen entry (Home, a hub): the background follows the screen's remembered row while it is previewed;
-	     Select enters the screen on that row. -->
+	     Select enters the screen on that row, or, while swap holds (Bald_SelectOpens with rows and a target), Right
+	     and Left do. -->
 	<include name="Bald_HomeMenuScreen">
 		<param name="screen" />
+		<param name="swap">false</param>
 		<definition>
 			<include content="Bald_FollowContainer"><param name="id">$INFO[Window(home).Property(Bald.Row.$PARAM[screen])]</param><param name="window">home</param></include>
-			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.Screen,$PARAM[screen],home)</onclick>
-			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onclick>
-			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_$PARAM[screen]],home)</onclick>
-			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">ClearProperty(Bald.Menu,home)</onclick>
-			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetFocus($INFO[Window(home).Property(Bald.Row.$PARAM[screen])])</onclick>
+			<include content="Bald_HomeMenuEnterOnClick"><param name="screen">$PARAM[screen]</param><param name="condition">$EXP[Bald_HasRows_$PARAM[screen]] + ![$PARAM[swap]]</param></include>
+			<include content="Bald_HomeMenuEnterOnRight"><param name="screen">$PARAM[screen]</param><param name="condition">$PARAM[swap]</param></include>
+			<include content="Bald_HomeMenuEnterOnLeft"><param name="screen">$PARAM[screen]</param><param name="condition">$PARAM[swap]</param></include>
 		</definition>
 	</include>
 	<!-- Hub slot n (1-8) of the main menu: the hub at position n in the Home Screens list (generated names, see
 	     shortcuts/generator/screen.xml). Hidden, and so skipped by the grouplist, when the slot is empty or the hub is
-	     turned off. Select enters its rows. Right opens its target, if it has one, through bridge 902n, and so does
-	     Select while the hub has no rows. -->
+	     turned off. Select enters its rows and Right opens its target, if it has one, through bridge 902n; Select also
+	     opens the target while the hub has no rows. With Bald_SelectOpens and both rows and a target, Select opens the
+	     target and Right (and Left) enter the rows (Bald_HubSwap_hub<n>). -->
 	<include name="Bald_HomeMenuHub">
 		<param name="n" />
 		<definition>
@@ -1309,9 +1495,10 @@
 				<param name="preview">hub$PARAM[n]</param>
 				<param name="visible">$EXP[Bald_HubShown_hub$PARAM[n]]</param>
 				<param name="right">902$PARAM[n]</param>
-				<param name="right_if">$EXP[Bald_HubHasOpen_hub$PARAM[n]]</param>
-				<include content="Bald_HomeMenuScreen"><param name="screen">hub$PARAM[n]</param></include>
-				<onclick condition="!$EXP[Bald_HasRows_hub$PARAM[n]] + $EXP[Bald_HubHasOpen_hub$PARAM[n]]">SetFocus(902$PARAM[n])</onclick>
+				<param name="right_if">$EXP[Bald_HubHasOpen_hub$PARAM[n]] + !$EXP[Bald_HubSwap_hub$PARAM[n]]</param>
+				<param name="left_if">!$EXP[Bald_HubSwap_hub$PARAM[n]]</param>
+				<include content="Bald_HomeMenuScreen"><param name="screen">hub$PARAM[n]</param><param name="swap">$EXP[Bald_HubSwap_hub$PARAM[n]]</param></include>
+				<onclick condition="$EXP[Bald_HubHasOpen_hub$PARAM[n]] + [!$EXP[Bald_HasRows_hub$PARAM[n]] | $EXP[Bald_SelectOpens]]">SetFocus(902$PARAM[n])</onclick>
 			</include>
 		</definition>
 	</include>
@@ -1330,7 +1517,8 @@
 		</definition>
 	</include>
 	<!-- Live TV's entry, with its own rows (Home Screens, Live TV), like a hub: Select (and Left) enters the rows while
-	     there are rows and a PVR add-on, else opens the guide; Right opens the guide (bridge 9029). -->
+	     there are rows and a PVR add-on, else opens the guide; Right opens the guide (bridge 9029). With
+	     Bald_SelectOpens and rows (Bald_LiveTVSwap), Select opens the guide and Right and Left enter the rows. -->
 	<include name="Bald_HomeMenuLiveTV">
 		<definition>
 			<include content="Bald_HomeMenuButton">
@@ -1341,14 +1529,14 @@
 				<!-- The disclosure cue hubs with a target show: Right opens the guide. -->
 				<param name="suffix">  ›</param>
 				<param name="right">9029</param>
+				<param name="right_if">!$EXP[Bald_LiveTVSwap]</param>
+				<param name="left_if">!$EXP[Bald_LiveTVSwap]</param>
 				<include content="Bald_FollowContainer"><param name="id">$INFO[Window(home).Property(Bald.Row.livetv)]</param><param name="window">home</param><param name="condition">$EXP[Bald_LiveTVRows]</param></include>
-				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Screen,livetv,home)</onclick>
-				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.livetv)],home)</onclick>
-				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_livetv],home)</onclick>
-				<onclick condition="$EXP[Bald_LiveTVRows]">ClearProperty(Bald.Menu,home)</onclick>
-				<onclick condition="$EXP[Bald_LiveTVRows]">SetFocus($INFO[Window(home).Property(Bald.Row.livetv)])</onclick>
-				<onclick condition="!$EXP[Bald_LiveTVRows]">SetProperty(Bald.ReturnMenu,9004,home)</onclick>
-				<onclick condition="!$EXP[Bald_LiveTVRows]">ActivateWindow(TVGuide)</onclick>
+				<include content="Bald_HomeMenuEnterOnClick"><param name="screen">livetv</param><param name="condition">$EXP[Bald_LiveTVRows] + !$EXP[Bald_LiveTVSwap]</param></include>
+				<include content="Bald_HomeMenuEnterOnRight"><param name="screen">livetv</param><param name="condition">$EXP[Bald_LiveTVSwap]</param></include>
+				<include content="Bald_HomeMenuEnterOnLeft"><param name="screen">livetv</param><param name="condition">$EXP[Bald_LiveTVSwap]</param></include>
+				<onclick condition="!$EXP[Bald_LiveTVRows] | $EXP[Bald_LiveTVSwap]">SetProperty(Bald.ReturnMenu,9004,home)</onclick>
+				<onclick condition="!$EXP[Bald_LiveTVRows] | $EXP[Bald_LiveTVSwap]">ActivateWindow(TVGuide)</onclick>
 			</include>
 		</definition>
 	</include>
