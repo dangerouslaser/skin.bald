@@ -1,7 +1,8 @@
 """Bald Helper's blurred backdrops: follow the item Bald's background shows, blur its fanart and publish the file.
 
-The skin names the container to follow in the active window's Bald.FocusContainer property (the include
-Bald_FollowContainer sets it where it also sets TMDb Helper's widget container). Without one, the follower uses the
+The skin names the container to follow in the Bald.FocusContainer property of the active window, or of the information
+dialog while it is open (the include Bald_FollowContainer sets it where it also sets TMDb Helper's widget container).
+Without one, the follower uses the
 focused item of a media window (Container.ListItem) or the information dialog's own item (ListItem). Its fanart, else
 the show's fanart, else its thumb, is cut to 480 x 270, blurred and written once to this add-on's cache; the path goes
 to Home's window properties:
@@ -53,11 +54,15 @@ PROPERTY_FOR = "Bald.Blur.For"
 # One condition per tick decides whether to rest. Bald.DisableBlur is Appearance's "Blurred background" switch.
 REST = "Skin.HasSetting(Bald.DisableBlur) | Window.IsActive(fullscreenvideo) | System.ScreenSaverActive"
 # A modal dialog other than the information dialog (context menu, select, keyboard, busy) is over the window: keep
-# what is shown. Kodi resolves unqualified Window.Property and Container(id) against the topmost modal dialog first.
+# what is shown. Container(id) and ListItem resolve in the topmost modal dialog first, then the active window, so
+# with nothing else modal on top they read the information dialog or the window below.
 HOLD = "System.HasActiveModalDialog + !Window.IsModalDialogTopmost(movieinformation)"
 INFO_DIALOG = "Window.IsModalDialogTopmost(movieinformation)"
 MEDIA_WINDOW = "Window.IsMedia"
-FOCUS_CONTAINER = "Window.Property(Bald.FocusContainer)"
+# The container to follow, read from a named window: the information dialog, else the active window (by id, as
+# xbmcgui.getCurrentWindowId gives it; Global Search is a script window with an id of its own).
+FOCUS_CONTAINER = "Window({}).Property(Bald.FocusContainer)"
+INFO_WINDOW = "movieinformation"
 ART = ("Art(fanart)", "Art(tvshow.fanart)", "Art(thumb)")
 
 THUMBNAILS = "special://thumbnails/"
@@ -255,9 +260,10 @@ class Follower:
     """Polls the item Bald's background shows and publishes its blur (see the module docstring)."""
 
     def __init__(self, xbmc, xbmcvfs, xbmcgui=None, blurrer: Blurrer | None = None, window=None,
-                 clock=time.monotonic, threaded: bool = True):
+                 clock=time.monotonic, threaded: bool = True, current_window=None):
         self.xbmc = xbmc
         self.window = window if window is not None else xbmcgui.Window(HOME_WINDOW)
+        self.current_window = current_window or xbmcgui.getCurrentWindowId
         self.clock = clock
         self.threaded = threaded
         self._logged = set()
@@ -297,11 +303,11 @@ class Follower:
         """(source, scrolling condition) for this tick; source is None to keep what is shown, '' for no art."""
         if self.xbmc.getCondVisibility(HOLD):
             return None, None
-        container_id = self.xbmc.getInfoLabel(FOCUS_CONTAINER)
-        info = media = False
-        if not container_id.strip().isdigit():
-            info = bool(self.xbmc.getCondVisibility(INFO_DIALOG))
-            media = not info and bool(self.xbmc.getCondVisibility(MEDIA_WINDOW))
+        info = bool(self.xbmc.getCondVisibility(INFO_DIALOG))
+        container_id = self.xbmc.getInfoLabel(FOCUS_CONTAINER.format(INFO_WINDOW if info else self.current_window()))
+        media = False
+        if not info and not container_id.strip().isdigit():
+            media = bool(self.xbmc.getCondVisibility(MEDIA_WINDOW))
         prefix, scrolling = follow_prefix(container_id, info, media)
         if prefix is None:
             return "", None
@@ -334,7 +340,10 @@ class Follower:
             self.candidate, self.since = source, now
             return POLL_SECONDS
         with self.lock:
-            if source == self.published or source == self.wanted:
+            if source == self.wanted:
+                return POLL_SECONDS
+            if source == self.published:
+                self.wanted = None  # back on the shown item: a blur still in flight is no longer wanted
                 return POLL_SECONDS
         if now - self.since < SETTLE_SECONDS:
             return POLL_SECONDS

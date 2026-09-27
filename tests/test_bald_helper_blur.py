@@ -124,14 +124,14 @@ class Case(unittest.TestCase):
         self.clock = Clock()
         self.blurrer = blur.Blurrer(self.xbmc, FakeVfs, cache_dir=self.cache, thumbnails=self.thumbs)
         self.follower = blur.Follower(self.xbmc, FakeVfs, blurrer=self.blurrer, window=self.window,
-                                      clock=self.clock, threaded=False)
+                                      clock=self.clock, threaded=False, current_window=lambda: 10000)
 
     def tearDown(self):
         self.directory.cleanup()
 
     def focus(self, container, fanart="", window="home", thumb=""):
         """The skin follows `container` in the active window and its focused item has this art."""
-        self.xbmc.labels = {"Window.Property(Bald.FocusContainer)": container,
+        self.xbmc.labels = {"Window(10000).Property(Bald.FocusContainer)": container,
                             f"Container({container}).ListItem.Art(fanart)": fanart,
                             f"Container({container}).ListItem.Art(thumb)": thumb}
 
@@ -338,6 +338,31 @@ class FollowerTests(Case):
         self.assertEqual(self.window.writes, [])
         self.assertTrue(os.path.exists(self.blurrer.path_for("/a.jpg")))  # kept for next time
 
+    def test_back_on_the_shown_item_drops_the_blur_in_flight(self):
+        FakeFile.files.update({"/a.jpg": jpeg(), "/b.jpg": jpeg()})
+        self.focus("9101", "/a.jpg")
+        self.settle()
+        self.follower.threaded = True  # queue /b.jpg without a worker to run it yet
+        self.focus("9101", "/b.jpg")
+        self.settle()
+        self.assertEqual(self.follower.wanted, "/b.jpg")
+        self.focus("9101", "/a.jpg")
+        self.settle()
+        self.assertIsNone(self.follower.wanted)
+        self.follower.work("/b.jpg")  # the worker finishes late
+        self.assertEqual(self.window.get("Bald.Blur.For"), "/a.jpg")
+
+    def test_info_dialog_reads_its_own_container(self):
+        # More like this (5100) names its container on the dialog; the window below names another.
+        FakeFile.files.update({"/similar.jpg": jpeg(), "/row.jpg": jpeg()})
+        self.xbmc.conditions = {blur.INFO_DIALOG: True}
+        self.xbmc.labels = {"Window(movieinformation).Property(Bald.FocusContainer)": "5100",
+                            "Window(10000).Property(Bald.FocusContainer)": "9101",
+                            "Container(5100).ListItem.Art(fanart)": "/similar.jpg",
+                            "Container(9101).ListItem.Art(fanart)": "/row.jpg"}
+        self.settle()
+        self.assertEqual(self.window.get("Bald.Blur.For"), "/similar.jpg")
+
     def test_item_without_art_clears_blur_but_keeps_the_last(self):
         FakeFile.files["/a.jpg"] = jpeg()
         self.focus("9101", "/a.jpg")
@@ -441,7 +466,8 @@ class FollowerTests(Case):
         self.assertEqual(len([1 for level, _ in self.xbmc.logs if level == self.xbmc.LOGERROR]), 1)
 
     def test_threads_start_and_stop(self):
-        follower = blur.Follower(self.xbmc, FakeVfs, blurrer=self.blurrer, window=self.window)
+        follower = blur.Follower(self.xbmc, FakeVfs, blurrer=self.blurrer, window=self.window,
+                                 current_window=lambda: 10000)
 
         class Monitor:
             def abortRequested(self):
