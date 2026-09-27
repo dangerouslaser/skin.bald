@@ -1204,6 +1204,16 @@
 			</control>
 		</definition>
 	</include>
+	<!-- A panel tile's art: the thumb, or for a still the spoiler protection hides, the show's art. -->
+	<variable name="Bald_OSDPanelArt">
+		<value condition="$EXP[Bald_SpoilerThumb]">$VAR[Bald_SpoilerArt]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+	<!-- The playlist tray's text: the focused item's plot, or the spoiler protection's note. -->
+	<variable name="Bald_OSDPlaylistPlot">
+		<value condition="$EXP[Bald_SpoilerPlot8150]">$VAR[Bald_SpoilerNoteText]</value>
+		<value>$INFO[Container(8150).ListItem.Plot]</value>
+	</variable>
 	<!-- One 320 x 180 landscape tile of a panel row with two lines under it; the focused one full and ringed. -->
 	<include name="Bald_OSDPanelTile">
 		<param name="focused">false</param>
@@ -1223,8 +1233,16 @@
 				<width>320</width>
 				<height>180</height>
 				<aspectratio scalediffuse="false">scale</aspectratio>
-				<texture diffuse="bald/tile.png" colordiffuse="$PARAM[dim]" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<texture diffuse="bald/tile.png" colordiffuse="$PARAM[dim]" background="true">$VAR[Bald_OSDPanelArt]</texture>
 			</control>
+			<include content="Bald_SpoilerStill">
+				<param name="x">12</param>
+				<param name="y">12</param>
+				<param name="w">320</param>
+				<param name="h">180</param>
+				<param name="diffuse">$PARAM[dim]</param>
+				<param name="number">false</param>
+			</include>
 			<control type="image">
 				<left>6</left>
 				<top>6</top>
@@ -1663,9 +1681,15 @@
 	<variable name="Bald_OSDNextPath">
 		<value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TvShowDBID) + !String.IsEmpty(VideoPlayer.Episode)">videodb://tvshows/titles/$INFO[VideoPlayer.TvShowDBID]/$INFO[VideoPlayer.Season]/?tvshowid=$INFO[VideoPlayer.TvShowDBID]&amp;xsp=%7B%22order%22%3A%7B%22method%22%3A%22episode%22%7D%2C%22rules%22%3A%7B%22and%22%3A%5B%7B%22field%22%3A%22episode%22%2C%22operator%22%3A%22greaterthan%22%2C%22value%22%3A%22$INFO[VideoPlayer.Episode]%22%7D%5D%7D%2C%22type%22%3A%22episodes%22%7D</value>
 	</variable>
+	<!-- An unwatched next episode's still is hidden under the spoiler protection (Includes_Bald_Spoilers.xml): the show's
+	     art instead, and for the season's next episode (8140) Bald_SpoilerStill over it. -->
+	<expression name="Bald_OSDNextSpoiler">[$EXP[Bald_OSDPlaylistAhead] + $EXP[Bald_SpoilerThumbsOn] + !String.IsEmpty(VideoPlayer.offset(1).Episode) + !Integer.IsGreater(VideoPlayer.offset(1).PlayCount,0)]</expression>
 	<variable name="Bald_OSDNextArt">
+		<value condition="$EXP[Bald_OSDNextSpoiler] + !String.IsEmpty(VideoPlayer.offset(1).Art(tvshow.fanart))">$INFO[VideoPlayer.offset(1).Art(tvshow.fanart)]</value>
+		<value condition="$EXP[Bald_OSDNextSpoiler]">$INFO[VideoPlayer.offset(1).Art(fanart)]</value>
 		<value condition="$EXP[Bald_OSDPlaylistAhead] + !String.IsEmpty(VideoPlayer.offset(1).Art(thumb))">$INFO[VideoPlayer.offset(1).Art(thumb)]</value>
 		<value condition="$EXP[Bald_OSDPlaylistAhead]">$INFO[VideoPlayer.offset(1).Art(fanart)]</value>
+		<value condition="$EXP[Bald_SpoilerThumb8140]">$VAR[Bald_SpoilerArt8140]</value>
 		<value>$INFO[Container(8140).ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="Bald_OSDNextTitle">
@@ -1714,6 +1738,13 @@
 				<aspectratio scalediffuse="false">scale</aspectratio>
 				<texture diffuse="bald/tile.png" background="true">$VAR[Bald_OSDNextArt]</texture>
 			</control>
+			<include content="Bald_SpoilerStill">
+				<param name="item">Container(8140).ListItem.</param>
+				<param name="visible">!$EXP[Bald_OSDPlaylistAhead]</param>
+				<param name="w">384</param>
+				<param name="h">216</param>
+				<param name="number">false</param>
+			</include>
 			<control type="label">
 				<left>416</left>
 				<top>64</top>
@@ -1752,7 +1783,12 @@
 	     stop, which it relabels) and 3014 (the countdown, which it sets), and fills window properties: title,
 	     tvshowtitle, seasonepisode, plot, thumb, landscape, fanart, remaining, endtime. Only used when the user installs
 	     the add-on. -->
+	<!-- Up Next's episode is unwatched (the add-on's playcount property is 0) under the spoiler protection
+	     (Includes_Bald_Spoilers.xml): the show's fanart for its still, the note for its plot. -->
+	<expression name="Bald_OSDUpNextThumbHidden">[$EXP[Bald_SpoilerThumbsOn] + !Integer.IsGreater(Window.Property(playcount),0)]</expression>
+	<expression name="Bald_OSDUpNextPlotHidden">[$EXP[Bald_SpoilerPlotsOn] + !Integer.IsGreater(Window.Property(playcount),0)]</expression>
 	<variable name="Bald_OSDUpNextArt">
+		<value condition="$EXP[Bald_OSDUpNextThumbHidden]">$INFO[Window.Property(fanart)]</value>
 		<value condition="!String.IsEmpty(Window.Property(thumb))">$INFO[Window.Property(thumb)]</value>
 		<value condition="!String.IsEmpty(Window.Property(landscape))">$INFO[Window.Property(landscape)]</value>
 		<value>$INFO[Window.Property(fanart)]</value>
@@ -1817,6 +1853,17 @@
 					<font>Bald_CaptionPlot</font>
 					<textcolor>bald_ink60</textcolor>
 					<label>$INFO[Window.Property(plot)]</label>
+					<visible>!$EXP[Bald_OSDUpNextPlotHidden]</visible>
+				</control>
+				<control type="label">
+					<left>512</left>
+					<top>606</top>
+					<width>1000</width>
+					<height>30</height>
+					<font>Bald_CaptionPlot</font>
+					<textcolor>bald_ink45</textcolor>
+					<label>$VAR[Bald_SpoilerNoteText]</label>
+					<visible>$EXP[Bald_OSDUpNextPlotHidden]</visible>
 				</control>
 				<control type="grouplist" id="8170">
 					<left>512</left>

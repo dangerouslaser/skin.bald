@@ -42,7 +42,7 @@
 			<include content="Bald_OSDPanelTray">
 				<param name="title">$INFO[Container(8150).ListItem.Title]</param>
 				<param name="meta">$VAR[Bald_OSDPlaylistTrayMeta]</param>
-				<param name="text">$INFO[Container(8150).ListItem.Plot]</param>
+				<param name="text">$VAR[Bald_OSDPlaylistPlot]</param>
 			</include>
 			<include content="Bald_OSDPanelHints">
 				<param name="first">$LOCALIZE[31662]</param>
