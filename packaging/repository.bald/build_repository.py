@@ -132,13 +132,15 @@ def landing_page(repository_zip: str, repository_version: str, skin_version: str
     """The site's index.html. Links use double quotes and the files are listed plainly, so Kodi can also browse the
     site as a file source (its HTTP directory parser only reads href="...")."""
     shots = "".join(
-        f'<figure><img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt="{caption}" loading="lazy" '
-        f'width="1920" height="1080"><figcaption>{caption}</figcaption></figure>'
+        f'<figure><a class="shot" href="kodi/skin.bald/resources/screenshot-{i:02d}.jpg">'
+        f'<img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt="{caption}" loading="lazy" '
+        f'width="1920" height="1080"></a><figcaption>{caption}</figcaption></figure>'
         for i, caption in enumerate(SCREENSHOT_CAPTIONS[1:], start=2)
     )
     views = "".join(
-        f'<figure><img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt="{caption}" loading="lazy" '
-        f'width="1920" height="1080"><figcaption>{caption}</figcaption></figure>'
+        f'<figure><a class="shot" href="kodi/skin.bald/resources/screenshot-{i:02d}.jpg">'
+        f'<img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt="{caption}" loading="lazy" '
+        f'width="1920" height="1080"></a><figcaption>{caption}</figcaption></figure>'
         for i, caption in enumerate(LIBRARY_CAPTIONS, start=len(SCREENSHOT_CAPTIONS) + 1)
     )
     return f"""<!doctype html>
@@ -182,6 +184,27 @@ figcaption::before {{ content: ""; display: inline-block; width: 7px; height: 7p
   color: var(--accent); }}
 .views p {{ margin: 0; color: var(--ink60); }}
 .views .gallery {{ grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 24px; margin-top: 32px; }}
+.shot {{ display: block; border-radius: 6px; cursor: zoom-in; }}
+.shot img {{ transition: transform .32s cubic-bezier(.22,1,.36,1), opacity .2s; }}
+.shot:hover img, .shot:focus-visible img {{ transform: scale(1.012); }}
+.shot:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 4px; }}
+dialog {{ width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  background: transparent; color: var(--ink); }}
+dialog::backdrop {{ background: rgba(6,7,10,.94); }}
+dialog[open] {{ display: grid; place-items: center; animation: fade .24s ease-out; }}
+@keyframes fade {{ from {{ opacity: 0; }} to {{ opacity: 1; }} }}
+.lightbox {{ margin: 0; width: min(calc(100vw - 176px), calc((100vh - 120px) * 16 / 9)); }}
+.lightbox img {{ border-radius: 8px; box-shadow: 0 30px 90px rgba(0,0,0,.6); }}
+.lightbox figcaption {{ display: flex; justify-content: space-between; gap: 16px; }}
+.lightbox figcaption::before {{ display: none; }}
+dialog:focus {{ outline: none; }}
+.count {{ color: var(--ink34); font-variant-numeric: tabular-nums; }}
+.nav, .close {{ position: fixed; border: 0; background: rgba(236,238,242,.08); color: var(--ink); cursor: pointer;
+  width: 48px; height: 48px; border-radius: 50%; font: 400 22px/48px "DM Sans", system-ui, sans-serif; }}
+.nav:hover, .close:hover {{ background: rgba(236,238,242,.18); }}
+.nav {{ top: 50%; margin-top: -24px; }}
+.prev {{ left: 24px; }} .next {{ right: 24px; }} .close {{ top: 20px; right: 24px; }}
+@media (max-width: 820px) {{ .nav {{ top: auto; bottom: 20px; margin: 0; }} .lightbox {{ width: 94vw; }} }}
 .files {{ margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--ink10); color: var(--ink34); font-size: 13px; }}
 .files a {{ color: var(--ink60); }}
 @media (max-width: 820px) {{ header {{ grid-template-columns: 1fr; }} .install {{ border-left: 0; padding-left: 0; }}
@@ -205,12 +228,49 @@ figcaption::before {{ content: ""; display: inline-block; width: 7px; height: 7p
 <span class="version">Bald {skin_version} · repository {repository_version} · Kodi 22 only</span>
 </div>
 </header>
-<figure class="hero"><img src="kodi/skin.bald/resources/screenshot-01.jpg" alt="{SCREENSHOT_CAPTIONS[0]}" width="1920" height="1080"><figcaption>{SCREENSHOT_CAPTIONS[0]}</figcaption></figure>
+<figure class="hero"><a class="shot" href="kodi/skin.bald/resources/screenshot-01.jpg"><img src="kodi/skin.bald/resources/screenshot-01.jpg" alt="{SCREENSHOT_CAPTIONS[0]}" width="1920" height="1080"></a><figcaption>{SCREENSHOT_CAPTIONS[0]}</figcaption></figure>
 <section class="gallery">{shots}</section>
 <section class="views"><h2>Library views</h2><p>Six ways to browse a library, switched from the options menu.</p>
 <div class="gallery">{views}</div></section>
 <p class="files">Files: <a href="{repository_zip}">{repository_zip}</a> · <a href="kodi/">kodi/</a></p>
 </main>
+<dialog id="viewer" aria-label="Screenshot" tabindex="-1">
+<figure class="lightbox"><img id="viewer-img" alt=""><figcaption><span id="viewer-caption"></span><span class="count" id="viewer-count"></span></figcaption></figure>
+<button class="nav prev" type="button" aria-label="Previous screenshot">&#8249;</button>
+<button class="nav next" type="button" aria-label="Next screenshot">&#8250;</button>
+<button class="close" type="button" aria-label="Close">&#215;</button>
+</dialog>
+<script>
+(() => {{
+  const shots = [...document.querySelectorAll("a.shot")];
+  const viewer = document.getElementById("viewer");
+  const img = document.getElementById("viewer-img");
+  const caption = document.getElementById("viewer-caption");
+  const count = document.getElementById("viewer-count");
+  if (!viewer.showModal) return;  // No <dialog> support: the links open the image itself.
+  let index = 0;
+  const show = (i) => {{
+    index = (i + shots.length) % shots.length;
+    const shot = shots[index];
+    const alt = shot.querySelector("img").alt;
+    img.src = shot.href; img.alt = alt;
+    caption.textContent = alt;
+    count.textContent = `${{index + 1}} / ${{shots.length}}`;
+    new Image().src = shots[(index + 1) % shots.length].href;  // Preload the next one.
+  }};
+  shots.forEach((shot, i) => shot.addEventListener("click", (event) => {{
+    event.preventDefault(); show(i); viewer.showModal(); viewer.focus();
+  }}));
+  viewer.querySelector(".prev").addEventListener("click", () => show(index - 1));
+  viewer.querySelector(".next").addEventListener("click", () => show(index + 1));
+  viewer.querySelector(".close").addEventListener("click", () => viewer.close());
+  viewer.addEventListener("click", (event) => {{ if (event.target === viewer) viewer.close(); }});
+  viewer.addEventListener("keydown", (event) => {{
+    if (event.key === "ArrowLeft") show(index - 1);
+    if (event.key === "ArrowRight") show(index + 1);
+  }});
+}})();
+</script>
 </body>
 </html>
 """
