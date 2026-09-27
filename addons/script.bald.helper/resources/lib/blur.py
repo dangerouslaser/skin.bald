@@ -1,9 +1,8 @@
 """Bald Helper's blurred backdrops: follow the item Bald's background shows, blur its fanart and publish the file.
 
-The skin names the container to follow in the Bald.FocusContainer property of the active window, or of the information
-dialog while it is open (the include Bald_FollowContainer sets it where it also sets TMDb Helper's widget container).
-Without one, the follower uses the
-focused item of a media window (Container.ListItem) or the information dialog's own item (ListItem). Its fanart, else
+Which item that is comes from follow.py, shared with the ratings follower: the container the skin names in the
+Bald.FocusContainer property of the active window (or of the information dialog while it is open), else the focused
+item of a media window (Container.ListItem) or the information dialog's own item (ListItem). Its fanart, else
 the show's fanart, else its thumb, is cut to 480 x 270, blurred and written once to this add-on's cache; the path goes
 to Home's window properties:
 
@@ -31,6 +30,20 @@ import threading
 import time
 from urllib.parse import unquote
 
+try:
+    from . import follow
+except ImportError:  # loaded by file path (the tests): load the sibling module the same way
+    import importlib.util as _util
+
+    _spec = _util.spec_from_file_location("bald_helper_follow", os.path.join(os.path.dirname(__file__), "follow.py"))
+    follow = _util.module_from_spec(_spec)
+    _spec.loader.exec_module(follow)
+
+# Which item to follow is shared with the ratings follower (follow.py).
+HOLD, INFO_DIALOG, MEDIA_WINDOW = follow.HOLD, follow.INFO_DIALOG, follow.MEDIA_WINDOW
+FOCUS_CONTAINER, INFO_WINDOW = follow.FOCUS_CONTAINER, follow.INFO_WINDOW
+follow_prefix = follow.follow_prefix
+
 ADDON_ID = "script.bald.helper"
 SKIN_ID = "skin.bald"
 HOME_WINDOW = 10000
@@ -55,16 +68,6 @@ PROPERTY_FOR = "Bald.Blur.For"
 
 # One condition per tick decides whether to rest. Bald.DisableBlur is Appearance's "Blurred background" switch.
 REST = "Skin.HasSetting(Bald.DisableBlur) | Window.IsActive(fullscreenvideo) | System.ScreenSaverActive"
-# A modal dialog other than the information dialog (context menu, select, keyboard, busy) is over the window: keep
-# what is shown. Container(id) and ListItem resolve in the topmost modal dialog first, then the active window, so
-# with nothing else modal on top they read the information dialog or the window below.
-HOLD = "System.HasActiveModalDialog + !Window.IsModalDialogTopmost(movieinformation)"
-INFO_DIALOG = "Window.IsModalDialogTopmost(movieinformation)"
-MEDIA_WINDOW = "Window.IsMedia"
-# The container to follow, read from a named window: the information dialog, else the active window (by id, as
-# xbmcgui.getCurrentWindowId gives it; Global Search is a script window with an id of its own).
-FOCUS_CONTAINER = "Window({}).Property(Bald.FocusContainer)"
-INFO_WINDOW = "movieinformation"
 ART = ("Art(fanart)", "Art(tvshow.fanart)", "Art(thumb)")
 
 THUMBNAILS = "special://thumbnails/"
@@ -89,18 +92,6 @@ def unwrap(source: str) -> tuple[str, bool]:
     if at and "%" not in kind and "/" not in kind:
         return unquote(rest), False
     return unquote(inner), True
-
-
-def follow_prefix(container_id: str, info_dialog: bool, media_window: bool) -> tuple[str | None, str | None]:
-    """The infolabel prefix of the item to follow and its scrolling condition; (None, None) for nothing to follow."""
-    container_id = container_id.strip()
-    if container_id.isdigit():
-        return f"Container({container_id}).ListItem.", f"Container({container_id}).Scrolling"
-    if info_dialog:
-        return "ListItem.", None
-    if media_window:
-        return "Container.ListItem.", "Container.Scrolling"
-    return None, None
 
 
 class Blurrer:
@@ -307,14 +298,10 @@ class Follower:
 
     def source(self) -> tuple[str | None, str | None]:
         """(source, scrolling condition) for this tick; source is None to keep what is shown, '' for no art."""
-        if self.xbmc.getCondVisibility(HOLD):
+        located = follow.locate(self.xbmc, self.current_window)
+        if located is follow.HELD:
             return None, None
-        info = bool(self.xbmc.getCondVisibility(INFO_DIALOG))
-        container_id = self.xbmc.getInfoLabel(FOCUS_CONTAINER.format(INFO_WINDOW if info else self.current_window()))
-        media = False
-        if not info and not container_id.strip().isdigit():
-            media = bool(self.xbmc.getCondVisibility(MEDIA_WINDOW))
-        prefix, scrolling = follow_prefix(container_id, info, media)
+        prefix, scrolling = located
         if prefix is None:
             return "", None
         for art in ART:

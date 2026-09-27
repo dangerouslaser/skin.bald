@@ -190,7 +190,9 @@ class HelperPropertiesTests(unittest.TestCase):
         blur = (ROOT / "addons" / "script.bald.helper" / "resources" / "lib" / "blur.py").read_text(encoding="utf-8")
         for name in ("Bald.Blur", "Bald.Blur.Last", "Bald.Blur.For"):
             self.assertIn(f'"{name}"', blur)
-        self.assertIn('"Window({}).Property(Bald.FocusContainer)"', blur)
+        follow = (ROOT / "addons" / "script.bald.helper" / "resources" / "lib" / "follow.py").read_text(encoding="utf-8")
+        self.assertIn('"Window({}).Property(Bald.FocusContainer)"', follow)
+        self.assertIn("follow.locate(", blur)
         skin = (XML / "Includes_Bald_Home.xml").read_text(encoding="utf-8")
         self.assertTrue(re.search(r"Window\(home\)\.Property\(Bald\.Blur\.Last\)", skin))
 
