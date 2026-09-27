@@ -45,8 +45,14 @@
 	<expression name="Bald_SpoilerThumb541">[[$EXP[Bald_SpoilerThumbsOn] + String.IsEqual(Container(541).ListItem.DBType,episode) + !Integer.IsGreater(Container(541).ListItem.PlayCount,0) + !Container(541).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + String.StartsWith(Container(541).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(541).ListItem.PlayCount,0) + !Container(541).ListItem.IsResumable]]</expression>
 	<expression name="Bald_SpoilerPlot542">[[$EXP[Bald_SpoilerPlotsOn] + String.IsEqual(Container(542).ListItem.DBType,episode) + !Integer.IsGreater(Container(542).ListItem.PlayCount,0) + !Container(542).ListItem.IsResumable] | [$EXP[Bald_SpoilerMoviesOn] + String.IsEqual(Container(542).ListItem.DBType,movie) + !Integer.IsGreater(Container(542).ListItem.PlayCount,0) + !Container(542).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + [Container(542).ListItem.HasEpg | [String.StartsWith(Container(542).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(542).ListItem.PlayCount,0) + !Container(542).ListItem.IsResumable]]] | String.IsEqual(Container(542).ListItem.Plot,$LOCALIZE[20370])]</expression>
 	<expression name="Bald_SpoilerThumb542">[[$EXP[Bald_SpoilerThumbsOn] + String.IsEqual(Container(542).ListItem.DBType,episode) + !Integer.IsGreater(Container(542).ListItem.PlayCount,0) + !Container(542).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + String.StartsWith(Container(542).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(542).ListItem.PlayCount,0) + !Container(542).ListItem.IsResumable]]</expression>
+	<expression name="Bald_SpoilerPlot50">[[$EXP[Bald_SpoilerPlotsOn] + String.IsEqual(Container(50).ListItem.DBType,episode) + !Integer.IsGreater(Container(50).ListItem.PlayCount,0) + !Container(50).ListItem.IsResumable] | [$EXP[Bald_SpoilerMoviesOn] + String.IsEqual(Container(50).ListItem.DBType,movie) + !Integer.IsGreater(Container(50).ListItem.PlayCount,0) + !Container(50).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + [Container(50).ListItem.HasEpg | [String.StartsWith(Container(50).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(50).ListItem.PlayCount,0) + !Container(50).ListItem.IsResumable]]] | String.IsEqual(Container(50).ListItem.Plot,$LOCALIZE[20370])]</expression>
+	<expression name="Bald_SpoilerThumb50">[[$EXP[Bald_SpoilerThumbsOn] + String.IsEqual(Container(50).ListItem.DBType,episode) + !Integer.IsGreater(Container(50).ListItem.PlayCount,0) + !Container(50).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + String.StartsWith(Container(50).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(50).ListItem.PlayCount,0) + !Container(50).ListItem.IsResumable]]</expression>
+	<expression name="Bald_SpoilerPlot5100">[[$EXP[Bald_SpoilerPlotsOn] + String.IsEqual(Container(5100).ListItem.DBType,episode) + !Integer.IsGreater(Container(5100).ListItem.PlayCount,0) + !Container(5100).ListItem.IsResumable] | [$EXP[Bald_SpoilerMoviesOn] + String.IsEqual(Container(5100).ListItem.DBType,movie) + !Integer.IsGreater(Container(5100).ListItem.PlayCount,0) + !Container(5100).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + [Container(5100).ListItem.HasEpg | [String.StartsWith(Container(5100).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(5100).ListItem.PlayCount,0) + !Container(5100).ListItem.IsResumable]]] | String.IsEqual(Container(5100).ListItem.Plot,$LOCALIZE[20370])]</expression>
+	<expression name="Bald_SpoilerThumb5100">[[$EXP[Bald_SpoilerThumbsOn] + String.IsEqual(Container(5100).ListItem.DBType,episode) + !Integer.IsGreater(Container(5100).ListItem.PlayCount,0) + !Container(5100).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + String.StartsWith(Container(5100).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(5100).ListItem.PlayCount,0) + !Container(5100).ListItem.IsResumable]]</expression>
 	<expression name="Bald_SpoilerPlot8140">[[$EXP[Bald_SpoilerPlotsOn] + String.IsEqual(Container(8140).ListItem.DBType,episode) + !Integer.IsGreater(Container(8140).ListItem.PlayCount,0) + !Container(8140).ListItem.IsResumable] | [$EXP[Bald_SpoilerMoviesOn] + String.IsEqual(Container(8140).ListItem.DBType,movie) + !Integer.IsGreater(Container(8140).ListItem.PlayCount,0) + !Container(8140).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + [Container(8140).ListItem.HasEpg | [String.StartsWith(Container(8140).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(8140).ListItem.PlayCount,0) + !Container(8140).ListItem.IsResumable]]] | String.IsEqual(Container(8140).ListItem.Plot,$LOCALIZE[20370])]</expression>
 	<expression name="Bald_SpoilerThumb8140">[[$EXP[Bald_SpoilerThumbsOn] + String.IsEqual(Container(8140).ListItem.DBType,episode) + !Integer.IsGreater(Container(8140).ListItem.PlayCount,0) + !Container(8140).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + String.StartsWith(Container(8140).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(8140).ListItem.PlayCount,0) + !Container(8140).ListItem.IsResumable]]</expression>
+	<expression name="Bald_SpoilerPlot8150">[[$EXP[Bald_SpoilerPlotsOn] + String.IsEqual(Container(8150).ListItem.DBType,episode) + !Integer.IsGreater(Container(8150).ListItem.PlayCount,0) + !Container(8150).ListItem.IsResumable] | [$EXP[Bald_SpoilerMoviesOn] + String.IsEqual(Container(8150).ListItem.DBType,movie) + !Integer.IsGreater(Container(8150).ListItem.PlayCount,0) + !Container(8150).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + [Container(8150).ListItem.HasEpg | [String.StartsWith(Container(8150).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(8150).ListItem.PlayCount,0) + !Container(8150).ListItem.IsResumable]]] | String.IsEqual(Container(8150).ListItem.Plot,$LOCALIZE[20370])]</expression>
+	<expression name="Bald_SpoilerThumb8150">[[$EXP[Bald_SpoilerThumbsOn] + String.IsEqual(Container(8150).ListItem.DBType,episode) + !Integer.IsGreater(Container(8150).ListItem.PlayCount,0) + !Container(8150).ListItem.IsResumable] | [$EXP[Bald_SpoilerLiveTVOn] + String.StartsWith(Container(8150).ListItem.FileNameAndPath,pvr://recordings/) + !Integer.IsGreater(Container(8150).ListItem.PlayCount,0) + !Container(8150).ListItem.IsResumable]]</expression>
 
 	<!-- The quiet art under a hidden still: the show's fanart (the item's, else the folder's), else an episode's own
 	     fanart (Kodi gives an episode its show's), else nothing (the tile's placeholder). -->
@@ -80,10 +86,28 @@
 		<value condition="String.IsEqual(Container(542).ListItem.DBType,episode)">$INFO[Container(542).ListItem.Art(fanart)]</value>
 		<value />
 	</variable>
+	<variable name="Bald_SpoilerArt50">
+		<value condition="!String.IsEmpty(Container(50).ListItem.Art(tvshow.fanart))">$INFO[Container(50).ListItem.Art(tvshow.fanart)]</value>
+		<value condition="!String.IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
+		<value condition="String.IsEqual(Container(50).ListItem.DBType,episode)">$INFO[Container(50).ListItem.Art(fanart)]</value>
+		<value />
+	</variable>
+	<variable name="Bald_SpoilerArt5100">
+		<value condition="!String.IsEmpty(Container(5100).ListItem.Art(tvshow.fanart))">$INFO[Container(5100).ListItem.Art(tvshow.fanart)]</value>
+		<value condition="!String.IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
+		<value condition="String.IsEqual(Container(5100).ListItem.DBType,episode)">$INFO[Container(5100).ListItem.Art(fanart)]</value>
+		<value />
+	</variable>
 	<variable name="Bald_SpoilerArt8140">
 		<value condition="!String.IsEmpty(Container(8140).ListItem.Art(tvshow.fanart))">$INFO[Container(8140).ListItem.Art(tvshow.fanart)]</value>
 		<value condition="!String.IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
 		<value condition="String.IsEqual(Container(8140).ListItem.DBType,episode)">$INFO[Container(8140).ListItem.Art(fanart)]</value>
+		<value />
+	</variable>
+	<variable name="Bald_SpoilerArt8150">
+		<value condition="!String.IsEmpty(Container(8150).ListItem.Art(tvshow.fanart))">$INFO[Container(8150).ListItem.Art(tvshow.fanart)]</value>
+		<value condition="!String.IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
+		<value condition="String.IsEqual(Container(8150).ListItem.DBType,episode)">$INFO[Container(8150).ListItem.Art(fanart)]</value>
 		<value />
 	</variable>
 
@@ -147,8 +171,10 @@
 		</definition>
 	</include>
 	<!-- Over a hidden still (the art under it is Bald_SpoilerArt*): Bald Helper's frosted copy of the still when it has
-	     one, a veil of the field colour, and the episode's number in the middle. Drawn right after the art, in the same box; `mask`
-	     rounds the corners like the tile under it (empty for square frames), `diffuse` dims it like the art. The copy
+	     one, a veil of the field colour, and (unless `number` is false: cards that print it already) the episode's
+	     number in the middle. Drawn right after the art, in the same box; `mask`
+	     rounds the corners like the tile under it (empty for square frames), `diffuse` dims it like the art; the
+	     caller's other children (animations) go on the group. The copy
 	     crossfades (fadetime) when the helper switches its folder's spelling after new stills. -->
 	<include name="Bald_SpoilerStill">
 		<param name="item">ListItem.</param>
@@ -157,9 +183,9 @@
 		<param name="w">176</param>
 		<param name="h">99</param>
 		<param name="mask">bald/tile.png</param>
-		<param name="diffuse">FFFFFFFF</param>
+		<param name="diffuse">bald_ink</param>
 		<param name="font">Bald_Hint</param>
-		<param name="label">$INFO[$PARAM[item]Season,S]$INFO[$PARAM[item]Episode, E]</param>
+		<param name="number">true</param>
 		<param name="visible">true</param>
 		<definition>
 			<control type="group">
@@ -186,9 +212,29 @@
 					<aligny>center</aligny>
 					<font>$PARAM[font]</font>
 					<textcolor>bald_ink80</textcolor>
-					<label>$PARAM[label]</label>
+					<label>$INFO[$PARAM[item]Season,S]$INFO[$PARAM[item]Episode, E]</label>
+					<visible>$PARAM[number]</visible>
 				</control>
+				<nested />
 			</control>
+		</definition>
+	</include>
+	<!-- Bald_SpoilerStill over a square preview frame (the library's episode art, 540, 541 and 542), fading with the
+	     item change, the number in the section font. -->
+	<include name="Bald_SpoilerFrame">
+		<param name="item" />
+		<param name="w" />
+		<param name="h" />
+		<definition>
+			<include content="Bald_SpoilerStill">
+				<param name="item">$PARAM[item]</param>
+				<param name="w">$PARAM[w]</param>
+				<param name="h">$PARAM[h]</param>
+				<param name="mask" />
+				<param name="font">Bald_Section</param>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
+			</include>
 		</definition>
 	</include>
 </includes>

@@ -137,6 +137,7 @@
 		<value condition="!String.IsEmpty(Container(0).ListItem.Art(fanart))">$INFO[Container(0).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Container(0).ListItem.Art(tvshow.fanart))">$INFO[Container(0).ListItem.Art(tvshow.fanart)]</value>
 		<value condition="!String.IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
+		<value condition="$EXP[Bald_SpoilerThumb0]">$VAR[Bald_SpoilerArt0]</value>
 		<value>$INFO[Container(0).ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="Bald_LibraryPoster">

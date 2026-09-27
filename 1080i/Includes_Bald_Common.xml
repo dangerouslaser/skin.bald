@@ -112,10 +112,12 @@
 	<!-- ============ Artwork fallbacks ============ -->
 	<!-- Named by what they pick, suffixed with the container id when they read Container(id).ListItem.* (Kodi variables
 	     take no params); the plain names read ListItem.*, so they follow the list layout or window that uses them. -->
-	<!-- Landscape art: fanart, else the show's, else the thumb. Home row tiles and the info dialog's own backdrop. -->
+	<!-- Landscape art: fanart, else the show's, else the thumb (not a hidden still, Includes_Bald_Spoilers.xml). Home row
+	     tiles and the info dialog's own backdrop. -->
 	<variable name="Bald_ItemFanart">
 		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value condition="$EXP[Bald_SpoilerThumb]">$VAR[Bald_SpoilerArt]</value>
 		<value>$INFO[ListItem.Art(thumb)]</value>
 	</variable>
 	<!-- Clearlogo, else the show's. -->
@@ -131,8 +133,10 @@
 		<value>$VAR[Bald_ItemFanart]</value>
 	</variable>
 	<!-- Episode still: thumb, else fanart, else the show's fanart. The library's Bald_EpisodeThumb540/541/542 end on the
-	     folder's Container.Art(tvshow.fanart) instead, which the TV info episode list does not have. -->
+	     folder's Container.Art(tvshow.fanart) instead, which the TV info episode list does not have. A hidden still
+	     (Includes_Bald_Spoilers.xml) is the show's art, under Bald_SpoilerStill. -->
 	<variable name="Bald_EpisodeThumb">
+		<value condition="$EXP[Bald_SpoilerThumb]">$VAR[Bald_SpoilerArt]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
 		<value>$INFO[ListItem.Art(tvshow.fanart)]</value>

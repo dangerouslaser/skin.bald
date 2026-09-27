@@ -117,7 +117,7 @@ class InfoPagesTests(unittest.TestCase):
         # 288: the rating row, between the flags (275) and the accent line (300).
         self.assertEqual(delays, {"180", "275", "288", "300", "350"})
         art = self.shared.find("variable[@name='Bald_ItemFanart5100']")
-        self.assertTrue(all("Container(5100).ListItem.Art" in node.text for node in art))
+        self.assertTrue(all("Container(5100).ListItem.Art" in node.text or node.text.endswith("5100]") for node in art))
         self.assertEqual(self.pages.findtext(".//control[@id='5204']/texture"), "$VAR[Bald_InfoPoster]")
 
     def test_recommendations_reuse_home_clearlogos_for_both_parities(self):

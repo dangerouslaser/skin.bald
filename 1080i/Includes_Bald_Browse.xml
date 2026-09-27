@@ -52,6 +52,7 @@
 	</variable>
 	<!-- Body text without Estuary's coloured field names. -->
 	<variable name="Bald_BrowsePlot">
+		<value condition="$EXP[Bald_SpoilerPlot]">$VAR[Bald_SpoilerNoteText]</value>
 		<value condition="String.IsEqual(Container.FolderPath,addons://outdated/) + !String.IsEmpty(ListItem.AddonNews)">$INFO[ListItem.AddonNews]</value>
 		<value condition="Container.Content(addons)">$INFO[ListItem.AddonDescription]</value>
 		<value condition="String.IsEqual(ListItem.DBType,album)">$INFO[ListItem.Property(album_description)]</value>
