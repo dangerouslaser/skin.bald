@@ -1210,6 +1210,18 @@
 	     than resetting it: Kodi sets each control's initial animation state from the properties as they were when Home
 	     was left, so any reset and restore flips conditions and animates the frame away and back. -->
 	<expression name="Bald_ReturningToMenu">[[String.IsEqual(Window(home).Property(Bald.ReturnMenu),9011) + Control.IsVisible(9011)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9012) + Control.IsVisible(9012)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9013) + Control.IsVisible(9013)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9014) + Control.IsVisible(9014)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9015) + Control.IsVisible(9015)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9016) + Control.IsVisible(9016)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9017) + Control.IsVisible(9017)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9018) + Control.IsVisible(9018)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9004) + Control.IsVisible(9004)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9006) + Control.IsVisible(9006)]]</expression>
+	<!-- A library page's heading (the movie and series views): the hub's name while the library shows the folder that
+	     hub opened (Bald.HubTitle, set by the hub's bridge; Bald.HubPath, taken by MyVideoNav's onload when it opens
+	     from Home), else the section's own name. -->
+	<variable name="Bald_LibraryMoviesHeading">
+		<value condition="$EXP[Bald_InHubFolder]">$INFO[Window(home).Property(Bald.HubTitle)]</value>
+		<value>$LOCALIZE[342]</value>
+	</variable>
+	<variable name="Bald_LibraryShowsHeading">
+		<value condition="$EXP[Bald_InHubFolder]">$INFO[Window(home).Property(Bald.HubTitle)]</value>
+		<value>$LOCALIZE[20343]</value>
+	</variable>
+	<expression name="Bald_InHubFolder">[!String.IsEmpty(Window(home).Property(Bald.HubTitle)) + !String.IsEmpty(Window(home).Property(Bald.HubPath)) + String.IsEqual(Container.FolderPath,Window(home).Property(Bald.HubPath))]</expression>
 	<include name="Bald_ReturnToMenuEntry">
 		<param name="id" />
 		<definition>
@@ -1273,6 +1285,8 @@
 			<control type="button" id="902$PARAM[n]">
 				<width>1</width><height>1</height><texturefocus /><texturenofocus />
 				<onfocus>SetProperty(Bald.ReturnMenu,901$PARAM[n],home)</onfocus>
+				<!-- The library heading shows the hub's name for the folder it opens (Bald_LibraryHeading). -->
+				<onfocus>SetProperty(Bald.HubTitle,$ESCVAR[Bald_HubLabel_hub$PARAM[n]],home)</onfocus>
 				<include content="Bald_HubOpen_hub$PARAM[n]" />
 			</control>
 		</definition>

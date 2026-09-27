@@ -477,3 +477,24 @@ class ChannelGroupSelectTests(unittest.TestCase):
             ("!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem]", "Action(Info)")])
         self.assertEqual(home.findtext("expression[@name='Bald_TVChannelGroupItem']"),
                          "[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/tv/)]")
+
+
+class HubHeadingTests(unittest.TestCase):
+    """A library opened from a hub shows the hub's name as its heading while it shows the folder the hub opened."""
+
+    def test_library_headings_follow_the_hub(self):
+        home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        for var, default in (("Bald_LibraryMoviesHeading", "$LOCALIZE[342]"), ("Bald_LibraryShowsHeading", "$LOCALIZE[20343]")):
+            values = [(v.get("condition"), v.text) for v in home.find(f"variable[@name='{var}']")]
+            self.assertEqual(values, [("$EXP[Bald_InHubFolder]", "$INFO[Window(home).Property(Bald.HubTitle)]"), (None, default)])
+        self.assertIn("String.IsEqual(Container.FolderPath,Window(home).Property(Bald.HubPath))",
+                      home.findtext("expression[@name='Bald_InHubFolder']"))
+        nav = ET.parse(XML / "MyVideoNav.xml").getroot()
+        self.assertIn(("Window.Previous(home)", "SetProperty(Bald.HubPath,$ESCINFO[Container.FolderPath],home)"),
+                      [(n.get("condition"), n.text) for n in nav.findall("onload")])
+        self.assertIn("ClearProperty(Bald.HubTitle,home)", [n.text for n in ET.parse(XML / "Home.xml").getroot().findall("onload")])
+        for name in ("View_510_Bald_Posters.xml", "View_512_Bald_WallPreview.xml", "View_513_Bald_CompactList.xml",
+                     "View_514_Bald_ArtworkList.xml", "View_520_Bald_TV.xml", "View_521_Bald_TV_Alternates.xml"):
+            with self.subTest(view=name):
+                text = (XML / name).read_text(encoding="utf-8")
+                self.assertRegex(text, r"\$VAR\[Bald_Library(Movies|Shows)Heading\]")

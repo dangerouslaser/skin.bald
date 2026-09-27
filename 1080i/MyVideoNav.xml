@@ -5,6 +5,9 @@
 	<views>510,511,512,513,514,515,520,521,522,523,530,531,540,541,542,504,50,51,52,53,54,55,500,501,502</views>
 	<menucontrol>9151</menucontrol>
 	<onload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onload>
+	<!-- Opened from Home: remember the folder, whose heading is the hub's name if a hub opened it (Bald_InHubFolder).
+	     Kodi fetches the first folder before the onload runs (CGUIMediaWindow::OnInitWindow). -->
+	<onload condition="Window.Previous(home)">SetProperty(Bald.HubPath,$ESCINFO[Container.FolderPath],home)</onload>
 	<onunload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunload>
 	<include>Bald_CurtainHandoff</include>
 	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>

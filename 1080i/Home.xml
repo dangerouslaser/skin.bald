@@ -57,6 +57,8 @@
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetFocus(9005)</onload>
 	<onload>ClearProperty(Bald.ReturnSearch,home)</onload>
 	<include>Bald_ReturnToMenu</include>
+	<!-- A hub's name is only for the library its bridge opens next (Bald_LibraryMoviesHeading). -->
+	<onload>ClearProperty(Bald.HubTitle,home)</onload>
 	<!-- Startup splash (Bald_Splash). No current row until it lifts, so the first row, its art, clearlogo and caption
 	     come in with their usual motion as it fades; until then keys go to 9198, which ignores them. -->
 	<onload condition="$EXP[Bald_Preloading]">ClearProperty(Bald.Row,home)</onload>
