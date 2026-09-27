@@ -513,6 +513,26 @@ class OSDStyleTests(unittest.TestCase):
                     self.assertIn(kind, TWEENS)
                     self.assertIn((effect.get("tween"), effect.get("easing")), TWEENS[kind])
 
+    def test_live_tv_panel_keeps_its_black_and_information_shades_only_over_video(self):
+        definitions = include_definitions()
+
+        def text(name):
+            holder = ET.Element("x")
+            holder.extend(definitions[name])
+            return ET.tostring(holder, encoding="unicode")
+
+        # The channel list and guide: a solid 85% black whatever Background shading says (the user asked for it).
+        self.assertNotIn("Bald_OSDShade", text("Bald_PVRPanelBase"))
+        self.assertIn('colordiffuse="bald_scrim85"', text("Bald_PVRPanelBase"))
+        # Programme and RDS information over a Live TV window (no video) do not follow a Playback setting.
+        scrims = ET.parse(SKIN / "Includes_Bald_PVR.xml").getroot().find("include[@name='Bald_PVRScrims']")
+        shade = [n for n in scrims.iter("include") if (n.get("content") or n.text) == "Bald_OSDShade"]
+        self.assertEqual([n.findtext("param[@name='when']") for n in shade], ["Window.IsActive(fullscreenvideo)"])
+        # No second dim: the OSD's tall scrim steps aside under the Live TV panel.
+        seek = self.roots["DialogSeekBar.xml"]
+        tall = [n.findtext("visible") for n in seek.iter("control") if "Bald_OSDTallScrim" in (n.findtext("visible") or "")]
+        self.assertEqual(tall, ["$EXP[Bald_OSDTallScrim] + !$EXP[Bald_OSDPVRPanelUp]"])
+
     def test_hints_sit_on_the_hint_line(self):
         # The OSD and its companions sit 36 px lower than the page layout, so their hints do too (990); the
         # full-height panels keep the page hint line (954).

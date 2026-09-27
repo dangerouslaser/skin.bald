@@ -113,27 +113,27 @@
 	<include name="Bald_PVRBackground">
 		<include>Bald_WindowBase</include>
 	</include>
-	<!-- Scrims for chrome over live video: field from the left edge and from the bottom. -->
-	<!-- Over live video: the playback scrims' black, scaled by Playback › Background shading (Bald_OSDShade). -->
+	<!-- Scrims for programme and RDS information: black from the left edge and from the bottom. Over full-screen video
+	     they follow Playback › Background shading like the player's own scrims (Bald_OSDShade); over a Live TV window
+	     they stay full. -->
 	<include name="Bald_PVRScrims">
 		<control type="group">
-			<include>Bald_OSDShade</include>
+			<include content="Bald_OSDShade"><param name="when">Window.IsActive(fullscreenvideo)</param></include>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_scrim">bald/scrim_info_h.png</texture></control>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_scrim">bald/scrim_info_b.png</texture></control>
 		</control>
 	</include>
-	<!-- Page title, the accent section line under it and, optionally, the date and time on the right. -->
 	<!-- ============ In-player Live TV panel (DialogPVRChannelGuide.xml, DialogPVRChannelsOSD.xml) ============
 	     One panel with two tabs over live video: Guide (the playing channel's programmes) and Channels (the switcher).
 	     Both have the same left list (780 wide) and a detail pane on the right for the focused programme or channel;
-	     Right from the guide swaps in the channels (it closes first, so they never stack). An even black under the
-	     whole screen, scaled by Playback › Background shading. -->
+	     Right from the guide over full-screen Live TV swaps in the channels (it closes first, so they never stack). A
+	     solid black underlay (85%) under the whole screen, whatever Playback › Background shading says, so the lists stay
+	     readable over bright video. -->
 	<include name="Bald_PVRPanelBase">
-		<control type="group">
-			<include>Bald_OSDShade</include>
-			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_scrim85">bald/white.png</texture></control>
-		</control>
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_scrim85">bald/white.png</texture></control>
 	</include>
+	<!-- The panel's header: the tab names (the active one in full ink, the other one it can swap to at 28%), the accent
+	     section line and the date and time on the right. -->
 	<include name="Bald_PVRTabs">
 		<param name="active" />
 		<param name="section" />
@@ -174,6 +174,7 @@
 			</control>
 		</definition>
 	</include>
+	<!-- Page title, the accent section line under it and, optionally, the date and time on the right. -->
 	<include name="Bald_PVRHeader">
 		<param name="title" />
 		<param name="section" />

@@ -269,12 +269,16 @@
 
 	<!-- Background shading (Bald Settings, Playback, Controls: Bald.OSD.Shade 75, 50, 25 or 0; empty is 100): the
 	     player's field gradients and panel dim fade to that share, the clock, text and buttons over them do not.
-	     Instant Conditional fades on a wrapper group, so the layers' own fades still run inside it. -->
+	     Instant Conditional fades on a wrapper group, so the layers' own fades still run inside it. <when> limits the
+	     shading to a condition (the Live TV information dialogs shade only over full-screen video). -->
 	<include name="Bald_OSDShade">
-		<animation type="Conditional" condition="Skin.String(Bald.OSD.Shade,75)"><effect type="fade" start="100" end="75" time="0" tween="sine" easing="inout" /></animation>
-		<animation type="Conditional" condition="Skin.String(Bald.OSD.Shade,50)"><effect type="fade" start="100" end="50" time="0" tween="sine" easing="inout" /></animation>
-		<animation type="Conditional" condition="Skin.String(Bald.OSD.Shade,25)"><effect type="fade" start="100" end="25" time="0" tween="sine" easing="inout" /></animation>
-		<animation type="Conditional" condition="Skin.String(Bald.OSD.Shade,0)"><effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" /></animation>
+		<param name="when">true</param>
+		<definition>
+			<animation type="Conditional" condition="[$PARAM[when]] + Skin.String(Bald.OSD.Shade,75)"><effect type="fade" start="100" end="75" time="0" tween="sine" easing="inout" /></animation>
+			<animation type="Conditional" condition="[$PARAM[when]] + Skin.String(Bald.OSD.Shade,50)"><effect type="fade" start="100" end="50" time="0" tween="sine" easing="inout" /></animation>
+			<animation type="Conditional" condition="[$PARAM[when]] + Skin.String(Bald.OSD.Shade,25)"><effect type="fade" start="100" end="25" time="0" tween="sine" easing="inout" /></animation>
+			<animation type="Conditional" condition="[$PARAM[when]] + Skin.String(Bald.OSD.Shade,0)"><effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" /></animation>
+		</definition>
 	</include>
 	<variable name="Bald_BackgroundVideoDimLabel">
 		<value condition="Skin.String(Bald.OSD.BackgroundVideoDim,60)">60%</value>
@@ -303,8 +307,9 @@
 				<param name="height">660</param>
 			</include>
 		</control>
+		<!-- Not under the Live TV panel, which brings its own black (Bald_PVRPanelBase). -->
 		<control type="group">
-			<visible>$EXP[Bald_OSDTallScrim]</visible>
+			<visible>$EXP[Bald_OSDTallScrim] + !$EXP[Bald_OSDPVRPanelUp]</visible>
 			<include>Bald_OSDAnimFade</include>
 			<include>Bald_PlaybackScrim</include>
 		</control>
