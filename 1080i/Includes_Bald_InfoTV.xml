@@ -399,14 +399,17 @@
 		</definition>
 	</include>
 	<!-- Episode row (always id 5302, in either window): fixedlist geometry, focus travel to slot 2, scrolling, Select to
-	     play (resuming, through the script) and the cards. The caller gives it its top, navigation and content. -->
+	     play (resuming, through the script) and the cards. The caller gives it its top, navigation and content.
+	     Focus position 0 with movement 2: focus travels slots 0-2 and the row then scrolls. A fresh fixedlist puts its
+	     selected item on the focus position, so with position 2 a season of one or two episodes started in the
+	     middle of the row; from 0 every season starts at the left edge. -->
 	<include name="Bald_InfoTVEpisodeRowLayout">
 		<definition>
 			<left>84</left>
 			<width>1740</width>
 			<height>204</height>
 			<orientation>horizontal</orientation>
-			<focusposition>2</focusposition>
+			<focusposition>0</focusposition>
 			<movement>2</movement>
 			<scrolltime tween="cubic" easing="out">440</scrolltime>
 			<onclick>RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])</onclick>
