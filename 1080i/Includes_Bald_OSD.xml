@@ -907,6 +907,39 @@
 			</control>
 		</definition>
 	</include>
+	<!-- A companion panel's row: every slot a stand-in (Fake) but the one the caller sets to Panel. -->
+	<include name="Bald_OSDCompanionRow">
+		<param name="owner" />
+		<param name="play">Fake</param>
+		<param name="back">Fake</param>
+		<param name="forward">Fake</param>
+		<param name="stop">Fake</param>
+		<param name="menu">Fake</param>
+		<param name="teletext">Fake</param>
+		<param name="stereo">Fake</param>
+		<param name="info">Fake</param>
+		<param name="audio">Fake</param>
+		<param name="subtitles">Fake</param>
+		<param name="ppi">Fake</param>
+		<param name="video">Fake</param>
+		<definition>
+			<include content="Bald_OSDRow">
+				<param name="owner">$PARAM[owner]</param>
+				<param name="play">$PARAM[play]</param>
+				<param name="back">$PARAM[back]</param>
+				<param name="forward">$PARAM[forward]</param>
+				<param name="stop">$PARAM[stop]</param>
+				<param name="menu">$PARAM[menu]</param>
+				<param name="teletext">$PARAM[teletext]</param>
+				<param name="stereo">$PARAM[stereo]</param>
+				<param name="info">$PARAM[info]</param>
+				<param name="audio">$PARAM[audio]</param>
+				<param name="subtitles">$PARAM[subtitles]</param>
+				<param name="ppi">$PARAM[ppi]</param>
+				<param name="video">$PARAM[video]</param>
+			</include>
+		</definition>
+	</include>
 	<!-- The seek sliders over the lifted bar (x 264, 1392 wide, centre y 796): invisible but for an accent nib while
 	     focused. Left and Right seek (Kodi's slider "seek" and "pvr.seek" actions); Down returns to the buttons. Kodi
 	     scales a slider's nib by the control height over the bar texture's height, so the bar is the transparent,

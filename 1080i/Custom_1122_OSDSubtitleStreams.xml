@@ -21,20 +21,9 @@
 				<param name="current">!String.IsEmpty(ListItem.Property(iscurrent)) + VideoPlayer.SubtitlesEnabled</param>
 				<param name="toggle">true</param>
 			</include>
-			<include content="Bald_OSDRow">
+			<include content="Bald_OSDCompanionRow">
 				<param name="owner">1122</param>
-				<param name="play">Fake</param>
-				<param name="back">Fake</param>
-				<param name="forward">Fake</param>
-				<param name="stop">Fake</param>
-				<param name="menu">Fake</param>
-				<param name="teletext">Fake</param>
-				<param name="stereo">Fake</param>
-				<param name="info">Fake</param>
-				<param name="audio">Fake</param>
 				<param name="subtitles">Panel</param>
-				<param name="ppi">Fake</param>
-				<param name="video">Fake</param>
 			</include>
 			<include>Bald_OSDHints</include>
 		</control>
