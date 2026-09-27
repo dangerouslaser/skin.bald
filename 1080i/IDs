@@ -396,6 +396,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 9621-9628	Behavior: ambient movement, navigation hints, reset hint, preload Home at startup,
 		scroll long plots, recommended Kodi settings; 9627 open TV shows on their info page (Bald Helper
 		enabled), 9628 the same row while Bald Helper is missing or disabled (installs or enables it)
+9629	Behavior: Select on a hub opens its library (Bald.HubSelectOpens; listed after 9623)
 9631	Typography: font (fontset)
 9641-9663	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; 9657 online ratings from TMDb Helper,
 		9658 TMDb Helper settings (both listed after 9641); sources 9642 IMDb, 9643 TMDb,

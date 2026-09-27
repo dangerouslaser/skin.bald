@@ -146,7 +146,8 @@ class HubSlotTests(unittest.TestCase):
         includes = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         hub = includes.find("include[@name='Bald_HomeMenuHub']/definition/include[@content='Bald_HomeMenuButton']")
         self.assertEqual(hub.findtext("param[@name='right']"), "902$PARAM[n]")
-        self.assertEqual(hub.findtext("param[@name='right_if']"), "$EXP[Bald_HubHasOpen_hub$PARAM[n]]")
+        self.assertEqual(hub.findtext("param[@name='right_if']"),
+                         "$EXP[Bald_HubHasOpen_hub$PARAM[n]] + !$EXP[Bald_HubSwap_hub$PARAM[n]]")
         bridge = includes.find("include[@name='Bald_HubBridge']/definition/control")
         self.assertEqual(bridge.get("id"), "902$PARAM[n]")
         self.assertEqual(bridge.find("include").get("content"), "Bald_HubOpen_hub$PARAM[n]")

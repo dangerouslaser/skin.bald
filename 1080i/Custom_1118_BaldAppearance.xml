@@ -111,6 +111,9 @@
 				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
 				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>
 				<control type="button" id="9623"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31766]</label><onclick>Skin.Reset(Bald.MenuOpens)</onclick><visible>Skin.HasSetting(Bald.AutoHideMenuHint)</visible></control>
+				<!-- Select on a hub (or Live TV) in the Home menu opens its library (or the guide) and Right enters its rows;
+				     off, the reverse (Includes_Bald_Home.xml, Bald_SelectOpens). Unset is off, so installs keep today's keys. -->
+				<control type="radiobutton" id="9629"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31210]</label><selected>Skin.HasSetting(Bald.HubSelectOpens)</selected><onclick>Skin.ToggleSetting(Bald.HubSelectOpens)</onclick></control>
 				<!-- Typography: switches Kodi's fontset (lookandfeel.font) between the two Font.xml typefaces; Kodi then
 				     reloads the skin. Default is DM Sans; any other fontset (Arial for non-Latin languages) switches to Instrument Sans. -->
 				<control type="button" id="9631"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">5</param></include><label>$LOCALIZE[31944]</label><label2>$VAR[Bald_FontName]</label2>

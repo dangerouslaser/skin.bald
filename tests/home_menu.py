@@ -49,3 +49,22 @@ def actions(node, tag):
 
 def select_actions(node):
     return actions(node, "onclick")
+
+
+def setting(on):
+    """Expression bodies with Appearance > Behavior "Select on a hub opens its library" (Bald.HubSelectOpens) fixed on
+    or off, for conditions.equivalent / implies.
+    Only Includes_Bald_Home.xml's expressions are expanded: the generated per-slot names (Bald_HasRows_hub1 and so on,
+    constants in the shipped fallback) stay atoms, so a condition is compared for every hub, with or without rows."""
+    import xml.etree.ElementTree as ET
+    from kodi_includes import SKIN
+    root = ET.parse(SKIN / "Includes_Bald_Home.xml").getroot()
+    bodies = {node.get("name"): node.text or "" for node in root.findall("expression")}
+    bodies["Bald_SelectOpens"] = "true" if on else "false"
+    return bodies
+
+
+def live(pairs, bodies):
+    """The (condition, action) pairs whose condition can hold under these bodies."""
+    from conditions import implies
+    return [(cond, action) for cond, action in pairs if not implies(cond or "true", "false", bodies)]
