@@ -20,6 +20,9 @@ TIMER = "bald_library_select"
 ACTION = f"Skin.TimerStart({TIMER})"
 KEYMAP_DIR = "special://profile/keymaps"
 KEYMAP_FILE = "bald-helper.xml"
+# Bald's retired TV guide Left override: the service deletes it when it starts (a no-op once gone), in place of
+# the skin script the guide used to run on every open.
+RETIRED_KEYMAP_FILES = ("bald-pvr.xml",)
 POLL_SECONDS = 1.0
 
 # The keys Kodi 22's default keymaps (system/keymaps) bind to Select in <global>, by device. CEC remotes arrive as
@@ -104,6 +107,21 @@ class Service:
         self.log(f"removed {self.path} ({reason})", self.xbmc.LOGINFO)
         return True
 
+    def remove_retired(self) -> bool:
+        """Delete keymap files Bald no longer writes. Returns whether any was removed (then keymaps are reloaded)."""
+        removed = []
+        for name in RETIRED_KEYMAP_FILES:
+            path = os.path.join(self.keymap_dir, name)
+            try:
+                os.remove(path)
+            except FileNotFoundError:
+                continue
+            removed.append(path)
+        if removed:
+            self.reload()
+            self.log(f"removed retired {', '.join(removed)}", self.xbmc.LOGINFO)
+        return bool(removed)
+
     def sync(self) -> bool:
         """One check. Returns whether the keymap changed."""
         skin_dir = self.xbmc.getSkinDir()
@@ -127,6 +145,7 @@ class Service:
         monitor = monitor or self.xbmc.Monitor()
         self.log("started")
         try:
+            self.safe(self.remove_retired)
             self.safe(self.sync)
             while not monitor.waitForAbort(POLL_SECONDS):
                 self.safe(self.sync)

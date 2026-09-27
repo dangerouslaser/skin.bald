@@ -1,4 +1,5 @@
-"""Bald Helper (addons/script.bald.helper): Select on a TV show in the video library opens its info page.
+"""Bald Helper (addons/script.bald.helper): Select on a TV show in the video library opens its info page, and the
+retired PVR keymap is removed. The blurred backgrounds are tested in test_bald_helper_blur.py.
 
 The helper's keymap maps Select in <videos> to Skin.TimerStart(bald_library_select); the skin timer runs Info on a
 focused library TV show and Select otherwise; Appearance, Behavior holds the switch (docs/NOTES.md)."""
@@ -182,6 +183,28 @@ class ServiceDecisionTests(unittest.TestCase):
         self.assertFalse(os.path.exists(service.path))
         self.assertEqual(xbmc.builtins.count("Action(reloadkeymaps)"), 4)
 
+    def test_removes_the_retired_pvr_keymap_once(self):
+        xbmc, service = self.service(setting=False)
+        os.makedirs(self.keymaps)
+        retired = Path(self.keymaps, "bald-pvr.xml")
+        retired.write_text("<keymap/>", encoding="utf-8")
+        other = Path(self.keymaps, "mine.xml")
+        other.write_text("<keymap/>", encoding="utf-8")
+        self.assertTrue(service.remove_retired())
+        self.assertFalse(retired.exists())
+        self.assertTrue(other.exists())
+        self.assertEqual(xbmc.builtins, ["Action(reloadkeymaps)"])
+        # Gone: nothing to do, no reload.
+        self.assertFalse(service.remove_retired())
+        self.assertEqual(xbmc.builtins, ["Action(reloadkeymaps)"])
+
+    def test_run_removes_the_retired_pvr_keymap_at_start(self):
+        xbmc, service = self.service(setting=False)
+        os.makedirs(self.keymaps)
+        Path(self.keymaps, "bald-pvr.xml").write_text("<keymap/>", encoding="utf-8")
+        service.run(FakeMonitor(xbmc, []))
+        self.assertFalse(Path(self.keymaps, "bald-pvr.xml").exists())
+
     def test_errors_do_not_stop_the_service_and_are_logged_once(self):
         xbmc, service = self.service(setting=True)
         xbmc.fail = RuntimeError("boom")
@@ -199,7 +222,7 @@ class AddonTests(unittest.TestCase):
     def test_addon_xml(self):
         root = ET.parse(ADDON / "addon.xml").getroot()
         self.assertEqual((root.get("id"), root.get("name"), root.get("version")),
-                         ("script.bald.helper", "Bald Helper", "1.0.0"))
+                         ("script.bald.helper", "Bald Helper", "1.1.0"))
         self.assertEqual(root.find("extension[@point='xbmc.service']").get("library"), "service.py")
         self.assertTrue((ADDON / "service.py").is_file())
         metadata = root.find("extension[@point='xbmc.addon.metadata']")
@@ -208,6 +231,16 @@ class AddonTests(unittest.TestCase):
         self.assertEqual(metadata.findtext("license"), skin_licence)
         icon = metadata.findtext("assets/icon")
         self.assertTrue((ADDON / icon).is_file())
+
+    def test_requires_kodis_pillow(self):
+        # The blurred backgrounds need Pillow: script.module.pil at the version Kodi 22 bundles.
+        root = ET.parse(ADDON / "addon.xml").getroot()
+        pil = root.find("requires/import[@addon='script.module.pil']")
+        self.assertIsNotNone(pil)
+        self.assertIsNone(pil.get("optional"))
+        bundled = Path("/Applications/Kodi.app/Contents/Resources/Kodi/addons/script.module.pil/addon.xml")
+        if bundled.is_file():
+            self.assertEqual(pil.get("version"), ET.parse(bundled).getroot().get("version"))
 
     def test_the_repository_publishes_it(self):
         path = ROOT / "packaging" / "repository.bald" / "build_repository.py"

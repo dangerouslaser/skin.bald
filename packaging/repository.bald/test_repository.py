@@ -55,9 +55,12 @@ def main() -> None:
         names = set(zipped.namelist())
         assert "script.bald.helper/service.py" in names
         assert "script.bald.helper/resources/lib/keymap.py" in names
+        assert "script.bald.helper/resources/lib/blur.py" in names
         assert "script.bald.helper/resources/icon.png" in names
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
     assert (root / "script.bald.helper" / "resources" / "icon.png").is_file()
+    # The blurred backgrounds need Kodi's Pillow module.
+    assert helper.find("./requires/import[@addon='script.module.pil']") is not None
     # The skin never requires the helper (an optional import would re-enable a disabled helper on skin updates).
     assert addons["skin.bald"].find("./requires/import[@addon='script.bald.helper']") is None
 
