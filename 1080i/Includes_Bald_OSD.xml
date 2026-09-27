@@ -410,6 +410,10 @@
 	     280 POP). <on> is the icon while <selected> holds (pause while playing, record while recording, tinted
 	     <on_color>); callers pass it even when it is the same icon (a param default cannot name another param). <code> is the button's own label, centred under the disc (the audio and subtitle language). The
 	     caller's actions and navigation are nested into the radiobutton itself. -->
+	<!-- The OSD keeps its focused button while a companion panel (1120-1124) is over it, and the panel draws its
+	     own copy of that button on top: the OSD's copy fades out then, so the two do not show through each other.
+	     Window.Property(xmlfile) is the window the button belongs to (the OSD or a panel). -->
+	<expression name="Bald_OSDCompanionOpen">String.IsEqual(Window.Property(xmlfile),VideoOSD.xml) + [Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124)]</expression>
 	<include name="Bald_OSDButton">
 		<param name="id" />
 		<param name="icon" />
@@ -451,6 +455,9 @@
 				<nested />
 				<animation type="Focus">
 					<effect type="zoom" start="100" end="105" center="40,36" time="280" tween="back" easing="out" />
+				</animation>
+				<animation type="Conditional" condition="Control.HasFocus($PARAM[id]) + $EXP[Bald_OSDCompanionOpen]">
+					<effect type="fade" start="100" end="0" time="0" />
 				</animation>
 				<animation type="Unfocus">
 					<effect type="zoom" start="105" end="100" center="40,36" time="220" tween="sine" easing="inout" />
