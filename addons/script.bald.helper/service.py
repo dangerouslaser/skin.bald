@@ -20,13 +20,16 @@ def start_blur():
         from resources.lib.blur import Follower, Warmer
 
         follower = Follower(xbmc, xbmcvfs, xbmcgui)
-        follower.start()
         follower.warmer = Warmer(xbmc, follower)  # Home rows' backdrops blurred ahead
-        follower.warmer.start()
-        return follower
+        follower.start()
     except Exception as error:  # noqa: BLE001 - the keymaps must not depend on the blur
         xbmc.log(f"script.bald.helper: blur did not start: {type(error).__name__}: {error}", xbmc.LOGERROR)
         return None
+    try:
+        follower.warmer.start()
+    except Exception as error:  # noqa: BLE001 - the follower works without the warm-up
+        xbmc.log(f"script.bald.helper: blur warm-up did not start: {type(error).__name__}: {error}", xbmc.LOGWARNING)
+    return follower
 
 
 def start_ratings():

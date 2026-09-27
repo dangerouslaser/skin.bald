@@ -55,6 +55,7 @@ QUALITY = 90
 CACHE_DIR = "special://profile/addon_data/script.bald.helper/blur"
 CACHE_MAX_BYTES = 60 * 1024 * 1024
 CACHE_MAX_FILES = 3000
+TMP_STALE_SECONDS = 60  # a temporary file older than this is a leftover (prune)
 PRUNE_EVERY = 100  # writes between prunes (the cache is also pruned at startup)
 
 POLL_SECONDS = 0.15
@@ -83,6 +84,7 @@ WARM_WHEN = "Window.IsActive(home) + !System.HasActiveModalDialog"
 WARM_PRELOADING = "!String.IsEmpty(Window(home).Property(Bald.Preload))"
 WARM_IDLE = "System.IdleTime(5)"
 WARM_PAUSE_SECONDS = 0.2  # between warm-up blurs, so the GUI and the follower keep the CPU
+WARM_RETRY_SECONDS = 1800.0  # a source that made nothing is tried again after this long
 THUMB_EXTENSIONS = (".jpg", ".png")
 
 
@@ -161,9 +163,11 @@ class Blurrer:
         for name in names:
             path = os.path.join(self.cache_dir, name)
             if ".tmp" in name:
+                # Only a leftover: the follower's worker and the warm-up write their own temporary files meanwhile.
                 try:
-                    os.remove(path)
-                    removed += 1
+                    if time.time() - os.stat(path).st_mtime > TMP_STALE_SECONDS:
+                        os.remove(path)
+                        removed += 1
                 except OSError:
                     pass
                 continue
@@ -206,6 +210,13 @@ class Blurrer:
             for extension in THUMB_EXTENSIONS:
                 found.append(os.path.join(self.thumbnails, name[0], name + extension))
         return found
+
+    def local(self, source: str) -> bool:
+        """Whether the source can be read without the network: Kodi's texture cache has it, or it is a local file."""
+        if any(os.path.isfile(candidate) for candidate in self.thumbnail_candidates(source)):
+            return True
+        path, readable = unwrap(source)
+        return readable and "://" not in path and os.path.isfile(path)
 
     def read(self, source: str) -> bytes | None:
         for candidate in self.thumbnail_candidates(source):
@@ -452,13 +463,17 @@ class Warmer:
         self.blurrer = follower.blurrer
         self.clock = clock
         self.queue: list[str] = []
-        self.failed: set[str] = set()  # sources that made nothing this session (unreadable, no art file)
+        self.failed: dict[str, float] = {}  # source -> when it made nothing (retried after WARM_RETRY_SECONDS)
         self.next_scan = 0.0
         self._stop = threading.Event()
         self._thread = None
 
     def sources(self) -> list[str]:
-        """The not yet cached sources of every loaded Home row, row by row, nearest items first."""
+        """The not yet blurred sources of every loaded Home row, row by row, nearest items first. Only art that is
+        already on this device (Kodi's texture cache, local files): remote art Kodi has not shown yet is left to the
+        follower, so the warm-up never downloads originals ahead of time."""
+        now = self.clock()
+        self.failed = {source: when for source, when in self.failed.items() if now - when < WARM_RETRY_SECONDS}
         found = []
         for base in WARM_BASES:
             for row in range(base + 1, base + WARM_MAX_ROWS + 1):
@@ -472,7 +487,8 @@ class Warmer:
                     for art in ART:
                         value = self.xbmc.getInfoLabel(prefix + art)
                         if value:
-                            if value not in found and value not in self.failed and not self.blurrer.has(value):
+                            if (value not in found and value not in self.failed and not self.blurrer.has(value)
+                                    and self.blurrer.local(value)):
                                 found.append(value)
                             break
         return found
@@ -498,6 +514,9 @@ class Warmer:
         """One unit of work: blur the next queued source, else maybe scan. Returns how long to wait."""
         if self.follower.wanted is not None:
             return WARM_PAUSE_SECONDS  # the viewer's own blur comes first
+        if self.queue and (self.follower.resting() or not self.xbmc.getCondVisibility(WARM_WHEN)):
+            self.queue = []  # left Home, playback, another skin or blur off: stop; the next scan starts again
+            return WARM_PRELOAD_SECONDS
         if self.queue:
             source = self.queue.pop(0)
             if not self.blurrer.has(source):
@@ -507,9 +526,7 @@ class Warmer:
                     self.follower.log_once(f"warm: {type(error).__name__}: {error}")
                     made = None
                 if made is None:
-                    self.failed.add(source)
-                    if len(self.failed) > 2000:
-                        self.failed.clear()
+                    self.failed[source] = self.clock()
             return WARM_PAUSE_SECONDS
         if self.due():
             self.queue = self.sources()

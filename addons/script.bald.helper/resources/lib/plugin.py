@@ -161,8 +161,9 @@ def tmdbhelper_key(xbmcaddon, xbmcvfs) -> str:
 
             root = ET.parse(xbmcvfs.translatePath(TMDBHELPER_SETTINGS)).getroot()
             for setting in root.iter("setting"):
-                if setting.get("id") == TMDBHELPER_KEY and (setting.text or "").strip():
-                    return setting.text.strip()
+                value = (setting.text or setting.get("value") or "").strip()  # settings version 2, or 1
+                if setting.get("id") == TMDBHELPER_KEY and value:
+                    return value
         except Exception:  # noqa: BLE001 - no file yet, or not readable
             pass
     try:

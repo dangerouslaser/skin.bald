@@ -260,10 +260,16 @@ class PruneTests(Case):
 
     def test_removes_leftover_temporary_files_and_ignores_others(self):
         self.fill(1)
-        Path(self.cache, "abc-r40.jpg.1.2.tmp").write_bytes(b"x")
+        old = Path(self.cache, "abc-r40.jpg.1.2.tmp")
+        old.write_bytes(b"x")
+        stale = time.time() - blur.TMP_STALE_SECONDS - 5
+        os.utime(old, (stale, stale))
+        # A temporary file being written right now (the other writer thread) stays.
+        Path(self.cache, "def-r40.jpg.3.4.tmp").write_bytes(b"x")
         Path(self.cache, "notes.txt").write_bytes(b"x")
         self.blurrer.prune()
-        self.assertEqual(sorted(os.listdir(self.cache)), ["00000000000000000000000000000000-r40.jpg", "notes.txt"])
+        self.assertEqual(sorted(os.listdir(self.cache)),
+                         ["00000000000000000000000000000000-r40.jpg", "def-r40.jpg.3.4.tmp", "notes.txt"])
 
     def test_no_cache_yet(self):
         self.assertEqual(self.blurrer.prune(), 0)
@@ -573,6 +579,8 @@ class WarmerTests(Case):
         super().setUp()
         self.warmer = blur.Warmer(self.xbmc, self.follower, clock=self.clock)
         self.xbmc.conditions[blur.WARM_WHEN] = True
+        self.remote = set()  # sources not on this device (not in the texture cache, not a local file)
+        self.blurrer.local = lambda source: source not in self.remote
 
     def rows(self, **rows):
         """Home rows: row id -> list of fanart paths (the selected item first)."""
@@ -592,8 +600,22 @@ class WarmerTests(Case):
         self.rows(r9101=["/a.jpg", "/b.jpg"])
         os.makedirs(self.cache, exist_ok=True)
         open(self.blurrer.path_for("/a.jpg"), "wb").close()
-        self.warmer.failed.add("/b.jpg")
+        self.warmer.failed["/b.jpg"] = self.clock()
         self.assertEqual(self.warmer.sources(), [])
+        # A failure is tried again after a while.
+        self.clock.advance(blur.WARM_RETRY_SECONDS + 1)
+        self.assertEqual(self.warmer.sources(), ["/b.jpg"])
+
+    def test_never_downloads_art_ahead(self):
+        self.rows(r9101=["https://example/a.jpg", "/b.jpg"])
+        self.remote.add("https://example/a.jpg")
+        self.assertEqual(self.warmer.sources(), ["/b.jpg"])
+
+    def test_a_queue_stops_when_home_is_left(self):
+        self.warmer.queue = ["/a.jpg", "/b.jpg"]
+        self.xbmc.conditions[blur.WARM_WHEN] = False  # playback started, another window
+        self.assertEqual(self.warmer.step(), blur.WARM_PRELOAD_SECONDS)
+        self.assertEqual(self.warmer.queue, [])
 
     def test_blurs_behind_the_splash_without_publishing(self):
         FakeFile.files["/a.jpg"] = jpeg()
