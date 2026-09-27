@@ -7,6 +7,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 
+from conditions import equivalent, implies
 from kodi_includes import SKIN, expressions, include_definitions, resolve_window
 
 ROOT = SKIN.parent
@@ -247,12 +248,18 @@ class ChainTests(unittest.TestCase):
 
 
 class HelperGuardTests(unittest.TestCase):
-    def test_cast_needs_tmdb_helper(self):
+    def test_cast_needs_tmdb_helper_or_bald_helper(self):
         bodies = expressions()
         guard = bodies["Bald_OSDHasTMDbHelper"]
         self.assertIn("System.HasAddon(plugin.video.themoviedb.helper)", guard)
         self.assertIn("System.AddonIsEnabled(plugin.video.themoviedb.helper)", guard)
-        self.assertIn("$EXP[Bald_OSDHasTMDbHelper]", bodies["Bald_OSDChainCast"])
+        # Bald Helper counts like TMDb Helper for library items (its plugin reads the library's cast).
+        self.assertTrue(equivalent(bodies["Bald_OSDHelperCast"],
+                                   "$EXP[Bald_HasHelper] + Integer.IsGreater(VideoPlayer.DBID,0)"))
+        self.assertTrue(equivalent(bodies["Bald_OSDChainCast"],
+                                   "[$EXP[Bald_OSDHasTMDbHelper] | $EXP[Bald_OSDHelperCast]]"
+                                   " + [VideoPlayer.Content(movies) | VideoPlayer.Content(episodes)]"
+                                   " + !Skin.HasSetting(Bald.OSD.NoCastPanel)"))
         # 1126 is only ever opened through the guarded chain.
         for path in SKIN.glob("*.xml"):
             for node in ET.parse(path).getroot().iter():
@@ -260,7 +267,50 @@ class HelperGuardTests(unittest.TestCase):
                     with self.subTest(file=path.name):
                         self.assertIn("$EXP[Bald_OSDChainCast]", node.get("condition") or "")
         row = ids(resolve_window("Custom_1119_BaldPlayback.xml"))["9835"]
-        self.assertEqual(row.findtext("enable"), "$EXP[Bald_OSDHasTMDbHelper]")
+        self.assertEqual(row.findtext("enable"), "$EXP[Bald_OSDCastProvider]")
+        self.assertTrue(equivalent(bodies["Bald_OSDCastProvider"],
+                                   "$EXP[Bald_OSDHasTMDbHelper] | $EXP[Bald_HasHelper]"))
+        self.assertTrue(equivalent(row.findtext("selected"),
+                                   "!Skin.HasSetting(Bald.OSD.NoCastPanel) + $EXP[Bald_OSDCastProvider]"))
+
+    def test_cast_path_uses_bald_helper_for_library_items(self):
+        """Library items with Bald Helper: its plugin for cast (and for crew without TMDb Helper); TMDb Helper for
+        everything else, as before."""
+        variable = ET.parse(SKIN / "Includes_Bald_OSD.xml").getroot().find("variable[@name='Bald_OSDCastPath']")
+        values = [(v.get("condition"), v.text) for v in variable.findall("value")]
+
+        def pick(assume):
+            return next(text for condition, text in values
+                        if condition is None or implies("true", condition, assume=assume))
+
+        crew = "String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)"
+        for content, dbtype in (("movies", "movie"), ("episodes", "episode")):
+            other = "episodes" if content == "movies" else "movies"
+            for helper, tmdb, is_crew, expected in (
+                (True, False, False, f"plugin://script.bald.helper/?info=cast&dbtype={dbtype}&dbid=$INFO[VideoPlayer.DBID]"),
+                (True, True, False, f"plugin://script.bald.helper/?info=cast&dbtype={dbtype}&dbid=$INFO[VideoPlayer.DBID]"),
+                (True, False, True, f"plugin://script.bald.helper/?info=crew&dbtype={dbtype}&dbid=$INFO[VideoPlayer.DBID]"),
+                (True, True, True, "plugin://plugin.video.themoviedb.helper/?info=crew"),
+                (False, True, False, "plugin://plugin.video.themoviedb.helper/?info=cast"),
+            ):
+                assume = {"System.HasAddon(script.bald.helper)": helper, "System.AddonIsEnabled(script.bald.helper)": helper,
+                          "Integer.IsGreater(VideoPlayer.DBID,0)": True,
+                          "System.HasAddon(plugin.video.themoviedb.helper)": tmdb,
+                          "System.AddonIsEnabled(plugin.video.themoviedb.helper)": tmdb,
+                          f"VideoPlayer.Content({content})": True, f"VideoPlayer.Content({other})": False,
+                          crew: is_crew, "String.StartsWith(VideoPlayer.IMDBNumber,tt)": True}
+                with self.subTest(content=content, helper=helper, tmdb=tmdb, crew=is_crew):
+                    self.assertTrue(pick(assume).startswith(expected), pick(assume))
+        # Not in the library: TMDb Helper, whatever Bald Helper is.
+        assume = {"System.HasAddon(script.bald.helper)": True, "System.AddonIsEnabled(script.bald.helper)": True,
+                  "Integer.IsGreater(VideoPlayer.DBID,0)": False, "VideoPlayer.Content(movies)": True,
+                  "VideoPlayer.Content(episodes)": False, crew: False, "String.StartsWith(VideoPlayer.IMDBNumber,tt)": True}
+        self.assertTrue(pick(assume).startswith("plugin://plugin.video.themoviedb.helper/?info=cast"))
+        # The plugin's arguments are ones it accepts.
+        for _condition, text in values:
+            if text.startswith("plugin://script.bald.helper/"):
+                self.assertRegex(text, r"^plugin://script\.bald\.helper/\?info=(cast|crew)&dbtype=(movie|episode)"
+                                       r"&dbid=\$INFO\[VideoPlayer\.DBID\]$")
 
     def test_skin_variables_guard(self):
         guard = expressions()["Bald_OSDHasSkinVariables"]

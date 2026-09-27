@@ -62,8 +62,8 @@
 				<control type="radiobutton" id="9832"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[19019]</label><selected>!Skin.HasSetting(Bald.OSD.NoChannelsPanel)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoChannelsPanel)</onclick></control>
 				<control type="radiobutton" id="9833"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[31639]</label><selected>!Skin.HasSetting(Bald.OSD.NoPlaylistPanel)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoPlaylistPanel)</onclick></control>
 				<control type="radiobutton" id="9834"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[298]</label><selected>!Skin.HasSetting(Bald.OSD.NoBookmarksPanel)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoBookmarksPanel)</onclick></control>
-				<!-- Needs TMDb Helper (an optional dependency); dimmed without it. -->
-				<control type="radiobutton" id="9835"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[31638]</label><selected>!Skin.HasSetting(Bald.OSD.NoCastPanel) + $EXP[Bald_OSDHasTMDbHelper]</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoCastPanel)</onclick><enable>$EXP[Bald_OSDHasTMDbHelper]</enable></control>
+				<!-- Needs TMDb Helper or Bald Helper (optional dependencies); dimmed without both. -->
+				<control type="radiobutton" id="9835"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param></include><label>$LOCALIZE[31638]</label><selected>!Skin.HasSetting(Bald.OSD.NoCastPanel) + $EXP[Bald_OSDCastProvider]</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoCastPanel)</onclick><enable>$EXP[Bald_OSDCastProvider]</enable></control>
 			</control>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>

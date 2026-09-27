@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald video OSD, down chain: cast and crew of what is playing, from TMDb Helper (docs/SPEC.md 5.16, "Video OSD").
-     TMDb Helper is an optional dependency: without it this panel is not in the chain (Bald_OSDChainCast). Down switches
+<!-- Bald video OSD, down chain: cast and crew of what is playing (docs/SPEC.md 5.16, "Video OSD"), from Bald Helper's
+     library plugin for library items and from TMDb Helper otherwise (Bald_OSDCastPath). Both are optional
+     dependencies: without either this panel is not in the chain (Bald_OSDChainCast). Down switches
      the row from cast to crew, Up back to cast and then closes the panel. The tray shows the focused person; Select
      opens their biography in the text viewer (1102). Layout and data: Includes_Bald_OSD.xml. -->
 <window type="dialog" id="1126">

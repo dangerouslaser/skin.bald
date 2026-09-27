@@ -58,10 +58,15 @@
 	<!-- The next episode of the season (the next item card's hidden list 8140, window 1124) has loaded and the
 	     episode is in its last ten minutes: forward plays it. -->
 	<expression name="Bald_OSDNextEpisodeReady">[VideoPlayer.Content(episodes) + !Container(8140).IsUpdating + Integer.IsGreater(Container(8140).NumItems,0) + Integer.IsLess(Player.TimeRemaining(mins),10)]</expression>
-	<!-- TMDb Helper is an optional dependency: the cast panel only exists with it. -->
+	<!-- The cast panel needs TMDb Helper, or Bald Helper for a library item (its plugin lists the library's cast). -->
 	<!-- TinyPPI (script.tinyppi, CoreELEC): its OSD button shows only when the add-on is there and enabled. -->
 	<expression name="Bald_OSDHasTinyPPI">[System.HasAddon(script.tinyppi) + System.AddonIsEnabled(script.tinyppi)]</expression>
 	<expression name="Bald_OSDHasTMDbHelper">[System.HasAddon(plugin.video.themoviedb.helper) + System.AddonIsEnabled(plugin.video.themoviedb.helper)]</expression>
+	<!-- Bald Helper lists the playing library item's cast (plugin://script.bald.helper/?info=cast); VideoPlayer.DBID is
+	     empty for anything not in the library. -->
+	<expression name="Bald_OSDHelperCast">[$EXP[Bald_HasHelper] + Integer.IsGreater(VideoPlayer.DBID,0)]</expression>
+	<!-- Either helper can fill the panel for some items: the setting row (9835) is usable. -->
+	<expression name="Bald_OSDCastProvider">[$EXP[Bald_OSDHasTMDbHelper] | $EXP[Bald_HasHelper]]</expression>
 	<!-- Script Skin Variables is a required dependency, but the inline stream lists still check for it. -->
 	<expression name="Bald_OSDHasSkinVariables">[System.HasAddon(script.skinvariables) + System.AddonIsEnabled(script.skinvariables)]</expression>
 	<!-- Auto-close: the setting holds seconds; empty means never. -->
@@ -75,7 +80,7 @@
 	<expression name="Bald_OSDChainChannels">[VideoPlayer.Content(livetv) + !Skin.HasSetting(Bald.OSD.NoChannelsPanel)]</expression>
 	<expression name="Bald_OSDChainPlaylist">[!VideoPlayer.Content(livetv) + [Integer.IsGreater(Playlist.Length(video),1) | [VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TvShowDBID) + !String.IsEmpty(VideoPlayer.Season)]] + !Skin.HasSetting(Bald.OSD.NoPlaylistPanel)]</expression>
 	<expression name="Bald_OSDChainBookmarks">[!VideoPlayer.Content(livetv) + !Skin.HasSetting(Bald.OSD.NoBookmarksPanel)]</expression>
-	<expression name="Bald_OSDChainCast">[$EXP[Bald_OSDHasTMDbHelper] + [VideoPlayer.Content(movies) | VideoPlayer.Content(episodes)] + !Skin.HasSetting(Bald.OSD.NoCastPanel)]</expression>
+	<expression name="Bald_OSDChainCast">[[$EXP[Bald_OSDHasTMDbHelper] | $EXP[Bald_OSDHelperCast]] + [VideoPlayer.Content(movies) | VideoPlayer.Content(episodes)] + !Skin.HasSetting(Bald.OSD.NoCastPanel)]</expression>
 	<include name="Bald_OSDChainFrom_0">
 		<ondown condition="$EXP[Bald_OSDChainGuide]">ActivateWindow(pvrchannelguide)</ondown>
 		<ondown condition="!$EXP[Bald_OSDChainGuide] + $EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</ondown>
@@ -1114,8 +1119,15 @@
 		<value condition="!String.IsEmpty(Container(8150).ListItem.Episode)">$INFO[Container(8150).ListItem.TVShowTitle,, · ]$INFO[Container(8150).ListItem.Season,S]$INFO[Container(8150).ListItem.Episode, E]$INFO[Container(8150).ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
 		<value>$INFO[Container(8150).ListItem.Year]$INFO[Container(8150).ListItem.Genre, · ]$INFO[Container(8150).ListItem.Duration(mins), · , $LOCALIZE[31710]]</value>
 	</variable>
-	<!-- The cast panel's list: TMDb Helper's cast, or its crew while Bald.OSD.Credits on Home is crew. -->
+	<!-- The cast panel's list. A library item with Bald Helper: its cast from the library (photos, roles, billing
+	     order; an episode's own cast, then the show's). Crew (Bald.OSD.Credits on Home is crew): TMDb Helper's when it
+	     is installed (photos and every department), else Bald Helper's director and writer names from the library,
+	     without photos. Anything else: TMDb Helper's cast or crew, looked up by IMDb id or title. -->
 	<variable name="Bald_OSDCastPath">
+		<value condition="$EXP[Bald_OSDHelperCast] + String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew) + !$EXP[Bald_OSDHasTMDbHelper] + VideoPlayer.Content(movies)">plugin://script.bald.helper/?info=crew&amp;dbtype=movie&amp;dbid=$INFO[VideoPlayer.DBID]</value>
+		<value condition="$EXP[Bald_OSDHelperCast] + String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew) + !$EXP[Bald_OSDHasTMDbHelper] + VideoPlayer.Content(episodes)">plugin://script.bald.helper/?info=crew&amp;dbtype=episode&amp;dbid=$INFO[VideoPlayer.DBID]</value>
+		<value condition="$EXP[Bald_OSDHelperCast] + !String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew) + VideoPlayer.Content(movies)">plugin://script.bald.helper/?info=cast&amp;dbtype=movie&amp;dbid=$INFO[VideoPlayer.DBID]</value>
+		<value condition="$EXP[Bald_OSDHelperCast] + !String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew) + VideoPlayer.Content(episodes)">plugin://script.bald.helper/?info=cast&amp;dbtype=episode&amp;dbid=$INFO[VideoPlayer.DBID]</value>
 		<value condition="VideoPlayer.Content(movies) + String.StartsWith(VideoPlayer.IMDBNumber,tt) + String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">plugin://plugin.video.themoviedb.helper/?info=crew&amp;tmdb_type=movie$INFO[VideoPlayer.IMDBNumber,&amp;imdb_id=]</value>
 		<value condition="VideoPlayer.Content(movies) + String.StartsWith(VideoPlayer.IMDBNumber,tt)">plugin://plugin.video.themoviedb.helper/?info=cast&amp;tmdb_type=movie$INFO[VideoPlayer.IMDBNumber,&amp;imdb_id=]</value>
 		<value condition="VideoPlayer.Content(movies) + String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">plugin://plugin.video.themoviedb.helper/?info=crew&amp;tmdb_type=movie$INFO[VideoPlayer.Title,&amp;query=]$INFO[VideoPlayer.Year,&amp;year=]</value>
