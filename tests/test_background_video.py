@@ -80,13 +80,20 @@ class BackgroundVideoTests(unittest.TestCase):
         first = button.find("onback")
         self.assertEqual((first.get("condition"), first.text), (ON, "Action(FullScreen)"))
 
-    def test_no_window_transitions_over_video(self):
+    def test_window_changes_over_video_fade_without_sliding(self):
         depth = self.common.find("include[@name='Bald_AnimWindowDepth']/definition")
         for animation in depth.findall("animation"):
-            self.assertIn(f"!{ON}", animation.get("condition"))
+            kinds = [e.get("type") for e in animation]
+            if "slide" in kinds:
+                self.assertIn(f"!{ON}", animation.get("condition"))
+            else:
+                self.assertIn(ON, animation.get("condition"))
+                self.assertEqual(kinds, ["fade"])
+        self.assertEqual(sorted(a.get("type") for a in depth.findall("animation") if "slide" not in [e.get("type") for e in a]),
+                         ["WindowClose", "WindowOpen"])
+        # The curtain keeps its fades: cutting it in and out made the change flicker.
         curtain = includes("Custom_1129_BaldCurtain.xml")
-        for animation in curtain.findall("animation"):
-            self.assertEqual(animation.get("condition"), f"!{ON}")
+        self.assertEqual([a.get("condition") for a in curtain.findall("animation")], [None, None])
 
     def test_strings(self):
         for language, text in (("en_gb", ""), ("de_de", "Hintergrundvideo")):

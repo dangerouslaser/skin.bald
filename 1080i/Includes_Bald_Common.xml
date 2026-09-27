@@ -252,7 +252,8 @@
 		<definition>
 			<!-- Not under the Home <-> library curtain (Custom_1129_BaldCurtain.xml): the window is already fully drawn
 			     when the curtain fades away. The condition is read when the open is queued, before the onload clears it.
-			     None with background video: windows change at once over the playing video (Bald_VideoBackdropOn). -->
+			     With background video (Bald_VideoBackdropOn) the slide is dropped and only the fade stays: a window that
+			     vanished at once left frames with nothing drawn, which on CoreELEC show the video undimmed (a flash). -->
 			<animation type="WindowOpen" condition="![$PARAM[back_in]] + String.IsEmpty(Window(home).Property(Bald.Curtain)) + !$EXP[Bald_VideoBackdropOn]">
 				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 				<effect type="slide" start="40,0" end="0,0" time="480" tween="cubic" easing="out" />
@@ -268,6 +269,12 @@
 			<animation type="WindowClose" condition="$PARAM[back_out] + !$EXP[Bald_VideoBackdropOn]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowOpen" condition="String.IsEmpty(Window(home).Property(Bald.Curtain)) + $EXP[Bald_VideoBackdropOn]">
+				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+			</animation>
+			<animation type="WindowClose" condition="$EXP[Bald_VideoBackdropOn]">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 			</animation>
 		</definition>
 	</include>

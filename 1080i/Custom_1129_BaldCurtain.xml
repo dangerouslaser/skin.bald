@@ -19,11 +19,10 @@
 	<onload>AlarmClock(bald_curtain,ClearProperty(Bald.Curtain,home),00:02,silent)</onload>
 	<onunload>CancelAlarm(bald_curtain,true)</onunload>
 	<onunload>ClearProperty(Bald.CurtainBlur,home)</onunload>
-	<!-- With background video the curtain is the same dimmed video as the windows it covers: no fades. -->
-	<animation type="WindowOpen" condition="!$EXP[Bald_VideoBackdropOn]">
+	<animation type="WindowOpen">
 		<effect type="fade" start="0" end="100" time="140" tween="sine" easing="inout" />
 	</animation>
-	<animation type="WindowClose" condition="!$EXP[Bald_VideoBackdropOn]">
+	<animation type="WindowClose">
 		<effect type="fade" start="100" end="0" delay="150" time="360" tween="sine" easing="inout" />
 	</animation>
 	<controls>
