@@ -41,7 +41,8 @@
 			<control type="grouplist">
 				<left>Bald_SafeLeft</left><top>760</top><width>780</width><height>170</height><orientation>vertical</orientation><itemgap>6</itemgap>
 				<control type="label"><width>780</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[Container(11).ListItem.StartTime]$INFO[Container(11).ListItem.EndTime,–]$INFO[Container(11).ListItem.Duration, · ]$INFO[Container(11).ListItem.Genre, · ]</label></control>
-				<control type="textbox"><width>780</width><height>120</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[Container(11).ListItem.Plot]</label></control>
+				<control type="textbox"><width>780</width><height>120</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[Container(11).ListItem.Plot]</label><include content="Bald_SpoilerPlotShown"><param name="item">Container(11).ListItem.</param></include></control>
+				<include content="Bald_SpoilerNote"><param name="item">Container(11).ListItem.</param><param name="width">780</param></include>
 			</control>
 			<include content="Bald_PVRHints">
 				<param name="first">$LOCALIZE[31668]</param>

@@ -31,7 +31,8 @@
 			<control type="label"><width>1120</width><height>32</height><font>Bald_InfoMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[SeasonEpisodeAndNameLabel]</label><visible>$EXP[listitem_has_episode_info]</visible></control>
 			<control type="progress"><width>560</width><height>4</height><include>Bald_PVRProgress</include><visible>Integer.IsGreater(ListItem.Progress,0)</visible></control>
 		</control>
-		<!-- The plot. Select reads all of it in the text viewer, as in Estuary. -->
+		<!-- The plot. Select reads all of it in the text viewer, as in Estuary; under Bald's spoiler protection
+		     (Includes_Bald_Spoilers.xml) the plot gives way to a note and Select is how to read it anyway. -->
 		<control type="group">
 			<left>Bald_SafeLeft</left><top>440</top>
 			<include content="Bald_AnimInfoIn"><param name="delay">100</param></include>
@@ -45,7 +46,8 @@
 				<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
 				<onup>5000</onup><ondown>5000</ondown><onleft>5000</onleft><onright>5000</onright>
 			</control>
-			<control type="textbox"><width>1120</width><height>232</height><font>Bald_InfoPlot</font><textcolor>bald_ink80</textcolor><label fallback="19055">$INFO[ListItem.Plot]</label></control>
+			<control type="textbox"><width>1120</width><height>232</height><font>Bald_InfoPlot</font><textcolor>bald_ink80</textcolor><label fallback="19055">$INFO[ListItem.Plot]</label><include content="Bald_SpoilerPlotShown" /></control>
+			<include content="Bald_SpoilerNote"><param name="width">1120</param><param name="height">34</param><param name="font">Bald_InfoPlot</param></include>
 		</control>
 		<!-- Actions: Kodi's ids, in Estuary's order. -->
 		<control type="grouplist" id="5000">

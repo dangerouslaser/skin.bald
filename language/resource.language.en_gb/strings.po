@@ -938,6 +938,50 @@ msgctxt "#31209"
 msgid "Clear target"
 msgstr ""
 
+# Bald spoiler protection strings: 31260-31279 (Includes_Bald_Spoilers.xml, Appearance > Information).
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: the spoiler protection switch
+msgctxt "#31260"
+msgid "Hide spoilers for unwatched items"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: blur unwatched episodes' stills
+msgctxt "#31261"
+msgid "Blur episode thumbnails"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide unwatched episodes' plots
+msgctxt "#31262"
+msgid "Hide episode plots"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide unwatched movies' plots
+msgctxt "#31263"
+msgid "Hide movie plots"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide programme descriptions and images, and unwatched recordings
+msgctxt "#31264"
+msgid "Hide Live TV descriptions and recordings"
+msgstr ""
+
+#: /1080i/Includes_Bald_Spoilers.xml
+#. In place of the plot of an unwatched episode, movie or recording
+msgctxt "#31265"
+msgid "Plot hidden, not watched yet"
+msgstr ""
+
+#: /1080i/Includes_Bald_Spoilers.xml
+#. In place of a Live TV programme's description
+msgctxt "#31266"
+msgid "Description hidden to avoid spoilers"
+msgstr ""
+
 # Bald ratings strings: 31300-31399 (Includes_Bald_Ratings.xml, Appearance > Ratings).
 
 #: /1080i/Custom_1118_BaldAppearance.xml

@@ -11,7 +11,9 @@
 	<!-- The options column (menucontrol 9000) has focus: the preview column gives way to it, as in Global Search. -->
 	<expression name="Bald_PVRMenuOpen">[ControlGroup(9000).HasFocus]</expression>
 	<expression name="Bald_PVRHasFlag">[ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive | ListItem.IsNew]</expression>
-	<expression name="Bald_PVRHasArt">[!String.IsEmpty(ListItem.EpgEventIcon) | !String.IsEmpty(ListItem.Art(thumb)) | !String.IsEmpty(ListItem.Art(fanart))]</expression>
+	<!-- Programme art; none (the channel logo instead) for a programme or recording the spoiler protection hides
+	     (Includes_Bald_Spoilers.xml). -->
+	<expression name="Bald_PVRHasArt">[[!String.IsEmpty(ListItem.EpgEventIcon) | !String.IsEmpty(ListItem.Art(thumb)) | !String.IsEmpty(ListItem.Art(fanart))] + !$EXP[Bald_SpoilerEpgArt] + !$EXP[Bald_SpoilerThumb]]</expression>
 	<expression name="Bald_PVRHasStatus">[ListItem.IsRecording | ListItem.HasTimer | ListItem.HasTimerSchedule | ListItem.HasArchive | ListItem.HasReminder]</expression>
 
 	<!-- ============ Text ============ -->
@@ -73,6 +75,8 @@
 	</variable>
 	<variable name="Bald_PVRLogo">
 		<value condition="!String.IsEmpty(ListItem.ChannelLogo)">$INFO[ListItem.ChannelLogo]</value>
+		<!-- A hidden recording's icon is its own picture: nothing (Includes_Bald_Spoilers.xml). -->
+		<value condition="$EXP[Bald_SpoilerThumb]" />
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 
@@ -322,7 +326,8 @@
 					<control type="label"><width>528</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$PARAM[extra]</label><visible>$PARAM[extra_visible]</visible></control>
 					<control type="progress"><width>528</width><height>4</height><include>Bald_PVRProgress</include><visible>Integer.IsGreater(ListItem.Progress,0)</visible></control>
 					<control type="progress"><width>528</width><height>4</height><include content="Bald_PVRProgress"><param name="info">ListItem.PercentPlayed</param><param name="color">bald_ink60</param></include><visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible></control>
-					<control type="textbox"><width>528</width><height>90</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[ListItem.Plot]</label></control>
+					<control type="textbox"><width>528</width><height>90</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[ListItem.Plot]</label><include content="Bald_SpoilerPlotShown" /></control>
+					<include content="Bald_SpoilerNote" />
 					<control type="label"><width>528</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_PVRNext]</label><visible>$PARAM[next] + !String.IsEmpty(ListItem.NextTitle)</visible></control>
 				</control>
 			</control>

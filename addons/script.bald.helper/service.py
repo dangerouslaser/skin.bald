@@ -1,5 +1,6 @@
 """Bald Helper service: Bald's keymaps (resources/lib/keymap.py), its blurred backgrounds (resources/lib/blur.py),
-its latency-sensitive skin actions (resources/lib/actions.py) and its online ratings (resources/lib/ratings.py).
+its latency-sensitive skin actions (resources/lib/actions.py), its online ratings (resources/lib/ratings.py) and its
+spoiler stills (resources/lib/spoilers.py).
 
 The blur follower, the ratings follower and the action worker run on their own threads; the keymap manager runs here,
 on the thread whose monitor receives the skin's notifications (and whose player receives playback events), and keeps
@@ -56,9 +57,25 @@ def start_actions():
         return None, None
 
 
+def start_spoilers():
+    """The spoiler stills (resources/lib/spoilers.py) and their library monitor (made on this thread, which runs the
+    loop, so Kodi delivers its notifications)."""
+    try:
+        from resources.lib.spoilers import Spoilers, make_monitor
+
+        spoilers = Spoilers(xbmc, xbmcvfs, xbmcgui)
+        spoilers_monitor = make_monitor(xbmc, spoilers)
+        spoilers.start()
+        return spoilers, spoilers_monitor
+    except Exception as error:  # noqa: BLE001 - Bald draws its placeholders without the stills
+        xbmc.log(f"script.bald.helper: spoilers did not start: {type(error).__name__}: {error}", xbmc.LOGERROR)
+        return None, None
+
+
 if __name__ == "__main__":
     blur = start_blur()
     ratings, player = start_ratings()
+    spoilers, spoilers_monitor = start_spoilers()
     actions, monitor = start_actions()
     try:
         if actions is not None:
@@ -74,3 +91,5 @@ if __name__ == "__main__":
             ratings.stop()
         if blur is not None:
             blur.stop()
+        if spoilers is not None:
+            spoilers.stop()

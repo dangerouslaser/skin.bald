@@ -113,7 +113,7 @@ class TVLibraryTests(unittest.TestCase):
 
     def test_episode_wall_uses_cropped_sixteen_by_nine_thumbnails(self):
         tile = self.alternates.find("include[@name='Bald_TVEpisodeWallTile']")
-        art = next(image for image in tile.findall('.//control[@type="image"]') if image.findtext('texture') == '$INFO[ListItem.Art(thumb)]')
+        art = next(image for image in tile.findall('.//control[@type="image"]') if image.findtext('texture') == '$VAR[Bald_EpisodeThumb]')
         self.assertEqual((art.findtext('width'), art.findtext('height'), art.findtext('aspectratio')), ('192', '108', 'scale'))
 
     def test_alternate_episode_preview_keeps_metadata_flags_and_art_fallbacks(self):

@@ -105,8 +105,11 @@ class ArtworkFallbackTest(unittest.TestCase):
     def test_shared_chains_live_in_common_and_are_defined_once(self):
         for name in ("Bald_ItemFanart", "Bald_ItemLogo", "Bald_EpisodeThumb"):
             self.assertEqual([f for f, _ in self.variables[name]], ["Includes_Bald_Common.xml"])
+        # A still hidden by the spoiler protection never becomes the fallback (Includes_Bald_Spoilers.xml).
         self.assertEqual([v for _, v in self.chain("Bald_ItemFanart")],
-                         ["$INFO[ListItem.Art(fanart)]", "$INFO[ListItem.Art(tvshow.fanart)]", "$INFO[ListItem.Art(thumb)]"])
+                         ["$INFO[ListItem.Art(fanart)]", "$INFO[ListItem.Art(tvshow.fanart)]", "$VAR[Bald_SpoilerArt]",
+                          "$INFO[ListItem.Art(thumb)]"])
+        self.assertEqual(self.chain("Bald_ItemFanart")[2][0], "$EXP[Bald_SpoilerThumb]")
         self.assertEqual([v for _, v in self.chain("Bald_ItemLogo")],
                          ["$INFO[ListItem.Art(clearlogo)]", "$INFO[ListItem.Art(tvshow.clearlogo)]"])
 
@@ -120,13 +123,18 @@ class ArtworkFallbackTest(unittest.TestCase):
                 self.assertNotIn(chain, shared.values(), name)
 
     def test_container_variants_match_the_listitem_chain(self):
+        def for_container(text, container):
+            # ListItem.* reads become Container(n).ListItem.*, and the spoiler names take the container's suffix.
+            text = text.replace("ListItem.", f"Container({container}).ListItem.")
+            return re.sub(r"(Bald_Spoiler(?:Thumb|Art))\]", rf"\g<1>{container}]", text)
+
         fanart = self.chain("Bald_ItemFanart")
         self.assertEqual(self.chain("Bald_ItemFanart5100"),
-                         [(c and c.replace("ListItem.", "Container(5100).ListItem."), v.replace("ListItem.", "Container(5100).ListItem."))
-                          for c, v in fanart])
+                         [(c and for_container(c, 5100), for_container(v, 5100)) for c, v in fanart])
         for container in (540, 541, 542):
             values = [v for _, v in self.chain(f"Bald_EpisodeThumb{container}")]
-            self.assertEqual(values, [f"$INFO[Container({container}).ListItem.Art(thumb)]",
+            self.assertEqual(values, [f"$VAR[Bald_SpoilerArt{container}]",
+                                      f"$INFO[Container({container}).ListItem.Art(thumb)]",
                                       f"$INFO[Container({container}).ListItem.Art(fanart)]",
                                       "$INFO[Container.Art(tvshow.fanart)]"])
 

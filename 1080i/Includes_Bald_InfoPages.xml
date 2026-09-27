@@ -91,8 +91,17 @@
 					<font>Bald_InfoPlot</font>
 					<textcolor>bald_ink80</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
+					<include content="Bald_SpoilerPlotShown" />
 					<include content="Bald_AnimInfoIn"><param name="delay">600</param></include>
 				</control>
+				<!-- The spoiler protection's note in its place, as tall, so the actions keep their line. -->
+				<include content="Bald_SpoilerNote">
+					<param name="top">14</param>
+					<param name="width">780</param>
+					<param name="height">134</param>
+					<param name="font">Bald_InfoPlot</param>
+					<include content="Bald_AnimInfoIn"><param name="delay">600</param></include>
+				</include>
 				<!-- Actions -->
 				<control type="grouplist" id="5000">
 					<top>34</top>

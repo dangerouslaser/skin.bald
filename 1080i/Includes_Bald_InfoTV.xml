@@ -227,6 +227,8 @@
 					<param name="diffuse">FFFFFFFF</param>
 					<param name="ring">$PARAM[ring]</param>
 					<param name="art">$VAR[Bald_EpisodeThumb]</param>
+					<param name="spoiler">true</param>
+					<param name="spoiler_number">false</param>
 					<param name="x">12</param>
 					<param name="y">12</param>
 					<param name="w">320</param>
@@ -436,7 +438,8 @@
 	</include>
 	<!-- The focused episode's detail: code and title 24, then runtime / air date / state 18 at 70%, its ratings and media
 	     flags, baselines aligned; one-line synopsis (a single-line label ends with an ellipsis). Kodi's "show plots of
-	     unwatched items" setting applies to ListItem.Plot itself. `ratings` is the surface's ratings setting. -->
+	     unwatched items" setting applies to ListItem.Plot itself; Bald's spoiler protection swaps the synopsis for its
+	     note (Includes_Bald_Spoilers.xml). `ratings` is the surface's ratings setting. -->
 	<include name="Bald_InfoTVEpisodeDetail">
 		<param name="ratings">$EXP[Bald_RatingsInfo]</param>
 		<param name="detail_y">894</param>
@@ -493,7 +496,15 @@
 				<textcolor>bald_ink80</textcolor>
 				<label>$INFO[Container(5302).ListItem.Plot]</label>
 				<visible>$EXP[Bald_InfoTVHasEpisodes]</visible>
+				<include content="Bald_SpoilerPlotShown"><param name="item">Container(5302).ListItem.</param></include>
 			</control>
+			<include content="Bald_SpoilerNote">
+				<param name="item">Container(5302).ListItem.</param>
+				<param name="visible">$EXP[Bald_InfoTVHasEpisodes]</param>
+				<param name="left">Bald_SafeLeft</param>
+				<param name="top">$PARAM[synopsis_y]</param>
+				<param name="width">1100</param>
+			</include>
 		</definition>
 	</include>
 	<!-- The Overview's directional scrims over the art; the library Series page draws the same pair. -->

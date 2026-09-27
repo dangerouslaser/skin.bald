@@ -786,8 +786,19 @@
 						<textcolor>bald_ink80</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Plot]</label>
 						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [!String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | !String.IsEmpty(Container($PARAM[c]).ListItem.Plot)]</visible>
+						<include content="Bald_SpoilerPlotShown"><param name="item">Container($PARAM[c]).ListItem.</param></include>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
 					</control>
+					<!-- The plot of an unwatched item under the spoiler protection (Includes_Bald_Spoilers.xml). -->
+					<include content="Bald_SpoilerNote">
+						<param name="item">Container($PARAM[c]).ListItem.</param>
+						<param name="visible">Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</param>
+						<param name="left">20</param>
+						<param name="top">18</param>
+						<param name="width">$PARAM[width]</param>
+						<param name="height">30</param>
+						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
+					</include>
 					<control type="label">
 						<top>18</top><left>20</left><width>$PARAM[width]</width><height>116</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor>
 						<label>$INFO[Container.ShowPlot]</label>
@@ -822,10 +833,14 @@
 	<!-- ============ Rows ============ -->
 	<!-- A landscape tile: 176 x 99, 3 px corners, drawn 10 px inside its 192 px slot so the pop and ring are not clipped.
 	     Geometry and art are parameters so the TV info episode cards (320 x 180) reuse it; the defaults are Home's row tile.
-	     The ring sits 3 px outside the tile. -->
+	     The ring sits 3 px outside the tile. `spoiler` is true where the art is an episode's still (Bald_EpisodeThumb):
+	     a hidden still gets Bald_SpoilerStill over the show's art, with the episode's number in the middle unless
+	     `spoiler_number` is false. -->
 	<include name="Bald_LandscapeTile">
 		<param name="diffuse">bald_tile_dim</param>
 		<param name="ring">false</param>
+		<param name="spoiler">false</param>
+		<param name="spoiler_number">true</param>
 		<param name="art">$VAR[Bald_ItemFanart]</param>
 		<param name="x">10</param>
 		<param name="y">10</param>
@@ -851,6 +866,15 @@
 				<aspectratio scalediffuse="false">scale</aspectratio>
 				<texture diffuse="bald/tile.png" colordiffuse="$PARAM[diffuse]" background="true">$PARAM[art]</texture>
 			</control>
+			<include content="Bald_SpoilerStill">
+				<param name="visible">$PARAM[spoiler]</param>
+				<param name="x">$PARAM[x]</param>
+				<param name="y">$PARAM[y]</param>
+				<param name="w">$PARAM[w]</param>
+				<param name="h">$PARAM[h]</param>
+				<param name="diffuse">$PARAM[diffuse]</param>
+				<param name="number">$PARAM[spoiler_number]</param>
+			</include>
 			<control type="image">
 				<left>$PARAM[ring_x]</left>
 				<top>$PARAM[ring_y]</top>
@@ -888,7 +912,7 @@
 		<include content="Bald_RowLandscape" />
 	</include>
 	<include name="Bald_RowTiles_thumbnail">
-		<include content="Bald_RowLandscape"><param name="art">$VAR[Bald_ItemThumbnail]</param></include>
+		<include content="Bald_RowLandscape"><param name="art">$VAR[Bald_ItemThumbnail]</param><param name="spoiler">String.IsEqual(ListItem.DBType,episode)</param></include>
 	</include>
 	<include name="Bald_RowTiles_logo">
 		<include content="Bald_RowLandscape"><param name="overlay">Bald_TileLogo</param></include>
@@ -902,6 +926,7 @@
 	     tile (it gets the tile's diffuse). -->
 	<include name="Bald_RowLandscape">
 		<param name="art">$VAR[Bald_ItemFanart]</param>
+		<param name="spoiler">false</param>
 		<param name="overlay">Bald_TileOverlayNone</param>
 		<definition>
 			<left>86</left>
@@ -909,7 +934,7 @@
 			<width>1258</width>
 			<height>119</height>
 			<itemlayout width="192" height="119">
-				<include content="Bald_LandscapeTile"><param name="art">$PARAM[art]</param></include>
+				<include content="Bald_LandscapeTile"><param name="art">$PARAM[art]</param><param name="spoiler">$PARAM[spoiler]</param></include>
 				<include content="$PARAM[overlay]" />
 			</itemlayout>
 			<focusedlayout width="192" height="119">
@@ -925,6 +950,7 @@
 					</animation>
 					<include content="Bald_LandscapeTile">
 						<param name="art">$PARAM[art]</param>
+						<param name="spoiler">$PARAM[spoiler]</param>
 						<param name="diffuse">FFFFFFFF</param>
 						<param name="ring">!$EXP[Bald_OverlayOpen]</param>
 					</include>
