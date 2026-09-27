@@ -17,7 +17,7 @@ def main() -> None:
     payload = index.read_bytes()
     assert hashlib.md5(payload).hexdigest() == (root / "addons.xml.md5").read_text().strip()
     addons = {node.attrib["id"]: node for node in ET.parse(index).getroot()}
-    assert {"skin.bald", "script.bald.xcsetup", "repository.bald"} <= addons.keys()
+    assert {"skin.bald", "script.bald.xcsetup", "script.bald.helper", "repository.bald"} <= addons.keys()
     assert addons["skin.bald"].find("./requires/import[@addon='xbmc.gui']").attrib["version"] == "5.18.0"
     assert addons["script.bald.xcsetup"].find(
         "./requires/import[@addon='pvr.iptvsimple']"
@@ -47,6 +47,19 @@ def main() -> None:
         assert "script.bald.xcsetup/resources/settings.xml" in names
         assert "script.bald.xcsetup/resources/language/resource.language.en_gb/strings.po" in names
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
+
+    helper = addons["script.bald.helper"]
+    assert helper.find("./extension[@point='xbmc.service']").attrib["library"] == "service.py"
+    helper_zip = root / "script.bald.helper" / f"script.bald.helper-{helper.attrib['version']}.zip"
+    with zipfile.ZipFile(helper_zip) as zipped:
+        names = set(zipped.namelist())
+        assert "script.bald.helper/service.py" in names
+        assert "script.bald.helper/resources/lib/keymap.py" in names
+        assert "script.bald.helper/resources/icon.png" in names
+        assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
+    assert (root / "script.bald.helper" / "resources" / "icon.png").is_file()
+    # The skin never requires the helper (an optional import would re-enable a disabled helper on skin updates).
+    assert addons["skin.bald"].find("./requires/import[@addon='script.bald.helper']") is None
 
     skin_version = addons["skin.bald"].attrib["version"]
     skin_zip = root / "skin.bald" / f"skin.bald-{skin_version}.zip"

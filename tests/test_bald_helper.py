@@ -209,6 +209,15 @@ class AddonTests(unittest.TestCase):
         icon = metadata.findtext("assets/icon")
         self.assertTrue((ADDON / icon).is_file())
 
+    def test_the_repository_publishes_it(self):
+        path = ROOT / "packaging" / "repository.bald" / "build_repository.py"
+        spec = importlib.util.spec_from_file_location("bald_build_repository", path)
+        build = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(build)
+        self.assertIn("addons/script.bald.helper", build.BUNDLED_ADDONS)
+        checks = (ROOT / "packaging" / "repository.bald" / "test_repository.py").read_text()
+        self.assertIn('"script.bald.helper/service.py" in names', checks)
+
     def test_skin_does_not_require_the_helper(self):
         # An optional import would still make Kodi re-enable a disabled helper whenever the skin installs or updates.
         skin = ET.parse(ROOT / "addon.xml").getroot()
