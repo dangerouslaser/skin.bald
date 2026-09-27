@@ -498,3 +498,26 @@ class HubHeadingTests(unittest.TestCase):
             with self.subTest(view=name):
                 text = (XML / name).read_text(encoding="utf-8")
                 self.assertRegex(text, r"\$VAR\[Bald_Library(Movies|Shows)Heading\]")
+
+
+class SeriesPageOptionTests(unittest.TestCase):
+    """The series views' options menu offers Open shows as (seasons or series page); with the series page chosen,
+    Select on a show opens the tabbed TV information, and otherwise Kodi's own Select opens its seasons."""
+
+    CLICK = ("Skin.HasSetting(Bald.ShowsOpenSeriesPage) + String.IsEqual(ListItem.DBType,tvshow)", "Action(Info)")
+
+    def test_series_views_open_the_series_page_when_chosen(self):
+        for name, ids in (("View_520_Bald_TV.xml", ["520"]), ("View_521_Bald_TV_Alternates.xml", ["521", "522", "523"])):
+            root = ET.parse(XML / name).getroot()
+            for view in ids:
+                with self.subTest(view=view):
+                    container = root.find(f".//control[@id='{view}']")
+                    self.assertEqual([(n.get("condition"), n.text) for n in container.findall("onclick")], [self.CLICK])
+
+    def test_options_menu_toggles_it_in_series_views(self):
+        root = ET.parse(XML / "View_510_Bald_Posters.xml").getroot()
+        item = next(i for i in root.iter("item") if i.findtext("property[@name='option']") == "shows")
+        self.assertEqual(item.findtext("onclick"), "Skin.ToggleSetting(Bald.ShowsOpenSeriesPage)")
+        self.assertEqual(item.findtext("visible"), "$EXP[Bald_LibrarySeriesView]")
+        name = [(v.get("condition"), v.text) for v in root.find("variable[@name='Bald_ShowsOpenName']")]
+        self.assertEqual(name, [("Skin.HasSetting(Bald.ShowsOpenSeriesPage)", "$LOCALIZE[31845]"), (None, "$LOCALIZE[33054]")])
