@@ -663,4 +663,101 @@
 			</control>
 		</definition>
 	</include>
+
+	<!-- ============ Player process info (DialogPlayerProcessInfo.xml) ============ -->
+	<!-- One page over the field dim and tall scrim: up to four 408 px columns (video, audio, subtitles with the system,
+	     and PVR on Live TV), each a heading and label/value pairs, and the hint on y 954. The columns start at y 268,
+	     so the longest without Live TV (subtitles and system, 672 px) ends at 940; on Live TV they rise 104 px for the
+	     PVR column (776 px). -->
+	<!-- A column: a vertical grouplist, so empty values (and their headings) drop out and the rest close up. -->
+	<include name="Bald_ProcessColumn">
+		<param name="x" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="grouplist">
+				<left>$PARAM[x]</left>
+				<top>268</top>
+				<width>408</width>
+				<height>776</height>
+				<orientation>vertical</orientation>
+				<itemgap>6</itemgap>
+				<visible>$PARAM[visible]</visible>
+				<animation type="Conditional" condition="VideoPlayer.Content(livetv)">
+					<effect type="slide" start="0,0" end="0,-104" time="0" />
+				</animation>
+				<nested />
+			</control>
+		</definition>
+	</include>
+	<!-- A section heading; 48 px with the text at the bottom, so a second section in a column keeps some space. -->
+	<include name="Bald_ProcessHeading">
+		<param name="label" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="label">
+				<width>408</width>
+				<height>48</height>
+				<aligny>bottom</aligny>
+				<font>Bald_RowLabel</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$PARAM[label]</label>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- A label/value pair, as the information screen's details (Bald_Detail). -->
+	<include name="Bald_ProcessDetail">
+		<param name="label" />
+		<param name="value" />
+		<param name="visible">true</param>
+		<definition>
+			<control type="group">
+				<width>408</width>
+				<height>58</height>
+				<visible>$PARAM[visible]</visible>
+				<control type="label">
+					<width>408</width>
+					<height>22</height>
+					<font>Bald_DetailLabel</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$PARAM[label]</label>
+				</control>
+				<control type="label">
+					<top>22</top>
+					<width>408</width>
+					<height>32</height>
+					<aligny>center</aligny>
+					<font>Bald_DetailValue</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$PARAM[value]</label>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- A pair with a level bar under it (PVR signal quality and SNR). -->
+	<include name="Bald_ProcessLevel">
+		<param name="label" />
+		<param name="value" />
+		<param name="info" />
+		<definition>
+			<control type="group">
+				<width>408</width>
+				<height>70</height>
+				<visible>!String.IsEmpty($PARAM[value])</visible>
+				<include content="Bald_ProcessDetail"><param name="label">$PARAM[label]</param><param name="value">$INFO[$PARAM[value]]</param></include>
+				<include content="Bald_PlaybackTrackLine"><param name="left">0</param><param name="width">408</param><param name="top">62</param></include>
+				<include content="Bald_PlaybackTrackFill">
+					<param name="left">0</param>
+					<param name="width">408</param>
+					<param name="top">60</param>
+					<param name="color">bald_accent</param>
+					<info>$PARAM[info]</info>
+				</include>
+			</control>
+		</definition>
+	</include>
+	<variable name="Bald_ProcessHdr">
+		<value condition="String.IsEmpty(VideoPlayer.HdrType)">SDR</value>
+		<value>$MAP[DefaultHdrMap, VideoPlayer.HdrType]$INFO[VideoPlayer.HdrDetail, P]</value>
+	</variable>
 </includes>

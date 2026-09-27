@@ -1052,6 +1052,7 @@ msgstr "Hoch zum Spulen"
 #: /1080i/Includes_Bald_Playback.xml
 #: /1080i/Includes_Bald_OSD.xml
 #: /1080i/VideoOSDBookmarks.xml
+#: /1080i/DialogPlayerProcessInfo.xml
 #. OSD hint when there is no seek row
 msgctxt "#31619"
 msgid "Back to close"
@@ -2608,6 +2609,11 @@ msgstr "Temperatur in Seitenköpfen"
 msgctxt "#31993"
 msgid "Scroll long plots"
 msgstr "Lange Handlungen scrollen"
+
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31994"
+msgid "CPU temperature"
+msgstr "CPU-Temperatur"
 
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
