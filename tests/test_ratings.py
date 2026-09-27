@@ -71,6 +71,14 @@ HELPER = {
 }
 LISTITEM = "Window(Home).Property(TMDbHelper.ListItem.{})"
 PLAYER = "Window(Home).Property(TMDbHelper.Player.{})"
+# Bald Helper's MDbList ratings (script.bald.helper, resources/lib/ratings.py): its key -> the TMDb Helper key it stands
+# beside, so glyph, switch, unit and library names are the same.
+BALD = {"imdb": "imdb_rating", "tmdb": "percent_tmdb_rating", "rt": "rottentomatoes_rating",
+        "rtaudience": "rottentomatoes_usermeter", "metacritic": "metacritic_rating",
+        "metacriticuser": "metacriticuser_rating", "trakt": "percent_trakt_rating", "letterboxd": "letterboxd_rating",
+        "myanimelist": "myanimelist_rating", "rogerebert": "rogerebert_rating", "mdblist": "mdblist_rating"}
+BALD_LISTITEM = "Window(Home).Property(Bald.Ratings.{})"
+BALD_PLAYER = "Window(Home).Property(Bald.Player.Ratings.{})"
 
 
 def guard(container):
@@ -87,6 +95,17 @@ def guard(container):
             f" + String.IsEqual({w('episode')},{item}.Episode)]"
             f" | [!String.IsEmpty({w('title')}) + String.IsEqual({w('title')},{item}.Title)"
             f" + String.IsEqual({w('year')},{item}.Year)]]")
+
+
+def bald_guard(container):
+    """What must hold for a Bald Helper pill: its ratings in use, and its identity (written last) this item's."""
+    item = f"{container}ListItem"
+    w = BALD_LISTITEM.format
+    return (f"$EXP[Bald_HelperRatings] + !String.IsEmpty({w('DBType')}) + String.IsEqual({w('DBType')},{item}.DBType) + ["
+            f"[!String.IsEmpty({w('DBID')}) + String.IsEqual({w('DBID')},{item}.DBID)]"
+            f" | [String.IsEmpty({w('DBID')}) + !String.IsEmpty({w('IMDbID')}) + String.IsEqual({w('IMDbID')},{item}.UniqueID(imdb))]"
+            f" | [String.IsEmpty({w('DBID')}) + String.IsEmpty({w('IMDbID')}) + !String.IsEmpty({w('TMDbID')})"
+            f" + String.IsEqual({w('TMDbID')},{item}.UniqueID(tmdb))]]")
 
 
 def mismatch(condition):
@@ -270,7 +289,8 @@ class RatingsTests(unittest.TestCase):
             (self.pills, "Container(510).ListItem.Rating", [f"Container(510).ListItem.Rating({n})" for n in SOURCES]),
             # The player's default rating gives way to any TMDb Helper value, while online ratings are on.
             (self.player, "VideoPlayer.Rating",
-             [f"!$EXP[Bald_RatingsOnline] | String.IsEmpty({PLAYER.format(k)})" for k in HELPER]),
+             [f"!$EXP[Bald_RatingsOnlinePlayer] | String.IsEmpty({PLAYER.format(k)})" for k in HELPER]
+             + [f"!$EXP[Bald_HelperPlayerRatings] | String.IsEmpty({BALD_PLAYER.format(k)})" for k in BALD]),
         ):
             with self.subTest(rating=rating):
                 default = [p for p in pills if p.glyph == DEFAULT_GLYPH]
@@ -331,8 +351,8 @@ class RatingsTests(unittest.TestCase):
             shows = pill.shows(button)
             votes = re.search(r"· \$INFO\[(.+?)\]\[/COLOR\]", button.findtext("label")).group(1)
             self.assertTrue(implies(shows, "$EXP[Bald_RatingVotes]"))
-            # Kodi prints "0" without votes; TMDb Helper publishes no comma_*_votes at all then.
-            empty = f"!String.IsEmpty({votes})" if "TMDbHelper" in votes else f"!String.IsEqual({votes},0)"
+            # Kodi prints "0" without votes; TMDb Helper and Bald Helper publish no vote property at all then.
+            empty = f"!String.IsEmpty({votes})" if "Window(Home)" in votes else f"!String.IsEqual({votes},0)"
             self.assertTrue(implies(shows, empty), votes)
         for pill in self.named():
             self.assertEqual(len(pill.values), 2)
@@ -364,7 +384,7 @@ class RatingsTests(unittest.TestCase):
         for key, (glyph, toggle, unit, _names) in HELPER.items():
             pill = next(p for p in player if f"{PLAYER.format(key)}]" in p.label())
             self.assertEqual(pill.glyph, f"bald/ratings/{glyph}.png")
-            self.assertTrue(implies(pill.visible, f"$EXP[{toggle}] + $EXP[Bald_RatingsOnline]"))
+            self.assertTrue(implies(pill.visible, f"$EXP[{toggle}] + $EXP[Bald_RatingsOnlinePlayer]"))
 
     def test_tmdb_helper_pills_are_guarded_on_every_surface(self):
         """A TMDb Helper value shows only for the item it belongs to: never mid-update, never on an identity mismatch."""
@@ -428,39 +448,49 @@ class RatingsTests(unittest.TestCase):
         self.assertIn(("!$EXP[Bald_RatingsOnline] + Skin.HasSetting(TMDbHelper.Service)",
                        "Skin.Reset(TMDbHelper.Service)"), actions)
         online = self.root.find("expression[@name='Bald_RatingsOnline']").text
-        self.assertTrue(equivalent(online, "$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(Bald.Ratings.NoOnline)"))
+        self.assertTrue(equivalent(online, "$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(Bald.Ratings.NoOnline)"
+                                           " + !$EXP[Bald_HelperRatings]"))
 
     def test_online_ratings_rows(self):
         row = self.appearance.find(f".//control[@id='{ONLINE_ROW}']")
         self.assertEqual(row.get("type"), "radiobutton")
-        self.assertEqual(row.findtext("label"), "$LOCALIZE[31323]")
-        self.assertTrue(equivalent(row.findtext("selected"), "$EXP[Bald_RatingsOnline]"))
-        # Greyed without TMDb Helper (and with ratings off).
-        self.assertTrue(equivalent(row.findtext("enable"),
-                                   "!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_HasTMDbHelper]"))
+        self.assertEqual(row.findtext("label"), "$VAR[Bald_RatingsOnlineLabel]")
+        either = "[$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]]"
+        self.assertTrue(equivalent(row.findtext("selected"), f"!Skin.HasSetting(Bald.Ratings.NoOnline) + {either}"))
+        # Greyed without either helper (and with ratings off).
+        self.assertTrue(equivalent(row.findtext("enable"), f"!Skin.HasSetting(Bald.Ratings.Hide) + {either}"))
         self.assertTrue(implies(" + ".join(n.text for n in row.findall("visible")), "Container(9500).HasFocus(6)"))
-        # Kodi checks every onclick condition first: the service follows the value the toggle is about to set.
+        # Kodi checks every onclick condition first: TMDb Helper's service follows the value the toggle is about to
+        # set, but is not started while Bald Helper supplies the ratings.
         clicks = [(n.get("condition"), n.text) for n in row.findall("onclick")]
-        self.assertEqual(clicks, [("Skin.HasSetting(Bald.Ratings.NoOnline)", "Skin.SetBool(TMDbHelper.Service)"),
+        self.assertEqual(clicks, [("Skin.HasSetting(Bald.Ratings.NoOnline) + !$EXP[Bald_HelperRatingsReady]",
+                                   "Skin.SetBool(TMDbHelper.Service)"),
                                   ("!Skin.HasSetting(Bald.Ratings.NoOnline)", "Skin.Reset(TMDbHelper.Service)"),
                                   (None, "Skin.ToggleSetting(Bald.Ratings.NoOnline)")])
-        # The next row opens TMDb Helper's settings, where the keys are entered; Bald asks for none.
+        # The next row opens the provider's settings, where the key is entered: Bald Helper's when it is installed.
         button = self.appearance.find(f".//control[@id='{HELPER_SETTINGS_ROW}']")
         self.assertEqual(button.get("type"), "button")
-        self.assertEqual([n.text for n in button.findall("onclick")],
-                         ["Addon.OpenSettings(plugin.video.themoviedb.helper)"])
-        self.assertTrue(equivalent(button.findtext("enable"), "$EXP[Bald_HasTMDbHelper]"))
-        self.assertEqual((button.findtext("label"), button.findtext("label2")), ("$LOCALIZE[31324]", "$LOCALIZE[31325]"))
+        self.assertEqual([(n.get("condition"), n.text) for n in button.findall("onclick")],
+                         [("$EXP[Bald_HasHelper]", "Addon.OpenSettings(script.bald.helper)"),
+                          ("!$EXP[Bald_HasHelper]", "Addon.OpenSettings(plugin.video.themoviedb.helper)")])
+        self.assertTrue(equivalent(button.findtext("enable"), either))
+        self.assertEqual((button.findtext("label"), button.findtext("label2")),
+                         ("$VAR[Bald_RatingsProviderLabel]", "$VAR[Bald_RatingsProviderKey]"))
+        for name, helper, tmdb in (("Bald_RatingsOnlineLabel", 31331, 31323), ("Bald_RatingsProviderLabel", 31332, 31324),
+                                   ("Bald_RatingsProviderKey", 31333, 31325)):
+            values = [(v.get("condition"), v.text) for v in self.root.find(f"variable[@name='{name}']")]
+            self.assertEqual(values, [("$EXP[Bald_HasHelper]", f"$LOCALIZE[{helper}]"), (None, f"$LOCALIZE[{tmdb}]")])
+        self.assertEqual(strings()[31333], "MDbList API key")
         ids = [c.get("id") for c in self.appearance.find(".//control[@id='9600']").findall("control")]
         self.assertEqual(ids.index(ONLINE_ROW), ids.index("9641") + 1)
         self.assertEqual(ids.index(HELPER_SETTINGS_ROW), ids.index(ONLINE_ROW) + 1)
-        # The category note names what TMDb Helper needs: a key and its online ratings setting.
+        # The category note says where the key goes for either provider.
         note = strings()[31301]
-        self.assertIn("MDbList", note)
-        self.assertIn("Use online ratings in details monitor", note)
+        for words in ("Bald Helper", "MDbList API key", "TMDb Helper", "Use online ratings in details monitor"):
+            self.assertIn(words, note)
         # Bald never asks for a key or calls a ratings API itself.
         skin = "\n".join(p.read_text() for p in SKIN.glob("*.xml"))
-        for word in ("omdb_apikey", "mdblist_apikey", "apikey="):
+        for word in ("omdb_apikey", "mdblist_apikey", "apikey=", "mdblist_key"):
             self.assertNotIn(word, skin)
 
     def test_tmdb_helper_source_rows(self):
@@ -472,13 +502,106 @@ class RatingsTests(unittest.TestCase):
                 expected = f"!Skin.HasSetting({setting})" if on_by_default else f"Skin.HasSetting({setting})"
                 self.assertTrue(equivalent(row.findtext("selected"), expected))
                 self.assertTrue(equivalent(row.findtext("enable"),
-                                           "!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnline]"))
+                                           "!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]"))
                 self.assertTrue(implies(" + ".join(n.text for n in row.findall("visible")), "Container(9500).HasFocus(6)"))
                 expression = next(toggle for _g, toggle, _u, _n in HELPER.values()
                                   if setting in self.root.find(f"expression[@name='{toggle}']").text)
                 self.assertTrue(equivalent(f"$EXP[{expression}]", expected))
         ids = [c.get("id") for c in self.appearance.find(".//control[@id='9600']").findall("control")]
         self.assertEqual(ids[ids.index("9648") + 1:ids.index("9648") + 6], list(HELPER_ROWS))
+
+    def bald_pills(self, found, prefix="Ratings"):
+        return [p for p in found if p.values and f"Bald.{prefix}." in p.label()]
+
+    def test_every_bald_helper_rating_has_a_pill(self):
+        """Beside each TMDb Helper pill, Bald Helper's for the same source: same glyph, format, switch and library rule."""
+        found = self.bald_pills(self.pills)
+        self.assertEqual(len(found), len(BALD))
+        for key, tmdb_key in BALD.items():
+            glyph, toggle, unit, names = HELPER[tmdb_key]
+            with self.subTest(key=key):
+                pill = next(p for p in found if f"{BALD_LISTITEM.format(key)}]" in p.label())
+                self.assertEqual(pill.glyph, f"bald/ratings/{glyph}.png")
+                self.assertEqual(pill.label(), f"$INFO[{BALD_LISTITEM.format(key)}]{unit}")
+                self.assertTrue(implies(pill.visible, f"$EXP[{toggle}]"))
+                self.assertTrue(implies(pill.visible, f"!String.IsEmpty({BALD_LISTITEM.format(key)})"))
+                for name in names:
+                    self.assertTrue(implies(pill.visible, f"String.IsEmpty(Container(510).ListItem.Rating({name}))"))
+                # It sits right after TMDb Helper's pill for the source.
+                tmdb = next(i for i, p in enumerate(self.pills) if f"{LISTITEM.format(tmdb_key)}]" in p.label())
+                self.assertIs(self.pills[tmdb + 1], pill)
+        player = self.bald_pills(self.player, "Player.Ratings")
+        self.assertEqual(len(player), len(BALD))
+        for key, tmdb_key in BALD.items():
+            glyph, toggle, _unit, _names = HELPER[tmdb_key]
+            pill = next(p for p in player if f"{BALD_PLAYER.format(key)}]" in p.label())
+            self.assertEqual(pill.glyph, f"bald/ratings/{glyph}.png")
+            self.assertTrue(implies(pill.visible, f"$EXP[{toggle}] + $EXP[Bald_RatingsOSD] + $EXP[Bald_HelperPlayerRatings]"))
+
+    def test_bald_helper_pills_are_guarded_on_every_surface(self):
+        """A Bald Helper value shows only for the item whose identity it carries, and never while that is cleared."""
+        surfaces = {
+            "Home and library caption": (expand_call("Bald_Caption", {"c": "9101", "p": "Odd"}, self.definitions),
+                                         "Container(9101)."),
+            "artwork list 514": (expand_call("Bald_RatingsRow", {"container": "Container(514)."}, self.definitions),
+                                 "Container(514)."),
+            "browse preview and info screens": (expand_call("Bald_RatingsRow", {}, self.definitions), ""),
+            "TV info episode line": (expand_call("Bald_Ratings", {"container": "Container(5302)."}, self.definitions),
+                                     "Container(5302)."),
+        }
+        for surface, (nodes, container) in surfaces.items():
+            found = self.bald_pills(pills(nodes))
+            with self.subTest(surface=surface):
+                self.assertEqual(len(found), len(BALD))
+                for pill in found:
+                    self.assertTrue(implies(pill.visible, bald_guard(container)), pill.label())
+                    self.assertTrue(implies(pill.visible, "$EXP[Bald_HasHelper]"))
+                    # The helper clears DBType first when the item changes and writes it last.
+                    cleared = f"[{pill.visible}] + String.IsEmpty(Window(Home).Property(Bald.Ratings.DBType))"
+                    self.assertTrue(implies(cleared, "false"))
+                    # Another item's identity: every comparison fails.
+                    other = {a: False for a in atoms(pill.visible)
+                             if a.startswith("String.IsEqual(Window(Home).Property(Bald.Ratings.")}
+                    self.assertTrue(implies(pill.visible, "false", assume=other), pill.label())
+        # fallback false turns them off too.
+        off = self.bald_pills(pills(expand_call("Bald_Ratings", {"container": "Container(510).", "fallback": "false"},
+                                                self.definitions)))
+        self.assertTrue(off)
+        for pill in off:
+            self.assertTrue(implies(pill.visible, "false"))
+        # Bald_Ratings and Bald_RatingsRow build the same guard.
+        guards = re.findall(r'<param name="bald">(\[\$PARAM\[fallback\]\][^<]+)</param>', RATINGS.read_text())
+        self.assertEqual(len(guards), 2)
+        self.assertEqual(guards[0], guards[1])
+
+    def test_one_provider_at_a_time(self):
+        """With Bald Helper's ratings in use every TMDb Helper pill is off, and without them every Bald Helper pill."""
+        for pill in self.helper_pills(self.pills):
+            self.assertTrue(implies(f"[{pill.visible}] + $EXP[Bald_HelperRatings]", "false"), pill.label())
+        for pill in self.helper_pills(self.player, "Player"):
+            self.assertTrue(implies(f"[{pill.visible}] + $EXP[Bald_HelperPlayerRatings]", "false"), pill.label())
+        for pill in self.bald_pills(self.pills) + self.bald_pills(self.player, "Player.Ratings"):
+            self.assertTrue(implies(f"[{pill.visible}] + !$EXP[Bald_HelperRatings]", "false"), pill.label())
+        # The player keeps TMDb Helper's values while Bald Helper has none for what is playing (an episode).
+        tmdb = next(p for p in self.helper_pills(self.player, "Player") if "imdb_rating" in p.label())
+        self.assertFalse(implies(f"[{tmdb.visible}] + $EXP[Bald_HelperRatings]", "false"))
+        # Bald Helper's readiness is its service's property plus the add-on being there and enabled.
+        ready = self.root.find("expression[@name='Bald_HelperRatingsReady']").text
+        self.assertTrue(equivalent(ready, "$EXP[Bald_HasHelper]"
+                                          " + String.IsEqual(Window(home).Property(Bald.Helper.Ratings),1)"))
+        helper = self.root.find("expression[@name='Bald_HelperRatings']").text
+        self.assertTrue(equivalent(helper, "$EXP[Bald_HelperRatingsReady] + !Skin.HasSetting(Bald.Ratings.NoOnline)"))
+
+    def test_one_pill_per_source_with_bald_helper(self):
+        asked = pills(expand_call("Bald_Ratings", {"container": "Container(5000)."}, self.definitions))
+        default = next(p for p in asked if p.glyph == DEFAULT_GLYPH)
+        for value, tmdb_key in FALLBACK_SOURCES.items():
+            key = next(k for k, v in BALD.items() if v == tmdb_key)
+            with self.subTest(value=value):
+                pill = next(p for p in asked if f"Bald.Ratings.{key})" in p.label())
+                same = f"String.IsEqual({DEFAULT_SOURCE},{value})"
+                self.assertTrue(implies(f"[{pill.visible}] + [{default.visible}] + {same}", "false"))
+                self.assertFalse(implies(f"[{pill.visible}] + [{default.visible}] + !{same}", "false"))
 
     def test_row_hides_when_nothing_shows(self):
         row = expand_call("Bald_RatingsRow", {"container": "Container(510).", "visible": "$EXP[Bald_RatingsLibrary]"},

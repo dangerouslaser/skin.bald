@@ -949,7 +949,7 @@ msgstr ""
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance > Ratings: category description
 msgctxt "#31301"
-msgid "Choose which ratings Bald shows and where. Your library's come from NFO files or scrapers. With TMDb Helper, online ratings fill the gaps: enter an MDbList (or OMDb) API key in its settings and keep its \"Use online ratings in details monitor\" on."
+msgid "Choose which ratings Bald shows and where. Your library's come from NFO files or scrapers; online ratings fill the gaps. With Bald Helper, enter an MDbList API key in its settings (the row below). Otherwise TMDb Helper supplies them with an MDbList or OMDb key and its \"Use online ratings in details monitor\" on."
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
@@ -1066,19 +1066,19 @@ msgctxt "#31322"
 msgid "Kodi"
 msgstr ""
 
-#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
 #. Appearance > Ratings: TMDb Helper's online ratings switch
 msgctxt "#31323"
 msgid "Online ratings from TMDb Helper"
 msgstr ""
 
-#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
 #. Appearance > Ratings: opens TMDb Helper's add-on settings
 msgctxt "#31324"
 msgid "TMDb Helper settings"
 msgstr ""
 
-#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
 #. Appearance > Ratings > TMDb Helper settings: what is entered there
 msgctxt "#31325"
 msgid "MDbList or OMDb API key"
@@ -1112,6 +1112,24 @@ msgstr ""
 #. Appearance > Ratings: rating source, MDbList's own combined score
 msgctxt "#31330"
 msgid "MDbList score"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: the online ratings switch, with Bald Helper installed
+msgctxt "#31331"
+msgid "Online ratings"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: opens Bald Helper's add-on settings
+msgctxt "#31332"
+msgid "Bald Helper settings"
+msgstr ""
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Bald Helper settings: what is entered there
+msgctxt "#31333"
+msgid "MDbList API key"
 msgstr ""
 
 #: /xml/Includes_SettingsDialog.xml

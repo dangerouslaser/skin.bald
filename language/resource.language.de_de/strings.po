@@ -768,8 +768,8 @@ msgstr "Bewertungen"
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance > Ratings: category description
 msgctxt "#31301"
-msgid "Choose which ratings Bald shows and where. Your library's come from NFO files or scrapers. With TMDb Helper, online ratings fill the gaps: enter an MDbList (or OMDb) API key in its settings and keep its \"Use online ratings in details monitor\" on."
-msgstr "Festlegen, welche Bewertungen Bald wo anzeigt. Die Bewertungen der Bibliothek stammen aus NFO-Dateien oder Scrapern. Mit TMDb Helper füllen Online-Bewertungen die Lücken: In dessen Einstellungen einen MDbList- (oder OMDb-)API-Schlüssel eingeben und „Use online ratings in details monitor“ eingeschaltet lassen."
+msgid "Choose which ratings Bald shows and where. Your library's come from NFO files or scrapers; online ratings fill the gaps. With Bald Helper, enter an MDbList API key in its settings (the row below). Otherwise TMDb Helper supplies them with an MDbList or OMDb key and its \"Use online ratings in details monitor\" on."
+msgstr "Festlegen, welche Bewertungen Bald wo anzeigt. Die Bewertungen der Bibliothek stammen aus NFO-Dateien oder Scrapern; Online-Bewertungen füllen die Lücken. Mit Bald Helper in dessen Einstellungen einen MDbList-API-Schlüssel eingeben (die Zeile darunter). Sonst liefert TMDb Helper sie mit einem MDbList- oder OMDb-Schlüssel und eingeschaltetem „Use online ratings in details monitor“."
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance > Ratings: master switch
@@ -885,19 +885,19 @@ msgctxt "#31322"
 msgid "Kodi"
 msgstr "Kodi"
 
-#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
 #. Appearance > Ratings: TMDb Helper's online ratings switch
 msgctxt "#31323"
 msgid "Online ratings from TMDb Helper"
 msgstr "Online-Bewertungen von TMDb Helper"
 
-#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
 #. Appearance > Ratings: opens TMDb Helper's add-on settings
 msgctxt "#31324"
 msgid "TMDb Helper settings"
 msgstr "TMDb-Helper-Einstellungen"
 
-#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
 #. Appearance > Ratings > TMDb Helper settings: what is entered there
 msgctxt "#31325"
 msgid "MDbList or OMDb API key"
@@ -932,6 +932,24 @@ msgstr "Roger Ebert"
 msgctxt "#31330"
 msgid "MDbList score"
 msgstr "MDbList-Wertung"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: the online ratings switch, with Bald Helper installed
+msgctxt "#31331"
+msgid "Online ratings"
+msgstr "Online-Bewertungen"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: opens Bald Helper's add-on settings
+msgctxt "#31332"
+msgid "Bald Helper settings"
+msgstr "Bald-Helper-Einstellungen"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Bald Helper settings: what is entered there
+msgctxt "#31333"
+msgid "MDbList API key"
+msgstr "MDbList-API-Schlüssel"
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window
