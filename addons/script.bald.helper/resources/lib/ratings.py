@@ -181,6 +181,13 @@ class Follower:
         if ready:
             if self.window.getProperty(PROPERTY_READY) != "1":  # also after a skin reload
                 self.window.setProperty(PROPERTY_READY, "1")
+            # Home decides TMDb Helper's ListItem monitor on load, which can be before this property exists (Kodi
+            # startup): it then switched TMDb Helper's service on until the next Home load. Now these ratings are
+            # ready, and online ratings are on, TMDb Helper's service is not needed, so it is switched off here.
+            if (self.xbmc.getCondVisibility("Skin.HasSetting(TMDbHelper.Service)")
+                    and not self.xbmc.getCondVisibility("Skin.HasSetting(Bald.Ratings.NoOnline)")):
+                self.xbmc.executebuiltin("Skin.Reset(TMDbHelper.Service)")
+                self.log("switched TMDb Helper's ListItem service off (Bald Helper supplies the ratings)", self.xbmc.LOGINFO)
         elif self.ready or self.window.getProperty(PROPERTY_READY):
             self.window.clearProperty(PROPERTY_READY)
         self.ready = ready

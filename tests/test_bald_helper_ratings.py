@@ -155,6 +155,9 @@ class FakeXbmc:
     def getLocalizedString(self, number):
         return {20339: "Director", 20417: "Writer"}.get(number, str(number))
 
+    def executebuiltin(self, builtin):
+        self.builtins = getattr(self, "builtins", []) + [builtin]
+
 
 class Base(unittest.TestCase):
     def setUp(self):
@@ -548,6 +551,19 @@ class FollowerTests(Base):
         self.cache.put("imdb/movie/tt0073195", JAWS_VALUES, NOW + DAY)
         self.follower.work(ref)
         self.assertEqual(self.window.get("Bald.Ratings.DBID"), "")
+
+    def test_ready_switches_tmdb_helpers_service_off(self):
+        # Home can turn TMDb Helper's service on before this is ready (Kodi startup); once ready it goes off.
+        self.xbmc.conditions["Skin.HasSetting(TMDbHelper.Service)"] = True
+        self.follower.tick()
+        self.assertEqual(self.window.get("Bald.Helper.Ratings"), "1")
+        self.assertIn("Skin.Reset(TMDbHelper.Service)", getattr(self.xbmc, "builtins", []))
+
+    def test_ready_leaves_tmdb_helper_alone_with_online_ratings_off(self):
+        self.xbmc.conditions["Skin.HasSetting(TMDbHelper.Service)"] = True
+        self.xbmc.conditions["Skin.HasSetting(Bald.Ratings.NoOnline)"] = True
+        self.follower.tick()
+        self.assertNotIn("Skin.Reset(TMDbHelper.Service)", getattr(self.xbmc, "builtins", []))
 
     def test_key_never_reaches_properties_or_log(self):
         self.fetch.add("imdb/movie/tt0073195", status=500, data={"error": KEY})
