@@ -166,4 +166,17 @@
         <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_ambient),8) | !System.IdleTime(60)</stop>
         <onstop condition="System.IdleTime(60) + !String.IsEmpty(Window(home).Property(Bald.Row))">Control.Move($INFO[Window(home).Property(Bald.Row)],1)</onstop>
     </timer>
+    <!-- Bald Helper (addons/script.bald.helper): while Appearance, Behavior, "Open TV shows on their info page" is on, its
+         keymap maps Select in the video library (the <videos> section) to Skin.TimerStart(bald_library_select). With a
+         library view container focused on a library TV show, Select opens the show's information (DialogVideoInfo,
+         Bald's series page) instead of its seasons; anything else gets Select as usual. A timer, not a hidden button:
+         SendClick never runs a skin button's onclick, and a focus bridge would replay the focused poster's pop (docs/NOTES.md,
+         "Select on a TV show opens its info page"). Conditions are evaluated when the keymap starts the timer, before
+         the actions run; the view ids are MyVideoNav's <views>. No start condition: only the keymap starts it. -->
+    <timer>
+        <name>bald_library_select</name>
+        <onstart condition="Skin.HasSetting(Bald.ShowsOpenInfo) + Window.IsActive(videos) + [Control.HasFocus(510) | Control.HasFocus(511) | Control.HasFocus(512) | Control.HasFocus(513) | Control.HasFocus(514) | Control.HasFocus(515) | Control.HasFocus(520) | Control.HasFocus(521) | Control.HasFocus(522) | Control.HasFocus(523) | Control.HasFocus(530) | Control.HasFocus(531) | Control.HasFocus(532) | Control.HasFocus(540) | Control.HasFocus(541) | Control.HasFocus(542) | Control.HasFocus(504) | Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(500) | Control.HasFocus(501) | Control.HasFocus(502)] + String.IsEqual(ListItem.DBType,tvshow) + Integer.IsGreater(ListItem.DBID,0) + !ListItem.IsParentFolder">Action(Info)</onstart>
+        <onstart condition="![Skin.HasSetting(Bald.ShowsOpenInfo) + Window.IsActive(videos) + [Control.HasFocus(510) | Control.HasFocus(511) | Control.HasFocus(512) | Control.HasFocus(513) | Control.HasFocus(514) | Control.HasFocus(515) | Control.HasFocus(520) | Control.HasFocus(521) | Control.HasFocus(522) | Control.HasFocus(523) | Control.HasFocus(530) | Control.HasFocus(531) | Control.HasFocus(532) | Control.HasFocus(540) | Control.HasFocus(541) | Control.HasFocus(542) | Control.HasFocus(504) | Control.HasFocus(50) | Control.HasFocus(51) | Control.HasFocus(52) | Control.HasFocus(53) | Control.HasFocus(54) | Control.HasFocus(55) | Control.HasFocus(500) | Control.HasFocus(501) | Control.HasFocus(502)] + String.IsEqual(ListItem.DBType,tvshow) + Integer.IsGreater(ListItem.DBID,0) + !ListItem.IsParentFolder]">Action(Select)</onstart>
+        <stop>true</stop>
+    </timer>
 </timers>

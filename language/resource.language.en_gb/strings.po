@@ -2281,6 +2281,18 @@ msgctxt "#31847"
 msgid "Down for episodes"
 msgstr ""
 
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Bald Settings, Appearance, Behavior: Select on a TV show in the video library opens its information page (Bald Helper)
+msgctxt "#31848"
+msgid "Open TV shows on their info page"
+msgstr ""
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Right-hand note on the Behavior row above while the Bald Helper add-on is not installed; Select installs it
+msgctxt "#31849"
+msgid "Needs the Bald Helper add-on"
+msgstr ""
+
 #: /1080i/View_510_Bald_Posters.xml
 #. Name of a library layout, shown by Container.Viewmode
 msgctxt "#31850"
@@ -2375,6 +2387,12 @@ msgstr ""
 #. Name of a library layout, shown by Container.Viewmode
 msgctxt "#31865"
 msgid "Bald search list"
+msgstr ""
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Right-hand note on the Behavior row "Open TV shows on their info page" while Bald Helper is installed but disabled; Select enables it
+msgctxt "#31866"
+msgid "Bald Helper is disabled"
 msgstr ""
 
 #: /1080i/Includes_PVR.xml
