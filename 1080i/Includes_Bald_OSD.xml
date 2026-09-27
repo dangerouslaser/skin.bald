@@ -810,7 +810,11 @@
 				<itemgap>8</itemgap>
 				<usecontrolcoords>true</usecontrolcoords>
 				<onleft>70062</onleft>
-				<onright>202</onright>
+				<!-- Into the first visible tool, not the group: a group refocuses its last focused button. -->
+				<onright condition="VideoPlayer.HasMenu">804</onright>
+				<onright condition="!VideoPlayer.HasMenu + VideoPlayer.HasTeletext">70045</onright>
+				<onright condition="!VideoPlayer.HasMenu + !VideoPlayer.HasTeletext + VideoPlayer.IsStereoscopic">70047</onright>
+				<onright condition="!VideoPlayer.HasMenu + !VideoPlayer.HasTeletext + !VideoPlayer.IsStereoscopic">70043</onright>
 				<include content="Bald_OSDSlot_$PARAM[play]_Play"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[back]_Back"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[forward]_Forward"><param name="owner">$PARAM[owner]</param></include>
@@ -826,7 +830,8 @@
 				<itemgap>8</itemgap>
 				<usecontrolcoords>true</usecontrolcoords>
 				<onleft>603</onleft>
-				<onright>201</onright>
+				<onright condition="Player.PauseEnabled">602</onright>
+				<onright condition="!Player.PauseEnabled">600</onright>
 				<include content="Bald_OSDSlot_$PARAM[menu]_Menu"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[teletext]_Teletext"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[stereo]_3D"><param name="owner">$PARAM[owner]</param></include>
