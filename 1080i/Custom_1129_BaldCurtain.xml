@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Curtain (prototype, branch curtain-prototype): a true crossfade between Home and the video library.
+<!-- Curtain: a true crossfade between Bald's full windows (Bald_CurtainChange, Includes_Bald_Common.xml).
      Kodi never draws two full windows at once: it plays the old window's WindowClose, then initializes the new one
      (MyVideoNav fetches its first folder before drawing anything), so the change showed a few frames of bare
      background and a colour cut. A modeless dialog keeps drawing through that swap, so this one covers it:
@@ -10,9 +10,14 @@
          drawn underneath, and clears Bald.Curtain in its onload; the curtain then fades away over it.
      No focus: a dialog with a <visible> condition is modeless and takes no input. -->
 <window type="dialog" id="1129">
-	<visible>[Window.IsActive(home) + Window.Next(videos)] | [Window.IsActive(videos) + Window.Next(home)] | !String.IsEmpty(Window(home).Property(Bald.Curtain))</visible>
+	<visible>$EXP[Bald_CurtainChange] | !String.IsEmpty(Window(home).Property(Bald.Curtain))</visible>
 	<zorder>0</zorder>
-	<onload>SetProperty(Bald.CurtainBlur,$ESCINFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)],home)</onload>
+	<onload>SetProperty(Bald.CurtainBlur,$ESCVAR[Bald_BlurImage],home)</onload>
+	<!-- Safety: whatever happens, the curtain lifts after 2 s (it normally lifts within about half a second), so it can
+	     never stay over the screen if the window it waits for does not load. -->
+	<onload>CancelAlarm(bald_curtain,true)</onload>
+	<onload>AlarmClock(bald_curtain,ClearProperty(Bald.Curtain,home),00:02,silent)</onload>
+	<onunload>CancelAlarm(bald_curtain,true)</onunload>
 	<onunload>ClearProperty(Bald.CurtainBlur,home)</onunload>
 	<animation type="WindowOpen">
 		<effect type="fade" start="0" end="100" time="140" tween="sine" easing="inout" />
@@ -32,7 +37,7 @@
 			<height>1080</height>
 			<aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_CurtainBlur]</texture>
-			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
+			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_HasBlur]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</controls>

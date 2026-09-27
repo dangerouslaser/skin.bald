@@ -5,6 +5,7 @@
      lines, 30 privacy policy text, 102 thank-you group with QR multiimage 103, 104 memory and version group (hidden on
      the thank-you page), 52 app name and version, 53 build date. -->
 <window>
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">95</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>

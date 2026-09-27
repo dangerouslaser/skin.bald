@@ -77,7 +77,7 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertNotIn("Bald.Screen.Movies", ET.tostring(root, encoding="unicode"))
         self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(root, encoding="unicode"))
         # Closing it rebuilds Home on its next load, as the widget editor does.
-        self.assertTrue(root.findtext("onunload").startswith("Skin.SetString(Bald.WidgetsStamp,"))
+        self.assertTrue(any(n.text.startswith("Skin.SetString(Bald.WidgetsStamp,") for n in root.findall("onunload")))
 
     def test_hub_rows_run_skin_variables_actions_on_the_selected_hub(self):
         root = resolve_window("Custom_1117_BaldHomeScreens.xml")
@@ -248,7 +248,10 @@ class BaldSettingsTests(unittest.TestCase):
         # A still copy (no fadetime, on the first frame) under the crossfading one (curtain prototype).
         self.assertEqual(len(images), 2)
         for image in images:
-            self.assertIn("TMDbHelper.ListItem.BlurImage", image.findtext("texture"))
+            # The live blur, or the last one seen in windows without their own (Bald_BlurImage).
+            self.assertIn("$VAR[Bald_BlurImage]", image.findtext("texture"))
+        blur = root.find("variable[@name='Bald_BlurImage']")
+        self.assertEqual(blur.findall("value")[-1].text, "$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]")
         self.assertIsNone(images[0].find("fadetime"))
         self.assertIsNone(images[0].find("texture").get("background"))
         self.assertEqual(images[1].findtext("fadetime"), "800")

@@ -4,6 +4,7 @@
      Kodi (CGUIWindowSettingsProfile) binds: 2 profile list (it fills the items and handles clicks), 4 login screen
      toggle, 5 automatic login button. Sidebar items 1 and 2 pick the pane, as in Estuary. -->
 <window>
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>

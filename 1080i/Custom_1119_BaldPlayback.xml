@@ -4,6 +4,7 @@
      means the default; buttons cycle their values and show the current one through a label variable whose last value
      is the default (Bald_OSD*Label). -->
 <window type="window" id="1119">
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9700</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>

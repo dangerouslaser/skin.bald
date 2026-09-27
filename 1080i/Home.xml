@@ -60,9 +60,7 @@
 	<onload condition="$EXP[Bald_Preloading]">SetFocus(9198)</onload>
 	<include>Bald_RowStartReset</include>
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
-	<!-- Curtain (Custom_1129_BaldCurtain.xml): up while Home is left for the library, and lifted once Home is back. -->
-	<onload>ClearProperty(Bald.Curtain,home)</onload>
-	<onunload condition="Window.Next(videos)">SetProperty(Bald.Curtain,1,home)</onunload>
+	<include>Bald_CurtainHandoff</include>
 	<controls>
 		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_Backdrop). -->
 		<control type="image">

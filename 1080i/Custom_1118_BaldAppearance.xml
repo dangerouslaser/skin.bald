@@ -3,6 +3,7 @@
      id 5 after the "Estuary windows" category (id 4) was folded into the others (docs/NOTES.md, "Estuary windows
      settings folded into Bald"). Estuary's other skin settings had no effect in Bald and were dropped earlier. -->
 <window type="window" id="1118">
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9500</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>

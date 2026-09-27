@@ -8,6 +8,7 @@
        15 colour button templates (hidden; cloned per category and setting), 20 settings level button.
      Kodi appends "Reset above settings to default" to every category as a clone of template 7. -->
 <window>
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol>3</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>
