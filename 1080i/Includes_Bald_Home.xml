@@ -136,6 +136,17 @@
 	<!-- The current row item's fanart, blurred by TMDb Helper (Gaussian radius 40 on a 480 px copy, cached), darkened
 	     for the OLED with colordiffuse. <fadetime> crossfades between titles and waits until the new image has loaded. -->
 	<include name="Bald_BackdropImage">
+		<!-- Still copy (curtain prototype): the same blur with no fadetime and loaded at once (a local file from TMDb
+		     Helper's blur cache), so a window's background is complete on its first frame, which the curtain lifts
+		     onto. The crossfading copy above still dissolves between titles. -->
+		<control type="image">
+			<width>1920</width>
+			<height>1080</height>
+			<aspectratio>scale</aspectratio>
+			<texture>$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</texture>
+			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
+			<colordiffuse>bald_backdrop</colordiffuse>
+		</control>
 		<control type="image">
 			<width>1920</width>
 			<height>1080</height>
@@ -147,6 +158,11 @@
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</include>
+	<!-- The curtain's blur (Custom_1129_BaldCurtain.xml): as it was when the curtain opened, else the live one. -->
+	<variable name="Bald_CurtainBlur">
+		<value condition="!String.IsEmpty(Window(home).Property(Bald.CurtainBlur))">$INFO[Window(home).Property(Bald.CurtainBlur)]</value>
+		<value>$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</value>
+	</variable>
 	<include name="Bald_Backdrop">
 		<include>Bald_BackdropImage</include>
 	</include>

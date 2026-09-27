@@ -6,6 +6,9 @@
 	<menucontrol>9151</menucontrol>
 	<onload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onload>
 	<onunload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunload>
+	<!-- Curtain (Custom_1129_BaldCurtain.xml): lifted once the library is drawn, up again when it is left for Home. -->
+	<onload>ClearProperty(Bald.Curtain,home)</onload>
+	<onunload condition="Window.Next(home)">SetProperty(Bald.Curtain,1,home)</onunload>
 	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<!-- Estuary remains a fallback for content we have not redesigned; movie libraries always enter a Bald view. -->
