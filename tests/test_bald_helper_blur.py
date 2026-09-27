@@ -538,7 +538,8 @@ class ServiceEntryTests(unittest.TestCase):
     def test_keymaps_run_even_if_the_blur_cannot_start(self):
         fake = types.SimpleNamespace(LOGERROR=4, logs=[])
         fake.log = lambda message, level: fake.logs.append((level, message))
-        modules = {"xbmc": fake, "xbmcgui": types.SimpleNamespace(), "xbmcvfs": types.SimpleNamespace()}
+        modules = {"xbmc": fake, "xbmcgui": types.SimpleNamespace(), "xbmcvfs": types.SimpleNamespace(),
+                   "xbmcaddon": types.SimpleNamespace()}
         saved = {name: sys.modules.get(name) for name in (*modules, "resources", "resources.lib",
                                                           "resources.lib.keymap", "resources.lib.blur")}
         sys.modules.update(modules)
