@@ -1900,6 +1900,13 @@ msgctxt "#31728"
 msgid "Text"
 msgstr ""
 
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Widget editor: row style with square tiles (album covers, artists) on the poster rail
+msgctxt "#31729"
+msgid "Square"
+msgstr ""
+
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Settings.xml
 msgctxt "#31730"

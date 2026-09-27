@@ -145,6 +145,10 @@
                                 <value>poster</value>
                             </rule>
                             <rule>
+                                <condition>{item_style}==square</condition>
+                                <value>square</value>
+                            </rule>
+                            <rule>
                                 <condition>{item_style}==text</condition>
                                 <value>text</value>
                             </rule>
@@ -303,6 +307,10 @@
                             <rule>
                                 <condition>{item_style}==poster</condition>
                                 <value>poster</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_style}==square</condition>
+                                <value>square</value>
                             </rule>
                             <rule>
                                 <condition>{item_style}==text</condition>

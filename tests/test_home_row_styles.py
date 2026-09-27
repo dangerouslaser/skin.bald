@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
 FALLBACK = XML / "Includes_Bald_HomeDefaults.xml"
 LANDSCAPE = ("fanart", "thumbnail", "logo")
-STYLES = LANDSCAPE + ("poster", "text")
+STYLES = LANDSCAPE + ("poster", "square", "text")
 SCREENS = tuple((screen, title) for screen, title, _, _ in HOME_SCREENS)
 
 
@@ -138,6 +138,20 @@ class PosterRowTests(unittest.TestCase):
         self.assertEqual(self.label_top(elements), "712")
         self.assertEqual(self.label_top(self.row("fanart", "2")[0]), "856")
 
+    def test_square_rows_share_the_poster_rail_and_frame(self):
+        elements, row = self.row("square", "2")
+        self.assertEqual(tuple(row.findtext(tag) for tag in ("left", "top", "width", "height")), ("96", "738", "1248", "234"))
+        for layout in ("itemlayout", "focusedlayout"):
+            node = row.find(layout)
+            self.assertEqual((node.get("width"), node.get("height")), ("208", "234"), layout)
+            self.assertIn("$VAR[Bald_SquareArt]", textures(node))
+        self.assertEqual(self.label_top(elements), "712")
+        home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        frame = home.find("expression[@name='Bald_PosterRow']").text
+        self.assertIn("Bald.RowStyle),square)", frame)
+        art = [v.get("condition") or "" for v in home.findall("variable[@name='Bald_SquareArt']/value")]
+        self.assertIn("String.IsEqual(ListItem.DBType,album)", art[0])
+
     def test_poster_focus_travels_to_slot_5_and_landscape_to_slot_2(self):
         for style, slot in (("poster", "5"), ("fanart", "2")):
             _, row = self.row(style, slot)
@@ -162,7 +176,8 @@ class PosterRowTests(unittest.TestCase):
 
     def test_the_frame_follows_a_window_property(self):
         body = ET.parse(XML / "Includes_Bald_Home.xml").getroot().findtext("expression[@name='Bald_PosterRow']")
-        self.assertTrue(equivalent(body, "String.IsEqual(Window(home).Property(Bald.RowStyle),poster)"))
+        self.assertTrue(equivalent(body, "String.IsEqual(Window(home).Property(Bald.RowStyle),poster)"
+                                         " | String.IsEqual(Window(home).Property(Bald.RowStyle),square)"))
         self.assertNotIn("Container(", body)
 
 

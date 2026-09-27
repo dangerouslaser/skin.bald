@@ -80,7 +80,7 @@
 	     going back to a landscape row. The row swap runs meanwhile (out 140, in 360 / 440 after 170).
 	     Paired non-reversible Conditionals, as in Bald_AnimInfoFrame: the animation whose condition drops is reset
 	     (no transform), and the one whose condition rises starts from the state the other ended in. -->
-	<expression name="Bald_PosterRow">[String.IsEqual(Window(home).Property(Bald.RowStyle),poster)]</expression>
+	<expression name="Bald_PosterRow">[String.IsEqual(Window(home).Property(Bald.RowStyle),poster) | String.IsEqual(Window(home).Property(Bald.RowStyle),square)]</expression>
 	<!-- The art layers (the art frame group, which also zooms for info). While info is open the nudge is undone in step
 	     with the zoom (640 move after 40), so the zoom about 274,343 maps the whole 1248 x 702 art to the screen exactly
 	     as on a landscape row; closing info nudges it again with the zoom back (540 after 30). -->
@@ -1002,8 +1002,8 @@
 
 	<!-- ============ Row styles ============ -->
 	<!-- Each Home row has a style, set in the widget editor (the Skin Variables row field "style") and passed to
-	     Bald_Row by the generator: fanart (the default, also for rows saved without a style), thumbnail, logo, poster
-	     or text.
+	     Bald_Row by the generator: fanart (the default, also for rows saved without a style), thumbnail, logo, poster,
+	     square or text.
 	     Bald_RowTiles_<style> fills the row's fixedlist: its position and size, and its item layouts. -->
 	<include name="Bald_RowTiles_fanart">
 		<include content="Bald_RowLandscape" />
@@ -1086,6 +1086,49 @@
 			</control>
 		</focusedlayout>
 	</include>
+	<!-- Square row (album covers, artists): the poster rail and its shrunken art frame (Bald_PosterRow), with 184 x 184
+	     tiles in 208 px slots, six across the 1248 px frame width, top-aligned with the posters. Focus travels to slot 2,
+	     as on landscape rows (six and a half tiles show there too). -->
+	<variable name="Bald_SquareArt">
+		<value condition="[String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song) | String.IsEqual(ListItem.DBType,artist)] + !String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(poster)) | !String.IsEmpty(ListItem.Art(tvshow.poster)) | $EXP[Bald_SpoilerThumb]">$VAR[Bald_LibraryPoster]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+	<include name="Bald_SquareTile">
+		<param name="diffuse">bald_poster_dim</param>
+		<param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="104,104" time="280" tween="back" easing="out" /></animation>
+				<control type="image"><left>12</left><top>12</top><width>184</width><height>184</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+				<control type="image"><left>12</left><top>12</top><width>184</width><height>184</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[Bald_SquareArt]</texture></control>
+				<control type="image"><left>9</left><top>9</top><width>190</width><height>190</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_RowTiles_square">
+		<left>Bald_SafeLeft</left>
+		<top>Bald_LowRailTop</top>
+		<width>1248</width>
+		<height>234</height>
+		<itemlayout width="208" height="234">
+			<include content="Bald_SquareTile" />
+			<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
+		</itemlayout>
+		<focusedlayout width="208" height="234">
+			<control type="group">
+				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+					<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
+				</animation>
+				<include content="Bald_SquareTile">
+					<param name="diffuse">bald_ink</param>
+					<param name="focused">!$EXP[Bald_OverlayOpen]</param>
+				</include>
+				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
+			</control>
+		</focusedlayout>
+	</include>
 	<!-- Row label line (label, dots, count): 12 px above the tiles, as on landscape rows. -->
 	<include name="Bald_RowLabelTop_fanart">
 		<top>856</top>
@@ -1101,6 +1144,9 @@
 	</include>
 	<include name="Bald_RowLabelTop_poster">
 		<top>712</top>
+	</include>
+	<include name="Bald_RowLabelTop_square">
+		<include>Bald_RowLabelTop_poster</include>
 	</include>
 	<include name="Bald_TileOverlayNone">
 		<definition />
