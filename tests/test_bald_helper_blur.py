@@ -322,6 +322,56 @@ class FollowerTests(Case):
         self.settle()
         self.assertEqual(self.window.get("Bald.Blur"), self.blurrer.path_for("/a.jpg"))
 
+    def test_a_cache_hit_is_published_after_100_ms_even_while_scrolling(self):
+        FakeFile.files.update({"/a.jpg": jpeg(), "/b.jpg": jpeg(colour=(200, 0, 0))})
+        self.blurrer.make("/b.jpg")
+        self.blurrer.render = None  # would fail if called
+        self.focus("9101", "/a.jpg")
+        self.xbmc.conditions["Container(9101).Scrolling"] = True
+        self.follower.tick()
+        self.clock.advance(0.05)
+        self.focus("9101", "/b.jpg")
+        # A new source: the next look comes after 100 ms, when a cached blur may already be shown.
+        self.assertEqual(self.follower.tick(), blur.FAST_SETTLE_SECONDS)
+        self.clock.advance(0.05)
+        self.follower.tick()
+        self.assertEqual(self.window.writes, [])
+        self.clock.advance(0.05)
+        self.follower.tick()
+        blurred = self.blurrer.path_for("/b.jpg")
+        self.assertEqual(self.window.writes, [("Bald.Blur", blurred), ("Bald.Blur.Last", blurred),
+                                              ("Bald.Blur.For", "/b.jpg")])
+
+    def test_a_cache_miss_keeps_the_full_wait_and_waits_for_scrolling_to_stop(self):
+        FakeFile.files["/a.jpg"] = jpeg()
+        made = []
+        make = self.blurrer.make
+        self.blurrer.make = lambda source: made.append(source) or make(source)
+        self.focus("9101", "/a.jpg")
+        self.follower.tick()
+        self.clock.advance(0.1)
+        self.follower.tick()  # 100 ms: not cached, so nothing yet
+        self.clock.advance(0.1)
+        self.follower.tick()  # 200 ms: still inside the full wait
+        self.assertEqual((made, self.window.writes), ([], []))
+        self.xbmc.conditions["Container(9101).Scrolling"] = True
+        self.clock.advance(0.1)
+        self.follower.tick()  # 300 ms but scrolling: fast scrolling makes no work
+        self.assertEqual((made, self.window.writes), ([], []))
+        self.xbmc.conditions["Container(9101).Scrolling"] = False
+        self.follower.tick()
+        self.assertEqual(made, ["/a.jpg"])
+        self.assertEqual(self.window.get("Bald.Blur.For"), "/a.jpg")
+
+    def test_the_fast_look_does_not_count_as_use(self):
+        FakeFile.files["/a.jpg"] = jpeg()
+        self.blurrer.make("/a.jpg")
+        path = self.blurrer.path_for("/a.jpg")
+        os.utime(path, (1, 1))
+        self.assertTrue(self.blurrer.has("/a.jpg"))
+        self.assertEqual(os.stat(path).st_mtime, 1)
+        self.assertFalse(self.blurrer.has("/other.jpg"))
+
     def test_a_stale_blur_is_not_published(self):
         FakeFile.files.update({"/a.jpg": jpeg(), "/b.jpg": jpeg()})
         make = self.blurrer.make
