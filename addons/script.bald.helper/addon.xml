@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.bald.helper" name="Bald Helper" version="1.0.0" provider-name="Bryan Hoban">
+	<requires>
+		<import addon="xbmc.python" version="3.0.1"/>
+	</requires>
+	<extension point="xbmc.service" library="service.py"/>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en_GB">Lets the Bald skin open TV shows on their info page.</summary>
+		<description lang="en_GB">A small service for the Bald skin. While Bald is the active skin and Bald Settings, Appearance, Behavior, "Open TV shows on their info page" is on, it installs a keymap so that Select on a TV show in the video library opens the show's information page instead of its seasons. It removes the keymap when the setting is off, under any other skin, and when Kodi exits or the add-on is disabled.</description>
+		<platform>all</platform>
+		<license>GPL-2.0-or-later</license>
+		<source>https://github.com/dangerouslaser/skin.bald</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+		</assets>
+	</extension>
+</addon>
