@@ -413,6 +413,98 @@ class SeriesPageMetaTests(unittest.TestCase):
         self.assertEqual(self.properties[info.VIDEO_NAV], {})
 
 
+
+class SharedHandlerTests(unittest.TestCase):
+    """handle(): the code RunScript runs, which Bald Helper's service calls with `cancelled` and `show`."""
+
+    setUp = InfoLifecycleTests.setUp
+
+    def test_run_passes_the_moved_actions_to_handle(self):
+        for args in (('info', 'movie', '1'), ('tvinfo', 'episode', '2'), ('recommendations', 'movie', '1'),
+                     ('play', 'episode', '3'), ('open', 'movie', '4'), ('seriesmeta', '', '')):
+            with self.subTest(args=args), patch.object(info, 'handle') as handle:
+                info.run(*args)
+                handle.assert_called_once_with(self.xbmc, self.gui, *args)
+        self.assertEqual(set(info.HELPER_ACTIONS), {'info', 'tvinfo', 'recommendations', 'play', 'open', 'seriesmeta'})
+        self.assertEqual(info.SERVICE_API, 1)
+
+    def test_info_opened_is_recommendations_then_tvinfo(self):
+        self.properties[12003]['Bald.Identity'] = 'episode:22'
+        calls = []
+        with patch.object(info, 'tv_publish', side_effect=lambda *a: calls.append('header') or (2, 22)), \
+                patch.object(info, 'publish_recommendations', side_effect=lambda *a: calls.append('more')), \
+                patch.object(info, 'tv_position', side_effect=lambda *a, **k: calls.append(('rows', a[3:6]))):
+            info.handle(self.xbmc, self.gui, 'info', 'episode', '22')
+        self.assertEqual(self.properties[12003]['Bald.Fanart'], 'image://fanart')
+        self.assertEqual(self.properties[12003]['Bald.ArtIdentity'], 'episode:22')
+        self.assertEqual(calls, ['header', 'more', ('rows', (2, 22, True))])
+
+    def test_info_opened_for_a_movie_skips_the_tv_steps(self):
+        with patch.object(info, 'tv_publish') as header, patch.object(info, 'publish_recommendations') as more:
+            info.handle(self.xbmc, self.gui, 'info', 'movie', '1')
+        header.assert_not_called()
+        more.assert_called_once()
+
+    def test_info_opened_for_an_add_on_item_publishes_only_its_art(self):
+        self.properties[12003]['Bald.Identity'] = 'movie:'
+        info.handle(self.xbmc, self.gui, 'info', 'movie', '')
+        self.assertEqual(self.properties[12003]['Bald.Fanart'], 'image://fanart')
+        self.xbmc.executeJSONRPC.assert_not_called()
+
+    def test_info_opened_for_a_replaced_dialog_does_nothing(self):
+        info.handle(self.xbmc, self.gui, 'info', 'movie', '2')
+        self.windows[12003].setProperty.assert_not_called()
+        self.xbmc.executeJSONRPC.assert_not_called()
+
+    def test_a_failing_tv_lookup_still_publishes_more_like_this(self):
+        self.properties[12003]['Bald.Identity'] = 'tvshow:5'
+        with patch.object(info, 'tv_publish', side_effect=RuntimeError('no show')), \
+                patch.object(info, 'publish_recommendations') as more, patch.object(info, 'tv_position') as rows:
+            info.handle(self.xbmc, self.gui, 'info', 'tvshow', '5')
+        more.assert_called_once()
+        rows.assert_not_called()
+        self.assertIn('no show', self.xbmc.log.call_args.args[0])
+
+    def test_a_newer_request_skips_the_remaining_steps(self):
+        self.properties[12003]['Bald.Identity'] = 'tvshow:5'
+        with patch.object(info, 'tv_publish', return_value=(1, 0)), \
+                patch.object(info, 'publish_recommendations') as more, patch.object(info, 'tv_position') as rows:
+            info.handle(self.xbmc, self.gui, 'info', 'tvshow', '5', cancelled=lambda: True)
+        more.assert_not_called()
+        rows.assert_not_called()
+
+    def test_tv_position_stops_when_cancelled(self):
+        kodi = FakeKodi(['1', '2'], {'1': [11], '2': [21]})
+        window = Mock()
+        window.getProperty.return_value = 'episode:21'
+        self.assertFalse(info.tv_position(kodi, window, 'episode:21', 2, 21, True, cancelled=lambda: True))
+        self.assertEqual(kodi.builtins, [])
+
+    def test_open_hands_the_new_item_to_show(self):
+        self.gui.ListItem.return_value = Mock()
+        self.properties[12003]['Bald.Identity'] = 'movie:1'
+        visible = iter([True, False])
+        self.xbmc.getCondVisibility.side_effect = lambda condition: (
+            next(visible) if condition == 'Window.IsVisible(movieinformation)' else True)
+        self.xbmc.Monitor.return_value.waitForAbort.return_value = False
+        shown = []
+        with patch.object(info, 'get_details', return_value={'title': 'Next', 'file': '/n.mkv'}):
+            info.handle(self.xbmc, self.gui, 'open', 'movie', '2', show=shown.append)
+        self.assertEqual(shown, [self.gui.ListItem.return_value])
+        self.gui.Dialog.assert_not_called()
+        self.assertNotIn('Bald.InfoSwitch', self.properties[10000])
+
+
+class SeriesPageCancelTests(unittest.TestCase):
+    setUp = SeriesPageMetaTests.setUp
+
+    def test_a_newer_request_ends_the_wait_for_the_view(self):
+        self.labels['Container(532).NumItems'] = '0'
+        info.handle(self.xbmc, self.gui, 'seriesmeta', cancelled=lambda: True)
+        self.xbmc.executeJSONRPC.assert_not_called()
+        self.xbmc.Monitor.return_value.waitForAbort.assert_not_called()
+
+
 if __name__ == '__main__':
     unittest.main()
 

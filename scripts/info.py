@@ -8,7 +8,12 @@ RunScript(skin.bald,seriesmeta)  (library Series page, view 532)
 RunScript(skin.bald,font,InstrumentSans)
 RunScript(skin.bald,hubs)  (one-time Home hubs migration, see hubs.py)
 RunScript(skin.bald,recommended[,prompt])  (Kodi settings Bald recommends, see recommended.py)
-No network requests, library writes, or long-running service.
+No network requests or library writes.
+
+Bald Helper (addons/script.bald.helper) runs the latency-sensitive actions in its resident service instead: the skin
+sends NotifyAll(skin.bald,bald.<action>|<type>|<id>) and the service calls handle() below, the same code RunScript
+runs, with a `cancelled` check so a newer request ends a wait early. SERVICE_API tells the helper which calls this
+file offers; the helper advertises itself to the skin only when it can load them.
 """
 import json
 import sys
@@ -33,6 +38,14 @@ PLAY_WINDOWS = "Window.IsActive(movieinformation) | Window.IsActive(videos)"
 # ids resolve through xbmc.getLocalizedString; the en_gb wording here is the default when no Kodi is present.
 RESUME, PLAY, ONE_SEASON, SEASONS_WORD, YEARS_TO = 13404, 208, 31711, 31712, 31719
 STRINGS = {RESUME: "Resume", PLAY: "Play", ONE_SEASON: "1 season", SEASONS_WORD: "seasons", YEARS_TO: "to"}
+# Bald Helper's contract with this file: handle(xbmc, xbmcgui, action, media_type, dbid, cancelled=, show=) for
+# HELPER_ACTIONS, and letters.publish(xbmc, xbmcgui, container, cache=, cancelled=).
+SERVICE_API = 1
+HELPER_ACTIONS = ("info", "tvinfo", "recommendations", "play", "open", "seriesmeta")
+
+
+def never():
+    return False
 
 
 def recommendation_path(media_type, title, genres):
@@ -192,7 +205,7 @@ def tv_publish(xbmc, window, identity, media_type, dbid):
     return None if season is None else (season, episodeid)
 
 
-def series_publish(xbmc, window, timeout=3.0):
+def series_publish(xbmc, window, timeout=3.0, cancelled=never):
     """Publish the Series page header line ("years, N seasons, rating") for the seasons folder in view.
 
     Kodi's seasons listing has the show's title, plot and art but no show years or season count. The show comes
@@ -215,7 +228,7 @@ def series_publish(xbmc, window, timeout=3.0):
 
     tvshowid = show_id()
     while not tvshowid:
-        if (label("Container.FolderPath") != folder or time.monotonic() >= deadline
+        if (label("Container.FolderPath") != folder or time.monotonic() >= deadline or cancelled()
                 or monitor.waitForAbort(0.05)):
             return False
         tvshowid = show_id()
@@ -233,7 +246,7 @@ def series_publish(xbmc, window, timeout=3.0):
     return True
 
 
-def tv_position(xbmc, window, identity, season, episodeid, focus_episode, timeout=5.0):
+def tv_position(xbmc, window, identity, season, episodeid, focus_episode, timeout=5.0, cancelled=never):
     """Select the season tab and episode once the native lists have loaded; optionally focus the episode.
 
     One bounded wait per dialog open that reads the lists' own items (no library query), and gives up quietly if
@@ -244,7 +257,7 @@ def tv_position(xbmc, window, identity, season, episodeid, focus_episode, timeou
     label = xbmc.getInfoLabel
 
     def alive():
-        return (window.getProperty("Bald.Identity") == identity
+        return (not cancelled() and window.getProperty("Bald.Identity") == identity
                 and xbmc.getCondVisibility("Window.IsVisible(movieinformation)"))
 
     def settle(ready):
@@ -398,65 +411,119 @@ def run(action="", media_type="", dbid=""):
         from recommended import apply
         apply(xbmc, xbmcgui, media_type)
         return
-    if action == "seriesmeta":
-        series_publish(xbmc, xbmcgui.Window(VIDEO_NAV))
-        return
     if action == "font":
         # RunScript(skin.bald,font,<fontset id>): the id arrives in the second argument.
         set_fontset(xbmc, media_type)
         return
 
+    handle(xbmc, xbmcgui, action, media_type, dbid)
+
+
+def valid_dbid(dbid):
+    return dbid.isdecimal() and int(dbid) > 0
+
+
+def publish_art(xbmc, window, identity):
+    """Publish the dialog's art without putting paths through builtin argument parsing."""
+    fanart = next((value for value in (
+        xbmc.getInfoLabel("ListItem.Art(fanart)"),
+        xbmc.getInfoLabel("ListItem.Art(tvshow.fanart)"),
+        xbmc.getInfoLabel("ListItem.Art(thumb)"),
+    ) if value), "")
+    window.setProperty("Bald.Fanart", fanart)
+    window.setProperty("Bald.ArtIdentity", identity)
+
+
+def publish_recommendations(xbmc, window, identity, media_type, dbid):
+    """More like this: the library titles sharing the movie's or show's first genre."""
+    if media_type not in (*MEDIA, "episode") or not valid_dbid(dbid):
+        return
+    subject_type, details = recommendation_subject(xbmc, media_type, int(dbid))
+    # A slow lookup from the previous item must not replace the new item's list.
+    if (xbmc.getCondVisibility("Window.IsVisible(movieinformation)")
+            and window.getProperty("Bald.Identity") == identity):
+        window.setProperty("Bald.MoreFor", details.get("title", ""))
+        window.setProperty("Bald.MorePath", recommendation_path(
+            subject_type, details.get("title", ""), details.get("genre", [])))
+
+
+def recommendations(xbmc, xbmcgui, media_type, dbid):
+    """RunScript(skin.bald,recommendations,<type>,<id>): every info open."""
     identity = "{}:{}".format(media_type, dbid)
     window = xbmcgui.Window(12003)
-    valid_id = dbid.isdecimal() and int(dbid) > 0
-    if action == "tvinfo":
-        if media_type not in TV_TYPES or not valid_id or window.getProperty("Bald.Identity") != identity:
-            return
-        target = tv_publish(xbmc, window, identity, media_type, int(dbid))
-        if target:
-            tv_position(xbmc, window, identity, target[0], target[1], media_type == "episode")
+    if window.getProperty("Bald.Identity") != identity:
         return
-    if action == "play":
-        if media_type != "episode" or not valid_id or not xbmc.getCondVisibility(PLAY_WINDOWS):
-            return
-        home = xbmcgui.Window(10000)
-        # Repeat Select while info closes must not start a second playback.
-        if home.getProperty("Bald.InfoPlay"):
-            return
-        token = uuid.uuid4().hex
-        home.setProperty("Bald.InfoPlay", token)
-        try:
-            play_episode(xbmc, int(dbid))
-        finally:
-            if home.getProperty("Bald.InfoPlay") == token:
-                home.clearProperty("Bald.InfoPlay")
+    publish_art(xbmc, window, identity)
+    publish_recommendations(xbmc, window, identity, media_type, dbid)
+
+
+def tv_info(xbmc, xbmcgui, media_type, dbid, cancelled=never):
+    """RunScript(skin.bald,tvinfo,<type>,<id>): a TV item's header, next episode and rows."""
+    identity = "{}:{}".format(media_type, dbid)
+    window = xbmcgui.Window(12003)
+    if media_type not in TV_TYPES or not valid_dbid(dbid) or window.getProperty("Bald.Identity") != identity:
         return
-    if action == "recommendations":
-        if window.getProperty("Bald.Identity") != identity:
-            return
-        # Publish the dialog's art without putting paths through builtin argument parsing.
-        fanart = next((value for value in (
-            xbmc.getInfoLabel("ListItem.Art(fanart)"),
-            xbmc.getInfoLabel("ListItem.Art(tvshow.fanart)"),
-            xbmc.getInfoLabel("ListItem.Art(thumb)"),
-        ) if value), "")
-        window.setProperty("Bald.Fanart", fanart)
-        window.setProperty("Bald.ArtIdentity", identity)
-        if media_type not in (*MEDIA, "episode") or not dbid.isdecimal() or int(dbid) <= 0:
-            return
-        subject_type, details = recommendation_subject(xbmc, media_type, int(dbid))
-        # A slow lookup from the previous item must not replace the new item's list.
-        if (xbmc.getCondVisibility("Window.IsVisible(movieinformation)")
-                and window.getProperty("Bald.Identity") == identity):
-            window.setProperty("Bald.MoreFor", details.get("title", ""))
-            window.setProperty("Bald.MorePath", recommendation_path(
-                subject_type, details.get("title", ""), details.get("genre", [])))
-        return
-    if action != "open" or not xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
-        return
-    if media_type not in MEDIA or not dbid.isdecimal() or int(dbid) <= 0:
+    target = tv_publish(xbmc, window, identity, media_type, int(dbid))
+    if target:
+        tv_position(xbmc, window, identity, target[0], target[1], media_type == "episode", cancelled=cancelled)
+
+
+def info_opened(xbmc, xbmcgui, media_type, dbid, cancelled=never):
+    """Bald Helper's single "info opened" request: recommendations and, for a TV item, tvinfo.
+
+    The same steps as the two RunScript calls, ordered for what shows first: the art, the TV header, More like
+    this, then the (waiting) season and episode positioning. A failing step is logged and the next still runs, as
+    it would with the two separate scripts."""
+    identity = "{}:{}".format(media_type, dbid)
+    window = xbmcgui.Window(12003)
+    if window.getProperty("Bald.Identity") != identity:
         return
 
+    def step(name, call, *args):
+        try:
+            return call(*args)
+        except Exception as error:  # noqa: BLE001 - one lookup failing must not hide the others
+            xbmc.log("Bald info: {}: {}".format(name, error), xbmc.LOGERROR)
+            return None
+
+    publish_art(xbmc, window, identity)
+    target = None
+    if media_type in TV_TYPES and valid_dbid(dbid):
+        target = step("tvinfo", tv_publish, xbmc, window, identity, media_type, int(dbid))
+    if not cancelled():
+        step("recommendations", publish_recommendations, xbmc, window, identity, media_type, dbid)
+    if target and not cancelled():
+        step("tvinfo", tv_position, xbmc, window, identity, target[0], target[1], media_type == "episode",
+             5.0, cancelled)
+
+
+def play(xbmc, xbmcgui, media_type, dbid):
+    """RunScript(skin.bald,play,episode,<id>): episode Select on the info page and the Series page."""
+    if media_type != "episode" or not valid_dbid(dbid) or not xbmc.getCondVisibility(PLAY_WINDOWS):
+        return
+    home = xbmcgui.Window(10000)
+    # Repeat Select while info closes must not start a second playback.
+    if home.getProperty("Bald.InfoPlay"):
+        return
+    token = uuid.uuid4().hex
+    home.setProperty("Bald.InfoPlay", token)
+    try:
+        play_episode(xbmc, int(dbid))
+    finally:
+        if home.getProperty("Bald.InfoPlay") == token:
+            home.clearProperty("Bald.InfoPlay")
+
+
+def open_item(xbmc, xbmcgui, media_type, dbid, show=None):
+    """RunScript(skin.bald,open,<type>,<id>): More like this swaps the info dialog for the chosen title.
+
+    `show` opens the new dialog. xbmcgui.Dialog().info returns only when that dialog closes, so Bald Helper passes
+    one that calls it on a thread of its own and keeps its worker free."""
+    if not xbmc.getCondVisibility("Window.IsActive(movieinformation)"):
+        return
+    if media_type not in MEDIA or not valid_dbid(dbid):
+        return
+    window = xbmcgui.Window(12003)
     home = xbmcgui.Window(10000)
     # Suppress repeat Select while fetching and exchanging the native dialog.
     if home.getProperty("Bald.InfoSwitch"):
@@ -481,10 +548,26 @@ def run(action="", media_type="", dbid=""):
             if time.monotonic() >= deadline or monitor.waitForAbort(0.02):
                 return
         # Home remains zoomed during the exchange. Onload releases this guard.
-        xbmcgui.Dialog().info(item)
+        (show or xbmcgui.Dialog().info)(item)
     finally:
         if home.getProperty("Bald.InfoSwitch") == token:
             home.clearProperty("Bald.InfoSwitch")
+
+
+def handle(xbmc, xbmcgui, action, media_type="", dbid="", cancelled=never, show=None):
+    """The latency-sensitive actions, shared by RunScript and Bald Helper's service (see the module docstring)."""
+    if action == "seriesmeta":
+        series_publish(xbmc, xbmcgui.Window(VIDEO_NAV), cancelled=cancelled)
+    elif action == "info":
+        info_opened(xbmc, xbmcgui, media_type, dbid, cancelled)
+    elif action == "tvinfo":
+        tv_info(xbmc, xbmcgui, media_type, dbid, cancelled)
+    elif action == "recommendations":
+        recommendations(xbmc, xbmcgui, media_type, dbid)
+    elif action == "play":
+        play(xbmc, xbmcgui, media_type, dbid)
+    elif action == "open":
+        open_item(xbmc, xbmcgui, media_type, dbid, show)
 
 
 if __name__ == "__main__":
