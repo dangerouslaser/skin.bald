@@ -11,7 +11,7 @@
                 <param name="index">1</param>
                 <param name="screen">home</param>
                 <param name="menu">9001</param>
-                <param name="enabled">true</param>
+                <param name="enabled">!$EXP[Bald_HomeHidden]</param>
                 <param name="up">SetFocus(9000,0,absolute)</param>
                 <param name="down">9102</param>
                 <param name="dots">Bald_RowDots_9101</param>
@@ -28,7 +28,7 @@
                 <param name="index">2</param>
                 <param name="screen">home</param>
                 <param name="menu">9001</param>
-                <param name="enabled">true</param>
+                <param name="enabled">!$EXP[Bald_HomeHidden]</param>
                 <param name="up">9101</param>
                 <param name="down">9103</param>
                 <param name="dots">Bald_RowDots_9102</param>
@@ -46,7 +46,7 @@
                 <param name="index">3</param>
                 <param name="screen">home</param>
                 <param name="menu">9001</param>
-                <param name="enabled">true</param>
+                <param name="enabled">!$EXP[Bald_HomeHidden]</param>
                 <param name="up">9102</param>
                 <param name="down"/>
                 <param name="dots">Bald_RowDots_9103</param>
@@ -263,7 +263,7 @@
         <value condition="String.IsEqual(Window(home).Property(Bald.Row.home),9103)">fanart</value>
         <value>fanart</value>
     </variable>
-    <expression name="Bald_PreviewRows_home">[$EXP[Bald_PreviewHome] + true + $EXP[Bald_HasRows_home]]</expression>
+    <expression name="Bald_PreviewRows_home">[$EXP[Bald_PreviewHome] + !$EXP[Bald_HomeHidden] + $EXP[Bald_HasRows_home]]</expression>
     <expression name="Bald_HubShown_home">[false]</expression>
     <expression name="Bald_HubHasOpen_home">[false]</expression>
     <variable name="Bald_HubLabel_home">

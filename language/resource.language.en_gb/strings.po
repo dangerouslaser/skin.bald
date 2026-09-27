@@ -1830,7 +1830,7 @@ msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31741"
-msgid "The default screen. Home cannot be removed."
+msgid "Your everyday rows, mixed from all your libraries, and the screen Bald starts on. Turn it off to start on your first hub instead; Home comes back whenever no hub is shown."
 msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml

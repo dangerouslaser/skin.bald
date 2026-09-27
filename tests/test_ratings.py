@@ -432,11 +432,14 @@ class RatingsTests(unittest.TestCase):
         fixedlist = next(c for c in row.iter("control") if c.get("type") == "fixedlist")
         focus = {n.text: n.get("condition") for n in expand_follow(fixedlist) if n.tag == "onfocus"}
         condition = focus["SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)"]
-        self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_ReturningToMenu]", condition))
+        # (An enabled row: Home's rows while Home is hidden set nothing.)
+        self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_ReturningToMenu] + $PARAM[enabled]", condition))
         home = ET.parse(SKIN / "Home.xml").getroot()
         loads = {n.text: n.get("condition") for n in expand_follow(home) if n.tag == "onload"}
         self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_ReturningToMenu]",
-                                loads["SetProperty(TMDbHelper.WidgetContainer,9101,home)"]))
+                                loads["SetProperty(TMDbHelper.WidgetContainer,$VAR[Bald_StartRow],home)"]))
+        import home_menu
+        self.assertEqual(home_menu.variable_value("Bald_StartRow", home_menu.HOME_SHOWN), "9101")
         self.assertEqual(home.findtext("defaultcontrol"), "9101")
 
     def test_home_runs_tmdb_helpers_monitor_with_online_ratings(self):

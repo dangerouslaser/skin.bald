@@ -68,3 +68,29 @@ def live(pairs, bodies):
     """The (condition, action) pairs whose condition can hold under these bodies."""
     from conditions import implies
     return [(cond, action) for cond, action in pairs if not implies(cond or "true", "false", bodies)]
+
+
+# Home shown in the main menu (Home Screens > Home; Bald.Screen.HideHome unset), for conditions.implies(assume=...).
+HOME_SHOWN = {"Skin.HasSetting(Bald.Screen.HideHome)": False}
+
+
+def same_under(a, b, assume):
+    """Conditions a and b mean the same once the atoms in assume are fixed."""
+    from conditions import implies
+    return implies(a or "true", b or "true", assume=assume) and implies(b or "true", a or "true", assume=assume)
+
+
+def variable_value(name, assume, bodies=None):
+    """The value Kodi picks from Includes_Bald_Home.xml's variable `name` once the atoms in assume are fixed: the first
+    whose condition must hold, every earlier one being impossible. None when that depends on other atoms."""
+    import xml.etree.ElementTree as ET
+    from conditions import implies
+    from kodi_includes import SKIN
+    variable = ET.parse(SKIN / "Includes_Bald_Home.xml").getroot().find(f"variable[@name='{name}']")
+    for value in variable.findall("value"):
+        cond = value.get("condition") or "true"
+        if implies("true", cond, bodies, assume=assume):
+            return value.text
+        if not implies(cond, "false", bodies, assume=assume):
+            return None
+    return None

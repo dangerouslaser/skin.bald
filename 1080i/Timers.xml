@@ -33,6 +33,15 @@
         <onstart condition="!Integer.IsGreater(Playlist.Length(video),1) + !String.IsEmpty(VideoPlayer.Episode)">SetFocus(8150,$INFO[VideoPlayer.Episode],absolute)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.OSD.Placed))</stop>
     </timer>
+    <!-- Home hidden (Home Screens): Home's onload focuses the start row, but a list that has never been shown has no
+         items and cannot take focus yet, so focus can stay on Home's hidden row 1 (the default control). Marker 9193
+         (Bald_HomeRowStranded) shows then; 9195 moves focus to the start row, now loading, or the menu. -->
+    <timer>
+        <name>bald_home_start</name>
+        <start>Window.IsActive(home) + Control.IsVisible(9193)</start>
+        <onstart>SetFocus(9195)</onstart>
+        <stop>!Control.IsVisible(9193)</stop>
+    </timer>
     <!-- Bald skin timers run in CApplication::ProcessSlow, every 500 ms: fine for row start and idle, too coarse
          for anything that must follow item changes. -->
     <!-- Bald Home. Row start: a fixedlist first selects the item at its focus position (slot 2, or slot 5 on a poster

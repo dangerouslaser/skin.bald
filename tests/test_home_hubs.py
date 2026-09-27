@@ -420,10 +420,12 @@ class ReturnKeepsStateTests(unittest.TestCase):
     """Returning to a menu entry keeps the state Home was left in: Kodi starts each control's animations from the
     properties as they were, so resetting and restoring them would animate the art frame away and back."""
 
-    RESETS = ["SetProperty(Bald.Row,9101,home)", "SetProperty(Bald.Row.home,9101,home)",
+    # Home's start state goes through Bald_Start* (Home, or while Home is hidden the screen it starts on); with Home
+    # shown they are Home's own values (tests/test_home_hidden.py).
+    RESETS = ["SetProperty(Bald.Row,$VAR[Bald_StartRow],home)", "SetProperty(Bald.Row.home,9101,home)",
               "SetProperty(Bald.Row.livetv,9051,home)"] + [f"SetProperty(Bald.Row.hub{n},9{n + 1}01,home)" for n in range(1, 9)] + [
-              "SetProperty(Bald.Screen,home,home)", "SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)",
-              "SetProperty(Bald.FocusContainer,9101,home)", "ClearProperty(Bald.Menu,home)"]
+              "SetProperty(Bald.Screen,$VAR[Bald_StartScreen],home)", "SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)",
+              "SetProperty(Bald.FocusContainer,$VAR[Bald_StartRow],home)", "ClearProperty(Bald.Menu,home)"]
 
     def test_state_resets_are_skipped_on_return_to_a_menu_entry(self):
         loads = [n for n in expand_follow(ET.parse(XML / "Home.xml").getroot()) if n.tag == "onload"]
@@ -431,7 +433,7 @@ class ReturnKeepsStateTests(unittest.TestCase):
         for action in self.RESETS:
             with self.subTest(action=action):
                 self.assertTrue(equivalent(onload[action], "!$EXP[Bald_ReturningToMenu]"), onload[action])
-        self.assertTrue(equivalent(onload["SetProperty(TMDbHelper.WidgetContainer,9101,home)"],
+        self.assertTrue(equivalent(onload["SetProperty(TMDbHelper.WidgetContainer,$VAR[Bald_StartRow],home)"],
                                    "!$EXP[Bald_ReturningToMenu] + $EXP[Bald_TMDbHelperFollows]"))
 
     def test_returning_matches_the_restored_entries(self):
@@ -450,12 +452,13 @@ class ReturnDefaultFocusTests(unittest.TestCase):
         home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         row = next(c for c in home.iter("control") if c.get("type") == "fixedlist" and c.get("id") == "$PARAM[id]")
         guarded = {n.text: n.get("condition") for n in expand_follow(row) if n.tag == "onfocus"}
+        # Nor from a disabled row ($PARAM[enabled]: Home's rows while Home is hidden get the same default focus).
         for action in ("SetProperty(Bald.Row,$PARAM[id],home)", "SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)",
                        "SetProperty(Bald.FocusContainer,$PARAM[id],home)", "SetProperty(Bald.RowStyle,$PARAM[style],home)"):
             with self.subTest(action=action):
-                self.assertTrue(equivalent(guarded[action], "!$EXP[Bald_ReturningToMenu]"), guarded[action])
+                self.assertTrue(equivalent(guarded[action], "!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]"), guarded[action])
         self.assertTrue(equivalent(guarded["SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)"],
-                                   "!$EXP[Bald_ReturningToMenu] + $EXP[Bald_TMDbHelperFollows]"))
+                                   "!$EXP[Bald_ReturningToMenu] + $PARAM[enabled] + $EXP[Bald_TMDbHelperFollows]"))
 
 
 class ContentPickerTests(unittest.TestCase):

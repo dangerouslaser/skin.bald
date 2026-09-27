@@ -289,7 +289,7 @@
 	     need a PVR add-on (their Bald_Row enabled parameter), so without one they neither preload nor count. Under a
 	     modal dialog Container(...) here resolves against the dialog, so the splash waits for it to close. -->
 	<expression name="Bald_Preloading">[!String.IsEmpty(Window(home).Property(Bald.Preload))]</expression>
-	<expression name="Bald_RowsLoading">[$EXP[Bald_RowsLoading_home] | [System.HasPVRAddon + !Skin.HasSetting(Bald.Screen.HideLiveTV) + $EXP[Bald_RowsLoading_livetv]] | [$EXP[Bald_HubShown_hub1] + $EXP[Bald_RowsLoading_hub1]] | [$EXP[Bald_HubShown_hub2] + $EXP[Bald_RowsLoading_hub2]] | [$EXP[Bald_HubShown_hub3] + $EXP[Bald_RowsLoading_hub3]] | [$EXP[Bald_HubShown_hub4] + $EXP[Bald_RowsLoading_hub4]] | [$EXP[Bald_HubShown_hub5] + $EXP[Bald_RowsLoading_hub5]] | [$EXP[Bald_HubShown_hub6] + $EXP[Bald_RowsLoading_hub6]] | [$EXP[Bald_HubShown_hub7] + $EXP[Bald_RowsLoading_hub7]] | [$EXP[Bald_HubShown_hub8] + $EXP[Bald_RowsLoading_hub8]]]</expression>
+	<expression name="Bald_RowsLoading">[[!$EXP[Bald_HomeHidden] + $EXP[Bald_RowsLoading_home]] | [System.HasPVRAddon + !Skin.HasSetting(Bald.Screen.HideLiveTV) + $EXP[Bald_RowsLoading_livetv]] | [$EXP[Bald_HubShown_hub1] + $EXP[Bald_RowsLoading_hub1]] | [$EXP[Bald_HubShown_hub2] + $EXP[Bald_RowsLoading_hub2]] | [$EXP[Bald_HubShown_hub3] + $EXP[Bald_RowsLoading_hub3]] | [$EXP[Bald_HubShown_hub4] + $EXP[Bald_RowsLoading_hub4]] | [$EXP[Bald_HubShown_hub5] + $EXP[Bald_RowsLoading_hub5]] | [$EXP[Bald_HubShown_hub6] + $EXP[Bald_RowsLoading_hub6]] | [$EXP[Bald_HubShown_hub7] + $EXP[Bald_RowsLoading_hub7]] | [$EXP[Bald_HubShown_hub8] + $EXP[Bald_RowsLoading_hub8]]]</expression>
 	<expression name="Bald_RowsLoaded">[!$EXP[Bald_DialogOver] + !$EXP[Bald_RowsLoading]]</expression>
 	<!-- The splash: random library fanart, darkened like Home's backdrop, crossfading (1000) every 4.5 s, with the
 	     wordmark centred. List 9180 drives it: random movies then random shows, ten each, auto-advancing. It sits inside
@@ -486,9 +486,95 @@
 		<value>$LOCALIZE[10000]</value>
 	</variable>
 
-	<!-- Where focus goes back to the rows (idle wake): the current row, or with no Home rows the menu's Home entry. -->
+	<!-- ============ Home hidden (Home Screens > Home > Show in the main menu) ============ -->
+	<!-- Bald.Screen.HideHome takes Home out of the menu, but only while some hub is shown: Home never hides with nothing
+	     else to show. Its rows are then disabled (screens.xml "enabled": not shown, not preloaded, not waited for, and
+	     their onfocus sets no state, so the default control 9101, which Kodi still focuses first, changes nothing).
+	     Home's onload starts where Home would have been (docs/NOTES.md, Home hidden):
+	       the first shown hub with rows (menu order), else Live TV's rows (shown, a PVR add-on and rows), else the menu
+	       open on the first shown hub.
+	     Bald_Start* name that start: the screen, its first row, that row's style and the menu entry; with Home shown
+	     they are exactly Home's (home, 9101, Bald_RowStyle_home, 9001). -->
+	<expression name="Bald_HomeHidden">[Skin.HasSetting(Bald.Screen.HideHome) + [$EXP[Bald_HubShown_hub1] | $EXP[Bald_HubShown_hub2] | $EXP[Bald_HubShown_hub3] | $EXP[Bald_HubShown_hub4] | $EXP[Bald_HubShown_hub5] | $EXP[Bald_HubShown_hub6] | $EXP[Bald_HubShown_hub7] | $EXP[Bald_HubShown_hub8]]]</expression>
+	<expression name="Bald_HubShownRows_hub1">[$EXP[Bald_HubShown_hub1] + $EXP[Bald_HasRows_hub1]]</expression>
+	<expression name="Bald_HubShownRows_hub2">[$EXP[Bald_HubShown_hub2] + $EXP[Bald_HasRows_hub2]]</expression>
+	<expression name="Bald_HubShownRows_hub3">[$EXP[Bald_HubShown_hub3] + $EXP[Bald_HasRows_hub3]]</expression>
+	<expression name="Bald_HubShownRows_hub4">[$EXP[Bald_HubShown_hub4] + $EXP[Bald_HasRows_hub4]]</expression>
+	<expression name="Bald_HubShownRows_hub5">[$EXP[Bald_HubShown_hub5] + $EXP[Bald_HasRows_hub5]]</expression>
+	<expression name="Bald_HubShownRows_hub6">[$EXP[Bald_HubShown_hub6] + $EXP[Bald_HasRows_hub6]]</expression>
+	<expression name="Bald_HubShownRows_hub7">[$EXP[Bald_HubShown_hub7] + $EXP[Bald_HasRows_hub7]]</expression>
+	<expression name="Bald_HubShownRows_hub8">[$EXP[Bald_HubShown_hub8] + $EXP[Bald_HasRows_hub8]]</expression>
+	<expression name="Bald_LiveTVStarts">[!Skin.HasSetting(Bald.Screen.HideLiveTV) + $EXP[Bald_LiveTVRows]]</expression>
+	<expression name="Bald_StartHasRows">[[!$EXP[Bald_HomeHidden] + $EXP[Bald_HasRows_home]] | [$EXP[Bald_HomeHidden] + [$EXP[Bald_HubShownRows_hub1] | $EXP[Bald_HubShownRows_hub2] | $EXP[Bald_HubShownRows_hub3] | $EXP[Bald_HubShownRows_hub4] | $EXP[Bald_HubShownRows_hub5] | $EXP[Bald_HubShownRows_hub6] | $EXP[Bald_HubShownRows_hub7] | $EXP[Bald_HubShownRows_hub8] | $EXP[Bald_LiveTVStarts]]]]</expression>
+	<variable name="Bald_StartScreen">
+		<value condition="!$EXP[Bald_HomeHidden]">home</value>
+		<value condition="$EXP[Bald_HubShownRows_hub1]">hub1</value>
+		<value condition="$EXP[Bald_HubShownRows_hub2]">hub2</value>
+		<value condition="$EXP[Bald_HubShownRows_hub3]">hub3</value>
+		<value condition="$EXP[Bald_HubShownRows_hub4]">hub4</value>
+		<value condition="$EXP[Bald_HubShownRows_hub5]">hub5</value>
+		<value condition="$EXP[Bald_HubShownRows_hub6]">hub6</value>
+		<value condition="$EXP[Bald_HubShownRows_hub7]">hub7</value>
+		<value condition="$EXP[Bald_HubShownRows_hub8]">hub8</value>
+		<value condition="$EXP[Bald_LiveTVStarts]">livetv</value>
+		<value condition="$EXP[Bald_HubShown_hub1]">hub1</value>
+		<value condition="$EXP[Bald_HubShown_hub2]">hub2</value>
+		<value condition="$EXP[Bald_HubShown_hub3]">hub3</value>
+		<value condition="$EXP[Bald_HubShown_hub4]">hub4</value>
+		<value condition="$EXP[Bald_HubShown_hub5]">hub5</value>
+		<value condition="$EXP[Bald_HubShown_hub6]">hub6</value>
+		<value condition="$EXP[Bald_HubShown_hub7]">hub7</value>
+		<value condition="$EXP[Bald_HubShown_hub8]">hub8</value>
+		<value>home</value>
+	</variable>
+	<variable name="Bald_StartRow">
+		<value condition="!$EXP[Bald_HomeHidden]">9101</value>
+		<value condition="$EXP[Bald_HubShownRows_hub1]">9201</value>
+		<value condition="$EXP[Bald_HubShownRows_hub2]">9301</value>
+		<value condition="$EXP[Bald_HubShownRows_hub3]">9401</value>
+		<value condition="$EXP[Bald_HubShownRows_hub4]">9501</value>
+		<value condition="$EXP[Bald_HubShownRows_hub5]">9601</value>
+		<value condition="$EXP[Bald_HubShownRows_hub6]">9701</value>
+		<value condition="$EXP[Bald_HubShownRows_hub7]">9801</value>
+		<value condition="$EXP[Bald_HubShownRows_hub8]">9901</value>
+		<value condition="$EXP[Bald_LiveTVStarts]">9051</value>
+		<value />
+	</variable>
+	<variable name="Bald_StartRowStyle">
+		<value condition="!$EXP[Bald_HomeHidden]">$VAR[Bald_RowStyle_home]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub1]">$VAR[Bald_RowStyle_hub1]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub2]">$VAR[Bald_RowStyle_hub2]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub3]">$VAR[Bald_RowStyle_hub3]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub4]">$VAR[Bald_RowStyle_hub4]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub5]">$VAR[Bald_RowStyle_hub5]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub6]">$VAR[Bald_RowStyle_hub6]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub7]">$VAR[Bald_RowStyle_hub7]</value>
+		<value condition="$EXP[Bald_HubShownRows_hub8]">$VAR[Bald_RowStyle_hub8]</value>
+		<value condition="$EXP[Bald_LiveTVStarts]">$VAR[Bald_RowStyle_livetv]</value>
+		<value />
+	</variable>
+	<variable name="Bald_StartMenuEntry">
+		<value condition="!$EXP[Bald_HomeHidden]">9001</value>
+		<value condition="$EXP[Bald_HubShown_hub1]">9011</value>
+		<value condition="$EXP[Bald_HubShown_hub2]">9012</value>
+		<value condition="$EXP[Bald_HubShown_hub3]">9013</value>
+		<value condition="$EXP[Bald_HubShown_hub4]">9014</value>
+		<value condition="$EXP[Bald_HubShown_hub5]">9015</value>
+		<value condition="$EXP[Bald_HubShown_hub6]">9016</value>
+		<value condition="$EXP[Bald_HubShown_hub7]">9017</value>
+		<value condition="$EXP[Bald_HubShown_hub8]">9018</value>
+		<value>9001</value>
+	</variable>
+	<!-- Focus left on a Home row while Home is hidden: only the default control 9101 at load, before the onload's
+	     SetFocus reaches the start row (a list that has never been shown has no items and cannot take focus yet), or a
+	     key pressed in that moment. Marker 9193 shows then, and Timers.xml bald_home_start moves focus on through 9195. -->
+	<expression name="Bald_HomeRowStranded">[$EXP[Bald_HomeHidden] + !$EXP[Bald_Preloading] + Integer.IsGreater(System.CurrentControlID,9100) + Integer.IsLess(System.CurrentControlID,9121)]</expression>
+
+	<!-- Where focus goes back to the rows (idle wake): the current row, or with no current row the menu's first entry
+	     (Home, or the first shown hub while Home is hidden). -->
 	<variable name="Bald_RowFocus">
 		<value condition="$EXP[Bald_HasRow]">$INFO[Window(home).Property(Bald.Row)]</value>
+		<value condition="$EXP[Bald_HomeHidden]">$VAR[Bald_StartMenuEntry]</value>
 		<value>9001</value>
 	</variable>
 	<variable name="Bald_NudgeLNext">
@@ -1160,11 +1246,13 @@
 				     controls' initial animation states and before the onload runs (CGUIWindow::OnInitWindow), so this focus
 				     would make row 1's state the frame's starting shape, and the return to a hub of another style would
 				     then resize it. -->
-				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
-				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
-				<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">home</param><param name="condition">!$EXP[Bald_ReturningToMenu]</param></include>
+				<!-- Nor from a disabled row: Home's rows while Home is hidden get that same default focus, and must not make
+				     themselves the current row over the screen Home starts on (Bald_HomeHidden). -->
+				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
+				<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">home</param><param name="condition">!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]</param></include>
 				<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
-				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
 				<!-- Row start: a fixedlist first selects item slot + 1 (start) at its focus slot. The row above moves this one back while
 				     it is hidden (generated onfocus, see shortcuts/generator/screen.xml) and Timers.xml covers the rows shown
 				     before they are focused; if the row is still pristine when it gains focus, move it here. Loaded rows are

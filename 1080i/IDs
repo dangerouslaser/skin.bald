@@ -253,10 +253,12 @@ HOME (Home.xml, Includes_Bald_Home.xml)
 		(tools/build_home_defaults.py) stands in until the first build. An empty slot
 		builds no controls. None of these ranges meets another: 9001-9029 menu and
 		bridges, 9051-9070, 9101-9120, then x01-x20 per hundred up to 9920, and the fixed
-		9180 and 9194-9199 below sit above 9120.
+		9180 and 9193-9199 below sit above 9120.
 9180	Startup splash: hidden list of random fanart that drives the background
+9193	Home hidden: shows while focus is stranded on one of Home's rows (Timers.xml bald_home_start reads it)
 9194	Startup splash: shows once every row has loaded (Timers.xml bald_preload reads it)
-9195	Startup splash: focus lifts the splash and moves on to row 1 (or the menu)
+9195	Startup splash: focus lifts the splash and moves on to row 1 (or the menu), or while Home is hidden to
+		the start screen's first row; bald_home_start also focuses it
 9198	Startup splash: holds focus and ignores keys while the splash shows
 9199	Idle-wake button: the idle timer parks focus here, any key returns to the row
 0		Bald_MenuNote label default (no id)

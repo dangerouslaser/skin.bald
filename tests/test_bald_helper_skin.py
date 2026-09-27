@@ -137,7 +137,8 @@ class FollowTests(unittest.TestCase):
                     found.setdefault(params["window"], set()).add(params["id"])
         self.assertEqual(set(found), {"home", "videos", "movieinformation"})
         self.assertEqual(found["movieinformation"], {"5100"})
-        self.assertLessEqual({"9101", "$PARAM[id]"}, found["home"])
+        # Home's onload follows the row it starts on (Bald_StartRow: 9101, or a hub's while Home is hidden).
+        self.assertLessEqual({"$VAR[Bald_StartRow]", "$PARAM[id]"}, found["home"])
         self.assertLessEqual({"510", "511", "512", "513", "514", "515", "520", "530", "540", "521", "522", "523",
                               "531", "532", "541", "542", "5302"}, found["videos"])
 

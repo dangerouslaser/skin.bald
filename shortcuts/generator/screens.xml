@@ -10,7 +10,8 @@
        title    include and expression name part (Bald_Generated_<title>Widgets, Bald_Preview<title>)
        base     row ids are base + 1 onward (1080i/IDs)
        button   the screen's main-menu entry (Home.xml grouplist 9000), where Up from its first row and Back go
-       enabled  a Kodi condition the screen's rows also need (Live TV rows need a PVR add-on)
+       enabled  a Kodi condition the screen's rows also need (Live TV rows need a PVR add-on; Home's rows are off
+                while Home is hidden, Bald_HomeHidden)
      Never write an empty <value>: Skin Variables reads it as None and formats the text "None". -->
 <contents>
     <lists>
@@ -21,7 +22,7 @@
             <value name="title">Home</value>
             <value name="base">9100</value>
             <value name="button">9001</value>
-            <value name="enabled">true</value>
+            <value name="enabled">!$EXP[Bald_HomeHidden]</value>
         </list>
         <list name="livetv">
             <value name="screen">livetv</value>
