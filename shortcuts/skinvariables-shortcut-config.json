@@ -130,11 +130,25 @@
     ],
     "grouping://bald/pvr/": [
         {
+            "name": "Recently played TV channels",
+            "path": "pvr://channels/tv/*?view=lastplayed",
+            "icon": "DefaultTVShows.png",
+            "link": "true",
+            "node": "tvchannels"
+        },
+        {
             "name": "Live TV channel groups",
             "path": "pvr://channels/tv/",
             "icon": "DefaultTVShows.png",
             "link": "false",
             "node": "tvchannels"
+        },
+        {
+            "name": "Recently played radio channels",
+            "path": "pvr://channels/radio/*?view=lastplayed",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "true",
+            "node": "radiochannels"
         },
         {
             "name": "Radio channel groups",

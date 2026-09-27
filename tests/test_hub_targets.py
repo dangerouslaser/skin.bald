@@ -56,14 +56,17 @@ class PickerTests(unittest.TestCase):
             "Favourites": ("favourites://", "favouritesbrowser"),
             "Live TV channel groups": ("pvr://channels/tv/", "tvchannels"),
             "Radio channel groups": ("pvr://channels/radio/", "radiochannels"),
+            "Recently played TV channels": ("pvr://channels/tv/*?view=lastplayed", "tvchannels"),
+            "Recently played radio channels": ("pvr://channels/radio/*?view=lastplayed", "radiochannels"),
         }
         self.assertEqual({name: (e["path"], e["node"]) for name, e in entries.items()}, expected)
-        # Rows need folders (a row is a list's content): no builtins here.
-        self.assertTrue(all(e["link"] == "false" for e in entries.values()))
+        # Rows need folders (a row is a list's content): no builtins here. The recently played channels are picked
+        # directly (link), since browsing into them would list channels to pick one from.
+        self.assertTrue(all(e["link"] == "false" or e["path"].startswith("pvr://") for e in entries.values()))
 
     def test_hubs_can_open_music_favourites_weather_pictures_programs_and_radio(self):
         entries = {e["name"]: e for e in grouping_entries("grouping://hubs/")}
-        builtins = {name: e["path"] for name, e in entries.items() if e["link"] == "true"}
+        builtins = {name: e["path"] for name, e in entries.items() if e["link"] == "true" and "://" not in e["path"]}
         self.assertEqual(builtins, {
             "Favourites": "ActivateWindow(FavouritesBrowser)",
             "Pictures": "ActivateWindow(Pictures)",
@@ -156,7 +159,7 @@ class OpenActionTests(unittest.TestCase):
                 continue
             with self.subTest(entry=entry["name"]):
                 action = hub_actions([{"label": "x", **browse_result(entry)}])[0]
-                if entry["link"] == "true":
+                if entry["link"] == "true" and "://" not in entry["path"]:
                     self.assertEqual(action, entry["path"])
                 else:
                     self.assertEqual(action, f"ActivateWindow({entry['node']},{entry['path']},return)")
