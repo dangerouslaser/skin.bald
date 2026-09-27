@@ -307,7 +307,8 @@ class EditorStyleTests(unittest.TestCase):
         button = root.find(".//control[@id='9208']")
         self.assertIsNotNone(button)
         self.assertEqual(button.findtext("label2"), "$VAR[Bald_WidgetStyleLabel]")
-        action = button.findtext("onclick")
+        # The first onclick marks the rows changed (Bald_StampWidgetsOnUnload).
+        action = button.find("onclick[2]").text
         # Skin Variables' do_edit: key, then label=value pairs joined by &, a heading, and use_prop_pairs.
         match = re.fullmatch(r"RunPlugin\(\$VAR\[Bald_WidgetItemUrl\]&func=do_edit"
                              r"&&style&&(?P<pairs>[^,]+?)&&(?P<heading>[^&]+)&&True\)", action)

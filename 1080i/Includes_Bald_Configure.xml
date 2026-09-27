@@ -233,8 +233,16 @@
 	     with none, the list holds only Skin Variables' placeholder, and do_choose on item 0 fills it rather than adding
 	     a second entry. -->
 	<include name="Bald_AddHubActions">
-		<onclick condition="!String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank))">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=0&amp;func=do_choose&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
-		<onclick condition="String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank)) + !$EXP[Bald_HubsFull]">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=98&amp;func=do_new&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
+		<onclick condition="!String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank))">SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick condition="!String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank))">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=0&amp;func=do_choose&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
+		<onclick condition="String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank)) + !$EXP[Bald_HubsFull]">SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick condition="String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank)) + !$EXP[Bald_HubsFull]">RunPlugin(plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=hubs&amp;skin=skin.bald&amp;mode=submenu&amp;item=98&amp;func=do_new&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
+	</include>
+
+	<!-- The widget editor (1116) and Home Screens (1117): every Skin Variables action marks the rows changed
+	     (Bald.WidgetsDirty on Home, set before the action's RunPlugin), and closing the window stamps
+	     Bald.WidgetsStamp only then, so Home rebuilds (and Skin Variables reloads the skin) only after a change. -->
+	<include name="Bald_StampWidgetsOnUnload">
+		<onunload condition="!String.IsEmpty(Window(home).Property(Bald.WidgetsDirty))">Skin.SetString(Bald.WidgetsStamp,$INFO[System.Date(yyyy-mm-dd)]_$INFO[System.Time(hh:mm:ss)])</onunload>
+		<onunload>ClearProperty(Bald.WidgetsDirty,home)</onunload>
 	</include>
 
 	<!-- Appearance > Typography (1118): the current fontset (Skin.Font is lookandfeel.font, a Font.xml fontset id). -->

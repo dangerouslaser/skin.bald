@@ -38,10 +38,9 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertIn("$INFO[Window(home).Property(Bald.ConfigureItem),&node=,]", content)
         self.assertIn("mode=$INFO[Window(home).Property(Bald.ConfigureMode)]", content)
         self.assertIn("skin=skin.bald", content)
-        # Closing the editor stamps the rows; Home rebuilds when the stamp it passes to Skin Variables changes.
-        stamp = root.findtext("onunload")
-        self.assertTrue(stamp.startswith("Skin.SetString(Bald.WidgetsStamp,"))
-        self.assertIn("System.Time(hh:mm:ss)", stamp)
+        # Closing the editor after a change stamps the rows; Home rebuilds when the stamp it passes to Skin Variables
+        # changes.
+        self.assert_stamps_only_after_a_change("Custom_1116_BaldHomeWidgets.xml")
         self.assertNotIn("buildtemplate", ET.tostring(root, encoding="unicode"))
 
     def test_home_builds_its_rows_on_load_only_when_inputs_change(self):
@@ -76,8 +75,28 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertIn("edit=true", hubs.findtext("content"))
         self.assertNotIn("Bald.Screen.Movies", ET.tostring(root, encoding="unicode"))
         self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(root, encoding="unicode"))
-        # Closing it rebuilds Home on its next load, as the widget editor does.
-        self.assertTrue(any(n.text.startswith("Skin.SetString(Bald.WidgetsStamp,") for n in root.findall("onunload")))
+        # Closing it after a change rebuilds Home on its next load, as the widget editor does.
+        self.assert_stamps_only_after_a_change("Custom_1117_BaldHomeScreens.xml")
+
+    def assert_stamps_only_after_a_change(self, name):
+        window = resolve_window(name)
+        unloads = [(n.get("condition"), n.text) for n in window.findall("onunload")]
+        stamp = next(u for u in unloads if u[1].startswith("Skin.SetString(Bald.WidgetsStamp,"))
+        self.assertIn("System.Time(hh:mm:ss)", stamp[1])
+        self.assertEqual(stamp[0], "!String.IsEmpty(Window(home).Property(Bald.WidgetsDirty))")
+        self.assertIn((None, "ClearProperty(Bald.WidgetsDirty,home)"), unloads[unloads.index(stamp) + 1:])
+        # Every Skin Variables action marks the rows changed first, under the same condition.
+        runs = 0
+        for parent in window.iter():
+            clicks = [n for n in parent if n.tag == "onclick"]
+            for i, click in enumerate(clicks):
+                if click.text.startswith("RunPlugin("):
+                    runs += 1
+                    with self.subTest(window=name, action=click.text[:60]):
+                        self.assertGreater(i, 0)
+                        mark = clicks[i - 1]
+                        self.assertEqual((mark.get("condition"), mark.text), (click.get("condition"), "SetProperty(Bald.WidgetsDirty,1,home)"))
+        self.assertGreater(runs, 5)
 
     def test_hub_rows_run_skin_variables_actions_on_the_selected_hub(self):
         root = resolve_window("Custom_1117_BaldHomeScreens.xml")

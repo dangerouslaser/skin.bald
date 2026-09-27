@@ -3,12 +3,13 @@
      The hubs are the Skin Variables menu "hubs" (skinvariables-shortcut-hubs.json in its addon_data): list 9390 reads it
      live, and each hub row of the sidebar shows the entry at its position. Every change goes through Skin Variables'
      own plugin actions (do_edit, do_toggle, do_action, do_move, do_delete, do_new/do_choose), which write the list and
-     refresh 9390; closing this window stamps Bald.WidgetsStamp, so Home rebuilds its menu and rows on its next load. -->
+     refresh 9390; closing this window after one stamps Bald.WidgetsStamp (Bald_StampWidgetsOnUnload), so Home rebuilds
+     its menu and rows on its next load. -->
 <window type="window" id="1117">
 	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9300</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
-	<onunload>Skin.SetString(Bald.WidgetsStamp,$INFO[System.Date(yyyy-mm-dd)]_$INFO[System.Time(hh:mm:ss)])</onunload>
+	<include>Bald_StampWidgetsOnUnload</include>
 	<controls>
 		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[31740]</param></include>
 		<!-- The hubs, as Skin Variables lists them (edit mode, so turned-off hubs are listed too; an empty list gets one
@@ -53,7 +54,7 @@
 				<control type="radiobutton" id="9401"><include>Bald_ConfigureButton</include><label>$LOCALIZE[305]</label>
 					<selected>[$EXP[Bald_HubCategorySelected] + String.IsEmpty(Container(9300).ListItem.Property(disabled))] | [String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)] | [String.IsEqual(Container(9300).ListItem.Property(kind),home) + !Skin.HasSetting(Bald.Screen.HideHome)]</selected>
 					<visible>$EXP[Bald_HubCategorySelected] | String.IsEqual(Container(9300).ListItem.Property(kind),livetv) | String.IsEqual(Container(9300).ListItem.Property(kind),home)</visible>
-					<onclick condition="$EXP[Bald_HubCategorySelected]">RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_toggle&amp;&amp;disabled)</onclick>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick condition="$EXP[Bald_HubCategorySelected]">RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_toggle&amp;&amp;disabled)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv)">Skin.ToggleSetting(Bald.Screen.HideLiveTV)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">Skin.ToggleSetting(Bald.Screen.HideHome)</onclick>
 				</control>
@@ -73,33 +74,33 @@
 				</control>
 				<control type="button" id="9403"><include>Bald_ConfigureButton</include><label>$LOCALIZE[118]</label>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
-					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;label)</onclick>
+					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;label)</onclick>
 				</control>
 				<!-- What Right (and Select without rows) opens: Skin Variables' Browse over grouping://hubs/ (video and music
 				     library nodes, Bald playlists, add-ons, Favourites, Pictures, Programs, Weather, Radio, channel groups) or Edit
 				     (a path or a builtin such as ActivateWindow(Weather)). The generator picks the window (Bald_HubOpen_<screen>). -->
 				<control type="button" id="9404"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31203]</label><label2>$VAR[Bald_HubTargetLabel]</label2>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
-					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_action&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
+					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_action&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
 				</control>
 				<control type="button" id="9405"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31209]</label>
 					<visible>$EXP[Bald_HubCategorySelected] + !String.IsEmpty(Container(9300).ListItem.Property(path))</visible>
-					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;path&amp;&amp;null)</onclick>
+					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;path&amp;&amp;null)</onclick>
 				</control>
 				<!-- Move: Skin Variables wraps at the ends, so the ends hide the button; the sidebar selection follows. -->
 				<control type="button" id="9406"><include>Bald_ConfigureButton</include><label>$LOCALIZE[13332]</label>
 					<visible>$EXP[Bald_HubCategorySelected] + !String.IsEqual(Container(9300).ListItem.Property(slot),0)</visible>
-					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_move&amp;&amp;-1)</onclick>
+					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_move&amp;&amp;-1)</onclick>
 					<onclick>Control.Move(9300,-1)</onclick>
 				</control>
 				<control type="button" id="9407"><include>Bald_ConfigureButton</include><label>$LOCALIZE[13333]</label>
 					<visible>$EXP[Bald_HubCategorySelected] + $EXP[Bald_HubHasNext]</visible>
-					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_move&amp;&amp;1)</onclick>
+					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_move&amp;&amp;1)</onclick>
 					<onclick>Control.Move(9300,1)</onclick>
 				</control>
 				<control type="button" id="9408"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31208]</label>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
-					<onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_delete)</onclick>
+					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_delete)</onclick>
 				</control>
 				<control type="button" id="9409"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31207]</label>
 					<visible>String.IsEqual(Container(9300).ListItem.Property(kind),add)</visible>

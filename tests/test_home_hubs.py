@@ -383,11 +383,11 @@ class RowSortTests(unittest.TestCase):
 
     def test_editor_offers_kodi_sort_methods_and_orders(self):
         window = ET.parse(XML / "Custom_1116_BaldHomeWidgets.xml").getroot()
-        sort = window.find(".//control[@id='9210']").findtext("onclick")
+        sort = window.find(".//control[@id='9210']/onclick[2]").text
         pairs = dict(p.split("=") for p in re.search(r"&&sortby&&(.*?)&&", sort).group(1).split("&"))
         self.assertEqual(pairs.pop("$LOCALIZE[571]"), "null")
         self.assertEqual(set(pairs.values()), self.METHODS)
-        order = window.find(".//control[@id='9211']").findtext("onclick")
+        order = window.find(".//control[@id='9211']/onclick[2]").text
         self.assertIn("&&sortorder&&$LOCALIZE[584]=ascending&$LOCALIZE[585]=descending&&", order)
         self.assertIn("!String.IsEqual(Container(9100).ListItem.Property(sortby),random)", window.find(".//control[@id='9211']").findtext("visible"))
 
