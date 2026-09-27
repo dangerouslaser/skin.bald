@@ -2,7 +2,7 @@
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
-	<views>510,511,512,513,514,515,520,521,522,523,530,531,540,541,542,504,50,51,52,53,54,55,500,501,502</views>
+	<views>510,511,512,513,514,515,520,521,522,523,530,531,532,540,541,542,504,50,51,52,53,54,55,500,501,502</views>
 	<menucontrol>9151</menucontrol>
 	<onload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onload>
 	<!-- Opened from Home: remember the folder, whose heading is the hub's name if a hub opened it (Bald_InHubFolder).
@@ -45,6 +45,7 @@
 			<include>View_523_Bald_SeriesPosterLow</include>
 			<include>View_530_Bald_Seasons</include>
 			<include>View_531_Bald_SeasonsCompact</include>
+			<include>View_532_Bald_SeriesPage</include>
 			<include>View_540_Bald_Episodes</include>
 			<include>View_541_Bald_EpisodesCompact</include>
 			<include>View_542_Bald_EpisodesWall</include>
