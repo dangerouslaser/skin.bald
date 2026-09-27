@@ -69,6 +69,14 @@ def main() -> None:
 
     assert (root / "skin.bald" / "resources" / "icon.png").is_file()
     assert (root / "skin.bald" / "resources" / "fanart.jpg").is_file()
+    # Screenshots addon.xml declares are published beside the icon (Kodi's add-on browser) and used by the site.
+    page = (root.parent / "index.html").read_text(encoding="utf-8")
+    for shot in addons["skin.bald"].findall("./extension[@point='xbmc.addon.metadata']/assets/screenshot"):
+        assert (root / "skin.bald" / shot.text).is_file(), shot.text
+        assert f'src="kodi/skin.bald/{shot.text}"' in page, shot.text
+    # Kodi's HTTP directory parser only reads double-quoted links, so the site also works as a Kodi file source.
+    assert f'href="repository.bald-{repository_version}.zip"' in page
+    assert "href='" not in page
 
 
 if __name__ == "__main__":

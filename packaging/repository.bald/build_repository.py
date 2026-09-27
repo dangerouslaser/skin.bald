@@ -97,10 +97,123 @@ def zip_bundled_addon(output: Path, revision: str, source: str) -> ET.Element:
 
 
 def copy_metadata(output: Path, addon_id: str, source_dir: Path, asset_dir: str = "") -> None:
+    """Icon, fanart and any screenshot-NN.jpg next to the add-on's zip, where Kodi's add-on browser reads them."""
     target = output / addon_id / asset_dir
     target.mkdir(parents=True, exist_ok=True)
     for name in ("icon.png", "fanart.jpg"):
         shutil.copy2(source_dir / name, target / name)
+    for screenshot in sorted(source_dir.glob("screenshot-*.jpg")):
+        shutil.copy2(screenshot, target / screenshot.name)
+
+
+# Captions for the skin's screenshots (resources/screenshot-NN.jpg, in order) on the landing page.
+SCREENSHOT_CAPTIONS = (
+    "Home: artwork first, with ratings, media flags and rows you arrange",
+    "Hubs you add, rename and reorder, each with its own rows",
+    "Movie information",
+    "Cast and details",
+    "More like this",
+    "Library views with a live preview",
+    "Live TV rows and channel groups",
+    "TV guide",
+)
+# The movie library's views (resources/screenshot-09.jpg onward), a section of their own.
+LIBRARY_CAPTIONS = (
+    "Posters with a preview",
+    "Poster wall with a preview",
+    "Full-width poster wall",
+    "Poster-low rail under the artwork",
+    "Compact list",
+    "Artwork list",
+)
+
+
+def landing_page(repository_zip: str, repository_version: str, skin_version: str) -> str:
+    """The site's index.html. Links use double quotes and the files are listed plainly, so Kodi can also browse the
+    site as a file source (its HTTP directory parser only reads href="...")."""
+    shots = "".join(
+        f'<figure><img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt="{caption}" loading="lazy" '
+        f'width="1920" height="1080"><figcaption>{caption}</figcaption></figure>'
+        for i, caption in enumerate(SCREENSHOT_CAPTIONS[1:], start=2)
+    )
+    views = "".join(
+        f'<figure><img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt="{caption}" loading="lazy" '
+        f'width="1920" height="1080"><figcaption>{caption}</figcaption></figure>'
+        for i, caption in enumerate(LIBRARY_CAPTIONS, start=len(SCREENSHOT_CAPTIONS) + 1)
+    )
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bald for Kodi 22</title>
+<meta name="description" content="Bald: a minimal, artwork-first skin for Kodi 22.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {{ --field: #0b0c10; --ink: #eceef2; --ink60: rgba(236,238,242,.6); --ink34: rgba(236,238,242,.34);
+  --ink10: rgba(236,238,242,.1); --accent: #9fb0c6; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; background: var(--field); color: var(--ink); font: 400 17px/1.55 "DM Sans", system-ui, sans-serif; }}
+main {{ max-width: 1200px; margin: 0 auto; padding: 72px 24px 96px; }}
+header {{ display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr) 360px; align-items: end; }}
+h1 {{ margin: 0; font-weight: 600; font-size: clamp(56px, 9vw, 104px); line-height: .95; letter-spacing: -.02em; }}
+.lede {{ margin: 18px 0 0; color: var(--ink60); font-size: 20px; max-width: 34ch; }}
+.install {{ border-left: 1px solid var(--ink10); padding-left: 28px; }}
+.install h2 {{ margin: 0 0 12px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); }}
+.install ol {{ margin: 0 0 20px; padding-left: 20px; color: var(--ink60); font-size: 15px; }}
+.install li {{ margin: 6px 0; }}
+.install strong {{ color: var(--ink); font-weight: 500; }}
+.button {{ display: inline-block; padding: 12px 20px; border-radius: 999px; background: var(--ink); color: var(--field);
+  font-weight: 600; text-decoration: none; }}
+.button:hover {{ background: var(--accent); }}
+.version {{ display: block; margin-top: 10px; color: var(--ink34); font-size: 13px; }}
+.hero {{ margin: 56px 0 0; }}
+img {{ display: block; width: 100%; height: auto; border-radius: 6px; background: var(--ink10); }}
+.hero img {{ box-shadow: 0 30px 80px rgba(0,0,0,.5); }}
+.gallery {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 28px; margin-top: 64px; }}
+figure {{ margin: 0; }}
+figcaption {{ margin-top: 12px; color: var(--ink60); font-size: 15px; }}
+figcaption::before {{ content: ""; display: inline-block; width: 7px; height: 7px; margin: 0 10px 2px 0;
+  border-radius: 50%; background: var(--accent); }}
+.views h2 {{ margin: 96px 0 8px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); }}
+.views p {{ margin: 0; color: var(--ink60); }}
+.views .gallery {{ grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 24px; margin-top: 32px; }}
+.files {{ margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--ink10); color: var(--ink34); font-size: 13px; }}
+.files a {{ color: var(--ink60); }}
+@media (max-width: 820px) {{ header {{ grid-template-columns: 1fr; }} .install {{ border-left: 0; padding-left: 0; }}
+  .gallery, .views .gallery {{ grid-template-columns: 1fr; }} main {{ padding: 48px 16px 64px; }} }}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div>
+<h1>Bald.</h1>
+<p class="lede">A minimal, artwork-first skin for Kodi 22, with fluid motion and nothing in the way of your library.</p>
+</div>
+<div class="install">
+<h2>Install</h2>
+<ol>
+<li>Download the repository and choose <strong>Add-ons › Install from zip file</strong> in Kodi.</li>
+<li>Then <strong>Install from repository › Bald Add-on Repository › Look and feel › Skin › Bald</strong>.</li>
+</ol>
+<a class="button" href="{repository_zip}">Download repository</a>
+<span class="version">Bald {skin_version} · repository {repository_version} · Kodi 22 only</span>
+</div>
+</header>
+<figure class="hero"><img src="kodi/skin.bald/resources/screenshot-01.jpg" alt="{SCREENSHOT_CAPTIONS[0]}" width="1920" height="1080"><figcaption>{SCREENSHOT_CAPTIONS[0]}</figcaption></figure>
+<section class="gallery">{shots}</section>
+<section class="views"><h2>Library views</h2><p>Six ways to browse a library, switched from the options menu.</p>
+<div class="gallery">{views}</div></section>
+<p class="files">Files: <a href="{repository_zip}">{repository_zip}</a> · <a href="kodi/">kodi/</a></p>
+</main>
+</body>
+</html>
+"""
 
 
 def main() -> None:
@@ -147,12 +260,7 @@ def main() -> None:
     (output / "addons.xml.md5").write_text(hashlib.md5(index + b"\n").hexdigest())
     shutil.copy2(repository_zip, output.parent / repository_zip.name)
     (output.parent / "index.html").write_text(
-        "<!doctype html><meta charset='utf-8'><title>Bald for Kodi 22</title>"
-        "<main style='max-width:44rem;margin:10vh auto;padding:2rem;font:18px system-ui;line-height:1.5'>"
-        "<h1>Bald for Kodi 22</h1><p>Install the repository ZIP in Kodi, then choose "
-        "<strong>Install from repository → Bald Add-on Repository → Look and feel → Skin</strong>.</p>"
-        f"<p><a href='{repository_zip.name}'>Download Bald Add-on Repository {repository_version}</a></p>"
-        "</main>"
+        landing_page(repository_zip.name, repository_version, skin_version), encoding="utf-8"
     )
 
 
