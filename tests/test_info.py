@@ -357,6 +357,61 @@ class TvInfoLifecycleTests(unittest.TestCase):
         self.xbmc.executeJSONRPC.assert_not_called()
         self.xbmc.executebuiltin.assert_not_called()
 
+    def test_library_series_page_plays_without_closing_anything(self):
+        self.xbmc.getCondVisibility.side_effect = lambda condition: condition in (
+            info.PLAY_WINDOWS, 'Window.IsActive(videos)')
+        self.rpc_results({})
+        info.run('play', 'episode', '22')
+        self.xbmc.executebuiltin.assert_not_called()
+        request = json.loads(self.xbmc.executeJSONRPC.call_args.args[0])
+        self.assertEqual(request['method'], 'Player.Open')
+        self.assertIn('Window.IsActive(videos)', info.PLAY_WINDOWS)
+
+
+class SeriesPageMetaTests(unittest.TestCase):
+    """RunScript(skin.bald,seriesmeta): the library Series page's header line (view 532)."""
+
+    def setUp(self):
+        InfoLifecycleTests.setUp(self)
+        self.properties[info.VIDEO_NAV] = {}
+        window = Mock()
+        store = self.properties[info.VIDEO_NAV]
+        window.getProperty.side_effect = lambda key: store.get(key, '')
+        window.setProperty.side_effect = lambda key, value: store.update({key: value})
+        self.windows[info.VIDEO_NAV] = window
+        self.labels = {
+            'Container.FolderPath': 'videodb://tvshows/titles/5/',
+            'Container(532).NumItems': '3',
+            'Container(532).ListItemAbsolute(0).TVShowDBID': '',
+            'Container(532).ListItemAbsolute(1).TVShowDBID': '5',
+        }
+        self.xbmc.getInfoLabel.side_effect = lambda name: self.labels.get(name, '')
+        self.xbmc.executeJSONRPC.side_effect = [json.dumps({'jsonrpc': '2.0', 'id': 1, 'result': r}) for r in (
+            {'tvshowdetails': {'year': 2019, 'genre': ['Drama', 'Mystery'], 'mpaa': 'TV-14', 'season': 3}},
+            {'episodes': [{'firstaired': '2019-02-01'}, {'firstaired': '2024-05-01'}]})]
+
+    def test_publishes_the_show_line_keyed_by_the_folder(self):
+        info.run('seriesmeta')
+        published = self.properties[info.VIDEO_NAV]
+        self.assertEqual(published['Bald.Series.Meta'], '2019 to 2024, 3 seasons, TV-14')
+        self.assertEqual(published['Bald.Series.Genre'], 'Drama / Mystery')
+        self.assertEqual(published['Bald.Series.For'], 'videodb://tvshows/titles/5/')
+        request = json.loads(self.xbmc.executeJSONRPC.call_args_list[0].args[0])
+        self.assertEqual(request['params']['tvshowid'], 5)
+
+    def test_a_folder_change_while_reading_publishes_nothing(self):
+        paths = iter(['videodb://tvshows/titles/5/', 'videodb://tvshows/titles/'])
+        self.xbmc.getInfoLabel.side_effect = lambda name: (
+            next(paths) if name == 'Container.FolderPath' else self.labels.get(name, ''))
+        info.run('seriesmeta')
+        self.assertEqual(self.properties[info.VIDEO_NAV], {})
+
+    def test_other_content_does_nothing(self):
+        self.xbmc.getCondVisibility.return_value = False
+        info.run('seriesmeta')
+        self.xbmc.executeJSONRPC.assert_not_called()
+        self.assertEqual(self.properties[info.VIDEO_NAV], {})
+
 
 if __name__ == '__main__':
     unittest.main()

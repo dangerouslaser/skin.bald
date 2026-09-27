@@ -5,7 +5,7 @@
 	<!-- Which Bald layout is showing, by content level (view ids in 1080i/IDs). -->
 	<expression name="Bald_LibraryMovieView">[Control.IsVisible(510) | Control.IsVisible(511) | Control.IsVisible(512) | Control.IsVisible(513) | Control.IsVisible(514) | Control.IsVisible(515)]</expression>
 	<expression name="Bald_LibrarySeriesView">[Control.IsVisible(520) | Control.IsVisible(521) | Control.IsVisible(522) | Control.IsVisible(523)]</expression>
-	<expression name="Bald_LibrarySeasonView">[Control.IsVisible(530) | Control.IsVisible(531)]</expression>
+	<expression name="Bald_LibrarySeasonView">[Control.IsVisible(530) | Control.IsVisible(531) | Control.IsVisible(532)]</expression>
 	<expression name="Bald_LibraryEpisodeView">[Control.IsVisible(540) | Control.IsVisible(541) | Control.IsVisible(542)]</expression>
 	<expression name="Bald_LibraryViewActive">[$EXP[Bald_LibraryMovieView] | $EXP[Bald_LibrarySeriesView] | $EXP[Bald_LibrarySeasonView] | $EXP[Bald_LibraryEpisodeView]]</expression>
 	<!-- The library is empty (or filtered to nothing). -->
@@ -113,7 +113,8 @@
 				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(523)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(522)</visible></item>
 				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(520)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(523)</visible></item>
 				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(531)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(530)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(530)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(531)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(532)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(531)</visible></item>
+				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(530)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(532)</visible></item>
 				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(541)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(540)</visible></item>
 				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(542)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(541)</visible></item>
 				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(540)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(542)</visible></item>

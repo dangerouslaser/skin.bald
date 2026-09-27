@@ -1831,6 +1831,7 @@ msgstr ""
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/Includes.xml
 #: /1080i/Custom_1119_BaldPlayback.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31747"
 msgid "Select to change"
 msgstr ""
@@ -2011,6 +2012,7 @@ msgid "All seasons"
 msgstr ""
 
 #: /1080i/Includes_Bald_InfoTV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31784"
 msgid "Select to play"
 msgstr ""
@@ -2169,6 +2171,7 @@ msgstr ""
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/Includes.xml
 #: /1080i/EventLog.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31827"
 msgid "Info for details"
 msgstr ""
@@ -2176,6 +2179,7 @@ msgstr ""
 #: /1080i/View_510_Bald_Posters.xml
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31828"
 msgid "Up for options"
 msgstr ""
@@ -2206,6 +2210,7 @@ msgstr ""
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/Includes.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31832"
 msgid "Left / Back to browse"
 msgstr ""
@@ -2262,6 +2267,18 @@ msgstr ""
 #. Notification after applying
 msgctxt "#31841"
 msgid "Recommended settings applied."
+msgstr ""
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode: the Seasons level drawn as the TV information page
+msgctxt "#31846"
+msgid "Bald series page"
+msgstr ""
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Library Series page hint, while a season tab has focus
+msgctxt "#31847"
+msgid "Down for episodes"
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml

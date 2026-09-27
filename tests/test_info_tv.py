@@ -29,8 +29,17 @@ class InfoTvTests(unittest.TestCase):
         self.shared = ET.parse(ROOT / "Includes_Bald_Info.xml").getroot()
         self.home = ET.parse(ROOT / "Includes_Bald_Home.xml").getroot()
         self.page = include_def(self.tv, "Bald_InfoTVOverview")
+        # The page as Kodi builds it: the shared parts (header, tabs, row, detail) are includes the library Series page
+        # (view 532) uses too.
+        self.built = expand_call("Bald_InfoTVOverview")[0]
 
     def control(self, control_id):
+        node = self.built.find(f".//control[@id='{control_id}']")
+        self.assertIsNotNone(node, control_id)
+        return node
+
+    def source(self, control_id):
+        """The control as written, with its include calls (navigation) still named."""
         node = self.page.find(f".//control[@id='{control_id}']")
         self.assertIsNotNone(node, control_id)
         return node
@@ -57,7 +66,7 @@ class InfoTvTests(unittest.TestCase):
         texts = [node.text for node in onload]
         self.assertIn("RunScript(skin.bald,tvinfo,$INFO[ListItem.DBType],$INFO[ListItem.DBID])", texts)
         focus_ids = {re.fullmatch(r"SetFocus\((\d+)\)", t).group(1) for t in texts if t.startswith("SetFocus")}
-        action_ids = {p["id"] for p in map(params, self.control("5000").findall("include[@content='Bald_InfoAction']"))}
+        action_ids = {p["id"] for p in map(params, self.source("5000").findall("include[@content='Bald_InfoAction']"))}
         self.assertEqual(focus_ids, {"5001", "5002", "5003"})
         self.assertTrue(focus_ids <= action_ids)
         # Every TV property the page reads is cleared when the dialog loads.
@@ -68,7 +77,7 @@ class InfoTvTests(unittest.TestCase):
         self.assertIn("Bald_InfoTVClear", [n.text for n in self.dialog.findall("include")])
 
     def test_actions_reuse_the_pill_and_lead_to_the_tabs(self):
-        actions = [params(n) for n in self.control("5000").findall("include[@content='Bald_InfoAction']")]
+        actions = [params(n) for n in self.source("5000").findall("include[@content='Bald_InfoAction']")]
         self.assertEqual([a["id"] for a in actions], ["5001", "5002", "5003", "5004"])
         self.assertTrue(all(a["down"] == "Bald_InfoTVActionDown" for a in actions))
         by_id = {a["id"]: a for a in actions}
@@ -129,9 +138,9 @@ class InfoTvTests(unittest.TestCase):
         scroll = row.find("scrolltime")
         self.assertEqual((scroll.text, scroll.get("tween"), scroll.get("easing")), ("440", "cubic", "out"))
         self.assertEqual(row.findtext("onclick"), "RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])")
-        self.assertIn("Bald_InfoActionToCast", [n.text for n in row.findall("include")])
+        self.assertIn("Bald_InfoActionToCast", [n.text for n in self.source("5302").findall("include")])
         # The season change fades the row out 140 while it updates, then in 340 / rises 420.
-        group = next(g for g in self.page.iter("control") if g.find("control[@id='5302']") is not None)
+        group = next(g for g in self.built.iter("control") if g.find("control[@id='5302']") is not None)
         swaps = [(a.get("condition"), [(e.get("type"), e.get("time")) for e in a])
                  for a in group.findall("animation[@type='Conditional']")]
         effects = {state: [steps for cond, steps in swaps if equivalent(cond, state)]
@@ -162,7 +171,7 @@ class InfoTvTests(unittest.TestCase):
             self.assertTrue(any(equivalent(v, state) for v in visible), state)
         self.assertEqual(card.find(".//control[@type='progress']").findtext("info"), "ListItem.PercentPlayed")
         # Episode detail reuses the shared flag row on the episode list's item.
-        flags = self.page.find(".//include[@content='Bald_MediaFlags']")
+        flags = include_def(self.tv, "Bald_InfoTVEpisodeDetail").find(".//include[@content='Bald_MediaFlags']")
         self.assertEqual(params(flags)["container"], "Container(5302).")
 
     def test_landscape_tile_defaults_are_homes_row_tile(self):
@@ -175,7 +184,8 @@ class InfoTvTests(unittest.TestCase):
     def test_page_model_and_stagger(self):
         page = self.page.find("control")
         self.assertEqual(params(page.find("include[@content='Bald_InfoPage']"))["page"], "0")
-        delays = sorted(int(params(n)["delay"]) for n in page.iter("include") if n.get("content") == "Bald_AnimInfoIn")
+        delays = sorted(int(effect.get("delay")) for effect in
+                        self.built.findall(".//animation[@type='WindowOpen']/effect[@type='fade']"))
         # Base 380 plus the prototype stagger 0, 60, 100, 180, 220, 270, 310.
         self.assertEqual(delays, [380, 440, 480, 560, 600, 650, 690])
         dim = include_def(self.tv, "Bald_InfoTVDim").find("control")
@@ -189,7 +199,7 @@ class InfoTvTests(unittest.TestCase):
     def test_script_contract_matches_the_xml(self):
         self.assertEqual(self.control(str(info.SEASONS)).get("type"), "list")
         self.assertEqual(self.control(str(info.EPISODES)).get("type"), "fixedlist")
-        action_ids = {params(n)["id"] for n in self.page.iter("include") if n.get("content") == "Bald_InfoAction"}
+        action_ids = {n.get("id") for n in self.built.iter("control") if n.get("type") == "button"}
         self.assertEqual(set(re.findall(r"Control\.HasFocus\((\d+)\)", info.EPISODE_ACTIONS)), {"5001", "5002"})
         self.assertTrue({"5001", "5002"} <= action_ids)
         self.assertEqual(set(info.TV_TYPES), {"tvshow", "season", "episode"})
