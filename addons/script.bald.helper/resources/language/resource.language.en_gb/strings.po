@@ -1,0 +1,95 @@
+# Kodi Media Center language file
+# Addon Name: Bald Helper
+# Addon id: script.bald.helper
+msgid ""
+msgstr ""
+"Project-Id-Version: Bald Helper\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Settings category
+msgctxt "#32001"
+msgid "Online ratings"
+msgstr ""
+
+#. Settings category help
+msgctxt "#32002"
+msgid "Bald shows online ratings from MDbList for the movie or TV show in focus and for the playing movie when Bald Settings, Appearance, Ratings, Online ratings is on."
+msgstr ""
+
+#. Settings group
+msgctxt "#32003"
+msgid "MDbList"
+msgstr ""
+
+#. Setting: the API key
+msgctxt "#32004"
+msgid "MDbList API key"
+msgstr ""
+
+#. Setting help: the API key
+msgctxt "#32005"
+msgid "Sign in at mdblist.com and copy the API key from your account preferences. A free account allows 1,000 requests a day; Bald Helper caches ratings for up to a week and stops for the day when the limit is reached."
+msgstr ""
+
+#. Setting: test the key
+msgctxt "#32006"
+msgid "Test key"
+msgstr ""
+
+#. Setting help: test the key
+msgctxt "#32007"
+msgid "Saves the settings and asks MDbList whether the key works (one request)."
+msgstr ""
+
+#. Setting: clear the cache
+msgctxt "#32008"
+msgid "Clear ratings cache"
+msgstr ""
+
+#. Setting help: clear the cache
+msgctxt "#32009"
+msgid "Forgets every stored rating, so each title is looked up again."
+msgstr ""
+
+#. Notification heading
+msgctxt "#32100"
+msgid "Bald Helper"
+msgstr ""
+
+#. Test key: the key works ({user}: MDbList user name)
+msgctxt "#32110"
+msgid "MDbList key works ({user})"
+msgstr ""
+
+#. Test key: the key works, with today's quota
+msgctxt "#32111"
+msgid "MDbList key works ({user}): {remaining} of {limit} requests left today"
+msgstr ""
+
+#. Test key: refused
+msgctxt "#32112"
+msgid "MDbList refused the key. Check it and try again."
+msgstr ""
+
+#. Test key: no key entered
+msgctxt "#32113"
+msgid "Enter an MDbList API key first."
+msgstr ""
+
+#. Test key: no network answer
+msgctxt "#32114"
+msgid "Could not reach MDbList. Check the network and try again."
+msgstr ""
+
+#. Test key: any other answer ({status}: HTTP status)
+msgctxt "#32115"
+msgid "MDbList answered with an error ({status}). Try again later."
+msgstr ""
+
+#. Clear ratings cache: done ({count}: ratings removed)
+msgctxt "#32116"
+msgid "Ratings cache cleared ({count} titles)"
+msgstr ""

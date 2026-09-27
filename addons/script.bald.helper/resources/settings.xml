@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald Helper's settings (Kodi 22 settings format, version 1). Strings: resources/language/*/strings.po.
+     The key is stored in userdata/addon_data/script.bald.helper/settings.xml like any add-on setting; the service
+     never writes it to the log or a window property. The two actions close the dialog first (so a key just typed is
+     saved) and run the plugin entry with handle -1. -->
+<settings version="1">
+	<section id="script.bald.helper">
+		<category id="ratings" label="32001" help="32002">
+			<group id="mdblist" label="32003">
+				<setting id="mdblist_key" type="string" label="32004" help="32005">
+					<level>0</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>32004</heading><hidden>true</hidden></control>
+				</setting>
+				<setting id="test_key" type="action" label="32006" help="32007">
+					<level>0</level>
+					<data>RunPlugin(plugin://script.bald.helper/?action=test_key)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="clear_cache" type="action" label="32008" help="32009">
+					<level>0</level>
+					<data>RunPlugin(plugin://script.bald.helper/?action=clear_cache)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+			</group>
+		</category>
+	</section>
+</settings>
