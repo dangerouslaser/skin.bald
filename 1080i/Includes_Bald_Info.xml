@@ -51,11 +51,178 @@
 		<value>$INFO[ListItem.VideoResolution,,p]</value>
 	</variable>
 	<variable name="Bald_InfoVideo">
-		<value>$VAR[Bald_InfoResolution]$INFO[ListItem.VideoCodec,$COMMA ,]$INFO[ListItem.HdrType,$COMMA ,]</value>
+		<!-- Kodi leaves the HDR type empty for SDR; with stream details present (a codec), that is SDR. -->
+		<value condition="String.IsEmpty(ListItem.HdrType) + !String.IsEmpty(ListItem.VideoCodec)">$VAR[Bald_InfoResolution]$MAP[DefaultCodecMap, ListItem.VideoCodec, · ] · SDR</value>
+		<value>$VAR[Bald_InfoResolution]$MAP[DefaultCodecMap, ListItem.VideoCodec, · ]$MAP[DefaultHdrMap, ListItem.HdrType, · ]</value>
 	</variable>
 	<variable name="Bald_InfoAudio">
-		<value>$INFO[ListItem.AudioCodec]$INFO[ListItem.AudioChannels,$COMMA , $LOCALIZE[31714]]$INFO[ListItem.AudioLanguage,$COMMA ,]</value>
+		<value>$MAP[Bald_AudioCodec, ListItem.AudioCodec]$VAR[Bald_InfoChannels]$MAP[Bald_Language, ListItem.AudioLanguage, · ]</value>
 	</variable>
+	<variable name="Bald_InfoChannels">
+		<value condition="Integer.IsGreater(ListItem.AudioChannels,10)">$INFO[ListItem.AudioChannels, · , $LOCALIZE[31714]]</value>
+		<value>$MAP[Bald_AudioChannels, ListItem.AudioChannels, · ]</value>
+	</variable>
+	<variable name="Bald_InfoSubtitle">
+		<value>$MAP[Bald_Language, ListItem.SubtitleLanguage]</value>
+	</variable>
+	<!-- Stream names for the details (after script.tinyppi's tables): Kodi's codec ids as their product names, the
+	     Atmos and DTS:X variants spelled out; Estuary's DefaultCodecMap for the rest. $MAP returns an id it has no
+	     entry for unchanged. -->
+	<map name="Bald_AudioCodec" ref="DefaultCodecMap">
+		<entry key="truehd">Dolby TrueHD</entry>
+		<entry key="truehd_atmos">Dolby TrueHD Atmos</entry>
+		<entry key="eac3">Dolby Digital Plus</entry>
+		<entry key="eac3_ddp_atmos">Dolby Digital Plus Atmos</entry>
+		<entry key="dtshd_ma_x">DTS:X</entry>
+		<entry key="dtshd_ma_x_imax">DTS:X IMAX</entry>
+		<entry key="dts_es">DTS-ES</entry>
+		<entry key="dts_96_24">DTS 96/24</entry>
+		<entry key="dts_express">DTS Express</entry>
+		<entry key="dtshd">DTS-HD</entry>
+		<entry key="pcm_bluray">LPCM</entry>
+		<!-- Estuary's spellings, tidied -->
+		<entry key="he_aac_v2">HE-AAC v2</entry>
+		<entry key="aifc">AIFF-C</entry>
+		<entry key="ape">Monkey's Audio</entry>
+		<entry key="cdda">CD Audio</entry>
+		<entry key="ogg">Ogg Vorbis</entry>
+		<entry key="opus">Opus</entry>
+		<entry key="wavpack">WavPack</entry>
+		<entry key="wmapro">WMA Pro</entry>
+		<!-- Dolby and object audio -->
+		<entry key="ac4">Dolby AC-4</entry>
+		<entry key="dolby_e">Dolby E</entry>
+		<entry key="mlp">MLP</entry>
+		<entry key="mpegh_3d_audio">MPEG-H 3D Audio</entry>
+		<!-- PCM and lossless -->
+		<entry key="pcm_dvd">LPCM</entry>
+		<entry key="pcm_s16be">PCM</entry>
+		<entry key="pcm_s24be">PCM</entry>
+		<entry key="pcm_s32le">PCM</entry>
+		<entry key="pcm_s32be">PCM</entry>
+		<entry key="pcm_f32le">PCM</entry>
+		<entry key="pcm_f64le">PCM</entry>
+		<entry key="pcm_u8">PCM</entry>
+		<entry key="pcm_alaw">A-law</entry>
+		<entry key="pcm_mulaw">μ-law</entry>
+		<entry key="dsd_lsbf">DSD</entry>
+		<entry key="dsd_msbf">DSD</entry>
+		<entry key="dsd_lsbf_planar">DSD</entry>
+		<entry key="dsd_msbf_planar">DSD</entry>
+		<entry key="mp4als">MPEG-4 ALS</entry>
+		<entry key="tak">TAK</entry>
+		<entry key="tta">TTA</entry>
+		<entry key="wmalossless">WMA Lossless</entry>
+		<!-- Other -->
+		<entry key="adpcm_ms">ADPCM</entry>
+		<entry key="adpcm_ima_wav">ADPCM</entry>
+		<entry key="amr_nb">AMR-NB</entry>
+		<entry key="amr_wb">AMR-WB</entry>
+		<entry key="atrac3">ATRAC3</entry>
+		<entry key="atrac3p">ATRAC3plus</entry>
+		<entry key="cook">RealAudio</entry>
+		<entry key="speex">Speex</entry>
+		<entry key="wmav1">WMA</entry>
+		<entry key="wmavoice">WMA Voice</entry>
+	</map>
+	<!-- Channel count to speaker layout; above 10 the count is shown with "channels" (Bald_InfoChannels). -->
+	<map name="Bald_AudioChannels">
+		<entry key="1">1.0</entry>
+		<entry key="2">2.0</entry>
+		<entry key="3">2.1</entry>
+		<entry key="4">4.0</entry>
+		<entry key="5">5.0</entry>
+		<entry key="6">5.1</entry>
+		<entry key="7">6.1</entry>
+		<entry key="8">7.1</entry>
+		<entry key="9">8.1</entry>
+		<entry key="10">9.1</entry>
+	</map>
+	<!-- ISO 639-2 codes (both the B and T forms where they differ) to each language's own name, the same in every
+	     interface language. -->
+	<map name="Bald_Language">
+		<entry key="ger">Deutsch</entry>
+		<entry key="deu">Deutsch</entry>
+		<entry key="eng">English</entry>
+		<entry key="fre">Français</entry>
+		<entry key="fra">Français</entry>
+		<entry key="spa">Español</entry>
+		<entry key="ita">Italiano</entry>
+		<entry key="por">Português</entry>
+		<entry key="dut">Nederlands</entry>
+		<entry key="nld">Nederlands</entry>
+		<entry key="dan">Dansk</entry>
+		<entry key="swe">Svenska</entry>
+		<entry key="nor">Norsk</entry>
+		<entry key="nob">Norsk</entry>
+		<entry key="nno">Norsk</entry>
+		<entry key="fin">Suomi</entry>
+		<entry key="ice">Íslenska</entry>
+		<entry key="isl">Íslenska</entry>
+		<entry key="pol">Polski</entry>
+		<entry key="cze">Čeština</entry>
+		<entry key="ces">Čeština</entry>
+		<entry key="slo">Slovenčina</entry>
+		<entry key="slk">Slovenčina</entry>
+		<entry key="slv">Slovenščina</entry>
+		<entry key="hun">Magyar</entry>
+		<entry key="rum">Română</entry>
+		<entry key="ron">Română</entry>
+		<entry key="bul">Български</entry>
+		<entry key="hrv">Hrvatski</entry>
+		<entry key="srp">Српски</entry>
+		<entry key="bos">Bosanski</entry>
+		<entry key="mac">Македонски</entry>
+		<entry key="mkd">Македонски</entry>
+		<entry key="alb">Shqip</entry>
+		<entry key="sqi">Shqip</entry>
+		<entry key="gre">Ελληνικά</entry>
+		<entry key="ell">Ελληνικά</entry>
+		<entry key="tur">Türkçe</entry>
+		<entry key="rus">Русский</entry>
+		<entry key="ukr">Українська</entry>
+		<entry key="bel">Беларуская</entry>
+		<entry key="est">Eesti</entry>
+		<entry key="lav">Latviešu</entry>
+		<entry key="lit">Lietuvių</entry>
+		<entry key="cat">Català</entry>
+		<entry key="baq">Euskara</entry>
+		<entry key="eus">Euskara</entry>
+		<entry key="glg">Galego</entry>
+		<entry key="wel">Cymraeg</entry>
+		<entry key="cym">Cymraeg</entry>
+		<entry key="gle">Gaeilge</entry>
+		<entry key="lat">Latina</entry>
+		<entry key="heb">עברית</entry>
+		<entry key="ara">العربية</entry>
+		<entry key="per">فارسی</entry>
+		<entry key="fas">فارسی</entry>
+		<entry key="hin">हिन्दी</entry>
+		<entry key="tam">தமிழ்</entry>
+		<entry key="tel">తెలుగు</entry>
+		<entry key="ben">বাংলা</entry>
+		<entry key="urd">اردو</entry>
+		<entry key="tha">ไทย</entry>
+		<entry key="vie">Tiếng Việt</entry>
+		<entry key="ind">Bahasa Indonesia</entry>
+		<entry key="may">Bahasa Melayu</entry>
+		<entry key="msa">Bahasa Melayu</entry>
+		<entry key="fil">Filipino</entry>
+		<entry key="tgl">Filipino</entry>
+		<entry key="chi">中文</entry>
+		<entry key="zho">中文</entry>
+		<entry key="jpn">日本語</entry>
+		<entry key="kor">한국어</entry>
+		<entry key="geo">ქართული</entry>
+		<entry key="kat">ქართული</entry>
+		<entry key="arm">Հայերեն</entry>
+		<entry key="hye">Հայերեն</entry>
+		<entry key="aze">Azərbaycan</entry>
+		<entry key="kaz">Қазақ</entry>
+		<entry key="mon">Монгол</entry>
+		<entry key="afr">Afrikaans</entry>
+		<entry key="swa">Kiswahili</entry>
+	</map>
 
 	<!-- ============ Animations ============ -->
 	<!-- Info content in: fade 400 and rise 18 px over 560, base delay 380 plus the stagger (0, 60, 100, 140, 180, 220,
