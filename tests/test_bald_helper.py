@@ -222,7 +222,7 @@ class AddonTests(unittest.TestCase):
     def test_addon_xml(self):
         root = ET.parse(ADDON / "addon.xml").getroot()
         self.assertEqual((root.get("id"), root.get("name"), root.get("version")),
-                         ("script.bald.helper", "Bald Helper", "1.4.0"))
+                         ("script.bald.helper", "Bald Helper", "1.4.1"))
         self.assertEqual(root.find("extension[@point='xbmc.service']").get("library"), "service.py")
         self.assertTrue((ADDON / "service.py").is_file())
         metadata = root.find("extension[@point='xbmc.addon.metadata']")
@@ -251,10 +251,15 @@ class AddonTests(unittest.TestCase):
         checks = (ROOT / "packaging" / "repository.bald" / "test_repository.py").read_text()
         self.assertIn('"script.bald.helper/service.py" in names', checks)
 
-    def test_skin_does_not_require_the_helper(self):
-        # An optional import would still make Kodi re-enable a disabled helper whenever the skin installs or updates.
+    def test_skin_requires_the_helper_at_its_version(self):
+        # Bald Helper is required (installed with the skin from the Bald repository) and takes precedence over TMDb
+        # Helper; the skin needs at least the helper version it ships with.
         skin = ET.parse(ROOT / "addon.xml").getroot()
-        self.assertIsNone(skin.find("requires/import[@addon='script.bald.helper']"))
+        imported = skin.find("requires/import[@addon='script.bald.helper']")
+        self.assertIsNotNone(imported)
+        self.assertIsNone(imported.get("optional"))
+        helper = ET.parse(ADDON / "addon.xml").getroot()
+        self.assertEqual(imported.get("version"), helper.get("version"))
 
 
 class TimerTests(unittest.TestCase):

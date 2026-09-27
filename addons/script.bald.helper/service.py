@@ -17,10 +17,12 @@ from resources.lib.keymap import POLL_SECONDS, Service
 
 def start_blur():
     try:
-        from resources.lib.blur import Follower
+        from resources.lib.blur import Follower, Warmer
 
         follower = Follower(xbmc, xbmcvfs, xbmcgui)
         follower.start()
+        follower.warmer = Warmer(xbmc, follower)  # Home rows' backdrops blurred ahead
+        follower.warmer.start()
         return follower
     except Exception as error:  # noqa: BLE001 - the keymaps must not depend on the blur
         xbmc.log(f"script.bald.helper: blur did not start: {type(error).__name__}: {error}", xbmc.LOGERROR)
@@ -90,6 +92,7 @@ if __name__ == "__main__":
         if ratings is not None:
             ratings.stop()
         if blur is not None:
+            blur.warmer.stop()
             blur.stop()
         if spoilers is not None:
             spoilers.stop()

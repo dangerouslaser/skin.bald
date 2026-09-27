@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald Helper's settings (Kodi 22 settings format, version 1). Strings: resources/language/*/strings.po.
      The key is stored in userdata/addon_data/script.bald.helper/settings.xml like any add-on setting; the service
-     never writes it to the log or a window property. The two actions close the dialog first (so a key just typed is
+     never writes it to the log or a window property. The actions close the dialog first (so a key just typed is
      saved) and run the plugin entry with handle -1. -->
 <settings version="1">
 	<section id="script.bald.helper">
@@ -12,6 +12,17 @@
 					<default></default>
 					<constraints><allowempty>true</allowempty></constraints>
 					<control type="edit" format="string"><heading>32004</heading><hidden>true</hidden></control>
+				</setting>
+				<!-- Shown only with TMDb Helper installed: its MDbList key copied into this setting. -->
+				<setting id="copy_tmdbhelper_key" type="action" label="32010" help="32011">
+					<level>0</level>
+					<data>RunPlugin(plugin://script.bald.helper/?action=copy_tmdbhelper_key)</data>
+					<dependencies>
+						<dependency type="visible">
+							<condition on="property" name="InfoBool">System.HasAddon(plugin.video.themoviedb.helper)</condition>
+						</dependency>
+					</dependencies>
+					<control type="button" format="action"><close>true</close></control>
 				</setting>
 				<setting id="test_key" type="action" label="32006" help="32007">
 					<level>0</level>

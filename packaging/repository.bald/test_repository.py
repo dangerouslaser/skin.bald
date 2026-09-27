@@ -67,8 +67,10 @@ def main() -> None:
     assert (root / "script.bald.helper" / "resources" / "icon.png").is_file()
     # The blurred backgrounds need Kodi's Pillow module.
     assert helper.find("./requires/import[@addon='script.module.pil']") is not None
-    # The skin never requires the helper (an optional import would re-enable a disabled helper on skin updates).
-    assert addons["skin.bald"].find("./requires/import[@addon='script.bald.helper']") is None
+    # The skin requires the helper, at a version this feed carries.
+    required = addons["skin.bald"].find("./requires/import[@addon='script.bald.helper']")
+    assert required is not None and required.get("optional") is None
+    assert required.attrib["version"] == helper.attrib["version"]
 
     skin_version = addons["skin.bald"].attrib["version"]
     skin_zip = root / "skin.bald" / f"skin.bald-{skin_version}.zip"

@@ -71,6 +71,18 @@ REST = "Skin.HasSetting(Bald.DisableBlur) | Window.IsActive(fullscreenvideo) | S
 ART = ("Art(fanart)", "Art(tvshow.fanart)", "Art(thumb)")
 
 THUMBNAILS = "special://thumbnails/"
+# Warm-up: Home's rows (row ids are base + 1 onward per screen, 1080i/IDs) get their shown item and the next ones
+# blurred ahead, so switching to a row or hub finds its backdrop cached. Scanned every WARM_PRELOAD_SECONDS behind the
+# startup splash (Bald.Preload), else every WARM_IDLE_SECONDS while Home is up and the remote has been idle.
+WARM_BASES = (9100, 9050, 9200, 9300, 9400, 9500, 9600, 9700, 9800, 9900)
+WARM_MAX_ROWS = 20
+WARM_AHEAD = 3  # the row's selected item and the next two
+WARM_PRELOAD_SECONDS = 2.0
+WARM_IDLE_SECONDS = 60.0
+WARM_WHEN = "Window.IsActive(home) + !System.HasActiveModalDialog"
+WARM_PRELOADING = "!String.IsEmpty(Window(home).Property(Bald.Preload))"
+WARM_IDLE = "System.IdleTime(5)"
+WARM_PAUSE_SECONDS = 0.2  # between warm-up blurs, so the GUI and the follower keep the CPU
 THUMB_EXTENSIONS = (".jpg", ".png")
 
 
@@ -428,3 +440,100 @@ class Follower:
             thread.join(2.0)
         self._threads = []
         self.log("stopped")
+
+
+class Warmer:
+    """Blurs Home rows' upcoming backdrops ahead of time (see WARM_* above), on its own thread and one image at a
+    time, giving way whenever the follower has a blur in flight. It never publishes: the follower finds the file."""
+
+    def __init__(self, xbmc, follower: Follower, clock=time.monotonic):
+        self.xbmc = xbmc
+        self.follower = follower
+        self.blurrer = follower.blurrer
+        self.clock = clock
+        self.queue: list[str] = []
+        self.failed: set[str] = set()  # sources that made nothing this session (unreadable, no art file)
+        self.next_scan = 0.0
+        self._stop = threading.Event()
+        self._thread = None
+
+    def sources(self) -> list[str]:
+        """The not yet cached sources of every loaded Home row, row by row, nearest items first."""
+        found = []
+        for base in WARM_BASES:
+            for row in range(base + 1, base + WARM_MAX_ROWS + 1):
+                count = self.xbmc.getInfoLabel(f"Container({row}).NumItems")
+                if not count:
+                    break  # no such row: the screen's rows are numbered without gaps
+                if count == "0":
+                    continue
+                for ahead in range(WARM_AHEAD):
+                    prefix = f"Container({row}).ListItem." if ahead == 0 else f"Container({row}).ListItemNoWrap({ahead})."
+                    for art in ART:
+                        value = self.xbmc.getInfoLabel(prefix + art)
+                        if value:
+                            if value not in found and value not in self.failed and not self.blurrer.has(value):
+                                found.append(value)
+                            break
+        return found
+
+    def due(self) -> bool:
+        """Whether to scan now (and when to look next)."""
+        now = self.clock()
+        if now < self.next_scan:
+            return False
+        if self.follower.resting() or not self.blurrer.available() or not self.xbmc.getCondVisibility(WARM_WHEN):
+            self.next_scan = now + WARM_PRELOAD_SECONDS
+            return False
+        if self.xbmc.getCondVisibility(WARM_PRELOADING):
+            self.next_scan = now + WARM_PRELOAD_SECONDS
+            return True
+        if not self.xbmc.getCondVisibility(WARM_IDLE):
+            self.next_scan = now + WARM_PRELOAD_SECONDS
+            return False
+        self.next_scan = now + WARM_IDLE_SECONDS
+        return True
+
+    def step(self) -> float:
+        """One unit of work: blur the next queued source, else maybe scan. Returns how long to wait."""
+        if self.follower.wanted is not None:
+            return WARM_PAUSE_SECONDS  # the viewer's own blur comes first
+        if self.queue:
+            source = self.queue.pop(0)
+            if not self.blurrer.has(source):
+                try:
+                    made = self.blurrer.make(source)
+                except Exception as error:  # noqa: BLE001 - a bad image must not end the warm-up
+                    self.follower.log_once(f"warm: {type(error).__name__}: {error}")
+                    made = None
+                if made is None:
+                    self.failed.add(source)
+                    if len(self.failed) > 2000:
+                        self.failed.clear()
+            return WARM_PAUSE_SECONDS
+        if self.due():
+            self.queue = self.sources()
+            if self.queue:
+                self.follower.log(f"warming {len(self.queue)} backdrops")
+            return 0.0 if self.queue else WARM_PRELOAD_SECONDS
+        return 1.0
+
+    def _run(self, monitor) -> None:
+        while not self._stop.is_set() and not monitor.abortRequested():
+            try:
+                wait = self.step()
+            except Exception as error:  # noqa: BLE001 - the warm-up outlives any single failure
+                self.follower.log_once(f"warm: {type(error).__name__}: {error}")
+                wait = WARM_IDLE_SECONDS
+            if self._stop.wait(wait):
+                break
+
+    def start(self, monitor=None) -> None:
+        monitor = monitor or self.xbmc.Monitor()
+        self._thread = threading.Thread(target=self._run, args=(monitor,), name=f"{ADDON_ID}.warm", daemon=True)
+        self._thread.start()
+
+    def stop(self) -> None:
+        self._stop.set()
+        if self._thread:
+            self._thread.join(2.0)

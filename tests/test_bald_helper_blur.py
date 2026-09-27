@@ -568,6 +568,68 @@ class ServiceEntryTests(unittest.TestCase):
 
 
 @needs_pillow
+class WarmerTests(Case):
+    def setUp(self):
+        super().setUp()
+        self.warmer = blur.Warmer(self.xbmc, self.follower, clock=self.clock)
+        self.xbmc.conditions[blur.WARM_WHEN] = True
+
+    def rows(self, **rows):
+        """Home rows: row id -> list of fanart paths (the selected item first)."""
+        for row, arts in rows.items():
+            row = row.lstrip("r")
+            self.xbmc.labels[f"Container({row}).NumItems"] = str(len(arts))
+            for index, art in enumerate(arts):
+                prefix = f"Container({row}).ListItem." if index == 0 else f"Container({row}).ListItemNoWrap({index})."
+                self.xbmc.labels[prefix + "Art(fanart)"] = art
+
+    def test_scans_every_screens_rows_nearest_items_first(self):
+        self.rows(r9101=["/a.jpg", "/b.jpg", "/c.jpg", "/d.jpg"], r9102=["/e.jpg"], r9201=["/f.jpg"], r9601=[])
+        self.xbmc.labels["Container(9601).NumItems"] = "0"
+        self.assertEqual(self.warmer.sources(), ["/a.jpg", "/b.jpg", "/c.jpg", "/e.jpg", "/f.jpg"])
+
+    def test_skips_cached_and_failed_sources(self):
+        self.rows(r9101=["/a.jpg", "/b.jpg"])
+        os.makedirs(self.cache, exist_ok=True)
+        open(self.blurrer.path_for("/a.jpg"), "wb").close()
+        self.warmer.failed.add("/b.jpg")
+        self.assertEqual(self.warmer.sources(), [])
+
+    def test_blurs_behind_the_splash_without_publishing(self):
+        FakeFile.files["/a.jpg"] = jpeg()
+        self.rows(r9201=["/a.jpg"])
+        self.xbmc.conditions[blur.WARM_PRELOADING] = True
+        self.assertEqual(self.warmer.step(), 0.0)  # scanned: one to warm
+        self.warmer.step()
+        self.assertTrue(self.blurrer.has("/a.jpg"))
+        self.assertEqual(self.window.writes, [])
+
+    def test_waits_for_the_remote_to_rest_after_the_splash(self):
+        self.rows(r9101=["/a.jpg"])
+        self.warmer.step()
+        self.assertEqual(self.warmer.queue, [])
+        self.xbmc.conditions[blur.WARM_IDLE] = True
+        self.clock.advance(blur.WARM_PRELOAD_SECONDS)
+        self.warmer.step()
+        self.assertEqual(self.warmer.queue, ["/a.jpg"])
+
+    def test_not_off_home_and_not_while_the_follower_is_busy(self):
+        self.rows(r9101=["/a.jpg"])
+        self.xbmc.conditions[blur.WARM_PRELOADING] = True
+        self.xbmc.conditions[blur.WARM_WHEN] = False
+        self.warmer.step()
+        self.assertEqual(self.warmer.queue, [])
+        self.warmer.queue = ["/a.jpg"]
+        self.follower.wanted = "/x.jpg"
+        self.assertEqual(self.warmer.step(), blur.WARM_PAUSE_SECONDS)
+        self.assertEqual(self.warmer.queue, ["/a.jpg"])
+
+    def test_an_unreadable_source_is_not_tried_again(self):
+        self.warmer.queue = ["/missing.jpg"]
+        self.warmer.step()
+        self.assertIn("/missing.jpg", self.warmer.failed)
+
+
 class BenchTests(unittest.TestCase):
     """Blur time per 1920 x 1080 JPEG; the timing is printed with BALD_BLUR_BENCH=1."""
 

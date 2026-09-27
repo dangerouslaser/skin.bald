@@ -34,6 +34,16 @@ msgctxt "#32005"
 msgid "Sign in at mdblist.com and copy the API key from your account preferences. A free account allows 1,000 requests a day; Bald Helper caches ratings for up to a week and stops for the day when the limit is reached."
 msgstr ""
 
+#. Setting: copy the MDbList key from TMDb Helper
+msgctxt "#32010"
+msgid "Copy the key from TMDb Helper"
+msgstr ""
+
+#. Setting help: copy the key
+msgctxt "#32011"
+msgid "Use the MDbList API key already entered in TMDb Helper's settings. The key is copied once; later changes in TMDb Helper are not followed."
+msgstr ""
+
 #. Setting: test the key
 msgctxt "#32006"
 msgid "Test key"
@@ -92,4 +102,14 @@ msgstr ""
 #. Clear ratings cache: done ({count}: ratings removed)
 msgctxt "#32116"
 msgid "Ratings cache cleared ({count} titles)"
+msgstr ""
+
+#. Copy the key: done
+msgctxt "#32117"
+msgid "Copied the MDbList key from TMDb Helper"
+msgstr ""
+
+#. Copy the key: TMDb Helper has none
+msgctxt "#32118"
+msgid "TMDb Helper has no MDbList key to copy"
 msgstr ""

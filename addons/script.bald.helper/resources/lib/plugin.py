@@ -49,6 +49,11 @@ S_EMPTY = 32113
 S_UNREACHABLE = 32114
 S_ERROR = 32115
 S_CLEARED = 32116
+S_COPIED = 32117
+S_NOTHING_TO_COPY = 32118
+TMDBHELPER_ID = "plugin.video.themoviedb.helper"
+TMDBHELPER_KEY = "mdblist_apikey"
+TMDBHELPER_SETTINGS = "special://profile/addon_data/plugin.video.themoviedb.helper/settings.xml"
 
 
 def parse(argument: str) -> dict:
@@ -147,6 +152,40 @@ def test_key(xbmcaddon, xbmcgui, fetch=None) -> str:
     return result
 
 
+def tmdbhelper_key(xbmcaddon, xbmcvfs) -> str:
+    """TMDb Helper's MDbList key: from its saved settings file (readable while it is disabled, when Kodi will not
+    open the add-on), else through the add-on API; '' when there is none."""
+    if xbmcvfs is not None:
+        try:
+            import xml.etree.ElementTree as ET  # noqa: PLC0415
+
+            root = ET.parse(xbmcvfs.translatePath(TMDBHELPER_SETTINGS)).getroot()
+            for setting in root.iter("setting"):
+                if setting.get("id") == TMDBHELPER_KEY and (setting.text or "").strip():
+                    return setting.text.strip()
+        except Exception:  # noqa: BLE001 - no file yet, or not readable
+            pass
+    try:
+        return xbmcaddon.Addon(TMDBHELPER_ID).getSettingString(TMDBHELPER_KEY).strip()
+    except Exception:  # noqa: BLE001 - not installed, disabled or no such setting
+        return ""
+
+
+def copy_tmdbhelper_key(xbmcaddon, xbmcgui, xbmcvfs=None) -> bool:
+    """Copy TMDb Helper's MDbList key into this add-on's setting (never shown or logged), then check it."""
+    addon = xbmcaddon.Addon(ADDON_ID)
+    text = addon.getLocalizedString
+    key = tmdbhelper_key(xbmcaddon, xbmcvfs)
+    if not key:
+        xbmcgui.Dialog().notification(text(S_HEADING), text(S_NOTHING_TO_COPY),
+                                      getattr(xbmcgui, "NOTIFICATION_WARNING", ""), 5000)
+        return False
+    addon.setSettingString(KEY_SETTING, key)
+    xbmcgui.Dialog().notification(text(S_HEADING), text(S_COPIED), getattr(xbmcgui, "NOTIFICATION_INFO", ""), 3000)
+    test_key(xbmcaddon, xbmcgui)
+    return True
+
+
 def clear_cache(xbmcaddon, xbmcgui, xbmcvfs) -> int:
     addon = xbmcaddon.Addon(ADDON_ID)
     path = os.path.join(xbmcvfs.translatePath(DATA_DIR), DATABASE)
@@ -170,6 +209,8 @@ def run(argv, xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs) -> None:
     action = query.get("action")
     if action == "test_key":
         test_key(xbmcaddon, xbmcgui)
+    elif action == "copy_tmdbhelper_key":
+        copy_tmdbhelper_key(xbmcaddon, xbmcgui, xbmcvfs)
     elif action == "clear_cache":
         clear_cache(xbmcaddon, xbmcgui, xbmcvfs)
     elif query.get("info") in ("cast", "crew") and handle >= 0:

@@ -772,10 +772,54 @@ class CastPluginTests(unittest.TestCase):
         self.assertFalse(any(KEY in str(part) for args in shown for part in args))
 
 
+    def test_copy_tmdbhelper_key_saves_it_without_showing_it(self):
+        shown, saved = [], {}
+        tmdb = {"mdblist_apikey": KEY}
+
+        class Addon:
+            def __init__(self, addon_id):
+                self.addon_id = addon_id
+
+            def getLocalizedString(self, number):
+                return {32100: "Bald Helper", 32117: "Copied", 32118: "Nothing to copy"}.get(number, "")
+
+            def getSettingString(self, setting):
+                if self.addon_id == "plugin.video.themoviedb.helper":
+                    return tmdb.get(setting, "")
+                return saved.get(setting, "")
+
+            def setSettingString(self, setting, value):
+                saved[setting] = value
+
+        dialog = types.SimpleNamespace(notification=lambda *args: shown.append(args))
+        xbmcgui = types.SimpleNamespace(Dialog=lambda: dialog, NOTIFICATION_INFO="info", NOTIFICATION_WARNING="warning")
+        checked = []
+        original = plugin.test_key
+        plugin.test_key = lambda *args, **kw: checked.append(True) or "ok"
+        try:
+            self.assertTrue(plugin.copy_tmdbhelper_key(types.SimpleNamespace(Addon=Addon), xbmcgui))
+            self.assertEqual((saved, checked, shown[-1][1]), ({"mdblist_key": KEY}, [True], "Copied"))
+            tmdb.clear()
+            saved.clear()
+            self.assertFalse(plugin.copy_tmdbhelper_key(types.SimpleNamespace(Addon=Addon), xbmcgui))
+            self.assertEqual((saved, shown[-1][1]), ({}, "Nothing to copy"))
+            # A disabled TMDb Helper: its saved settings file still has the key.
+            with tempfile.TemporaryDirectory() as folder:
+                path = os.path.join(folder, "settings.xml")
+                with open(path, "w", encoding="utf-8") as handle:
+                    handle.write(f'<settings version="2"><setting id="mdblist_apikey">{KEY}</setting></settings>')
+                vfs = types.SimpleNamespace(translatePath=lambda _path: path)
+                self.assertTrue(plugin.copy_tmdbhelper_key(types.SimpleNamespace(Addon=Addon), xbmcgui, vfs))
+                self.assertEqual(saved, {"mdblist_key": KEY})
+        finally:
+            plugin.test_key = original
+        self.assertFalse(any(KEY in str(part) for args in shown for part in args))
+
+
 class PackagingTests(unittest.TestCase):
     def test_addon_declares_service_and_plugin(self):
         root = ET.parse(ADDON / "addon.xml").getroot()
-        self.assertEqual(root.get("version"), "1.4.0")
+        self.assertEqual(root.get("version"), "1.4.1")
         points = {e.get("point"): e.get("library") for e in root.findall("extension")}
         self.assertEqual(points["xbmc.service"], "service.py")
         self.assertEqual(points["xbmc.python.pluginsource"], "plugin.py")
@@ -789,7 +833,10 @@ class PackagingTests(unittest.TestCase):
         self.assertEqual(key.findtext("control/hidden"), "true")
         actions = {s.get("id"): s.findtext("data") for s in settings.iter("setting") if s.get("type") == "action"}
         self.assertEqual(actions, {"test_key": "RunPlugin(plugin://script.bald.helper/?action=test_key)",
-                                   "clear_cache": "RunPlugin(plugin://script.bald.helper/?action=clear_cache)"})
+                                   "clear_cache": "RunPlugin(plugin://script.bald.helper/?action=clear_cache)",
+                               "copy_tmdbhelper_key": "RunPlugin(plugin://script.bald.helper/?action=copy_tmdbhelper_key)"})
+        copy = settings.find(".//setting[@id='copy_tmdbhelper_key']")
+        self.assertEqual(copy.findtext(".//condition"), "System.HasAddon(plugin.video.themoviedb.helper)")
         po = (ADDON / "resources" / "language" / "resource.language.en_gb" / "strings.po").read_text(encoding="utf-8")
         defined = {int(n) for n in __import__("re").findall(r'msgctxt "#(\d+)"', po)}
         used = {int(settings_id) for node in settings.iter() for attr in ("label", "help")
