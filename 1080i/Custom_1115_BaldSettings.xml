@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald Settings. The page itself is Bald_SettingsHome (Includes_Bald_Configure.xml), shared with SkinSettings.xml. -->
 <window type="window" id="1115">
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>

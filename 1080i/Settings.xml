@@ -4,6 +4,7 @@
      Started from Kodi 22 Estuary's Settings.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). Kodi binds no control
      ids in this window (CGUIWindowSettings is a plain window); every entry is an action. -->
 <window>
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol>9000</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<controls>

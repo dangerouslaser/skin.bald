@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="window" id="1116">
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9100</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<!-- Home rebuilds its rows on its next load when this stamp changed (see Home.xml). -->

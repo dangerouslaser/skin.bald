@@ -143,8 +143,8 @@
 			<width>1920</width>
 			<height>1080</height>
 			<aspectratio>scale</aspectratio>
-			<texture>$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</texture>
-			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
+			<texture>$VAR[Bald_BlurImage]</texture>
+			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_HasBlur]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 		<control type="image">
@@ -152,16 +152,25 @@
 			<height>1080</height>
 			<aspectratio>scale</aspectratio>
 			<fadetime>800</fadetime>
-			<texture background="true">$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</texture>
+			<texture background="true">$VAR[Bald_BlurImage]</texture>
 			<!-- Optional enhancement: the field underneath is the supported no-helper fallback. -->
-			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))</visible>
+			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_HasBlur]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</include>
-	<!-- The curtain's blur (Custom_1129_BaldCurtain.xml): as it was when the curtain opened, else the live one. -->
+	<!-- The blurred background. TMDb Helper's blur follows the focused item of a media list, so it is empty in windows
+	     without one (settings, the guide); those show the last blur seen instead (Bald.LastBlur, kept by
+	     Bald_CurtainHandoff as each window is left). Home and the library keep the plain field for an item without art. -->
+	<expression name="Bald_BlurFallback">[!Window.IsActive(home) + !Window.IsActive(videos) + String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))]</expression>
+	<expression name="Bald_HasBlur">[!String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage)) | [$EXP[Bald_BlurFallback] + !String.IsEmpty(Window(home).Property(Bald.LastBlur))]]</expression>
+	<variable name="Bald_BlurImage">
+		<value condition="$EXP[Bald_BlurFallback]">$INFO[Window(home).Property(Bald.LastBlur)]</value>
+		<value>$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</value>
+	</variable>
+	<!-- The curtain's blur (Custom_1129_BaldCurtain.xml): as it was when the curtain opened, else the current one. -->
 	<variable name="Bald_CurtainBlur">
 		<value condition="!String.IsEmpty(Window(home).Property(Bald.CurtainBlur))">$INFO[Window(home).Property(Bald.CurtainBlur)]</value>
-		<value>$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</value>
+		<value>$VAR[Bald_BlurImage]</value>
 	</variable>
 	<include name="Bald_Backdrop">
 		<include>Bald_BackdropImage</include>

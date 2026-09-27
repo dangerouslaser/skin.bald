@@ -5,6 +5,7 @@
      own plugin actions (do_edit, do_toggle, do_action, do_move, do_delete, do_new/do_choose), which write the list and
      refresh 9390; closing this window stamps Bald.WidgetsStamp, so Home rebuilds its menu and rows on its next load. -->
 <window type="window" id="1117">
+	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9300</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
 	<onunload>Skin.SetString(Bald.WidgetsStamp,$INFO[System.Date(yyyy-mm-dd)]_$INFO[System.Time(hh:mm:ss)])</onunload>
