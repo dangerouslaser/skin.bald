@@ -141,14 +141,23 @@ class Service:
                 self.log(text, self.xbmc.LOGERROR)
                 self._last_error = text
 
-    def run(self, monitor=None) -> None:
+    def run(self, monitor=None, wake: float = POLL_SECONDS, each=None) -> None:
+        """Sync about every POLL_SECONDS until Kodi exits. `wake` is how often the loop waits out a slice of that
+        (Kodi runs the monitor's callbacks between slices), and `each` runs alongside every sync."""
         monitor = monitor or self.xbmc.Monitor()
+        slices = max(1, round(POLL_SECONDS / wake))
         self.log("started")
         try:
             self.safe(self.remove_retired)
             self.safe(self.sync)
-            while not monitor.waitForAbort(POLL_SECONDS):
+            waited = 0
+            while not monitor.waitForAbort(wake):
+                waited += 1
+                if waited % slices:
+                    continue
                 self.safe(self.sync)
+                if each is not None:
+                    self.safe(each)
         finally:
             # Kodi exit, add-on disabled or uninstalled: never leave a keymap that points at Bald's timer.
             self.safe(self.remove, "service stopped")

@@ -305,6 +305,9 @@
 		<param name="id" />
 		<param name="label" />
 		<param name="onclick" />
+		<!-- Optional: a Bald Helper request sent in place of onclick while helper_if holds. -->
+		<param name="helper">noop</param>
+		<param name="helper_if">false</param>
 		<param name="visible">true</param>
 		<!-- Include holding the Down route: Cast & details for movies, the season tabs for TV. -->
 		<param name="down">Bald_InfoActionToCast</param>
@@ -320,7 +323,8 @@
 				<focusedcolor>bald_field</focusedcolor>
 				<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
 				<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
-				<onclick>$PARAM[onclick]</onclick>
+				<onclick condition="![$PARAM[helper_if]]">$PARAM[onclick]</onclick>
+				<onclick condition="$PARAM[helper_if]">$PARAM[helper]</onclick>
 				<!-- Navigation belongs to the focused button, not its grouplist. -->
 				<include>$PARAM[down]</include>
 				<onup>noop</onup>

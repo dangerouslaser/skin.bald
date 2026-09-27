@@ -262,7 +262,8 @@
 				<include content="Bald_FollowContainer"><param name="id">5100</param><param name="window">movieinformation</param></include>
 				<include>Bald_InfoBackToCast</include>
 				<ondown>noop</ondown><onleft>noop</onleft><onright>noop</onright>
-				<onclick>RunScript(skin.bald,open,$INFO[Container(5100).ListItem.DBType],$INFO[Container(5100).ListItem.DBID])</onclick>
+				<onclick condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.open|$INFO[Container(5100).ListItem.DBType]|$INFO[Container(5100).ListItem.DBID])</onclick>
+				<onclick condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,open,$INFO[Container(5100).ListItem.DBType],$INFO[Container(5100).ListItem.DBID])</onclick>
 				<itemlayout width="192" height="119"><include>Bald_LandscapeTile</include></itemlayout>
 				<focusedlayout width="192" height="119"><include content="Bald_LandscapeTile"><param name="diffuse">bald_ink</param><param name="ring">Control.HasFocus(5100)</param></include></focusedlayout>
 				<content target="videos" sortby="rating" sortorder="descending" limit="12" browse="never">$INFO[Window(movieinformation).Property(Bald.MorePath)]</content>

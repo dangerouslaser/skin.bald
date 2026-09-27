@@ -11,6 +11,10 @@
 	<!-- Bald Helper (addons/script.bald.helper) is installed and enabled: it blurs the backgrounds (Bald.Blur) and owns
 	     Bald's keymaps. TMDb Helper's blur is the fallback without it. -->
 	<expression name="Bald_HasHelper">[System.HasAddon(script.bald.helper) + System.AddonIsEnabled(script.bald.helper)]</expression>
+	<!-- Bald Helper is running and serves the skin's latency-sensitive actions (its service sets the property once it
+	     has loaded scripts/info.py and clears it when it stops). Call sites send NotifyAll(skin.bald,bald.<action>|...)
+	     while this holds and RunScript(skin.bald,...) otherwise; see addons/script.bald.helper/resources/lib/actions.py. -->
+	<expression name="Bald_HelperActions">[$EXP[Bald_HasHelper] + String.IsEqual(Window(home).Property(Bald.Helper.Actions),1)]</expression>
 
 	<!-- ============ Following an item ============ -->
 	<!-- The background follows the focused item of the container a window names in its Bald.FocusContainer property

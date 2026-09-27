@@ -12,9 +12,10 @@ to Home's window properties:
     Bald.Blur.For   the source image Bald.Blur was made from; written last
 
 It works only while Bald is the skin and its blur is on, and rests during fullscreen video and the screensaver.
-A change is acted on once the source has stayed the same for SETTLE_SECONDS and its container is not scrolling:
-a cached blur is published at once, anything else is blurred on one worker thread and published only if it is
-still the current source. Pillow (script.module.pil) is imported only when first needed; without it nothing is
+A source whose blur is already cached is published once it has stayed the same for FAST_SETTLE_SECONDS, even while
+its container scrolls (switching to a known image costs one file check). Anything else waits until the source has
+stayed the same for SETTLE_SECONDS and its container is not scrolling, so fast scrolling makes no work; it is then
+blurred on one worker thread and published only if it is still the current source. Pillow (script.module.pil) is imported only when first needed; without it nothing is
 published and the skin keeps its plain field.
 
 Written from Pillow's documentation and Kodi's Python API. Nothing here imports xbmc at module level, so the tests
@@ -46,6 +47,7 @@ PRUNE_EVERY = 100  # writes between prunes (the cache is also pruned at startup)
 POLL_SECONDS = 0.15
 IDLE_SECONDS = 1.0  # while resting: another skin, blur off, fullscreen video, screensaver
 SETTLE_SECONDS = 0.25
+FAST_SETTLE_SECONDS = 0.1  # a cached blur: only this long, and scrolling does not hold it back
 
 PROPERTY_BLUR = "Bald.Blur"
 PROPERTY_LAST = "Bald.Blur.Last"
@@ -132,6 +134,10 @@ class Blurrer:
     # --- the cache ---
     def path_for(self, source: str) -> str:
         return os.path.join(self.cache_dir, cache_name(source))
+
+    def has(self, source: str) -> bool:
+        """Whether the source's blur is in the cache (one stat; does not count as use)."""
+        return os.path.isfile(self.path_for(source))
 
     def cached(self, source: str) -> str | None:
         path = self.path_for(source)
@@ -338,14 +344,20 @@ class Follower:
         now = self.clock()
         if source != self.candidate:
             self.candidate, self.since = source, now
-            return POLL_SECONDS
+            return FAST_SETTLE_SECONDS  # look again as soon as a cached blur could be shown
         with self.lock:
             if source == self.wanted:
                 return POLL_SECONDS
             if source == self.published:
                 self.wanted = None  # back on the shown item: a blur still in flight is no longer wanted
                 return POLL_SECONDS
-        if now - self.since < SETTLE_SECONDS:
+        elapsed = now - self.since
+        if elapsed < FAST_SETTLE_SECONDS - 0.01:  # a timed wait may wake a hair early
+            return POLL_SECONDS
+        if source and self.blurrer.has(source):
+            self.request(source)  # cached: publish now, scrolling or not
+            return POLL_SECONDS
+        if elapsed < SETTLE_SECONDS:
             return POLL_SECONDS
         if scrolling and self.xbmc.getCondVisibility(scrolling):
             return POLL_SECONDS

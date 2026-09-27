@@ -87,6 +87,51 @@ class LetterAvailabilityTests(unittest.TestCase):
         gui.Window.assert_not_called()
 
 
+
+class DictCache(dict):
+    def put(self, key, value):
+        self[key] = value
+
+
+class LetterCacheTests(unittest.TestCase):
+    """Bald Helper's service passes a cache and a cancel check; RunScript passes neither."""
+
+    def test_a_second_visit_reads_the_cache_not_the_items(self):
+        cache = DictCache()
+        xbmc, gui, props = fake_kodi(510, 'M')
+        publish(xbmc, gui, '510', cache=cache)
+        self.assertEqual(props['Bald.AvailableLetters'], ';M;')
+        self.assertEqual(list(cache.values()), [';M;'])
+        xbmc, gui, props = fake_kodi(510, 'Q')  # same folder and size: the cached groups are published
+        publish(xbmc, gui, '510', cache=cache)
+        self.assertEqual(props['Bald.AvailableLetters'], ';M;')
+        read = [c.args[0] for c in xbmc.getInfoLabel.call_args_list]
+        self.assertFalse(any('SortLetter' in label for label in read))
+
+    def test_the_key_is_folder_size_and_sort(self):
+        xbmc = Mock()
+        xbmc.getInfoLabel.side_effect = {'Container.SortMethod': 'Year', 'Container.SortOrder': 'Descending'}.get
+        from scripts.letters import cache_key
+        self.assertEqual(cache_key(xbmc, 510, 12, 'videodb://movies/titles/'),
+                         (510, 'videodb://movies/titles/', 12, 'Year', 'Descending'))
+
+    def test_another_folder_is_scanned(self):
+        cache = DictCache()
+        publish(*fake_kodi(510, 'M', folder='a')[:2], '510', cache=cache)
+        xbmc, gui, props = fake_kodi(510, 'Q', folder='b')
+        publish(xbmc, gui, '510', cache=cache)
+        self.assertEqual(props['Bald.AvailableLetters'], ';Q;')
+        self.assertEqual(len(cache), 2)
+
+    def test_a_cancelled_scan_publishes_and_caches_nothing(self):
+        cache = DictCache()
+        xbmc, gui, props = fake_kodi(510, 'M')
+        publish(xbmc, gui, '510', cache=cache, cancelled=lambda: True)
+        self.assertNotIn('Bald.AvailableLetters', props)
+        self.assertEqual(cache, {})
+        self.assertIsNone(available_letters(10, lambda index: 'A', lambda: True))
+
+
 class LetterDispatchTests(unittest.TestCase):
     def test_info_script_forwards_the_container_argument(self):
         from scripts import info

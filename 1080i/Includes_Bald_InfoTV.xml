@@ -79,7 +79,8 @@
 	     once the script has selected it, the episode card itself (docs/SPEC.md 5.3). -->
 	<include name="Bald_InfoTVOnLoad">
 		<onload>SetProperty(Bald.InfoTV,1,movieinformation)</onload>
-		<onload>RunScript(skin.bald,tvinfo,$INFO[ListItem.DBType],$INFO[ListItem.DBID])</onload>
+		<!-- With Bald Helper, DialogVideoInfo.xml's bald.info request runs tvinfo. -->
+		<onload condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,tvinfo,$INFO[ListItem.DBType],$INFO[ListItem.DBID])</onload>
 		<onload condition="$EXP[Bald_InfoTVIsEpisode] + ListItem.IsResumable">SetFocus(5001)</onload>
 		<onload condition="$EXP[Bald_InfoTVIsEpisode] + !ListItem.IsResumable">SetFocus(5002)</onload>
 		<onload condition="!$EXP[Bald_InfoTVIsEpisode]">SetFocus(5003)</onload>
@@ -412,7 +413,8 @@
 			<focusposition>0</focusposition>
 			<movement>2</movement>
 			<scrolltime tween="cubic" easing="out">440</scrolltime>
-			<onclick>RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])</onclick>
+			<onclick condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.play|episode|$INFO[Container(5302).ListItem.DBID])</onclick>
+			<onclick condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])</onclick>
 			<itemlayout width="344" height="204"><include>Bald_InfoTVEpisodeCard</include></itemlayout>
 			<focusedlayout width="344" height="204">
 				<include content="Bald_InfoTVEpisodeCard"><param name="ring">$EXP[Bald_InfoTVEpisodesFocused]</param><param name="focus_fade">100</param></include>
@@ -542,6 +544,8 @@
 					<param name="id">5003</param>
 					<param name="label">$VAR[Bald_InfoTVNextLabel]</param>
 					<param name="onclick">RunScript(skin.bald,play,episode,$INFO[Window(movieinformation).Property(Bald.TV.NextID)])</param>
+					<param name="helper_if">$EXP[Bald_HelperActions]</param>
+					<param name="helper">NotifyAll(skin.bald,bald.play|episode|$INFO[Window(movieinformation).Property(Bald.TV.NextID)])</param>
 					<param name="visible">!$EXP[Bald_InfoTVIsEpisode]</param>
 					<param name="down">Bald_InfoTVActionDown</param>
 				</include>
