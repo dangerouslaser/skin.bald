@@ -2180,8 +2180,8 @@ msgstr "Datum auswählen"
 
 #: /1080i/Includes_PVR.xml
 msgctxt "#31876"
-msgid "Exit Live TV"
-msgstr "Live-TV beenden"
+msgid "Exit guide"
+msgstr "TV-Programm verlassen"
 
 #: /1080i/MyPVRGuide.xml
 msgctxt "#31877"

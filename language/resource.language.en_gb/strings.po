@@ -2608,7 +2608,7 @@ msgstr ""
 
 #: /1080i/Includes_PVR.xml
 msgctxt "#31876"
-msgid "Exit Live TV"
+msgid "Exit guide"
 msgstr ""
 
 #: /1080i/MyPVRGuide.xml
