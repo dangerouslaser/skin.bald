@@ -212,6 +212,7 @@
 		<value condition="Control.HasFocus(70043)">$LOCALIZE[19033]</value>
 		<value condition="Control.HasFocus(70060)">$LOCALIZE[292]</value>
 		<value condition="Control.HasFocus(70061)">$LOCALIZE[287]</value>
+		<value condition="Control.HasFocus(70063)">TinyPPI</value>
 		<value condition="Control.HasFocus(70062)">$LOCALIZE[157]</value>
 		<value condition="Control.HasFocus(8110)">$LOCALIZE[292]</value>
 		<value condition="Control.HasFocus(8120)">$LOCALIZE[287]</value>
@@ -393,7 +394,7 @@
 	<!-- ============ Buttons ============
 	     The row: transport grouplist 201 from x 96 (play/pause 602, back 600, forward 607, stop 603) and tools grouplist
 	     202 ending at x 1824 (disc menu 804, teletext 70045 and 3D 70047 when they apply, then info 70043, audio 70060,
-	     subtitles 70061, video 70062). 80 x 96 buttons, 8 px apart, at y 836. Left from the first transport button
+	     subtitles 70061, TinyPPI 70063 when installed, video 70062). 80 x 96 buttons, 8 px apart, at y 836. Left from the first transport button
 	     wraps to the last tool, Right from the last tool to the first transport button. -->
 	<!-- Kodi's radio textures take no $VAR, so back and forward carry both icons and pick one with <selected>: the
 	     guide and record icons on Live TV. A recording shows as an accent-free dot under the record icon (the status
@@ -734,6 +735,25 @@
 			<include content="Bald_OSDFakeButton"><param name="id">70061</param><param name="owner">$PARAM[owner]</param></include>
 		</definition>
 	</include>
+	<!-- TinyPPI: opens the add-on's dialog (which closes the OSD itself); hidden unless script.tinyppi is enabled. -->
+	<include name="Bald_OSDSlot_Real_PPI">
+		<include content="Bald_OSDButton">
+			<param name="id">70063</param>
+			<param name="icon">bald/osd_ppi.png</param>
+			<param name="on">bald/osd_ppi.png</param>
+			<param name="visible">System.AddonIsEnabled(script.tinyppi)</param>
+			<onclick>CancelAlarm(bald_osd_close,true)</onclick>
+			<onclick>RunScript(script.tinyppi,dialog)</onclick>
+			<include>Bald_OSDUpToSeek</include>
+			<include>Bald_OSDChainFrom_0</include>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_PPI">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70063</param><param name="owner">$PARAM[owner]</param><param name="visible">System.AddonIsEnabled(script.tinyppi)</param></include>
+		</definition>
+	</include>
 	<!-- Video: focusing opens the video panel (1123); Select opens Kodi's video settings. -->
 	<include name="Bald_OSDVideoBody">
 		<definition>
@@ -778,6 +798,7 @@
 		<param name="info">Real</param>
 		<param name="audio">Real</param>
 		<param name="subtitles">Real</param>
+		<param name="ppi">Real</param>
 		<param name="video">Real</param>
 		<definition>
 			<control type="grouplist" id="201">
@@ -812,6 +833,7 @@
 				<include content="Bald_OSDSlot_$PARAM[info]_Info"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[audio]_Audio"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[subtitles]_Subtitles"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[ppi]_PPI"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[video]_Video"><param name="owner">$PARAM[owner]</param></include>
 			</control>
 		</definition>
