@@ -88,6 +88,9 @@ def _estuary_window(filename):
 HOISTED_GROUPS = {"698", "699"}
 # Estuary ids retired on purpose: 799 is touch mode's back button, and Bald is remote-only (touch mode retired).
 RETIRED_IDS = {"799"}
+# Conditions Bald adds to an Estuary control's visibility: the music OSD's buttons step aside for the settings drawer
+# its settings button opens (1101), as they do for Kodi's settings dialogs.
+ADDED_VISIBILITY = {("MusicOSD.xml", "200"): ["!Window.IsActive(1101)"]}
 
 
 class PlaybackContractTests(unittest.TestCase):
@@ -135,15 +138,18 @@ class PlaybackContractTests(unittest.TestCase):
                         # The OSD button body arms and cancels the auto-close alarm (Bald_OSDAutoCloseArm) on
                         # focus and click; those are Bald's own, around Estuary's actions.
                         mine = [(c, a) for c, a in _actions(new, tag) if "bald_osd_close" not in a]
+                        # Estuary's navigation to an id its own window lacks (704's 1000, the music seek sliders'
+                        # 8010 and 650) did nothing and is dropped.
+                        theirs = [(c, a) for c, a in _actions(old, tag) if not (a.isdigit() and a not in estuary)]
                         if hoisted and tag == "selected":
                             # Estuary's wrapper showed state through a variable image; Bald's toggle shows it with
                             # static radio textures chosen by <selected>.
                             continue
-                        self.assertTrue(same_actions(mine, _actions(old, tag), bodies),
-                                        f"{tag}: {mine} != {_actions(old, tag)}")
+                        self.assertTrue(same_actions(mine, theirs, bodies), f"{tag}: {mine} != {theirs}")
                     old_visible = [v.text for v in old.findall("visible")]
                     if hoisted:
                         old_visible += [v.text for v in parent.findall("visible")]
+                    old_visible += ADDED_VISIBILITY.get((name, control_id), [])
                     self.assertTrue(equivalent(all_of([v.text for v in new.findall("visible")]),
                                                all_of(old_visible), bodies))
 

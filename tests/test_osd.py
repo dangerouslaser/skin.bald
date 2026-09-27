@@ -157,6 +157,19 @@ class OSDContractTests(unittest.TestCase):
                     with self.subTest(window=name, id=control.get("id")):
                         self.assertIsNotNone(control.find("visible"))
 
+    def test_navigation_goes_to_controls_that_exist(self):
+        # Estuary leftovers (704's 1000, the music seek sliders' 8010 and 650) named controls these windows lack.
+        for name in ["PlayerControls.xml", "MusicOSD.xml"] + WINDOWS:
+            root = self.windows.get(name) if name in self.windows else resolve_window(name)
+            known = set(ids(root))
+            for control in root.iter("control"):
+                for tag in ("onup", "ondown", "onleft", "onright"):
+                    for node in control.findall(tag):
+                        target = (node.text or "").strip()
+                        if target.isdigit():
+                            with self.subTest(window=name, id=control.get("id"), tag=tag):
+                                self.assertIn(target, known)
+
     def test_no_onback_previousmenu(self):
         for name in WINDOWS + [OSD_INCLUDES]:
             for node in ET.parse(SKIN / name).getroot().iter("onback"):

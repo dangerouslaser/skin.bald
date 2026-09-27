@@ -11,7 +11,7 @@
 	<controls>
 		<control type="group">
 			<include>Bald_OSDCompanionHide</include>
-		<include>Bald_OSDVideoPanel</include>
+			<include>Bald_OSDVideoPanel</include>
 			<include content="Bald_OSDRow">
 				<param name="owner">1123</param>
 				<param name="play">Fake</param>

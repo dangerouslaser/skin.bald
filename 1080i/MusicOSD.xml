@@ -23,7 +23,7 @@
 		</control>
 		<control type="group" id="200">
 			<include>Bald_PlaybackAnimWindow</include>
-			<visible>!Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(playerprocessinfo)</visible>
+			<visible>!Window.IsActive(1101) + !Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(playerprocessinfo)</visible>
 			<include>Bald_PlaybackAnimVisible</include>
 			<include content="Bald_PlaybackHints"><param name="top">Bald_OSDHintTop</param></include>
 			<control type="grouplist" id="201">
@@ -163,7 +163,7 @@
 			</control>
 		</control>
 		<!-- Seek row: the hidden button 87 takes Up from the buttons; the sliders are mouse seek targets over the seek
-		     dialog's track (Estuary's duplicated navigation tags are kept as they were). -->
+		     dialog's track. -->
 		<control type="group">
 			<include>Bald_PlaybackAnimWindow</include>
 			<control type="button" id="87">
@@ -176,8 +176,6 @@
 			<include>Bald_PlaybackSeekFocus</include>
 			<control type="slider">
 				<include>Bald_PlaybackSeekArea</include>
-				<onup>8010</onup>
-				<ondown>650</ondown>
 				<info>Player.Progress</info>
 				<onup>201</onup>
 				<ondown>200</ondown>
@@ -186,8 +184,6 @@
 			</control>
 			<control type="slider">
 				<include>Bald_PlaybackSeekArea</include>
-				<onup>8010</onup>
-				<ondown>650</ondown>
 				<info>PVR.TimeshiftProgressPlayPos</info>
 				<onup>201</onup>
 				<ondown>200</ondown>

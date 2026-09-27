@@ -12,7 +12,7 @@
 	<controls>
 		<control type="group">
 			<include>Bald_OSDCompanionHide</include>
-		<include>Bald_OSDNextCard</include>
+			<include>Bald_OSDNextCard</include>
 			<include content="Bald_OSDRow">
 				<param name="owner">1124</param>
 				<param name="play">Fake</param>
