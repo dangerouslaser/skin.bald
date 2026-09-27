@@ -324,7 +324,7 @@
 					<left>92</left><top>40</top><width>200</width><height>200</height>
 					<aspectratio scalediffuse="false">scale</aspectratio>
 					<texture diffuse="bald/circle_112.png" background="true">$INFO[ListItem.Icon]</texture>
-					<animation effect="fade" start="100" end="55" time="0" condition="![$PARAM[focused]]">Conditional</animation>
+					<animation effect="fade" start="100" end="55" time="0" condition="[![$PARAM[focused]]] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
 				</control>
 				<control type="image">
 					<left>86</left><top>34</top><width>212</width><height>212</height>
@@ -415,7 +415,7 @@
 	     placeholder under a missing one), the title and the year; focused, the tile ring and pop. -->
 	<include name="Bald_MusicInfoCover">
 		<param name="ink">bald_ink70</param>
-		<param name="diffuse">bald_ink70</param>
+		<param name="diffuse">bald_art70</param>
 		<param name="focused">false</param>
 		<definition>
 			<control type="group">

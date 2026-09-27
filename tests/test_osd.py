@@ -334,7 +334,7 @@ class SettingsTests(unittest.TestCase):
                                 "Bald.OSD.DetailsPlot", "Bald.OSD.HideInfoArt",
                                 "Bald.OSD.HideInfoPlot", "Bald.OSD.NoGuidePanel", "Bald.OSD.NoChannelsPanel",
                                 "Bald.OSD.NoPlaylistPanel", "Bald.OSD.NoBookmarksPanel", "Bald.OSD.NoCastPanel",
-                                "Bald.OSD.Shade"})
+                                "Bald.OSD.Shade", "Bald.OSD.BackgroundVideoDim"})
         for setting in read:
             with self.subTest(setting=setting):
                 self.assertRegex(self.page_text, rf"Skin\.(ToggleSetting|SetString|Reset)\({re.escape(setting)}[,)]")

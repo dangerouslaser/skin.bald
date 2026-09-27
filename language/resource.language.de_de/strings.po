@@ -2656,6 +2656,12 @@ msgctxt "#31997"
 msgid "Background video"
 msgstr "Hintergrundvideo"
 
+#. Bald Settings, Playback, Controls: how much the background video is darkened (60, 70, 80, 90 per cent)
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31998"
+msgid "Background video dim"
+msgstr "Hintergrundvideo abdunkeln"
+
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 #~ msgstr "Keine Favoriten gefunden. Es kann jeder beliebige Eintrag aus den Medienansichten via Kontextmenü zu den Favoriten hinzugefügt werden."

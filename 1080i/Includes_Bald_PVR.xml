@@ -559,7 +559,7 @@
 			<control type="image">
 				<left>0</left><top>0</top><right>0</right><bottom>0</bottom>
 				<texture colordiffuse="bald_ink10">bald/white.png</texture>
-				<animation type="Conditional" condition="!Control.HasFocus($PARAM[list_id])"><effect type="fade" start="100" end="50" time="0" /></animation>
+				<animation type="Conditional" condition="[!Control.HasFocus($PARAM[list_id])] + !$EXP[Bald_VideoBackdropOn]"><effect type="fade" start="100" end="50" time="0" /></animation>
 			</control>
 		</definition>
 	</include>
@@ -570,7 +570,7 @@
 		<param name="c1">bald_ink70</param>
 		<definition>
 			<control type="group">
-				<animation type="Conditional" condition="!ListItem.Property(ActiveChannel)"><effect type="fade" start="100" end="50" time="0" /></animation>
+				<animation type="Conditional" condition="[!ListItem.Property(ActiveChannel)] + !$EXP[Bald_VideoBackdropOn]"><effect type="fade" start="100" end="50" time="0" /></animation>
 				<control type="image"><left>20</left><top>15</top><width>64</width><height>40</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.Property(icon)]</texture></control>
 				<control type="label"><left>104</left><top>0</top><width>452</width><height>70</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><label>$INFO[ListItem.Property(Number),,  ]$INFO[ListItem.Property(Name)]</label><visible>!$PARAM[focused]</visible></control>
 				<control type="label"><left>104</left><top>8</top><width>452</width><height>30</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[c1]</textcolor><scroll>true</scroll><label>$INFO[ListItem.Property(Number),,  ]$INFO[ListItem.Property(Name)]</label><visible>$PARAM[focused]</visible></control>

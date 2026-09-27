@@ -18,7 +18,11 @@
 		<control type="group">
 			<visible>$EXP[Bald_VideoBackdropOn]</visible>
 			<control type="videowindow"><width>1920</width><height>1080</height></control>
-			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_video_dim">bald/white.png</texture></control>
+			<!-- Dim level: Skin.String(Bald.OSD.BackgroundVideoDim) 60, 70 or 90; empty is 80. -->
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_video_dim">bald/white.png</texture><visible>String.IsEmpty(Skin.String(Bald.OSD.BackgroundVideoDim))</visible></control>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_video_dim60">bald/white.png</texture><visible>Skin.String(Bald.OSD.BackgroundVideoDim,60)</visible></control>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_video_dim70">bald/white.png</texture><visible>Skin.String(Bald.OSD.BackgroundVideoDim,70)</visible></control>
+			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_video_dim90">bald/white.png</texture><visible>Skin.String(Bald.OSD.BackgroundVideoDim,90)</visible></control>
 		</control>
 	</include>
 	<include name="Bald_Field">

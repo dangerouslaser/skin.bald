@@ -1054,7 +1054,7 @@
 						<effect type="zoom" start="100" end="105" center="98,59" time="280" tween="back" easing="out" />
 						<effect type="fade" start="55" end="100" time="300" tween="sine" easing="inout" />
 					</animation>
-					<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+					<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + !$EXP[Bald_VideoBackdropOn]">
 						<effect type="zoom" start="100" end="95.2" center="98,59" time="300" tween="cubic" easing="out" />
 						<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
 					</animation>
@@ -1086,7 +1086,7 @@
 		<focusedlayout width="156" height="234">
 			<control type="group">
 				<!-- While the menu is open the focused poster dims like a landscape tile. -->
-				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+				<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + !$EXP[Bald_VideoBackdropOn]">
 					<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
 				</animation>
 				<include content="Bald_PosterLowTile">
@@ -1129,7 +1129,7 @@
 		</itemlayout>
 		<focusedlayout width="208" height="234">
 			<control type="group">
-				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+				<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + !$EXP[Bald_VideoBackdropOn]">
 					<effect type="fade" start="100" end="66" time="300" tween="sine" easing="inout" />
 				</animation>
 				<include content="Bald_SquareTile">
@@ -1265,10 +1265,10 @@
 				<visible>$PARAM[enabled] + [[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])]]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
-				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+				<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + !$EXP[Bald_VideoBackdropOn]">
 					<effect type="fade" start="100" end="60" time="360" tween="sine" easing="inout" />
 				</animation>
-				<animation type="Conditional" condition="$EXP[Bald_Idle]">
+				<animation type="Conditional" condition="[$EXP[Bald_Idle]] + !$EXP[Bald_VideoBackdropOn]">
 					<effect type="fade" start="100" end="40" time="900" tween="sine" easing="inout" />
 				</animation>
 				<!-- Row label line: label, row dots, count (Bald.ShowRowCount) -->
@@ -1325,10 +1325,10 @@
 				<visible allowhiddenfocus="true">$PARAM[enabled] + [[String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + [[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]] | [!Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !$EXP[Bald_DialogOver]]]] | [$EXP[Bald_MenuOpen] + String.IsEqual(Window(home).Property(Bald.MenuPreview),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row.$PARAM[screen]),$PARAM[id])] | [$EXP[Bald_Preloading] + Container($PARAM[id]).IsUpdating]]</visible>
 				<include>Bald_AnimRowSwap</include>
 				<include>Bald_AnimInfoChrome</include>
-				<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+				<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + !$EXP[Bald_VideoBackdropOn]">
 					<effect type="fade" start="100" end="60" time="360" tween="sine" easing="inout" />
 				</animation>
-				<animation type="Conditional" condition="$EXP[Bald_Idle]">
+				<animation type="Conditional" condition="[$EXP[Bald_Idle]] + !$EXP[Bald_VideoBackdropOn]">
 					<effect type="fade" start="100" end="40" time="900" tween="sine" easing="inout" />
 				</animation>
 				<include content="Bald_AnimNudge"><param name="prop">Bald.NudgeL</param><param name="x">14</param><param name="back">-14</param></include>

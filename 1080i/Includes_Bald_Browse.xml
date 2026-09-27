@@ -72,7 +72,7 @@
 	<!-- ============ Motion ============ -->
 	<!-- Views dim to 72% while the options menu covers the preview column (SPEC 5.5). -->
 	<include name="Bald_BrowseDim">
-		<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_BrowseMenuOpen]">Conditional</animation>
+		<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="[$EXP[Bald_BrowseMenuOpen]] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
 	</include>
 	<!-- A view appearing after a view switch or window open: fade 380 and a 40 px settle, as the Bald menus. -->
 	<include name="Bald_BrowseViewIn">
@@ -198,7 +198,7 @@
 			</control>
 			<control type="image">
 				<left>1112</left><top>16</top><width>24</width><height>24</height><aspectratio>keep</aspectratio>
-				<texture colordiffuse="bald_ink45">$VAR[AddonsOriginVar]</texture>
+				<texture colordiffuse="bald_art45">$VAR[AddonsOriginVar]</texture>
 				<visible>!ListItem.IsFolder</visible>
 			</control>
 		</definition>
@@ -473,7 +473,7 @@
 	<include name="Bald_AddonInfoDetail">
 		<control type="label"><width>528</width><height>24</height><font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Label]</label></control>
 		<control type="label"><top>26</top><width>488</width><height>40</height><font>Bald_DetailValue</font><textcolor>bald_ink</textcolor><wrapmultiline>true</wrapmultiline><label>$INFO[ListItem.Label2]</label></control>
-		<control type="image"><left>500</left><top>30</top><width>24</width><height>24</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_ink45">$INFO[ListItem.Icon]</texture></control>
+		<control type="image"><left>500</left><top>30</top><width>24</width><height>24</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_art45">$INFO[ListItem.Icon]</texture></control>
 	</include>
 	<!-- Round transport button for the options menu's now-playing row (ids 14101-14106): Estuary's icon, tinted. -->
 	<include name="Bald_BrowseTransportButton">

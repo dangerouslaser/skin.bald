@@ -51,6 +51,13 @@
 				</control>
 				<!-- Background video: playing video shows, dimmed, behind Bald's windows (on unless Bald.OSD.NoBackgroundVideo). -->
 				<control type="radiobutton" id="9807"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31997]</label><selected>!Skin.HasSetting(Bald.OSD.NoBackgroundVideo)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoBackgroundVideo)</onclick></control>
+				<!-- Background video dim: 80 (default, unset), 90, 60, 70 %. -->
+				<control type="button" id="9808"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">1</param></include><label>$LOCALIZE[31998]</label><label2>$VAR[Bald_BackgroundVideoDimLabel]</label2><enable>!Skin.HasSetting(Bald.OSD.NoBackgroundVideo)</enable>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.OSD.BackgroundVideoDim))">Skin.SetString(Bald.OSD.BackgroundVideoDim,90)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.BackgroundVideoDim,90)">Skin.SetString(Bald.OSD.BackgroundVideoDim,60)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.BackgroundVideoDim,60)">Skin.SetString(Bald.OSD.BackgroundVideoDim,70)</onclick>
+					<onclick condition="Skin.String(Bald.OSD.BackgroundVideoDim,70)">Skin.Reset(Bald.OSD.BackgroundVideoDim)</onclick>
+				</control>
 				<!-- Pause: none, hide the bar or show info, after a 0-3 s delay (empty = 3 s). -->
 				<control type="button" id="9811"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">2</param></include><label>$LOCALIZE[31978]</label><label2>$VAR[Bald_OSDPauseModeLabel]</label2>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.OSD.PauseMode))">Skin.SetString(Bald.OSD.PauseMode,hide)</onclick>

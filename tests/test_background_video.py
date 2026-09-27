@@ -30,8 +30,13 @@ class BackgroundVideoTests(unittest.TestCase):
     def test_the_video_is_dimmed_and_replaces_the_field(self):
         video = self.common.find("include[@name='Bald_VideoBackdrop']/control")
         self.assertEqual(video.findtext("visible"), ON)
-        self.assertEqual([c.get("type") for c in video.findall("control")], ["videowindow", "image"])
-        self.assertEqual(video.find("control[@type='image']/texture").get("colordiffuse"), "bald_video_dim")
+        self.assertEqual([c.get("type") for c in video.findall("control")], ["videowindow"] + ["image"] * 4)
+        # One dim per level; unset is 80 %.
+        dims = {c.findtext("visible"): c.find("texture").get("colordiffuse") for c in video.findall("control[@type='image']")}
+        self.assertEqual(dims, {"String.IsEmpty(Skin.String(Bald.OSD.BackgroundVideoDim))": "bald_video_dim",
+                                "Skin.String(Bald.OSD.BackgroundVideoDim,60)": "bald_video_dim60",
+                                "Skin.String(Bald.OSD.BackgroundVideoDim,70)": "bald_video_dim70",
+                                "Skin.String(Bald.OSD.BackgroundVideoDim,90)": "bald_video_dim90"})
         field = self.common.find("include[@name='Bald_Field']/control")
         self.assertEqual(field.findtext("visible"), f"!{ON}")
         base = [n.text for n in self.common.findall("include[@name='Bald_WindowBase']/include")]

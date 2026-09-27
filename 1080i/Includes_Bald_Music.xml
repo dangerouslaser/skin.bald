@@ -72,13 +72,13 @@
 	     art show their default icon small and quiet on the placeholder. Two lines under it: the item's label and, for
 	     albums, the artist. Focus: the 3 px ink ring and the 2.5% pop (280 POP), as the poster tiles. -->
 	<include name="Bald_MusicTile">
-		<param name="diffuse">bald_ink70</param><param name="ink">bald_ink70</param><param name="focused">false</param>
+		<param name="diffuse">bald_art70</param><param name="ink">bald_ink70</param><param name="focused">false</param>
 		<definition>
 			<control type="group">
 				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="108,108" time="280" tween="back" easing="out" /></animation>
 				<control type="image"><left>12</left><top>12</top><width>192</width><height>192</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 				<control type="image"><left>12</left><top>12</top><width>192</width><height>192</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$INFO[ListItem.Art(thumb)]</texture><visible>!String.IsEmpty(ListItem.Art(thumb))</visible></control>
-				<control type="image"><left>60</left><top>60</top><width>96</width><height>96</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_ink45">$INFO[ListItem.Icon]</texture><visible>String.IsEmpty(ListItem.Art(thumb))</visible></control>
+				<control type="image"><left>60</left><top>60</top><width>96</width><height>96</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_art45">$INFO[ListItem.Icon]</texture><visible>String.IsEmpty(ListItem.Art(thumb))</visible></control>
 				<control type="image"><left>9</left><top>9</top><width>198</width><height>198</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
 			</control>
 			<control type="label"><left>12</left><top>216</top><width>192</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><label>$INFO[ListItem.Label]</label></control>
@@ -241,7 +241,7 @@
 			<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">music</param></include>
 			<include content="Bald_UnfollowContainer"><param name="window">music</param></include>
 			<onup>$PARAM[up]</onup><onleft>$PARAM[left]</onleft>
-			<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
+			<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="[$EXP[Bald_LibraryMenuOpen]] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
 		</definition>
 	</include>
 	<!-- Empty state under the header, for container c. -->
@@ -298,7 +298,7 @@
 	<!-- The artwork list's 88 px row (624 wide): a 72 px square thumbnail, the label in the tagline size and a meta
 	     line (albums "Artist · 1997", artists their genre). -->
 	<include name="Bald_MusicArtworkRow">
-		<param name="ink">bald_ink70</param><param name="scroll">false</param><param name="diffuse">bald_ink70</param>
+		<param name="ink">bald_ink70</param><param name="scroll">false</param><param name="diffuse">bald_art70</param>
 		<definition>
 			<control type="image"><left>26</left><top>8</top><width>72</width><height>72</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 			<control type="image"><left>26</left><top>8</top><width>72</width><height>72</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$INFO[ListItem.Art(thumb)]</texture></control>

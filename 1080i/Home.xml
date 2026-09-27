@@ -314,7 +314,7 @@
 				<!-- Labels are top-aligned and offset so their baselines match (Instrument Sans ascender = font size). -->
 				<usecontrolcoords>true</usecontrolcoords>
 				<include>Bald_AnimMenuHides</include>
-				<animation type="Conditional" condition="$EXP[Bald_Idle]">
+				<animation type="Conditional" condition="[$EXP[Bald_Idle]] + !$EXP[Bald_VideoBackdropOn]">
 					<effect type="fade" start="100" end="45" time="600" tween="sine" easing="inout" />
 				</animation>
 				<control type="group">

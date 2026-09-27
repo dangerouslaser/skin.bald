@@ -41,12 +41,20 @@
 	     Playback › Background shading scales them (Bald_OSDShade). -->
 	<color name="bald_scrim">FF000000</color>
 	<color name="bald_scrim60">99000000</color>
-	<!-- Background video (playing video behind Bald's windows): darkened to 35% so rows and text stay readable. -->
-	<color name="bald_video_dim">A6000000</color>
+	<!-- Background video (playing video behind Bald's windows): Playback › Background video dim darkens it by 60, 70,
+	     80 (the default) or 90 %, so rows and text stay readable. -->
+	<color name="bald_video_dim60">99000000</color>
+	<color name="bald_video_dim70">B3000000</color>
+	<color name="bald_video_dim">CC000000</color>
+	<color name="bald_video_dim90">E6000000</color>
 	<!-- Unfocused tiles and posters: 55% (SPEC 5.1 row behavior), as brightness at full opacity, so a tile stays solid
 	     over background video (a 55% alpha tile let the video through). -->
 	<color name="bald_tile_dim">FF8C8C8C</color>
 	<color name="bald_poster_dim">FF818285</color>
+	<!-- Artwork at an ink step's brightness, at full opacity (ink60/70/45 are translucent; over video they showed it
+	     through): unfocused wall posters, music covers and icons. -->
+	<color name="bald_art70">FFA5A7A9</color>
+	<color name="bald_art45">FF6A6B6D</color>
 	<color name="bald_placeholder">14808080</color>
 	<color name="bald_tile_placeholder">26808080</color>
 </colors>

@@ -3086,3 +3086,9 @@ msgstr ""
 msgctxt "#31997"
 msgid "Background video"
 msgstr ""
+
+#. Bald Settings, Playback, Controls: how much the background video is darkened (60, 70, 80, 90 per cent)
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31998"
+msgid "Background video dim"
+msgstr ""
