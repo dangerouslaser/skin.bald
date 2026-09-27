@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald music library views (MyMusicNav.xml; shared pieces in Includes_Bald_Music.xml, ids in 1080i/IDs).
+     All three are "list" views, so Kodi's default list view for each content type is the first of them that shows
+     for it (CGUIViewControl picks the first visible view of the type): artists and albums open on the covers, songs
+     and the plain lists on the compact list. -->
+<includes>
+	<!-- 550 Bald covers: five-by-two square covers at (84,210) beside the preview column (section 5.7's wall with
+	     preview, with square art in 216 x 300 slots). -->
+	<include name="View_550_Bald_Covers">
+		<control type="group">
+			<visible>Control.IsVisible(550)</visible>
+			<include>Bald_MusicPage</include>
+			<control type="panel" id="550">
+				<left>84</left><top>210</top><width>1080</width><height>600</height><orientation>vertical</orientation>
+				<viewtype label="31400">list</viewtype><visible>$EXP[Bald_MusicCoverContent]</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<include content="Bald_MusicViewNav"><param name="id">550</param></include>
+				<onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|550)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,550)</onright>
+				<ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|550)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,550)</ondown>
+				<itemlayout width="216" height="300"><include>Bald_MusicTile</include></itemlayout>
+				<focusedlayout width="216" height="300"><include content="Bald_MusicTile"><param name="diffuse">bald_ink</param><param name="ink">bald_ink</param><param name="focused">Control.HasFocus(550) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
+			</control>
+			<include content="Bald_MusicEmptyNote"><param name="c">550</param></include>
+			<include content="Bald_MusicPreview"><param name="c">550</param></include>
+			<include content="Bald_WallFooter"><param name="c">550</param></include>
+		</control>
+	</include>
+	<!-- 551 Bald compact list: thirteen 48 px rows at (96,222), 1140 wide, beside the preview column (section 5.8).
+	     Songs read as a track list (track, title, artist, duration) with the album cover in the preview. -->
+	<include name="View_551_Bald_MusicCompact">
+		<control type="group">
+			<visible>Control.IsVisible(551)</visible>
+			<include>Bald_MusicPage</include>
+			<include>Bald_MusicCompactHeader</include>
+			<control type="list" id="551">
+				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height><orientation>vertical</orientation>
+				<viewtype label="31853">list</viewtype><visible>$EXP[Bald_MusicListContent]</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<include content="Bald_MusicViewNav"><param name="id">551</param></include>
+				<onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|551)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,551)</onright>
+				<ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|551)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,551)</ondown>
+				<itemlayout width="1140" height="48"><include>Bald_MusicCompactRow</include></itemlayout>
+				<focusedlayout width="1140" height="48">
+					<control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(551) | $EXP[Bald_LibraryLettersOpen]</visible></control>
+					<include content="Bald_MusicCompactRow"><param name="ink">bald_ink</param><param name="meta">bald_ink70</param><param name="scroll">true</param></include>
+				</focusedlayout>
+			</control>
+			<include content="Bald_MusicEmptyNote"><param name="c">551</param></include>
+			<include content="Bald_MusicPreview"><param name="c">551</param></include>
+			<include content="Bald_WallFooter"><param name="c">551</param><param name="letters_hint">$LOCALIZE[31834]</param></include>
+		</control>
+	</include>
+	<!-- 552 Bald artwork list: seven 88 px rows with square thumbnails at (96,222), 624 wide, beside a 1008 x 567
+	     fanart frame at (816,180) (section 5.9): the album's cover inset, or the artist's clearlogo, on the art; the
+	     meta line at y 774, the genre at y 806 and two lines of description at y 848 (hidden in letter mode). -->
+	<include name="Bald_MusicArtworkCaption">
+		<param name="p" />
+		<definition>
+			<control type="group">
+				<visible>Integer.Is$PARAM[p](Container(552).CurrentItem)</visible>
+				<control type="label"><left>816</left><top>774</top><width>1008</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink80</textcolor><label>$INFO[Container(552).ListItem.Artist]$INFO[Container(552).ListItem.Year, · ,]</label><visible>Container.Content(albums)</visible><include content="Bald_AnimCaptionIn"><param name="c">552</param><param name="delay">250</param></include></control>
+				<control type="label"><left>816</left><top>774</top><width>1008</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink80</textcolor><label>$INFO[Container(552).ListItem.Label2]</label><visible>!Container.Content(albums)</visible><include content="Bald_AnimCaptionIn"><param name="c">552</param><param name="delay">250</param></include></control>
+				<control type="label"><left>816</left><top>808</top><width>1008</width><height>24</height><font>Bald_Accent</font><textcolor>bald_accent</textcolor><label>$INFO[Container(552).ListItem.Genre]</label><include content="Bald_AnimCaptionIn"><param name="c">552</param><param name="delay">300</param></include></control>
+				<control type="textbox"><left>816</left><top>848</top><width>1008</width><height>60</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[Container(552).ListItem.Property(Album_Description)]$INFO[Container(552).ListItem.Property(Artist_Description)]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_AnimCaptionIn"><param name="c">552</param><param name="delay">350</param></include></control>
+			</control>
+		</definition>
+	</include>
+	<include name="View_552_Bald_MusicArtwork">
+		<control type="group">
+			<visible>Control.IsVisible(552)</visible>
+			<include content="Bald_MusicPage"><param name="title_width">624</param></include>
+			<control type="list" id="552">
+				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>624</width><height>616</height><orientation>vertical</orientation>
+				<viewtype label="31854">list</viewtype><visible>$EXP[Bald_MusicCoverContent]</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
+				<include content="Bald_MusicViewNav"><param name="id">552</param></include>
+				<onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|552)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,552)</onright>
+				<ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|552)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,552)</ondown>
+				<itemlayout width="624" height="88"><include>Bald_MusicArtworkRow</include></itemlayout>
+				<focusedlayout width="624" height="88">
+					<control type="image"><left>0</left><top>40</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(552) | $EXP[Bald_LibraryLettersOpen]</visible></control>
+					<include content="Bald_MusicArtworkRow"><param name="ink">bald_ink</param><param name="scroll">true</param><param name="diffuse">bald_ink</param></include>
+				</focusedlayout>
+			</control>
+			<include content="Bald_MusicEmptyNote"><param name="c">552</param><param name="width">598</param></include>
+			<control type="group">
+				<visible>!$EXP[Bald_LibraryMenuOpen] + !Container(552).ListItem.IsParentFolder + !String.IsEmpty(Container(552).ListItem.Label)</visible>
+				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
+				<control type="group"><left>816</left><top>180</top>
+					<include content="Bald_MusicArtFrame">
+						<param name="c">552</param><param name="w">1008</param><param name="h">567</param><param name="center">504,283.5</param>
+						<param name="inset">240</param><param name="inset_x">40</param><param name="inset_y">287</param>
+						<!-- The artist's clearlogo over the logo scrim, where there is one. -->
+						<control type="image"><width>1008</width><height>567</height><texture>bald/scrim_logo.png</texture><visible>$EXP[Bald_ShowClearlogo] + !String.IsEmpty(Container(552).ListItem.Art(clearlogo))</visible><animation effect="fade" start="0" end="100" time="500" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="150" tween="sine" easing="inout">Hidden</animation></control>
+						<include content="Bald_ArtLogo"><param name="c">552</param><param name="p">Odd</param><param name="ignore_home_row">true</param><param name="x">40</param><param name="y">378</param><param name="width">504</param><param name="height">153</param></include>
+						<include content="Bald_ArtLogo"><param name="c">552</param><param name="p">Even</param><param name="ignore_home_row">true</param><param name="x">40</param><param name="y">378</param><param name="width">504</param><param name="height">153</param></include>
+					</include>
+				</control>
+				<include content="Bald_MusicArtworkCaption"><param name="p">Odd</param></include>
+				<include content="Bald_MusicArtworkCaption"><param name="p">Even</param></include>
+			</control>
+			<include content="Bald_WallFooter"><param name="c">552</param><param name="letters_hint">$LOCALIZE[31834]</param></include>
+		</control>
+	</include>
+</includes>

@@ -1132,6 +1132,66 @@ msgctxt "#31333"
 msgid "MDbList API key"
 msgstr ""
 
+#: /1080i/View_550_Bald_Music.xml
+#. Music library view: square covers beside the preview
+msgctxt "#31400"
+msgid "Bald covers"
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Search note
+msgctxt "#31401"
+msgid "Search your music library."
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Party mode note
+msgctxt "#31402"
+msgid "Play random songs from your library, one after another."
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Update library note
+msgctxt "#31403"
+msgid "Scan your music sources for new or changed items."
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Stop update note
+msgctxt "#31404"
+msgid "Stop the current music-library scan."
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Now playing note
+msgctxt "#31405"
+msgid "Show what is playing."
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Go to playlist note
+msgctxt "#31406"
+msgid "Open the music playlist."
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library letter bar: the list is not sorted by name
+msgctxt "#31407"
+msgid "Choose a name sort in options"
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library letter bar: nothing to browse
+msgctxt "#31408"
+msgid "Nothing to browse"
+msgstr ""
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library: empty view
+msgctxt "#31409"
+msgid "Nothing to show. Open options to adjust your filters."
+msgstr ""
+
 #: /xml/Includes_SettingsDialog.xml
 #. Button to select Player Process Info window
 msgctxt "#31597"
@@ -1367,6 +1427,7 @@ msgid "Up to choose"
 msgstr ""
 
 #: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Music.xml
 #. Video OSD playlist panel: marks the item that is playing
 msgctxt "#31634"
 msgid "Now playing"
@@ -2048,16 +2109,19 @@ msgid "Library options"
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
 msgctxt "#31801"
 msgid "View"
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
 msgctxt "#31802"
 msgid "Sort by"
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
 msgctxt "#31803"
 msgid "Order"
 msgstr ""
@@ -2083,16 +2147,19 @@ msgid "Search your episode library."
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
 msgctxt "#31808"
 msgid "Narrow the items shown by genre, year, rating and other library details."
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
 msgctxt "#31809"
 msgid "Narrow the items shown by matching their titles."
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
 msgctxt "#31810"
 msgid "Update library"
 msgstr ""
@@ -2103,6 +2170,7 @@ msgid "Scan your configured video sources for new or changed items."
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
 msgctxt "#31812"
 msgid "Stop update"
 msgstr ""
@@ -2167,6 +2235,7 @@ msgid "No movies to browse"
 msgstr ""
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
 msgctxt "#31824"
 msgid "Browse by letter"
 msgstr ""
@@ -2241,6 +2310,7 @@ msgstr ""
 
 #: /1080i/View_513_Bald_CompactList.xml
 #: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_550_Bald_Music.xml
 msgctxt "#31834"
 msgid "Right for letters"
 msgstr ""
@@ -2331,12 +2401,14 @@ msgid "Bald wall with preview"
 msgstr ""
 
 #: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_550_Bald_Music.xml
 #. Name of a library layout, shown by Container.Viewmode
 msgctxt "#31853"
 msgid "Bald compact list"
 msgstr ""
 
 #: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_550_Bald_Music.xml
 #. Name of a library layout, shown by Container.Viewmode
 msgctxt "#31854"
 msgid "Bald artwork list"

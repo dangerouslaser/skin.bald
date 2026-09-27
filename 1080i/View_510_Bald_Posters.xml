@@ -97,7 +97,11 @@
 		<value condition="String.IsEqual(Container(9150).ListItem.Property(option),watched) + !String.IsEmpty(Control.GetLabel(10))">$LOCALIZE[31820] $INFO[Control.GetLabel(10)]. $LOCALIZE[31821]</value>
 		<value>$INFO[Container(9150).ListItem.Property(note)]</value>
 	</variable>
+	<!-- items: the include holding the list's items: the video library's (default) or the music library's
+	     (Bald_MusicOptionItems, Includes_Bald_Music.xml). -->
 	<include name="Bald_LibraryOptions">
+		<param name="items">Bald_LibraryVideoOptionItems</param>
+		<definition>
 		<control type="group">
 			<visible>$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
 			<control type="label"><left>1466</left><top>292</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31800]</label></control>
@@ -109,36 +113,38 @@
 			<onleft>50</onleft><onback>50</onback><onright>noop</onright><onup>noop</onup><ondown>noop</ondown>
 			<itemlayout width="420" height="62"><include>Bald_MenuRowUnfocused</include></itemlayout>
 			<focusedlayout width="420" height="62"><include content="Bald_MenuRowFocused"><param name="always_dot">true</param></include></focusedlayout>
-			<content>
-				<!-- Keep the options list open and constrain movie browsing to Bald's native layouts. -->
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(511)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(510)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(512)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(511)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(513)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(512)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(514)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(513)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(515)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(514)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(510)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(515)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(521)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(520)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(522)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(521)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(523)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(522)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(520)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(523)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(531)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(530)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(532)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(531)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(530)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(532)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(541)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(540)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(542)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(541)</visible></item>
-				<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(540)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(542)</visible></item>
-				<item><label>$LOCALIZE[31802]</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
-				<item><label>$LOCALIZE[31803]</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
-				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31805]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,movies=true)</onclick><visible>$EXP[Bald_LibraryMovieView]</visible></item>
-				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31806]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,tvshows=true)</onclick><visible>$EXP[Bald_LibrarySeriesView] | $EXP[Bald_LibrarySeasonView]</visible></item>
-				<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31807]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,episodes=true)</onclick><visible>$EXP[Bald_LibraryEpisodeView]</visible></item>
-				<item><label>$LOCALIZE[587]</label><property name="note">$LOCALIZE[31808]</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
-				<item><label>$LOCALIZE[587]</label><property name="note">$LOCALIZE[31809]</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
-				<item><label>$LOCALIZE[31804]</label><property name="option">watched</property><onclick>SendClick(10)</onclick></item>
-				<item><label>$LOCALIZE[31810]</label><property name="note">$LOCALIZE[31811]</property><onclick>UpdateLibrary(video)</onclick><visible>!Library.IsScanningVideo</visible></item>
-				<item><label>$LOCALIZE[31812]</label><property name="note">$LOCALIZE[31813]</property><onclick>UpdateLibrary(video)</onclick><visible>Library.IsScanningVideo</visible></item>
-			</content>
+			<content><include>$PARAM[items]</include></content>
 		</control>
+		</definition>
+	</include>
+	<include name="Bald_LibraryVideoOptionItems">
+		<!-- Keep the options list open and constrain movie browsing to Bald's native layouts. -->
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(511)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(510)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(512)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(511)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(513)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(512)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(514)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(513)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(515)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(514)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(510)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(515)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(521)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(520)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(522)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(521)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(523)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(522)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(520)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(523)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(531)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(530)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(532)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(531)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(530)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(532)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(541)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(540)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(542)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(541)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(540)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(542)</visible></item>
+		<item><label>$LOCALIZE[31802]</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
+		<item><label>$LOCALIZE[31803]</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
+		<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31805]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,movies=true)</onclick><visible>$EXP[Bald_LibraryMovieView]</visible></item>
+		<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31806]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,tvshows=true)</onclick><visible>$EXP[Bald_LibrarySeriesView] | $EXP[Bald_LibrarySeasonView]</visible></item>
+		<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31807]</property><onclick>SetProperty(Bald.SearchOrigin,library,home)</onclick><onclick>RunScript(script.globalsearch,episodes=true)</onclick><visible>$EXP[Bald_LibraryEpisodeView]</visible></item>
+		<item><label>$LOCALIZE[587]</label><property name="note">$LOCALIZE[31808]</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
+		<item><label>$LOCALIZE[587]</label><property name="note">$LOCALIZE[31809]</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
+		<item><label>$LOCALIZE[31804]</label><property name="option">watched</property><onclick>SendClick(10)</onclick></item>
+		<item><label>$LOCALIZE[31810]</label><property name="note">$LOCALIZE[31811]</property><onclick>UpdateLibrary(video)</onclick><visible>!Library.IsScanningVideo</visible></item>
+		<item><label>$LOCALIZE[31812]</label><property name="note">$LOCALIZE[31813]</property><onclick>UpdateLibrary(video)</onclick><visible>Library.IsScanningVideo</visible></item>
 	</include>
 	<!-- Bald_ItemFanart (Includes_Bald_Common.xml) for whichever library view is showing (Container(0)), with the show
 	     folder's fanart before the thumb so seasons and episodes without their own keep a backdrop. -->

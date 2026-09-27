@@ -179,7 +179,7 @@ class LetterCallSiteTests(unittest.TestCase):
         called = {int(site.get('id')) for path in ROOT.glob('View_5*.xml')
                   for site in ET.parse(path).getroot().iter('control')
                   if any((a.text or '').startswith(LETTERS) for a in site)}
-        self.assertEqual(called, {510, 511, 512, 513, 514, 515, 520, 521, 522, 523})
+        self.assertEqual(called, {510, 511, 512, 513, 514, 515, 520, 521, 522, 523, 550, 551, 552})
 
 
 if __name__ == '__main__':

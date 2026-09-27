@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald music library (MyMusicNav.xml) and Now Playing (MusicVisualisation.xml): the pieces the music views
+     (View_550_Bald_Music.xml) share, in the video library's language (docs/SPEC.md 5.5-5.12, docs/NOTES.md "Music").
+
+     Views (ids in 1080i/IDs), each a native Kodi container in <views> with its own content condition:
+       550  Bald covers: five-by-two square covers with the preview column (artists, albums)
+       551  Bald compact list: thirteen rows with the preview column (artists, albums, songs, genres, years, roles,
+            sources); songs read as a track list with the album cover in the preview
+       552  Bald artwork list: seven rows with thumbnails beside a large fanart frame (artists, albums)
+     The shared library pieces are reused with params: the options column (Bald_LibraryOptions, items), the letter bar
+     (Bald_LibraryLetters, window music), the footer (Bald_WallFooter) and the window motion.
+
+     Artwork. Kodi gives albums and songs the artist's fanart as their fanart fallback (CMusicThumbLoader::
+     FillLibraryArt: "fanart" falls back to artist.fanart, then albumartist.fanart), and songs the album cover as their
+     thumb, so Art(fanart) and Art(thumb) are enough here. The blurred background is Bald Helper's (or TMDb Helper's)
+     blur of the followed view's item; an item without art leaves the plain field, never the last title's blur.
+
+     Only fade, slide and zoom; move = cubic out, fade = sine in-out, pop = back out (docs/SPEC.md 4). -->
+<includes>
+	<!-- ============ States ============ -->
+	<!-- A Bald music view is showing: MyMusicNav hides Estuary's chrome and routes Menu to the Bald options. -->
+	<expression name="Bald_MusicViewActive">[Control.IsVisible(550) | Control.IsVisible(551) | Control.IsVisible(552)]</expression>
+	<!-- Content the cover views serve. -->
+	<expression name="Bald_MusicCoverContent">[Container.Content(artists) | Container.Content(albums)]</expression>
+	<!-- Content the compact list serves: the cover content, songs and the library's plain lists. -->
+	<expression name="Bald_MusicListContent">[$EXP[Bald_MusicCoverContent] | Container.Content(songs) | Container.Content(genres) | Container.Content(years) | Container.Content(roles) | Container.Content(sources)]</expression>
+	<!-- The view shows nothing (an empty library, or filtered to nothing). Artists carry no title, so the label. -->
+	<expression name="Bald_MusicEmpty">[String.IsEmpty(Container(0).ListItem.Label)]</expression>
+	<!-- The letters follow the current sort: by name, title, artist or album. -->
+	<expression name="Bald_MusicLettersSorted">[String.IsEqual(Container.SortMethod,$LOCALIZE[551]) | String.IsEqual(Container.SortMethod,$LOCALIZE[556]) | String.IsEqual(Container.SortMethod,$LOCALIZE[557]) | String.IsEqual(Container.SortMethod,$LOCALIZE[558])]</expression>
+	<variable name="Bald_MusicLetterLabel">
+		<value condition="!$EXP[Bald_MusicLettersSorted]">$LOCALIZE[31407]</value>
+		<value condition="$EXP[Bald_MusicEmpty]">$LOCALIZE[31408]</value>
+		<value>$LOCALIZE[31824]</value>
+	</variable>
+	<!-- Page title: the hub's name for the folder a Home hub opened, else the folder's own name (Artists, an artist's
+	     name over their albums, an album's name over its songs), else Music. -->
+	<variable name="Bald_MusicHeading">
+		<value condition="$EXP[Bald_InHubFolder]">$INFO[Window(home).Property(Bald.HubTitle)]</value>
+		<value condition="!String.IsEmpty(Container.FolderName)">$INFO[Container.FolderName]</value>
+		<value>$LOCALIZE[2]</value>
+	</variable>
+
+	<!-- ============ Background ============ -->
+	<!-- The followed item's blur only: Bald Helper's Bald.Blur, else TMDb Helper's. Unlike Bald_BlurImage there is no
+	     fallback to the last blur, so a music item without art keeps the plain field. -->
+	<variable name="Bald_MusicBlur">
+		<value condition="$EXP[Bald_HasHelper]">$INFO[Window(home).Property(Bald.Blur)]</value>
+		<value>$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</value>
+	</variable>
+	<expression name="Bald_MusicHasBlur">[$EXP[Bald_BlurOn] + $EXP[Bald_BlurNow]]</expression>
+	<!-- Field, then the blur twice as Bald_BackdropImage draws it: a still copy that is complete on the first frame
+	     (the curtain lifts onto it) and a copy that crossfades between items (800 FADE). -->
+	<include name="Bald_MusicBackdrop">
+		<control type="image">
+			<width>1920</width><height>1080</height>
+			<texture colordiffuse="bald_field">bald/white.png</texture>
+		</control>
+		<control type="image">
+			<width>1920</width><height>1080</height><aspectratio>scale</aspectratio>
+			<texture>$VAR[Bald_MusicBlur]</texture>
+			<visible>$EXP[Bald_MusicHasBlur]</visible>
+			<colordiffuse>bald_backdrop</colordiffuse>
+		</control>
+		<control type="image">
+			<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>800</fadetime>
+			<texture background="true">$VAR[Bald_MusicBlur]</texture>
+			<visible>$EXP[Bald_MusicHasBlur]</visible>
+			<colordiffuse>bald_backdrop</colordiffuse>
+		</control>
+	</include>
+
+	<!-- ============ Artwork ============ -->
+	<!-- One square cover tile (the covers view): 192 px art at 12,12 in a 216 x 300 slot, centre-cropped; items without
+	     art show their default icon small and quiet on the placeholder. Two lines under it: the item's label and, for
+	     albums, the artist. Focus: the 3 px ink ring and the 2.5% pop (280 POP), as the poster tiles. -->
+	<include name="Bald_MusicTile">
+		<param name="diffuse">bald_ink70</param><param name="ink">bald_ink70</param><param name="focused">false</param>
+		<definition>
+			<control type="group">
+				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="108,108" time="280" tween="back" easing="out" /></animation>
+				<control type="image"><left>12</left><top>12</top><width>192</width><height>192</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+				<control type="image"><left>12</left><top>12</top><width>192</width><height>192</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$INFO[ListItem.Art(thumb)]</texture><visible>!String.IsEmpty(ListItem.Art(thumb))</visible></control>
+				<control type="image"><left>60</left><top>60</top><width>96</width><height>96</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_ink45">$INFO[ListItem.Icon]</texture><visible>String.IsEmpty(ListItem.Art(thumb))</visible></control>
+				<control type="image"><left>9</left><top>9</top><width>198</width><height>198</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
+			</control>
+			<control type="label"><left>12</left><top>216</top><width>192</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>$PARAM[ink]</textcolor><label>$INFO[ListItem.Label]</label></control>
+			<control type="label"><left>12</left><top>244</top><width>192</width><height>26</height><font>Bald_Hint</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.Artist]</label><visible>Container.Content(albums)</visible></control>
+		</definition>
+	</include>
+	<!-- The preview frame for container c at the caller's position, w x h: the item's fanart (for albums and songs,
+	     Kodi's fallback is the artist's) with Home's parity crossfade and settle zoom, clipped to the frame by a
+	     grouplist, so no backdrop masks are needed; without fanart, the cover whole on the placeholder. Albums and
+	     songs with fanart also show their cover inset at the bottom left (inset px, 20 px in). -->
+	<include name="Bald_MusicArtFrame">
+		<param name="c" /><param name="w">528</param><param name="h">297</param><param name="center">264,148.5</param>
+		<param name="inset">150</param><param name="inset_x">20</param><param name="inset_y">127</param>
+		<definition>
+			<control type="grouplist">
+				<width>$PARAM[w]</width><height>$PARAM[h]</height><orientation>vertical</orientation><usecontrolcoords>true</usecontrolcoords>
+				<control type="group">
+					<width>$PARAM[w]</width><height>$PARAM[h]</height>
+					<control type="image"><width>$PARAM[w]</width><height>$PARAM[h]</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+					<include content="Bald_ArtLayer"><param name="texture">$INFO[Container($PARAM[c]).ListItem.Art(fanart)]</param><param name="width">$PARAM[w]</param><param name="height">$PARAM[h]</param><param name="center">$PARAM[center]</param><param name="visible">Integer.IsOdd(Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(fanart))</param></include>
+					<include content="Bald_ArtLayer"><param name="texture">$INFO[Container($PARAM[c]).ListItem.Art(fanart)]</param><param name="width">$PARAM[w]</param><param name="height">$PARAM[h]</param><param name="center">$PARAM[center]</param><param name="visible">Integer.IsEven(Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(fanart))</param></include>
+					<control type="image">
+						<width>$PARAM[w]</width><height>$PARAM[h]</height><aspectratio>keep</aspectratio><fadetime>300</fadetime>
+						<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(thumb)]</texture>
+						<visible>String.IsEmpty(Container($PARAM[c]).ListItem.Art(fanart))</visible>
+						<animation type="Visible"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+					</control>
+					<control type="group">
+						<left>$PARAM[inset_x]</left><top>$PARAM[inset_y]</top>
+						<visible>!String.IsEmpty(Container($PARAM[c]).ListItem.Art(fanart)) + !String.IsEmpty(Container($PARAM[c]).ListItem.Art(thumb)) + [String.IsEqual(Container($PARAM[c]).ListItem.DBType,album) | String.IsEqual(Container($PARAM[c]).ListItem.DBType,song)]</visible>
+						<include content="Bald_AnimLogoIn"><param name="c">$PARAM[c]</param></include>
+						<control type="image"><left>-3</left><top>-3</top><width>$PARAM[inset]</width><height>$PARAM[inset]</height><texture border="8" colordiffuse="bald_field60">bald/focus_ring.png</texture></control>
+						<control type="image"><width>$PARAM[inset]</width><height>$PARAM[inset]</height><aspectratio>scale</aspectratio><fadetime>300</fadetime><texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(thumb)]</texture></control>
+					</control>
+					<nested />
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Caption ============ -->
+	<!-- The caption for container c and parity p (Odd/Even), as the library caption: a title of up to two lines that
+	     ends where the body starts, then the meta line, the genre in the accent and four lines of description, each on
+	     the caption stagger (title 180, meta 250, genre 300, text 350). The title is the album, the artist or the song
+	     title rather than the listing's label (which carries track numbers and artists by Kodi's label masks). -->
+	<include name="Bald_MusicCaptionTitle">
+		<param name="c" /><param name="p" /><param name="width" /><param name="height" /><param name="label" /><param name="visible" />
+		<definition>
+			<control type="textbox">
+				<left>20</left><width>$PARAM[width]</width><height max="$PARAM[height]">auto</height>
+				<font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$PARAM[label]</label>
+				<visible>$PARAM[visible] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
+				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">180</param></include>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_MusicCaptionLine">
+		<param name="c" /><param name="p" /><param name="width" /><param name="label" /><param name="visible">true</param>
+		<param name="font">Bald_CaptionMeta</param><param name="color">bald_ink80</param><param name="top">14</param><param name="delay">250</param>
+		<definition>
+			<control type="label">
+				<left>20</left><top>$PARAM[top]</top><width>$PARAM[width]</width><height>26</height>
+				<font>$PARAM[font]</font><textcolor>$PARAM[color]</textcolor><label>$PARAM[label]</label>
+				<visible>[$PARAM[visible]] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
+				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">$PARAM[delay]</param></include>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_MusicCaptionText">
+		<param name="c" /><param name="p" /><param name="width" /><param name="label" /><param name="visible" /><param name="height">116</param>
+		<definition>
+			<control type="label">
+				<left>20</left><top>18</top><width>$PARAM[width]</width><height>$PARAM[height]</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny>
+				<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$PARAM[label]</label>
+				<visible>$PARAM[visible] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
+				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_MusicCaption">
+		<param name="c" /><param name="p" />
+		<param name="x">1276</param><param name="title_y">548</param><param name="title_height">88</param><param name="body_y">636</param>
+		<param name="width">528</param><param name="clip_width">568</param><param name="text_height">116</param>
+		<definition>
+			<control type="group">
+				<animation type="Hidden">
+					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
+					<effect type="slide" start="0,0" end="-14,0" time="130" tween="sine" easing="inout" />
+				</animation>
+				<!-- Title: bottom-aligned in a vertical grouplist (align right), so its last line ends at body_y. -->
+				<control type="grouplist">
+					<left>$PARAM[x]</left><top>$PARAM[title_y]</top><width>$PARAM[clip_width]</width><height>$PARAM[title_height]</height>
+					<orientation>vertical</orientation><align>right</align><usecontrolcoords>true</usecontrolcoords>
+					<include content="Bald_MusicCaptionTitle"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="height">$PARAM[title_height]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Album]</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,album) + !String.IsEmpty(Container($PARAM[c]).ListItem.Album)</param></include>
+					<include content="Bald_MusicCaptionTitle"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="height">$PARAM[title_height]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Title]</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,song) + !String.IsEmpty(Container($PARAM[c]).ListItem.Title)</param></include>
+					<include content="Bald_MusicCaptionTitle"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="height">$PARAM[title_height]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Label]</param><param name="visible">![String.IsEqual(Container($PARAM[c]).ListItem.DBType,album) + !String.IsEmpty(Container($PARAM[c]).ListItem.Album)] + ![String.IsEqual(Container($PARAM[c]).ListItem.DBType,song) + !String.IsEmpty(Container($PARAM[c]).ListItem.Title)]</param></include>
+				</control>
+				<control type="grouplist">
+					<left>$PARAM[x]</left><top>$PARAM[body_y]</top><width>$PARAM[clip_width]</width><height>396</height>
+					<orientation>vertical</orientation><itemgap>0</itemgap><usecontrolcoords>true</usecontrolcoords>
+					<!-- Meta: album "Artist · 1997"; song "Artist · Album"; anything else Kodi's second label. -->
+					<include content="Bald_MusicCaptionLine"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Artist]$INFO[Container($PARAM[c]).ListItem.Year, · ,]</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,album)</param></include>
+					<include content="Bald_MusicCaptionLine"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Artist]$INFO[Container($PARAM[c]).ListItem.Album, · ,]</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,song)</param></include>
+					<!-- Song: "Track 3 · 4:12 · 1997". -->
+					<include content="Bald_MusicCaptionLine"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="top">4</param><param name="color">bald_ink60</param><param name="label">$INFO[Container($PARAM[c]).ListItem.TrackNumber,$LOCALIZE[554] ,]$INFO[Container($PARAM[c]).ListItem.Duration, · ,]$INFO[Container($PARAM[c]).ListItem.Year, · ,]</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,song)</param></include>
+					<include content="Bald_MusicCaptionLine"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Label2]</param><param name="visible">!String.IsEmpty(Container($PARAM[c]).ListItem.Label2) + !String.IsEqual(Container($PARAM[c]).ListItem.DBType,album) + !String.IsEqual(Container($PARAM[c]).ListItem.DBType,song) + !String.IsEqual(Container($PARAM[c]).ListItem.DBType,artist)</param></include>
+					<!-- Accent line: the genre. -->
+					<include content="Bald_MusicCaptionLine"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="top">8</param><param name="font">Bald_Accent</param><param name="color">bald_accent</param><param name="delay">300</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Genre]</param><param name="visible">!String.IsEmpty(Container($PARAM[c]).ListItem.Genre)</param></include>
+					<!-- The description Kodi has for the item (often only once its information has been opened). -->
+					<include content="Bald_MusicCaptionText"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="height">$PARAM[text_height]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Property(Album_Description)]</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,album) + !String.IsEmpty(Container($PARAM[c]).ListItem.Property(Album_Description))</param></include>
+					<include content="Bald_MusicCaptionText"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="height">$PARAM[text_height]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Property(Artist_Description)]</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,artist) + !String.IsEmpty(Container($PARAM[c]).ListItem.Property(Artist_Description))</param></include>
+					<include content="Bald_MusicCaptionText"><param name="c">$PARAM[c]</param><param name="p">$PARAM[p]</param><param name="width">$PARAM[width]</param><param name="height">$PARAM[text_height]</param><param name="label">$INFO[Container($PARAM[c]).ListItem.Comment]</param><param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,song) + !String.IsEmpty(Container($PARAM[c]).ListItem.Comment)</param></include>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Preview column ============ -->
+	<!-- Section 5.5's right-hand preview for container c: the 528 x 297 frame at (1296,222) and the caption beneath
+	     from y 548. It gives way to the options (fade 180 out, back in 380 after 140, the caption sliding 40 px) and
+	     hides for the parent-folder item. -->
+	<include name="Bald_MusicPreview">
+		<param name="c" />
+		<definition>
+			<control type="group">
+				<visible>!$EXP[Bald_LibraryMenuOpen] + !Container($PARAM[c]).ListItem.IsParentFolder + !String.IsEmpty(Container($PARAM[c]).ListItem.Label)</visible>
+				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
+				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
+				<control type="group"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top>
+					<include content="Bald_MusicArtFrame"><param name="c">$PARAM[c]</param></include>
+				</control>
+				<control type="group">
+					<visible>!$EXP[Bald_LibraryMenuOpen]</visible>
+					<animation type="Hidden"><effect type="fade" start="100" end="100" time="180" tween="sine" easing="inout" /></animation>
+					<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+					<include content="Bald_MusicCaption"><param name="c">$PARAM[c]</param><param name="p">Odd</param></include>
+					<include content="Bald_MusicCaption"><param name="c">$PARAM[c]</param><param name="p">Even</param></include>
+				</control>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Page chrome ============ -->
+	<!-- Field and blur, the page title at (96,108) and the sort summary right-aligned over the preview. -->
+	<include name="Bald_MusicPage">
+		<param name="title_width">1100</param>
+		<definition>
+			<include>Bald_MusicBackdrop</include>
+			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>$PARAM[title_width]</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_MusicHeading]</label></control>
+			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+		</definition>
+	</include>
+	<!-- A view container's shared behaviour: remember it for the letter bar, follow it for the blur, route Up / Left at
+	     the edges to the options and dim while they are open, as the video views do. Right / Down into the letters are
+	     written on each view, since the letter scan's call sites name their container literally (tests/test_letters.py). -->
+	<include name="Bald_MusicViewNav">
+		<param name="id" /><param name="up">9150</param><param name="left">9150</param>
+		<definition>
+			<onfocus>SetProperty(Bald.LibraryContainer,$PARAM[id],music)</onfocus>
+			<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">music</param></include>
+			<include content="Bald_UnfollowContainer"><param name="window">music</param></include>
+			<onup>$PARAM[up]</onup><onleft>$PARAM[left]</onleft>
+			<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
+		</definition>
+	</include>
+	<!-- Empty state under the header, for container c. -->
+	<include name="Bald_MusicEmptyNote">
+		<param name="c" /><param name="width">1050</param>
+		<definition>
+			<control type="textbox"><left>122</left><top>240</top><width>$PARAM[width]</width><height>88</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$LOCALIZE[31409]</label><visible>Integer.IsEqual(Container($PARAM[c]).NumItems,0)</visible></control>
+		</definition>
+	</include>
+
+	<!-- ============ Rows ============ -->
+	<!-- The compact list's 48 px row (1140 wide) for each content type; ink is the title's colour, meta the others'.
+	     Songs: track (disc-track on multi-disc albums), title, artist, duration. Albums: title, artist, year. Artists,
+	     genres, years, roles and sources: the label and Kodi's second label. -->
+	<include name="Bald_MusicCompactRow">
+		<param name="ink">bald_ink70</param><param name="meta">bald_ink45</param><param name="scroll">false</param>
+		<definition>
+			<control type="group">
+				<visible>Container.Content(songs)</visible>
+				<control type="label"><left>26</left><width>64</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor><label>$INFO[ListItem.TrackNumber]</label><visible>!Integer.IsGreater(ListItem.TotalDiscs,1)</visible></control>
+				<control type="label"><left>26</left><width>64</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor><label>$INFO[ListItem.DiscNumber,,-]$INFO[ListItem.TrackNumber]</label><visible>Integer.IsGreater(ListItem.TotalDiscs,1)</visible></control>
+				<control type="label"><left>112</left><width>560</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$INFO[ListItem.Title]</label><visible>!String.IsEmpty(ListItem.Title)</visible></control>
+				<control type="label"><left>112</left><width>560</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$INFO[ListItem.Label]</label><visible>String.IsEmpty(ListItem.Title)</visible></control>
+				<control type="label"><left>696</left><width>320</width><height>48</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor><label>$INFO[ListItem.Artist]</label></control>
+				<control type="label"><left>1030</left><width>110</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor><label>$INFO[ListItem.Duration]</label></control>
+			</control>
+			<control type="group">
+				<visible>Container.Content(albums)</visible>
+				<control type="label"><left>26</left><width>646</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$INFO[ListItem.Label]</label></control>
+				<control type="label"><left>696</left><width>320</width><height>48</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor><label>$INFO[ListItem.Artist]</label></control>
+				<control type="label"><left>1030</left><width>110</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor><label>$INFO[ListItem.Year]</label></control>
+			</control>
+			<control type="group">
+				<visible>!Container.Content(songs) + !Container.Content(albums)</visible>
+				<control type="label"><left>26</left><width>840</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$INFO[ListItem.Label]</label></control>
+				<control type="label"><left>880</left><width>260</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>$PARAM[meta]</textcolor><label>$INFO[ListItem.Label2]</label></control>
+			</control>
+		</definition>
+	</include>
+	<!-- Column headings over the compact list (y 180), for songs and albums. -->
+	<include name="Bald_MusicCompactHeader">
+		<control type="group"><left>Bald_SafeLeft</left><top>180</top><visible>Container.Content(songs)</visible>
+			<control type="label"><left>26</left><width>64</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[554]</label></control>
+			<control type="label"><left>112</left><width>560</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[556]</label></control>
+			<control type="label"><left>696</left><width>320</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[557]</label></control>
+			<control type="label"><left>1030</left><width>110</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[180]</label></control>
+		</control>
+		<control type="group"><left>Bald_SafeLeft</left><top>180</top><visible>Container.Content(albums)</visible>
+			<control type="label"><left>26</left><width>646</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[558]</label></control>
+			<control type="label"><left>696</left><width>320</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[557]</label></control>
+			<control type="label"><left>1030</left><width>110</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[562]</label></control>
+		</control>
+	</include>
+	<!-- The artwork list's 88 px row (624 wide): a 72 px square thumbnail, the label in the tagline size and a meta
+	     line (albums "Artist · 1997", artists their genre). -->
+	<include name="Bald_MusicArtworkRow">
+		<param name="ink">bald_ink70</param><param name="scroll">false</param><param name="diffuse">bald_ink70</param>
+		<definition>
+			<control type="image"><left>26</left><top>8</top><width>72</width><height>72</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+			<control type="image"><left>26</left><top>8</top><width>72</width><height>72</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$INFO[ListItem.Art(thumb)]</texture></control>
+			<control type="label"><left>118</left><top>6</top><width>506</width><height>40</height><font>Bald_InfoTagline</font><textcolor>$PARAM[ink]</textcolor><scroll>$PARAM[scroll]</scroll><label>$INFO[ListItem.Label]</label></control>
+			<control type="label"><left>118</left><top>48</top><width>506</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Artist]$INFO[ListItem.Year, · ,]</label><visible>Container.Content(albums)</visible></control>
+			<control type="label"><left>118</left><top>48</top><width>506</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.Genre]</label><visible>!Container.Content(albums)</visible></control>
+		</definition>
+	</include>
+
+	<!-- ============ Options ============ -->
+	<!-- The items of the shared options column (Bald_LibraryOptions, list 9150) in the music library. Kodi's own
+	     hidden controls do the work: 3 sort, 4 order, 8 search, 16 party mode, 19 filter (MyMusicNav's Estuary menu). The
+	     view cycles within the layouts valid for the content: covers, compact list and artwork list for artists and
+	     albums; songs and the plain lists have only the compact list. -->
+	<include name="Bald_MusicOptionItems">
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(551)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(550)</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(552)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(551) + $EXP[Bald_MusicCoverContent]</visible></item>
+		<item><label>$LOCALIZE[31801]</label><property name="option">view</property><onclick>Container.SetViewMode(550)</onclick><onclick>SetFocus(9150)</onclick><visible>Control.IsVisible(552)</visible></item>
+		<item><label>$LOCALIZE[31802]</label><property name="option">sort</property><onclick>SendClick(3)</onclick><visible>Control.IsEnabled(3)</visible></item>
+		<item><label>$LOCALIZE[31803]</label><property name="option">order</property><onclick>SendClick(4)</onclick><visible>Control.IsEnabled(4)</visible></item>
+		<item><label>$LOCALIZE[137]</label><property name="note">$LOCALIZE[31401]</property><onclick>SendClick(8)</onclick></item>
+		<item><label>$LOCALIZE[587]</label><property name="note">$LOCALIZE[31808]</property><onclick>Filter</onclick><visible>Container.CanFilterAdvanced</visible></item>
+		<item><label>$LOCALIZE[587]</label><property name="note">$LOCALIZE[31809]</property><onclick>SendClick(19)</onclick><visible>Container.CanFilter + !Container.CanFilterAdvanced</visible></item>
+		<item><label>$LOCALIZE[31634]</label><property name="note">$LOCALIZE[31405]</property><onclick>ActivateWindow(visualisation)</onclick><visible>Player.HasAudio</visible></item>
+		<item><label>$LOCALIZE[31056]</label><property name="note">$LOCALIZE[31406]</property><onclick>ActivateWindow(musicplaylist)</onclick><visible>Integer.IsGreater(Playlist.Length(music),0)</visible></item>
+		<item><label>$LOCALIZE[589]</label><property name="note">$LOCALIZE[31402]</property><onclick>SendClick(16)</onclick></item>
+		<item><label>$LOCALIZE[31810]</label><property name="note">$LOCALIZE[31403]</property><onclick>UpdateLibrary(music)</onclick><visible>!Library.IsScanningMusic</visible></item>
+		<item><label>$LOCALIZE[31812]</label><property name="note">$LOCALIZE[31404]</property><onclick>UpdateLibrary(music)</onclick><visible>Library.IsScanningMusic</visible></item>
+	</include>
+</includes>
