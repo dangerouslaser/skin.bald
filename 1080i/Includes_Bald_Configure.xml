@@ -368,7 +368,8 @@
 				<top>216</top>
 				<label>$LOCALIZE[502]</label>
 				<onleft>$PARAM[list]</onleft>
-				<onclick>SendClick($PARAM[list])</onclick>
+				<onclick>SetFocus($PARAM[list])</onclick>
+				<onclick>Action(Select)</onclick>
 			</control>
 		</definition>
 	</include>
