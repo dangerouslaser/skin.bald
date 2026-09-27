@@ -1550,11 +1550,13 @@
 				<height>240</height>
 				<orientation>vertical</orientation>
 				<itemgap>8</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
 				<onup>noop</onup>
 				<!-- Process info: the codec flags; Select opens Kodi's player process info. -->
 				<control type="button" id="8131">
+					<top>12</top>
 					<width>688</width>
-					<height>80</height>
+					<height>56</height>
 					<label>$LOCALIZE[10116]</label>
 					<label2>$VAR[Bald_OSDVideoFlags]</label2>
 					<font>Bald_Section</font>
@@ -1571,6 +1573,7 @@
 				</control>
 				<!-- Speed: Left and Right change the tempo, or rewind and fast forward; either resumes a paused video. -->
 				<control type="button" id="8132">
+					<top>12</top>
 					<width>688</width>
 					<height>144</height>
 					<label>$LOCALIZE[31142]</label>
