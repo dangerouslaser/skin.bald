@@ -33,8 +33,12 @@
 		<control type="button" id="8"><include>HiddenObject</include></control>
 		<control type="button" id="9"><include>HiddenObject</include></control>
 		<control type="button" id="11"><include>HiddenObject</include></control>
+		<!-- The scrims and the TV dim that darken the art. From Home they wait for the frame zoom (260 after); over
+		     the library's own backdrop they arrive with it, or the sharp fanart showed undimmed for a moment and then
+		     darkened (a bright flash on opening a show from the library). -->
 		<control type="group">
-			<animation effect="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout">WindowOpen</animation>
+			<animation type="WindowOpen" condition="!$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout" /></animation>
+			<animation type="WindowOpen" condition="$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
 			<animation effect="fade" start="100" end="0" time="130" tween="sine" easing="inout">WindowClose</animation>
 			<!-- Only Overview needs the hero's directional scrims. -->
 			<control type="group">
@@ -44,6 +48,10 @@
 				<include>Bald_InfoScrims</include>
 			</control>
 			<include condition="$EXP[Bald_InfoTVItem]">Bald_InfoTVDim</include>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="130" tween="sine" easing="inout">WindowClose</animation>
 			<!-- Crossfade to the SAME cached blur, field and multiplier used by Home.
 			     TMDb Helper follows the native item until the recommendation page sets its local container. -->
 			<control type="group" id="5200">
