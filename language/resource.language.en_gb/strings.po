@@ -1252,6 +1252,7 @@ msgstr ""
 #: /1080i/Includes_Bald_Playback.xml
 #: /1080i/Includes_Bald_OSD.xml
 #: /1080i/VideoOSDBookmarks.xml
+#: /1080i/DialogPlayerProcessInfo.xml
 #. OSD hint when there is no seek row
 msgctxt "#31619"
 msgid "Back to close"
@@ -2881,4 +2882,10 @@ msgstr ""
 #. Appearance > Behavior: long plots scroll on their own
 msgctxt "#31993"
 msgid "Scroll long plots"
+msgstr ""
+
+#. Player process info, System tab: the CPU temperature (Kodi's own #22011 ends in a colon)
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31994"
+msgid "CPU temperature"
 msgstr ""
