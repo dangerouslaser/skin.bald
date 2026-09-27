@@ -173,7 +173,7 @@
 				<top>$PARAM[top]</top>
 				<width>1920</width>
 				<height>$PARAM[height]</height>
-				<texture colordiffuse="bald_field">bald/scrim_info_b.png</texture>
+				<texture colordiffuse="bald_scrim">bald/scrim_info_b.png</texture>
 			</control>
 		</definition>
 	</include>
@@ -184,7 +184,7 @@
 			<top>0</top>
 			<width>1920</width>
 			<height>640</height>
-			<texture flipy="true" colordiffuse="bald_field">bald/scrim_info_b.png</texture>
+			<texture flipy="true" colordiffuse="bald_scrim">bald/scrim_info_b.png</texture>
 		</control>
 	</include>
 	<!-- Opaque popup panel for the one-row player dialogs (DialogSlider, Custom_1110), centred at the top. -->

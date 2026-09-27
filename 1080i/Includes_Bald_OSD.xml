@@ -312,7 +312,7 @@
 			<top>0</top>
 			<width>1920</width>
 			<height>1080</height>
-			<texture colordiffuse="bald_field60">bald/white.png</texture>
+			<texture colordiffuse="bald_scrim60">bald/white.png</texture>
 			<visible>$EXP[Bald_OSDPanelUp]</visible>
 			<include>Bald_OSDAnimFade</include>
 		</control>
@@ -1106,14 +1106,18 @@
 			</control>
 		</definition>
 	</include>
-	<!-- The left scrim behind the info column: the info dialog's horizontal scrim in field. -->
+	<!-- The left scrim behind the info column: the info dialog's horizontal scrim in black, scaled by Background
+	     shading like the OSD's own scrims. -->
 	<include name="Bald_OSDInfoScrim">
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>1920</width>
-			<height>1080</height>
-			<texture colordiffuse="bald_field">bald/scrim_info_h.png</texture>
+		<control type="group">
+			<include>Bald_OSDShade</include>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1920</width>
+				<height>1080</height>
+				<texture colordiffuse="bald_scrim">bald/scrim_info_h.png</texture>
+			</control>
 		</control>
 	</include>
 	<!-- ============ Playback settings values (Custom_1119_BaldPlayback.xml) ============

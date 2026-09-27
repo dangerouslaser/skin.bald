@@ -275,7 +275,7 @@ class PlaybackStyleTests(unittest.TestCase):
     def test_osd_sits_on_the_bottom_scrim_with_hints_on_the_hint_line(self):
         scrim, = expand_call("Bald_PlaybackScrim")
         self.assertEqual(scrim.findtext("texture"), "bald/scrim_info_b.png")
-        self.assertEqual(scrim.find("texture").get("colordiffuse"), "bald_field")
+        self.assertEqual(scrim.find("texture").get("colordiffuse"), "bald_scrim")
         seekbar = ET.tostring(resolve_window("DialogSeekBar.xml"), encoding="unicode")
         self.assertIn("bald/scrim_info_b.png", seekbar)
         for name in ("VideoOSD.xml", "MusicOSD.xml"):
