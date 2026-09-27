@@ -80,7 +80,7 @@ class RowStyleIncludeTests(unittest.TestCase):
             self.assertEqual((layout.get("width"), layout.get("height")), ("192", "119"), style)
 
     def test_thumbnail_tiles_use_stills_and_landscape_art(self):
-        self.assertIn("$VAR[Bald_ItemFanart]", textures(self.row("fanart").find("itemlayout")))
+        self.assertIn("$VAR[Bald_RowItemArt]", textures(self.row("fanart").find("itemlayout")))
         for layout in ("itemlayout", "focusedlayout"):
             self.assertIn("$VAR[Bald_ItemThumbnail]", textures(self.row("thumbnail").find(layout)))
         values = [(value.get("condition"), value.text) for value in

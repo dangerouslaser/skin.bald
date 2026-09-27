@@ -463,8 +463,8 @@ class ContentPickerTests(unittest.TestCase):
     entry's node as the row's target (the editor passes use_rawpath)."""
 
     def test_channel_groups_can_be_chosen_as_rows(self):
-        config = json.loads((Path(__file__).resolve().parents[1] / "shortcuts" / "skinvariables-shortcut-config.json").read_text())
-        entries = {e["path"]: e for e in config["grouping://shortcuts/"]}
+        from test_hub_targets import grouping_entries
+        entries = {e["path"]: e for e in grouping_entries("grouping://shortcuts/")}
         self.assertEqual((entries["pvr://channels/tv/"]["node"], entries["pvr://channels/tv/"]["link"]), ("tvchannels", "false"))
         self.assertEqual((entries["pvr://channels/radio/"]["node"], entries["pvr://channels/radio/"]["link"]), ("radiochannels", "false"))
 
@@ -479,7 +479,7 @@ class ChannelGroupSelectTests(unittest.TestCase):
         self.assertEqual(clicks, [
             ("$EXP[Bald_TVChannelGroupItem]", "ActivateWindow(TVGuide,$ESCINFO[ListItem.FolderPath],return)"),
             ("$EXP[Bald_RadioChannelGroupItem]", "ActivateWindow(RadioGuide,$ESCINFO[ListItem.FolderPath],return)"),
-            ("!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem]", "Action(Info)")])
+            ("!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem] + !$EXP[Bald_FavouriteItem]", "Action(Info)")])
         self.assertEqual(home.findtext("expression[@name='Bald_TVChannelGroupItem']"),
                          "[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/tv/)]")
 

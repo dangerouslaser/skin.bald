@@ -896,13 +896,14 @@
 	<!-- Text: fanart-sized tiles that show the item's name instead of art (channel groups, genres, folders); the big art
 	     frame is unchanged. The tile is the empty-art placeholder box with Bald_TileText over it. -->
 	<include name="Bald_RowTiles_text">
-		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param></include>
+		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param><param name="cover">false</param></include>
 	</include>
 	<!-- Landscape row: 176 x 99 tiles in 192 px slots. art is the tile texture; overlay names an include drawn over each
-	     tile (it gets the tile's diffuse). -->
+	     tile (it gets the tile's diffuse); cover shows an album's or song's square cover over the tile (Bald_TileCover). -->
 	<include name="Bald_RowLandscape">
-		<param name="art">$VAR[Bald_ItemFanart]</param>
+		<param name="art">$VAR[Bald_RowItemArt]</param>
 		<param name="overlay">Bald_TileOverlayNone</param>
+		<param name="cover">true</param>
 		<definition>
 			<left>86</left>
 			<top>884</top>
@@ -911,6 +912,7 @@
 			<itemlayout width="192" height="119">
 				<include content="Bald_LandscapeTile"><param name="art">$PARAM[art]</param></include>
 				<include content="$PARAM[overlay]" />
+				<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param></include>
 			</itemlayout>
 			<focusedlayout width="192" height="119">
 				<control type="group">
@@ -929,6 +931,7 @@
 						<param name="ring">!$EXP[Bald_OverlayOpen]</param>
 					</include>
 					<include content="$PARAM[overlay]"><param name="diffuse">FFFFFFFF</param></include>
+					<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param><param name="diffuse">FFFFFFFF</param></include>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -978,6 +981,32 @@
 	</include>
 	<include name="Bald_TileOverlayNone">
 		<definition />
+	</include>
+	<!-- Music in a landscape row. Tile art: the item's fanart, the show's, then (albums and songs) the artist's
+	     fanart, else the thumb (an album's cover, an artist's photo); Bald_ItemFanart without the artist step is
+	     shared with the library views. An album or song also shows its square cover, 99 x 99, centred over the tile
+	     (the cover alone would be cropped to a strip by the 16:9 tile); artists keep their fanart. Not on Text rows. -->
+	<variable name="Bald_RowItemArt">
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(artist.fanart))">$INFO[ListItem.Art(artist.fanart)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+	<expression name="Bald_MusicCoverItem">[[String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)] + !String.IsEmpty(ListItem.Art(thumb))]</expression>
+	<include name="Bald_TileCover">
+		<param name="shown">true</param>
+		<param name="diffuse">bald_tile_dim</param>
+		<definition>
+			<control type="image">
+				<left>49</left>
+				<top>10</top>
+				<width>99</width>
+				<height>99</height>
+				<aspectratio>scale</aspectratio>
+				<texture colordiffuse="$PARAM[diffuse]" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<visible>$PARAM[shown] + $EXP[Bald_MusicCoverItem]</visible>
+			</control>
+		</definition>
 	</include>
 	<!-- Fanart + logo: the item's clearlogo (else the show's, Bald_ItemLogo) at the tile's bottom left, 8 px in, at most
 	     100 x 34, over the logo scrim clipped to the tile's corners. Hidden without a logo or with clearlogos turned off
@@ -1164,7 +1193,10 @@
 				     (CGUIWindowPVRGuideBase::OnMessage, SetChannelGroupPath). Everything else opens its information. -->
 				<onclick condition="$EXP[Bald_TVChannelGroupItem]">ActivateWindow(TVGuide,$ESCINFO[ListItem.FolderPath],return)</onclick>
 				<onclick condition="$EXP[Bald_RadioChannelGroupItem]">ActivateWindow(RadioGuide,$ESCINFO[ListItem.FolderPath],return)</onclick>
-				<onclick condition="!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem]">Action(Info)</onclick>
+				<!-- A favourite (a "favourites://" row) runs itself: with no onclick condition true, Kodi hands the click to the
+				     list provider (CGUIBaseContainer::OnClick), which resolves and executes the favourite
+				     (CDirectoryProvider::OnClick). -->
+				<onclick condition="!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem] + !$EXP[Bald_FavouriteItem]">Action(Info)</onclick>
 				<nested />
 			</control>
 		</definition>
@@ -1174,6 +1206,8 @@
 	<!-- The focused row item is a PVR channel group (a folder under pvr://channels/). -->
 	<expression name="Bald_TVChannelGroupItem">[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/tv/)]</expression>
 	<expression name="Bald_RadioChannelGroupItem">[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/radio/)]</expression>
+	<!-- The focused row item is one of Kodi's favourites (a row on favourites://; CFavouritesURL paths). -->
+	<expression name="Bald_FavouriteItem">[String.StartsWith(ListItem.FolderPath,favourites://)]</expression>
 	<!-- One entry of the Home menu (grouplist 9000). Pass what Select does as <onclick> children (nested), or
 	     Bald_HomeMenuScreen for a screen with rows. Up and Down are the grouplist's: CGUIControlGroupList::AddControl
 	     points each entry at its neighbours (replacing any onup/ondown here) and CGUIWindow::OnMove passes over hidden
