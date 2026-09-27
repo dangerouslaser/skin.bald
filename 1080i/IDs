@@ -316,7 +316,7 @@ The seek layer is DialogSeekBar.xml (401, 402, 403 and 40000 under PLAYBACK abov
 VideoOSD.xml (CGUIDialogVideoOSD binds none) and the companion panels 1120-1124, which repeat the row
 201		Transport grouplist: 602 play/pause, 600 back (Live TV: guide), 607 forward (Live TV: record), 603 stop
 202		Tools grouplist: 804 disc menu, 70045 teletext, 70047 3D (when they apply), 70043 information,
-		70060 audio, 70061 subtitles, 70062 video
+		70060 audio, 70061 subtitles, 70063 TinyPPI (when installed; opens its dialog), 70062 video
 87		Seek slider over the lifted bar (files; action seek); 88 the same for Live TV (action pvr.seek)
 		Estuary's 601, 606, 608, 698, 200, 6000, 799 and 70040-70042, 70044, 70046, 70048 are retired in the video
 		OSD: rewind and fast forward live in the video panel, record and guide moved onto 607 and 600, channels,

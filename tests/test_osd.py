@@ -20,7 +20,7 @@ WINDOWS = (["VideoOSD.xml", "DialogSeekBar.xml", "VideoOSDBookmarks.xml", "Custo
             "Custom_1125_OSDPlaylist.xml", "Custom_1126_OSDCast.xml", "Custom_1127_OSDInfoOverlay.xml",
             "Custom_1128_OSDDetails.xml"] + list(COMPANIONS) + UPNEXT)
 # The row's buttons in order: transport, then tools.
-ROW = ["602", "600", "607", "603", "804", "70045", "70047", "70043", "70060", "70061", "70062"]
+ROW = ["602", "600", "607", "603", "804", "70045", "70047", "70043", "70060", "70061", "70063", "70062"]
 CHAIN = ["pvrchannelguide", "pvrosdchannels", "1125", "videobookmarks", "1126"]
 FOCUSABLE = {"button", "radiobutton", "togglebutton", "slider", "sliderex", "spincontrol", "spincontrolex", "edit",
              "list", "fixedlist", "wraplist", "panel", "grouplist"}
@@ -384,3 +384,17 @@ class OSDStyleTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TinyPPITests(unittest.TestCase):
+    """The TinyPPI button (script.tinyppi, CoreELEC) shows only with the add-on installed and enabled, opens its
+    dialog, and names itself with the add-on's own title."""
+
+    def test_tinyppi_button_is_guarded_and_opens_its_dialog(self):
+        root = ET.parse(SKIN / "Includes_Bald_OSD.xml").getroot()
+        self.assertEqual(root.findtext("expression[@name='Bald_OSDHasTinyPPI']"),
+                         "[System.HasAddon(script.tinyppi) + System.AddonIsEnabled(script.tinyppi)]")
+        text = (SKIN / "Includes_Bald_OSD.xml").read_text(encoding="utf-8")
+        self.assertEqual(text.count("<param name=\"visible\">$EXP[Bald_OSDHasTinyPPI]</param>"), 2)
+        self.assertIn("<onclick>RunScript(script.tinyppi,dialog)</onclick>", text)
+        self.assertIn("$INFO[System.AddonTitle(script.tinyppi)]", text)
