@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 import home_menu
 from conditions import equivalent, implies, shows_for_content
-from kodi_includes import expand_call, parse
+from kodi_includes import expand_call, expand_follow, parse
 from skin_strings import loc
 
 
@@ -171,7 +171,10 @@ class LibraryViewTests(unittest.TestCase):
             self.assertEqual(mode.findtext(direction), '50')
         self.assertEqual(mode.findtext('onclick'), 'SetFocus(50)')
         self.assertEqual(mode.findtext('ondown'), 'noop')
-        self.assertEqual(mode.findtext('onfocus'), 'SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(videos).Property(Bald.LibraryContainer)],videos)')
+        library = '$INFO[Window(videos).Property(Bald.LibraryContainer)]'
+        self.assertEqual([n.text for n in expand_follow(mode) if n.tag == 'onfocus'],
+                         [f'SetProperty(Bald.FocusContainer,{library},videos)',
+                          f'SetProperty(TMDbHelper.WidgetContainer,{library},videos)'])
         self.assertTrue(equivalent('$EXP[Bald_LibraryTitleSorted]', 'String.IsEqual(Container.SortMethod,$LOCALIZE[556])'))
 
     def test_full_alphabet_fits_beneath_posters(self):

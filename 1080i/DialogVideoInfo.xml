@@ -9,7 +9,7 @@
 	<onload>ClearProperty(Bald.MorePath,movieinformation)</onload>
 	<onload>ClearProperty(Bald.MoreFor,movieinformation)</onload>
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
-	<onload>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onload>
+	<include content="Bald_UnfollowContainerOnLoad"><param name="window">movieinformation</param></include>
 	<include>Bald_InfoTVClear</include>
 	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<onload>RunScript(skin.bald,recommendations,$INFO[ListItem.DBType],$INFO[ListItem.DBID])</onload>
@@ -19,7 +19,7 @@
 	<onunload>ClearProperty(Bald.Identity,movieinformation)</onunload>
 	<onunload>ClearProperty(Bald.MorePath,movieinformation)</onunload>
 	<onunload>ClearProperty(Bald.MoreFor,movieinformation)</onunload>
-	<onunload>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onunload>
+	<include content="Bald_UnfollowContainerOnUnload"><param name="window">movieinformation</param></include>
 	<controls>
 		<!-- Opaque sharp fallback for library/add-on entry points. -->
 		<control type="group">
@@ -53,7 +53,8 @@
 			<animation effect="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="130" tween="sine" easing="inout">WindowClose</animation>
 			<!-- Crossfade to the SAME cached blur, field and multiplier used by Home.
-			     TMDb Helper follows the native item until the recommendation page sets its local container. -->
+			     Bald Helper (or TMDb Helper) follows the dialog's own item until More like this names its container
+			     (Bald_FollowContainer, 5100). -->
 			<control type="group" id="5200">
 				<visible>!$EXP[Bald_InfoOnOverview]</visible>
 				<animation effect="fade" start="0" end="100" time="460" tween="sine" easing="inout">Visible</animation>

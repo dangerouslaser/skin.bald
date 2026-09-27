@@ -2,10 +2,16 @@
 <!-- Active-skin override for script.globalsearch 9.x. The add-on owns all data/actions. -->
 <window>
 	<views>50</views>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<!-- The background follows the results list (50) on this script window's own properties (Bald_FollowContainer
+	     cannot be used: a SetProperty with an empty window names no window). Blur: Bald Helper's, else TMDb Helper's,
+	     never both (Home.xml). -->
+	<onload>SetProperty(Bald.FocusContainer,50)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb))</onload>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">SetProperty(TMDbHelper.WidgetContainer,50)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb))</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + $EXP[Bald_TMDbHelperFollows]">SetProperty(TMDbHelper.WidgetContainer,50)</onload>
+	<onunload>ClearProperty(Bald.FocusContainer)</onunload>
 	<onunload>ClearProperty(TMDbHelper.WidgetContainer)</onunload>
 	<onunload>ClearProperty(TMDbHelper.Blur.SourceImage)</onunload>
 	<onunload condition="String.IsEqual(Window(home).Property(Bald.SearchOrigin),home)">SetProperty(Bald.ReturnSearch,true,home)</onunload>
@@ -14,12 +20,12 @@
 	<animation type="WindowClose"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
 	<controls>
 		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
-		<!-- Global Search is a script WindowXML, so TMDb Helper must watch its local
-		     container and publish the cached blur on this window rather than Home. -->
+		<!-- Global Search is a script WindowXML: Bald Helper publishes the blur on Home as everywhere (Bald.Blur), while
+		     TMDb Helper watches this window's local container and publishes it on this window. -->
 		<control type="image">
 			<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>800</fadetime>
-			<texture background="true">$INFO[Window.Property(TMDbHelper.ListItem.BlurImage)]</texture>
-			<visible>$EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window.Property(TMDbHelper.ListItem.BlurImage))</visible>
+			<texture background="true">$VAR[Bald_SearchBlur]</texture>
+			<visible>!Skin.HasSetting(Bald.DisableBlur) + [[$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.Blur))] | [!$EXP[Bald_HasHelper] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window.Property(TMDbHelper.ListItem.BlurImage))]]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field60">bald/white.png</texture></control>

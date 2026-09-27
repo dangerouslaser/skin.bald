@@ -4,7 +4,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import equivalent, find_value, implies
-from kodi_includes import expand_call, parse
+from kodi_includes import expand_call, expand_follow, parse
 from skin_strings import loc
 
 
@@ -144,9 +144,13 @@ class InfoPagesTests(unittest.TestCase):
 
     def test_reuses_home_blur_and_clears_local_override(self):
         self.assertEqual(self.dialog.findtext(".//control[@id='5200']/include"), "Bald_BackdropImage")
-        self.assertIn("ClearProperty(TMDbHelper.WidgetContainer,movieinformation)", [node.text for node in self.dialog.findall("onunload")])
+        unloads = [node.text for node in expand_follow(self.dialog) if node.tag == "onunload"]
         for name in ("Bald_InfoToOverview", "Bald_InfoBackToCast"):
-            self.assertIn("ClearProperty(TMDbHelper.WidgetContainer,movieinformation)", [node.text for node in self.shared.find(f"include[@name='{name}']")])
+            actions = [node.text for node in expand_follow(self.shared.find(f"include[@name='{name}']"))]
+            for clear in ("ClearProperty(Bald.FocusContainer,movieinformation)",
+                          "ClearProperty(TMDbHelper.WidgetContainer,movieinformation)"):
+                self.assertIn(clear, unloads)
+                self.assertIn(clear, actions)
 
     def test_empty_state_has_return_route_and_guarded_readiness(self):
         fallback = self.pages.find(".//control[@id='5150']")

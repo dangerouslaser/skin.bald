@@ -10,7 +10,7 @@
 			<control type="panel" id="512">
 				<left>84</left><top>210</top><width>1080</width><height>624</height><orientation>vertical</orientation>
 				<viewtype label="31852">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
-				<onfocus>SetProperty(Bald.LibraryContainer,512,videos)</onfocus><onfocus>SetProperty(TMDbHelper.WidgetContainer,512,videos)</onfocus><onunfocus>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunfocus>
+				<onfocus>SetProperty(Bald.LibraryContainer,512,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">512</param><param name="window">videos</param></include><include content="Bald_UnfollowContainer"><param name="window">videos</param></include>
 				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright>RunScript(skin.bald,letters,512)</onright><ondown>SetFocus(9160)</ondown><ondown>RunScript(skin.bald,letters,512)</ondown>
 				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="$EXP[Bald_LibraryMenuOpen]">Conditional</animation>
 				<itemlayout width="216" height="312"><include>Bald_WallPoster</include></itemlayout>

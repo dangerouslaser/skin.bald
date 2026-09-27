@@ -133,18 +133,19 @@
 	</variable>
 
 	<!-- ============ Background ============ -->
-	<!-- The current row item's fanart, blurred by TMDb Helper (Gaussian radius 40 on a 480 px copy, cached), darkened
-	     for the OLED with colordiffuse. <fadetime> crossfades between titles and waits until the new image has loaded. -->
+	<!-- The current row item's fanart, blurred (a 480 x 270 copy at Gaussian radius 40, cached) by Bald Helper, or by
+	     TMDb Helper without it, darkened for the OLED with colordiffuse. <fadetime> crossfades between titles and waits
+	     until the new image has loaded. -->
 	<include name="Bald_BackdropImage">
-		<!-- Still copy (curtain prototype): the same blur with no fadetime and loaded at once (a local file from TMDb
-		     Helper's blur cache), so a window's background is complete on its first frame, which the curtain lifts
+		<!-- Still copy (curtain prototype): the same blur with no fadetime and loaded at once (a local file from the
+		     helper's blur cache), so a window's background is complete on its first frame, which the curtain lifts
 		     onto. The crossfading copy above still dissolves between titles. -->
 		<control type="image">
 			<width>1920</width>
 			<height>1080</height>
 			<aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_BlurImage]</texture>
-			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_HasBlur]</visible>
+			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 		<control type="image">
@@ -154,18 +155,29 @@
 			<fadetime>800</fadetime>
 			<texture background="true">$VAR[Bald_BlurImage]</texture>
 			<!-- Optional enhancement: the field underneath is the supported no-helper fallback. -->
-			<visible>!Skin.HasSetting(Bald.DisableBlur) + $EXP[Bald_HasTMDbHelper] + $EXP[Bald_HasBlur]</visible>
+			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur]</visible>
 			<colordiffuse>bald_backdrop</colordiffuse>
 		</control>
 	</include>
-	<!-- The blurred background. TMDb Helper's blur follows the focused item of a media list, so it is empty in windows
-	     without one (settings, the guide); those show the last blur seen instead (Bald.LastBlur, kept by
-	     Bald_CurtainHandoff as each window is left). Home and the library keep the plain field for an item without art. -->
-	<expression name="Bald_BlurFallback">[!Window.IsActive(home) + !Window.IsActive(videos) + String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))]</expression>
-	<expression name="Bald_HasBlur">[!String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage)) | [$EXP[Bald_BlurFallback] + !String.IsEmpty(Window(home).Property(Bald.LastBlur))]]</expression>
+	<!-- The blurred background. Bald Helper publishes Home's Bald.Blur (the followed item's blur, empty where there is
+	     no item: settings, the guide) and Bald.Blur.Last (the last non-empty one); without it, TMDb Helper publishes
+	     TMDbHelper.ListItem.BlurImage and Bald_CurtainHandoff keeps the last one as each window is left (Bald.LastBlur).
+	     Windows without an item show the last blur; Home and the library keep the plain field for an item without art. -->
+	<expression name="Bald_BlurOn">[!Skin.HasSetting(Bald.DisableBlur) + [$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]]]</expression>
+	<expression name="Bald_BlurNow">[[$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.Blur))] | [!$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))]]</expression>
+	<expression name="Bald_BlurLastSet">[[$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.Blur.Last))] | [!$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.LastBlur))]]</expression>
+	<expression name="Bald_BlurFallback">[!Window.IsActive(home) + !Window.IsActive(videos) + !$EXP[Bald_BlurNow]]</expression>
+	<expression name="Bald_HasBlur">[$EXP[Bald_BlurNow] | [$EXP[Bald_BlurFallback] + $EXP[Bald_BlurLastSet]]]</expression>
 	<variable name="Bald_BlurImage">
+		<value condition="$EXP[Bald_BlurFallback] + $EXP[Bald_HasHelper]">$INFO[Window(home).Property(Bald.Blur.Last)]</value>
 		<value condition="$EXP[Bald_BlurFallback]">$INFO[Window(home).Property(Bald.LastBlur)]</value>
+		<value condition="$EXP[Bald_HasHelper]">$INFO[Window(home).Property(Bald.Blur)]</value>
 		<value>$INFO[Window(home).Property(TMDbHelper.ListItem.BlurImage)]</value>
+	</variable>
+	<!-- Global Search's blur (script-globalsearch.xml): Bald Helper's on Home, else TMDb Helper's on the search window. -->
+	<variable name="Bald_SearchBlur">
+		<value condition="$EXP[Bald_HasHelper]">$INFO[Window(home).Property(Bald.Blur)]</value>
+		<value>$INFO[Window.Property(TMDbHelper.ListItem.BlurImage)]</value>
 	</variable>
 	<!-- The curtain's blur (Custom_1129_BaldCurtain.xml): as it was when the curtain opened, else the current one. -->
 	<variable name="Bald_CurtainBlur">
@@ -1121,7 +1133,7 @@
 				     then resize it. -->
 				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
 				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
-				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onfocus>
+				<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">home</param><param name="condition">!$EXP[Bald_ReturningToMenu]</param></include>
 				<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
 				<onfocus condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
 				<!-- Row start: a fixedlist first selects item slot + 1 (start) at its focus slot. The row above moves this one back while
@@ -1136,7 +1148,7 @@
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.Menu,1,home)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onup>
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(Bald.RowStyle,$PARAM[style],home)</onup>
-				<onup condition="Integer.IsEqual($PARAM[index],1)">SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onup>
+				<include content="Bald_FollowContainerOnUp"><param name="id">$PARAM[id]</param><param name="window">home</param><param name="condition">Integer.IsEqual($PARAM[index],1)</param></include>
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetFocus($PARAM[menu])</onup>
 				<onup condition="!Integer.IsEqual($PARAM[index],1)">$PARAM[up]</onup>
 				<ondown>$PARAM[down]</ondown>
@@ -1145,7 +1157,7 @@
 				<onback>SetProperty(Bald.Menu,1,home)</onback>
 				<onback>SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onback>
 				<onback>SetProperty(Bald.RowStyle,$PARAM[style],home)</onback>
-				<onback>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)</onback>
+				<include content="Bald_FollowContainerOnBack"><param name="id">$PARAM[id]</param><param name="window">home</param></include>
 				<onback>SetFocus($PARAM[menu])</onback>
 				<!-- A PVR channel group (a "channel groups" row, widget editor Choose content) opens the guide on that group:
 				     the guide windows take a group path with ActivateWindow and make it the active group
@@ -1244,12 +1256,12 @@
 			<onload>ClearProperty(Bald.ReturnMenu,home)</onload>
 		</definition>
 	</include>
-	<!-- A screen entry (Home, a hub): TMDb Helper follows the screen's remembered row while it is previewed;
+	<!-- A screen entry (Home, a hub): the background follows the screen's remembered row while it is previewed;
 	     Select enters the screen on that row. -->
 	<include name="Bald_HomeMenuScreen">
 		<param name="screen" />
 		<definition>
-			<onfocus>SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onfocus>
+			<include content="Bald_FollowContainer"><param name="id">$INFO[Window(home).Property(Bald.Row.$PARAM[screen])]</param><param name="window">home</param></include>
 			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.Screen,$PARAM[screen],home)</onclick>
 			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.$PARAM[screen])],home)</onclick>
 			<onclick condition="$EXP[Bald_HasRows_$PARAM[screen]]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_$PARAM[screen]],home)</onclick>
@@ -1303,7 +1315,7 @@
 				<!-- The disclosure cue hubs with a target show: Right opens the guide. -->
 				<param name="suffix">  ›</param>
 				<param name="right">9029</param>
-				<onfocus condition="$EXP[Bald_LiveTVRows]">SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.livetv)],home)</onfocus>
+				<include content="Bald_FollowContainer"><param name="id">$INFO[Window(home).Property(Bald.Row.livetv)]</param><param name="window">home</param><param name="condition">$EXP[Bald_LiveTVRows]</param></include>
 				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Screen,livetv,home)</onclick>
 				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.Row,$INFO[Window(home).Property(Bald.Row.livetv)],home)</onclick>
 				<onclick condition="$EXP[Bald_LiveTVRows]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_livetv],home)</onclick>

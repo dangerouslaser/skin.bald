@@ -186,7 +186,7 @@
 				<left>624</left><top>378</top><width>1200</width><height>234</height>
 				<orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.InfoSec,1,home)</onfocus>
-				<onfocus>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onfocus>
+				<include content="Bald_UnfollowContainerOnFocus"><param name="window">movieinformation</param></include>
 				<include>Bald_InfoToOverview</include><include>Bald_InfoToMore</include>
 				<onleft>noop</onleft><onright>noop</onright>
 				<itemlayout width="240" height="234"><include>Bald_CastItem</include></itemlayout>
@@ -201,7 +201,7 @@
 				<left>624</left><top>650</top><width>180</width><height>28</height>
 				<font>Bald_Section</font><textcolor>bald_ink</textcolor><focusedcolor>bald_accent</focusedcolor>
 				<textoffsetx>0</textoffsetx><texturefocus /><texturenofocus /><label>$LOCALIZE[33029]</label>
-				<onfocus>SetProperty(Bald.InfoSec,1,home)</onfocus><onfocus>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onfocus>
+				<onfocus>SetProperty(Bald.InfoSec,1,home)</onfocus><include content="Bald_UnfollowContainerOnFocus"><param name="window">movieinformation</param></include>
 				<include>Bald_InfoToOverview</include><include>Bald_InfoToMore</include>
 				<onleft>noop</onleft><onright>noop</onright><onclick>noop</onclick>
 			</control>
@@ -259,7 +259,7 @@
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<visible allowhiddenfocus="true">$EXP[Bald_InfoHasMorePath]</visible>
 				<onfocus>SetProperty(Bald.InfoSec,2,home)</onfocus>
-				<onfocus>SetProperty(TMDbHelper.WidgetContainer,5100,movieinformation)</onfocus>
+				<include content="Bald_FollowContainer"><param name="id">5100</param><param name="window">movieinformation</param></include>
 				<include>Bald_InfoBackToCast</include>
 				<ondown>noop</ondown><onleft>noop</onleft><onright>noop</onright>
 				<onclick>RunScript(skin.bald,open,$INFO[Container(5100).ListItem.DBType],$INFO[Container(5100).ListItem.DBID])</onclick>

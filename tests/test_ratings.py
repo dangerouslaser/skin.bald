@@ -6,7 +6,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import atoms, equivalent, implies
-from kodi_includes import SKIN, expand_call, include_definitions, resolve_window
+from kodi_includes import SKIN, expand_call, expand_follow, include_definitions, resolve_window
 from skin_strings import RATINGS_RANGE, strings
 
 ROOT = SKIN.parent
@@ -405,15 +405,18 @@ class RatingsTests(unittest.TestCase):
         self.assertEqual(helpers[0], helpers[1])
 
     def test_home_keeps_tmdb_helper_on_the_focused_row(self):
-        """The Home caption follows the focused row, so TMDb Helper must too: every row sets the widget container
-        when it gains focus (row to row, from the menu, back from a dialog), and Home starts on row 9101."""
+        """The Home caption follows the focused row, so TMDb Helper must too while online ratings are on (even with
+        Bald Helper making the blur): every row sets the widget container when it gains focus (row to row, from the
+        menu, back from a dialog), and Home starts on row 9101."""
         row = include_definitions()["Bald_Row"]
         fixedlist = next(c for c in row.iter("control") if c.get("type") == "fixedlist")
-        self.assertIn("SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)",
-                      [n.text for n in fixedlist.findall("onfocus")])
+        focus = {n.text: n.get("condition") for n in expand_follow(fixedlist) if n.tag == "onfocus"}
+        condition = focus["SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)"]
+        self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_ReturningToMenu]", condition))
         home = ET.parse(SKIN / "Home.xml").getroot()
-        loads = [n.text for n in home.findall("onload")]
-        self.assertIn("SetProperty(TMDbHelper.WidgetContainer,9101,home)", loads)
+        loads = {n.text: n.get("condition") for n in expand_follow(home) if n.tag == "onload"}
+        self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_ReturningToMenu]",
+                                loads["SetProperty(TMDbHelper.WidgetContainer,9101,home)"]))
         self.assertEqual(home.findtext("defaultcontrol"), "9101")
 
     def test_home_runs_tmdb_helpers_monitor_with_online_ratings(self):

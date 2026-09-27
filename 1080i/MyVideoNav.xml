@@ -7,14 +7,16 @@
 	<!-- With Bald Helper's "Open TV shows on their info page" on, Select here starts the skin timer bald_library_select
 	     (Timers.xml), which opens a focused TV show's information and passes anything else on as Select. Its focus
 	     condition lists the <views> ids above: keep the two in step (tests/test_bald_helper.py). -->
-	<onload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onload>
+	<include content="Bald_UnfollowContainerOnLoad"><param name="window">videos</param></include>
 	<!-- Opened from Home: remember the folder, whose heading is the hub's name if a hub opened it (Bald_InHubFolder).
 	     Kodi fetches the first folder before the onload runs (CGUIMediaWindow::OnInitWindow). -->
 	<onload condition="Window.Previous(home)">SetProperty(Bald.HubPath,$ESCINFO[Container.FolderPath],home)</onload>
-	<onunload>ClearProperty(TMDbHelper.WidgetContainer,videos)</onunload>
+	<include content="Bald_UnfollowContainerOnUnload"><param name="window">videos</param></include>
 	<include>Bald_CurtainHandoff</include>
 	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<!-- Blur: Bald Helper's, else TMDb Helper's, never both (Home.xml). -->
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
 	<!-- Estuary remains a fallback for content we have not redesigned; movie libraries always enter a Bald view. -->
 	<onload condition="Container.Content(movies) + !$EXP[Bald_LibraryMovieView]">Container.SetViewMode(510)</onload>
 	<onload condition="Container.Content(tvshows) + !$EXP[Bald_LibrarySeriesView]">Container.SetViewMode(520)</onload>

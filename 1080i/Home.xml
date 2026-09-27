@@ -40,18 +40,19 @@
 	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Screen,home,home)</onload>
 	<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
 	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.RowStyle,$VAR[Bald_RowStyle_home],home)</onload>
-	<!-- Background: TMDb Helper's blurred fanart of the current row item (its image service only; no TMDB lookups),
-	     watching the current row (TMDbHelper.WidgetContainer). The earlier color tint is switched off. -->
-	<onload condition="Skin.HasSetting(TMDbHelper.EnableColors)">Skin.Reset(TMDbHelper.EnableColors)</onload>
-	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<!-- Background: the current row item's blurred fanart, following the current row (Bald_FollowContainer). Bald
+	     Helper makes it (Bald.Blur); without it, TMDb Helper's image service does (TMDbHelper.EnableBlur; no TMDB
+	     lookups). Never both: with Bald Helper, TMDb Helper's blur is switched off. -->
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<!-- Online ratings (Appearance > Ratings): TMDb Helper's ListItem monitor, which publishes the followed item's
 	     ratings, runs only while the skin sets TMDbHelper.Service. On with the setting, off without it
 	     (Includes_Bald_Ratings.xml, Bald_RatingsOnline). -->
 	<onload condition="$EXP[Bald_RatingsOnline] + !Skin.HasSetting(TMDbHelper.Service)">Skin.SetBool(TMDbHelper.Service)</onload>
 	<onload condition="!$EXP[Bald_RatingsOnline] + Skin.HasSetting(TMDbHelper.Service)">Skin.Reset(TMDbHelper.Service)</onload>
-	<onload>SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(TMDbHelper.WidgetContainer,9101,home)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
+	<include content="Bald_FollowContainerOnLoad"><param name="id">9101</param><param name="window">home</param><param name="condition">!$EXP[Bald_ReturningToMenu]</param></include>
 	<onload condition="!$EXP[Bald_ReturningToMenu]">ClearProperty(Bald.Menu,home)</onload>
 	<!-- No Home rows (the widget editor keeps one, but a row list can be emptied by hand): no current row, and focus
 	     goes to the menu's Home entry, which opens the menu. Search's return below still takes precedence. -->

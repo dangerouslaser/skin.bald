@@ -3,6 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import has_action, implies, shows_for_content
+from kodi_includes import expand_follow
 
 ROOT = Path(__file__).resolve().parents[1] / '1080i'
 
@@ -50,7 +51,9 @@ class WallTests(unittest.TestCase):
         for name in ('Bald_LibraryPreview', 'Bald_WallFooter'):
             self.assertEqual(root.findtext(f".//include[@content='{name}']/param[@name='c']"), '512')
         self.assertEqual(panel.findtext('itemlayout/include'), 'Bald_WallPoster')
-        self.assertIn('SetProperty(TMDbHelper.WidgetContainer,512,videos)', [n.text for n in panel.findall('onfocus')])
+        focus = [n.text for n in expand_follow(panel) if n.tag == 'onfocus']
+        self.assertIn('SetProperty(Bald.FocusContainer,512,videos)', focus)
+        self.assertIn('SetProperty(TMDbHelper.WidgetContainer,512,videos)', focus)
         nav = ET.parse(ROOT / 'MyVideoNav.xml').getroot()
         self.assertIn('512', nav.findtext('views').split(','))
         self.assertIn('View_512_Bald_WallPreview', [n.text for n in nav.iter('include')])

@@ -52,8 +52,12 @@ class CurtainTests(unittest.TestCase):
     def test_windows_without_a_blur_show_the_last_one(self):
         home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         blur = [(v.get("condition"), v.text) for v in home.find("variable[@name='Bald_BlurImage']")]
-        self.assertEqual(blur[0], ("$EXP[Bald_BlurFallback]", "$INFO[Window(home).Property(Bald.LastBlur)]"))
+        # Bald Helper keeps the last blur itself (Bald.Blur.Last); TMDb Helper's is kept as each window is left.
+        self.assertEqual(blur[0], ("$EXP[Bald_BlurFallback] + $EXP[Bald_HasHelper]",
+                                   "$INFO[Window(home).Property(Bald.Blur.Last)]"))
+        self.assertEqual(blur[1], ("$EXP[Bald_BlurFallback]", "$INFO[Window(home).Property(Bald.LastBlur)]"))
         fallback = home.findtext("expression[@name='Bald_BlurFallback']")
         self.assertIn("!Window.IsActive(home) + !Window.IsActive(videos)", fallback)
         handoff = self.common.find("include[@name='Bald_CurtainHandoff']")
-        self.assertIn("SetProperty(Bald.LastBlur,", " ".join(n.text for n in handoff.findall("onunload")))
+        keep = next(n for n in handoff.findall("onunload") if (n.text or "").startswith("SetProperty(Bald.LastBlur,"))
+        self.assertIn("!$EXP[Bald_HasHelper]", keep.get("condition"))

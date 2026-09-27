@@ -102,7 +102,7 @@
 	<include name="Bald_InfoTVActionDown">
 		<ondown condition="$EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</ondown>
 		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating">SetProperty(Bald.InfoSec,1,home)</ondown>
-		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating">ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
+		<include content="Bald_UnfollowContainerOnDown"><param name="window">movieinformation</param><param name="condition">!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating</param></include>
 		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating + $EXP[Bald_InfoHasCast]">SetFocus(50)</ondown>
 		<ondown condition="!$EXP[Bald_InfoTVHasSeasons] + !Container(5301).IsUpdating + !$EXP[Bald_InfoHasCast]">SetFocus(5050)</ondown>
 	</include>
@@ -112,13 +112,13 @@
 		<ondown condition="$EXP[Bald_InfoTVHasEpisodes] + String.IsEqual(Window(movieinformation).Property(Bald.TV.RowFor),Container(5301).CurrentItem)">SetFocus(5302)</ondown>
 		<ondown condition="$EXP[Bald_InfoTVHasEpisodes] + !String.IsEqual(Window(movieinformation).Property(Bald.TV.RowFor),Container(5301).CurrentItem)">SetFocus(5302,0,absolute)</ondown>
 		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating">SetProperty(Bald.InfoSec,1,home)</ondown>
-		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating">ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</ondown>
+		<include content="Bald_UnfollowContainerOnDown"><param name="window">movieinformation</param><param name="condition">!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating</param></include>
 		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating + $EXP[Bald_InfoHasCast]">SetFocus(50)</ondown>
 		<ondown condition="!$EXP[Bald_InfoTVHasEpisodes] + !Container(5302).IsUpdating + !$EXP[Bald_InfoHasCast]">SetFocus(5050)</ondown>
 	</include>
 	<include name="Bald_InfoTVOnOverview">
 		<onfocus>SetProperty(Bald.InfoSec,0,home)</onfocus>
-		<onfocus>ClearProperty(TMDbHelper.WidgetContainer,movieinformation)</onfocus>
+		<include content="Bald_UnfollowContainerOnFocus"><param name="window">movieinformation</param></include>
 	</include>
 
 	<!-- ============ Controls ============ -->

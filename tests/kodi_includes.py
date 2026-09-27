@@ -186,6 +186,22 @@ def expand_call(name, params=None, definitions=None):
     return list(resolve_constants(holder))
 
 
+FOLLOW_INCLUDES = ("Bald_FollowContainer", "Bald_UnfollowContainer")
+
+
+def expand_follow(parent, definitions=None):
+    """parent's children with the Bald_FollowContainer* and Bald_UnfollowContainer* calls expanded and every other
+    child as it is: the actions a control or window runs to set or clear the container its background follows."""
+    definitions = definitions if definitions is not None else include_definitions()
+    children = []
+    for child in parent:
+        if child.tag == "include" and (child.get("content") or "").startswith(FOLLOW_INCLUDES):
+            children.extend(_expand_include(child, definitions))
+        else:
+            children.append(child)
+    return children
+
+
 def resolve_window(filename, definitions=None):
     """Return the window's root element with every static include expanded."""
     definitions = definitions if definitions is not None else include_definitions()

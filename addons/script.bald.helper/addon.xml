@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="script.bald.helper" name="Bald Helper" version="1.0.0" provider-name="Bryan Hoban">
+<addon id="script.bald.helper" name="Bald Helper" version="1.1.0" provider-name="Bryan Hoban">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
+		<!-- Pillow, for the blurred backgrounds: the version Kodi 22 bundles (Kodi.app's addons/script.module.pil). -->
+		<import addon="script.module.pil" version="5.1.0"/>
 	</requires>
 	<extension point="xbmc.service" library="service.py"/>
 	<extension point="xbmc.addon.metadata">
-		<summary lang="en_GB">Lets the Bald skin open TV shows on their info page.</summary>
-		<description lang="en_GB">A small service for the Bald skin. While Bald is the active skin and Bald Settings, Appearance, Behavior, "Open TV shows on their info page" is on, it installs a keymap so that Select on a TV show in the video library opens the show's information page instead of its seasons. It removes the keymap when the setting is off, under any other skin, and when Kodi exits or the add-on is disabled.</description>
+		<summary lang="en_GB">Blurred backgrounds and keymaps for the Bald skin.</summary>
+		<description lang="en_GB">A small service for the Bald skin. While Bald is the active skin and its blurred background is on, it blurs the fanart of the item Bald's background follows and keeps the results in a small cache, so Bald no longer needs TMDb Helper for its backgrounds. While Bald is the active skin and Bald Settings, Appearance, Behavior, "Open TV shows on their info page" is on, it installs a keymap so that Select on a TV show in the video library opens the show's information page instead of its seasons. It removes the keymap when the setting is off, under any other skin, and when Kodi exits or the add-on is disabled.</description>
 		<platform>all</platform>
 		<license>GPL-2.0-or-later</license>
 		<source>https://github.com/dangerouslaser/skin.bald</source>

@@ -149,9 +149,12 @@ class BaldSettingsTests(unittest.TestCase):
                 # A hub without rows opens its target instead (bridge 902n, as Right does).
                 entering.append((f"!{has_rows} + $EXP[Bald_HubHasOpen_{screen}]", f"SetFocus(902{screen[3:]})"))
             self.assertTrue(same_actions(actions, entering), actions)
-            self.assertTrue(has_action(
-                home_menu.actions(home_menu.entry(preview=screen), "onfocus"), None,
-                f"SetProperty(TMDbHelper.WidgetContainer,$INFO[Window(home).Property(Bald.Row.{screen})],home)"))
+            # The background follows the screen's remembered row while it is previewed (Bald_FollowContainer).
+            onfocus = home_menu.actions(home_menu.entry(preview=screen), "onfocus")
+            row = f"$INFO[Window(home).Property(Bald.Row.{screen})]"
+            self.assertTrue(has_action(onfocus, None, f"SetProperty(Bald.FocusContainer,{row},home)"))
+            self.assertTrue(has_action(onfocus, "$EXP[Bald_TMDbHelperFollows]",
+                                       f"SetProperty(TMDbHelper.WidgetContainer,{row},home)"))
 
     def test_live_tv_select_enters_its_rows_and_right_opens_the_guide(self):
         # Like a hub: Select (and Left, which does what Select does) enters the rows while there are rows and a PVR
