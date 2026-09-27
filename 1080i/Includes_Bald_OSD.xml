@@ -335,11 +335,16 @@
 			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_ink45</param><param name="visible">!Player.Seeking</param><info>Player.ProgressCache</info></include>
 			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_accent</param><info>Player.Progress</info></include>
 		</control>
+		<!-- Live TV. Timeshifting (Player.SeekEnabled), the track is the timeshift window, as the seek slider 88 is: the
+		     buffer in 45% ink, the programme from the play position to its end in 34% ink under it, and the played part
+		     of the programme (its start to the play position) in the accent, as Estuary draws it. Otherwise, and for a
+		     channel preview, the track is the programme and the fill its progress. -->
 		<control type="group">
 			<visible>VideoPlayer.Content(livetv)</visible>
+			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_ink34</param><param name="visible">Player.SeekEnabled + !Player.ChannelPreviewActive + VideoPlayer.HasEpg</param><info>PVR.TimeshiftProgressEpgEnd</info><info2>PVR.TimeshiftProgressPlayPos</info2></include>
 			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_ink45</param><param name="visible">Player.SeekEnabled + !Player.ChannelPreviewActive</param><info>PVR.TimeshiftProgressBufferEnd</info><info2>PVR.TimeshiftProgressBufferStart</info2></include>
-			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_accent</param><param name="visible">!Player.ChannelPreviewActive</param><info>PVR.EpgEventProgress</info></include>
-			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_accent</param><param name="visible">Player.ChannelPreviewActive</param><info>PVR.EpgEventProgress</info></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_accent</param><param name="visible">Player.SeekEnabled + !Player.ChannelPreviewActive</param><info>PVR.TimeshiftProgressPlayPos</info><info2>PVR.TimeshiftProgressEpgStart</info2></include>
+			<include content="Bald_PlaybackTrackFill"><param name="left">264</param><param name="width">1392</param><param name="top">928</param><param name="color">bald_accent</param><param name="visible">!Player.SeekEnabled | Player.ChannelPreviewActive</param><info>PVR.EpgEventProgress</info></include>
 		</control>
 		<!-- Chapter, scene and cut ticks, edit-list ranges and bookmarks. -->
 		<include content="Bald_PlaybackTrackMarks"><param name="left">264</param><param name="width">1392</param><param name="top">928</param></include>

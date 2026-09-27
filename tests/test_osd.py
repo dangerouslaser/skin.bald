@@ -77,6 +77,22 @@ class OSDContractTests(unittest.TestCase):
                 hidden = [a for a in nib.findall("animation") if a.get("type") == "Hidden"]
                 self.assertEqual(hidden[0].find("effect").get("delay"), "300")
 
+    def test_live_tv_bar_uses_one_scale(self):
+        # Timeshifting, every fill is on the timeshift window's scale (the seek slider 88's): the programme's played
+        # part as a range from its start to the play position (Estuary's pattern). The programme's own progress only
+        # when not timeshifting or for a channel preview; one such fill.
+        fills = {}
+        for node in self.windows["DialogSeekBar.xml"].iter("control"):
+            info = node.findtext("info") or ""
+            if node.get("type") == "progress" and info.startswith("PVR."):
+                fills.setdefault((info, node.findtext("info2")), []).append(node.findtext("visible"))
+        timeshift = "Player.SeekEnabled + !Player.ChannelPreviewActive"
+        self.assertEqual(fills[("PVR.TimeshiftProgressPlayPos", "PVR.TimeshiftProgressEpgStart")], [timeshift])
+        self.assertEqual(fills[("PVR.TimeshiftProgressBufferEnd", "PVR.TimeshiftProgressBufferStart")], [timeshift])
+        self.assertEqual(fills[("PVR.TimeshiftProgressEpgEnd", "PVR.TimeshiftProgressPlayPos")],
+                         [timeshift + " + VideoPlayer.HasEpg"])
+        self.assertEqual(fills[("PVR.EpgEventProgress", None)], ["!Player.SeekEnabled | Player.ChannelPreviewActive"])
+
     def test_osd_row_order_and_seek_sliders(self):
         osd = self.windows["VideoOSD.xml"]
         found = ids(osd)
