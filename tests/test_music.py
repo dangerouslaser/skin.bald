@@ -153,6 +153,8 @@ class NowPlayingTests(unittest.TestCase):
         self.assertEqual(follow.get("type"), "list")
         # Off screen but not hidden: Kodi updates a static item's $INFO only while its container is visible.
         self.assertIsNone(follow.find("visible"))
+        # Disabled: it must never take the window's keys.
+        self.assertEqual(follow.findtext("enable"), "false")
         self.assertEqual(follow.findtext("content/item/thumb"), "$VAR[Bald_NowPlayingBlurSource]")
 
     def test_shows_what_the_brief_asks_for(self):

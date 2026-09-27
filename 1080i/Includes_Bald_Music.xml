@@ -388,10 +388,11 @@
 		</control>
 	</include>
 	<!-- The playing item as a one-item list for Bald Helper to follow (Bald.FocusContainer on the visualisation
-	     window). Off screen but visible, so Kodi keeps its static item's $INFO values current. -->
+	     window). Off screen but visible, so Kodi keeps its static item's $INFO values current; disabled, so it never
+	     takes focus from the window, whose keys (skip, seek, OSD, Info) are the visualisation window's own. -->
 	<include name="Bald_NowPlayingFollowList">
 		<control type="list" id="5500">
-			<left>-3000</left><top>-3000</top><width>1</width><height>1</height>
+			<left>-3000</left><top>-3000</top><width>1</width><height>1</height><enable>false</enable>
 			<itemlayout width="1" height="1" /><focusedlayout width="1" height="1" />
 			<content>
 				<item><label>$INFO[MusicPlayer.Title]</label><thumb>$VAR[Bald_NowPlayingBlurSource]</thumb></item>
