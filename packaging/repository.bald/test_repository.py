@@ -50,12 +50,18 @@ def main() -> None:
 
     helper = addons["script.bald.helper"]
     assert helper.find("./extension[@point='xbmc.service']").attrib["library"] == "service.py"
+    assert helper.find("./extension[@point='xbmc.python.pluginsource']").attrib["library"] == "plugin.py"
     helper_zip = root / "script.bald.helper" / f"script.bald.helper-{helper.attrib['version']}.zip"
     with zipfile.ZipFile(helper_zip) as zipped:
         names = set(zipped.namelist())
         assert "script.bald.helper/service.py" in names
         assert "script.bald.helper/resources/lib/keymap.py" in names
         assert "script.bald.helper/resources/lib/blur.py" in names
+        assert "script.bald.helper/plugin.py" in names
+        for module in ("follow", "mdblist", "ratings", "plugin"):
+            assert f"script.bald.helper/resources/lib/{module}.py" in names
+        assert "script.bald.helper/resources/settings.xml" in names
+        assert "script.bald.helper/resources/language/resource.language.en_gb/strings.po" in names
         assert "script.bald.helper/resources/icon.png" in names
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
     assert (root / "script.bald.helper" / "resources" / "icon.png").is_file()
