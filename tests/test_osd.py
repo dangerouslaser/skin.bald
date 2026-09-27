@@ -533,6 +533,18 @@ class OSDStyleTests(unittest.TestCase):
         tall = [n.findtext("visible") for n in seek.iter("control") if "Bald_OSDTallScrim" in (n.findtext("visible") or "")]
         self.assertEqual(tall, ["$EXP[Bald_OSDTallScrim] + !$EXP[Bald_OSDPVRPanelUp]"])
 
+    def test_popup_animation_uses_the_bald_curves(self):
+        # Shared by DialogSlider, 1110, DialogSubtitles, PlayerControls and the Live TV managers: open pops and fades,
+        # close only fades.
+        popup = include_definitions()["Animation_DialogPopupOpenClose"]
+        kinds = {}
+        for animation in popup:
+            if animation.tag != "animation":
+                continue
+            kinds[animation.get("type")] = [(e.get("type"), e.get("tween"), e.get("easing")) for e in animation]
+        self.assertEqual(kinds["WindowOpen"], [("zoom", "back", "out"), ("fade", "sine", "inout")])
+        self.assertEqual(kinds["WindowClose"], [("fade", "sine", "inout")])
+
     def test_hints_sit_on_the_hint_line(self):
         # The OSD and its companions sit 36 px lower than the page layout, so their hints do too (990); the
         # full-height panels keep the page hint line (954).
