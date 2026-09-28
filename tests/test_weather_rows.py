@@ -9,6 +9,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from PIL import Image
+
 from conditions import all_of, implies
 from kodi_includes import Skin, expand_call, include_definitions
 from skin_strings import strings
@@ -149,8 +151,37 @@ class InfolabelTests(unittest.TestCase):
                 self.assertTrue(icon.startswith(prefix) and icon.endswith("$VAR[WeatherOutlookIconPostfixVar]"), icon)
         values = [value.text for value in ET.parse(XML / "Variables.xml").getroot()
                   .findall("variable[@name='WeatherOutlookIconPrefixVar']/value")]
-        self.assertEqual(values, ["$INFO[Skin.String(Bald.WeatherIcons.path)]",
-                                  "resource://resource.images.weathericons.default/"])
+        # A chosen pack, else Bald's own icons (media/bald/weather) as <code>.png.
+        self.assertEqual(values, ["$INFO[Skin.String(Bald.WeatherIcons.path)]", "special://skin/media/bald/weather/"])
+        postfix = [value.text for value in ET.parse(XML / "Variables.xml").getroot()
+                   .findall("variable[@name='WeatherOutlookIconPostfixVar']/value")]
+        self.assertEqual(postfix, ["$INFO[Skin.String(Bald.WeatherIcons.ext)]", ".png"])
+
+    def test_bald_ships_an_icon_for_every_weather_code(self):
+        icons = ROOT / "media" / "bald" / "weather"
+        codes = [str(code) for code in range(48)] + ["na"]
+        self.assertEqual(sorted(p.stem for p in icons.glob("*.png")), sorted(codes))
+        for code in codes:
+            with self.subTest(code=code):
+                with Image.open(icons / f"{code}.png") as im:
+                    self.assertEqual(im.mode, "RGBA")
+                    self.assertEqual(im.size, (256, 256))
+                    # White line art on transparency, so colordiffuse tints it: every pixel white, drawn by alpha.
+                    self.assertEqual(im.getchannel("R").getextrema(), (255, 255))
+                    self.assertEqual(im.getchannel("G").getextrema(), (255, 255))
+                    self.assertEqual(im.getchannel("B").getextrema(), (255, 255))
+                    alpha = im.getchannel("A")
+                    self.assertEqual(alpha.getextrema(), (0, 255))
+                    self.assertEqual(alpha.getpixel((0, 0)), 0)
+        licence = (icons / "LICENSE-Meteocons.txt").read_text()
+        self.assertIn("MIT License", licence)
+        self.assertIn("Bas Milius", licence)
+
+    def test_the_default_weather_icons_are_named_in_appearance(self):
+        values = [(value.get("condition"), value.text) for value in ET.parse(XML / "Includes_Bald_Configure.xml")
+                  .getroot().findall("variable[@name='Bald_WeatherIconsName']/value")]
+        self.assertEqual(values[-1], (None, "$LOCALIZE[31433]"))
+        self.assertEqual(strings()[31433], "Meteocons")
 
 
 class FallbackTests(unittest.TestCase):
