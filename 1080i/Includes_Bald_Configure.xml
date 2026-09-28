@@ -283,6 +283,14 @@
 		<value condition="String.IsEqual(Skin.Font,Arial)">$LOCALIZE[31415]</value>
 		<value>$LOCALIZE[31941]</value>
 	</variable>
+	<!-- Typography, text size (9638): Skin.String(Bald.TextSize) is Kodi's lookandfeel.skinzoom, kept in step by the
+	     font and text size script and Bald Helper; a zoom set in Kodi's own settings shows as its number. -->
+	<variable name="Bald_TextSizeLabel">
+		<value condition="String.IsEqual(Skin.String(Bald.TextSize),4)">$LOCALIZE[31431]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.TextSize),8)">$LOCALIZE[31432]</value>
+		<value condition="!String.IsEmpty(Skin.String(Bald.TextSize)) + !String.IsEqual(Skin.String(Bald.TextSize),0)">$INFO[Skin.String(Bald.TextSize),, %]</value>
+		<value>$LOCALIZE[571]</value>
+	</variable>
 
 	<!-- One settings row (button or radiobutton), in the Home menu's focus language: unfocused at 50%, focused full ink
 	     with the accent dot, sliding 6 px right. A radiobutton's state is a dot at the right: accent on, dim off. -->

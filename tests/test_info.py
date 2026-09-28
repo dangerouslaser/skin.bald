@@ -574,6 +574,57 @@ class MouseInputTests(unittest.TestCase):
         ids = [node.get('id') for node in root.findall('fontset')]
         self.assertEqual(ids, list(info.FONTSETS))
 
+    def run_text_size(self, zoom, answer=None):
+        xbmc = Mock()
+        xbmc.executeJSONRPC.return_value = json.dumps(answer or {'jsonrpc': '2.0', 'id': 1, 'result': True})
+        with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
+            info.run('textsize', zoom)
+        return xbmc
+
+    def test_text_size_action_sets_kodis_skin_zoom_as_a_number(self):
+        for zoom in ('0', '4', '8'):
+            with self.subTest(zoom=zoom):
+                xbmc = self.run_text_size(zoom)
+                request = json.loads(xbmc.executeJSONRPC.call_args.args[0])
+                self.assertEqual(request['method'], 'Settings.SetSettingValue')
+                # An integer setting: JSON-RPC refuses a string value.
+                self.assertEqual(request['params'], {'setting': 'lookandfeel.skinzoom', 'value': int(zoom)})
+
+    def test_text_size_action_keeps_the_choice_in_a_skin_string_after_the_setting(self):
+        for zoom in ('0', '4', '8'):
+            with self.subTest(zoom=zoom):
+                xbmc = self.run_text_size(zoom)
+                xbmc.executebuiltin.assert_called_once_with(f'Skin.SetString(Bald.TextSize,{zoom})')
+                calls = [name for name, _, _ in xbmc.mock_calls]
+                self.assertLess(calls.index('executeJSONRPC'), calls.index('executebuiltin'))
+
+    def test_text_size_action_keeps_no_copy_when_kodi_refuses_the_setting(self):
+        xbmc = Mock()
+        xbmc.executeJSONRPC.return_value = json.dumps({'jsonrpc': '2.0', 'id': 1, 'error': {'code': -32602}})
+        with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
+            with self.assertRaises(RuntimeError):
+                info.run('textsize', '8')
+        xbmc.executebuiltin.assert_not_called()
+
+    def test_text_size_action_rejects_sizes_it_does_not_offer(self):
+        for zoom in ('', '2', '-4', '+4', '04', '10', 'large', '4,8'):
+            with self.subTest(zoom=zoom):
+                xbmc = Mock()
+                with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
+                    with self.assertRaises(ValueError):
+                        info.run('textsize', zoom)
+                xbmc.executeJSONRPC.assert_not_called()
+                xbmc.executebuiltin.assert_not_called()
+
+    def test_text_sizes_stay_inside_the_safe_margin(self):
+        # Kodi's CGraphicContext::GetGUIScaling zooms about the centre: a zoom z crops z / (2 (1 + z)) of each side.
+        self.assertEqual(info.TEXT_SIZES, (0, 4, 8))
+        for zoom in info.TEXT_SIZES:
+            z = zoom / 100
+            with self.subTest(zoom=zoom):
+                self.assertGreaterEqual(zoom, 0)  # a negative zoom frames the full-screen backgrounds in black
+                self.assertLess(1920 * z / (2 * (1 + z)), 96 - 20)  # 20 px of margin left at least
+
     def test_mouse_is_only_disabled_while_kodi_has_it_on(self):
         import xml.etree.ElementTree as ET
         from pathlib import Path
