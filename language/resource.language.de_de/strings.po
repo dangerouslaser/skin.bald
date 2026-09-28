@@ -846,6 +846,13 @@ msgctxt "#31414"
 msgid "bit"
 msgstr "Bit"
 
+#: /1080i/Font.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Font set name (the typeface with Cyrillic): Kodi's Interface > Skin > Fonts list and Bald Settings > Appearance > Typography
+msgctxt "#31415"
+msgid "Onest"
+msgstr "Onest"
+
 #: /1080i/Includes_Bald_Weather.xml
 #. Home weather row: the tile shown without a weather service
 msgctxt "#31450"

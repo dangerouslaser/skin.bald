@@ -211,8 +211,8 @@
 			<size>18</size>
 		</font>
 	</fontset>
-	<!-- Instrument Sans (Appearance > Typography). The reference set: DM Sans (Default) differs from it only in files
-	     and linespacing (tests/test_fonts.py). -->
+	<!-- Instrument Sans (Appearance > Typography). The reference set: DM Sans (Default) and Onest (Arial) differ from
+	     it only in files and linespacing (tests/test_fonts.py). -->
 	<fontset id="InstrumentSans" idloc="31940">
 		<!-- Normal Fonts -->
 		<font>
@@ -406,17 +406,25 @@
 			<size>18</size>
 		</font>
 	</fontset>
-	<fontset id="Arial" idloc="31053">
-		<!-- Arial Font better for non English -->
+	<!-- Onest (Appearance > Typography), the typeface with Cyrillic (no Greek): DM Sans and Instrument Sans have
+	     neither, and Kodi draws a missing glyph as a box rather than falling back to another file. Its id is "Arial",
+	     the id of the arial.ttf fontset Estuary and earlier Bald versions offered for non-Latin text, so anyone who had
+	     picked Arial for Cyrillic lands on Onest without choosing again; the label comes from idloc. The DM Sans set
+	     with each weight swapped for the same Onest weight (static instances of the variable font). Onest's natural
+	     line is 1.275 em, so the fonts drawn on several lines have their own linespacing that brings Kodi's pixel line
+	     height back to Instrument Sans' within 0.5 px (tests/test_fonts.py). -->
+	<fontset id="Arial" idloc="31415">
 		<font>
 			<name>font12</name>
-			<filename>arial.ttf</filename>
-			<size>22</size>
+			<filename>Onest-Regular.ttf</filename>
+			<size>25</size>
+			<linespacing>0.969</linespacing>
 		</font>
 		<font>
 			<name>font13</name>
-			<filename>arial.ttf</filename>
-			<size>27</size>
+			<filename>Onest-Regular.ttf</filename>
+			<size>30</size>
+			<linespacing>0.974</linespacing>
 		</font>
 		<font>
 			<name>font23_narrow</name>
@@ -425,8 +433,9 @@
 		</font>
 		<font>
 			<name>font27</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>27</size>
+			<linespacing>0.971</linespacing>
 		</font>
 		<font>
 			<name>font32</name>
@@ -435,93 +444,88 @@
 		</font>
 		<font>
 			<name>font37</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>37</size>
+			<linespacing>0.957</linespacing>
 		</font>
 		<!-- Title Fonts -->
 		<font>
 			<name>font25_title</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>25</size>
-			<style>bold</style>
 		</font>
-
 		<font>
 			<name>font40_title</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>40</size>
-			<style>bold</style>
 		</font>
 		<!-- Bald type scale (docs/SPEC.md section 3) -->
 		<!-- Clock (spec 300; lightest static face is 400) -->
 		<font>
 			<name>Bald_Clock</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>132</size>
 		</font>
 		<!-- Date -->
 		<font>
 			<name>Bald_Date</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>22</size>
 		</font>
 		<!-- Caption title, line height 44 (prototype 1.1) -->
 		<font>
 			<name>Bald_CaptionTitle</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>40</size>
-			<linespacing>0.92</linespacing>
-			<style>bold</style>
+			<linespacing>0.884</linespacing>
 		</font>
 		<!-- Caption meta -->
 		<font>
 			<name>Bald_CaptionMeta</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>20</size>
+			<linespacing>0.923</linespacing>
 		</font>
 		<!-- Accent line -->
 		<font>
 			<name>Bald_Accent</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>18</size>
-			<style>bold</style>
 		</font>
 		<!-- Caption plot, line height 30 (natural line is ~24 px) -->
 		<font>
 			<name>Bald_CaptionPlot</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>20</size>
-			<linespacing>1.25</linespacing>
+			<linespacing>1.154</linespacing>
 		</font>
 		<!-- Media flag -->
 		<font>
 			<name>Bald_Flag</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>14</size>
-			<style>bold</style>
 		</font>
 		<!-- Menu item -->
 		<font>
 			<name>Bald_MenuItem</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>46</size>
-			<style>bold</style>
 		</font>
 		<!-- Menu note, line height 28 -->
 		<font>
 			<name>Bald_MenuNote</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Medium.ttf</filename>
 			<size>19</size>
-			<linespacing>1.23</linespacing>
-			<style>bold</style>
+			<linespacing>1.179</linespacing>
 		</font>
 		<!-- Section line, action button, section heading -->
 		<font>
 			<name>Bald_Section</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>22</size>
-			<style>bold</style>
+			<linespacing>0.964</linespacing>
 		</font>
+		<!-- Kodi's generated keyboard symbol layers require broader Unicode coverage than DM Sans. -->
 		<font>
 			<name>Bald_KeyboardKey</name>
 			<filename>NotoSans-Regular.ttf</filename>
@@ -530,88 +534,82 @@
 		<!-- Section hint, row count -->
 		<font>
 			<name>Bald_Hint</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>17</size>
 		</font>
 		<!-- Row label -->
 		<font>
 			<name>Bald_RowLabel</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>20</size>
-			<style>bold</style>
 		</font>
 		<!-- Info title fallback -->
 		<font>
 			<name>Bald_InfoTitle</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>76</size>
-			<style>bold</style>
 		</font>
 		<!-- Info meta -->
 		<font>
 			<name>Bald_InfoMeta</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Medium.ttf</filename>
 			<size>24</size>
-			<style>bold</style>
 		</font>
 		<!-- Info tagline -->
 		<font>
 			<name>Bald_InfoTagline</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Medium.ttf</filename>
 			<size>30</size>
-			<style>bold</style>
 		</font>
 		<!-- Info plot, line height 34 (natural line is ~26.4 px) -->
 		<font>
 			<name>Bald_InfoPlot</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>22</size>
-			<linespacing>1.29</linespacing>
+			<linespacing>1.244</linespacing>
 		</font>
 		<!-- Info genres -->
 		<font>
 			<name>Bald_InfoGenre</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>20</size>
-			<style>bold</style>
 		</font>
 		<!-- Info media flag -->
 		<font>
 			<name>Bald_FlagL</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>16</size>
-			<style>bold</style>
 		</font>
 		<!-- Cast name -->
 		<font>
 			<name>Bald_CastName</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-SemiBold.ttf</filename>
 			<size>18</size>
-			<style>bold</style>
+			<linespacing>0.957</linespacing>
 		</font>
 		<!-- Cast role -->
 		<font>
 			<name>Bald_CastRole</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>16</size>
 		</font>
 		<!-- Details label -->
 		<font>
 			<name>Bald_DetailLabel</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>17</size>
 		</font>
 		<!-- Details value -->
 		<font>
 			<name>Bald_DetailValue</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Medium.ttf</filename>
 			<size>21</size>
-			<style>bold</style>
+			<linespacing>0.963</linespacing>
 		</font>
 		<!-- Info progress -->
 		<font>
 			<name>Bald_Progress</name>
-			<filename>arial.ttf</filename>
+			<filename>Onest-Regular.ttf</filename>
 			<size>18</size>
 		</font>
 	</fontset>

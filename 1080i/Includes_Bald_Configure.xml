@@ -280,7 +280,7 @@
 	</variable>
 	<variable name="Bald_FontName">
 		<value condition="String.IsEqual(Skin.Font,InstrumentSans)">$LOCALIZE[31940]</value>
-		<value condition="String.IsEqual(Skin.Font,Arial)">$LOCALIZE[31053]</value>
+		<value condition="String.IsEqual(Skin.Font,Arial)">$LOCALIZE[31415]</value>
 		<value>$LOCALIZE[31941]</value>
 	</variable>
 

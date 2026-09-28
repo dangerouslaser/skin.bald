@@ -380,8 +380,9 @@ def disable_mouse(xbmc):
     rpc(xbmc, "Settings.SetSettingValue", {"setting": "input.enablemouse", "value": False})
 
 
-# Font.xml fontset ids Bald Settings > Appearance offers (Default is DM Sans, lookandfeel.font's default).
-FONTSETS = ("Default", "InstrumentSans")
+# Font.xml fontset ids Bald Settings > Appearance offers, in file order: DM Sans (Default, lookandfeel.font's
+# default), Instrument Sans, Onest (id Arial, see Font.xml).
+FONTSETS = ("Default", "InstrumentSans", "Arial")
 
 
 def set_fontset(xbmc, fontset):

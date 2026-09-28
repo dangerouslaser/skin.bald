@@ -519,7 +519,7 @@ class MouseInputTests(unittest.TestCase):
         self.assertEqual(request['params'], {'setting': 'input.enablemouse', 'value': False})
 
     def test_font_action_sets_kodis_fontset_setting(self):
-        for fontset in ('Default', 'InstrumentSans'):
+        for fontset in ('Default', 'InstrumentSans', 'Arial'):
             with self.subTest(fontset=fontset):
                 xbmc = Mock()
                 xbmc.executeJSONRPC.return_value = json.dumps({'jsonrpc': '2.0', 'id': 1, 'result': True})
@@ -530,7 +530,7 @@ class MouseInputTests(unittest.TestCase):
                 self.assertEqual(request['params'], {'setting': 'lookandfeel.font', 'value': fontset})
 
     def test_font_action_rejects_unknown_fontsets(self):
-        for fontset in ('', 'Arial', 'DMSans', 'instrumentsans', 'InstrumentSans,Default'):
+        for fontset in ('', 'Onest', 'DMSans', 'instrumentsans', 'arial', 'InstrumentSans,Default'):
             with self.subTest(fontset=fontset):
                 xbmc = Mock()
                 with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
@@ -550,7 +550,7 @@ class MouseInputTests(unittest.TestCase):
         from pathlib import Path
         root = ET.parse(Path(__file__).resolve().parents[1] / '1080i' / 'Font.xml').getroot()
         ids = [node.get('id') for node in root.findall('fontset')]
-        self.assertEqual([i for i in ids if i != 'Arial'], list(info.FONTSETS))
+        self.assertEqual(ids, list(info.FONTSETS))
 
     def test_mouse_is_only_disabled_while_kodi_has_it_on(self):
         import xml.etree.ElementTree as ET

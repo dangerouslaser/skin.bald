@@ -119,15 +119,16 @@ class InfoTvTests(unittest.TestCase):
                          ("zoom", "1,100", "300", "cubic", "out"))
         self.assertTrue(grow.get("center").startswith("0,"))
         calls = underline.findall("include[@content='Bald_InfoTVUnderline']")
-        widths = [params(n)[key] for n in calls for key in ("w", "w_dm")]
-        self.assertEqual(len(widths), 12)
+        widths = [params(n)[key] for n in calls for key in ("w", "w_on", "w_dm")]
+        self.assertEqual(len(widths), 18)
         slot = int(seasons.find("itemlayout").get("width"))
         self.assertTrue(all(int(w) < slot for w in widths))
         self.assertEqual(self.tv.find("include[@name='Bald_InfoTVUnderline']//texture").get("colordiffuse"), "bald_accent")
-        # One underline per typeface: DM Sans (Default) unless Instrument Sans or Arial is the selected fontset.
+        # One underline per typeface: Instrument Sans, Onest (fontset Arial), else DM Sans (Default).
         images = self.tv.findall("include[@name='Bald_InfoTVUnderline']/definition/control")
         self.assertEqual([(i.findtext("width"), i.findtext("visible")) for i in images],
-                         [("$PARAM[w]", "$PARAM[visible] + $EXP[Bald_FontNotDMSans]"),
+                         [("$PARAM[w]", "$PARAM[visible] + String.IsEqual(Skin.Font,InstrumentSans)"),
+                          ("$PARAM[w_on]", "$PARAM[visible] + String.IsEqual(Skin.Font,Arial)"),
                           ("$PARAM[w_dm]", "$PARAM[visible] + !$EXP[Bald_FontNotDMSans]")])
         self.assertEqual(self.tv.findtext("expression[@name='Bald_FontNotDMSans']"),
                          "[String.IsEqual(Skin.Font,InstrumentSans) | String.IsEqual(Skin.Font,Arial)]")

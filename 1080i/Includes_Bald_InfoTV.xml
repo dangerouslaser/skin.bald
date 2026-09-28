@@ -125,8 +125,9 @@
 	<!-- ============ Controls ============ -->
 	<!-- Season tab: 24 px label; the selected tab is full ink, the rest 45%. The focused tab grows a 2 px accent
 	     underline from the left (300 MOVE) under exactly its label; Kodi list slots have one width, so the widths are
-	     measured from Instrument Sans Medium at 24 px for each label shape (w), with DM Sans widths (w_dm) for when
-	     that fontset is selected. -->
+	     measured from Instrument Sans Medium at 24 px for each label shape (w), with DM Sans widths (w_dm) and Onest
+	     widths (w_on: Instrument Sans' plus the difference in advance widths, from the font files) for when that
+	     fontset is selected. -->
 	<include name="Bald_InfoTVSeasonTab">
 		<param name="selected">false</param>
 		<!-- The tabs list: 5301 here, the library Series page's view list (532) there. -->
@@ -158,20 +159,21 @@
 				<animation type="Hidden" condition="$EXP[Bald_FullMotion]">
 					<effect type="zoom" start="100,100" end="1,100" center="0,37" time="300" tween="cubic" easing="out" />
 				</animation>
-				<include content="Bald_InfoTVUnderline"><param name="w">96</param><param name="w_dm">94</param><param name="visible">String.IsEqual(ListItem.Season,1)</param></include>
-				<include content="Bald_InfoTVUnderline"><param name="w">101</param><param name="w_dm">100</param><param name="visible">Integer.IsGreater(ListItem.Season,1) + Integer.IsLess(ListItem.Season,10)</param></include>
-				<include content="Bald_InfoTVUnderline"><param name="w">110</param><param name="w_dm">109</param><param name="visible">Integer.IsGreater(ListItem.Season,9) + Integer.IsLess(ListItem.Season,20)</param></include>
-				<include content="Bald_InfoTVUnderline"><param name="w">114</param><param name="w_dm">114</param><param name="visible">Integer.IsGreater(ListItem.Season,19)</param></include>
-				<include content="Bald_InfoTVUnderline"><param name="w">93</param><param name="w_dm">93</param><param name="visible">String.IsEqual(ListItem.Season,0)</param></include>
-				<include content="Bald_InfoTVUnderline"><param name="w">124</param><param name="w_dm">122</param><param name="visible">String.IsEmpty(ListItem.Season)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">96</param><param name="w_on">99</param><param name="w_dm">94</param><param name="visible">String.IsEqual(ListItem.Season,1)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">101</param><param name="w_on">105</param><param name="w_dm">100</param><param name="visible">Integer.IsGreater(ListItem.Season,1) + Integer.IsLess(ListItem.Season,10)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">110</param><param name="w_on">113</param><param name="w_dm">109</param><param name="visible">Integer.IsGreater(ListItem.Season,9) + Integer.IsLess(ListItem.Season,20)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">114</param><param name="w_on">118</param><param name="w_dm">114</param><param name="visible">Integer.IsGreater(ListItem.Season,19)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">93</param><param name="w_on">94</param><param name="w_dm">93</param><param name="visible">String.IsEqual(ListItem.Season,0)</param></include>
+				<include content="Bald_InfoTVUnderline"><param name="w">124</param><param name="w_on">125</param><param name="w_dm">122</param><param name="visible">String.IsEmpty(ListItem.Season)</param></include>
 			</control>
 		</definition>
 	</include>
 	<!-- Kodi reads <width> once, so each typeface gets its own image; Skin.Font is the selected Font.xml fontset. -->
-	<!-- DM Sans is the Default fontset (Font.xml); Instrument Sans and Arial use the other widths. -->
+	<!-- DM Sans is the Default fontset (Font.xml), Onest is the Arial one; any other id falls back to Default. -->
 	<expression name="Bald_FontNotDMSans">[String.IsEqual(Skin.Font,InstrumentSans) | String.IsEqual(Skin.Font,Arial)]</expression>
 	<include name="Bald_InfoTVUnderline">
 		<param name="w" />
+		<param name="w_on" />
 		<param name="w_dm" />
 		<param name="visible" />
 		<definition>
@@ -180,7 +182,14 @@
 				<width>$PARAM[w]</width>
 				<height>2</height>
 				<texture colordiffuse="bald_accent">bald/white.png</texture>
-				<visible>$PARAM[visible] + $EXP[Bald_FontNotDMSans]</visible>
+				<visible>$PARAM[visible] + String.IsEqual(Skin.Font,InstrumentSans)</visible>
+			</control>
+			<control type="image">
+				<top>36</top>
+				<width>$PARAM[w_on]</width>
+				<height>2</height>
+				<texture colordiffuse="bald_accent">bald/white.png</texture>
+				<visible>$PARAM[visible] + String.IsEqual(Skin.Font,Arial)</visible>
 			</control>
 			<control type="image">
 				<top>36</top>
