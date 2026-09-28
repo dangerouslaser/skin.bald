@@ -19,14 +19,20 @@ class ScrimTests(unittest.TestCase):
                     else:
                         self.assertIn("scrim_logo.png", texture, "only the logo scrim carries its own (black) colour")
 
-    def test_dark_info_scrims_are_the_shared_ones_at_double_strength(self):
+    def test_dark_info_scrims(self):
         from PIL import Image
-        for name in ("scrim_info_h", "scrim_info_b"):
-            base = Image.open(ROOT / "media" / "bald" / f"{name}.png").convert("RGBA").getchannel("A")
-            dark = Image.open(ROOT / "media" / "bald" / f"{name}_dark.png").convert("RGBA").getchannel("A")
-            self.assertEqual(base.size, dark.size, name)
-            for a, d in zip(base.tobytes(), dark.tobytes()):
-                self.assertEqual(d, round(255 * (1 - (1 - a / 255) ** 2)), name)
+        side = Image.open(ROOT / "media" / "bald" / "scrim_info_h.png").convert("RGBA").getchannel("A")
+        dark = Image.open(ROOT / "media" / "bald" / "scrim_info_h_dark.png").convert("RGBA").getchannel("A")
+        self.assertEqual(side.size, dark.size)
+        for a, d in zip(side.tobytes(), dark.tobytes()):
+            self.assertEqual(d, round(255 * (1 - (1 - a / 255) ** 1.6)))
+        bottom = Image.open(ROOT / "media" / "bald" / "scrim_info_b_dark.png").convert("RGBA").getchannel("A")
+        column = [bottom.getpixel((0, y)) for y in range(bottom.height)]
+        self.assertEqual(bottom.size, (4, 1080))
+        self.assertEqual(column[300], 0)
+        self.assertEqual(column, sorted(column), "darkens steadily towards the bottom")
+        self.assertGreaterEqual(column[820], 215)
+        self.assertEqual(column[-1], 245)
 
 
 if __name__ == "__main__":

@@ -194,7 +194,7 @@ class InfoTvTests(unittest.TestCase):
                         full_motion(self.built).findall(".//animation[@type='WindowOpen']/effect[@type='fade']"))
         # Base 380 plus the prototype stagger 0, 60, 100, 180, 220, 270, 310.
         self.assertEqual(delays, [380, 440, 480, 560, 600, 650, 690])
-        # The art stays at full brightness under two black scrims at double strength; no flat dim.
+        # The art stays at full brightness under the two stronger black scrims; no flat dim.
         scrims = [image.find("texture") for image in include_def(self.tv, "Bald_InfoScrims").findall("control")]
         self.assertEqual([(t.get("colordiffuse"), t.text) for t in scrims],
                          [("bald_scrim", "bald/scrim_info_h_dark.png"), ("bald_scrim", "bald/scrim_info_b_dark.png")])
