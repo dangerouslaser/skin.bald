@@ -123,15 +123,6 @@
 	</include>
 
 	<!-- ============ Controls ============ -->
-	<!-- The art dims at rest so the text reads on bright fanart: a 60% field layer (movies and TV alike). -->
-	<include name="Bald_InfoTVDim">
-		<control type="image">
-			<width>1920</width>
-			<height>1080</height>
-			<texture colordiffuse="bald_field60">bald/white.png</texture>
-		</control>
-	</include>
-
 	<!-- Season tab: 24 px label; the selected tab is full ink, the rest 45%. The focused tab grows a 2 px accent
 	     underline from the left (300 MOVE) under exactly its label; Kodi list slots have one width, so the widths are
 	     measured from Instrument Sans Medium at 24 px for each label shape (w), with DM Sans widths (w_dm) for when
@@ -243,7 +234,7 @@
 					<top>12</top>
 					<width>320</width>
 					<height>180</height>
-					<texture diffuse="bald/tile.png" colordiffuse="bald_field">bald/scrim_card.png</texture>
+					<texture diffuse="bald/tile.png" colordiffuse="bald_scrim">bald/scrim_card.png</texture>
 				</control>
 				<control type="label">
 					<left>28</left>
@@ -515,8 +506,10 @@
 	</include>
 	<!-- The Overview's directional scrims over the art; the library Series page draws the same pair. -->
 	<include name="Bald_InfoScrims">
-		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_h.png</texture></control>
-		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/scrim_info_b.png</texture></control>
+		<!-- Black, over the art at full brightness: the _dark textures are the shared scrim_info ones at double
+		     strength (alpha 1 - (1 - a)^2, the same as drawing them twice). -->
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_scrim">bald/scrim_info_h_dark.png</texture></control>
+		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_scrim">bald/scrim_info_b_dark.png</texture></control>
 	</include>
 
 	<!-- ============ Page ============ -->

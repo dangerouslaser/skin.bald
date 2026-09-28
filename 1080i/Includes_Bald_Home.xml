@@ -1352,7 +1352,7 @@
 				<control type="image">
 					<width>$PARAM[w]</width>
 					<height>$PARAM[h]</height>
-					<texture diffuse="$PARAM[mask]" colordiffuse="bald_field">bald/scrim_card.png</texture>
+					<texture diffuse="$PARAM[mask]" colordiffuse="bald_scrim">bald/scrim_card.png</texture>
 				</control>
 				<control type="label">
 					<left>8</left>

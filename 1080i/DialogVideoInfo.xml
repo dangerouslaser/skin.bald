@@ -52,8 +52,6 @@
 				<animation effect="fade" start="100" end="0" time="460" tween="sine" easing="inout">Hidden</animation>
 				<include>Bald_InfoScrims</include>
 			</control>
-			<!-- Movies and TV alike: a flat dim over the fanart and its scrims keeps the text readable on bright art. -->
-			<include>Bald_InfoTVDim</include>
 		</control>
 		<control type="group">
 			<animation effect="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout">WindowOpen</animation>

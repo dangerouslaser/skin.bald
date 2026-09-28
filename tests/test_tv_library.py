@@ -165,7 +165,7 @@ class SeriesPageTests(unittest.TestCase):
     def test_series_page_reuses_the_info_page_parts(self):
         calls = {n.get('content') or n.text: {p.get('name'): p.text for p in n.findall('param')}
                  for n in self.view.iter('include')}
-        for name in ('Bald_InfoTVHeader', 'Bald_InfoScrims', 'Bald_InfoTVDim', 'Bald_InfoTVEpisodeSwap',
+        for name in ('Bald_InfoTVHeader', 'Bald_InfoScrims', 'Bald_InfoTVEpisodeSwap',
                      'Bald_InfoTVEpisodeRowLayout', 'Bald_InfoTVEpisodeDetail'):
             self.assertIn(name, calls)
         self.assertEqual(calls['Bald_InfoTVTabsLayout'], {'tabs': '532'})

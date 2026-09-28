@@ -194,11 +194,12 @@ class InfoTvTests(unittest.TestCase):
                         full_motion(self.built).findall(".//animation[@type='WindowOpen']/effect[@type='fade']"))
         # Base 380 plus the prototype stagger 0, 60, 100, 180, 220, 270, 310.
         self.assertEqual(delays, [380, 440, 480, 560, 600, 650, 690])
-        dim = include_def(self.tv, "Bald_InfoTVDim").find("control")
-        self.assertEqual(dim.find("texture").get("colordiffuse"), "bald_field60")
-        self.assertIsNone(dim.find("animation"), "a flat 60% dim")
-        self.assertIn("Bald_InfoTVDim", [n.text for n in ET.parse(ROOT / "DialogVideoInfo.xml").getroot().iter("include") if n.get("condition") is None],
-                      "the dim covers movies too")
+        # The art stays at full brightness under two black scrims at double strength; no flat dim.
+        scrims = [image.find("texture") for image in include_def(self.tv, "Bald_InfoScrims").findall("control")]
+        self.assertEqual([(t.get("colordiffuse"), t.text) for t in scrims],
+                         [("bald_scrim", "bald/scrim_info_h_dark.png"), ("bald_scrim", "bald/scrim_info_b_dark.png")])
+        for path in ROOT.glob("*.xml"):
+            self.assertNotIn("Bald_InfoTVDim", path.read_text(encoding="utf-8"), f"{path.name}: no flat dim")
         # Up from Cast returns to the lowest filled TV row; movies fall through to their actions.
         up = [(n.get("condition"), n.text) for n in self.shared.find("include[@name='Bald_InfoToOverview']").findall("onup")]
         self.assertTrue(has_action(up, "$EXP[Bald_InfoTVHasEpisodes]", "SetFocus(5302)"))
