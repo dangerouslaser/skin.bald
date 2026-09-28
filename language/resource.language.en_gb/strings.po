@@ -753,13 +753,13 @@ msgid "On focus"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
-#. Appearance > Information: the watched check on episode cards and the Watched note in lists
+#. Appearance > Information: the watched check on episode cards and Home tiles, and the Watched note in lists
 msgctxt "#31339"
 msgid "Watched marks"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
-#. Appearance > Information: the progress bar on episode cards and the Resume note in lists
+#. Appearance > Information: the progress bar on episode cards and Home tiles, and the Resume note in lists
 msgctxt "#31340"
 msgid "Progress marks"
 msgstr ""

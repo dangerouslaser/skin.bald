@@ -1140,22 +1140,24 @@
 		<include content="Bald_RowLandscape"><param name="art">$VAR[Bald_ItemThumbnail]</param><param name="spoiler">String.IsEqual(ListItem.DBType,episode)</param></include>
 	</include>
 	<include name="Bald_RowTiles_logo">
-		<include content="Bald_RowLandscape"><param name="overlay">Bald_TileLogo</param><param name="show_title">false</param></include>
+		<include content="Bald_RowLandscape"><param name="overlay">Bald_TileLogo</param><param name="show_title">false</param><param name="marks">Bald_TileOverlayNone</param></include>
 	</include>
 	<!-- Text: fanart-sized tiles that show the item's name instead of art (channel groups, genres, folders); the big art
 	     frame is unchanged. The tile is the empty-art placeholder box with Bald_TileText over it. -->
 	<include name="Bald_RowTiles_text">
-		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param><param name="cover">false</param><param name="show_title">false</param></include>
+		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param><param name="cover">false</param><param name="show_title">false</param><param name="marks">Bald_TileOverlayNone</param></include>
 	</include>
 	<!-- Landscape row: 176 x 99 tiles in 192 px slots. art is the tile texture; overlay names an include drawn over each
 	     tile (it gets the tile's diffuse); cover shows an album's or song's square cover over the tile (Bald_TileCover);
-	     show_title allows the item's name on the tile (Bald_TileTitle; logo and text rows name their items already). -->
+	     show_title allows the item's name on the tile (Bald_TileTitle; logo and text rows name their items already);
+	     marks names the watch-state marks' include (Bald_TileMarks; logo and text rows pass Bald_TileOverlayNone). -->
 	<include name="Bald_RowLandscape">
 		<param name="art">$VAR[Bald_RowItemArt]</param>
 		<param name="spoiler">false</param>
 		<param name="overlay">Bald_TileOverlayNone</param>
 		<param name="cover">true</param>
 		<param name="show_title">true</param>
+		<param name="marks">Bald_TileMarks</param>
 		<definition>
 			<left>86</left>
 			<top>884</top>
@@ -1166,6 +1168,7 @@
 				<include content="$PARAM[overlay]" />
 				<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param></include>
 				<include content="Bald_TileTitle"><param name="visible">$PARAM[show_title] + $EXP[Bald_TileTitlesAlways]</param></include>
+				<include content="$PARAM[marks]" />
 			</itemlayout>
 			<focusedlayout width="192" height="119">
 				<control type="group">
@@ -1193,6 +1196,7 @@
 					<include content="$PARAM[overlay]"><param name="diffuse">FFFFFFFF</param></include>
 					<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param><param name="diffuse">FFFFFFFF</param></include>
 					<include content="Bald_TileTitle"><param name="visible">$PARAM[show_title] + $EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param></include>
+					<include content="$PARAM[marks]"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param></include>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -1210,6 +1214,7 @@
 			<include content="Bald_PosterLowTile" />
 			<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
 			<include content="Bald_TileTitle"><param name="visible">$EXP[Bald_TileTitlesAlways]</param><param name="diffuse">bald_poster_dim</param><param name="x">12</param><param name="y">12</param><param name="w">140</param><param name="h">210</param><param name="label_y">180</param><param name="label_w">124</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">78,117</param></include>
+			<include content="Bald_TileMarks"><param name="diffuse">bald_poster_dim</param><param name="check_x">120</param><param name="check_y">20</param><param name="bar_x">20</param><param name="bar_y">214</param><param name="bar_w">124</param><param name="pop">102.5</param><param name="center">78,117</param></include>
 		</itemlayout>
 		<focusedlayout width="156" height="234">
 			<control type="group">
@@ -1223,6 +1228,7 @@
 				</include>
 				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
 				<include content="Bald_TileTitle"><param name="visible">$EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param><param name="x">12</param><param name="y">12</param><param name="w">140</param><param name="h">210</param><param name="label_y">180</param><param name="label_w">124</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">78,117</param></include>
+				<include content="Bald_TileMarks"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param><param name="check_x">120</param><param name="check_y">20</param><param name="bar_x">20</param><param name="bar_y">214</param><param name="bar_w">124</param><param name="pop">102.5</param><param name="center">78,117</param></include>
 			</control>
 		</focusedlayout>
 	</include>
@@ -1261,12 +1267,15 @@
 		     item back from its focus slot (2); the row slides two slots left in those states so the tile starts at the
 		     safe margin like any row's first item. -->
 		<animation effect="slide" end="-416,0" time="0" condition="String.IsEmpty(Weather.Plugin) | !Weather.IsFetched">Conditional</animation>
-		<include content="Bald_RowSquare"><param name="art" /><param name="overlay">Bald_WeatherTileFace</param><param name="caption">Bald_TileOverlayNone</param></include>
+		<include content="Bald_RowSquare"><param name="art" /><param name="overlay">Bald_WeatherTileFace</param><param name="caption">Bald_TileOverlayNone</param><param name="marks">Bald_TileOverlayNone</param></include>
 	</include>
+	<!-- A square row's tiles: art and overlay as Bald_SquareTile's, caption the name on the tile (Bald_TileTitle) and
+	     marks the watch-state marks (Bald_TileMarks); a weather row passes Bald_TileOverlayNone for both. -->
 	<include name="Bald_RowSquare">
 		<param name="art">$VAR[Bald_SquareArt]</param>
 		<param name="overlay">Bald_TileOverlayNone</param>
 		<param name="caption">Bald_TileTitle</param>
+		<param name="marks">Bald_TileMarks</param>
 		<definition>
 			<left>Bald_SafeLeft</left>
 			<top>Bald_LowRailTop</top>
@@ -1276,6 +1285,7 @@
 				<include content="Bald_SquareTile"><param name="art">$PARAM[art]</param><param name="overlay">$PARAM[overlay]</param></include>
 				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
 				<include content="$PARAM[caption]"><param name="visible">$EXP[Bald_TileTitlesAlways]</param><param name="diffuse">bald_poster_dim</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
+				<include content="$PARAM[marks]"><param name="diffuse">bald_poster_dim</param><param name="check_x">164</param><param name="check_y">20</param><param name="bar_x">20</param><param name="bar_y">188</param><param name="bar_w">168</param><param name="pop">102.5</param><param name="center">104,104</param></include>
 			</itemlayout>
 			<focusedlayout width="208" height="234">
 				<control type="group">
@@ -1290,6 +1300,7 @@
 					</include>
 					<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
 					<include content="$PARAM[caption]"><param name="visible">$EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
+					<include content="$PARAM[marks]"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param><param name="check_x">164</param><param name="check_y">20</param><param name="bar_x">20</param><param name="bar_y">188</param><param name="bar_w">168</param><param name="pop">102.5</param><param name="center">104,104</param></include>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -1368,6 +1379,95 @@
 	</include>
 	<include name="Bald_TileOverlayNone">
 		<definition />
+	</include>
+	<!-- Watch-state marks on a Home tile (fanart, thumbnail, poster and square rows; not logo, text or weather rows,
+	     which pass Bald_TileOverlayNone instead). The TV episode cards' language (Bald_InfoTVEpisodeCard) at tile size:
+	     the check (bald/check.png, 14 px) on a dot (bald/dot.png, 24 px) 8 px in from the top right corner, and a 4 px
+	     bar (bald/bar.png) 8 px in from the sides and the bottom edge. Every colour is opaque, as the tile's own dim is
+	     (bald_tile_dim), so nothing shows background video through: the dot is bald_field, the bar's track
+	     bald_mark_track (bald_ink28 over the field) and the check and fill take diffuse, the tile's dim unfocused and
+	     full ink focused (track follows: bald_mark_track_dim unfocused).
+	     Drawn after Bald_TileTitle so the title's scrim never darkens them; the bar lies below the title's line.
+	     The tile's rectangle in its slot is x, y, w, h (as Bald_TileTitle's); the include takes the marks' places from
+	     it (skin XML has no arithmetic): check_x = x + w - 32, check_y = y + 8, bar_x = x + 8, bar_y = y + h - 8,
+	     bar_w = w - 16. The defaults are the landscape tile's (10, 10, 176, 99). pop and center are Bald_TileTitle's: posters and squares pop
+	     inside their own include (102.5 about the tile's centre) and the marks pop with them; a landscape tile's whole
+	     focused layout pops, so its marks keep pop 100. The pop is a pure zoom, so Reduce motion simply drops it.
+	     Which items: video items only (Bald_TileMarkItem; music has play counts too). Resume wins, as in list rows:
+	     an item part way through (ListItem.IsResumable) shows the bar at ListItem.PercentPlayed and no check. A TV show
+	     or season with some but not all episodes watched shows the bar at ListItem.Property(WatchedEpisodePercent)
+	     (Kodi sets it with WatchedEpisodes and UnWatchedEpisodes; a progress control reads a numeric property). The
+	     check needs ListItem.PlayCount above 0, which Kodi sets on a show or season only when every episode is
+	     watched and on a movie set (ListItem.IsCollection) only when every movie is (GroupUtils); a set has no
+	     percentage, so it gets the check but no bar. Each mark follows its Appearance switch (Bald_ShowWatchedMarks,
+	     Bald_ShowProgressMarks). -->
+	<expression name="Bald_TileMarkItem">[!String.IsEqual(ListItem.DBType,album) + !String.IsEqual(ListItem.DBType,song) + !String.IsEqual(ListItem.DBType,artist) + !$EXP[Bald_FavouriteItem]]</expression>
+	<expression name="Bald_TileShowInProgress">[[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + Integer.IsGreater(ListItem.Property(WatchedEpisodes),0) + Integer.IsGreater(ListItem.Property(UnWatchedEpisodes),0)]</expression>
+	<expression name="Bald_TileInProgress">[ListItem.IsResumable | $EXP[Bald_TileShowInProgress]]</expression>
+	<expression name="Bald_TileWatched">[Integer.IsGreater(ListItem.PlayCount,0) + !$EXP[Bald_TileInProgress]]</expression>
+	<include name="Bald_TileMarks">
+		<param name="diffuse">bald_tile_dim</param>
+		<param name="track">bald_mark_track_dim</param>
+		<param name="check_x">154</param>
+		<param name="check_y">18</param>
+		<param name="bar_x">18</param>
+		<param name="bar_y">101</param>
+		<param name="bar_w">160</param>
+		<param name="pop">100</param>
+		<param name="center">98,59</param>
+		<definition>
+			<control type="group">
+				<visible>$EXP[Bald_TileMarkItem]</visible>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="$PARAM[pop]" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
+				<control type="group">
+					<left>$PARAM[check_x]</left>
+					<top>$PARAM[check_y]</top>
+					<visible>$EXP[Bald_TileWatched] + $EXP[Bald_ShowWatchedMarks]</visible>
+					<control type="image">
+						<width>24</width>
+						<height>24</height>
+						<texture colordiffuse="bald_field">bald/dot.png</texture>
+					</control>
+					<control type="image">
+						<left>5</left>
+						<top>5</top>
+						<width>14</width>
+						<height>14</height>
+						<texture colordiffuse="$PARAM[diffuse]">bald/check.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<left>$PARAM[bar_x]</left>
+					<top>$PARAM[bar_y]</top>
+					<visible>$EXP[Bald_TileInProgress] + $EXP[Bald_ShowProgressMarks]</visible>
+					<control type="image">
+						<width>$PARAM[bar_w]</width>
+						<height>4</height>
+						<texture border="2" colordiffuse="$PARAM[track]">bald/bar.png</texture>
+					</control>
+					<control type="progress">
+						<width>$PARAM[bar_w]</width>
+						<height>4</height>
+						<texturebg />
+						<lefttexture />
+						<midtexture border="2" colordiffuse="$PARAM[diffuse]">bald/bar.png</midtexture>
+						<righttexture />
+						<info>ListItem.PercentPlayed</info>
+						<visible>ListItem.IsResumable</visible>
+					</control>
+					<control type="progress">
+						<width>$PARAM[bar_w]</width>
+						<height>4</height>
+						<texturebg />
+						<lefttexture />
+						<midtexture border="2" colordiffuse="$PARAM[diffuse]">bald/bar.png</midtexture>
+						<righttexture />
+						<info>ListItem.Property(WatchedEpisodePercent)</info>
+						<visible>!ListItem.IsResumable</visible>
+					</control>
+				</control>
+			</control>
+		</definition>
 	</include>
 	<!-- Music in a landscape row. Tile art: the item's fanart, the show's, then (albums and songs) the artist's
 	     fanart, else the thumb (an album's cover, an artist's photo); Bald_ItemFanart without the artist step is
