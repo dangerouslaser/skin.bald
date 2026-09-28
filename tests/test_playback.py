@@ -54,8 +54,8 @@ FILES = list(WINDOWS) + ["Includes_Bald_Playback.xml", "Includes_SettingsDialog.
 SHARED_INCLUDES = {"HiddenObject", "DialogBackgroundCommons", "DefaultDialogButton", "DefaultSimpleListLayout",
                    "Animation_DialogPopupOpenClose", "SettingsDialogLayout", "SettingsDialogOSDVisible"}
 # Estuary variables still read: textures and plain labels only.
-SHARED_VARIABLES = {"PlayerClearLogoVar", "NowPlayingPosterVar", "PlayerControlsPlayImageVar",
-                    "PlayerControlsRepeatImageVar", "VideoPlayerForwardRewindVar", "ActiveVideoPlayerSubtitleLanguage",
+SHARED_VARIABLES = {"PlayerClearLogoVar", "NowPlayingPosterVar",
+                    "VideoPlayerForwardRewindVar", "ActiveVideoPlayerSubtitleLanguage",
                     "ActiveVideoPlayerAudioLanguage", "AudioCodecVar", "AudioChannelsVar", "VideoCodecVar",
                     "VideoHDRTypeVar", "VideoResolutionTypeVar"}
 ACTION_TAGS = ("onclick", "onleft", "onright", "onup", "ondown", "onback", "onfocus", "onunfocus", "action",

@@ -20,10 +20,9 @@ class PopupThemeTests(unittest.TestCase):
         self.assertEqual(button.find("texturefocus").get("border"), "27")
         self.assertEqual(button.findtext("texturenofocus"), "bald/pill_outline.png")
 
-        for filename in ("Constants_1080.xml", "Constants_720.xml"):
-            constants = ET.parse(ROOT / filename).getroot()
-            gap = int(constants.findtext("constant[@name='dialogbuttons_itemgap']"))
-            self.assertGreaterEqual(gap, 0)
+        constants = ET.parse(ROOT / "Constants.xml").getroot()
+        gap = int(constants.findtext("constant[@name='dialogbuttons_itemgap']"))
+        self.assertGreaterEqual(gap, 0)
 
         for path in ROOT.glob("*.xml"):
             root = ET.parse(path).getroot()

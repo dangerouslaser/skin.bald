@@ -3,53 +3,6 @@
      restyled with Bald tokens and fonts, sizes and parameters kept so the windows that use them keep their layout.
      Icon textures stay Estuary's, tinted with Bald ink. -->
 <includes>
-	<include name="OSDButton">
-		<textureradioonfocus colordiffuse="bald_field">$PARAM[texture]</textureradioonfocus>
-		<textureradioonnofocus colordiffuse="bald_ink70">$PARAM[texture]</textureradioonnofocus>
-		<textureradioofffocus colordiffuse="bald_field">$PARAM[texture]</textureradioofffocus>
-		<textureradiooffnofocus colordiffuse="bald_ink70">$PARAM[texture]</textureradiooffnofocus>
-		<textureradioondisabled colordiffuse="bald_ink28">$PARAM[texture]</textureradioondisabled>
-		<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[texture]</textureradiooffdisabled>
-		<texturefocus colordiffuse="bald_ink">osd/fullscreen/buttons/button-fo.png</texturefocus>
-		<width>76</width>
-		<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" easing="out">Focus</animation>
-		<height>76</height>
-		<radiowidth>74</radiowidth>
-		<radioheight>74</radioheight>
-		<font></font>
-		<texturenofocus />
-		<radioposx>1</radioposx>
-		<radioposy>0</radioposy>
-	</include>
-	<include name="InfoDialogMetadata">
-		<param name="onclick_condition">false</param>
-		<param name="onclick">noop</param>
-		<param name="altclick_condition">false</param>
-		<param name="altclick">noop</param>
-		<definition>
-			<control type="togglebutton" id="$PARAM[control_id]">
-				<width>469</width>
-				<height>49</height>
-				<textoffsetx>16</textoffsetx>
-				<aligny>center</aligny>
-				<font>Bald_InfoMeta</font>
-				<textcolor>bald_ink60</textcolor>
-				<focusedcolor>bald_ink</focusedcolor>
-				<texturefocus border="8" colordiffuse="bald_ink10">bald/white.png</texturefocus>
-				<alttexturefocus border="8" colordiffuse="bald_ink10">bald/white.png</alttexturefocus>
-				<texturenofocus />
-				<alttexturenofocus />
-				<onclick>noop</onclick>
-				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick]</onclick>
-				<altclick>noop</altclick>
-				<altclick condition="$PARAM[altclick_condition]">$PARAM[altclick]</altclick>
-				<label>$PARAM[label]</label>
-				<altlabel>$PARAM[altlabel]</altlabel>
-				<usealttexture>Control.HasFocus($PARAM[control_id])</usealttexture>
-				<visible>$PARAM[visible]</visible>
-			</control>
-		</definition>
-	</include>
 	<include name="DefaultSettingButton">
 		<param name="height">70</param>
 		<param name="textoffsetx">40</param>
@@ -66,24 +19,6 @@
 			<texturenofocus />
 		</definition>
 	</include>
-	<include name="DialogSettingButton">
-		<param name="width">700</param>
-		<param name="height">70</param>
-		<param name="textoffsetx">40</param>
-		<definition>
-			<textoffsetx>$PARAM[textoffsetx]</textoffsetx>
-			<top>0</top>
-			<width>$PARAM[width]</width>
-			<height>$PARAM[height]</height>
-			<aligny>center</aligny>
-			<textcolor>bald_ink60</textcolor>
-			<focusedcolor>bald_ink</focusedcolor>
-			<invalidcolor>bald_accent</invalidcolor>
-			<selectedcolor>bald_accent</selectedcolor>
-			<texturefocus border="8" colordiffuse="bald_ink10">bald/white.png</texturefocus>
-			<texturenofocus colordiffuse="bald_field">bald/white.png</texturenofocus>
-		</definition>
-	</include>
 	<include name="DefaultSettingLabel">
 		<left>0</left>
 		<top>0</top>
@@ -92,24 +27,6 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<font>Bald_RowLabel</font>
-		<textcolor>bald_ink60</textcolor>
-	</include>
-	<include name="SettingsItemCommon">
-		<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
-		<texturefocus border="27" colordiffuse="bald_ink28">bald/pill.png</texturefocus>
-		<height>100</height>
-		<aligny>center</aligny>
-		<textoffsetx>40</textoffsetx>
-		<font>Bald_Section</font>
-		<textcolor>bald_ink</textcolor>
-		<alttexturefocus border="27" colordiffuse="bald_ink28">bald/pill.png</alttexturefocus>
-		<alttexturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</alttexturenofocus>
-	</include>
-	<include name="SettingsLabelCommon">
-		<height>50</height>
-		<font>Bald_RowLabel</font>
-		<textoffsetx>30</textoffsetx>
-		<textoffsety>10</textoffsety>
 		<textcolor>bald_ink60</textcolor>
 	</include>
 	<include name="DefaultDialogButton">
@@ -152,147 +69,6 @@
 	<include name="Bald_KeyboardAction">
 		<param name="width">350</param><param name="height">72</param><param name="label"></param>
 		<definition><control type="button" id="$PARAM[id]"><width>$PARAM[width]</width><height>$PARAM[height]</height><label>$PARAM[label]</label><font>Bald_Section</font><align>center</align><aligny>center</aligny><textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor><texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus><texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus></control></definition>
-	</include>
-	<include name="PlaylistWindowButton">
-		<param name="width">100%</param>
-		<definition>
-			<control type="button" id="$PARAM[control_id]">
-				<width>$PARAM[width]</width>
-				<height>110</height>
-				<align>left</align>
-				<aligny>top</aligny>
-				<texturefocus border="8" colordiffuse="bald_ink10">bald/white.png</texturefocus>
-				<texturenofocus />
-				<textoffsetx>40</textoffsetx>
-				<textoffsety>35</textoffsety>
-				<label>$PARAM[label]</label>
-				<onclick>$PARAM[onclick]</onclick>
-				<textcolor>bald_ink60</textcolor>
-				<focusedcolor>bald_ink</focusedcolor>
-				<selectedcolor>bald_ink</selectedcolor>
-			</control>
-		</definition>
-	</include>
-	<include name="BottomMainMenuToggleItem">
-		<param name="height">120</param>
-		<definition>
-			<control type="radiobutton" id="$PARAM[control_id]">
-				<width>120</width>
-				<height>$PARAM[height]</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<onclick>$PARAM[onclick]</onclick>
-				<font></font>
-				<label>$PARAM[label]</label>
-				<texturefocus colordiffuse="bald_ink">buttons/roundbutton-fo.png</texturefocus>
-				<texturenofocus />
-				<radioposx>40</radioposx>
-				<radioposy>0</radioposy>
-				<radiowidth>40</radiowidth>
-				<radioheight>40</radioheight>
-				<textureradioonfocus colordiffuse="bald_field">$PARAM[icon_on]</textureradioonfocus>
-				<textureradioonnofocus colordiffuse="bald_ink60">$PARAM[icon_on]</textureradioonnofocus>
-				<textureradioofffocus colordiffuse="bald_field">$PARAM[icon_off]</textureradioofffocus>
-				<textureradiooffnofocus colordiffuse="bald_ink60">$PARAM[icon_off]</textureradiooffnofocus>
-				<selected>$PARAM[selected]</selected>
-			</control>
-		</definition>
-	</include>
-	<include name="VideoInfoButtonsCommon">
-		<param name="width">264</param>
-		<definition>
-			<width>$PARAM[width]</width>
-			<height>142</height>
-			<align>center</align>
-			<aligny>top</aligny>
-			<texturefocus border="21" colordiffuse="bald_ink28">buttons/button-fo.png</texturefocus>
-			<texturenofocus border="21" colordiffuse="bald_ink10">buttons/button-fo.png</texturenofocus>
-			<textoffsetx>22</textoffsetx>
-			<textoffsety>78</textoffsety>
-			<radioposx>108</radioposx>
-			<radioposy>13</radioposy>
-			<radiowidth>48</radiowidth>
-			<font>Bald_RowLabel</font>
-			<textcolor>bald_ink70</textcolor>
-			<focusedcolor>bald_ink</focusedcolor>
-			<hitrect x="21" y="21" w="245" h="100" />
-			<textureradioonfocus colordiffuse="bald_ink">$PARAM[icon]</textureradioonfocus>
-			<textureradioonnofocus colordiffuse="bald_ink80">$PARAM[icon]</textureradioonnofocus>
-			<textureradioofffocus colordiffuse="bald_ink">$PARAM[icon]</textureradioofffocus>
-			<textureradiooffnofocus colordiffuse="bald_ink80">$PARAM[icon]</textureradiooffnofocus>
-			<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradiooffdisabled>
-			<textureradioondisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradioondisabled>
-		</definition>
-	</include>
-	<include name="InfoDialogButton">
-		<param name="width">264</param>
-		<param name="onclick_1_condition">true</param>
-		<param name="onclick_2_condition">true</param>
-		<param name="onclick_3_condition">true</param>
-		<definition>
-			<control type="radiobutton" id="$PARAM[id]">
-				<width>$PARAM[width]</width>
-				<height>142</height>
-				<align>center</align>
-				<aligny>top</aligny>
-				<texturefocus border="21" colordiffuse="bald_ink28">buttons/button-fo.png</texturefocus>
-				<texturenofocus border="21" colordiffuse="bald_ink10">buttons/button-fo.png</texturenofocus>
-				<textoffsetx>22</textoffsetx>
-				<textoffsety>78</textoffsety>
-				<radioposx>108</radioposx>
-				<radioposy>16</radioposy>
-				<radiowidth>48</radiowidth>
-				<font>Bald_RowLabel</font>
-				<textcolor>bald_ink70</textcolor>
-				<focusedcolor>bald_ink</focusedcolor>
-				<hitrect x="21" y="21" w="245" h="100" />
-				<textureradioonfocus colordiffuse="bald_ink">$PARAM[icon]</textureradioonfocus>
-				<textureradioonnofocus colordiffuse="bald_ink80">$PARAM[icon]</textureradioonnofocus>
-				<textureradioofffocus colordiffuse="bald_ink">$PARAM[icon]</textureradioofffocus>
-				<textureradiooffnofocus colordiffuse="bald_ink80">$PARAM[icon]</textureradiooffnofocus>
-				<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradiooffdisabled>
-				<textureradioondisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradioondisabled>
-				<label>$PARAM[label]</label>
-				<onclick condition="$PARAM[onclick_1_condition]">$PARAM[onclick_1]</onclick>
-				<onclick condition="$PARAM[onclick_2_condition]">$PARAM[onclick_2]</onclick>
-				<onclick condition="$PARAM[onclick_3_condition]">$PARAM[onclick_3]</onclick>
-				<visible>$PARAM[visible]</visible>
-				<animation effect="fade" start="100" end="0" time="300" delay="300">Hidden</animation>
-			</control>
-		</definition>
-	</include>
-	<include name="InfoDialogToggleButton">
-		<param name="width">264</param>
-		<definition>
-			<control type="radiobutton" id="$PARAM[id]">
-				<width>$PARAM[width]</width>
-				<height>142</height>
-				<align>center</align>
-				<aligny>top</aligny>
-				<texturefocus border="21" colordiffuse="bald_ink28">buttons/button-fo.png</texturefocus>
-				<texturenofocus border="21" colordiffuse="bald_ink10">buttons/button-fo.png</texturenofocus>
-				<textoffsetx>35</textoffsetx>
-				<textoffsety>78</textoffsety>
-				<radioposx>108</radioposx>
-				<radioposy>16</radioposy>
-				<radiowidth>48</radiowidth>
-				<font>Bald_RowLabel</font>
-				<textcolor>bald_ink70</textcolor>
-				<focusedcolor>bald_ink</focusedcolor>
-				<hitrect x="21" y="21" w="245" h="100" />
-				<textureradioonfocus colordiffuse="bald_ink">$PARAM[icon_on]</textureradioonfocus>
-				<textureradioonnofocus colordiffuse="bald_ink80">$PARAM[icon_on]</textureradioonnofocus>
-				<textureradioofffocus colordiffuse="bald_ink">$PARAM[icon_off]</textureradioofffocus>
-				<textureradiooffnofocus colordiffuse="bald_ink80">$PARAM[icon_off]</textureradiooffnofocus>
-				<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon_off]</textureradiooffdisabled>
-				<textureradioondisabled colordiffuse="bald_ink28">$PARAM[icon_on]</textureradioondisabled>
-				<selected>$PARAM[selected]</selected>
-				<label>$PARAM[label]</label>
-				<onclick>$PARAM[onclick_1]</onclick>
-				<onclick>$PARAM[onclick_2]</onclick>
-				<visible>$PARAM[visible]</visible>
-			</control>
-		</definition>
 	</include>
 	<include name="ButtonMenuList">
 		<left>0</left>

@@ -81,10 +81,10 @@ CONSTANT_TAGS = {"left", "top", "right", "bottom", "width", "height", "posx", "p
 
 
 def constants(folder=SKIN):
-    """Every <constant> in the include files by name, first definition kept, at 1080 (Constants_720.xml skipped)."""
+    """Every <constant> in the include files by name, first definition kept."""
     values = {}
     for path in sorted(folder.glob("*.xml")):
-        if path.name in (GENERATED, "Constants_720.xml"):
+        if path.name == GENERATED:
             continue
         root = ET.parse(path).getroot()
         if root.tag == "includes":

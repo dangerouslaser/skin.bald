@@ -49,7 +49,7 @@ LAYOUT = {("left", "96"): "Bald_SafeLeft", ("top", "954"): "Bald_HintTop", ("lef
 
 class ConstantTests(unittest.TestCase):
     def test_bald_constants_load_at_every_screen_height(self):
-        # Constants_720/1080.xml are conditional on the screen height; Bald's 1080i values must not be.
+        # Bald's 1080i values load at every screen height (no condition on their include).
         registered = {node.get("file"): node.get("condition") for node in ET.parse(SKIN / "Includes.xml").getroot().findall("include")
                       if node.get("file")}
         self.assertIn("Includes_Bald_Constants.xml", registered)
@@ -193,3 +193,45 @@ class CurveTests(unittest.TestCase):
                     if kind == 'fade' and effect.get('tween'):
                         with self.subTest(file=path.name, effect=ET.tostring(effect, encoding='unicode')[:90]):
                             self.assertIsNotNone(effect.get('easing'))
+
+
+class MotionCurveTests(unittest.TestCase):
+    """CLAUDE.md's curves: fade = sine in-out, move (slide, and a zoom that settles back) = cubic out, pop = back out.
+    The shared dialog animations in Includes_Animations.xml follow them, and so does every zoom that settles back
+    when focus leaves (Unfocus), across the skin."""
+
+    FADE = {("sine", "inout")}
+    MOVE = {("cubic", "out"), ("back", "out")}
+
+    @staticmethod
+    def effects(anim):
+        if anim.get("effect"):
+            return [(anim.get("effect"), anim)]
+        return [(effect.get("type"), effect) for effect in anim.iter("effect")]
+
+    @staticmethod
+    def curve(node):
+        return node.get("tween"), node.get("easing")
+
+    def test_shared_dialog_animations_use_the_spec_curves(self):
+        root = ET.parse(SKIN / "Includes_Animations.xml").getroot()
+        for anim in root.iter("animation"):
+            for kind, node in self.effects(anim):
+                if int(node.get("time", "0")) == 0:
+                    continue
+                with self.subTest(effect=kind, curve=self.curve(node)):
+                    self.assertIn(kind, ("fade", "slide", "zoom"))
+                    self.assertIn(self.curve(node), self.FADE if kind == "fade" else self.MOVE)
+
+    def test_unfocus_zooms_settle_with_cubic_out(self):
+        for path in sorted(SKIN.glob("*.xml")):
+            if path.name.startswith("script-skinvariables"):
+                continue
+            for anim in ET.parse(path).getroot().iter("animation"):
+                if (anim.get("type") or anim.text or "").strip().lower() != "unfocus":
+                    continue
+                for kind, node in self.effects(anim):
+                    if kind != "zoom" or int(node.get("time", "0")) == 0:
+                        continue
+                    with self.subTest(file=path.name, curve=self.curve(node)):
+                        self.assertEqual(self.curve(node), ("cubic", "out"))

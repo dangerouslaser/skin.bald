@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="Animation_FocusTextureFade">
-		<animation effect="fade" start="0" end="100" time="200" tween="sine">Focus</animation>
+		<animation effect="fade" start="0" end="100" time="200" tween="sine" easing="inout">Focus</animation>
 		<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
 	</include>
 	<!-- Popup dialogs (select, confirm, sliders, subtitle search, the player controls and more): open with the pop
@@ -19,71 +19,51 @@
 	</include>
 	<include name="Animation_DialogPopupVisible">
 		<animation type="Visible" reversible="false">
-			<effect type="zoom" start="80" end="100" center="50%,50%" delay="160" tween="back" time="240" />
-			<effect type="fade" delay="160" end="100" time="240" />
+			<effect type="zoom" start="80" end="100" center="50%,50%" delay="160" time="240" tween="back" easing="out" />
+			<effect type="fade" start="0" end="100" delay="160" time="240" tween="sine" easing="inout" />
 		</animation>
 		<animation type="Hidden" reversible="false">
-			<effect type="zoom" start="100" end="80" center="50%,50%" easing="in" tween="back" time="240" />
-			<effect type="fade" start="100" end="0" time="240" />
-		</animation>
-	</include>
-	<include name="Animation_TopSlide">
-		<animation type="WindowOpen" reversible="false">
-			<effect type="fade" start="0" end="100" time="300"/>
-			<effect type="slide" start="0,-200" end="0,0" time="300" tween="cubic" easing="out" />
-		</animation>
-		<animation type="WindowClose" reversible="false">
-			<effect type="fade" start="100" end="0" time="300"/>
-			<effect type="slide" start="0,0" end="0,-200" time="300" tween="cubic" easing="out" />
-		</animation>
-	</include>
-	<include name="Animation_BottomSlide">
-		<animation type="WindowOpen" reversible="false">
-			<effect type="fade" start="0" end="100" time="300"/>
-			<effect type="slide" start="0,200" end="0,0" time="300" tween="cubic" easing="out" />
-		</animation>
-		<animation type="WindowClose" reversible="false">
-			<effect type="fade" start="100" end="0" time="300"/>
-			<effect type="slide" start="0,0" end="0,200" time="300" tween="cubic" easing="out" />
+			<effect type="zoom" start="100" end="80" center="50%,50%" time="240" tween="cubic" easing="out" />
+			<effect type="fade" start="100" end="0" time="240" tween="sine" easing="inout" />
 		</animation>
 	</include>
 	<include name="Visible_Left">
 		<animation type="Visible" reversible="false">
-			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
+			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="inout" />
 			<effect type="slide" start="-320" end="0" time="400" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Hidden" reversible="false">
-			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="out" />
+			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="inout" />
 			<effect type="slide" start="0" end="-320" time="300" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<include name="OpenClose_Left">
 		<animation type="WindowOpen">
-			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
+			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="inout" />
 			<effect type="slide" start="-320" end="0" time="400" tween="cubic" easing="out" />
 		</animation>
 		<animation type="WindowClose">
-			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="out" />
+			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="inout" />
 			<effect type="slide" start="0" end="-320" time="300" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<include name="OpenClose_Right">
 		<animation type="WindowOpen">
-			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
+			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="inout" />
 			<effect type="slide" start="320" end="0" time="400" tween="cubic" easing="out" />
 		</animation>
 		<animation type="WindowClose">
-			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="out" />
+			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="inout" />
 			<effect type="slide" start="0" end="320" time="300" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<include name="Keyboard_Slide_Up">
 		<animation type="WindowOpen">
-			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
+			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="inout" />
 			<effect type="slide" start="0,1080" end="0,0" time="400" tween="cubic" easing="out" />
 		</animation>
 		<animation type="WindowClose">
-			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="out" />
+			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="inout" />
 			<effect type="slide" start="0,0" end="0,1080" time="400" tween="cubic" easing="out" />
 		</animation>
 	</include>

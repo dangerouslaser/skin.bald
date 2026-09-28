@@ -444,8 +444,9 @@ DialogTextViewer.xml (CGUIDialogTextViewer) and Custom_1102_TextViewer.xml (wind
 2000	Text box (1102; the skin fills it from a home property)
 3000	Hidden scrollbar, the text box's page control
 1000	Hidden button that holds remote focus: Select closes, Up and Down page
+22002	Full-panel button under the controls (DialogBackgroundCommons), so a click inside the panel does not close it
 
-Free custom window numbers start at 1119.
+Free custom window numbers start at 1130.
 
 
 MEDIA WINDOWS (restyled Estuary copies; Includes_Bald_Media.xml adds no fixed ids)
@@ -473,8 +474,8 @@ DialogGameControllers.xml (Includes_Games.xml)
 		Ports: 2, 3, 18, 19; 62, 9001. Players: 2, 3, 4, 7, 18; 10 actions, 61 scrollbar
 		Disc manager: 3 menu (items 108323-108327), 108321 disc list, 108322 scrollbar
 MyWeather.xml		Kodi binds none that Estuary or Bald ship. 2000 page grouplist, 567 current block,
-		20 location button, 15100 daily, 15200 hourly (+666 row captions), 70010-70059 maps
-		(700N0 button ... 700N9 heading), 20000 / 20001 end bumps, 10000 Menu to weather settings
+		20 location button, 15100 daily, 15200 hourly (+666 row captions), 7001-7005 map groups,
+		70010-70059 maps (in group 700N: 700N0 button ... 700N9 heading), 20000 / 20001 end bumps, 10000 Menu to weather settings
 MyPics.xml		6 slideshow, 7 recursive slideshow, 9 shuffle (Estuary side panel, unchanged)
 MyMusicPlaylistEditor.xml	6 load, 7 save, 8 clear, 50 files, 100 playlist; 60 / 61 scrollbars, 9000 actions
 

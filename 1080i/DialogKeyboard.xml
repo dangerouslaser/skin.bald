@@ -31,7 +31,7 @@
 				<height>100</height>
 				<font>Bald_CaptionTitle</font>
 				<textcolor>bald_ink</textcolor>
-				<label>$PARAM[header_label]</label>
+				<label />
 				<align>center</align>
 				<aligny>center</aligny>
 				<shadowcolor>black</shadowcolor>

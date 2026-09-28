@@ -101,8 +101,7 @@ class FontsetTests(unittest.TestCase):
         # Fonts of textboxes and wrapped labels: their line pitch is layout, so DM Sans must match it.
         multi_line = {"Bald_CaptionMeta", "Bald_CaptionPlot", "Bald_CaptionTitle", "Bald_CastName", "Bald_CastRole",
                       "Bald_DetailValue", "Bald_InfoPlot", "Bald_MenuNote", "Bald_Section", "font12", "font13",
-                      "font14", "font27", "font27_narrow", "font30_title", "font32_title", "font36_title", "font37",
-                      "font45_title"}
+                      "font27", "font37"}
         sets = fontsets()
         default = entries(sets[BASE])
         for fontset_id in TYPEFACES:

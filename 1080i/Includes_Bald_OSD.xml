@@ -520,7 +520,7 @@
 				<effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" />
 			</animation>
 			<animation type="Unfocus">
-				<effect type="zoom" start="105" end="100" center="40,36" time="220" tween="sine" easing="inout" />
+				<effect type="zoom" start="105" end="100" center="40,36" time="220" tween="cubic" easing="out" />
 			</animation>
 		</definition>
 	</include>

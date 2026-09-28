@@ -7,22 +7,10 @@
 	     1.22), so every font drawn on several lines (textboxes, wrapped labels) has its own linespacing here that
 	     brings Kodi's pixel line height back to Instrument Sans' within 0.5 px (tests/test_fonts.py). -->
 	<fontset id="Default" idloc="31941">
-        <font>
-            <name>font23_narrow</name>
-            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
-            <size>21</size>
-        </font>
-        <font>
-            <name>font32</name>
-            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
-            <size>32</size>
-        </font>
-		<!-- Normal Fonts -->
-		<font>
-			<name>font10</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>23</size>
-		</font>
+		<!-- Estuary names kept for the copied utility windows; font13 also stays because Kodi falls back to it for any
+		     font name a window asks for that the skin lacks. font23_narrow and font32 use Kodi's bundled arial.ttf in
+		     every fontset: they only draw text from outside the skin (a game add-on's emulator name and version in
+		     DialogAddonSettings, the screen calibration readout), which arial.ttf's wide glyph coverage suits. -->
 		<font>
 			<name>font12</name>
 			<filename>DMSans-Regular.ttf</filename>
@@ -36,22 +24,9 @@
 			<linespacing>0.949</linespacing>
 		</font>
 		<font>
-			<name>font14</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>33</size>
-			<linespacing>0.93</linespacing>
-		</font>
-		<font>
 			<name>font23_narrow</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>23</size>
-			<linespacing>0.8</linespacing>
-		</font>
-		<font>
-			<name>font25_narrow</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>25</size>
-			<linespacing>0.8</linespacing>
+			<filename>special://xbmc/media/Fonts/arial.ttf</filename>
+			<size>21</size>
 		</font>
 		<font>
 			<name>font27</name>
@@ -60,14 +35,8 @@
 			<linespacing>0.943</linespacing>
 		</font>
 		<font>
-			<name>font27_narrow</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>27</size>
-			<linespacing>0.754</linespacing>
-		</font>
-		<font>
 			<name>font32</name>
-			<filename>DMSans-Regular.ttf</filename>
+			<filename>special://xbmc/media/Fonts/arial.ttf</filename>
 			<size>32</size>
 		</font>
 		<font>
@@ -76,86 +45,16 @@
 			<size>37</size>
 			<linespacing>0.938</linespacing>
 		</font>
-		<font>
-			<name>font45</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>45</size>
-		</font>
-		<font>
-			<name>font60</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>60</size>
-		</font>
-		<font>
-			<name>font_clock</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>70</size>
-		</font>
 		<!-- Title Fonts -->
-		<font>
-			<name>font_flag</name>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>18</size>
-		</font>
-		<font>
-			<name>font20_title</name>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>20</size>
-		</font>
 		<font>
 			<name>font25_title</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>25</size>
 		</font>
 		<font>
-			<name>font30_title</name>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>30</size>
-			<linespacing>0.949</linespacing>
-		</font>
-		<font>
-			<name>font32_title</name>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>32</size>
-			<linespacing>0.929</linespacing>
-		</font>
-		<font>
-			<name>font36_title</name>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>36</size>
-			<linespacing>0.936</linespacing>
-		</font>
-		<font>
 			<name>font40_title</name>
 			<filename>DMSans-SemiBold.ttf</filename>
 			<size>40</size>
-		</font>
-		<font>
-			<name>font45_title</name>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>45</size>
-			<linespacing>0.932</linespacing>
-		</font>
-		<font>
-			<name>font52_title</name>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>52</size>
-		</font>
-		<font>
-			<name>font_MainMenu</name>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>60</size>
-		</font>
-		<font>
-			<name>WeatherTemp</name>
-			<aspect>0.85</aspect>
-			<filename>DMSans-SemiBold.ttf</filename>
-			<size>120</size>
-		</font>
-		<font>
-			<name>Mono26</name>
-			<filename>DMSans-Regular.ttf</filename>
-			<size>26</size>
 		</font>
 		<!-- Bald type scale (docs/SPEC.md section 3) -->
 		<!-- Clock (spec 300; lightest static face is 400) -->
@@ -315,22 +214,7 @@
 	<!-- Instrument Sans (Appearance > Typography). The reference set: DM Sans (Default) differs from it only in files
 	     and linespacing (tests/test_fonts.py). -->
 	<fontset id="InstrumentSans" idloc="31940">
-        <font>
-            <name>font23_narrow</name>
-            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
-            <size>21</size>
-        </font>
-        <font>
-            <name>font32</name>
-            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
-            <size>32</size>
-        </font>
 		<!-- Normal Fonts -->
-		<font>
-			<name>font10</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>23</size>
-		</font>
 		<font>
 			<name>font12</name>
 			<filename>InstrumentSans-Regular.ttf</filename>
@@ -342,21 +226,9 @@
 			<size>30</size>
 		</font>
 		<font>
-			<name>font14</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>33</size>
-		</font>
-		<font>
 			<name>font23_narrow</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>23</size>
-			<linespacing>0.8</linespacing>
-		</font>
-		<font>
-			<name>font25_narrow</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>25</size>
-			<linespacing>0.8</linespacing>
+			<filename>special://xbmc/media/Fonts/arial.ttf</filename>
+			<size>21</size>
 		</font>
 		<font>
 			<name>font27</name>
@@ -364,14 +236,8 @@
 			<size>27</size>
 		</font>
 		<font>
-			<name>font27_narrow</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>27</size>
-			<linespacing>0.8</linespacing>
-		</font>
-		<font>
 			<name>font32</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
+			<filename>special://xbmc/media/Fonts/arial.ttf</filename>
 			<size>32</size>
 		</font>
 		<font>
@@ -379,82 +245,16 @@
 			<filename>InstrumentSans-Regular.ttf</filename>
 			<size>37</size>
 		</font>
-		<font>
-			<name>font45</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>45</size>
-		</font>
-		<font>
-			<name>font60</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>60</size>
-		</font>
-		<font>
-			<name>font_clock</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>70</size>
-		</font>
 		<!-- Title Fonts -->
-		<font>
-			<name>font_flag</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>18</size>
-		</font>
-		<font>
-			<name>font20_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>20</size>
-		</font>
 		<font>
 			<name>font25_title</name>
 			<filename>InstrumentSans-SemiBold.ttf</filename>
 			<size>25</size>
 		</font>
 		<font>
-			<name>font30_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>30</size>
-		</font>
-		<font>
-			<name>font32_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>32</size>
-		</font>
-		<font>
-			<name>font36_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>36</size>
-		</font>
-		<font>
 			<name>font40_title</name>
 			<filename>InstrumentSans-SemiBold.ttf</filename>
 			<size>40</size>
-		</font>
-		<font>
-			<name>font45_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>45</size>
-		</font>
-		<font>
-			<name>font52_title</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>52</size>
-		</font>
-		<font>
-			<name>font_MainMenu</name>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>60</size>
-		</font>
-		<font>
-			<name>WeatherTemp</name>
-			<aspect>0.85</aspect>
-			<filename>InstrumentSans-SemiBold.ttf</filename>
-			<size>120</size>
-		</font>
-		<font>
-			<name>Mono26</name>
-			<filename>InstrumentSans-Regular.ttf</filename>
-			<size>26</size>
 		</font>
 		<!-- Bald type scale (docs/SPEC.md section 3) -->
 		<!-- Clock (spec 300; lightest static face is 400) -->
@@ -607,22 +407,7 @@
 		</font>
 	</fontset>
 	<fontset id="Arial" idloc="31053">
-        <font>
-            <name>font23_narrow</name>
-            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
-            <size>21</size>
-        </font>
-        <font>
-            <name>font32</name>
-            <filename>special://xbmc/media/Fonts/arial.ttf</filename>
-            <size>32</size>
-        </font>
 		<!-- Arial Font better for non English -->
-		<font>
-			<name>font10</name>
-			<filename>arial.ttf</filename>
-			<size>18</size>
-		</font>
 		<font>
 			<name>font12</name>
 			<filename>arial.ttf</filename>
@@ -634,21 +419,9 @@
 			<size>27</size>
 		</font>
 		<font>
-			<name>font14</name>
-			<filename>arial.ttf</filename>
-			<size>30</size>
-		</font>
-		<font>
 			<name>font23_narrow</name>
-			<filename>arial.ttf</filename>
-			<size>23</size>
-			<linespacing>0.8</linespacing>
-		</font>
-		<font>
-			<name>font25_narrow</name>
-			<filename>arial.ttf</filename>
-			<size>25</size>
-			<linespacing>0.8</linespacing>
+			<filename>special://xbmc/media/Fonts/arial.ttf</filename>
+			<size>21</size>
 		</font>
 		<font>
 			<name>font27</name>
@@ -656,14 +429,8 @@
 			<size>27</size>
 		</font>
 		<font>
-			<name>font27_narrow</name>
-			<filename>arial.ttf</filename>
-			<size>27</size>
-			<linespacing>0.8</linespacing>
-		</font>
-		<font>
 			<name>font32</name>
-			<filename>arial.ttf</filename>
+			<filename>special://xbmc/media/Fonts/arial.ttf</filename>
 			<size>32</size>
 		</font>
 		<font>
@@ -671,95 +438,19 @@
 			<filename>arial.ttf</filename>
 			<size>37</size>
 		</font>
-		<font>
-			<name>font45</name>
-			<filename>arial.ttf</filename>
-			<size>45</size>
-		</font>
-		<font>
-			<name>font60</name>
-			<filename>arial.ttf</filename>
-			<size>60</size>
-			<style>lighten</style>
-		</font>
-		<font>
-			<name>font_clock</name>
-			<filename>arial.ttf</filename>
-			<size>70</size>
-			<style>lighten</style>
-		</font>
 		<!-- Title Fonts -->
-		<font>
-			<name>font_flag</name>
-			<filename>arial.ttf</filename>
-			<size>18</size>
-		</font>
-		<font>
-			<name>font20_title</name>
-			<filename>arial.ttf</filename>
-			<size>20</size>
-			<style>bold</style>
-		</font>
 		<font>
 			<name>font25_title</name>
 			<filename>arial.ttf</filename>
 			<size>25</size>
 			<style>bold</style>
 		</font>
-		<font>
-			<name>font30_title</name>
-			<filename>arial.ttf</filename>
-			<size>30</size>
-			<style>bold</style>
-		</font>
 
-		<font>
-			<name>font32_title</name>
-			<filename>arial.ttf</filename>
-			<size>32</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>font36_title</name>
-			<filename>arial.ttf</filename>
-			<size>36</size>
-			<style>bold</style>
-		</font>
 		<font>
 			<name>font40_title</name>
 			<filename>arial.ttf</filename>
 			<size>40</size>
 			<style>bold</style>
-		</font>
-		<font>
-			<name>font45_title</name>
-			<filename>arial.ttf</filename>
-			<size>45</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>font52_title</name>
-			<filename>arial.ttf</filename>
-			<size>52</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>font_MainMenu</name>
-			<filename>arial.ttf</filename>
-			<size>52</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>WeatherTemp</name>
-			<aspect>0.75</aspect>
-			<filename>arial.ttf</filename>
-			<size>120</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>Mono26</name>
-			<filename>arial.ttf</filename>
-			<size>26</size>
 		</font>
 		<!-- Bald type scale (docs/SPEC.md section 3) -->
 		<!-- Clock (spec 300; lightest static face is 400) -->

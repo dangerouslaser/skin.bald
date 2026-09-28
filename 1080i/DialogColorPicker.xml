@@ -42,7 +42,7 @@
 							<effect type="zoom" start="100" end="112" center="73,44" time="280" tween="back" easing="out" />
 						</animation>
 						<animation type="Unfocus">
-							<effect type="zoom" start="112" end="100" center="73,44" time="220" tween="sine" easing="inout" />
+							<effect type="zoom" start="112" end="100" center="73,44" time="220" tween="cubic" easing="out" />
 						</animation>
 						<include>Bald_ColorSwatch</include>
 						<control type="image">
