@@ -124,6 +124,12 @@ class GeneratorTests(unittest.TestCase):
 class InfolabelTests(unittest.TestCase):
     def test_everything_shown_is_a_native_weather_infolabel(self):
         text = WEATHER.read_text(encoding="utf-8")
+        # Bald Helper's tidied values (resources/lib/weather.py) are the one exception: only the fields it publishes.
+        tidied = set(re.findall(r"Window\(home\)\.Property\(Bald\.Weather\.([^)]+)\)", text))
+        self.assertEqual(tidied, {"Current.Precipitation", "Daily.$PARAM[n].HighTemperature",
+                                  "Daily.$PARAM[n].LowTemperature", "Hourly.$PARAM[n].Time",
+                                  "Hourly.$PARAM[n].Temperature", "Hourly.$PARAM[n].Precipitation"})
+        text = re.sub(r"Window\(home\)\.Property\(Bald\.Weather\.[^)]+\)", "Weather.Data(Current.Temperature)", text)
         labels = set(infolabels(text))
         self.assertTrue(labels)
         for label in sorted(labels):

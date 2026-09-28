@@ -160,8 +160,9 @@ class ServiceTests(unittest.TestCase):
     def test_the_service_runs_the_keeper_in_its_loop(self):
         text = (ADDON / "service.py").read_text(encoding="utf-8")
         self.assertIn("from resources.lib.fontset import Keeper", text)
-        self.assertIn("each=(actions.refresh, *fontset_steps)", text)
-        self.assertIn("each=fontset_steps", text)
+        self.assertIn("each=(actions.refresh, *loop_steps)", text)
+        self.assertIn("each=loop_steps", text)
+        self.assertIn("step.tick for step in (fontset, weather)", text)
 
     def test_each_step_is_guarded_on_its_own(self):
         class Xbmc:
