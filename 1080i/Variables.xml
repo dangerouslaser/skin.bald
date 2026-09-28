@@ -371,7 +371,7 @@
 	</variable>
 	<variable name="WeatherOutlookIconPrefixVar">
 		<value condition="!String.IsEmpty(Skin.String(Bald.WeatherIcons.path))">$INFO[Skin.String(Bald.WeatherIcons.path)]</value>
-		<value>resource://resource.images.weathericons.default/</value>
+		<value>special://skin/media/bald/weather/</value>
 	</variable>
 	<variable name="WeatherOutlookIconPostfixVar">
 		<value condition="!String.IsEmpty(Skin.String(Bald.WeatherIcons.path))">$INFO[Skin.String(Bald.WeatherIcons.ext)]</value>

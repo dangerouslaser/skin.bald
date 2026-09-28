@@ -12,7 +12,7 @@
      one quiet tile waits in its place. Select on any other tile opens the weather page.
 
      Each item carries what its tile and caption show: label (top of the tile), label2 (under the icon), the icon from
-     the weather icon pack (WeatherOutlookIconPrefixVar, Kodi's default pack without one), and the properties
+     the weather icon pack (WeatherOutlookIconPrefixVar, Bald's own Meteocons icons without one), and the properties
      Bald.Weather (the tile's kind), Bald.WeatherCode (the condition's fanart code, for the weather background pack),
      Bald.Title, Bald.Meta, Bald.Detail, Bald.Accent and Bald.Note (the caption's lines, Bald_WeatherCaption). -->
 <includes>
