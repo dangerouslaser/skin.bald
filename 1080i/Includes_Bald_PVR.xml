@@ -136,16 +136,19 @@
 	</include>
 	<!-- The panel's header: the tab names (the active one in full ink, the other one it can swap to at 28%), the accent
 	     section line and the date and time on the right. -->
+	<!-- `guide` / `channels`: true in the tab that is showing. (Booleans, not a name compared with String.IsEqual,
+	     which reads its first argument as an infolabel: a literal like "channels" is empty there.) -->
 	<include name="Bald_PVRTabs">
-		<param name="active" />
+		<param name="guide">false</param>
+		<param name="channels">false</param>
 		<param name="section" />
 		<definition>
 			<control type="grouplist">
 				<left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>780</width><height>52</height>
 				<orientation>horizontal</orientation><itemgap>36</itemgap><usecontrolcoords>true</usecontrolcoords>
-				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[19069]</label><visible>String.IsEqual($PARAM[active],guide)</visible></control>
-				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[19019]</label><visible>String.IsEqual($PARAM[active],channels)</visible></control>
-				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink28</textcolor><label>$LOCALIZE[19019]</label><visible>!String.IsEqual($PARAM[active],channels) + $EXP[Bald_PVRGuideToChannels]</visible></control>
+				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[19069]</label><visible>$PARAM[guide]</visible></control>
+				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[19019]</label><visible>$PARAM[channels]</visible></control>
+				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink28</textcolor><label>$LOCALIZE[19019]</label><visible>![$PARAM[channels]] + $EXP[Bald_PVRGuideToChannels]</visible></control>
 			</control>
 			<control type="label"><left>Bald_SafeLeft</left><top>174</top><width>780</width><height>28</height><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[section]</label></control>
 			<control type="label"><left>1000</left><top>120</top><width>824</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[System.Date] · $INFO[System.Time]</label></control>

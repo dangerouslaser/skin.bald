@@ -296,13 +296,14 @@ class ChainTests(unittest.TestCase):
         labels = {name: [(n.findtext("label"), n.findtext("visible")) for n in resolve_window(name).iter("control")
                          if n.get("type") == "label" and n.findtext("font") == "Bald_CaptionTitle"]
                   for name in ("DialogPVRChannelGuide.xml", "DialogPVRChannelsOSD.xml")}
-        self.assertIn(("$LOCALIZE[19019]", "!String.IsEqual(guide,channels) + $EXP[Bald_PVRGuideToChannels]"),
-                      labels["DialogPVRChannelGuide.xml"])
-        channels = labels["DialogPVRChannelsOSD.xml"]
-        self.assertEqual([label for label, visible in channels if visible == "String.IsEqual(channels,channels)"],
-                         ["$LOCALIZE[19019]"])
-        self.assertEqual([visible for label, visible in channels if label == "$LOCALIZE[19069]"],
-                         ["String.IsEqual(channels,guide)"])
+        # The tab that is showing is lit (a literal true), never through String.IsEqual on a literal, which Kodi
+        # reads as an empty infolabel and so never matches.
+        self.assertEqual(labels["DialogPVRChannelGuide.xml"],
+                         [("$LOCALIZE[19069]", "true"), ("$LOCALIZE[19019]", "false"),
+                          ("$LOCALIZE[19019]", "![false] + $EXP[Bald_PVRGuideToChannels]")])
+        self.assertEqual(labels["DialogPVRChannelsOSD.xml"],
+                         [("$LOCALIZE[19069]", "false"), ("$LOCALIZE[19019]", "true"),
+                          ("$LOCALIZE[19019]", "![true] + $EXP[Bald_PVRGuideToChannels]")])
 
     def test_chain_panels_stop_the_auto_close(self):
         # Browsed, not glanced at: the alarm waits while a chain panel is open and comes back when it closes (focus

@@ -16,7 +16,7 @@
 			<!-- The Live TV panel's Guide tab (Includes_Bald_PVR.xml, "In-player Live TV panel"). -->
 			<include>Bald_PVRPanelBase</include>
 			<include content="Bald_PVRTabs">
-				<param name="active">guide</param>
+				<param name="guide">true</param>
 				<param name="section">$INFO[Container(11).ListItem.ChannelName]$INFO[Container(11).ListItem.StartDate, · ]</param>
 			</include>
 			<!-- Header label as Estuary numbers it; Kodi does not write to it. -->

@@ -15,7 +15,7 @@
 			     shows the focused channel's programme on now and what is next, as you scroll. -->
 			<include>Bald_PVRPanelBase</include>
 			<include content="Bald_PVRTabs">
-				<param name="active">channels</param>
+				<param name="channels">true</param>
 				<param name="section">$VAR[Bald_PVRPlayingArea]$INFO[VideoPlayer.ChannelGroup, · ]</param>
 			</include>
 			<!-- Header label as Estuary numbers it; Kodi does not write to it. -->
