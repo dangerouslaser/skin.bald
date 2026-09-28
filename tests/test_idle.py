@@ -37,6 +37,8 @@ def evaluate(tree, stored, seconds):
     if kind == "atom":
         if value == "String.IsEmpty(Skin.String(Bald.IdleTime))":
             return stored == ""
+        if value == "String.IsEmpty(Window(home).Property(Bald.IdlePreview))":
+            return True  # the test switch (Bald.IdlePreview) is off here: `!` of this makes it count as not idle
         match = re.fullmatch(r"Skin\.String\(Bald\.IdleTime,(\w+)\)", value)
         if match:
             return stored.lower() == match.group(1).lower()

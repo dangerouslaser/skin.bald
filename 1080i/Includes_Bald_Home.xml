@@ -184,13 +184,15 @@
 			<effect type="fade" start="0" end="100" time="400" delay="400" tween="sine" easing="inout" />
 		</animation>
 	</include>
-	<!-- The frame's own masks: gone at once, back after the frame has shrunk (and a poster row's nudge has settled). -->
+	<!-- The frame's own masks: gone at once, back as the frame finishes shrinking (450-550), before the idle masks leave
+	     (600-680): both lay the same background back, so they overlap and the art's edges are never uncovered in the
+	     handoff (a gap between them showed the frame's overflow for a moment at the end of the wake, a judder). -->
 	<include name="Bald_AnimIdleMasks">
 		<animation type="Conditional" condition="$EXP[Bald_IdleExpand]" reversible="false">
 			<effect type="fade" start="100" end="0" time="150" tween="sine" easing="inout" />
 		</animation>
 		<animation type="Conditional" condition="!$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="0" end="100" time="80" delay="600" tween="sine" easing="inout" />
+			<effect type="fade" start="0" end="100" time="100" delay="450" tween="sine" easing="inout" />
 		</animation>
 	</include>
 	<!-- Everything the big frame covers (rows, caption, clock and date, section line): out 600, back as it reverses. -->
@@ -220,7 +222,7 @@
 		<!-- Idle masks: the zoomed frame spills 66 px above and below the big rect (and its settle zoom a little round
 		     it), so the background is laid back over everything outside it, from the start until the frame has shrunk. -->
 		<control type="group">
-			<include content="Bald_AnimIdleLayer"><param name="time">0</param><param name="out">80</param><param name="out_delay">520</param></include>
+			<include content="Bald_AnimIdleLayer"><param name="time">0</param><param name="out">80</param><param name="out_delay">600</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">0</param><param name="w">96</param><param name="h">1080</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">0</param><param name="w">96</param><param name="h">1080</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">0</param><param name="w">1728</param><param name="h">120</param></include>
