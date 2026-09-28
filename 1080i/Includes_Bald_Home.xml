@@ -127,7 +127,7 @@
 		</animation>
 		<!-- Idle (Bald_IdleZoom): the nudge is undone in step with the idle zoom, so a poster row's art expands exactly
 		     as a landscape row's. Waking, the first Conditional above nudges it again, on its own timing, as the frame
-		     shrinks. A pure move: under Reduce motion the frame keeps its shape and the full-size layer fades over it. -->
+		     shrinks. A pure move: under Reduce motion the frame keeps its shape and the full-size copy fades over it. -->
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + $EXP[Bald_IdleZoom]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="slide" start="0,-63" end="0,0" time="Bald_IdleGrowTime" delay="Bald_IdleGrowDelay" tween="cubic" easing="out" />
 		</animation>
@@ -158,23 +158,24 @@
 	     1728 x 840), so the expansion is three layers in step:
 	       - the frame group zooms uniformly by 1728 / 1248 = 138.462 % about 96,291.6: its left edge stays on 96 and the
 	         art's centre (y 471 on every row style, a poster row's nudge being undone in step, Bald_AnimPosterArt) lands
-	         on the big rect's centre, y 540. The zoomed 16:9 art spans y 54-1026, exactly the crop the full-size layer's
-	         aspectratio scale takes of the same picture, so the two register;
-	       - the full-size layer (Bald_IdleFrame), the same art at 1728 x 840, fades in over the frame during the zoom,
-	         so the growth reads as one expansion with nothing stretched;
+	         on the big rect's centre, y 540. The zoomed 16:9 art spans y 54-1026, exactly the crop a 1728 x 840
+	         image with aspectratio scale takes of the same picture (the Reduce motion copy's), so the zoom alone is the
+	         big frame;
+	       - nothing else is drawn for the big frame: the zoomed art is the full-size picture (a copy faded in over the
+	         zoom sat at its final size over a still smaller frame, a double image mid-growth);
 	       - the idle masks (windows onto the background) cover the zoomed frame's overflow outside the big rect, and
 	         the frame's own masks fade out (they would cut into it).
 	     Timings are the Bald_Idle* constants below; tests/test_home_idle.py holds their relationships. Enter and wake
 	     are paired non-reversible Conditionals, as for the info handoff: the one whose condition rises starts from the
 	     end state the other would have reached. So a key pressed while the frame is still growing snaps it to full size
 	     before it shrinks (Kodi resets the dropped animation and cannot start the other part-way).
-	     Reduce motion (Bald_IdleZoom false): no zoom and the frame's masks stay; the full-size layer crossfades over the
-	     frame and back, with the same fades round it.
+	     Reduce motion (Bald_IdleZoom false): no zoom and the frame's masks stay; a full-size copy of the art crossfades
+	     over the frame and back over Bald_IdleGrowTime / Bald_IdleShrinkTime, with the same fades round it.
 	     The layers rest at a Conditional alpha of 0 rather than a <visible>, so their textures keep following the
 	     current item: Kodi still processes a control at alpha 0 but does not draw it (CGUIControl::DoProcess, Render). -->
 	<!-- Enter. The chrome fades out over the first step; everything else starts once it is out. -->
 	<constant name="Bald_IdleGrowDelay">300</constant>
-	<!-- The frame's zoom, a poster row's nudge undone and the full-size layer fading in. -->
+	<!-- The frame's zoom and a poster row's nudge undone (under Reduce motion, the full-size copy's crossfade). -->
 	<constant name="Bald_IdleGrowTime">900</constant>
 	<constant name="Bald_IdleOverlayOutTime">200</constant>
 	<constant name="Bald_IdleFrameMasksOutTime">150</constant>
@@ -183,7 +184,7 @@
 	<constant name="Bald_IdleClockInTime">400</constant>
 	<constant name="Bald_IdleLogoInDelay">800</constant>
 	<constant name="Bald_IdleLogoInTime">500</constant>
-	<!-- Wake. The zoom back and the full-size layer out at once; the chrome waits for them. -->
+	<!-- Wake. The zoom back (under Reduce motion, the copy out) at once; the chrome waits for it. -->
 	<constant name="Bald_IdleShrinkTime">480</constant>
 	<constant name="Bald_IdleChromeBackTime">360</constant>
 	<!-- The frame's masks come back as it finishes shrinking (450-550), before the idle masks leave (600-680): both lay
@@ -281,14 +282,16 @@
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">0</param><param name="w">1728</param><param name="h">120</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">960</param><param name="w">1728</param><param name="h">120</param></include>
 		</control>
-		<!-- Full-size layer: the frame's art (the current row's followed item, which ambient movement advances) at the
-		     big rect, cropped by aspectratio scale; <fadetime> crossfades each new item as the frame's layers do. In
-		     over the grow, out over the shrink. -->
+		<!-- Reduce motion only (no zoom): the frame's art (the current row's followed item, which ambient movement
+		     advances) at the big rect, cropped by aspectratio scale, crossfades over the frame and back; <fadetime>
+		     crossfades each new item as the frame's layers do. With the zoom there is no copy: the frame itself grows
+		     and the idle masks crop it to the big rect. -->
 		<control type="group">
 			<left>Bald_SafeLeft</left>
 			<top>120</top>
 			<width>1728</width>
 			<height>840</height>
+			<visible>$EXP[Bald_ReduceMotion]</visible>
 			<include content="Bald_AnimIdleLayer"><param name="in">Bald_IdleGrowTime</param><param name="in_delay">Bald_IdleGrowDelay</param><param name="out">Bald_IdleShrinkTime</param></include>
 			<control type="image">
 				<width>1728</width>

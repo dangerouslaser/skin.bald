@@ -381,3 +381,15 @@ class IdleOverSkinTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class IdleNoCopyTests(unittest.TestCase):
+    def test_with_the_zoom_the_frame_alone_is_the_big_frame(self):
+        """A full-size copy faded in over the zoom sat at its final size over a still smaller frame (a double image
+        mid-growth); only Reduce motion, which has no zoom, draws one."""
+        root = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        frame = root.find("include[@name='Bald_IdleFrame']")
+        copies = [group for group in frame.iter("control") if group.get("type") == "group"
+                  and any(t.text == "$VAR[Bald_Fanart]" for t in group.iter("texture"))]
+        self.assertEqual(len(copies), 1)
+        self.assertEqual(copies[0].findtext("visible"), "$EXP[Bald_ReduceMotion]")
