@@ -58,6 +58,19 @@ class LetterAvailabilityTests(unittest.TestCase):
                 publish(xbmc, gui, str(container))
                 self.assertEqual(props['Bald.AvailableLetters'], ';G;')
 
+    def test_the_parent_folder_item_is_not_a_letter(self):
+        """Kodi's ".." (sort letter "." -> 0-9) is the first item when parent folder items are on."""
+        xbmc, gui, props = fake_kodi(510, 'G')
+        base_label, base_visible = xbmc.getInfoLabel.side_effect, xbmc.getCondVisibility.side_effect
+        items = {0: '.', 1: 'G'}
+        xbmc.getInfoLabel.side_effect = lambda key: (
+            '2' if key == 'Container(510).NumAllItems' else
+            items[int(key.split('ListItemAbsolute(')[1].split(')')[0])] if 'ListItemAbsolute(' in key else base_label(key))
+        xbmc.getCondVisibility.side_effect = lambda condition: (
+            True if condition == 'Container(510).ListItemAbsolute(0).IsParentFolder' else base_visible(condition))
+        publish(xbmc, gui, '510')
+        self.assertEqual(props['Bald.AvailableLetters'], ';G;')
+
     def test_only_the_passed_container_is_read(self):
         # 511 is visible but the call site named 510: nothing is scanned.
         xbmc, gui, props = fake_kodi(511, 'B')

@@ -210,7 +210,7 @@ class LetterCacheTests(Case):
         from scripts import letters
         xbmc, gui, window = Mock(), Mock(), FakeWindow()
         gui.Window.return_value = window
-        xbmc.getCondVisibility.return_value = True
+        xbmc.getCondVisibility.side_effect = lambda condition: not condition.endswith("IsParentFolder")
         labels = {"Container(510).NumAllItems": "2", "Container.FolderPath": "videodb://movies/titles/",
                   "Container(510).ListItemAbsolute(0).SortLetter": "A",
                   "Container(510).ListItemAbsolute(1).SortLetter": "7"}

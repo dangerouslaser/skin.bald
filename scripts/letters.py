@@ -75,7 +75,9 @@ def publish(xbmc, xbmcgui, container='', cache=None, cancelled=None):
     key = cache_key(xbmc, container, count, path) if cache is not None else None
     result = cache.get(key) if cache is not None else None
     if result is None:
-        result = available_letters(count, lambda index: xbmc.getInfoLabel(
+        # Kodi's ".." item (on by default) sorts first and would light up 0-9 in every folder: skip it.
+        parent_first = xbmc.getCondVisibility(f'Container({container}).ListItemAbsolute(0).IsParentFolder')
+        result = available_letters(count, lambda index: '' if index == 0 and parent_first else xbmc.getInfoLabel(
             f'Container({container}).ListItemAbsolute({index}).SortLetter'), cancelled)
         if result is None:
             return
