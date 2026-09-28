@@ -55,7 +55,7 @@ class InfoTvTests(unittest.TestCase):
         chosen = {node.text: node.get("condition") for node in self.dialog.iter("include") if node.get("condition")}
         for name in ("Bald_InfoOverview", "Bald_InfoMovieOnLoad"):
             self.assertTrue(equivalent(chosen[name], "!" + TV_ITEM), name)
-        for name in ("Bald_InfoTVOverview", "Bald_InfoTVOnLoad", "Bald_InfoTVDim", "Bald_InfoTVHints"):
+        for name in ("Bald_InfoTVOverview", "Bald_InfoTVOnLoad", "Bald_InfoTVHints"):
             self.assertTrue(equivalent(chosen[name], TV_ITEM), name)
         # Movie info keeps its own onload focus and paged includes.
         movie_focus = [n.text for n in self.shared.find("include[@name='Bald_InfoMovieOnLoad']")]
@@ -196,7 +196,9 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(delays, [380, 440, 480, 560, 600, 650, 690])
         dim = include_def(self.tv, "Bald_InfoTVDim").find("control")
         self.assertEqual(dim.find("texture").get("colordiffuse"), "bald_field60")
-        self.assertEqual(dim.find("animation").get("end"), "70")
+        self.assertIsNone(dim.find("animation"), "a flat 60% dim")
+        self.assertIn("Bald_InfoTVDim", [n.text for n in ET.parse(ROOT / "DialogVideoInfo.xml").getroot().iter("include") if n.get("condition") is None],
+                      "the dim covers movies too")
         # Up from Cast returns to the lowest filled TV row; movies fall through to their actions.
         up = [(n.get("condition"), n.text) for n in self.shared.find("include[@name='Bald_InfoToOverview']").findall("onup")]
         self.assertTrue(has_action(up, "$EXP[Bald_InfoTVHasEpisodes]", "SetFocus(5302)"))

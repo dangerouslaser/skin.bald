@@ -123,13 +123,12 @@
 	</include>
 
 	<!-- ============ Controls ============ -->
-	<!-- The art dims at rest because content runs the full height: the prototype's 60% field layer at 70%. -->
+	<!-- The art dims at rest so the text reads on bright fanart: a 60% field layer (movies and TV alike). -->
 	<include name="Bald_InfoTVDim">
 		<control type="image">
 			<width>1920</width>
 			<height>1080</height>
 			<texture colordiffuse="bald_field60">bald/white.png</texture>
-			<animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
 
