@@ -180,7 +180,8 @@
 				<!-- Typography: cycles Kodi's fontset (lookandfeel.font) through the three Font.xml typefaces, DM Sans (Default),
 				     Instrument Sans (InstrumentSans), Onest (Arial), one step per click; Kodi then reloads the skin. Onest is the
 				     one with Cyrillic (none of the three has Greek). Kodi evaluates every onclick condition before it runs any,
-				     so the three conditions exclude each other; an unknown id counts as Default. -->
+				     so the three conditions exclude each other; an unknown id counts as Default. The script also keeps the
+				     choice in Skin.String(Bald.Fontset), which Bald Helper re-applies if the setting was lost. -->
 				<control type="button" id="9631"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">5</param><param name="level">basic</param></include><label>$LOCALIZE[31944]</label><label2>$VAR[Bald_FontName]</label2>
 					<onclick condition="!String.IsEqual(Skin.Font,InstrumentSans) + !String.IsEqual(Skin.Font,Arial)">RunScript(skin.bald,font,InstrumentSans)</onclick>
 					<onclick condition="String.IsEqual(Skin.Font,InstrumentSans)">RunScript(skin.bald,font,Arial)</onclick>

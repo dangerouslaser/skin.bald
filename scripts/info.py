@@ -383,13 +383,20 @@ def disable_mouse(xbmc):
 # Font.xml fontset ids Bald Settings > Appearance offers, in file order: DM Sans (Default, lookandfeel.font's
 # default), Instrument Sans, Onest (id Arial, see Font.xml).
 FONTSETS = ("Default", "InstrumentSans", "Arial")
+# The skin's own copy of the choice; Bald Helper (resources/lib/fontset.py) re-applies it when the setting was lost.
+FONTSET_SKIN_STRING = "Bald.Fontset"
 
 
 def set_fontset(xbmc, fontset):
-    """Select a Font.xml fontset; Kodi reloads the skin itself when lookandfeel.font changes."""
+    """Select a Font.xml fontset; Kodi reloads the skin itself when lookandfeel.font changes.
+
+    JSON-RPC's Settings.SetSettingValue changes the setting without writing guisettings.xml, so a Kodi killed or
+    powered off before a clean exit forgets it. Any Skin.SetString saves Kodi's settings at once, and keeps a copy
+    in the skin's settings that survives skin updates."""
     if fontset not in FONTSETS:
         raise ValueError("Unknown fontset: {!r}".format(fontset))
     rpc(xbmc, "Settings.SetSettingValue", {"setting": "lookandfeel.font", "value": fontset})
+    xbmc.executebuiltin("Skin.SetString({},{})".format(FONTSET_SKIN_STRING, fontset))
 
 
 def run(action="", media_type="", dbid=""):

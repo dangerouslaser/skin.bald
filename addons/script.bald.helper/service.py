@@ -1,6 +1,6 @@
 """Bald Helper service: Bald's keymaps (resources/lib/keymap.py), its blurred backgrounds (resources/lib/blur.py),
-its latency-sensitive skin actions (resources/lib/actions.py), its online ratings (resources/lib/ratings.py) and its
-spoiler stills (resources/lib/spoilers.py).
+its latency-sensitive skin actions (resources/lib/actions.py), its online ratings (resources/lib/ratings.py), its
+spoiler stills (resources/lib/spoilers.py) and its typeface choice (resources/lib/fontset.py).
 
 The blur follower, the ratings follower and the action worker run on their own threads; the keymap manager runs here,
 on the thread whose monitor receives the skin's notifications (and whose player receives playback events), and keeps
@@ -77,18 +77,31 @@ def start_spoilers():
         return None, None
 
 
+def start_fontset():
+    """The keeper of Bald's typeface choice; its step runs in the keymap loop."""
+    try:
+        from resources.lib.fontset import Keeper
+
+        return Keeper(xbmc)
+    except Exception as error:  # noqa: BLE001 - the fontset stays whatever Kodi has
+        xbmc.log(f"script.bald.helper: fontset keeper did not start: {type(error).__name__}: {error}", xbmc.LOGERROR)
+        return None
+
+
 if __name__ == "__main__":
     blur = start_blur()
     ratings, player = start_ratings()
     spoilers, spoilers_monitor = start_spoilers()
     actions, monitor = start_actions()
+    fontset = start_fontset()
+    fontset_steps = (fontset.tick,) if fontset is not None else ()
     try:
         if actions is not None:
             from resources.lib.actions import WAKE_SECONDS
 
-            Service(xbmc, xbmcvfs).run(monitor, wake=WAKE_SECONDS, each=actions.refresh)
+            Service(xbmc, xbmcvfs).run(monitor, wake=WAKE_SECONDS, each=(actions.refresh, *fontset_steps))
         else:
-            Service(xbmc, xbmcvfs).run(wake=POLL_SECONDS)
+            Service(xbmc, xbmcvfs).run(wake=POLL_SECONDS, each=fontset_steps)
     finally:
         if actions is not None:
             actions.stop()
