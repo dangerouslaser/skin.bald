@@ -510,7 +510,7 @@
 		<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
 		<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
 		<animation type="Focus"><effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" /></animation>
-		<animation type="Unfocus"><effect type="zoom" start="104" end="100" center="auto" time="220" tween="sine" easing="inout" /></animation>
+		<animation type="Unfocus"><effect type="zoom" start="104" end="100" center="auto" time="220" tween="cubic" easing="out" /></animation>
 	</include>
 	<!-- A Kodi-bound action (find, switch, record, play, timer, reminder): Kodi handles the click by id and may relabel
 	     or hide it. -->

@@ -29,7 +29,7 @@ TEXTURE_TAGS = {"texture", "texturefocus", "texturenofocus", "texturebg", "leftt
                 "overlaytexture", "textureslidernib", "textureslidernibfocus", "texturesliderbar",
                 "textureradioonfocus", "textureradioonnofocus", "textureradioofffocus", "textureradiooffnofocus",
                 "textureradioondisabled", "textureradiooffdisabled"}
-TWEENS = {"slide": {("cubic", "out")}, "fade": {("sine", "inout")}, "zoom": {("back", "out"), ("sine", "inout")}}
+TWEENS = {"slide": {("cubic", "out")}, "fade": {("sine", "inout")}, "zoom": {("back", "out"), ("cubic", "out")}}
 
 
 def ids(root):
