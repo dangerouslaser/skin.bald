@@ -47,30 +47,42 @@
          for anything that must follow item changes. -->
     <!-- Bald Home. Row start: a fixedlist first selects the item at its focus position (slot 2, or slot 5 on a poster
          row: item 6 at position 5; a landscape row's cursor never reaches position 5, so the two cannot be confused);
-         once a row's items have loaded, move it back to the first item. One shot per window load; Home clears the flags in onload.
+         once a row's items have loaded, move it back to the first item. A short row (2 to 5 items, at most its slot;
+         Bald_Row, aligny) starts with its last item selected at position NumItems - 1 instead; the third clause
+         catches that (a landscape row of 3 matches both, at position 2). The move is the position, one line per
+         position, so exactly one runs. One shot per window load; Home clears the flags in onload.
          Timers only for rows that can show before they are focused (the first rows, and each screen's first row in the menu
          preview) and the next two Home rows; every other row is moved by the row above it or on its own focus (Bald_Row). -->
     <timer>
         <name>bald_rowstart_9101</name>
-        <start>Window.IsActive(home) + !Container(9101).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9101)) + [[String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)] | [String.IsEqual(Container(9101).CurrentItem,6) + String.IsEqual(Container(9101).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9101).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9101)) + [[String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)] | [String.IsEqual(Container(9101).CurrentItem,6) + String.IsEqual(Container(9101).Position,5)] | [Integer.IsGreater(Container(9101).NumItems,1) + !Integer.IsGreater(Container(9101).NumItems,5) + Integer.IsEqual(Container(9101).CurrentItem,Container(9101).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9101,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9101).Position,1)">Control.Move(9101,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9101).Position,2)">Control.Move(9101,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9101).Position,3)">Control.Move(9101,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9101).Position,4)">Control.Move(9101,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9101).Position,5)">Control.Move(9101,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9101))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9102</name>
-        <start>Window.IsActive(home) + !Container(9102).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9102)) + [[String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)] | [String.IsEqual(Container(9102).CurrentItem,6) + String.IsEqual(Container(9102).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9102).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9102)) + [[String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)] | [String.IsEqual(Container(9102).CurrentItem,6) + String.IsEqual(Container(9102).Position,5)] | [Integer.IsGreater(Container(9102).NumItems,1) + !Integer.IsGreater(Container(9102).NumItems,5) + Integer.IsEqual(Container(9102).CurrentItem,Container(9102).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9102,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9102).Position,1)">Control.Move(9102,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9102).Position,2)">Control.Move(9102,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9102).Position,3)">Control.Move(9102,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9102).Position,4)">Control.Move(9102,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9102).Position,5)">Control.Move(9102,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9102))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9103</name>
-        <start>Window.IsActive(home) + !Container(9103).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9103)) + [[String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)] | [String.IsEqual(Container(9103).CurrentItem,6) + String.IsEqual(Container(9103).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9103).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9103)) + [[String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)] | [String.IsEqual(Container(9103).CurrentItem,6) + String.IsEqual(Container(9103).Position,5)] | [Integer.IsGreater(Container(9103).NumItems,1) + !Integer.IsGreater(Container(9103).NumItems,5) + Integer.IsEqual(Container(9103).CurrentItem,Container(9103).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9103,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9103).Position,1)">Control.Move(9103,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9103).Position,2)">Control.Move(9103,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9103).Position,3)">Control.Move(9103,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9103).Position,4)">Control.Move(9103,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9103).Position,5)">Control.Move(9103,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9103))</stop>
     </timer>
@@ -79,73 +91,100 @@
          the start condition never holds. -->
     <timer>
         <name>bald_rowstart_9201</name>
-        <start>Window.IsActive(home) + !Container(9201).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9201)) + [[String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)] | [String.IsEqual(Container(9201).CurrentItem,6) + String.IsEqual(Container(9201).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9201).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9201)) + [[String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)] | [String.IsEqual(Container(9201).CurrentItem,6) + String.IsEqual(Container(9201).Position,5)] | [Integer.IsGreater(Container(9201).NumItems,1) + !Integer.IsGreater(Container(9201).NumItems,5) + Integer.IsEqual(Container(9201).CurrentItem,Container(9201).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9201,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9201).Position,1)">Control.Move(9201,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9201).Position,2)">Control.Move(9201,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9201).Position,3)">Control.Move(9201,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9201).Position,4)">Control.Move(9201,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9201).Position,5)">Control.Move(9201,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9201))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9301</name>
-        <start>Window.IsActive(home) + !Container(9301).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9301)) + [[String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)] | [String.IsEqual(Container(9301).CurrentItem,6) + String.IsEqual(Container(9301).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9301).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9301)) + [[String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)] | [String.IsEqual(Container(9301).CurrentItem,6) + String.IsEqual(Container(9301).Position,5)] | [Integer.IsGreater(Container(9301).NumItems,1) + !Integer.IsGreater(Container(9301).NumItems,5) + Integer.IsEqual(Container(9301).CurrentItem,Container(9301).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9301,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9301).Position,1)">Control.Move(9301,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9301).Position,2)">Control.Move(9301,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9301).Position,3)">Control.Move(9301,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9301).Position,4)">Control.Move(9301,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9301).Position,5)">Control.Move(9301,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9301))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9401</name>
-        <start>Window.IsActive(home) + !Container(9401).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9401)) + [[String.IsEqual(Container(9401).CurrentItem,3) + String.IsEqual(Container(9401).Position,2)] | [String.IsEqual(Container(9401).CurrentItem,6) + String.IsEqual(Container(9401).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9401).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9401)) + [[String.IsEqual(Container(9401).CurrentItem,3) + String.IsEqual(Container(9401).Position,2)] | [String.IsEqual(Container(9401).CurrentItem,6) + String.IsEqual(Container(9401).Position,5)] | [Integer.IsGreater(Container(9401).NumItems,1) + !Integer.IsGreater(Container(9401).NumItems,5) + Integer.IsEqual(Container(9401).CurrentItem,Container(9401).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9401,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9401).Position,1)">Control.Move(9401,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9401).Position,2)">Control.Move(9401,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9401).Position,3)">Control.Move(9401,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9401).Position,4)">Control.Move(9401,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9401).Position,5)">Control.Move(9401,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9401))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9501</name>
-        <start>Window.IsActive(home) + !Container(9501).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9501)) + [[String.IsEqual(Container(9501).CurrentItem,3) + String.IsEqual(Container(9501).Position,2)] | [String.IsEqual(Container(9501).CurrentItem,6) + String.IsEqual(Container(9501).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9501).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9501)) + [[String.IsEqual(Container(9501).CurrentItem,3) + String.IsEqual(Container(9501).Position,2)] | [String.IsEqual(Container(9501).CurrentItem,6) + String.IsEqual(Container(9501).Position,5)] | [Integer.IsGreater(Container(9501).NumItems,1) + !Integer.IsGreater(Container(9501).NumItems,5) + Integer.IsEqual(Container(9501).CurrentItem,Container(9501).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9501,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9501).Position,1)">Control.Move(9501,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9501).Position,2)">Control.Move(9501,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9501).Position,3)">Control.Move(9501,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9501).Position,4)">Control.Move(9501,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9501).Position,5)">Control.Move(9501,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9501))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9601</name>
-        <start>Window.IsActive(home) + !Container(9601).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9601)) + [[String.IsEqual(Container(9601).CurrentItem,3) + String.IsEqual(Container(9601).Position,2)] | [String.IsEqual(Container(9601).CurrentItem,6) + String.IsEqual(Container(9601).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9601).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9601)) + [[String.IsEqual(Container(9601).CurrentItem,3) + String.IsEqual(Container(9601).Position,2)] | [String.IsEqual(Container(9601).CurrentItem,6) + String.IsEqual(Container(9601).Position,5)] | [Integer.IsGreater(Container(9601).NumItems,1) + !Integer.IsGreater(Container(9601).NumItems,5) + Integer.IsEqual(Container(9601).CurrentItem,Container(9601).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9601,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9601).Position,1)">Control.Move(9601,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9601).Position,2)">Control.Move(9601,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9601).Position,3)">Control.Move(9601,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9601).Position,4)">Control.Move(9601,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9601).Position,5)">Control.Move(9601,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9601))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9701</name>
-        <start>Window.IsActive(home) + !Container(9701).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9701)) + [[String.IsEqual(Container(9701).CurrentItem,3) + String.IsEqual(Container(9701).Position,2)] | [String.IsEqual(Container(9701).CurrentItem,6) + String.IsEqual(Container(9701).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9701).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9701)) + [[String.IsEqual(Container(9701).CurrentItem,3) + String.IsEqual(Container(9701).Position,2)] | [String.IsEqual(Container(9701).CurrentItem,6) + String.IsEqual(Container(9701).Position,5)] | [Integer.IsGreater(Container(9701).NumItems,1) + !Integer.IsGreater(Container(9701).NumItems,5) + Integer.IsEqual(Container(9701).CurrentItem,Container(9701).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9701,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9701).Position,1)">Control.Move(9701,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9701).Position,2)">Control.Move(9701,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9701).Position,3)">Control.Move(9701,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9701).Position,4)">Control.Move(9701,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9701).Position,5)">Control.Move(9701,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9701))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9801</name>
-        <start>Window.IsActive(home) + !Container(9801).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9801)) + [[String.IsEqual(Container(9801).CurrentItem,3) + String.IsEqual(Container(9801).Position,2)] | [String.IsEqual(Container(9801).CurrentItem,6) + String.IsEqual(Container(9801).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9801).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9801)) + [[String.IsEqual(Container(9801).CurrentItem,3) + String.IsEqual(Container(9801).Position,2)] | [String.IsEqual(Container(9801).CurrentItem,6) + String.IsEqual(Container(9801).Position,5)] | [Integer.IsGreater(Container(9801).NumItems,1) + !Integer.IsGreater(Container(9801).NumItems,5) + Integer.IsEqual(Container(9801).CurrentItem,Container(9801).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9801,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9801).Position,1)">Control.Move(9801,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9801).Position,2)">Control.Move(9801,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9801).Position,3)">Control.Move(9801,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9801).Position,4)">Control.Move(9801,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9801).Position,5)">Control.Move(9801,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9801))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9901</name>
-        <start>Window.IsActive(home) + !Container(9901).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9901)) + [[String.IsEqual(Container(9901).CurrentItem,3) + String.IsEqual(Container(9901).Position,2)] | [String.IsEqual(Container(9901).CurrentItem,6) + String.IsEqual(Container(9901).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9901).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9901)) + [[String.IsEqual(Container(9901).CurrentItem,3) + String.IsEqual(Container(9901).Position,2)] | [String.IsEqual(Container(9901).CurrentItem,6) + String.IsEqual(Container(9901).Position,5)] | [Integer.IsGreater(Container(9901).NumItems,1) + !Integer.IsGreater(Container(9901).NumItems,5) + Integer.IsEqual(Container(9901).CurrentItem,Container(9901).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9901,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9901).Position,1)">Control.Move(9901,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9901).Position,2)">Control.Move(9901,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9901).Position,3)">Control.Move(9901,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9901).Position,4)">Control.Move(9901,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9901).Position,5)">Control.Move(9901,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9901))</stop>
     </timer>
     <timer>
         <name>bald_rowstart_9051</name>
-        <start>Window.IsActive(home) + !Container(9051).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9051)) + [[String.IsEqual(Container(9051).CurrentItem,3) + String.IsEqual(Container(9051).Position,2)] | [String.IsEqual(Container(9051).CurrentItem,6) + String.IsEqual(Container(9051).Position,5)]]</start>
+        <start>Window.IsActive(home) + !Container(9051).IsUpdating + String.IsEmpty(Window(home).Property(Bald.Start9051)) + [[String.IsEqual(Container(9051).CurrentItem,3) + String.IsEqual(Container(9051).Position,2)] | [String.IsEqual(Container(9051).CurrentItem,6) + String.IsEqual(Container(9051).Position,5)] | [Integer.IsGreater(Container(9051).NumItems,1) + !Integer.IsGreater(Container(9051).NumItems,5) + Integer.IsEqual(Container(9051).CurrentItem,Container(9051).NumItems)]]</start>
         <onstart>SetProperty(Bald.Start9051,1,home)</onstart>
+        <onstart condition="String.IsEqual(Container(9051).Position,1)">Control.Move(9051,-1)</onstart>
         <onstart condition="String.IsEqual(Container(9051).Position,2)">Control.Move(9051,-2)</onstart>
+        <onstart condition="String.IsEqual(Container(9051).Position,3)">Control.Move(9051,-3)</onstart>
+        <onstart condition="String.IsEqual(Container(9051).Position,4)">Control.Move(9051,-4)</onstart>
         <onstart condition="String.IsEqual(Container(9051).Position,5)">Control.Move(9051,-5)</onstart>
         <stop>!String.IsEmpty(Window(home).Property(Bald.Start9051))</stop>
     </timer>

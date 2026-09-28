@@ -1263,10 +1263,8 @@
 	<!-- Weather (Includes_Bald_Weather.xml): square tiles showing the tile's label, weather icon and label2 instead of
 	     art, on the square row's rail and frame. -->
 	<include name="Bald_RowTiles_weather">
-		<!-- Without a weather service, or while it fetches, the row holds one tile, and a fixedlist can't bring a lone
-		     item back from its focus slot (2); the row slides two slots left in those states so the tile starts at the
-		     safe margin like any row's first item. -->
-		<animation effect="slide" end="-416,0" time="0" condition="String.IsEmpty(Weather.Plugin) | !Weather.IsFetched">Conditional</animation>
+		<!-- Without a weather service, or while it fetches, the row holds one tile; like any short row it starts at the
+		     safe margin (Bald_Row, aligny). -->
 		<include content="Bald_RowSquare"><param name="art" /><param name="overlay">Bald_WeatherTileFace</param><param name="caption">Bald_TileOverlayNone</param><param name="marks">Bald_TileOverlayNone</param></include>
 	</include>
 	<!-- A square row's tiles: art and overlay as Bald_SquareTile's, caption the name on the tile (Bald_TileTitle) and
@@ -1543,6 +1541,37 @@
 		</definition>
 	</include>
 
+	<!-- Row start for a short row (NumItems 2 to slot; see aligny in Bald_Row): a fresh fixedlist has its last item
+	     selected, at position NumItems - 1, so move it back that many items to item 1. One action per count, because
+	     Control.Move takes a number and a move past item 1 would wrap (CGUIBaseContainer, GUI_MSG_MOVE_OFFSET moves
+	     with wrap around). A row of one item needs no move. The conditions exclude each other and the full row's own
+	     start (item slot + 1 at position slot), so at most one move runs. Marks the row as started like the full row's
+	     start does; used by Bald_Row's onfocus and the generated Bald_RowStart_<id> (shortcuts/generator/row-parts.xmltemplate). -->
+	<include name="Bald_RowStartShort_2">
+		<param name="id" />
+		<definition>
+			<include content="Bald_RowStartShortCount"><param name="id">$PARAM[id]</param><param name="n">2</param><param name="move">1</param></include>
+		</definition>
+	</include>
+	<include name="Bald_RowStartShort_5">
+		<param name="id" />
+		<definition>
+			<include content="Bald_RowStartShortCount"><param name="id">$PARAM[id]</param><param name="n">2</param><param name="move">1</param></include>
+			<include content="Bald_RowStartShortCount"><param name="id">$PARAM[id]</param><param name="n">3</param><param name="move">2</param></include>
+			<include content="Bald_RowStartShortCount"><param name="id">$PARAM[id]</param><param name="n">4</param><param name="move">3</param></include>
+			<include content="Bald_RowStartShortCount"><param name="id">$PARAM[id]</param><param name="n">5</param><param name="move">4</param></include>
+		</definition>
+	</include>
+	<!-- n items, the last selected: move back move (n - 1) items. -->
+	<include name="Bald_RowStartShortCount">
+		<param name="id" />
+		<param name="n" />
+		<param name="move" />
+		<definition>
+			<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$PARAM[id])) + Integer.IsEqual(Container($PARAM[id]).NumItems,$PARAM[n]) + Integer.IsEqual(Container($PARAM[id]).CurrentItem,$PARAM[n])">SetProperty(Bald.Start$PARAM[id],1,home)</onfocus>
+			<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$PARAM[id])) + Integer.IsEqual(Container($PARAM[id]).NumItems,$PARAM[n]) + Integer.IsEqual(Container($PARAM[id]).CurrentItem,$PARAM[n])">Control.Move($PARAM[id],-$PARAM[move])</onfocus>
+		</definition>
+	</include>
 	<include name="Bald_RowDotsNone">
 		<definition />
 	</include>
@@ -1643,6 +1672,22 @@
 				<orientation>horizontal</orientation>
 				<focusposition>$PARAM[slot]</focusposition>
 				<movement>$PARAM[slot]</movement>
+				<!-- Short rows start at the safe margin. A fixedlist lets the cursor range over
+				     [slot - movement, slot + movement] (0 to 2 x slot here) and, with fewer items than that range holds,
+				     narrows it until it fits (CGUIFixedListContainer::GetCursorRange). By default it narrows from both
+				     sides towards the focus slot, so a row of one landscape tile sat at slot 2, and every row shorter
+				     than the range (up to 4 items on a landscape or square row, up to 8 on a poster row, whose range
+				     the 8-slot page ends) began one or more slots in.
+				     Kodi 22's aligny (xbmc/xbmc 7025f71, "items vertical alignment", also for horizontal lists: top is the
+				     start) set to top narrows it from the end only: the range becomes 0 to NumItems - 1, the offset stays
+				     0, so item 1 is always at slot 0 and Right walks the cursor across the row without scrolling, with the
+				     edge nudge at its last item. A row long enough to fill the range never narrows it, so it behaves as
+				     before. This replaces a conditional slide of the list, which would have needed per-style slot widths,
+				     an animation per item count, and would have moved the nudge and focus pop off their slots.
+				     The fresh selection moves too: Kodi starts the cursor at the focus slot, and a row of NumItems up to
+				     slot has it clamped to the last item (NumItems - 1). Row start below brings that back to item 1 as
+				     well (Bald_RowStartShort_<slot>). -->
+				<aligny>top</aligny>
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<!-- Not while Home loads back onto a menu entry: Kodi focuses the default control (row 1) before it sets the
 				     controls' initial animation states and before the onload runs (CGUIWindow::OnInitWindow), so this focus
@@ -1661,6 +1706,7 @@
 				     marked once focused, so a later item 3 at slot 2 is the viewer's own. Home clears the marks in onload.
 				     Conditions are evaluated before any of these actions run (CGUIAction::ExecuteActions). -->
 				<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$PARAM[id])) + String.IsEqual(Container($PARAM[id]).CurrentItem,$PARAM[start]) + String.IsEqual(Container($PARAM[id]).Position,$PARAM[slot])">Control.Move($PARAM[id],-$PARAM[slot])</onfocus>
+				<include content="Bald_RowStartShort_$PARAM[slot]"><param name="id">$PARAM[id]</param></include>
 				<onfocus condition="Integer.IsGreater(Container($PARAM[id]).NumItems,0)">SetProperty(Bald.Start$PARAM[id],1,home)</onfocus>
 				<!-- Opening the menu is screen-relative: focus the active screen's own entry (menu) instead of
 				     resetting the navigation model to Home. -->
