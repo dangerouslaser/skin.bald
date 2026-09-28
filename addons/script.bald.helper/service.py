@@ -1,10 +1,11 @@
 """Bald Helper service: Bald's keymaps (resources/lib/keymap.py), its blurred backgrounds (resources/lib/blur.py),
 its latency-sensitive skin actions (resources/lib/actions.py), its online ratings (resources/lib/ratings.py), its
 spoiler stills (resources/lib/spoilers.py), its typeface and text size (resources/lib/lookandfeel.py) its
-tidied weather values and weather tiles' pictures (resources/lib/weather.py) and the focused item's time left
-(resources/lib/remaining.py).
+tidied weather values and weather tiles' pictures (resources/lib/weather.py), the focused item's time left
+(resources/lib/remaining.py) and the art pre-cache (resources/lib/precache.py), which gets the fanart Bald shows next
+into Kodi's texture cache so remote backdrops do not arrive late.
 
-The blur follower, the ratings follower and the action worker run on their own threads; the keymap manager runs here,
+The blur follower, the ratings follower, the action worker and the art pre-cache run on their own threads; the keymap manager runs here,
 on the thread whose monitor receives the skin's notifications (and whose player receives playback events), and keeps
 working if any of the others cannot start.
 """
@@ -116,6 +117,19 @@ def start_remaining():
         return None
 
 
+def start_precache():
+    """The art pre-cache (its own daemon thread)."""
+    try:
+        from resources.lib.precache import Precacher
+
+        precacher = Precacher(xbmc, xbmcvfs, xbmcgui)
+        precacher.start()
+        return precacher
+    except Exception as error:  # noqa: BLE001 - art is cached when first shown, as without Bald Helper
+        xbmc.log(f"script.bald.helper: art pre-cache did not start: {type(error).__name__}: {error}", xbmc.LOGERROR)
+        return None
+
+
 if __name__ == "__main__":
     blur = start_blur()
     ratings, player = start_ratings()
@@ -124,6 +138,7 @@ if __name__ == "__main__":
     lookandfeel = start_lookandfeel()
     weather = start_weather()
     remaining = start_remaining()
+    precache = start_precache()
     loop_steps = tuple(step.tick for step in (lookandfeel, weather, remaining) if step is not None)
     try:
         if actions is not None:
@@ -142,3 +157,5 @@ if __name__ == "__main__":
             blur.stop()
         if spoilers is not None:
             spoilers.stop()
+        if precache is not None:
+            precache.stop()
