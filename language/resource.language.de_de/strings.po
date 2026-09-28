@@ -859,6 +859,24 @@ msgctxt "#31416"
 msgid "Clock on the controls"
 msgstr "Uhr bei der Steuerung"
 
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Bald Settings > Appearance > Typography: how large the whole interface is drawn (Kodi's skin zoom)
+msgctxt "#31430"
+msgid "Text size"
+msgstr "Textgröße"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Bald Settings > Appearance > Typography > Text size: the interface drawn 4 per cent larger
+msgctxt "#31431"
+msgid "Large"
+msgstr "Groß"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Bald Settings > Appearance > Typography > Text size: the interface drawn 8 per cent larger
+msgctxt "#31432"
+msgid "Larger"
+msgstr "Größer"
+
 #: /1080i/Includes_Bald_Weather.xml
 #. Home weather row: the tile shown without a weather service
 msgctxt "#31450"

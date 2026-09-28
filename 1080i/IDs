@@ -416,6 +416,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		enabled), 9628 the same row while Bald Helper is missing or disabled (installs or enables it)
 9629	Behavior: Select on a hub opens its library (Bald.HubSelectOpens; listed after 9623)
 9631	Typography: font (fontset)
+9638	Typography: text size (lookandfeel.skinzoom: default, large, larger; listed after 9631)
 9632-9634	Date & time (Includes_Bald_Common.xml, Clock): 9632 time format (region, 12 hours, 24 hours), 9633 date
 		with the clock, 9634 clock on Home
 9635-9637	Information (listed after 9612): 9635 titles on Home tiles (none, on focus, always), 9636 watched marks,

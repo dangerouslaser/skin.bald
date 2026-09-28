@@ -6,6 +6,7 @@ RunScript(skin.bald,tvinfo,episode,789)
 RunScript(skin.bald,play,episode,789)
 RunScript(skin.bald,seriesmeta)  (library Series page, view 532)
 RunScript(skin.bald,font,InstrumentSans)
+RunScript(skin.bald,textsize,8)
 RunScript(skin.bald,hubs)  (one-time Home hubs migration, see hubs.py)
 RunScript(skin.bald,recommended[,prompt])  (Kodi settings Bald recommends, see recommended.py)
 No network requests or library writes.
@@ -383,8 +384,15 @@ def disable_mouse(xbmc):
 # Font.xml fontset ids Bald Settings > Appearance offers, in file order: DM Sans (Default, lookandfeel.font's
 # default), Instrument Sans, Onest (id Arial, see Font.xml).
 FONTSETS = ("Default", "InstrumentSans", "Arial")
-# The skin's own copy of the choice; Bald Helper (resources/lib/fontset.py) re-applies it when the setting was lost.
+# The skin's own copy of the choice; Bald Helper (resources/lib/lookandfeel.py) re-applies it when the setting was
+# lost.
 FONTSET_SKIN_STRING = "Bald.Fontset"
+# Text size: Kodi's lookandfeel.skinzoom, a per-cent zoom (-30 to 30) of the whole interface about the centre of the
+# screen. Bald Settings > Appearance > Typography offers Default, Large and Larger. A zoom z crops z / (2 (1 + z)) of
+# the width and height off each side: 37 and 21 px at 4, 71 and 40 px at 8, all inside Bald's 96 px safe margin.
+# A negative zoom would frame every full-screen background in black, so there is no smaller size.
+TEXT_SIZES = (0, 4, 8)
+TEXT_SIZE_SKIN_STRING = "Bald.TextSize"
 
 
 def set_fontset(xbmc, fontset):
@@ -397,6 +405,16 @@ def set_fontset(xbmc, fontset):
         raise ValueError("Unknown fontset: {!r}".format(fontset))
     rpc(xbmc, "Settings.SetSettingValue", {"setting": "lookandfeel.font", "value": fontset})
     xbmc.executebuiltin("Skin.SetString({},{})".format(FONTSET_SKIN_STRING, fontset))
+
+
+def set_text_size(xbmc, zoom):
+    """Set Kodi's interface zoom (a TEXT_SIZES value, as text). Kodi re-lays every window and redraws its fonts at
+    the new size at once, without a skin reload. The copy in Skin.String(Bald.TextSize) saves the setting at once
+    and lets Bald Helper re-apply it, as for the fontset."""
+    if zoom not in [str(size) for size in TEXT_SIZES]:
+        raise ValueError("Unknown text size: {!r}".format(zoom))
+    rpc(xbmc, "Settings.SetSettingValue", {"setting": "lookandfeel.skinzoom", "value": int(zoom)})
+    xbmc.executebuiltin("Skin.SetString({},{})".format(TEXT_SIZE_SKIN_STRING, zoom))
 
 
 def run(action="", media_type="", dbid=""):
@@ -423,6 +441,10 @@ def run(action="", media_type="", dbid=""):
     if action == "font":
         # RunScript(skin.bald,font,<fontset id>): the id arrives in the second argument.
         set_fontset(xbmc, media_type)
+        return
+    if action == "textsize":
+        # RunScript(skin.bald,textsize,<zoom>): 0, 4 or 8.
+        set_text_size(xbmc, media_type)
         return
 
     handle(xbmc, xbmcgui, action, media_type, dbid)

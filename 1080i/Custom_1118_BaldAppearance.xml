@@ -187,6 +187,16 @@
 					<onclick condition="String.IsEqual(Skin.Font,InstrumentSans)">RunScript(skin.bald,font,Arial)</onclick>
 					<onclick condition="String.IsEqual(Skin.Font,Arial)">RunScript(skin.bald,font,Default)</onclick>
 				</control>
+				<!-- Typography, text size: cycles Kodi's interface zoom (lookandfeel.skinzoom) through Default (0), Large (4) and
+				     Larger (8) per cent, one step per click. The zoom scales the whole interface about the centre and crops
+				     at most 71 px a side, inside the 96 px safe margin; Kodi re-lays the windows without a skin reload. The
+				     script keeps the choice in Skin.String(Bald.TextSize), which Bald Helper re-applies if the setting was
+				     lost; any other value (a zoom set in Kodi's settings) steps to Large, as Default does. -->
+				<control type="button" id="9638"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">5</param><param name="level">standard</param></include><label>$LOCALIZE[31430]</label><label2>$VAR[Bald_TextSizeLabel]</label2>
+					<onclick condition="!String.IsEqual(Skin.String(Bald.TextSize),4) + !String.IsEqual(Skin.String(Bald.TextSize),8)">RunScript(skin.bald,textsize,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.TextSize),4)">RunScript(skin.bald,textsize,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.TextSize),8)">RunScript(skin.bald,textsize,0)</onclick>
+				</control>
 				<!-- On by default: Startup.xml sets Bald.Preload and Home holds a splash until every row has loaded (docs/NOTES.md, Startup splash). -->
 				<control type="radiobutton" id="9624"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">expert</param></include><label>$LOCALIZE[31726]</label><selected>!Skin.HasSetting(Bald.DisablePreload)</selected><onclick>Skin.ToggleSetting(Bald.DisablePreload)</onclick></control>
 				<!-- Long plots in the library previews and Estuary's list views scroll on their own after 10 s. -->

@@ -1,6 +1,6 @@
 """Bald Helper service: Bald's keymaps (resources/lib/keymap.py), its blurred backgrounds (resources/lib/blur.py),
 its latency-sensitive skin actions (resources/lib/actions.py), its online ratings (resources/lib/ratings.py), its
-spoiler stills (resources/lib/spoilers.py) and its typeface choice (resources/lib/fontset.py).
+spoiler stills (resources/lib/spoilers.py) and its typeface and text size (resources/lib/lookandfeel.py).
 
 The blur follower, the ratings follower and the action worker run on their own threads; the keymap manager runs here,
 on the thread whose monitor receives the skin's notifications (and whose player receives playback events), and keeps
@@ -77,14 +77,15 @@ def start_spoilers():
         return None, None
 
 
-def start_fontset():
-    """The keeper of Bald's typeface choice; its step runs in the keymap loop."""
+def start_lookandfeel():
+    """The keeper of Bald's typeface and text size; its step runs in the keymap loop."""
     try:
-        from resources.lib.fontset import Keeper
+        from resources.lib.lookandfeel import Keeper
 
         return Keeper(xbmc)
-    except Exception as error:  # noqa: BLE001 - the fontset stays whatever Kodi has
-        xbmc.log(f"script.bald.helper: fontset keeper did not start: {type(error).__name__}: {error}", xbmc.LOGERROR)
+    except Exception as error:  # noqa: BLE001 - the fontset and zoom stay whatever Kodi has
+        xbmc.log(f"script.bald.helper: look-and-feel keeper did not start: {type(error).__name__}: {error}",
+                 xbmc.LOGERROR)
         return None
 
 
@@ -93,15 +94,15 @@ if __name__ == "__main__":
     ratings, player = start_ratings()
     spoilers, spoilers_monitor = start_spoilers()
     actions, monitor = start_actions()
-    fontset = start_fontset()
-    fontset_steps = (fontset.tick,) if fontset is not None else ()
+    lookandfeel = start_lookandfeel()
+    lookandfeel_steps = (lookandfeel.tick,) if lookandfeel is not None else ()
     try:
         if actions is not None:
             from resources.lib.actions import WAKE_SECONDS
 
-            Service(xbmc, xbmcvfs).run(monitor, wake=WAKE_SECONDS, each=(actions.refresh, *fontset_steps))
+            Service(xbmc, xbmcvfs).run(monitor, wake=WAKE_SECONDS, each=(actions.refresh, *lookandfeel_steps))
         else:
-            Service(xbmc, xbmcvfs).run(wake=POLL_SECONDS, each=fontset_steps)
+            Service(xbmc, xbmcvfs).run(wake=POLL_SECONDS, each=lookandfeel_steps)
     finally:
         if actions is not None:
             actions.stop()

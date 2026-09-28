@@ -241,5 +241,74 @@ class TypographyRowTests(unittest.TestCase):
         self.assertEqual(self.row.findtext("label2"), "$VAR[Bald_FontName]")
 
 
+class TextSizeRowTests(unittest.TestCase):
+    """Appearance > Typography > Text size (9638): one click moves one step along Default (0), Large (4), Larger (8),
+    Kodi's lookandfeel.skinzoom, as kept in Skin.String(Bald.TextSize)."""
+
+    STRING = "Skin.String(Bald.TextSize)"
+
+    @classmethod
+    def setUpClass(cls):
+        window = ET.parse(ROOT / "1080i" / "Custom_1118_BaldAppearance.xml").getroot()
+        cls.rows = [node.get("id") for node in window.iter("control") if node.get("id") in ("9631", "9638")]
+        cls.row = window.find(".//control[@id='9638']")
+        configure = ET.parse(ROOT / "1080i" / "Includes_Bald_Configure.xml").getroot()
+        cls.label = configure.find("variable[@name='Bald_TextSizeLabel']")
+
+    @classmethod
+    def holds(cls, condition, stored):
+        """Whether a condition (String.IsEqual / String.IsEmpty terms on the skin string, joined by +) holds."""
+        for term in (t.strip() for t in condition.split("+")):
+            match = re.fullmatch(r"(!?)String\.(IsEqual|IsEmpty)\(Skin\.String\(Bald\.TextSize\)(?:,(-?\w+))?\)", term)
+            assert match, term
+            truth = stored == match.group(3) if match.group(2) == "IsEqual" else stored == ""
+            if truth == bool(match.group(1)):
+                return False
+        return True
+
+    def clicked(self, stored):
+        return [n.text for n in self.row.findall("onclick") if self.holds(n.get("condition"), stored)]
+
+    def shown(self, stored):
+        """The label2 text for a stored value: the first value whose condition holds."""
+        for value in self.label.findall("value"):
+            if value.get("condition") is None or self.holds(value.get("condition"), stored):
+                return value.text
+
+    def test_each_click_moves_one_step_round_the_three(self):
+        for stored, following in {"": "4", "0": "4", "4": "8", "8": "0"}.items():
+            with self.subTest(stored=stored):
+                self.assertEqual(self.clicked(stored), [f"RunScript(skin.bald,textsize,{following})"])
+
+    def test_a_zoom_set_elsewhere_steps_to_large(self):
+        for stored in ("2", "10", "-4", "30"):
+            with self.subTest(stored=stored):
+                self.assertEqual(self.clicked(stored), ["RunScript(skin.bald,textsize,4)"])
+
+    def test_the_row_names_the_size(self):
+        text = strings()
+        self.assertEqual(self.row.findtext("label"), "$LOCALIZE[31430]")
+        self.assertEqual(text[31430], "Text size")
+        self.assertEqual(self.row.findtext("label2"), "$VAR[Bald_TextSizeLabel]")
+        for stored, expected in {"": "$LOCALIZE[571]", "0": "$LOCALIZE[571]", "4": "$LOCALIZE[31431]",
+                                 "8": "$LOCALIZE[31432]", "10": "$INFO[Skin.String(Bald.TextSize),, %]",
+                                 "-4": "$INFO[Skin.String(Bald.TextSize),, %]"}.items():
+            with self.subTest(stored=stored):
+                self.assertEqual(self.shown(stored), expected)
+        self.assertEqual((text[31431], text[31432]), ("Large", "Larger"))
+
+    def test_the_row_follows_the_font_row_at_standard(self):
+        self.assertEqual(self.rows, ["9631", "9638"])
+        include = self.row.find("include[@content='Bald_SettingRow']")
+        params = {p.get("name"): p.text for p in include.findall("param")}
+        self.assertEqual(params, {"list": "9500", "item": "5", "level": "standard"})
+
+    def test_the_steps_are_the_scripts_sizes(self):
+        from scripts import info
+        steps = sorted({int(n.text.rsplit(",", 1)[1][:-1]) for n in self.row.findall("onclick")})
+        self.assertEqual(tuple(steps), info.TEXT_SIZES)
+        self.assertEqual(info.TEXT_SIZE_SKIN_STRING, "Bald.TextSize")
+
+
 if __name__ == "__main__":
     unittest.main()
