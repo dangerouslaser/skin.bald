@@ -84,6 +84,13 @@ class IdleConditionTests(unittest.TestCase):
         # The zoom is full motion only.
         self.assertTrue(equivalent(expression("Bald_IdleZoom"), "$EXP[Bald_IdleExpand] + $EXP[Bald_FullMotion]"))
 
+    def test_every_key_on_the_wake_button_returns_to_the_rows(self):
+        # The first key only wakes; Info included, or it woke Home but left focus on 9199 and every later Info did nothing.
+        button = ET.parse(XML / "Home.xml").getroot().find(".//control[@id='9199']")
+        for action in ("onup", "ondown", "onleft", "onright", "onclick", "onback", "oninfo"):
+            with self.subTest(action=action):
+                self.assertEqual(button.findtext(action), "SetFocus($VAR[Bald_RowFocus])")
+
 
 class IdleTimingTableTests(unittest.TestCase):
     """The sequence, from the constants: enter, then wake."""

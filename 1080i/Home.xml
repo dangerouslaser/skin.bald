@@ -415,6 +415,8 @@
 			<onright>SetFocus($VAR[Bald_RowFocus])</onright>
 			<onclick>SetFocus($VAR[Bald_RowFocus])</onclick>
 			<onback>SetFocus($VAR[Bald_RowFocus])</onback>
+			<!-- Info too: without it the key woke Home but left focus here, so every later Info did nothing. -->
+			<oninfo>SetFocus($VAR[Bald_RowFocus])</oninfo>
 		</control>
 		<!-- Startup splash. 9198 holds focus while it shows and swallows keys (Arctic Fuse 3's splash has no skip either);
 		     if it somehow still has focus afterwards, any key goes on to 9195. The bald_preload timer lifts the splash
