@@ -4,10 +4,10 @@
      settings folded into Bald"). Date & time is id 7, listed before Typography. Estuary's other skin settings had no
      effect in Bald and were dropped earlier.
      Every row names its settings level (Includes_Bald_Configure.xml, "Settings level"). Basic: blurred backgrounds,
-     show ratings, time format, font. Advanced: blur strength and brightness, music video posters, list-view titles,
+     show ratings, time format, reduce motion, font. Advanced: blur strength and brightness, music video posters, list-view titles,
      profile name, spoiler details, extra rating sources, rating placement and votes, hub Select, watched and progress
      marks. Expert: rating provider settings, default rating source, hint reset, preload Home. The rest is Standard;
-     Information and Behavior hide at Basic. -->
+     Information hides at Basic. -->
 <window type="window" id="1118">
 	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9500</defaultcontrol>
@@ -21,7 +21,7 @@
 				<item id="1"><label>$LOCALIZE[39123]</label><property name="note">$LOCALIZE[31755]</property></item>
 				<item id="2"><label>$LOCALIZE[19033]</label><property name="note">$LOCALIZE[31756]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
 				<item id="6"><label>$LOCALIZE[31300]</label><property name="note">$LOCALIZE[31301]</property></item>
-				<item id="3"><label>$LOCALIZE[31757]</label><property name="note">$LOCALIZE[31758]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
+				<item id="3"><label>$LOCALIZE[31757]</label><property name="note">$LOCALIZE[31758]</property></item>
 				<item id="7"><label>$LOCALIZE[14063]</label><property name="note">$LOCALIZE[31334]</property></item>
 				<item id="5"><label>$LOCALIZE[31942]</label><property name="note">$LOCALIZE[31943]</property></item>
 			</content>
@@ -161,7 +161,7 @@
 				<!-- Ambient movement happens while idle, so it greys out with idle off. -->
 				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick><enable>!Skin.String(Bald.IdleTime,off)</enable></control>
 				<!-- Reduce motion (Bald_ReduceMotion, Includes_Bald_Common.xml): zooms and slides become plain fades, for slower boxes. -->
-				<control type="radiobutton" id="9681"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31371]</label><selected>Skin.HasSetting(Bald.ReduceMotion)</selected><onclick>Skin.ToggleSetting(Bald.ReduceMotion)</onclick></control>
+				<control type="radiobutton" id="9681"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">basic</param></include><label>$LOCALIZE[31371]</label><selected>Skin.HasSetting(Bald.ReduceMotion)</selected><onclick>Skin.ToggleSetting(Bald.ReduceMotion)</onclick></control>
 				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>
 				<control type="button" id="9623"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">expert</param></include><label>$LOCALIZE[31766]</label><onclick>Skin.Reset(Bald.MenuOpens)</onclick><visible>Skin.HasSetting(Bald.AutoHideMenuHint)</visible></control>
 				<!-- Select on a hub (or Live TV) in the Home menu opens its library (or the guide) and Right enters its rows;
