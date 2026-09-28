@@ -431,8 +431,8 @@ class HttpTests(unittest.TestCase):
 
     def test_check_key(self):
         fetch = Fetch()
-        fetch.add("user", data={"username": "bryan", "rate_limit": 1000, "rate_limit_remaining": 990})
-        self.assertEqual(mdblist.check_key(KEY, fetch), ("ok", {"username": "bryan", "limit": 1000, "remaining": 990}))
+        fetch.add("user", data={"username": "dangerouslaser", "rate_limit": 1000, "rate_limit_remaining": 990})
+        self.assertEqual(mdblist.check_key(KEY, fetch), ("ok", {"username": "dangerouslaser", "limit": 1000, "remaining": 990}))
         self.assertEqual(mdblist.check_key("  ", fetch)[0], "empty")
         fetch.answers["user"] = [mdblist.Response(403, {"error": "Invalid API key!"})]
         self.assertEqual(mdblist.check_key(KEY, fetch)[0], "rejected")
@@ -807,9 +807,9 @@ class CastPluginTests(unittest.TestCase):
         dialog = types.SimpleNamespace(notification=lambda *args: shown.append(args))
         xbmcgui = types.SimpleNamespace(Dialog=lambda: dialog, NOTIFICATION_INFO="info", NOTIFICATION_WARNING="warning")
         fetch = Fetch()
-        fetch.add("user", data={"username": "bryan", "rate_limit": 1000, "rate_limit_remaining": 990})
+        fetch.add("user", data={"username": "dangerouslaser", "rate_limit": 1000, "rate_limit_remaining": 990})
         self.assertEqual(plugin.test_key(types.SimpleNamespace(Addon=Addon), xbmcgui, fetch=fetch), "ok")
-        self.assertEqual(shown[-1][1], "MDbList key works (bryan): 990 of 1000 requests left today")
+        self.assertEqual(shown[-1][1], "MDbList key works (dangerouslaser): 990 of 1000 requests left today")
         fetch.answers["user"] = [mdblist.Response(401)]
         self.assertEqual(plugin.test_key(types.SimpleNamespace(Addon=Addon), xbmcgui, fetch=fetch), "rejected")
         self.assertFalse(any(KEY in str(part) for args in shown for part in args))
@@ -862,7 +862,7 @@ class CastPluginTests(unittest.TestCase):
 class PackagingTests(unittest.TestCase):
     def test_addon_declares_service_and_plugin(self):
         root = ET.parse(ADDON / "addon.xml").getroot()
-        self.assertEqual(root.get("version"), "1.4.1")
+        self.assertEqual(root.get("version"), "1.4.2")
         points = {e.get("point"): e.get("library") for e in root.findall("extension")}
         self.assertEqual(points["xbmc.service"], "service.py")
         self.assertEqual(points["xbmc.python.pluginsource"], "plugin.py")

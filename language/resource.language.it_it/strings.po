@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Bald
 # Addon id: skin.bald
-# Addon Provider: Bryan Hoban
+# Addon Provider: dangerouslaser
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
