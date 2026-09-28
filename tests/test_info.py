@@ -562,3 +562,34 @@ class MouseInputTests(unittest.TestCase):
                 mouse = [n for n in loads if n.text == 'RunScript(skin.bald,mouse)']
                 self.assertEqual(len(mouse), 1)
                 self.assertEqual(mouse[0].get('condition'), 'System.GetBool(input.enablemouse)')
+
+
+class MakeItemTests(unittest.TestCase):
+    """Titles opened from More like this keep what the Overview and the identity guard read."""
+
+    def make(self, media_type, details):
+        gui = Mock()
+        item = gui.ListItem.return_value
+        tag = item.getVideoInfoTag.return_value
+        info.make_item(Mock(), gui, media_type, 7, details)
+        return item, tag
+
+    def test_movie_keeps_ratings_ids_and_votes(self):
+        details = {"title": "Heat", "file": "/m/heat.mkv", "ratings": {
+            "imdb": {"default": True, "rating": 8.3, "votes": 700000}, "tomatometerallcritics": {"rating": 8.8}},
+            "uniqueid": {"imdb": "tt0113277", "tmdb": "949"}, "votes": "700,000", "set": "Heat Collection",
+            "premiered": "1995-12-15", "country": ["United States"], "originaltitle": "Heat", "userrating": 9}
+        _, tag = self.make("movie", details)
+        tag.setRatings.assert_called_once_with({"imdb": (8.3, 700000), "tomatometerallcritics": (8.8, 0)}, "imdb")
+        tag.setUniqueIDs.assert_called_once_with({"imdb": "tt0113277", "tmdb": "949"}, "imdb")
+        tag.setVotes.assert_called_once_with(700000)
+        tag.setSet.assert_called_once_with("Heat Collection")
+        tag.setPremiered.assert_called_once_with("1995-12-15")
+
+    def test_show_keeps_its_episode_counts(self):
+        item, tag = self.make("tvshow", {"title": "Severance", "file": "videodb://tvshows/titles/7/",
+                                         "season": 2, "episode": 19, "watchedepisodes": 12})
+        properties = {c.args[0]: c.args[1] for c in item.setProperty.call_args_list}
+        self.assertEqual(properties, {"TotalSeasons": "2", "TotalEpisodes": "19", "WatchedEpisodes": "12",
+                                      "UnWatchedEpisodes": "7"})
+        tag.setRatings.assert_not_called()

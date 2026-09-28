@@ -324,6 +324,21 @@ def make_item(xbmc, xbmcgui, media_type, dbid, details):
     tag.setMpaa(details.get("mpaa", ""))
     tag.setPlaycount(details.get("playcount", 0))
     tag.setRating(details.get("rating", 0))
+    # Named ratings (the Overview's ratings row) and the ids the TMDb Helper identity guard matches on.
+    ratings = details.get("ratings") or {}
+    default = next((name for name, value in ratings.items() if value.get("default")), "")
+    if ratings:
+        tag.setRatings({name: (value.get("rating", 0), value.get("votes", 0)) for name, value in ratings.items()},
+                       default)
+    uniqueids = details.get("uniqueid") or {}
+    if uniqueids:
+        tag.setUniqueIDs(uniqueids, "imdb" if "imdb" in uniqueids else next(iter(uniqueids)))
+    tag.setUserRating(details.get("userrating", 0))
+    votes = str(details.get("votes") or "0").replace(",", "").replace(".", "")
+    tag.setVotes(int(votes) if votes.isdigit() else 0)  # JSON-RPC gives votes as text, e.g. "12,345"
+    tag.setPremiered(details.get("premiered", ""))
+    tag.setCountries(details.get("country", []))
+    tag.setOriginalTitle(details.get("originaltitle", ""))
     tag.setDateAdded(details.get("dateadded", ""))
     tag.setCast([xbmc.Actor(actor["name"], actor.get("role", ""),
                              actor.get("order", -1), actor.get("thumbnail", ""))
@@ -334,6 +349,8 @@ def make_item(xbmc, xbmcgui, media_type, dbid, details):
         tag.setWriters(details.get("writer", []))
         tag.setTagLine(details.get("tagline", ""))
         tag.setTrailer(details.get("trailer", ""))
+        if details.get("set"):
+            tag.setSet(details["set"])
         resume = details.get("resume", {})
         tag.setResumePoint(resume.get("position", 0), resume.get("total", 0))
         streams = details.get("streamdetails", {})
@@ -351,6 +368,10 @@ def make_item(xbmc, xbmcgui, media_type, dbid, details):
     else:
         tag.setPath(details["file"])
         item.setProperty("TotalSeasons", str(details.get("season", 0)))
+        total, watched = details.get("episode", 0), details.get("watchedepisodes", 0)
+        item.setProperty("TotalEpisodes", str(total))
+        item.setProperty("WatchedEpisodes", str(watched))
+        item.setProperty("UnWatchedEpisodes", str(max(total - watched, 0)))
     return item
 
 
@@ -512,10 +533,11 @@ def open_item(xbmc, xbmcgui, media_type, dbid, show=None):
     home.setProperty("Bald.InfoSwitch", token)
     origin = window.getProperty("Bald.Identity")
     try:
-        properties = ["title", "file", "art", "plot", "year", "genre",
-                      "studio", "mpaa", "playcount", "rating", "dateadded", "cast"]
-        properties += (["director", "runtime", "writer", "tagline", "trailer", "resume", "streamdetails"]
-                       if media_type == "movie" else ["season"])
+        properties = ["title", "file", "art", "plot", "year", "genre", "studio", "mpaa", "playcount", "rating",
+                      "dateadded", "cast", "ratings", "uniqueid", "userrating", "votes", "premiered", "country",
+                      "originaltitle"]
+        properties += (["director", "runtime", "writer", "tagline", "trailer", "resume", "streamdetails", "set"]
+                       if media_type == "movie" else ["season", "episode", "watchedepisodes"])
         details = get_details(xbmc, media_type, int(dbid), properties)
         item = make_item(xbmc, xbmcgui, media_type, int(dbid), details)
         if (not xbmc.getCondVisibility("Window.IsActive(movieinformation)")
