@@ -13,7 +13,7 @@
 		<definition>
 			<control type="group">
 				<visible>Integer.Is$PARAM[p](Container(511).CurrentItem)</visible>
-				<include content="Bald_AnimCaptionIn"><param name="c">511</param><param name="delay">180</param></include>
+				<include content="Bald_AnimCaptionIn"><param name="c">511</param><param name="ignore_home_row">true</param><param name="delay">180</param></include>
 				<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[Container(511).ListItem.Title]</label></control>
 				<control type="label"><left>Bald_SafeLeft</left><top>168</top><width>1100</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><include content="Bald_MetaLibraryMovie"><param name="container">Container(511).</param></include></control>
 				<control type="grouplist"><left>Bald_PreviewLeft</left><top>168</top><width>528</width><height>26</height><orientation>horizontal</orientation><align>right</align><itemgap>8</itemgap><include content="Bald_MediaFlags"><param name="container">Container(511).</param></include></control>

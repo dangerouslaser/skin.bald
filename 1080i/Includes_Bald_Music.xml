@@ -131,7 +131,7 @@
 				<left>20</left><width>$PARAM[width]</width><height max="$PARAM[height]">auto</height>
 				<font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$PARAM[label]</label>
 				<visible>$PARAM[visible] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
-				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">180</param></include>
+				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">true</param><param name="delay">180</param></include>
 			</control>
 		</definition>
 	</include>
@@ -143,7 +143,7 @@
 				<left>20</left><top>$PARAM[top]</top><width>$PARAM[width]</width><height>26</height>
 				<font>$PARAM[font]</font><textcolor>$PARAM[color]</textcolor><label>$PARAM[label]</label>
 				<visible>[$PARAM[visible]] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
-				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">$PARAM[delay]</param></include>
+				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">true</param><param name="delay">$PARAM[delay]</param></include>
 			</control>
 		</definition>
 	</include>
@@ -154,7 +154,7 @@
 				<left>20</left><top>18</top><width>$PARAM[width]</width><height>$PARAM[height]</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny>
 				<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$PARAM[label]</label>
 				<visible>$PARAM[visible] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
-				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
+				<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">true</param><param name="delay">350</param></include>
 			</control>
 		</definition>
 	</include>

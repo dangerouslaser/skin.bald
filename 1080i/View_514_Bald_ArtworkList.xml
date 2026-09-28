@@ -5,14 +5,14 @@
 		<definition>
 			<control type="group">
 				<visible>Integer.Is$PARAM[p](Container(514).CurrentItem)</visible>
-				<control type="label"><left>816</left><top>774</top><width>1008</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><include content="Bald_MetaLibraryMovie"><param name="container">Container(514).</param></include><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">250</param></include></control>
-				<control type="group"><left>816</left><top>806</top><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">275</param></include>
+				<control type="label"><left>816</left><top>774</top><width>1008</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><include content="Bald_MetaLibraryMovie"><param name="container">Container(514).</param></include><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="ignore_home_row">true</param><param name="delay">250</param></include></control>
+				<control type="group"><left>816</left><top>806</top><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="ignore_home_row">true</param><param name="delay">275</param></include>
 					<control type="grouplist"><width>1008</width><height>26</height><orientation>horizontal</orientation><itemgap>8</itemgap><include content="Bald_MediaFlags"><param name="container">Container(514).</param></include></control>
 					<!-- Ratings at the right of the flags line. -->
 					<include content="Bald_RatingsRow"><param name="container">Container(514).</param><param name="visible">$EXP[Bald_RatingsLibrary]</param><param name="width">1008</param><param name="align">right</param></include>
 				</control>
-				<control type="textbox"><left>816</left><top>848</top><width>1008</width><height>60</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[Container(514).ListItem.Plot]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_SpoilerPlotShown"><param name="item">Container(514).ListItem.</param></include><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">350</param></include></control>
-				<include content="Bald_SpoilerNote"><param name="item">Container(514).ListItem.</param><param name="visible">!$EXP[Bald_LibraryLettersOpen]</param><param name="left">816</param><param name="top">848</param><param name="width">1008</param><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="delay">350</param></include></include>
+				<control type="textbox"><left>816</left><top>848</top><width>1008</width><height>60</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[Container(514).ListItem.Plot]</label><visible>!$EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_SpoilerPlotShown"><param name="item">Container(514).ListItem.</param></include><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="ignore_home_row">true</param><param name="delay">350</param></include></control>
+				<include content="Bald_SpoilerNote"><param name="item">Container(514).ListItem.</param><param name="visible">!$EXP[Bald_LibraryLettersOpen]</param><param name="left">816</param><param name="top">848</param><param name="width">1008</param><include content="Bald_AnimCaptionIn"><param name="c">514</param><param name="ignore_home_row">true</param><param name="delay">350</param></include></include>
 			</control>
 		</definition>
 	</include>
