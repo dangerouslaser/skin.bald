@@ -145,13 +145,19 @@
 	</include>
 	<!-- The OSD settings drawer: the Home menu's open (fade 380, 40 px slide over 480, after 120) and close (160). -->
 	<include name="Bald_PlaybackAnimDrawer">
-		<animation type="WindowOpen" reversible="false">
+		<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]" reversible="false">
 			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
 			<effect type="slide" start="40,0" end="0,0" time="480" delay="120" tween="cubic" easing="out" />
 		</animation>
-		<animation type="WindowClose" reversible="false">
+		<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
+		</animation>
+		<animation type="WindowClose" condition="$EXP[Bald_FullMotion]" reversible="false">
 			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 			<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowClose" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 		</animation>
 	</include>
 
@@ -452,10 +458,10 @@
 			<textureradiooffnofocus colordiffuse="$PARAM[off_color]">$PARAM[icon]</textureradiooffnofocus>
 			<textureradioondisabled colordiffuse="bald_ink28">$PARAM[on]</textureradioondisabled>
 			<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradiooffdisabled>
-			<animation type="Focus">
+			<animation type="Focus" condition="$EXP[Bald_FullMotion]">
 				<effect type="zoom" start="100" end="105" center="32,32" time="280" tween="back" easing="out" />
 			</animation>
-			<animation type="Unfocus">
+			<animation type="Unfocus" condition="$EXP[Bald_FullMotion]">
 				<effect type="zoom" start="105" end="100" center="32,32" time="220" tween="cubic" easing="out" />
 			</animation>
 		</definition>

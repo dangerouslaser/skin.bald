@@ -75,7 +75,7 @@
 		<param name="diffuse">bald_art70</param><param name="ink">bald_ink70</param><param name="focused">false</param>
 		<definition>
 			<control type="group">
-				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="108,108" time="280" tween="back" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="102.5" center="108,108" time="280" tween="back" easing="out" /></animation>
 				<control type="image"><left>12</left><top>12</top><width>192</width><height>192</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 				<control type="image"><left>12</left><top>12</top><width>192</width><height>192</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$INFO[ListItem.Art(thumb)]</texture><visible>!String.IsEmpty(ListItem.Art(thumb))</visible></control>
 				<control type="image"><left>60</left><top>60</top><width>96</width><height>96</height><aspectratio>keep</aspectratio><texture colordiffuse="bald_art45">$INFO[ListItem.Icon]</texture><visible>String.IsEmpty(ListItem.Art(thumb))</visible></control>
@@ -164,9 +164,12 @@
 		<param name="width">528</param><param name="clip_width">568</param><param name="text_height">116</param>
 		<definition>
 			<control type="group">
-				<animation type="Hidden">
+				<animation type="Hidden" condition="$EXP[Bald_FullMotion]">
 					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 					<effect type="slide" start="0,0" end="-14,0" time="130" tween="cubic" easing="out" />
+				</animation>
+				<animation type="Hidden" condition="$EXP[Bald_ReduceMotion]">
+					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 				</animation>
 				<!-- Title: bottom-aligned in a vertical grouplist (align right), so its last line ends at body_y. -->
 				<control type="grouplist">
@@ -213,7 +216,7 @@
 				<control type="group">
 					<visible>!$EXP[Bald_LibraryMenuOpen]</visible>
 					<animation type="Hidden"><effect type="fade" start="100" end="100" time="180" tween="sine" easing="inout" /></animation>
-					<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+					<animation type="Visible" condition="$EXP[Bald_FullMotion]"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
 					<include content="Bald_MusicCaption"><param name="c">$PARAM[c]</param><param name="p">Odd</param></include>
 					<include content="Bald_MusicCaption"><param name="c">$PARAM[c]</param><param name="p">Even</param></include>
 				</control>
@@ -412,8 +415,11 @@
 		<!-- With the music OSD up, the seek layer lifts its status line to y 745 (Bald_OSDControlsUp), over the cover's
 		     foot: the screen rises 72 px while it is there. -->
 		<control type="group">
-			<animation type="Conditional" condition="$EXP[Bald_OSDControlsUp]" reversible="true">
+			<animation type="Conditional" condition="[$EXP[Bald_OSDControlsUp]] + $EXP[Bald_FullMotion]" reversible="true">
 				<effect type="slide" end="0,-72" time="320" tween="cubic" easing="out" />
+			</animation>
+			<animation type="Conditional" condition="[$EXP[Bald_OSDControlsUp]] + $EXP[Bald_ReduceMotion]" reversible="true">
+				<effect type="slide" end="0,-72" time="0" tween="cubic" easing="out" />
 			</animation>
 			<control type="group">
 				<left>Bald_SafeLeft</left><top>180</top>

@@ -58,13 +58,19 @@
 	<include name="Bald_OverlayOpenClose">
 		<param name="offset">0,-14</param>
 		<definition>
-			<animation type="WindowOpen" reversible="false">
+			<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="0" end="100" time="240" tween="sine" easing="inout" />
 				<effect type="slide" start="$PARAM[offset]" end="0,0" time="360" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowClose" reversible="false">
+			<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="0" end="100" time="240" tween="sine" easing="inout" />
+			</animation>
+			<animation type="WindowClose" condition="$EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="$PARAM[offset]" time="200" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 			</animation>
 		</definition>
 	</include>

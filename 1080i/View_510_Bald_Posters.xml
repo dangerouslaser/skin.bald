@@ -107,7 +107,8 @@
 		<definition>
 			<control type="image"><top>23</top><width>10</width><height>10</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>$PARAM[always_dot]</visible></control>
 			<control type="label"><left>26</left><width>394</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
-				<animation type="Focus" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_ReduceMotion]" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /></animation>
 			</control>
 			<!-- A quiet disclosure cue for screen entries whose full native library opens with Right. -->
 			<control type="label"><left>374</left><width>28</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink70</textcolor><label>›</label><visible>!String.IsEmpty(ListItem.Property(library))</visible></control>
@@ -204,7 +205,7 @@
 		<param name="width">360</param><param name="height">540</param><param name="ring_width">366</param><param name="ring_height">546</param><param name="center">192,282</param><param name="show_label">true</param>
 		<definition>
 			<control type="group">
-				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="102.5" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
 				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[Bald_LibraryPoster]</texture></control>
 				<control type="image"><left>9</left><top>9</top><width>$PARAM[ring_width]</width><height>$PARAM[ring_height]</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
@@ -248,7 +249,7 @@
 					<visible>!$EXP[Bald_LibraryMenuOpen]</visible>
 					<!-- Retain the caption while the parent completes its outgoing fade. -->
 					<animation type="Hidden"><effect type="fade" start="100" end="100" time="180" tween="sine" easing="inout" /></animation>
-					<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+					<animation type="Visible" condition="$EXP[Bald_FullMotion]"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
 					<include content="Bald_LibraryCaption"><param name="c">$PARAM[c]</param><param name="p">Odd</param></include>
 					<include content="Bald_LibraryCaption"><param name="c">$PARAM[c]</param><param name="p">Even</param></include>
 				</control>

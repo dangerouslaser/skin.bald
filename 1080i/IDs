@@ -427,6 +427,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		9662 Roger Ebert, 9663 MDbList score (listed after 9648), 9649 my rating, 9650 default rating;
 		surfaces 9651 information screens, 9652 Home, 9653 library views, 9654 player info overlay;
 		9655 vote counts; 9656 default rating source (listed after 9650)
+9681	Behavior: reduce motion (Bald.ReduceMotion; listed after 9621)
 
 GLOBAL OVERLAYS (Includes_Bald_Overlays.xml)
 

@@ -95,9 +95,12 @@
 						<font>$PARAM[font]</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$INFO[ListItem.Label]</label>
-						<animation type="Focus" reversible="false">
+						<animation type="Focus" condition="$EXP[Bald_FullMotion]" reversible="false">
 							<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
 							<effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" />
+						</animation>
+						<animation type="Focus" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+							<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
 						</animation>
 					</control>
 				</control>
@@ -314,11 +317,14 @@
 			<!-- menu_dot.png is 440 x 56 with the dot in its first 10 px: the left border keeps it round at any width. -->
 			<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
 			<texturenofocus />
-			<animation type="Focus" reversible="false">
+			<animation type="Focus" condition="$EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" />
 			</animation>
-			<animation type="Unfocus">
+			<animation type="Focus" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Unfocus" condition="$EXP[Bald_FullMotion]">
 				<effect type="slide" start="6,0" end="0,0" time="320" tween="cubic" easing="out" />
 			</animation>
 		</definition>
@@ -670,9 +676,12 @@
 					<visible>$PARAM[focused]</visible>
 				</control>
 				<control type="group">
-					<animation type="Focus" reversible="false" condition="$PARAM[focused]">
+					<animation type="Focus" reversible="false" condition="[$PARAM[focused]] + $EXP[Bald_FullMotion]">
 						<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
 						<effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" />
+					</animation>
+					<animation type="Focus" reversible="false" condition="[$PARAM[focused]] + $EXP[Bald_ReduceMotion]">
+						<effect type="fade" start="50" end="100" time="240" tween="sine" easing="inout" />
 					</animation>
 					<control type="image">
 						<left>26</left>

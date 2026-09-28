@@ -24,6 +24,16 @@
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_video_dim90">bald/white.png</texture><visible>Skin.String(Bald.OSD.BackgroundVideoDim,90)</visible></control>
 		</control>
 	</include>
+	<!-- Reduce motion (Appearance › Behavior, Bald.ReduceMotion, off by default): zooms and slides become plain fades,
+	     for slower boxes. Every timed slide or zoom is gated on Bald_FullMotion; its twin under Bald_ReduceMotion keeps
+	     only the fades, with the same timings, or, where the move holds a layout (poster rows, the info handoff, the OSD
+	     rising for its panels, the playback speed marker), makes the move instantly. Kodi has no per-effect
+	     conditions, so the twins are whole animations. Instant layout steps (time 0) and list scrolling stay. -->
+	<expression name="Bald_FullMotion">[!Skin.HasSetting(Bald.ReduceMotion)]</expression>
+	<expression name="Bald_ReduceMotion">[Skin.HasSetting(Bald.ReduceMotion)]</expression>
+	<!-- Window changes fade without their move: over background video (a slide flashed the video undimmed) and under
+	     Reduce motion. -->
+	<expression name="Bald_FadeOnly">[$EXP[Bald_VideoBackdropOn] | $EXP[Bald_ReduceMotion]]</expression>
 	<include name="Bald_Field">
 		<control type="image">
 			<width>1920</width>
@@ -337,27 +347,28 @@
 			<!-- Not under the Home <-> library curtain (Custom_1129_BaldCurtain.xml): the window is already fully drawn
 			     when the curtain fades away. The condition is read when the open is queued, before the onload clears it.
 			     With background video (Bald_VideoBackdropOn) the slide is dropped and only the fade stays: a window that
-			     vanished at once left frames with nothing drawn, which on CoreELEC show the video undimmed (a flash). -->
-			<animation type="WindowOpen" condition="![$PARAM[back_in]] + String.IsEmpty(Window(home).Property(Bald.Curtain)) + !$EXP[Bald_VideoBackdropOn]">
+			     vanished at once left frames with nothing drawn, which on CoreELEC show the video undimmed (a flash).
+			     Reduce motion drops it the same way (Bald_FadeOnly). -->
+			<animation type="WindowOpen" condition="![$PARAM[back_in]] + String.IsEmpty(Window(home).Property(Bald.Curtain)) + !$EXP[Bald_FadeOnly]">
 				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 				<effect type="slide" start="40,0" end="0,0" time="480" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowOpen" condition="$PARAM[back_in] + String.IsEmpty(Window(home).Property(Bald.Curtain)) + !$EXP[Bald_VideoBackdropOn]">
+			<animation type="WindowOpen" condition="$PARAM[back_in] + String.IsEmpty(Window(home).Property(Bald.Curtain)) + !$EXP[Bald_FadeOnly]">
 				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 				<effect type="slide" start="-40,0" end="0,0" time="480" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowClose" condition="![$PARAM[back_out]] + !$EXP[Bald_VideoBackdropOn]">
+			<animation type="WindowClose" condition="![$PARAM[back_out]] + !$EXP[Bald_FadeOnly]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="-40,0" time="180" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowClose" condition="$PARAM[back_out] + !$EXP[Bald_VideoBackdropOn]">
+			<animation type="WindowClose" condition="$PARAM[back_out] + !$EXP[Bald_FadeOnly]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowOpen" condition="String.IsEmpty(Window(home).Property(Bald.Curtain)) + $EXP[Bald_VideoBackdropOn]">
+			<animation type="WindowOpen" condition="String.IsEmpty(Window(home).Property(Bald.Curtain)) + $EXP[Bald_FadeOnly]">
 				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 			</animation>
-			<animation type="WindowClose" condition="$EXP[Bald_VideoBackdropOn]">
+			<animation type="WindowClose" condition="$EXP[Bald_FadeOnly]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 			</animation>
 		</definition>

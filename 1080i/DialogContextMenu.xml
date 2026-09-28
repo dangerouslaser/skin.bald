@@ -39,13 +39,19 @@
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
-			<animation type="WindowOpen">
+			<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]">
 				<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
 				<effect type="slide" start="40,0" end="0,0" time="480" delay="120" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowClose">
+			<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]">
+				<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
+			</animation>
+			<animation type="WindowClose" condition="$EXP[Bald_FullMotion]">
 				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose" condition="$EXP[Bald_ReduceMotion]">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 			</animation>
 			<!-- Starts 10 px left of the menu column (1430) because grouplists clip, and the focus dot sits at 1440. -->
 			<control type="grouplist" id="996">
@@ -79,11 +85,14 @@
 			<!-- Focused item: the Home menu's accent dot at x 1440, marking the highlighted entry. -->
 			<texturefocus colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
 			<texturenofocus />
-			<animation type="Focus" reversible="false">
+			<animation type="Focus" condition="$EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
 				<effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" />
 			</animation>
-			<animation type="Unfocus">
+			<animation type="Focus" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Unfocus" condition="$EXP[Bald_FullMotion]">
 				<effect type="slide" start="6,0" end="0,0" time="320" tween="cubic" easing="out" />
 			</animation>
 		</control>

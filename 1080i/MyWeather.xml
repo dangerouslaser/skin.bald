@@ -62,11 +62,11 @@
 			<left>0</left>
 			<ondown>20001</ondown>
 			<usecontrolcoords>true</usecontrolcoords>
-			<animation type="Conditional" condition="Control.IsVisible(20000)" reversible="false">
+			<animation type="Conditional" condition="[Control.IsVisible(20000)] + $EXP[Bald_FullMotion]" reversible="false">
 				<effect type="slide" end="0,14" time="110" tween="cubic" easing="out" />
 				<effect type="slide" end="0,-14" time="110" tween="cubic" easing="out" delay="110" />
 			</animation>
-			<animation type="Conditional" condition="Control.IsVisible(20001)" reversible="false">
+			<animation type="Conditional" condition="[Control.IsVisible(20001)] + $EXP[Bald_FullMotion]" reversible="false">
 				<effect type="slide" end="0,-14" time="110" tween="cubic" easing="out" />
 				<effect type="slide" end="0,14" time="110" tween="cubic" easing="out" delay="110" />
 			</animation>

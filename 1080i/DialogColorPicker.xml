@@ -38,10 +38,10 @@
 				</itemlayout>
 				<focusedlayout height="88" width="146">
 					<control type="group">
-						<animation type="Focus">
+						<animation type="Focus" condition="$EXP[Bald_FullMotion]">
 							<effect type="zoom" start="100" end="112" center="73,44" time="280" tween="back" easing="out" />
 						</animation>
-						<animation type="Unfocus">
+						<animation type="Unfocus" condition="$EXP[Bald_FullMotion]">
 							<effect type="zoom" start="112" end="100" center="73,44" time="220" tween="cubic" easing="out" />
 						</animation>
 						<include>Bald_ColorSwatch</include>

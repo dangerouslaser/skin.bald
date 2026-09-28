@@ -33,22 +33,37 @@
 	<!-- A modal dialog is over Home. <visible> and animation conditions are evaluated without a window context, so
 	     under a modal dialog any Container(...) in them resolves against the dialog; Home guards on this. -->
 	<expression name="Bald_DialogOver">[System.HasActiveModalDialog | $EXP[Bald_InfoOpen] | Window.IsVisible(contextmenu)]</expression>
+	<!-- Reduce motion (Bald_ReduceMotion): the frame changes size at once and fades in at its new size instead. -->
 	<include name="Bald_AnimInfoFrame">
-		<animation type="Conditional" condition="$EXP[Bald_InfoOpen]" reversible="false">
+		<animation type="Conditional" condition="[$EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="zoom" start="100" end="153.846" center="274,343" time="640" delay="40" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Conditional" condition="!$EXP[Bald_InfoOpen]" reversible="false">
+		<animation type="Conditional" condition="[$EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="zoom" start="100" end="153.846" center="274,343" time="0" delay="40" tween="cubic" easing="out" />
+			<effect type="fade" start="0" end="100" time="380" delay="40" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Conditional" condition="[!$EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="zoom" start="153.846" end="100" center="274,343" time="540" delay="30" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[!$EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="zoom" start="153.846" end="100" center="274,343" time="0" delay="30" tween="cubic" easing="out" />
+			<effect type="fade" start="0" end="100" time="380" delay="30" tween="sine" easing="inout" />
 		</animation>
 	</include>
 	<include name="Bald_AnimInfoChrome">
-		<animation type="Conditional" condition="$EXP[Bald_InfoOpen]" reversible="false">
+		<animation type="Conditional" condition="[$EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="fade" start="100" end="0" time="200" tween="sine" easing="inout" />
 			<effect type="slide" start="0,0" end="24,0" time="220" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Conditional" condition="!$EXP[Bald_InfoOpen]" reversible="false">
+		<animation type="Conditional" condition="[$EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="fade" start="100" end="0" time="200" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Conditional" condition="[!$EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="fade" start="0" end="100" time="380" delay="440" tween="sine" easing="inout" />
 			<effect type="slide" start="24,0" end="0,0" time="480" delay="440" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[!$EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" delay="440" tween="sine" easing="inout" />
 		</animation>
 	</include>
 	<!-- The logo scrim and clearlogo on the art leave with the chrome and come back once the frame has settled. -->
@@ -87,23 +102,38 @@
 	     with the zoom (640 move after 40), so the zoom about 274,343 maps the whole 1248 x 702 art to the screen exactly
 	     as on a landscape row; closing info nudges it again with the zoom back (540 after 30). -->
 	<include name="Bald_AnimPosterArt">
-		<animation type="Conditional" condition="$EXP[Bald_PosterRow] + !$EXP[Bald_InfoOpen]" reversible="false">
+		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + !$EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="slide" start="0,0" end="0,-63" time="540" delay="30" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Conditional" condition="!$EXP[Bald_PosterRow]" reversible="false">
+		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + !$EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="slide" start="0,0" end="0,-63" time="0" delay="30" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[!$EXP[Bald_PosterRow]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="slide" start="0,-63" end="0,0" time="540" delay="30" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Conditional" condition="$EXP[Bald_PosterRow] + $EXP[Bald_InfoOpen]" reversible="false">
+		<animation type="Conditional" condition="[!$EXP[Bald_PosterRow]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="slide" start="0,-63" end="0,0" time="0" delay="30" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + $EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="slide" start="0,-63" end="0,0" time="640" delay="40" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + $EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="slide" start="0,-63" end="0,0" time="0" delay="40" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<!-- The frame's bottom edge: the bottom mask, and the logo scrim and clearlogo. -->
 	<include name="Bald_AnimPosterEdge">
-		<animation type="Conditional" condition="$EXP[Bald_PosterRow]" reversible="false">
+		<animation type="Conditional" condition="[$EXP[Bald_PosterRow]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="slide" start="0,0" end="0,-126" time="540" delay="30" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Conditional" condition="!$EXP[Bald_PosterRow]" reversible="false">
+		<animation type="Conditional" condition="[$EXP[Bald_PosterRow]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="slide" start="0,0" end="0,-126" time="0" delay="30" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[!$EXP[Bald_PosterRow]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="slide" start="0,-126" end="0,0" time="540" delay="30" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[!$EXP[Bald_PosterRow]] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="slide" start="0,-126" end="0,0" time="0" delay="30" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<!-- The displayed screen's current row style, and the style of the screen the menu previews (empty, a full frame,
@@ -617,9 +647,12 @@
 		<param name="ignore_home_row">false</param>
 		<definition>
 			<include content="Bald_AnimCaptionRow_$PARAM[ignore_home_row]"><param name="c">$PARAM[c]</param><param name="delay">$PARAM[delay]</param></include>
-			<animation type="Visible">
+			<animation type="Visible" condition="$EXP[Bald_FullMotion]">
 				<effect type="fade" start="0" end="100" time="380" delay="$PARAM[delay]" tween="sine" easing="inout" />
 				<effect type="slide" start="-14,0" end="0,0" time="540" delay="$PARAM[delay]" tween="cubic" easing="out" />
+			</animation>
+			<animation type="Visible" condition="$EXP[Bald_ReduceMotion]">
+				<effect type="fade" start="0" end="100" time="380" delay="$PARAM[delay]" tween="sine" easing="inout" />
 			</animation>
 		</definition>
 	</include>
@@ -627,9 +660,12 @@
 		<param name="c" />
 		<param name="delay" />
 		<definition>
-			<animation type="Conditional" condition="String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])" reversible="false">
+			<animation type="Conditional" condition="[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + $EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="0" end="100" time="380" delay="$PARAM[delay]" tween="sine" easing="inout" />
 				<effect type="slide" start="-14,0" end="0,0" time="540" delay="$PARAM[delay]" tween="cubic" easing="out" />
+			</animation>
+			<animation type="Conditional" condition="[String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])] + $EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" delay="$PARAM[delay]" tween="sine" easing="inout" />
 			</animation>
 		</definition>
 	</include>
@@ -640,13 +676,19 @@
 	</include>
 	<!-- Row swap: out 140 fade and drop 18 px, then (after 170, as in the prototype) in 360 fade and 440 rise. -->
 	<include name="Bald_AnimRowSwap">
-		<animation type="Visible">
+		<animation type="Visible" condition="$EXP[Bald_FullMotion]">
 			<effect type="fade" start="0" end="100" time="360" delay="170" tween="sine" easing="inout" />
 			<effect type="slide" start="0,18" end="0,0" time="440" delay="170" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Hidden">
+		<animation type="Visible" condition="$EXP[Bald_ReduceMotion]">
+			<effect type="fade" start="0" end="100" time="360" delay="170" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Hidden" condition="$EXP[Bald_FullMotion]">
 			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
 			<effect type="slide" start="0,0" end="0,18" time="140" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Hidden" condition="$EXP[Bald_ReduceMotion]">
+			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
 		</animation>
 	</include>
 	<!-- Row edge nudge: 14 px over 110, then back. -->
@@ -655,11 +697,11 @@
 		<param name="x" />
 		<param name="back" />
 		<definition>
-			<animation type="Conditional" condition="String.IsEqual(Window(home).Property($PARAM[prop]),a)" reversible="false">
+			<animation type="Conditional" condition="[String.IsEqual(Window(home).Property($PARAM[prop]),a)] + $EXP[Bald_FullMotion]" reversible="false">
 				<effect type="slide" start="0,0" end="$PARAM[x],0" time="110" tween="cubic" easing="out" />
 				<effect type="slide" start="0,0" end="$PARAM[back],0" time="110" delay="110" tween="cubic" easing="out" />
 			</animation>
-			<animation type="Conditional" condition="String.IsEqual(Window(home).Property($PARAM[prop]),b)" reversible="false">
+			<animation type="Conditional" condition="[String.IsEqual(Window(home).Property($PARAM[prop]),b)] + $EXP[Bald_FullMotion]" reversible="false">
 				<effect type="slide" start="0,0" end="$PARAM[x],0" time="110" tween="cubic" easing="out" />
 				<effect type="slide" start="0,0" end="$PARAM[back],0" time="110" delay="110" tween="cubic" easing="out" />
 			</animation>
@@ -673,21 +715,30 @@
 	</include>
 
 	<include name="Bald_AnimMenuShows">
-		<animation type="Visible">
+		<animation type="Visible" condition="$EXP[Bald_FullMotion]">
 			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
 			<effect type="slide" start="40,0" end="0,0" time="480" delay="120" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Hidden">
+		<animation type="Visible" condition="$EXP[Bald_ReduceMotion]">
+			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Hidden" condition="$EXP[Bald_FullMotion]">
 			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 			<effect type="slide" start="0,0" end="40,0" time="180" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Hidden" condition="$EXP[Bald_ReduceMotion]">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
 		</animation>
 	</include>
 
 	<include name="Bald_AnimLogoIn">
 		<definition>
-			<animation type="Visible">
+			<animation type="Visible" condition="$EXP[Bald_FullMotion]">
 				<effect type="fade" start="0" end="100" time="520" delay="380" tween="sine" easing="inout" />
 				<effect type="slide" start="0,10" end="0,0" time="760" delay="380" tween="cubic" easing="out" />
+			</animation>
+			<animation type="Visible" condition="$EXP[Bald_ReduceMotion]">
+				<effect type="fade" start="0" end="100" time="520" delay="380" tween="sine" easing="inout" />
 			</animation>
 			<animation type="Hidden">
 				<effect type="fade" start="100" end="0" time="150" tween="sine" easing="inout" />
@@ -710,9 +761,12 @@
 				<fadetime>700</fadetime>
 				<texture background="true">$PARAM[texture]</texture>
 				<visible>$PARAM[visible]</visible>
-				<animation type="Visible" condition="!$EXP[Bald_VideoBackdropOn]">
+				<animation type="Visible" condition="[!$EXP[Bald_VideoBackdropOn]] + $EXP[Bald_FullMotion]">
 					<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
 					<effect type="zoom" start="105" end="100" center="$PARAM[center]" time="1500" tween="cubic" easing="out" />
+				</animation>
+				<animation type="Visible" condition="[!$EXP[Bald_VideoBackdropOn]] + $EXP[Bald_ReduceMotion]">
+					<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
 				</animation>
 				<!-- Background video: no settle zoom, which the frame masks (not drawn over video) would have to hide. -->
 				<animation type="Visible" condition="$EXP[Bald_VideoBackdropOn]">
@@ -810,9 +864,12 @@
 		<definition>
 			<control type="group">
 				<visible>$PARAM[ignore_home_row] | $PARAM[preview] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
-				<animation type="Hidden">
+				<animation type="Hidden" condition="$EXP[Bald_FullMotion]">
 					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 					<effect type="slide" start="0,0" end="-14,0" time="130" tween="cubic" easing="out" />
+				</animation>
+				<animation type="Hidden" condition="$EXP[Bald_ReduceMotion]">
+					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 				</animation>
 				<!-- Title: wraps up to 3 lines (44 px each) and grows upward. The textbox sizes to its text and this
 				     grouplist bottom-aligns it (align right = end of a vertical grouplist), so the last line always
@@ -1113,12 +1170,15 @@
 			<focusedlayout width="192" height="119">
 				<control type="group">
 					<!-- Tile focus pop: 280 pop to 1.05. While the menu is open the tile settles back and dims. -->
-					<animation type="Focus" reversible="false">
+					<animation type="Focus" condition="$EXP[Bald_FullMotion]" reversible="false">
 						<effect type="zoom" start="100" end="105" center="98,59" time="280" tween="back" easing="out" />
 						<effect type="fade" start="55" end="100" time="300" tween="sine" easing="inout" />
 					</animation>
+					<animation type="Focus" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+						<effect type="fade" start="55" end="100" time="300" tween="sine" easing="inout" />
+					</animation>
 					<!-- The settle zoom always runs; the dim is dropped over background video (no partial fade there). -->
-					<animation type="Conditional" condition="$EXP[Bald_OverlayOpen]">
+					<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + $EXP[Bald_FullMotion]">
 						<effect type="zoom" start="100" end="95.2" center="98,59" time="300" tween="cubic" easing="out" />
 					</animation>
 					<animation type="Conditional" condition="[$EXP[Bald_OverlayOpen]] + !$EXP[Bald_VideoBackdropOn]">
@@ -1183,7 +1243,7 @@
 		<param name="overlay">Bald_TileOverlayNone</param>
 		<definition>
 			<control type="group">
-				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="104,104" time="280" tween="back" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="102.5" center="104,104" time="280" tween="back" easing="out" /></animation>
 				<control type="image"><left>12</left><top>12</top><width>184</width><height>184</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 				<control type="image"><left>12</left><top>12</top><width>184</width><height>184</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$PARAM[art]</texture></control>
 				<include content="$PARAM[overlay]"><param name="diffuse">$PARAM[diffuse]</param></include>
@@ -1561,8 +1621,9 @@
 				<textcolor>bald_ink34</textcolor><focusedcolor>bald_ink</focusedcolor><label>$PARAM[label]$PARAM[suffix]</label>
 				<!-- Not reversible: Kodi reverses an interrupted Focus animation from wherever it stopped, which left quickly
 				     passed items at a stray brightness. Resetting it returns every unfocused item to exactly bald_ink34. -->
-				<animation type="Focus" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" /></animation>
-				<animation type="Unfocus"><effect type="slide" start="6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="0,0" end="6,0" time="320" tween="cubic" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_ReduceMotion]" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /></animation>
+				<animation type="Unfocus" condition="$EXP[Bald_FullMotion]"><effect type="slide" start="6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
 				<!-- Count the first three menu opens for the auto-hiding menu hint; not Home's own move to the menu when
 				     there are no rows (no current row then). -->
 				<onfocus condition="!$EXP[Bald_MenuOpen] + $EXP[Bald_HasRow] + String.IsEqual(Skin.String(Bald.MenuOpens),2)">Skin.SetString(Bald.MenuOpens,3)</onfocus>

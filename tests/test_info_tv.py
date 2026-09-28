@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 from conditions import equivalent, has_action, implies
 from kodi_includes import expand_call, expand_follow
 from scripts import info
+from motion import full_motion
 
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
@@ -143,7 +144,7 @@ class InfoTvTests(unittest.TestCase):
             ("!$EXP[Bald_HelperActions]", "RunScript(skin.bald,play,episode,$INFO[Container(5302).ListItem.DBID])")])
         self.assertIn("Bald_InfoActionToCast", [n.text for n in self.source("5302").findall("include")])
         # The season change fades the row out 140 while it updates, then in 340 / rises 420.
-        group = next(g for g in self.built.iter("control") if g.find("control[@id='5302']") is not None)
+        group = full_motion(next(g for g in self.built.iter("control") if g.find("control[@id='5302']") is not None))
         swaps = [(a.get("condition"), [(e.get("type"), e.get("time")) for e in a])
                  for a in group.findall("animation[@type='Conditional']")]
         effects = {state: [steps for cond, steps in swaps if equivalent(cond, state)]
@@ -190,7 +191,7 @@ class InfoTvTests(unittest.TestCase):
         page = self.page.find("control")
         self.assertEqual(params(page.find("include[@content='Bald_InfoPage']"))["page"], "0")
         delays = sorted(int(effect.get("delay")) for effect in
-                        self.built.findall(".//animation[@type='WindowOpen']/effect[@type='fade']"))
+                        full_motion(self.built).findall(".//animation[@type='WindowOpen']/effect[@type='fade']"))
         # Base 380 plus the prototype stagger 0, 60, 100, 180, 220, 270, 310.
         self.assertEqual(delays, [380, 440, 480, 560, 600, 650, 690])
         dim = include_def(self.tv, "Bald_InfoTVDim").find("control")

@@ -31,9 +31,12 @@
 		</control>
 		<control type="group">
 			<left>Bald_PreviewLeft</left>
-			<animation type="WindowOpen" reversible="false">
+			<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
 				<effect type="slide" start="40,0" end="0,0" time="480" delay="120" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
 			</animation>
 			<control type="label">
 				<top>Bald_PageTitleTop</top>

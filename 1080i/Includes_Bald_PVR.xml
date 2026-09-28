@@ -380,7 +380,8 @@
 				<left>Bald_PreviewLeft</left><top>Bald_ContentTop</top><width>528</width>
 				<visible>!$EXP[Bald_PVRMenuOpen] + !String.IsEmpty(ListItem.Label) + !ListItem.IsParentFolder</visible>
 				<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation>
-				<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+				<animation type="Visible" condition="$EXP[Bald_FullMotion]"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+				<animation type="Visible" condition="$EXP[Bald_ReduceMotion]"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
 				<control type="image"><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 				<control type="image"><width>528</width><height>297</height><aspectratio>keep</aspectratio><fadetime>380</fadetime><texture background="true">$VAR[Bald_PVRArt]</texture><visible>$EXP[Bald_PVRHasArt]</visible></control>
 				<control type="image"><left>132</left><top>74</top><width>264</width><height>148</height><aspectratio>keep</aspectratio><fadetime>380</fadetime><texture background="true">$VAR[Bald_PVRLogo]</texture><visible>!$EXP[Bald_PVRHasArt] + !ListItem.IsFolder</visible></control>
@@ -522,8 +523,8 @@
 		<textcolor>bald_ink</textcolor><focusedcolor>bald_field</focusedcolor><disabledcolor>bald_ink45</disabledcolor>
 		<texturenofocus border="27" colordiffuse="bald_ink45">bald/pill_outline.png</texturenofocus>
 		<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
-		<animation type="Focus"><effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" /></animation>
-		<animation type="Unfocus"><effect type="zoom" start="104" end="100" center="auto" time="220" tween="cubic" easing="out" /></animation>
+		<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" /></animation>
+		<animation type="Unfocus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="104" end="100" center="auto" time="220" tween="cubic" easing="out" /></animation>
 	</include>
 	<!-- A Kodi-bound action (find, switch, record, play, timer, reminder): Kodi handles the click by id and may relabel
 	     or hide it. -->

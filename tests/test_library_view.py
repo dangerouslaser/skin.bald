@@ -7,6 +7,7 @@ import home_menu
 from conditions import equivalent, implies, shows_for_content
 from kodi_includes import expand_call, expand_follow, parse
 from skin_strings import loc
+from motion import full_motion
 
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
@@ -196,7 +197,7 @@ class LibraryViewTests(unittest.TestCase):
 class LibraryCaptionMotionTests(unittest.TestCase):
     def test_library_captions_leave_out_the_home_row_conditional(self):
         def kinds(params):
-            return [a.get("type") for a in expand_call("Bald_AnimCaptionIn", params)]
+            return [a.get("type") for a in full_motion(expand_call("Bald_AnimCaptionIn", params))]
 
         self.assertEqual(kinds({"c": "9101", "delay": "180"}), ["Conditional", "Visible"])
         self.assertEqual(kinds({"c": "514", "delay": "180", "ignore_home_row": "true"}), ["Visible"])

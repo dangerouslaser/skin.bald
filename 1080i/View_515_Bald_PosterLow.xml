@@ -64,7 +64,7 @@
 				</control>
 			</control>
 			<control type="group"><visible>!$EXP[Bald_LibraryMenuOpen]</visible>
-				<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+				<animation type="Visible" condition="$EXP[Bald_FullMotion]"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
 				<include content="Bald_PosterLowCaption"><param name="p">Odd</param></include>
 				<include content="Bald_PosterLowCaption"><param name="p">Even</param></include>
 			</control>

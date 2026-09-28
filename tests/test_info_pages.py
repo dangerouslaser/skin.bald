@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from conditions import equivalent, find_value, implies
 from kodi_includes import expand_call, expand_follow, expressions, parse
 from skin_strings import loc
+from motion import full_motion
 
 
 ROOT = Path(__file__).resolve().parents[1] / "1080i"
@@ -97,7 +98,7 @@ class InfoPagesTests(unittest.TestCase):
         for name in ("Bald_InfoOverview", "Bald_InfoCastPage", "Bald_InfoRecommendationsPage"):
             self.assertIsNotNone(self.pages.find(f"include[@name='{name}']"))
             self.assertIn(name, [node.text for node in self.dialog.iter("include")])
-        transition = self.shared.find("include[@name='Bald_InfoPage']/definition")
+        transition = full_motion(self.shared.find("include[@name='Bald_InfoPage']/definition"))
         self.assertEqual(transition.find("visible").get("allowhiddenfocus"), "true")
         self.assertEqual([node.get("type") for node in transition.findall("animation")], ["Visible", "Hidden"])
         self.assertEqual(transition.find("animation/effect[@type='slide']").get("start"), "0,18")

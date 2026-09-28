@@ -10,6 +10,7 @@ from conditions import equivalent, implies
 from kodi_includes import Skin, expand_call, include_definitions
 from skin_strings import bald_strings
 from support import load_builder
+from motion import full_motion
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -177,7 +178,7 @@ class PosterRowTests(unittest.TestCase):
 
 def slides(include):
     """(condition, start, end, time, delay, tween, easing) for each non-reversible Conditional slide in an include."""
-    node = include_definitions()[include]
+    node = full_motion(include_definitions()[include])
     return [(anim.get("condition"), effect.get("start"), effect.get("end"), effect.get("time"), effect.get("delay"),
              effect.get("tween"), effect.get("easing"))
             for anim in node.iter("animation") if anim.get("type") == "Conditional" and anim.get("reversible") == "false"
@@ -204,7 +205,7 @@ class PosterFrameTests(unittest.TestCase):
         # so the zoomed art is exactly a landscape row's.
         self.assertEqual(one(art, f"{poster} + !{info}")[:2], ("0,0", "0,-63"))
         self.assertEqual(one(art, landscape)[:2], ("0,-63", "0,0"))
-        zoom = next(anim.find("effect") for anim in include_definitions()["Bald_AnimInfoFrame"].iter("animation")
+        zoom = next(anim.find("effect") for anim in full_motion(include_definitions()["Bald_AnimInfoFrame"]).iter("animation")
                     if equivalent(anim.get("condition"), info))
         self.assertEqual(one(art, f"{poster} + {info}"), ("0,-63", "0,0", zoom.get("time"), zoom.get("delay")))
         # Art and edge move together.

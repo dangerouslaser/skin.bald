@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from kodi_includes import include_definitions, resolve_window
+from motion import full_motion
 
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
@@ -125,7 +126,7 @@ class BackgroundVideoTests(unittest.TestCase):
             self.assertIn('<param name="panel">true</param>', (XML / name).read_text(encoding="utf-8"))
 
     def test_no_settle_zoom_over_video(self):
-        layer = self.home.find("include[@name='Bald_ArtLayer']/definition/control")
+        layer = full_motion(self.home.find("include[@name='Bald_ArtLayer']/definition/control"))
         visible = {a.get("condition"): [e.get("type") for e in a] for a in layer.findall("animation[@type='Visible']")}
         self.assertEqual(visible, {f"!{ON}": ["fade", "zoom"], ON: ["fade"]})
 
@@ -154,10 +155,13 @@ class BackgroundVideoTests(unittest.TestCase):
         for animation in depth.findall("animation"):
             kinds = [e.get("type") for e in animation]
             if "slide" in kinds:
-                self.assertIn(f"!{ON}", animation.get("condition"))
+                self.assertIn("!$EXP[Bald_FadeOnly]", animation.get("condition"))
             else:
-                self.assertIn(ON, animation.get("condition"))
+                self.assertIn("$EXP[Bald_FadeOnly]", animation.get("condition"))
                 self.assertEqual(kinds, ["fade"])
+        # Fade only: over background video, and under Reduce motion.
+        self.assertEqual(self.common.findtext("expression[@name='Bald_FadeOnly']"),
+                         f"[{ON} | $EXP[Bald_ReduceMotion]]")
         self.assertEqual(sorted(a.get("type") for a in depth.findall("animation") if "slide" not in [e.get("type") for e in a]),
                          ["WindowClose", "WindowOpen"])
         # The curtain keeps its fades: cutting it in and out made the change flicker.

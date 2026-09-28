@@ -240,11 +240,17 @@
 	<!-- Seek layer lift: 100 px while the buttons are up (bar to y 830), 496 px under a bottom panel (to y 434); 480 MOVE
 	     either way. -->
 	<include name="Bald_OSDLift">
-		<animation type="Conditional" condition="$EXP[Bald_OSDControlsUp] + !$EXP[Bald_OSDPanelUp]">
+		<animation type="Conditional" condition="[$EXP[Bald_OSDControlsUp] + !$EXP[Bald_OSDPanelUp]] + $EXP[Bald_FullMotion]">
 			<effect type="slide" start="0,0" end="0,-100" time="480" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Conditional" condition="$EXP[Bald_OSDPanelUp]">
+		<animation type="Conditional" condition="[$EXP[Bald_OSDControlsUp] + !$EXP[Bald_OSDPanelUp]] + $EXP[Bald_ReduceMotion]">
+			<effect type="slide" start="0,0" end="0,-100" time="0" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[$EXP[Bald_OSDPanelUp]] + $EXP[Bald_FullMotion]">
 			<effect type="slide" start="0,0" end="0,-496" time="480" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[$EXP[Bald_OSDPanelUp]] + $EXP[Bald_ReduceMotion]">
+			<effect type="slide" start="0,0" end="0,-496" time="0" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<!-- A panel or overlay window: in 380 FADE, out 160 FADE (it fades in place). -->
@@ -513,13 +519,13 @@
 			<textureradioondisabled colordiffuse="bald_ink28">$PARAM[on]</textureradioondisabled>
 			<textureradiooffdisabled colordiffuse="bald_ink28">$PARAM[icon]</textureradiooffdisabled>
 			<include>Bald_OSDAutoCloseArm</include>
-			<animation type="Focus">
+			<animation type="Focus" condition="$EXP[Bald_FullMotion]">
 				<effect type="zoom" start="100" end="105" center="40,36" time="280" tween="back" easing="out" />
 			</animation>
 			<animation type="Conditional" condition="Control.HasFocus($PARAM[id]) + $EXP[Bald_OSDCompanionOpen]">
 				<effect type="fade" start="100" end="0" time="0" tween="sine" easing="inout" />
 			</animation>
-			<animation type="Unfocus">
+			<animation type="Unfocus" condition="$EXP[Bald_FullMotion]">
 				<effect type="zoom" start="105" end="100" center="40,36" time="220" tween="cubic" easing="out" />
 			</animation>
 		</definition>
@@ -1647,24 +1653,41 @@
 			<height>12</height>
 			<texture colordiffuse="bald_accent">bald/dot.png</texture>
 			<!-- Tempo 0.80 to 1.50 in 0.10 steps (8 steps). -->
-			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,0.90)"><effect type="slide" start="0,0" end="60,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="Player.TempoEnabled + [String.IsEqual(Player.PlaySpeed,1.00) | String.IsEqual(Player.PlaySpeed,0.00) | String.IsEmpty(Player.PlaySpeed)]"><effect type="slide" start="0,0" end="120,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.10)"><effect type="slide" start="0,0" end="180,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.20)"><effect type="slide" start="0,0" end="240,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.30)"><effect type="slide" start="0,0" end="300,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.40)"><effect type="slide" start="0,0" end="360,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.50)"><effect type="slide" start="0,0" end="420,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,0.90)] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="60,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,0.90)] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="60,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + [String.IsEqual(Player.PlaySpeed,1.00) | String.IsEqual(Player.PlaySpeed,0.00) | String.IsEmpty(Player.PlaySpeed)]] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="120,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + [String.IsEqual(Player.PlaySpeed,1.00) | String.IsEqual(Player.PlaySpeed,0.00) | String.IsEmpty(Player.PlaySpeed)]] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="120,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.10)] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="180,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.10)] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="180,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.20)] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="240,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.20)] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="240,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.30)] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="300,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.30)] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="300,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.40)] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="360,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.40)] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="360,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.50)] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="420,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[Player.TempoEnabled + String.IsEqual(Player.PlaySpeed,1.50)] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="420,0" time="0" tween="cubic" easing="out" /></animation>
 			<!-- Rewind 32x to fast forward 32x (11 steps, the middle one is play). -->
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Rewinding16x"><effect type="slide" start="0,0" end="60,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Rewinding8x"><effect type="slide" start="0,0" end="120,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Rewinding4x"><effect type="slide" start="0,0" end="180,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Rewinding2x"><effect type="slide" start="0,0" end="240,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + !Player.Rewinding + !Player.Forwarding"><effect type="slide" start="0,0" end="300,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding2x"><effect type="slide" start="0,0" end="360,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding4x"><effect type="slide" start="0,0" end="420,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding8x"><effect type="slide" start="0,0" end="480,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding16x"><effect type="slide" start="0,0" end="540,0" time="240" tween="cubic" easing="out" /></animation>
-			<animation type="Conditional" condition="!Player.TempoEnabled + Player.Forwarding32x"><effect type="slide" start="0,0" end="600,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Rewinding16x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="60,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Rewinding16x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="60,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Rewinding8x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="120,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Rewinding8x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="120,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Rewinding4x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="180,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Rewinding4x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="180,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Rewinding2x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="240,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Rewinding2x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="240,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + !Player.Rewinding + !Player.Forwarding] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="300,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + !Player.Rewinding + !Player.Forwarding] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="300,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding2x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="360,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding2x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="360,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding4x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="420,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding4x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="420,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding8x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="480,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding8x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="480,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding16x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="540,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding16x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="540,0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding32x] + $EXP[Bald_FullMotion]"><effect type="slide" start="0,0" end="600,0" time="240" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="[!Player.TempoEnabled + Player.Forwarding32x] + $EXP[Bald_ReduceMotion]"><effect type="slide" start="0,0" end="600,0" time="0" tween="cubic" easing="out" /></animation>
 		</control>
 	</include>
 	<!-- The video panel over the tools: codec flags on a process-info row, then the speed row with its scale. -->
@@ -1817,13 +1840,19 @@
 			<height>216</height>
 			<visible>$EXP[Bald_OSDNextCard]</visible>
 			<include>Bald_OSDCompanionHide</include>
-			<animation type="Visible" reversible="false">
+			<animation type="Visible" condition="$EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="0" end="100" time="380" delay="240" tween="sine" easing="inout" />
 				<effect type="slide" start="0,-40" end="0,0" time="480" delay="240" tween="cubic" easing="out" />
 			</animation>
-			<animation type="WindowOpen" reversible="false">
+			<animation type="Visible" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" delay="240" tween="sine" easing="inout" />
+			</animation>
+			<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="0" end="100" time="380" delay="240" tween="sine" easing="inout" />
 				<effect type="slide" start="0,-40" end="0,0" time="480" delay="240" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" delay="240" tween="sine" easing="inout" />
 			</animation>
 			<control type="image">
 				<left>0</left>

@@ -744,6 +744,12 @@ msgctxt "#31340"
 msgid "Progress marks"
 msgstr "Fortschrittsanzeigen"
 
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Behavior: zooms and slides become plain fades
+msgctxt "#31371"
+msgid "Reduce motion"
+msgstr "Bewegung reduzieren"
+
 #: /1080i/View_550_Bald_Music.xml
 #. Music library view: square covers beside the preview
 msgctxt "#31400"

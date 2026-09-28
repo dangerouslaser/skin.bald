@@ -232,9 +232,12 @@
 	<include name="Bald_AnimInfoIn">
 		<param name="delay" />
 		<definition>
-			<animation type="WindowOpen">
+			<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]">
 				<effect type="fade" start="0" end="100" time="400" delay="$PARAM[delay]" tween="sine" easing="inout" />
 				<effect type="slide" start="0,18" end="0,0" time="560" delay="$PARAM[delay]" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]">
+				<effect type="fade" start="0" end="100" time="400" delay="$PARAM[delay]" tween="sine" easing="inout" />
 			</animation>
 		</definition>
 	</include>
@@ -243,9 +246,12 @@
 		<param name="page" />
 		<definition>
 			<visible allowhiddenfocus="true">String.IsEqual(Window(home).Property(Bald.InfoSec),$PARAM[page])</visible>
-			<animation type="Visible" reversible="false">
+			<animation type="Visible" condition="$EXP[Bald_FullMotion]" reversible="false">
 				<effect type="fade" start="0" end="100" time="360" tween="sine" easing="inout" />
 				<effect type="slide" start="0,18" end="0,0" time="560" tween="cubic" easing="out" />
+			</animation>
+			<animation type="Visible" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="0" end="100" time="360" tween="sine" easing="inout" />
 			</animation>
 			<animation type="Hidden" reversible="false">
 				<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
@@ -333,10 +339,10 @@
 				<onfocus>SetProperty(Bald.InfoSec,0,home)</onfocus>
 				<include content="Bald_UnfollowContainerOnFocus"><param name="window">movieinformation</param></include>
 				<visible>$PARAM[visible]</visible>
-				<animation type="Focus">
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]">
 					<effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" />
 				</animation>
-				<animation type="Unfocus">
+				<animation type="Unfocus" condition="$EXP[Bald_FullMotion]">
 					<effect type="zoom" start="104" end="100" center="auto" time="220" tween="cubic" easing="out" />
 				</animation>
 			</control>
@@ -347,7 +353,7 @@
 		<param name="focused">false</param>
 		<definition>
 			<control type="group">
-				<animation type="Focus">
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]">
 					<effect type="zoom" start="100" end="106" center="120,68" time="280" tween="back" easing="out" />
 				</animation>
 				<control type="image">

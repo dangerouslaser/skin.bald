@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 
 from conditions import equivalent, implies
 from kodi_includes import SKIN, expressions, include_definitions, resolve_window
+from motion import full_motion
 
 ROOT = SKIN.parent
 OSD_INCLUDES = "Includes_Bald_OSD.xml"
@@ -538,7 +539,7 @@ class OSDStyleTests(unittest.TestCase):
     def test_popup_animation_uses_the_bald_curves(self):
         # Shared by DialogSlider, 1110, DialogSubtitles, PlayerControls and the Live TV managers: open pops and fades,
         # close only fades.
-        popup = include_definitions()["Animation_DialogPopupOpenClose"]
+        popup = full_motion(include_definitions()["Animation_DialogPopupOpenClose"])
         kinds = {}
         for animation in popup:
             if animation.tag != "animation":

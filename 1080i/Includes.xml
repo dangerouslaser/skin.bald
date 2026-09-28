@@ -550,9 +550,9 @@
 				<height>24</height>
 				<texturefocus colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
 				<texturenofocus colordiffuse="button_focus">overlays/arrowdown.png</texturenofocus>
-				<animation effect="zoom" start="100,0" end="100,100" center="auto" time="200" delay="10">VisibleChange</animation>
-				<animation effect="zoom" start="100,0" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
-				<animation effect="zoom" start="100,100" end="100,0" center="auto" time="200">WindowClose</animation>
+				<animation effect="zoom" condition="$EXP[Bald_FullMotion]" start="100,0" end="100,100" center="auto" time="200" delay="10">VisibleChange</animation>
+				<animation effect="zoom" condition="$EXP[Bald_FullMotion]" start="100,0" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
+				<animation effect="zoom" condition="$EXP[Bald_FullMotion]" start="100,100" end="100,0" center="auto" time="200">WindowClose</animation>
 				<onclick>SetFocus($PARAM[container_id])</onclick>
 				<onclick>PageDown</onclick>
 				<visible>Container($PARAM[container_id]).HasNext + Control.IsVisible($PARAM[container_id])</visible>
@@ -565,9 +565,9 @@
 				<height>24</height>
 				<texturefocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturefocus>
 				<texturenofocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturenofocus>
-				<animation effect="zoom" start="100,0" end="100,100" center="auto" time="200" delay="10">VisibleChange</animation>
-				<animation effect="zoom" start="100,0" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
-				<animation effect="zoom" start="100,100" end="100,0" center="auto" time="200">WindowClose</animation>
+				<animation effect="zoom" condition="$EXP[Bald_FullMotion]" start="100,0" end="100,100" center="auto" time="200" delay="10">VisibleChange</animation>
+				<animation effect="zoom" condition="$EXP[Bald_FullMotion]" start="100,0" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
+				<animation effect="zoom" condition="$EXP[Bald_FullMotion]" start="100,100" end="100,0" center="auto" time="200">WindowClose</animation>
 				<onclick>SetFocus($PARAM[container_id])</onclick>
 				<onclick>PageUp</onclick>
 				<visible>Container($PARAM[container_id]).HasPrevious + Control.IsVisible($PARAM[container_id])</visible>

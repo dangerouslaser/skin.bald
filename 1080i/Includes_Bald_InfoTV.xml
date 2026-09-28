@@ -162,10 +162,10 @@
 			</control>
 			<control type="group">
 				<visible>$PARAM[selected] + Control.HasFocus($PARAM[tabs]) + !ListItem.IsParentFolder</visible>
-				<animation type="Focus">
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]">
 					<effect type="zoom" start="1,100" end="100,100" center="0,37" time="300" tween="cubic" easing="out" />
 				</animation>
-				<animation type="Hidden">
+				<animation type="Hidden" condition="$EXP[Bald_FullMotion]">
 					<effect type="zoom" start="100,100" end="1,100" center="0,37" time="300" tween="cubic" easing="out" />
 				</animation>
 				<include content="Bald_InfoTVUnderline"><param name="w">96</param><param name="w_dm">94</param><param name="visible">String.IsEqual(ListItem.Season,1)</param></include>
@@ -218,10 +218,10 @@
 				<animation type="Conditional" condition="$EXP[Bald_InfoTVEpisodesFocused]">
 					<effect type="fade" start="100" end="$PARAM[focus_fade]" time="300" tween="sine" easing="inout" />
 				</animation>
-				<animation type="Focus">
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]">
 					<effect type="zoom" start="100" end="105" center="172,102" time="280" tween="back" easing="out" />
 				</animation>
-				<animation type="Unfocus">
+				<animation type="Unfocus" condition="$EXP[Bald_FullMotion]">
 					<effect type="zoom" start="105" end="100" center="172,102" time="220" tween="cubic" easing="out" />
 				</animation>
 				<include content="Bald_LandscapeTile">
@@ -428,13 +428,19 @@
 	     Conditional animations, not <visible>, because Kodi does not process a hidden list, so it would never finish
 	     loading. For the group around the row. -->
 	<include name="Bald_InfoTVEpisodeSwap">
-		<animation type="Conditional" condition="Container(5302).IsUpdating" reversible="false">
+		<animation type="Conditional" condition="[Container(5302).IsUpdating] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
 			<effect type="slide" start="0,0" end="0,14" time="140" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Conditional" condition="!Container(5302).IsUpdating" reversible="false">
+		<animation type="Conditional" condition="[Container(5302).IsUpdating] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Conditional" condition="[!Container(5302).IsUpdating] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="fade" start="0" end="100" time="340" tween="sine" easing="inout" />
 			<effect type="slide" start="0,14" end="0,0" time="420" tween="cubic" easing="out" />
+		</animation>
+		<animation type="Conditional" condition="[!Container(5302).IsUpdating] + $EXP[Bald_ReduceMotion]" reversible="false">
+			<effect type="fade" start="0" end="100" time="340" tween="sine" easing="inout" />
 		</animation>
 	</include>
 	<!-- The focused episode's detail: code and title 24, then runtime / air date / state 18 at 70%, its ratings and media

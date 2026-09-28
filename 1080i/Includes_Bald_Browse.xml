@@ -86,13 +86,19 @@
 	</include>
 	<!-- A view appearing after a view switch or window open: fade 380 and a 40 px settle, as the Bald menus. -->
 	<include name="Bald_BrowseViewIn">
-		<animation type="Visible">
+		<animation type="Visible" condition="$EXP[Bald_FullMotion]">
 			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 			<effect type="slide" start="0,18" end="0,0" time="440" tween="cubic" easing="out" />
 		</animation>
-		<animation type="WindowOpen">
+		<animation type="Visible" condition="$EXP[Bald_ReduceMotion]">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+		</animation>
+		<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]">
 			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 			<effect type="slide" start="0,18" end="0,0" time="440" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
 		</animation>
 		<animation type="Hidden">
 			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
@@ -254,7 +260,7 @@
 		<param name="ink">bald_ink70</param>
 		<definition>
 			<control type="group">
-				<animation type="Focus"><effect type="zoom" start="100" end="102.5" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="102.5" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
 				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><texture colordiffuse="bald_tile_placeholder">bald/white.png</texture></control>
 				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio>$PARAM[aspect]</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$PARAM[art]</texture></control>
 				<control type="image"><left>9</left><top>9</top><width>$PARAM[ring_width]</width><height>$PARAM[ring_height]</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
@@ -418,7 +424,7 @@
 				</control>
 				<control type="group">
 					<visible>$PARAM[show_caption]</visible>
-					<animation type="Visible"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
+					<animation type="Visible" condition="$EXP[Bald_FullMotion]"><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation>
 					<include content="Bald_BrowseCaption"><param name="p">Odd</param></include>
 					<include content="Bald_BrowseCaption"><param name="p">Even</param></include>
 					<!-- A movie set without its own plot lists its movies, as Estuary did. The preview is included more
@@ -464,16 +470,19 @@
 				<textureradiooffnofocus />
 				<textureradiooffdisabled />
 				<visible>$PARAM[visible]</visible>
-				<animation type="Focus"><effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" /></animation>
-				<animation type="Unfocus"><effect type="zoom" start="104" end="100" center="auto" time="220" tween="cubic" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="104" center="auto" time="260" tween="back" easing="out" /></animation>
+				<animation type="Unfocus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="104" end="100" center="auto" time="220" tween="cubic" easing="out" /></animation>
 			</control>
 		</definition>
 	</include>
 	<!-- Add-on information: the content's staggered entrance (fade 380 and an 18 px rise over 560, after 120). -->
 	<include name="Bald_AddonInfoIn">
-		<animation type="WindowOpen">
+		<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]">
 			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
 			<effect type="slide" start="0,18" end="0,0" time="560" delay="120" tween="cubic" easing="out" />
+		</animation>
+		<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]">
+			<effect type="fade" start="0" end="100" time="380" delay="120" tween="sine" easing="inout" />
 		</animation>
 		<animation type="WindowClose">
 			<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
