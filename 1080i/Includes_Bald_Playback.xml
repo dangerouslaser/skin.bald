@@ -512,7 +512,8 @@
 
 	<!-- ============ Clock (the seek layer, DialogSeekBar) ============ -->
 	<!-- Home's clock and date position: the time at 1440,104 in Bald_Clock and the finish time where the date is, with
-	     the mute mark after it. -->
+	     the mute mark after it. Playback › Controls › Clock on the controls off (Bald.OSD.HideClock) drops the time and
+	     lifts the finish time and mute mark into its place. -->
 	<include name="Bald_PlaybackClock">
 		<control type="group">
 			<left>Bald_RightColumn</left>
@@ -523,9 +524,11 @@
 				<font>Bald_Clock</font>
 				<textcolor>bald_ink</textcolor>
 				<label>$VAR[Bald_Clock]</label>
+				<visible>!Skin.HasSetting(Bald.OSD.HideClock)</visible>
 			</control>
 			<control type="grouplist">
 				<top>144</top>
+				<animation effect="slide" end="0,-144" time="0" condition="Skin.HasSetting(Bald.OSD.HideClock)">Conditional</animation>
 				<width>384</width>
 				<height>30</height>
 				<orientation>horizontal</orientation>
