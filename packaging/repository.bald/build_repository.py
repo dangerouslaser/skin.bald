@@ -21,6 +21,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 REPOSITORY_SOURCE = "packaging/repository.bald"  # the repository add-on, in the checkout
 BUNDLED_ADDONS = ("addons/script.bald.xcsetup", "addons/script.bald.helper")
+# The published site (GitHub Pages). Kodi can add it as a file source: its HTTP directory listing keeps the links whose
+# text is their target, which on the landing page is only the repository zip.
+SITE_URL = "https://dangerouslaser.github.io/skin.bald/"
 # Skin Variables writes the Home rows per install; releases ship 1080i/Includes_Bald_HomeDefaults.xml instead.
 PER_INSTALL_FILES = ("1080i/script-skinvariables-generator-includes",)
 
@@ -208,6 +211,9 @@ h1 .dot {{ display: inline-block; animation: bald-drop 1.6s .25s both; }}
   color: var(--accent); }}
 .install ol {{ margin: 0 0 20px; padding-left: 20px; color: var(--ink60); font-size: 15px; }}
 .install li {{ margin: 6px 0; }}
+.install code {{ padding: 1px 6px; border-radius: 4px; background: var(--ink10); color: var(--ink); font-size: 14px;
+  word-break: break-all; user-select: all; }}
+.install .alt {{ margin: -8px 0 16px; color: var(--ink34); font-size: 13px; }}
 .install strong {{ color: var(--ink); font-weight: 500; }}
 .button {{ display: inline-block; padding: 12px 20px; border-radius: 999px; background: var(--ink); color: var(--field);
   font-weight: 600; text-decoration: none; }}
@@ -262,9 +268,11 @@ dialog:focus {{ outline: none; }}
 <div class="install">
 <h2>Install</h2>
 <ol>
-<li>Download the repository and choose <strong>Add-ons › Install from zip file</strong> in Kodi.</li>
+<li>In Kodi, open <strong>Settings › File manager › Add source</strong>, enter <code>{SITE_URL}</code> and name it <strong>Bald</strong>.</li>
+<li>Choose <strong>Add-ons › Install from zip file › Bald › {repository_zip}</strong>.</li>
 <li>Then <strong>Install from repository › Bald Add-on Repository › Look and feel › Skin › Bald</strong>.</li>
 </ol>
+<p class="alt">Or download the repository zip and install it from a file.</p>
 <a class="button" href="{repository_zip}">Download repository</a>
 <span class="version">Bald {skin_version} · repository {repository_version} · Kodi 22 only</span>
 </div>
@@ -273,7 +281,7 @@ dialog:focus {{ outline: none; }}
 <section class="gallery">{shots}</section>
 <section class="views"><h2>Library views</h2><p>Six ways to browse a library, switched from the options menu.</p>
 <div class="gallery">{views}</div></section>
-<p class="files"><a href="https://github.com/dangerouslaser/skin.bald">Source on GitHub</a> · <a href="https://forum.kodi.tv/showthread.php?tid=388804">Kodi forum thread</a> · Files: <a href="{repository_zip}">{repository_zip}</a> · <a href="kodi/">kodi/</a></p>
+<p class="files"><a href="https://github.com/dangerouslaser/skin.bald">Source on GitHub</a> · <a href="https://forum.kodi.tv/showthread.php?tid=388804">Kodi forum thread</a> · Files: <a href="{repository_zip}">{repository_zip}</a> · <a href="kodi/">Kodi repository files</a></p>
 </main>
 <dialog id="viewer" aria-label="Screenshot" tabindex="-1">
 <figure class="lightbox"><img id="viewer-img" alt=""><figcaption><span id="viewer-caption"></span><span class="count" id="viewer-count"></span></figcaption></figure>

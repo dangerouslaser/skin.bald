@@ -61,3 +61,22 @@ class RevisionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class KodiSourceTests(unittest.TestCase):
+    """Kodi can add the site as a file source: its HTTP directory listing (CHTTPDirectory) keeps only the links whose
+    text is their target, so the landing page must offer exactly the repository zip that way."""
+
+    def test_the_site_lists_only_the_repository_zip(self):
+        import html as html_module
+        import re
+        from urllib.parse import unquote
+
+        page = build.landing_page("repository.bald-9.9.9.zip", "9.9.9", "1.2.3")
+        listed = []
+        for match in re.finditer(r'<a[^>]*href="([^"]*)"[^>]*>\s*(.*?)\s*</a>', page, re.S):
+            href, text = match.group(1), re.sub("<[^>]+>", "", match.group(2)).strip()
+            if "://" not in href and unquote(href).rstrip("/") == html_module.unescape(text).rstrip("/"):
+                listed.append(href)
+        self.assertEqual(listed, ["repository.bald-9.9.9.zip"])
+        self.assertIn(f"<code>{build.SITE_URL}</code>", page)
