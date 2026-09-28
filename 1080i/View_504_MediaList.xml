@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
      Bald: video versions and extras as 88 px rows with a 16:9 still, title, duration and stream details, beside the
-     preview column the window supplies. Id, viewtype, visibility, page control 531 and label 50401 are Estuary's. -->
+     preview column the window supplies. Id, viewtype, visibility, page control (Estuary's 531, here 5198) and label 50401 are Estuary's. -->
 <includes>
 	<include name="Bald_MediaListRow">
 		<param name="ink">bald_ink70</param>
@@ -44,9 +44,9 @@
 					<scrolltime tween="cubic" easing="out">440</scrolltime>
 					<orientation>vertical</orientation>
 					<preloaditems>2</preloaditems>
-					<pagecontrol>531</pagecontrol>
+					<pagecontrol>5198</pagecontrol>
 					<onleft>9000</onleft>
-					<onright>531</onright>
+					<onright>5198</onright>
 					<onup>504</onup>
 					<ondown>504</ondown>
 					<viewtype label="$LOCALIZE[31108]">list</viewtype>

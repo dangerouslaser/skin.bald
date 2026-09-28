@@ -222,7 +222,10 @@ class EstuaryParityTests(unittest.TestCase):
                 with self.subTest(view=name, id=view_id):
                     self.assertEqual(control.find("viewtype").get("label"), original.find("viewtype").get("label"))
                     self.assertEqual(control.findtext("viewtype"), original.findtext("viewtype"))
-                    self.assertEqual(control.findtext("pagecontrol"), original.findtext("pagecontrol"))
+                    # Estuary's scrollbar 531 is 5198 in Bald: 531 is Bald's seasons view (1080i/IDs).
+                    renumbered = {"531": "5198"}
+                    self.assertEqual(control.findtext("pagecontrol"),
+                                     renumbered.get(original.findtext("pagecontrol"), original.findtext("pagecontrol")))
                     ours_visible = " + ".join(f"[{v.text}]" for v in control.findall("visible")) or "true"
                     theirs_visible = " + ".join(f"[{v.text}]" for v in original.findall("visible")) or "true"
                     self.assertTrue(equivalent(ours_visible, theirs_visible), (ours_visible, theirs_visible))

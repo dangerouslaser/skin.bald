@@ -2,7 +2,7 @@
 <!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
      Bald: the main browse list for add-ons, plugins, files, playlists and favourites. Eleven 56 px rows at the safe
      margin (icons for add-ons, plugin folders, playlists and favourites; text rows for videos and songs) beside the
-     preview column, which the window supplies (ListThumbInfoPanel). Id, viewtype, page control 531 and navigation
+     preview column, which the window supplies (ListThumbInfoPanel). Id, viewtype, page control (Estuary's 531, here 5198) and navigation
      are Estuary's. -->
 <includes>
 	<include name="View_55_WideList">
@@ -20,9 +20,9 @@
 					<scrolltime tween="cubic" easing="out">440</scrolltime>
 					<orientation>vertical</orientation>
 					<preloaditems>2</preloaditems>
-					<pagecontrol>531</pagecontrol>
+					<pagecontrol>5198</pagecontrol>
 					<onleft>9000</onleft>
-					<onright>531</onright>
+					<onright>5198</onright>
 					<onup>55</onup>
 					<ondown>55</ondown>
 					<viewtype label="$LOCALIZE[31107]">list</viewtype>

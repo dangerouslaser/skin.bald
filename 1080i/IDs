@@ -169,11 +169,8 @@ Hundreds digit 5, tens digit is the content level, units digit the layout.
   523	Series poster low
 530-539	TV seasons
   530	Seasons (View_520_Bald_TV.xml)
-  531	Seasons compact (View_521_Bald_TV_Alternates.xml)
-		Clash, inherited: Estuary's CommonScrollbars (Includes.xml, included by MyVideoNav.xml)
-		also defines scrollbar 531, the pagecontrol and onright target of Estuary views 52, 55,
-		500, 501 and 504. Keep view 531 (Container.SetViewMode, letters.py); see docs/NOTES.md,
-		"Control ID 531 is used twice".
+  531	Seasons compact (View_521_Bald_TV_Alternates.xml). Estuary's CommonScrollbars scrollbar 531
+		(Includes.xml) is 5198 in Bald, so the id is used once (Container.SetViewMode, letters.py).
   532	Series page (View_521_Bald_TV_Alternates.xml): the view list is drawn as the TV info page's
 		season tabs. Its episode row is 5302, the same id as the info page's row (ids are per window),
 		so the shared Includes_Bald_InfoTV.xml row, cards and detail work unchanged in MyVideoNav.
@@ -224,8 +221,8 @@ Media windows (MyVideoNav, AddonBrowser, MyPrograms, MyFavourites, MyPlaylist; G
 18900, 7700, 23000	Header sort summary, now-playing sub label, fast-scroll letter (TopBar)
 31111, 32111	Background fanart group and image (DefaultBackground)
 Views and their page controls
-50 (50600), 51 (5199), 52 (531), 53 (5199), 54 (531), 55 (531), 500 (531), 501 (531),
-502 (502600), 503 (503600), 504 (531; 50401 its detail label)
+50 (50600), 51 (5199), 52 (5198), 53 (5199), 54 (5198), 55 (5198), 500 (5198), 501 (5198),
+502 (502600), 503 (503600), 504 (5198; 50401 its detail label)
 20000		View 51's hidden animation helper
 15599		Now-playing text in view 503's column
 5000		InfoList's default id (MyGames' collection list); the browse preview's movie-set list has no id

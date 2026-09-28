@@ -67,15 +67,16 @@
 	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131)</expression>
 	<expression name="videoasset_true">Container.Content(videoassets) | Container.Content(videoversions) | Container.Content(videoextras)</expression>
 	<include name="CommonScrollbars">
-		<!-- Bald: 4 px tracks outside the content (Bald_BrowseScrollbarStyle). 531 is the vertical page control of views
-		     52, 55, 500, 501, 504 and 54, 5199 the horizontal one of views 51 and 53. Both keep Estuary's ids and routes. -->
+		<!-- Bald: 4 px tracks outside the content (Bald_BrowseScrollbarStyle). 5198 is the vertical page control of views
+		     52, 55, 500, 501, 504 and 54 (Estuary's 531, renumbered: Bald's seasons view is 531), 5199 the horizontal one of
+		     views 51 and 53 (Estuary's id). Both keep Estuary's routes. -->
 		<param name="bottom_offset">list_bottom_offset</param>
 		<definition>
 			<control type="group">
 				<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout">WindowClose</animation>
 				<animation effect="fade" start="100" end="0" time="200" tween="sine" easing="inout" condition="System.HasActiveModalDialog">Conditional</animation>
 				<animation effect="fade" start="0" end="100" delay="300" time="380" tween="sine" easing="inout">WindowOpen</animation>
-				<control type="scrollbar" id="531">
+				<control type="scrollbar" id="5198">
 					<left>1860</left>
 					<top>Bald_ContentTop</top>
 					<width>4</width>

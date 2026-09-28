@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
      Bald: TV banners in three full-width columns with the Bald ring and pop. MyVideoNav sends TV shows to the Bald
-     series view on focus, so this shows only where another window lists TV shows. Id, viewtype, visibility, page
-     control 531 and navigation are Estuary's. -->
+     series view on focus, so this shows only where another window lists TV shows. Id, viewtype, visibility and
+     navigation are Estuary's; the page control is Estuary's 531 as 5198 (1080i/IDs). -->
 <includes>
 	<include name="View_501_Banner">
 		<control type="group">
@@ -16,12 +16,12 @@
 				<height>624</height>
 				<orientation>vertical</orientation>
 				<onleft>9000</onleft>
-				<onright>531</onright>
+				<onright>5198</onright>
 				<onup>501</onup>
 				<ondown>501</ondown>
 				<viewtype label="20020">wide</viewtype>
 				<preloaditems>2</preloaditems>
-				<pagecontrol>531</pagecontrol>
+				<pagecontrol>5198</pagecontrol>
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<visible>Container.Content(tvshows)</visible>
 				<include>Bald_BrowseDim</include>
