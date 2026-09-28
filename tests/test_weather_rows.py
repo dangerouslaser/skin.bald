@@ -32,7 +32,7 @@ NATIVE_INFO = re.compile(r"^(Weather\.(Plugin|IsFetched|Data\(("
                          r")\))"
                          r"|Skin\.String\(Bald\.Weather(Fanart|Icons)\.(path|ext)\)"
                          r"|Window\(home\)\.Property\(Bald\.(Row|RowStyle)\)"
-                         r"|(Container\(\d+\)\.)?ListItem\.(Label|Label2|Icon|CurrentItem|Art\(thumb\)|Property\(Bald\.[A-Za-z]+\)))$")
+                         r"|(Container\(\d+\)\.)?ListItem\.(Label|Label2|Icon|CurrentItem|Art\(thumb\)|Art\(icon\)|Property\(Bald\.[A-Za-z]+\)))$")
 
 
 def helper_weather():
@@ -309,7 +309,7 @@ class LayoutTests(unittest.TestCase):
             self.assertEqual((node.get("width"), node.get("height")), ("208", "234"))
             labels = [label.findtext("label") for label in node.iter("control") if label.get("type") == "label"]
             self.assertEqual(labels, ["$INFO[ListItem.Label]", "$INFO[ListItem.Label2]"])
-            self.assertIn("$INFO[ListItem.Icon]", [texture.text for texture in node.iter("texture")])
+            self.assertIn("$INFO[ListItem.Art(icon)]", [texture.text for texture in node.iter("texture")])  # not ListItem.Icon: Kodi returns the thumb (the tile's photo) there
             # The tile face keeps the icon: the item's thumb (its background picture) is never drawn on the tile.
             textures = " ".join(texture.text or "" for texture in node.iter("texture"))
             for art in ("Art(thumb)", "ListItem.Thumb", "Bald_SquareArt"):
@@ -337,7 +337,7 @@ class LayoutTests(unittest.TestCase):
         # The folder-pack picture in the art frame, and the big icon over it.
         self.assertTrue([node for node in home.iter("control") if node.get("type") == "multiimage"
                          and "Bald.WeatherFanart.path" in (node.findtext("imagepath") or "")])
-        self.assertIn("$INFO[Container(9101).ListItem.Icon]", [t.text for t in home.iter("texture")])
+        self.assertIn("$INFO[Container(9101).ListItem.Art(icon)]", [t.text for t in home.iter("texture")])
 
 
 class EditorTests(unittest.TestCase):

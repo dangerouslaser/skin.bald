@@ -221,7 +221,7 @@
 				<width>96</width>
 				<height>96</height>
 				<aspectratio>keep</aspectratio>
-				<texture colordiffuse="$PARAM[diffuse]" background="true">$INFO[ListItem.Icon]</texture>
+				<texture colordiffuse="$PARAM[diffuse]" background="true">$INFO[ListItem.Art(icon)]</texture>
 			</control>
 			<control type="label">
 				<left>24</left>
@@ -257,7 +257,7 @@
 					<width>288</width>
 					<height>288</height>
 					<aspectratio>keep</aspectratio>
-					<texture background="true">$INFO[Container($PARAM[c]).ListItem.Icon]</texture>
+					<texture background="true">$INFO[Container($PARAM[c]).ListItem.Art(icon)]</texture>
 					<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) | String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.WeatherCode)) | [String.IsEmpty(Container($PARAM[c]).ListItem.Art(thumb)) + String.IsEmpty(Skin.String(Bald.WeatherFanart.ext)) + !String.IsEmpty(Window(home).Property(Bald.Weather.ArtReady))]]</visible>
 					<include>Bald_AnimLogoIn</include>
 				</control>
