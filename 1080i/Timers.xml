@@ -37,6 +37,17 @@
     <!-- Home hidden (Home Screens): Home's onload focuses the start row, but a list that has never been shown has no
          items and cannot take focus yet, so focus can stay on Home's hidden row 1 (the default control). Marker 9193
          (Bald_HomeRowStranded) shows then; 9195 moves focus to the start row, now loading, or the menu. -->
+    <!-- Bald Home, lost focus: Kodi cannot focus an empty list, so returning to a row with no items (a new install with
+         no library, a screen whose rows are all empty) left nothing focused and every key doing nothing. After a
+         second with nothing focused on Home (a moment between controls never lasts that long; not behind the startup
+         splash or a dialog), open the menu on the current screen's entry. -->
+    <timer>
+        <name>bald_focus_lost</name>
+        <start>Window.IsActive(home) + String.IsEmpty(System.CurrentControlID) + String.IsEmpty(Window(home).Property(Bald.Preload)) + !System.HasActiveModalDialog</start>
+        <stop>!String.IsEmpty(System.CurrentControlID) | Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_focus_lost),1)</stop>
+        <onstop condition="Window.IsActive(home) + String.IsEmpty(System.CurrentControlID) + !System.HasActiveModalDialog">SetProperty(Bald.Menu,1,home)</onstop>
+        <onstop condition="Window.IsActive(home) + String.IsEmpty(System.CurrentControlID) + !System.HasActiveModalDialog">SetFocus($VAR[Bald_ScreenMenuEntry])</onstop>
+    </timer>
     <timer>
         <name>bald_home_start</name>
         <start>Window.IsActive(home) + Control.IsVisible(9193)</start>

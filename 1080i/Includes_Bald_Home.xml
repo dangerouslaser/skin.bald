@@ -851,6 +851,21 @@
 		<value condition="$EXP[Bald_LiveTVStarts]">$VAR[Bald_RowStyle_livetv]</value>
 		<value />
 	</variable>
+	<!-- The menu entry of the screen on show (Bald.Screen), else the start screen's: where focus goes when it is lost
+	     (Timers.xml bald_focus_lost). -->
+	<variable name="Bald_ScreenMenuEntry">
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),home) + !$EXP[Bald_HomeHidden]">9001</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),livetv) + System.HasPVRAddon + !Skin.HasSetting(Bald.Screen.HideLiveTV)">9004</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),hub1) + $EXP[Bald_HubShown_hub1]">9011</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),hub2) + $EXP[Bald_HubShown_hub2]">9012</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),hub3) + $EXP[Bald_HubShown_hub3]">9013</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),hub4) + $EXP[Bald_HubShown_hub4]">9014</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),hub5) + $EXP[Bald_HubShown_hub5]">9015</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),hub6) + $EXP[Bald_HubShown_hub6]">9016</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),hub7) + $EXP[Bald_HubShown_hub7]">9017</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.Screen),hub8) + $EXP[Bald_HubShown_hub8]">9018</value>
+		<value>$VAR[Bald_StartMenuEntry]</value>
+	</variable>
 	<variable name="Bald_StartMenuEntry">
 		<value condition="!$EXP[Bald_HomeHidden]">9001</value>
 		<value condition="$EXP[Bald_HubShown_hub1]">9011</value>
