@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald context menu: drawn as the Home menu (docs/SPEC.md 5.1 "Menu (open)"): 1440, 392, width 420, 46 px items,
+<!-- Bald context menu: drawn as the Home menu (docs/SPEC.md 5.1 "Menu (open)"): 1440, 392, width 420, 56 px items,
      6 px gap, unfocused items at 34% and 6 px left, in fade 380 and slide 40 px over 480 after 120, out 160.
      Over Home the caption slides out as for the main menu (Bald_OverlayOpen); elsewhere a dark scrim sits behind it.
      Kodi (CGUIDialogContextMenu) fills grouplist 996 with copies of button 1000, and centres the dialog on the focused
@@ -64,7 +64,7 @@
 			</control>
 			<include content="Bald_MenuNote"><param name="id">995</param><param name="text">$VAR[Bald_ContextNote]</param></include>
 		</control>
-		<!-- Button template: 46 px menu item. Unfocused 34%; focused full ink, sliding 6 px right (320), with the accent dot. -->
+		<!-- Button template: 56 px menu item. Unfocused 34%; focused full ink, sliding 6 px right (320), with the accent dot. -->
 		<control type="button" id="1000">
 			<!-- At 1434 (list at 1430 plus 4) so that after the 6 px focus slide the dot sits at 1440, like the Home menu's;
 			     text lands at 1460 unfocused and 1466 focused, also as in the Home menu. -->
