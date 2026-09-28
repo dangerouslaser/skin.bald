@@ -1348,7 +1348,7 @@
 				<left>$PARAM[x]</left>
 				<top>$PARAM[y]</top>
 				<visible>$PARAM[visible] + !String.IsEmpty(ListItem.Label)</visible>
-				<animation type="Focus"><effect type="zoom" start="100" end="$PARAM[pop]" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
+				<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="$PARAM[pop]" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
 				<control type="image">
 					<width>$PARAM[w]</width>
 					<height>$PARAM[h]</height>
