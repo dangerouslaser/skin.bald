@@ -203,13 +203,15 @@ class PosterFrameTests(unittest.TestCase):
         self.assertEqual(one(edge, landscape)[:2], ("0,-126", "0,0"))
         # The art moves up 63 px, back for landscape rows, and back in step with the info zoom while info is open,
         # so the zoomed art is exactly a landscape row's.
-        self.assertEqual(one(art, f"{poster} + !{info}")[:2], ("0,0", "0,-63"))
+        # Not while idle expands the frame (Bald_IdleZoom): the nudge is undone then, see test_home_idle.
+        nudged = f"{poster} + !{info} + !$EXP[Bald_IdleZoom]"
+        self.assertEqual(one(art, nudged)[:2], ("0,0", "0,-63"))
         self.assertEqual(one(art, landscape)[:2], ("0,-63", "0,0"))
         zoom = next(anim.find("effect") for anim in full_motion(include_definitions()["Bald_AnimInfoFrame"]).iter("animation")
                     if equivalent(anim.get("condition"), info))
         self.assertEqual(one(art, f"{poster} + {info}"), ("0,-63", "0,0", zoom.get("time"), zoom.get("delay")))
         # Art and edge move together.
-        self.assertEqual(one(art, f"{poster} + !{info}")[2:], one(edge, poster)[2:])
+        self.assertEqual(one(art, nudged)[2:], one(edge, poster)[2:])
         self.assertEqual(one(art, landscape)[2:], one(edge, landscape)[2:])
 
     def test_home_applies_the_frame_animations(self):

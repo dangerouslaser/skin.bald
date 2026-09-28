@@ -96,6 +96,8 @@
 			<!-- Art frame -->
 			<control type="group">
 				<include>Bald_AnimInfoFrame</include>
+				<!-- Idle: grows to the full 1728 x 840 rect (Bald_AnimIdleFrame, Includes_Bald_Home.xml). -->
+				<include>Bald_AnimIdleFrame</include>
 				<!-- Poster rows: up 63 px so the crop stays centred in the 576 px frame; undone while info is open. -->
 				<include>Bald_AnimPosterArt</include>
 				<left>Bald_SafeLeft</left>
@@ -179,6 +181,7 @@
 			<control type="group">
 				<include>Bald_AnimInfoFrame</include>
 				<include>Bald_AnimInfoArtOverlay</include>
+				<include>Bald_AnimIdleArtOverlay</include>
 				<!-- Poster rows: up 126 px with the frame's bottom edge. -->
 				<include>Bald_AnimPosterEdge</include>
 				<left>Bald_SafeLeft</left>
@@ -224,12 +227,17 @@
 			     onto the same background (grouplists clip ordinary textures), so the bars are invisible against it. -->
 			<control type="group">
 				<include>Bald_AnimInfoMasks</include>
+				<include>Bald_AnimIdleMasks</include>
 				<include>Bald_HomeFrameMasks</include>
 			</control>
+
+			<!-- Idle: the expanded frame's full-size art, its masks, clearlogo and small clock (Bald_IdleFrame). -->
+			<include>Bald_IdleFrame</include>
 
 			<!-- Clock and date (Appearance › Date & time: format, the date line, the clock on Home at all) -->
 			<control type="group">
 				<include>Bald_AnimInfoChrome</include>
+				<include>Bald_AnimIdleChrome</include>
 				<visible>$EXP[Bald_ShowHomeClock]</visible>
 				<left>Bald_RightColumn</left>
 				<top>104</top>
@@ -253,6 +261,7 @@
 			<!-- Caption: out 180 and slide 40 px right as the menu or context menu opens; back 380 / 480 after 140 as it closes. -->
 			<control type="group">
 				<include>Bald_AnimInfoChrome</include>
+				<include>Bald_AnimIdleChrome</include>
 				<visible>!$EXP[Bald_OverlayOpen]</visible>
 				<animation type="Hidden" condition="$EXP[Bald_FullMotion]">
 					<effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" />
@@ -329,9 +338,7 @@
 				<!-- Labels are top-aligned and offset so their baselines match (Instrument Sans ascender = font size). -->
 				<usecontrolcoords>true</usecontrolcoords>
 				<include>Bald_AnimMenuHides</include>
-				<animation type="Conditional" condition="[$EXP[Bald_Idle]] + !$EXP[Bald_VideoBackdropOn]">
-					<effect type="fade" start="100" end="45" time="600" tween="sine" easing="inout" />
-				</animation>
+				<include>Bald_AnimIdleChrome</include>
 				<control type="group">
 					<width>8</width>
 					<control type="image">

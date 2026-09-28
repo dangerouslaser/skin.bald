@@ -1,5 +1,5 @@
 """Idle after (Appearance › Behavior, Skin.String(Bald.IdleTime)): how long Home and Now Playing wait before the idle
-state. One expression, Bald_IdleReached, decides it everywhere (Home's dims and hints, Now Playing's dim, the idle and
+state. One expression, Bald_IdleReached, decides it everywhere (Home's expanding frame, Now Playing's dim, the idle and
 ambient timers); the burn-in drift follows it too but keeps running, after the default minute, with idle off."""
 
 import re

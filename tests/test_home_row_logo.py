@@ -105,10 +105,11 @@ class FrameLogoWiringTests(unittest.TestCase):
         images = [node for node in home.iter("control") if node.get("type") == "image"]
         scrims = [node for node in images if node.findtext("texture") == "bald/scrim_logo.png" and node.findtext("visible")]
         self.assertTrue(any(implies(node.findtext("visible"), "$EXP[Bald_EffectiveHasLogo]") for node in scrims))
-        # The global setting still hides every frame logo, the dialog-over one included.
-        dialog = [node for node in images if node.findtext("texture") == "$VAR[Bald_Logo]"]
-        self.assertEqual(len(dialog), 1)
-        self.assertTrue(implies(dialog[0].findtext("visible"), "$EXP[Bald_ShowClearlogo]"))
+        # The global setting still hides every frame logo: the dialog-over one and the idle frame's.
+        live = [node for node in images if node.findtext("texture") == "$VAR[Bald_Logo]"]
+        self.assertEqual(len(live), 2)
+        for node in live:
+            self.assertTrue(implies(node.findtext("visible"), "$EXP[Bald_ShowClearlogo]"))
 
 
 class EditorLogoTests(unittest.TestCase):
