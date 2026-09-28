@@ -76,6 +76,7 @@ WARM_IDLE = "System.IdleTime(5)"
 WARM_PAUSE_SECONDS = 0.2  # between warm-up blurs, so the GUI and the follower keep the CPU
 WARM_RETRY_SECONDS = 1800.0  # a source that made nothing is tried again after this long
 THUMB_EXTENSIONS = (".jpg", ".png")
+LOCAL_SCHEMES = ("resource://",)  # installed add-on files Kodi reads through xbmcvfs
 
 
 def cache_name(source: str, radius: int = RADIUS) -> str:
@@ -203,10 +204,13 @@ class Blurrer:
         return found
 
     def local(self, source: str) -> bool:
-        """Whether the source can be read without the network: Kodi's texture cache has it, or it is a local file."""
+        """Whether the source can be read without the network: Kodi's texture cache has it, it is a local file, or it
+        is in an installed image resource add-on (resource://, as the weather tiles' pictures are)."""
         if any(os.path.isfile(candidate) for candidate in self.thumbnail_candidates(source)):
             return True
         path, readable = unwrap(source)
+        if readable and path.startswith(LOCAL_SCHEMES):
+            return True
         return readable and "://" not in path and os.path.isfile(path)
 
     def read(self, source: str) -> bytes | None:

@@ -1,3 +1,4 @@
+import datetime
 from pathlib import Path
 import sys
 import unittest
@@ -109,6 +110,120 @@ class TidierTests(unittest.TestCase):
             self.assertEqual(fields[f"Hourly.{n}.Time"], "time")
             self.assertEqual(fields[f"Hourly.{n}.Precipitation"], "precipitation")
         self.assertEqual(fields["Current.Precipitation"], "precipitation")
+
+
+PACK = "resource://resource.images.weatherfanart.multi/"
+
+
+class Vfs:
+    """xbmcvfs.listdir over a dict of folder -> file names; a folder not in it does not exist."""
+
+    def __init__(self, folders):
+        self.folders, self.listed = folders, []
+
+    def listdir(self, path):
+        self.listed.append(path)
+        if path not in self.folders:
+            raise OSError(path)
+        return [], list(self.folders[path])
+
+
+class ArtTests(unittest.TestCase):
+    def setUp(self):
+        self.now = [100.0]
+        self.day = [datetime.date(2026, 1, 1)]  # day of the year 1
+        self.xbmc = Xbmc({"Weather.Plugin": "weather.multi", "Skin.String(Bald.WeatherFanart.path)": PACK,
+                          raw("Current.FanartCode"): "26", raw("Daily.1.FanartCode"): "32",
+                          raw("Daily.2.FanartCode"): "32", raw("Hourly.5.FanartCode"): "11",
+                          raw("Day2.FanartCode"): "26", raw("Daily.3.FanartCode"): "99"})
+        self.vfs = Vfs({PACK + "26/": ["a.jpg", "c.jpg", "b.png", "notes.txt", "Thumbs.db"],
+                        PACK + "32/": ["sun.JPG"], PACK + "11/": ["rain-1.jpg", "rain-2.jpg"]})
+        self.window = Window()
+        self.tidier = weather.Tidier(self.xbmc, self.window, lambda: self.now[0], self.vfs, lambda: self.day[0])
+
+    def tick(self, seconds=weather.TIDY_SECONDS):
+        self.now[0] += seconds
+        self.tidier.tick()
+
+    def test_each_slot_gets_its_conditions_picture_from_a_folder_pack(self):
+        self.tidier.tick()
+        p = self.window.props
+        # Code 26's pictures, sorted: a.jpg, b.png, c.jpg (not the text file); day 1 -> index 1.
+        self.assertEqual(p["Bald.Weather.Art.Current"], PACK + "26/b.png")
+        self.assertEqual(p["Bald.Weather.Art.Day2"], PACK + "26/b.png")
+        self.assertEqual(p["Bald.Weather.Art.Daily.1"], PACK + "32/sun.JPG")
+        self.assertEqual(p["Bald.Weather.Art.Daily.2"], PACK + "32/sun.JPG")
+        self.assertEqual(p["Bald.Weather.Art.Hourly.5"], PACK + "11/rain-2.jpg")
+        self.assertEqual(p["Bald.Weather.ArtReady"], "1")
+        # A code without a folder, and slots without a code, get no picture.
+        self.assertNotIn("Bald.Weather.Art.Daily.3", p)
+        self.assertNotIn("Bald.Weather.Art.Hourly.1", p)
+        # Each code folder listed once, however many slots share it.
+        self.assertEqual(sorted(self.vfs.listed), sorted([PACK + "26/", PACK + "32/", PACK + "11/", PACK + "99/"]))
+
+    def test_the_picture_stays_all_day_and_moves_on_the_next(self):
+        self.tidier.tick()
+        self.tick()
+        self.assertEqual(self.window.props["Bald.Weather.Art.Current"], PACK + "26/b.png")
+        self.day[0] = datetime.date(2026, 1, 2)
+        self.tick()
+        self.assertEqual(self.window.props["Bald.Weather.Art.Current"], PACK + "26/c.jpg")
+        self.assertEqual(self.window.props["Bald.Weather.Art.Hourly.5"], PACK + "11/rain-1.jpg")
+        self.day[0] = datetime.date(2026, 1, 3)
+        self.tick()
+        self.assertEqual(self.window.props["Bald.Weather.Art.Current"], PACK + "26/a.jpg")
+
+    def test_folders_are_listed_again_only_after_a_few_hours(self):
+        self.tidier.tick()
+        listed = len(self.vfs.listed)
+        self.tick()
+        self.assertEqual(len(self.vfs.listed), listed)
+        self.vfs.folders[PACK + "99/"] = ["storm.jpg"]
+        self.tick(weather.LIST_SECONDS)
+        self.assertEqual(len(self.vfs.listed), 2 * listed)
+        self.assertEqual(self.window.props["Bald.Weather.Art.Daily.3"], PACK + "99/storm.jpg")
+
+    def test_a_pack_of_single_pictures_names_the_file(self):
+        self.xbmc.labels["Skin.String(Bald.WeatherFanart.ext)"] = ".jpg"
+        self.xbmc.labels["Skin.String(Bald.WeatherFanart.path)"] = "special://home/weather"  # no trailing slash
+        self.tidier.tick()
+        p = self.window.props
+        self.assertEqual(p["Bald.Weather.Art.Current"], "special://home/weather/26.jpg")
+        self.assertEqual(p["Bald.Weather.Art.Daily.3"], "special://home/weather/99.jpg")
+        self.assertEqual(self.vfs.listed, [], "nothing to list")
+
+    def test_stale_pictures_are_cleared(self):
+        self.tidier.tick()
+        # The forecast moves on: Hourly.5 has no code any more, Daily.1 another one.
+        del self.xbmc.labels[raw("Hourly.5.FanartCode")]
+        self.xbmc.labels[raw("Daily.1.FanartCode")] = "11"
+        self.tick()
+        p = self.window.props
+        self.assertNotIn("Bald.Weather.Art.Hourly.5", p)
+        self.assertEqual(p["Bald.Weather.Art.Daily.1"], PACK + "11/rain-2.jpg")
+        # The pack is removed: every picture goes, and the ready flag with them.
+        self.xbmc.labels["Skin.String(Bald.WeatherFanart.path)"] = ""
+        self.tick()
+        self.assertEqual([key for key in self.window.props if key.startswith("Bald.Weather.Art")], [])
+        # Without a weather service as well.
+        self.xbmc.labels["Skin.String(Bald.WeatherFanart.path)"] = PACK
+        self.tick()
+        self.xbmc.labels["Weather.Plugin"] = ""
+        self.tick()
+        self.assertEqual(self.window.props, {})
+
+    def test_slots_cover_every_tile(self):
+        slots = dict(weather.art_slots())
+        self.assertEqual(len(slots), 1 + 7 + 7 + 24)
+        self.assertEqual(slots["Current"], "Current.FanartCode")
+        self.assertEqual(slots["Daily.7"], "Daily.7.FanartCode")
+        self.assertEqual(slots["Day0"], "Day0.FanartCode")
+        self.assertEqual(slots["Hourly.24"], "Hourly.24.FanartCode")
+
+    def test_without_xbmcvfs_a_folder_pack_has_no_pictures(self):
+        tidier = weather.Tidier(self.xbmc, self.window, lambda: self.now[0])
+        tidier.tick()
+        self.assertNotIn("Bald.Weather.Art.Current", self.window.props)
 
 
 if __name__ == "__main__":
