@@ -72,8 +72,9 @@
 					<onclick condition="String.IsEqual(Skin.String(Bald.TileTitles),focus)">Skin.SetString(Bald.TileTitles,always)</onclick>
 					<onclick condition="!String.IsEmpty(Skin.String(Bald.TileTitles)) + !String.IsEqual(Skin.String(Bald.TileTitles),focus)">Skin.Reset(Bald.TileTitles)</onclick>
 				</control>
-				<!-- Watch-state marks: the watched check and progress bar on TV episode cards, the Resume / Watched note in
-				     list rows (Bald_ShowWatchedMarks, Bald_ShowProgressMarks). -->
+				<!-- Watch-state marks: the watched check and progress bar on TV episode cards and on Home's row tiles
+				     (Bald_TileMarks: fanart, thumbnail, poster and square rows), the Resume / Watched note in list rows
+				     (Bald_ShowWatchedMarks, Bald_ShowProgressMarks). -->
 				<control type="radiobutton" id="9636"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">advanced</param></include><label>$LOCALIZE[31339]</label><selected>!Skin.HasSetting(Bald.HideWatchedMarks)</selected><onclick>Skin.ToggleSetting(Bald.HideWatchedMarks)</onclick></control>
 				<control type="radiobutton" id="9637"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">advanced</param></include><label>$LOCALIZE[31340]</label><selected>!Skin.HasSetting(Bald.HideProgressMarks)</selected><onclick>Skin.ToggleSetting(Bald.HideProgressMarks)</onclick></control>
 				<!-- Titles in list views 50, 55 and 504 (ListLabelVar): the localised title, or with the original title too. -->

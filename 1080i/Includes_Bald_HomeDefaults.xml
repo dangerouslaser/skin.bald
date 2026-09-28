@@ -90,6 +90,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9101)) + String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)">SetProperty(Bald.Start9101,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9101)) + String.IsEqual(Container(9101).CurrentItem,3) + String.IsEqual(Container(9101).Position,2)">Control.Move(9101,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9101</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowDots_9102">
@@ -124,6 +127,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">SetProperty(Bald.Start9102,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9102)) + String.IsEqual(Container(9102).CurrentItem,3) + String.IsEqual(Container(9102).Position,2)">Control.Move(9102,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9102</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowDots_9103">
@@ -158,6 +164,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">SetProperty(Bald.Start9103,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9103)) + String.IsEqual(Container(9103).CurrentItem,3) + String.IsEqual(Container(9103).Position,2)">Control.Move(9103,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9103</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowStartReset_home">
@@ -373,6 +382,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9051)) + String.IsEqual(Container(9051).CurrentItem,3) + String.IsEqual(Container(9051).Position,2)">SetProperty(Bald.Start9051,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9051)) + String.IsEqual(Container(9051).CurrentItem,3) + String.IsEqual(Container(9051).Position,2)">Control.Move(9051,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9051</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowDots_9052">
@@ -407,6 +419,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9052)) + String.IsEqual(Container(9052).CurrentItem,3) + String.IsEqual(Container(9052).Position,2)">SetProperty(Bald.Start9052,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9052)) + String.IsEqual(Container(9052).CurrentItem,3) + String.IsEqual(Container(9052).Position,2)">Control.Move(9052,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9052</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowDots_9053">
@@ -441,6 +456,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9053)) + String.IsEqual(Container(9053).CurrentItem,3) + String.IsEqual(Container(9053).Position,2)">SetProperty(Bald.Start9053,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9053)) + String.IsEqual(Container(9053).CurrentItem,3) + String.IsEqual(Container(9053).Position,2)">Control.Move(9053,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9053</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowStartReset_livetv">
@@ -632,6 +650,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9201)) + String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)">SetProperty(Bald.Start9201,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9201)) + String.IsEqual(Container(9201).CurrentItem,3) + String.IsEqual(Container(9201).Position,2)">Control.Move(9201,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9201</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowDots_9202">
@@ -659,6 +680,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">SetProperty(Bald.Start9202,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9202)) + String.IsEqual(Container(9202).CurrentItem,3) + String.IsEqual(Container(9202).Position,2)">Control.Move(9202,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9202</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowStartReset_hub1">
@@ -821,6 +845,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9301)) + String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)">SetProperty(Bald.Start9301,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9301)) + String.IsEqual(Container(9301).CurrentItem,3) + String.IsEqual(Container(9301).Position,2)">Control.Move(9301,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9301</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowDots_9302">
@@ -848,6 +875,9 @@
         <definition>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">SetProperty(Bald.Start9302,1,home)</onfocus>
             <onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start9302)) + String.IsEqual(Container(9302).CurrentItem,3) + String.IsEqual(Container(9302).Position,2)">Control.Move(9302,-2)</onfocus>
+            <include content="Bald_RowStartShort_2">
+                <param name="id">9302</param>
+            </include>
         </definition>
     </include>
     <include name="Bald_RowStartReset_hub2">
