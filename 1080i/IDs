@@ -385,6 +385,9 @@ Custom_1115_BaldSettings.xml (window 1115) and SkinSettings.xml (Kodi's "Configu
 		Both draw Bald_SettingsHome (Includes_Bald_Configure.xml).
 9000	Section list
 9001	Button
+9090	Settings level button (Bald_SettingsLevelButton), under the sidebar in 1115-1119 and SkinSettings.xml:
+		cycles Skin.String(Bald.SettingsLevel) through Basic, Standard (unset), Advanced, Expert; Down from the
+		last sidebar entry reaches it. Rows above the chosen level hide (Bald_ConfigureRow, Bald_SettingRow).
 
 Custom_1116_BaldHomeWidgets.xml (window 1116)
 9100	List

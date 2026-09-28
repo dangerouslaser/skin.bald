@@ -24,6 +24,7 @@
 		</control>
 		<control type="list" id="9300">
 			<include content="Bald_SettingsCategories"><param name="id">9300</param><param name="right">9400</param></include>
+			<ondown>9090</ondown>
 			<content>
 				<item id="1"><label>$LOCALIZE[10000]</label><property name="kind">home</property><property name="note">$LOCALIZE[31741]</property></item>
 				<include content="Bald_HubCategory"><param name="n">0</param></include>
@@ -44,6 +45,8 @@
 				</item>
 			</content>
 		</control>
+		<!-- Settings levels: every row is Basic except Clear target (Standard). -->
+		<include content="Bald_SettingsLevelButton"><param name="list">9300</param><param name="right">9400</param></include>
 		<include content="Bald_SettingsDetail">
 			<param name="heading">$INFO[Container(9300).ListItem.Label]</param>
 			<param name="note">$INFO[Container(9300).ListItem.Property(note)]</param>
@@ -51,7 +54,7 @@
 				<!-- Show in the main menu: a hub's "disabled" field (Skin Variables do_toggle), Live TV's and Home's skin bools.
 				     Home hidden starts Home on the first shown hub's rows; with no hub shown, Home shows anyway
 				     (Includes_Bald_Home.xml, Bald_HomeHidden). -->
-				<control type="radiobutton" id="9401"><include>Bald_ConfigureButton</include><label>$LOCALIZE[305]</label>
+				<control type="radiobutton" id="9401"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[305]</label>
 					<selected>[$EXP[Bald_HubCategorySelected] + String.IsEmpty(Container(9300).ListItem.Property(disabled))] | [String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)] | [String.IsEqual(Container(9300).ListItem.Property(kind),home) + !Skin.HasSetting(Bald.Screen.HideHome)]</selected>
 					<visible>$EXP[Bald_HubCategorySelected] | String.IsEqual(Container(9300).ListItem.Property(kind),livetv) | String.IsEqual(Container(9300).ListItem.Property(kind),home)</visible>
 					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick condition="$EXP[Bald_HubCategorySelected]">RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_toggle&amp;&amp;disabled)</onclick>
@@ -59,7 +62,7 @@
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">Skin.ToggleSetting(Bald.Screen.HideHome)</onclick>
 				</control>
 				<!-- Rows: the widget editor (1116) on Home's, Live TV's or this hub's row list. -->
-				<control type="button" id="9402"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31745]</label>
+				<control type="button" id="9402"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31745]</label>
 					<visible>!String.IsEqual(Container(9300).ListItem.Property(kind),add)</visible>
 					<onclick>SetProperty(Bald.ConfigureLabel,$INFO[Container(9300).ListItem.Label],home)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">SetProperty(Bald.ConfigureNode,homewidgets,home)</onclick>
@@ -72,37 +75,37 @@
 					<!-- Never without a hub's index: with no node, Skin Variables edits the hubs list itself as rows. -->
 					<onclick condition="!$EXP[Bald_HubCategorySelected] | !String.IsEmpty(Container(9300).ListItem.Property(slot))">ActivateWindow(1116)</onclick>
 				</control>
-				<control type="button" id="9403"><include>Bald_ConfigureButton</include><label>$LOCALIZE[118]</label>
+				<control type="button" id="9403"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[118]</label>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;label)</onclick>
 				</control>
 				<!-- What Right (and Select without rows) opens: Skin Variables' Browse over grouping://hubs/ (video and music
 				     library nodes, Bald playlists, add-ons, Favourites, Pictures, Programs, Weather, Radio, channel groups) or Edit
 				     (a path or a builtin such as ActivateWindow(Weather)). The generator picks the window (Bald_HubOpen_<screen>). -->
-				<control type="button" id="9404"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31203]</label><label2>$VAR[Bald_HubTargetLabel]</label2>
+				<control type="button" id="9404"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31203]</label><label2>$VAR[Bald_HubTargetLabel]</label2>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_action&amp;&amp;grouping::grouping://hubs/&amp;&amp;use_rawpath::True)</onclick>
 				</control>
-				<control type="button" id="9405"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31209]</label>
+				<control type="button" id="9405"><include content="Bald_ConfigureRow"><param name="level">standard</param></include><label>$LOCALIZE[31209]</label>
 					<visible>$EXP[Bald_HubCategorySelected] + !String.IsEmpty(Container(9300).ListItem.Property(path))</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;path&amp;&amp;null)</onclick>
 				</control>
 				<!-- Move: Skin Variables wraps at the ends, so the ends hide the button; the sidebar selection follows. -->
-				<control type="button" id="9406"><include>Bald_ConfigureButton</include><label>$LOCALIZE[13332]</label>
+				<control type="button" id="9406"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[13332]</label>
 					<visible>$EXP[Bald_HubCategorySelected] + !String.IsEqual(Container(9300).ListItem.Property(slot),0)</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_move&amp;&amp;-1)</onclick>
 					<onclick>Control.Move(9300,-1)</onclick>
 				</control>
-				<control type="button" id="9407"><include>Bald_ConfigureButton</include><label>$LOCALIZE[13333]</label>
+				<control type="button" id="9407"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[13333]</label>
 					<visible>$EXP[Bald_HubCategorySelected] + $EXP[Bald_HubHasNext]</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_move&amp;&amp;1)</onclick>
 					<onclick>Control.Move(9300,1)</onclick>
 				</control>
-				<control type="button" id="9408"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31208]</label>
+				<control type="button" id="9408"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31208]</label>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_delete)</onclick>
 				</control>
-				<control type="button" id="9409"><include>Bald_ConfigureButton</include><label>$LOCALIZE[31207]</label>
+				<control type="button" id="9409"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31207]</label>
 					<visible>String.IsEqual(Container(9300).ListItem.Property(kind),add)</visible>
 					<include>Bald_AddHubActions</include>
 				</control>

@@ -78,15 +78,16 @@
 	     its ratings while the previous item's are published (IsUpdatingRatings). -->
 	<expression name="Bald_TMDbHelperIdle">[String.IsEmpty(Window(Home).Property(TMDbHelper.IsUpdating)) + String.IsEmpty(Window(Home).Property(TMDbHelper.IsUpdatingRatings))]</expression>
 	<!-- One Appearance > Ratings row (category item 6) for a negative bool: on (accent dot) while <setting> is unset.
-	     The rows under the master switch grey out while ratings are off. -->
+	     The rows under the master switch grey out while ratings are off. <level> is the row's settings level. -->
 	<include name="Bald_RatingsSettingRow">
 		<param name="id" />
 		<param name="label" />
 		<param name="setting" />
+		<param name="level" />
 		<param name="enable">!Skin.HasSetting(Bald.Ratings.Hide)</param>
 		<definition>
 			<control type="radiobutton" id="$PARAM[id]">
-				<include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include>
+				<include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">$PARAM[level]</param></include>
 				<label>$PARAM[label]</label>
 				<selected>!Skin.HasSetting($PARAM[setting])</selected>
 				<onclick>Skin.ToggleSetting($PARAM[setting])</onclick>

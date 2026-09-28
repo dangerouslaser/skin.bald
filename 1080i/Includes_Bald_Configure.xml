@@ -315,15 +315,114 @@
 		</definition>
 	</include>
 
-	<!-- A row that belongs to one category: shown while category item <item> of list <list> is selected. Rows are
-	     matched by the static item's id, never its label, so translated labels keep working. A further <visible>
-	     on the control is ANDed with this one. -->
-	<include name="Bald_SettingRow">
+	<!-- ============ Settings level ============
+	     Bald's own settings mirror Kodi's settings levels: Basic, Standard, Advanced and Expert, chosen with the level
+	     button under each Bald settings sidebar (Bald_SettingsLevel) and kept in Skin.String(Bald.SettingsLevel), whose
+	     unset value is Standard. Every row declares its level (Bald_ConfigureRow, Bald_SettingRow) and shows while the
+	     chosen level is at least that; a category whose rows all sit above the chosen level hides with them.
+	       basic     what every user touches: editing Home's screens and rows, blurred backgrounds, show ratings, font,
+	                 background video
+	       standard  common customisation: artwork and information options, rating sources, OSD details and panels
+	       advanced  tuning: blur strength and brightness, dims and shading, delays, spoiler details, rating placement
+	       expert    diagnostics and obscure switches: rating provider keys, default rating source, hint reset,
+	                 preloading Home -->
+	<expression name="Bald_SettingsLevel_basic">[true]</expression>
+	<expression name="Bald_SettingsLevel_standard">[!Skin.String(Bald.SettingsLevel,basic)]</expression>
+	<expression name="Bald_SettingsLevel_advanced">[Skin.String(Bald.SettingsLevel,advanced) | Skin.String(Bald.SettingsLevel,expert)]</expression>
+	<expression name="Bald_SettingsLevel_expert">[Skin.String(Bald.SettingsLevel,expert)]</expression>
+	<variable name="Bald_SettingsLevelLabel">
+		<value condition="Skin.String(Bald.SettingsLevel,basic)">$LOCALIZE[10036]</value>
+		<value condition="Skin.String(Bald.SettingsLevel,advanced)">$LOCALIZE[10038]</value>
+		<value condition="Skin.String(Bald.SettingsLevel,expert)">$LOCALIZE[10039]</value>
+		<value>$LOCALIZE[10037]</value>
+	</variable>
+
+	<!-- The level button under the sidebar, with its caption: Kodi's settings pages (SettingsCategory 20, whose label
+	     and click Kodi supplies as nested content) and Bald's own settings windows (id 9090, with Bald_SettingsLevelCycle).
+	     Kodi's control 20 must be a radiobutton (<type>); its radio state means nothing and is drawn empty. Up returns
+	     to the sidebar <up>, Right enters the rows <right>. -->
+	<include name="Bald_SettingsLevel">
+		<param name="id">9090</param>
+		<param name="type">button</param>
+		<param name="up" />
+		<param name="right" />
+		<param name="down">noop</param>
+		<definition>
+			<control type="label">
+				<include>Bald_AnimSettingsWindow</include>
+				<left>122</left>
+				<top>908</top>
+				<width>372</width>
+				<height>24</height>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink45</textcolor>
+				<label>$LOCALIZE[31950]</label>
+			</control>
+			<control type="$PARAM[type]" id="$PARAM[id]">
+				<include>Bald_AnimSettingsWindow</include>
+				<description>settings level</description>
+				<left>Bald_SafeLeft</left>
+				<top>938</top>
+				<include content="Bald_SettingsRowStyle"><param name="width">398</param></include>
+				<textureradioonfocus />
+				<textureradioonnofocus />
+				<textureradioofffocus />
+				<textureradiooffnofocus />
+				<textureradioondisabled />
+				<textureradiooffdisabled />
+				<onup>$PARAM[up]</onup>
+				<onright>$PARAM[right]</onright>
+				<ondown>$PARAM[down]</ondown>
+				<onleft>noop</onleft>
+				<nested />
+			</control>
+		</definition>
+	</include>
+	<!-- Bald's level button: shows the level and cycles Basic, Standard (unset), Advanced, Expert, back to Basic. An
+	     unknown value goes back to Standard. Kodi decides every condition before it runs the actions, so one click
+	     moves one step. -->
+	<include name="Bald_SettingsLevelCycle">
+		<label>$VAR[Bald_SettingsLevelLabel]</label>
+		<onclick condition="String.IsEmpty(Skin.String(Bald.SettingsLevel))">Skin.SetString(Bald.SettingsLevel,advanced)</onclick>
+		<onclick condition="Skin.String(Bald.SettingsLevel,advanced)">Skin.SetString(Bald.SettingsLevel,expert)</onclick>
+		<onclick condition="Skin.String(Bald.SettingsLevel,expert)">Skin.SetString(Bald.SettingsLevel,basic)</onclick>
+		<onclick condition="!String.IsEmpty(Skin.String(Bald.SettingsLevel)) + !Skin.String(Bald.SettingsLevel,advanced) + !Skin.String(Bald.SettingsLevel,expert)">Skin.Reset(Bald.SettingsLevel)</onclick>
+	</include>
+	<!-- A Bald settings window's level button (9090) under sidebar list <list>, Right to the row grouplist <right>. -->
+	<include name="Bald_SettingsLevelButton">
 		<param name="list" />
-		<param name="item" />
+		<param name="right" />
+		<definition>
+			<include content="Bald_SettingsLevel">
+				<param name="up">$PARAM[list]</param>
+				<param name="right">$PARAM[right]</param>
+				<include>Bald_SettingsLevelCycle</include>
+			</include>
+		</definition>
+	</include>
+
+	<!-- A settings row of level <level> (basic, standard, advanced or expert): hidden while the chosen settings level is
+	     lower. Grouplists collapse hidden rows, so focus never lands on one. -->
+	<include name="Bald_ConfigureRow">
+		<param name="level" />
 		<param name="width">720</param>
 		<definition>
 			<include content="Bald_ConfigureButton"><param name="width">$PARAM[width]</param></include>
+			<visible>$EXP[Bald_SettingsLevel_$PARAM[level]]</visible>
+		</definition>
+	</include>
+
+	<!-- A row that belongs to one category: shown while category item <item> of list <list> is selected and the settings
+	     level reaches <level>. Rows are matched by the static item's id, never its label, so translated labels keep
+	     working. A further <visible> on the control is ANDed with this one. -->
+	<include name="Bald_SettingRow">
+		<param name="list" />
+		<param name="item" />
+		<param name="level" />
+		<param name="width">720</param>
+		<definition>
+			<include content="Bald_ConfigureRow"><param name="level">$PARAM[level]</param><param name="width">$PARAM[width]</param></include>
 			<visible>Container($PARAM[list]).HasFocus($PARAM[item])</visible>
 		</definition>
 	</include>
@@ -694,6 +793,7 @@
 		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[31730]</param></include>
 		<control type="list" id="9000">
 			<include content="Bald_SettingsCategories"><param name="id">9000</param><param name="right">9001</param></include>
+			<ondown>9090</ondown>
 			<content>
 				<item>
 					<label>$LOCALIZE[31731]</label>
@@ -734,6 +834,7 @@
 			<param name="note">$INFO[Container(9000).ListItem.Label2]</param>
 			<include content="Bald_SettingsOpen"><param name="list">9000</param></include>
 		</include>
+		<include content="Bald_SettingsLevelButton"><param name="list">9000</param><param name="right">9001</param></include>
 		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31738]</param><param name="second">$LOCALIZE[31739]</param></include>
 	</include>
 </includes>

@@ -2407,7 +2407,7 @@ msgctxt "#31944"
 msgid "Font"
 msgstr ""
 
-#: /1080i/SettingsCategory.xml
+#: /1080i/Includes_Bald_Configure.xml
 msgctxt "#31950"
 msgid "Settings level"
 msgstr ""

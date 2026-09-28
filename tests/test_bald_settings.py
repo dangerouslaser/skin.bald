@@ -4,7 +4,7 @@ from pathlib import Path
 
 import home_menu
 from home_screens import SCREENS as HOME_SCREENS
-from conditions import atoms, equivalent, has_action, implies, same_actions
+from conditions import all_of, atoms, equivalent, has_action, implies, same_actions
 from kodi_includes import expand, resolve_window
 from skin_strings import loc
 
@@ -113,7 +113,7 @@ class BaldSettingsTests(unittest.TestCase):
         for control_id, action in expected.items():
             node = root.find(f".//control[@id='{control_id}']")
             self.assertIn(action, [n.text for n in node.findall("onclick")], control_id)
-            self.assertTrue(implies(node.findtext("visible"), "$EXP[Bald_HubCategorySelected]")
+            self.assertTrue(implies(all_of([n.text for n in node.findall("visible")]), "$EXP[Bald_HubCategorySelected]")
                             or control_id == "9401", control_id)
         # Moving keeps the sidebar selection on the moved hub.
         self.assertIn("Control.Move(9300,-1)", [n.text for n in root.find(".//control[@id='9406']").findall("onclick")])
@@ -150,7 +150,8 @@ class BaldSettingsTests(unittest.TestCase):
         toggle = root.find(".//control[@id='9401']")
         configure = root.find(".//control[@id='9402']")
         self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(toggle, encoding="unicode"))
-        self.assertTrue(equivalent(configure.findtext("visible"),
+        # Its only other condition is its settings level (Basic: always shown).
+        self.assertTrue(equivalent(all_of([n.text for n in configure.findall("visible")]),
                                    "!String.IsEqual(Container(9300).ListItem.Property(kind),add)"))
 
     def test_screens_restore_their_last_row_when_entered_from_menu(self):

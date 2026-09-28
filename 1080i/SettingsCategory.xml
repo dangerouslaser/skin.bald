@@ -27,34 +27,14 @@
 			<include>Bald_SettingsCategoryButton</include>
 		</control>
 		<!-- Settings level: Kodi sets the label (Basic, Standard, Advanced, Expert) and cycles it on click. -->
-		<control type="label">
-			<include>Bald_AnimSettingsWindow</include>
-			<left>122</left>
-			<top>908</top>
-			<width>372</width>
-			<height>24</height>
-			<aligny>center</aligny>
-			<font>Bald_Hint</font>
-			<textcolor>bald_ink45</textcolor>
-			<label>$LOCALIZE[31950]</label>
-		</control>
-		<control type="radiobutton" id="20">
-			<include>Bald_AnimSettingsWindow</include>
-			<description>settings level</description>
-			<left>Bald_SafeLeft</left>
-			<top>938</top>
-			<include content="Bald_SettingsRowStyle"><param name="width">398</param></include>
-			<textureradioonfocus />
-			<textureradioonnofocus />
-			<textureradioofffocus />
-			<textureradiooffnofocus />
-			<textureradioondisabled />
-			<textureradiooffdisabled />
+		<include content="Bald_SettingsLevel">
+			<param name="id">20</param>
+			<param name="type">radiobutton</param>
+			<param name="up">3</param>
+			<param name="right">5</param>
+			<param name="down">3</param>
 			<onclick>SettingsLevelChange</onclick>
-			<onright>5</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
-		</control>
+		</include>
 		<control type="grouplist" id="5">
 			<include>Bald_AnimSettingsWindow</include>
 			<description>settings</description>

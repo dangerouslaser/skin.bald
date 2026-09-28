@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Appearance. Rows belong to a category by the category item's id (Bald_SettingRow), not its label; Typography keeps
      id 5 after the "Estuary windows" category (id 4) was folded into the others (docs/NOTES.md, "Estuary windows
-     settings folded into Bald"). Estuary's other skin settings had no effect in Bald and were dropped earlier. -->
+     settings folded into Bald"). Estuary's other skin settings had no effect in Bald and were dropped earlier.
+     Every row names its settings level (Includes_Bald_Configure.xml, "Settings level"). Basic: blurred backgrounds,
+     show ratings, font. Advanced: blur strength and brightness, music video posters, list-view titles, profile name,
+     spoiler details, extra rating sources, rating placement and votes, hub Select. Expert: rating provider settings,
+     default rating source, hint reset, preload Home. The rest is Standard; Information and Behavior hide at Basic. -->
 <window type="window" id="1118">
 	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9500</defaultcontrol>
@@ -10,54 +14,56 @@
 		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[480]</param></include>
 		<control type="list" id="9500">
 			<include content="Bald_SettingsCategories"><param name="id">9500</param><param name="right">9600</param></include>
+			<ondown>9090</ondown>
 			<content>
 				<item id="1"><label>$LOCALIZE[39123]</label><property name="note">$LOCALIZE[31755]</property></item>
-				<item id="2"><label>$LOCALIZE[19033]</label><property name="note">$LOCALIZE[31756]</property></item>
+				<item id="2"><label>$LOCALIZE[19033]</label><property name="note">$LOCALIZE[31756]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
 				<item id="6"><label>$LOCALIZE[31300]</label><property name="note">$LOCALIZE[31301]</property></item>
-				<item id="3"><label>$LOCALIZE[31757]</label><property name="note">$LOCALIZE[31758]</property></item>
+				<item id="3"><label>$LOCALIZE[31757]</label><property name="note">$LOCALIZE[31758]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
 				<item id="5"><label>$LOCALIZE[31942]</label><property name="note">$LOCALIZE[31943]</property></item>
 			</content>
 		</control>
+		<include content="Bald_SettingsLevelButton"><param name="list">9500</param><param name="right">9600</param></include>
 		<include content="Bald_SettingsDetail">
 			<param name="heading">$INFO[Container(9500).ListItem.Label]</param>
 			<param name="note">$INFO[Container(9500).ListItem.Property(note)]</param>
 			<control type="grouplist" id="9600">
 				<include content="Bald_SettingsRows"><param name="left">9500</param></include>
 				<!-- Artwork -->
-				<control type="radiobutton" id="9601"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31761]</label><selected>!Skin.HasSetting(Bald.HideClearlogo)</selected><onclick>Skin.ToggleSetting(Bald.HideClearlogo)</onclick></control>
-				<control type="radiobutton" id="9602"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31762]</label><selected>!Skin.HasSetting(Bald.DisableBlur)</selected><onclick>Skin.ToggleSetting(Bald.DisableBlur)</onclick></control>
+				<control type="radiobutton" id="9601"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">standard</param></include><label>$LOCALIZE[31761]</label><selected>!Skin.HasSetting(Bald.HideClearlogo)</selected><onclick>Skin.ToggleSetting(Bald.HideClearlogo)</onclick></control>
+				<control type="radiobutton" id="9602"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">basic</param></include><label>$LOCALIZE[31762]</label><selected>!Skin.HasSetting(Bald.DisableBlur)</selected><onclick>Skin.ToggleSetting(Bald.DisableBlur)</onclick></control>
 				<!-- Blur strength (Bald Helper reads Skin.String(Bald.BlurStrength): light 20, medium 40, strong 70 px radius) and
 				     the blurred background's brightness (Bald_BlurDiffuse). Both need the blurred background on. -->
-				<control type="button" id="9608"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31691]</label><label2>$VAR[Bald_BlurStrengthLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
+				<control type="button" id="9608"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">advanced</param></include><label>$LOCALIZE[31691]</label><label2>$VAR[Bald_BlurStrengthLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.BlurStrength))">Skin.SetString(Bald.BlurStrength,strong)</onclick>
 					<onclick condition="Skin.String(Bald.BlurStrength,strong)">Skin.SetString(Bald.BlurStrength,light)</onclick>
 					<onclick condition="Skin.String(Bald.BlurStrength,light)">Skin.Reset(Bald.BlurStrength)</onclick>
 				</control>
-				<control type="button" id="9609"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31692]</label><label2>$VAR[Bald_BlurBrightnessLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
+				<control type="button" id="9609"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">advanced</param></include><label>$LOCALIZE[31692]</label><label2>$VAR[Bald_BlurBrightnessLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.BlurBrightness))">Skin.SetString(Bald.BlurBrightness,40)</onclick>
 					<onclick condition="Skin.String(Bald.BlurBrightness,40)">Skin.SetString(Bald.BlurBrightness,50)</onclick>
 					<onclick condition="Skin.String(Bald.BlurBrightness,50)">Skin.SetString(Bald.BlurBrightness,20)</onclick>
 					<onclick condition="Skin.String(Bald.BlurBrightness,20)">Skin.Reset(Bald.BlurBrightness)</onclick>
 				</control>
 				<!-- Library pages outside the Bald views: the focused item's fanart behind the page (DefaultBackground). -->
-				<control type="radiobutton" id="9603"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31985]</label><selected>!Skin.HasSetting(Bald.HideBrowseFanart)</selected><onclick>Skin.ToggleSetting(Bald.HideBrowseFanart)</onclick></control>
+				<control type="radiobutton" id="9603"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">standard</param></include><label>$LOCALIZE[31985]</label><selected>!Skin.HasSetting(Bald.HideBrowseFanart)</selected><onclick>Skin.ToggleSetting(Bald.HideBrowseFanart)</onclick></control>
 				<!-- Music videos as posters rather than 16:9 thumbs in walls 500 and 54. -->
-				<control type="radiobutton" id="9604"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31986]</label><selected>Skin.HasSetting(Bald.MusicVideoPosters)</selected><onclick>Skin.ToggleSetting(Bald.MusicVideoPosters)</onclick></control>
+				<control type="radiobutton" id="9604"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">advanced</param></include><label>$LOCALIZE[31986]</label><selected>Skin.HasSetting(Bald.MusicVideoPosters)</selected><onclick>Skin.ToggleSetting(Bald.MusicVideoPosters)</onclick></control>
 				<!-- Image packs, picked with script.image.resource.select (it writes <property>.name, .path and .ext). -->
-				<control type="button" id="9605"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31987]</label><label2>$VAR[Bald_GenreFanartName]</label2><enable>!Skin.HasSetting(Bald.HideBrowseFanart)</enable>
+				<control type="button" id="9605"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">standard</param></include><label>$LOCALIZE[31987]</label><label2>$VAR[Bald_GenreFanartName]</label2><enable>!Skin.HasSetting(Bald.HideBrowseFanart)</enable>
 					<include content="Bald_ImageResourceActions"><param name="property">Bald.GenreFanart</param><param name="type">resource.images.moviegenrefanart</param></include>
 				</control>
-				<control type="button" id="9606"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31988]</label><label2>$VAR[Bald_WeatherFanartName]</label2>
+				<control type="button" id="9606"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">standard</param></include><label>$LOCALIZE[31988]</label><label2>$VAR[Bald_WeatherFanartName]</label2>
 					<include content="Bald_ImageResourceActions"><param name="property">Bald.WeatherFanart</param><param name="type">resource.images.weatherfanart</param></include>
 				</control>
-				<control type="button" id="9607"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31989]</label><label2>$VAR[Bald_WeatherIconsName]</label2>
+				<control type="button" id="9607"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">standard</param></include><label>$LOCALIZE[31989]</label><label2>$VAR[Bald_WeatherIconsName]</label2>
 					<include content="Bald_ImageResourceActions"><param name="property">Bald.WeatherIcons</param><param name="type">resource.images.weathericons</param></include>
 				</control>
 				<!-- Information -->
-				<control type="radiobutton" id="9611"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31763]</label><selected>!Skin.HasSetting(Bald.HideMediaFlags)</selected><onclick>Skin.ToggleSetting(Bald.HideMediaFlags)</onclick></control>
-				<control type="radiobutton" id="9612"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31769]</label><selected>Skin.HasSetting(Bald.ShowRowCount)</selected><onclick>Skin.ToggleSetting(Bald.ShowRowCount)</onclick></control>
+				<control type="radiobutton" id="9611"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">standard</param></include><label>$LOCALIZE[31763]</label><selected>!Skin.HasSetting(Bald.HideMediaFlags)</selected><onclick>Skin.ToggleSetting(Bald.HideMediaFlags)</onclick></control>
+				<control type="radiobutton" id="9612"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">standard</param></include><label>$LOCALIZE[31769]</label><selected>Skin.HasSetting(Bald.ShowRowCount)</selected><onclick>Skin.ToggleSetting(Bald.ShowRowCount)</onclick></control>
 				<!-- Titles in list views 50, 55 and 504 (ListLabelVar): the localised title, or with the original title too. -->
-				<control type="button" id="9613"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31990]</label><label2>$VAR[Bald_OriginalTitleLabel]</label2>
+				<control type="button" id="9613"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">advanced</param></include><label>$LOCALIZE[31990]</label><label2>$VAR[Bald_OriginalTitleLabel]</label2>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.OriginalTitle))">Skin.SetString(Bald.OriginalTitle,original)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(Bald.OriginalTitle),original)">Skin.SetString(Bald.OriginalTitle,originalfirst)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(Bald.OriginalTitle),originalfirst)">Skin.SetString(Bald.OriginalTitle,localisedfirst)</onclick>
@@ -65,54 +71,54 @@
 				</control>
 				<!-- The library page header's right-hand meta line (TopBar): the profile name when there are several profiles,
 				     and the temperature. Without a weather service, Select opens Kodi's weather settings instead. -->
-				<control type="radiobutton" id="9614"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31991]</label><selected>Skin.HasSetting(Bald.HeaderProfile)</selected><onclick>Skin.ToggleSetting(Bald.HeaderProfile)</onclick></control>
-				<control type="radiobutton" id="9615"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31992]</label><selected>Skin.HasSetting(Bald.HeaderWeather) + !String.IsEmpty(Weather.Plugin)</selected><onclick condition="!String.IsEmpty(Weather.Plugin)">Skin.ToggleSetting(Bald.HeaderWeather)</onclick><onclick condition="String.IsEmpty(Weather.Plugin)">ActivateWindow(servicesettings,weather)</onclick></control>
+				<control type="radiobutton" id="9614"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">advanced</param></include><label>$LOCALIZE[31991]</label><selected>Skin.HasSetting(Bald.HeaderProfile)</selected><onclick>Skin.ToggleSetting(Bald.HeaderProfile)</onclick></control>
+				<control type="radiobutton" id="9615"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">standard</param></include><label>$LOCALIZE[31992]</label><selected>Skin.HasSetting(Bald.HeaderWeather) + !String.IsEmpty(Weather.Plugin)</selected><onclick condition="!String.IsEmpty(Weather.Plugin)">Skin.ToggleSetting(Bald.HeaderWeather)</onclick><onclick condition="String.IsEmpty(Weather.Plugin)">ActivateWindow(servicesettings,weather)</onclick></control>
 				<!-- Spoiler protection (Includes_Bald_Spoilers.xml), opt-in. Under it, episode stills and plots are hidden by
 				     default (negative names), movie plots and Live TV only when asked for; the rows under the switch grey
 				     out while it is off. Bald Helper adds the frosted stills; without it the stills are the show's art. -->
-				<control type="radiobutton" id="9616"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31260]</label><selected>Skin.HasSetting(Bald.Spoilers)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers)</onclick></control>
-				<control type="radiobutton" id="9617"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31261]</label><selected>!Skin.HasSetting(Bald.Spoilers.ShowThumbs)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers.ShowThumbs)</onclick><enable>Skin.HasSetting(Bald.Spoilers)</enable></control>
-				<control type="radiobutton" id="9618"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31262]</label><selected>!Skin.HasSetting(Bald.Spoilers.ShowPlots)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers.ShowPlots)</onclick><enable>Skin.HasSetting(Bald.Spoilers)</enable></control>
-				<control type="radiobutton" id="9619"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31263]</label><selected>Skin.HasSetting(Bald.Spoilers.Movies)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers.Movies)</onclick><enable>Skin.HasSetting(Bald.Spoilers)</enable></control>
-				<control type="radiobutton" id="9620"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param></include><label>$LOCALIZE[31264]</label><selected>Skin.HasSetting(Bald.Spoilers.LiveTV)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers.LiveTV)</onclick><enable>Skin.HasSetting(Bald.Spoilers)</enable></control>
+				<control type="radiobutton" id="9616"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">standard</param></include><label>$LOCALIZE[31260]</label><selected>Skin.HasSetting(Bald.Spoilers)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers)</onclick></control>
+				<control type="radiobutton" id="9617"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">advanced</param></include><label>$LOCALIZE[31261]</label><selected>!Skin.HasSetting(Bald.Spoilers.ShowThumbs)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers.ShowThumbs)</onclick><enable>Skin.HasSetting(Bald.Spoilers)</enable></control>
+				<control type="radiobutton" id="9618"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">advanced</param></include><label>$LOCALIZE[31262]</label><selected>!Skin.HasSetting(Bald.Spoilers.ShowPlots)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers.ShowPlots)</onclick><enable>Skin.HasSetting(Bald.Spoilers)</enable></control>
+				<control type="radiobutton" id="9619"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">advanced</param></include><label>$LOCALIZE[31263]</label><selected>Skin.HasSetting(Bald.Spoilers.Movies)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers.Movies)</onclick><enable>Skin.HasSetting(Bald.Spoilers)</enable></control>
+				<control type="radiobutton" id="9620"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">2</param><param name="level">advanced</param></include><label>$LOCALIZE[31264]</label><selected>Skin.HasSetting(Bald.Spoilers.LiveTV)</selected><onclick>Skin.ToggleSetting(Bald.Spoilers.LiveTV)</onclick><enable>Skin.HasSetting(Bald.Spoilers)</enable></control>
 				<!-- Ratings (Includes_Bald_Ratings.xml): the master switch, one row per source, where they show, vote counts.
 				     Every name is negative so unset means shown, except vote counts (off by default). The rows under the
 				     master switch grey out while it is off. -->
-				<include content="Bald_RatingsSettingRow"><param name="id">9641</param><param name="label">$LOCALIZE[31302]</param><param name="setting">Bald.Ratings.Hide</param><param name="enable">true</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9641</param><param name="label">$LOCALIZE[31302]</param><param name="setting">Bald.Ratings.Hide</param><param name="enable">true</param><param name="level">basic</param></include>
 				<!-- Online ratings: from Bald Helper with an MDbList key in its settings, else from TMDb Helper (its monitors
 				     publish the scores the library lacks; its MDbList, OMDb and Trakt keys are entered in its own settings).
 				     Bald itself never asks for a key or calls an API. Turning it on or off also starts or stops TMDb Helper's
 				     ListItem monitor (TMDbHelper.Service), as Home's onload does, unless Bald Helper supplies the ratings.
 				     Greyed without either helper; the next row opens the provider's settings. -->
-				<control type="radiobutton" id="9657"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$VAR[Bald_RatingsOnlineLabel]</label><selected>!Skin.HasSetting(Bald.Ratings.NoOnline) + [$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]]</selected><enable>!Skin.HasSetting(Bald.Ratings.Hide) + [$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]]</enable>
+				<control type="radiobutton" id="9657"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">standard</param></include><label>$VAR[Bald_RatingsOnlineLabel]</label><selected>!Skin.HasSetting(Bald.Ratings.NoOnline) + [$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]]</selected><enable>!Skin.HasSetting(Bald.Ratings.Hide) + [$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]]</enable>
 					<onclick condition="Skin.HasSetting(Bald.Ratings.NoOnline) + !$EXP[Bald_HelperRatingsReady]">Skin.SetBool(TMDbHelper.Service)</onclick>
 					<onclick condition="!Skin.HasSetting(Bald.Ratings.NoOnline)">Skin.Reset(TMDbHelper.Service)</onclick>
 					<onclick>Skin.ToggleSetting(Bald.Ratings.NoOnline)</onclick>
 				</control>
-				<control type="button" id="9658"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$VAR[Bald_RatingsProviderLabel]</label><label2>$VAR[Bald_RatingsProviderKey]</label2><enable>$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]</enable>
+				<control type="button" id="9658"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">expert</param></include><label>$VAR[Bald_RatingsProviderLabel]</label><label2>$VAR[Bald_RatingsProviderKey]</label2><enable>$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]</enable>
 					<onclick condition="$EXP[Bald_HasHelper]">Addon.OpenSettings(script.bald.helper)</onclick>
 					<onclick condition="!$EXP[Bald_HasHelper]">Addon.OpenSettings(plugin.video.themoviedb.helper)</onclick>
 				</control>
-				<include content="Bald_RatingsSettingRow"><param name="id">9642</param><param name="label">$LOCALIZE[31303]</param><param name="setting">Bald.Ratings.NoIMDb</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9643</param><param name="label">$LOCALIZE[31304]</param><param name="setting">Bald.Ratings.NoTMDb</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9644</param><param name="label">$LOCALIZE[31311]</param><param name="setting">Bald.Ratings.NoRTCritics</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9645</param><param name="label">$LOCALIZE[31312]</param><param name="setting">Bald.Ratings.NoRTAudience</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9646</param><param name="label">$LOCALIZE[31307]</param><param name="setting">Bald.Ratings.NoMetacritic</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9647</param><param name="label">$LOCALIZE[31308]</param><param name="setting">Bald.Ratings.NoTrakt</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9648</param><param name="label">$LOCALIZE[31309]</param><param name="setting">Bald.Ratings.NoTVDb</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9642</param><param name="label">$LOCALIZE[31303]</param><param name="setting">Bald.Ratings.NoIMDb</param><param name="level">standard</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9643</param><param name="label">$LOCALIZE[31304]</param><param name="setting">Bald.Ratings.NoTMDb</param><param name="level">standard</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9644</param><param name="label">$LOCALIZE[31311]</param><param name="setting">Bald.Ratings.NoRTCritics</param><param name="level">standard</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9645</param><param name="label">$LOCALIZE[31312]</param><param name="setting">Bald.Ratings.NoRTAudience</param><param name="level">standard</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9646</param><param name="label">$LOCALIZE[31307]</param><param name="setting">Bald.Ratings.NoMetacritic</param><param name="level">standard</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9647</param><param name="label">$LOCALIZE[31308]</param><param name="setting">Bald.Ratings.NoTrakt</param><param name="level">standard</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9648</param><param name="label">$LOCALIZE[31309]</param><param name="setting">Bald.Ratings.NoTVDb</param><param name="level">standard</param></include>
 				<!-- Sources only the online providers supply (from MDbList): greyed while online ratings are off. Letterboxd is on by
 				     default; Metacritic users, MyAnimeList, Roger Ebert and the MDbList score are off until asked for. -->
-				<control type="radiobutton" id="9659"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31326]</label><selected>!Skin.HasSetting(Bald.Ratings.NoLetterboxd)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.NoLetterboxd)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
-				<control type="radiobutton" id="9660"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31327]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMetacriticUser)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMetacriticUser)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
-				<control type="radiobutton" id="9661"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31328]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMyAnimeList)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMyAnimeList)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
-				<control type="radiobutton" id="9662"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31329]</label><selected>Skin.HasSetting(Bald.Ratings.ShowRogerEbert)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowRogerEbert)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
-				<control type="radiobutton" id="9663"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31330]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMDbList)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMDbList)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
-				<include content="Bald_RatingsSettingRow"><param name="id">9649</param><param name="label">$LOCALIZE[38018]</param><param name="setting">Bald.Ratings.NoUser</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9650</param><param name="label">$LOCALIZE[31313]</param><param name="setting">Bald.Ratings.NoDefault</param></include>
+				<control type="radiobutton" id="9659"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">standard</param></include><label>$LOCALIZE[31326]</label><selected>!Skin.HasSetting(Bald.Ratings.NoLetterboxd)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.NoLetterboxd)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
+				<control type="radiobutton" id="9660"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">advanced</param></include><label>$LOCALIZE[31327]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMetacriticUser)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMetacriticUser)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
+				<control type="radiobutton" id="9661"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">advanced</param></include><label>$LOCALIZE[31328]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMyAnimeList)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMyAnimeList)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
+				<control type="radiobutton" id="9662"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">advanced</param></include><label>$LOCALIZE[31329]</label><selected>Skin.HasSetting(Bald.Ratings.ShowRogerEbert)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowRogerEbert)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
+				<control type="radiobutton" id="9663"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">advanced</param></include><label>$LOCALIZE[31330]</label><selected>Skin.HasSetting(Bald.Ratings.ShowMDbList)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowMDbList)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide) + $EXP[Bald_RatingsOnlineAny]</enable></control>
+				<include content="Bald_RatingsSettingRow"><param name="id">9649</param><param name="label">$LOCALIZE[38018]</param><param name="setting">Bald.Ratings.NoUser</param><param name="level">standard</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9650</param><param name="label">$LOCALIZE[31313]</param><param name="setting">Bald.Ratings.NoDefault</param><param name="level">advanced</param></include>
 				<!-- Which service Kodi's unnamed default rating came from (a Jellyfin-synced library stores only "default"):
 				     its glyph and format. Select cycles Generic (empty, the star), IMDb, TMDb, Rotten Tomatoes critics and
 				     audience, Metacritic, Trakt, Jellyfin, Kodi; an unknown value goes back to Generic. -->
-				<control type="button" id="9656"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31319]</label><label2>$VAR[Bald_RatingDefaultSourceName]</label2><enable>!Skin.HasSetting(Bald.Ratings.Hide) + !Skin.HasSetting(Bald.Ratings.NoDefault)</enable>
+				<control type="button" id="9656"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">expert</param></include><label>$LOCALIZE[31319]</label><label2>$VAR[Bald_RatingDefaultSourceName]</label2><enable>!Skin.HasSetting(Bald.Ratings.Hide) + !Skin.HasSetting(Bald.Ratings.NoDefault)</enable>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.Ratings.DefaultSource))">Skin.SetString(Bald.Ratings.DefaultSource,imdb)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),imdb)">Skin.SetString(Bald.Ratings.DefaultSource,tmdb)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),tmdb)">Skin.SetString(Bald.Ratings.DefaultSource,rt)</onclick>
@@ -123,36 +129,36 @@
 					<onclick condition="String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),jellyfin)">Skin.SetString(Bald.Ratings.DefaultSource,kodi)</onclick>
 					<onclick condition="!String.IsEmpty(Skin.String(Bald.Ratings.DefaultSource)) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),imdb) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),tmdb) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rt) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),rtaudience) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),metacritic) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),trakt) + !String.IsEqual(Skin.String(Bald.Ratings.DefaultSource),jellyfin)">Skin.Reset(Bald.Ratings.DefaultSource)</onclick>
 				</control>
-				<include content="Bald_RatingsSettingRow"><param name="id">9651</param><param name="label">$LOCALIZE[31314]</param><param name="setting">Bald.Ratings.NoInfo</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9652</param><param name="label">$LOCALIZE[31315]</param><param name="setting">Bald.Ratings.NoHome</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9653</param><param name="label">$LOCALIZE[31316]</param><param name="setting">Bald.Ratings.NoLibrary</param></include>
-				<include content="Bald_RatingsSettingRow"><param name="id">9654</param><param name="label">$LOCALIZE[31317]</param><param name="setting">Bald.Ratings.NoOSD</param></include>
-				<control type="radiobutton" id="9655"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param></include><label>$LOCALIZE[31318]</label><selected>Skin.HasSetting(Bald.Ratings.ShowVotes)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowVotes)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide)</enable></control>
+				<include content="Bald_RatingsSettingRow"><param name="id">9651</param><param name="label">$LOCALIZE[31314]</param><param name="setting">Bald.Ratings.NoInfo</param><param name="level">advanced</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9652</param><param name="label">$LOCALIZE[31315]</param><param name="setting">Bald.Ratings.NoHome</param><param name="level">advanced</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9653</param><param name="label">$LOCALIZE[31316]</param><param name="setting">Bald.Ratings.NoLibrary</param><param name="level">advanced</param></include>
+				<include content="Bald_RatingsSettingRow"><param name="id">9654</param><param name="label">$LOCALIZE[31317]</param><param name="setting">Bald.Ratings.NoOSD</param><param name="level">advanced</param></include>
+				<control type="radiobutton" id="9655"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">advanced</param></include><label>$LOCALIZE[31318]</label><selected>Skin.HasSetting(Bald.Ratings.ShowVotes)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowVotes)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide)</enable></control>
 				<!-- Behavior -->
-				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
-				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>
-				<control type="button" id="9623"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31766]</label><onclick>Skin.Reset(Bald.MenuOpens)</onclick><visible>Skin.HasSetting(Bald.AutoHideMenuHint)</visible></control>
+				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
+				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>
+				<control type="button" id="9623"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">expert</param></include><label>$LOCALIZE[31766]</label><onclick>Skin.Reset(Bald.MenuOpens)</onclick><visible>Skin.HasSetting(Bald.AutoHideMenuHint)</visible></control>
 				<!-- Select on a hub (or Live TV) in the Home menu opens its library (or the guide) and Right enters its rows;
 				     off, the reverse (Includes_Bald_Home.xml, Bald_SelectOpens). Unset is off, so installs keep today's keys. -->
-				<control type="radiobutton" id="9629"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31210]</label><selected>Skin.HasSetting(Bald.HubSelectOpens)</selected><onclick>Skin.ToggleSetting(Bald.HubSelectOpens)</onclick></control>
+				<control type="radiobutton" id="9629"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">advanced</param></include><label>$LOCALIZE[31210]</label><selected>Skin.HasSetting(Bald.HubSelectOpens)</selected><onclick>Skin.ToggleSetting(Bald.HubSelectOpens)</onclick></control>
 				<!-- Typography: switches Kodi's fontset (lookandfeel.font) between the two Font.xml typefaces; Kodi then
 				     reloads the skin. Default is DM Sans; any other fontset (Arial for non-Latin languages) switches to Instrument Sans. -->
-				<control type="button" id="9631"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">5</param></include><label>$LOCALIZE[31944]</label><label2>$VAR[Bald_FontName]</label2>
+				<control type="button" id="9631"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">5</param><param name="level">basic</param></include><label>$LOCALIZE[31944]</label><label2>$VAR[Bald_FontName]</label2>
 					<onclick condition="String.IsEqual(Skin.Font,InstrumentSans)">RunScript(skin.bald,font,Default)</onclick>
 					<onclick condition="!String.IsEqual(Skin.Font,InstrumentSans)">RunScript(skin.bald,font,InstrumentSans)</onclick>
 				</control>
 				<!-- On by default: Startup.xml sets Bald.Preload and Home holds a splash until every row has loaded (docs/NOTES.md, Startup splash). -->
-				<control type="radiobutton" id="9624"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31726]</label><selected>!Skin.HasSetting(Bald.DisablePreload)</selected><onclick>Skin.ToggleSetting(Bald.DisablePreload)</onclick></control>
+				<control type="radiobutton" id="9624"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">expert</param></include><label>$LOCALIZE[31726]</label><selected>!Skin.HasSetting(Bald.DisablePreload)</selected><onclick>Skin.ToggleSetting(Bald.DisablePreload)</onclick></control>
 				<!-- Long plots in the library previews and Estuary's list views scroll on their own after 10 s. -->
-				<control type="radiobutton" id="9625"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31993]</label><selected>Skin.HasSetting(Bald.ScrollPlots)</selected><onclick>Skin.ToggleSetting(Bald.ScrollPlots)</onclick></control>
+				<control type="radiobutton" id="9625"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31993]</label><selected>Skin.HasSetting(Bald.ScrollPlots)</selected><onclick>Skin.ToggleSetting(Bald.ScrollPlots)</onclick></control>
 				<!-- Kodi settings Bald recommends (scripts/recommended.py): hide parent folder items, Select shows information. -->
-				<control type="button" id="9626"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31839]</label><onclick>RunScript(skin.bald,recommended)</onclick></control>
+				<control type="button" id="9626"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31839]</label><onclick>RunScript(skin.bald,recommended)</onclick></control>
 				<!-- Select on a TV show in the library opens its information page: Bald Helper (addons/script.bald.helper) maps
 				     Select there to the skin timer bald_library_select while this is on. 9627 is the switch while the add-on is
 				     enabled; 9628 stands in for it otherwise, with a note, and installs the add-on from the Bald repository or
 				     enables it. -->
-				<control type="radiobutton" id="9627"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31848]</label><selected>Skin.HasSetting(Bald.ShowsOpenInfo)</selected><onclick>Skin.ToggleSetting(Bald.ShowsOpenInfo)</onclick><visible>System.AddonIsEnabled(script.bald.helper)</visible></control>
-				<control type="button" id="9628"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param></include><label>$LOCALIZE[31848]</label><visible>!System.AddonIsEnabled(script.bald.helper)</visible>
+				<control type="radiobutton" id="9627"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31848]</label><selected>Skin.HasSetting(Bald.ShowsOpenInfo)</selected><onclick>Skin.ToggleSetting(Bald.ShowsOpenInfo)</onclick><visible>System.AddonIsEnabled(script.bald.helper)</visible></control>
+				<control type="button" id="9628"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31848]</label><visible>!System.AddonIsEnabled(script.bald.helper)</visible>
 					<label2>$VAR[Bald_HelperNote]</label2>
 					<onclick condition="!System.HasAddon(script.bald.helper)">InstallAddon(script.bald.helper)</onclick>
 					<onclick condition="System.HasAddon(script.bald.helper)">EnableAddon(script.bald.helper)</onclick>
