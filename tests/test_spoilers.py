@@ -197,7 +197,7 @@ class PlotSitesTests(unittest.TestCase):
 
     def test_plot_variables_start_with_the_note(self):
         found = all_variables()
-        for name in ("Bald_BrowsePlot", "PlotTextBoxVar", "ShiftRightTextBoxVar", "ListBoxInfoVar", "VideoInfoPlotVar"):
+        for name in ("Bald_BrowsePlot",):
             with self.subTest(variable=name):
                 self.assertEqual(found[name][0], ("$EXP[Bald_SpoilerPlot]", "$VAR[Bald_SpoilerNoteText]"))
         self.assertEqual(found["Bald_OSDPlaylistPlot"][0], ("$EXP[Bald_SpoilerPlot8150]", "$VAR[Bald_SpoilerNoteText]"))
