@@ -93,12 +93,28 @@ def constants(folder=SKIN):
     return values
 
 
+# Attributes whose value Kodi replaces the same way, each comma-separated part on its own
+# (CGUIIncludes CONSTANT_ATTRIBUTES; animation times and delays among them).
+CONSTANT_ATTRIBUTES = {"acceleration", "border", "center", "delay", "end", "h", "height", "max", "min", "repeat", "start",
+                       "time", "w", "width", "x", "y"}
+
+
+def resolve_constant(value, values=None):
+    """One attribute value with its constant names replaced, as CGUIIncludes::ResolveConstant does."""
+    values = values if values is not None else constants()
+    return ",".join(values.get(part, part) for part in value.split(","))
+
+
 def resolve_constants(root, values=None):
-    """Replace constant names in position and size tags with their values, in place, as Kodi does on load."""
+    """Replace constant names in position and size tags, and in animation and size attributes, with their values, in
+    place, as Kodi does on load."""
     values = values if values is not None else constants()
     for node in root.iter():
         if node.tag in CONSTANT_TAGS and node.text and node.text.strip() in values:
             node.text = values[node.text.strip()]
+        for key, value in node.attrib.items():
+            if key in CONSTANT_ATTRIBUTES:
+                node.attrib[key] = resolve_constant(value, values)
     return root
 
 

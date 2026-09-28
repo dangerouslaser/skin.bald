@@ -24,9 +24,14 @@
 
 	<!-- ============ Info handoff (docs/SPEC.md 4 and 5.2) ============ -->
 	<!-- Info opens as a dialog over Home. Home does the handoff: the art frame zooms to full screen (translate -96,-120
-	     and scale 1.53846 in the prototype, i.e. zoom about 274,343), 640 move after 40, and back 540 after 160 when
-	     it closes; Home chrome goes out 200 and returns 380 / 480 after 440. Paired non-reversible Conditionals keep
-	     open and close timings separate; Kodi applies a Conditional's end state silently at window load. -->
+	     and scale 1.53846 in the prototype, i.e. zoom about 274,343), 640 move after 40, and back 540 after 30 when it
+	     closes (a poster row's nudge follows both, Bald_AnimPosterArt); Home chrome goes out 200 and returns 380 / 480
+	     after 440. Paired non-reversible Conditionals keep open and close timings separate; Kodi applies a
+	     Conditional's end state silently at window load. The dialog's own timings: Includes_Bald_Info.xml. -->
+	<constant name="Bald_InfoZoomDelay">40</constant>
+	<constant name="Bald_InfoZoomTime">640</constant>
+	<constant name="Bald_InfoReturnDelay">30</constant>
+	<constant name="Bald_InfoReturnTime">540</constant>
 	<expression name="Bald_InfoOpen">[Window.IsVisible(movieinformation) | !String.IsEmpty(Window(home).Property(Bald.InfoSwitch))]</expression>
 	<!-- Keep the outgoing art during exchanges; don't show a previous dialog's property on initial open. -->
 	<expression name="Bald_InfoArtReady">[!String.IsEmpty(Window(home).Property(Bald.InfoSwitch)) | [!String.IsEmpty(Window(movieinformation).Property(Bald.Identity)) + String.IsEqual(Window(movieinformation).Property(Bald.ArtIdentity),Window(movieinformation).Property(Bald.Identity))]]</expression>
@@ -36,18 +41,18 @@
 	<!-- Reduce motion (Bald_ReduceMotion): the frame changes size at once and fades in at its new size instead. -->
 	<include name="Bald_AnimInfoFrame">
 		<animation type="Conditional" condition="[$EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="zoom" start="100" end="153.846" center="274,343" time="640" delay="40" tween="cubic" easing="out" />
+			<effect type="zoom" start="100" end="153.846" center="274,343" time="Bald_InfoZoomTime" delay="Bald_InfoZoomDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[$EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
-			<effect type="zoom" start="100" end="153.846" center="274,343" time="0" delay="40" tween="cubic" easing="out" />
-			<effect type="fade" start="0" end="100" time="380" delay="40" tween="sine" easing="inout" />
+			<effect type="zoom" start="100" end="153.846" center="274,343" time="0" delay="Bald_InfoZoomDelay" tween="cubic" easing="out" />
+			<effect type="fade" start="0" end="100" time="380" delay="Bald_InfoZoomDelay" tween="sine" easing="inout" />
 		</animation>
 		<animation type="Conditional" condition="[!$EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="zoom" start="153.846" end="100" center="274,343" time="540" delay="30" tween="cubic" easing="out" />
+			<effect type="zoom" start="153.846" end="100" center="274,343" time="Bald_InfoReturnTime" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[!$EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
-			<effect type="zoom" start="153.846" end="100" center="274,343" time="0" delay="30" tween="cubic" easing="out" />
-			<effect type="fade" start="0" end="100" time="380" delay="30" tween="sine" easing="inout" />
+			<effect type="zoom" start="153.846" end="100" center="274,343" time="0" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
+			<effect type="fade" start="0" end="100" time="380" delay="Bald_InfoReturnDelay" tween="sine" easing="inout" />
 		</animation>
 	</include>
 	<include name="Bald_AnimInfoChrome">
@@ -91,8 +96,8 @@
 	     <visible> and animation conditions have no window context under a modal dialog (see Bald_DialogOver).
 	     Kodi cannot animate a control's size, so on a poster row the bottom frame mask slides up 126 px, the art moves
 	     up 63 px so its crop stays centred in the smaller window, and the scrim and clearlogo move up 126 px to stay on
-	     the frame's bottom edge; all 540 move after 30, the timing of the info close's frame return, and the reverse
-	     going back to a landscape row. The row swap runs meanwhile (out 140, in 360 / 440 after 170).
+	     the frame's bottom edge; all 540 move after 30 (Bald_InfoReturn*, the info close's frame return), and the
+	     reverse going back to a landscape row. The row swap runs meanwhile (out 140, in 360 / 440 after 170).
 	     Paired non-reversible Conditionals, as in Bald_AnimInfoFrame: the animation whose condition drops is reset
 	     (no transform), and the one whose condition rises starts from the state the other ended in. -->
 	<expression name="Bald_PosterRow">[String.IsEqual(Window(home).Property(Bald.RowStyle),poster) | String.IsEqual(Window(home).Property(Bald.RowStyle),square) | String.IsEqual(Window(home).Property(Bald.RowStyle),weather)]</expression>
@@ -103,130 +108,172 @@
 	     as on a landscape row; closing info nudges it again with the zoom back (540 after 30). -->
 	<include name="Bald_AnimPosterArt">
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + !$EXP[Bald_InfoOpen] + !$EXP[Bald_IdleZoom]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="slide" start="0,0" end="0,-63" time="540" delay="30" tween="cubic" easing="out" />
+			<effect type="slide" start="0,0" end="0,-63" time="Bald_InfoReturnTime" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + !$EXP[Bald_InfoOpen] + !$EXP[Bald_IdleZoom]] + $EXP[Bald_ReduceMotion]" reversible="false">
-			<effect type="slide" start="0,0" end="0,-63" time="0" delay="30" tween="cubic" easing="out" />
+			<effect type="slide" start="0,0" end="0,-63" time="0" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[!$EXP[Bald_PosterRow]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="slide" start="0,-63" end="0,0" time="540" delay="30" tween="cubic" easing="out" />
+			<effect type="slide" start="0,-63" end="0,0" time="Bald_InfoReturnTime" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[!$EXP[Bald_PosterRow]] + $EXP[Bald_ReduceMotion]" reversible="false">
-			<effect type="slide" start="0,-63" end="0,0" time="0" delay="30" tween="cubic" easing="out" />
+			<effect type="slide" start="0,-63" end="0,0" time="0" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + $EXP[Bald_InfoOpen]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="slide" start="0,-63" end="0,0" time="640" delay="40" tween="cubic" easing="out" />
+			<effect type="slide" start="0,-63" end="0,0" time="Bald_InfoZoomTime" delay="Bald_InfoZoomDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + $EXP[Bald_InfoOpen]] + $EXP[Bald_ReduceMotion]" reversible="false">
-			<effect type="slide" start="0,-63" end="0,0" time="0" delay="40" tween="cubic" easing="out" />
+			<effect type="slide" start="0,-63" end="0,0" time="0" delay="Bald_InfoZoomDelay" tween="cubic" easing="out" />
 		</animation>
 		<!-- Idle (Bald_IdleZoom): the nudge is undone in step with the idle zoom, so a poster row's art expands exactly
-		     as a landscape row's. Waking, the first Conditional above nudges it again. A pure move: under Reduce motion
-		     the frame keeps its shape and the full-size layer fades in over it. -->
+		     as a landscape row's. Waking, the first Conditional above nudges it again, on its own timing, as the frame
+		     shrinks. A pure move: under Reduce motion the frame keeps its shape and the full-size layer fades over it. -->
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + $EXP[Bald_IdleZoom]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="slide" start="0,-63" end="0,0" time="900" delay="300" tween="cubic" easing="out" />
+			<effect type="slide" start="0,-63" end="0,0" time="Bald_IdleGrowTime" delay="Bald_IdleGrowDelay" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<!-- The frame's bottom edge: the bottom mask, and the logo scrim and clearlogo. -->
 	<include name="Bald_AnimPosterEdge">
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="slide" start="0,0" end="0,-126" time="540" delay="30" tween="cubic" easing="out" />
+			<effect type="slide" start="0,0" end="0,-126" time="Bald_InfoReturnTime" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow]] + $EXP[Bald_ReduceMotion]" reversible="false">
-			<effect type="slide" start="0,0" end="0,-126" time="0" delay="30" tween="cubic" easing="out" />
+			<effect type="slide" start="0,0" end="0,-126" time="0" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[!$EXP[Bald_PosterRow]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="slide" start="0,-126" end="0,0" time="540" delay="30" tween="cubic" easing="out" />
+			<effect type="slide" start="0,-126" end="0,0" time="Bald_InfoReturnTime" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[!$EXP[Bald_PosterRow]] + $EXP[Bald_ReduceMotion]" reversible="false">
-			<effect type="slide" start="0,-126" end="0,0" time="0" delay="30" tween="cubic" easing="out" />
+			<effect type="slide" start="0,-126" end="0,0" time="0" delay="Bald_InfoReturnDelay" tween="cubic" easing="out" />
 		</animation>
 	</include>
-	<!-- ============ Idle: the art frame expands ============ -->
-	<!-- While Home sits idle (Bald_Idle: Appearance › Behavior › Idle after; never with it off) the art frame grows from
-	     its rect to 96,120 1728 x 840, the same 96 / 120 px margins on every side, and the rows, caption, clock and
-	     section line fade out under it (they are hidden, not dimmed). Only once the idle timer has parked focus on the
-	     wake button 9199 (which also closes the menu, so the row style is the current row's again), never under a dialog
-	     or info (Bald_DialogOver), and never over background video: the frame masks cannot be drawn over video, so there
-	     the idle state stays as it was (rows as they are, the row dots, count and menu hint fading out).
-	     Kodi cannot animate a size, and the shape changes (1248 x 702, or 576 on a poster row, to 1728 x 840), so:
+	<!-- ============ Idle: the art frame expands (ambient mode) ============ -->
+	<!-- While Home sits idle the art frame grows from its rect to 96,120 1728 x 840 (96 / 120 px margins, as round the
+	     frame) and everything it covers fades out: the rows, caption, clock and date, section line (hidden, not dimmed).
+	     Bald_IdleExpand holds it: idle (Bald_Idle, Appearance › Behavior › Idle after; never with it off) and focus on
+	     the wake button 9199, where the idle timer parks it after closing the menu (so the displayed row style is the
+	     current row's). Never under a dialog or info (Bald_DialogOver), and never over background video: the masks
+	     cannot be drawn over video, so there only the row dots, count and menu hint fade (on plain Bald_Idle).
+	     Kodi cannot animate a size, and the shape changes (1248 x 702, a poster row's 1248 x 576 window onto it, to
+	     1728 x 840), so the expansion is three layers in step:
 	       - the frame group zooms uniformly by 1728 / 1248 = 138.462 % about 96,291.6: its left edge stays on 96 and the
 	         art's centre (y 471 on every row style, a poster row's nudge being undone in step, Bald_AnimPosterArt) lands
-	         on the big rect's centre, y 540. The zoomed 16:9 art then spans 54-1026, exactly the crop the full-size
-	         layer's aspectratio scale takes of the same picture, so the two register;
-	       - the full-size layer (Bald_IdleFrame), the same art at 1728 x 840, fades in over the frame during the move,
+	         on the big rect's centre, y 540. The zoomed 16:9 art spans y 54-1026, exactly the crop the full-size layer's
+	         aspectratio scale takes of the same picture, so the two register;
+	       - the full-size layer (Bald_IdleFrame), the same art at 1728 x 840, fades in over the frame during the zoom,
 	         so the growth reads as one expansion with nothing stretched;
-	       - idle masks (windows onto the background) cover the zoomed frame's overflow outside the big rect, and the
-	         frame's own masks fade out (they would cut into it).
-	     Waking (any key) runs it back faster: the zoom 480 and the layer out 480, the chrome back in as its Conditional
-	     reverses. Out and back are paired non-reversible Conditionals, as for the info handoff.
-	     Reduce motion (Bald_IdleZoom false): no zoom; the full-size layer simply crossfades over the frame and back.
-	     The layers keep a Conditional alpha of 0 rather than a <visible>, so their textures follow the current item
-	     while they are out (Kodi culls a control at alpha 0, CGUIControl::DoProcess, so they cost nothing then). -->
+	       - the idle masks (windows onto the background) cover the zoomed frame's overflow outside the big rect, and
+	         the frame's own masks fade out (they would cut into it).
+	     Timings are the Bald_Idle* constants below; tests/test_home_idle.py holds their relationships. Enter and wake
+	     are paired non-reversible Conditionals, as for the info handoff: the one whose condition rises starts from the
+	     end state the other would have reached. So a key pressed while the frame is still growing snaps it to full size
+	     before it shrinks (Kodi resets the dropped animation and cannot start the other part-way).
+	     Reduce motion (Bald_IdleZoom false): no zoom; the full-size layer crossfades over the frame and back, with the
+	     same fades round it.
+	     The layers rest at a Conditional alpha of 0 rather than a <visible>, so their textures keep following the
+	     current item: Kodi still processes a control at alpha 0 but does not draw it (CGUIControl::DoProcess, Render). -->
+	<!-- Enter. The chrome fades out over the first step; everything else starts once it is out. -->
+	<constant name="Bald_IdleGrowDelay">300</constant>
+	<!-- The frame's zoom, a poster row's nudge undone and the full-size layer fading in. -->
+	<constant name="Bald_IdleGrowTime">900</constant>
+	<constant name="Bald_IdleOverlayOutTime">200</constant>
+	<constant name="Bald_IdleFrameMasksOutTime">150</constant>
+	<!-- The small clock, then the big clearlogo, as the frame settles. -->
+	<constant name="Bald_IdleClockInDelay">700</constant>
+	<constant name="Bald_IdleClockInTime">400</constant>
+	<constant name="Bald_IdleLogoInDelay">800</constant>
+	<constant name="Bald_IdleLogoInTime">500</constant>
+	<!-- Wake. The zoom back and the full-size layer out at once; the chrome waits for them. -->
+	<constant name="Bald_IdleShrinkTime">480</constant>
+	<constant name="Bald_IdleChromeBackTime">360</constant>
+	<!-- The frame's masks come back as it finishes shrinking (450-550), before the idle masks leave (600-680): both lay
+	     the same background, so they overlap and the art's edges are never uncovered (a gap between them showed the
+	     frame's overflow for a moment at the end of the wake). -->
+	<constant name="Bald_IdleFrameMasksBackDelay">450</constant>
+	<constant name="Bald_IdleFrameMasksBackTime">100</constant>
+	<constant name="Bald_IdleMasksOutDelay">600</constant>
+	<constant name="Bald_IdleMasksOutTime">80</constant>
+	<!-- The frame's logo scrim and clearlogo come back; the big clearlogo and small clock leave at once. -->
+	<constant name="Bald_IdleOverlayBackDelay">400</constant>
+	<constant name="Bald_IdleOverlayBackTime">400</constant>
+	<constant name="Bald_IdleCornerOutTime">150</constant>
 	<expression name="Bald_IdleExpand">[$EXP[Bald_Idle] + Control.HasFocus(9199) + !$EXP[Bald_VideoBackdropOn] + !$EXP[Bald_DialogOver] + !$EXP[Bald_MenuOpen]]</expression>
 	<expression name="Bald_IdleZoom">[$EXP[Bald_IdleExpand] + $EXP[Bald_FullMotion]]</expression>
 	<!-- The art frame group (Home.xml): grow and shrink. Pure moves: under Reduce motion the frame stays as it is. -->
 	<include name="Bald_AnimIdleFrame">
 		<animation type="Conditional" condition="[$EXP[Bald_IdleExpand]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="zoom" start="100" end="138.462" center="96,291.6" time="900" delay="300" tween="cubic" easing="out" />
+			<effect type="zoom" start="100" end="138.462" center="96,291.6" time="Bald_IdleGrowTime" delay="Bald_IdleGrowDelay" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[!$EXP[Bald_IdleExpand]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="zoom" start="138.462" end="100" center="96,291.6" time="480" tween="cubic" easing="out" />
+			<effect type="zoom" start="138.462" end="100" center="96,291.6" time="Bald_IdleShrinkTime" tween="cubic" easing="out" />
 		</animation>
 	</include>
-	<!-- The frame's logo scrim and clearlogo: out as the frame grows (the idle copy takes over in the big frame's
-	     corner), back once it is home again. -->
-	<include name="Bald_AnimIdleArtOverlay">
-		<animation type="Conditional" condition="$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="100" end="0" time="200" delay="300" tween="sine" easing="inout" />
-		</animation>
-		<animation type="Conditional" condition="!$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="0" end="100" time="400" delay="400" tween="sine" easing="inout" />
-		</animation>
+	<!-- Something shown at rest that leaves while expanded (while when holds): out over out after out_delay, back over
+	     back after back_delay. -->
+	<include name="Bald_AnimIdleHide">
+		<param name="when">$EXP[Bald_IdleExpand]</param>
+		<param name="out" />
+		<param name="out_delay">0</param>
+		<param name="back" />
+		<param name="back_delay">0</param>
+		<definition>
+			<animation type="Conditional" condition="$PARAM[when]" reversible="false">
+				<effect type="fade" start="100" end="0" time="$PARAM[out]" delay="$PARAM[out_delay]" tween="sine" easing="inout" />
+			</animation>
+			<animation type="Conditional" condition="!$PARAM[when]" reversible="false">
+				<effect type="fade" start="0" end="100" time="$PARAM[back]" delay="$PARAM[back_delay]" tween="sine" easing="inout" />
+			</animation>
+		</definition>
 	</include>
-	<!-- The frame's own masks: gone at once, back as the frame finishes shrinking (450-550), before the idle masks leave
-	     (600-680): both lay the same background back, so they overlap and the art's edges are never uncovered in the
-	     handoff (a gap between them showed the frame's overflow for a moment at the end of the wake, a judder). -->
-	<include name="Bald_AnimIdleMasks">
-		<animation type="Conditional" condition="$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="100" end="0" time="150" delay="300" tween="sine" easing="inout" />
-		</animation>
-		<animation type="Conditional" condition="!$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="0" end="100" time="100" delay="450" tween="sine" easing="inout" />
-		</animation>
-	</include>
-	<!-- Everything the big frame covers (rows, caption, clock and date, section line): out first (300; the frame starts to
-	     grow after it, delay 300), back last (360 once the frame has shrunk, after 480). -->
-	<include name="Bald_AnimIdleChrome">
-		<animation type="Conditional" condition="$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="inout" />
-		</animation>
-		<animation type="Conditional" condition="!$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="0" end="100" time="360" delay="480" tween="sine" easing="inout" />
-		</animation>
-	</include>
-	<!-- A layer shown only while expanded: in over time after delay, out over out after out_delay as idle ends; alpha 0
+	<!-- A layer shown only while expanded: in over in after in_delay, out over out after out_delay as idle ends; alpha 0
 	     otherwise (the second Conditional's end state, applied at window load). -->
 	<include name="Bald_AnimIdleLayer">
-		<param name="time" />
-		<param name="delay">0</param>
+		<param name="in" />
+		<param name="in_delay">0</param>
 		<param name="out" />
 		<param name="out_delay">0</param>
 		<definition>
 			<animation type="Conditional" condition="$EXP[Bald_IdleExpand]" reversible="false">
-				<effect type="fade" start="0" end="100" time="$PARAM[time]" delay="$PARAM[delay]" tween="sine" easing="inout" />
+				<effect type="fade" start="0" end="100" time="$PARAM[in]" delay="$PARAM[in_delay]" tween="sine" easing="inout" />
 			</animation>
 			<animation type="Conditional" condition="!$EXP[Bald_IdleExpand]" reversible="false">
 				<effect type="fade" start="100" end="0" time="$PARAM[out]" delay="$PARAM[out_delay]" tween="sine" easing="inout" />
 			</animation>
 		</definition>
 	</include>
+	<!-- Everything the big frame covers (rows, caption, clock and date, section line): out first, back last. -->
+	<include name="Bald_AnimIdleChrome">
+		<include content="Bald_AnimIdleHide">
+			<param name="out">Bald_IdleGrowDelay</param>
+			<param name="back">Bald_IdleChromeBackTime</param>
+			<param name="back_delay">Bald_IdleShrinkTime</param>
+		</include>
+	</include>
+	<!-- The frame's logo scrim and clearlogo: out as the frame starts to grow (the big frame's own takes over in its
+	     corner), back once it is home again. -->
+	<include name="Bald_AnimIdleArtOverlay">
+		<include content="Bald_AnimIdleHide">
+			<param name="out">Bald_IdleOverlayOutTime</param>
+			<param name="out_delay">Bald_IdleGrowDelay</param>
+			<param name="back">Bald_IdleOverlayBackTime</param>
+			<param name="back_delay">Bald_IdleOverlayBackDelay</param>
+		</include>
+	</include>
+	<!-- The frame's own masks: out as the zoom starts, back as it ends. -->
+	<include name="Bald_AnimIdleMasks">
+		<include content="Bald_AnimIdleHide">
+			<param name="out">Bald_IdleFrameMasksOutTime</param>
+			<param name="out_delay">Bald_IdleGrowDelay</param>
+			<param name="back">Bald_IdleFrameMasksBackTime</param>
+			<param name="back_delay">Bald_IdleFrameMasksBackDelay</param>
+		</include>
+	</include>
 	<!-- The expanded frame (Home.xml, over the frame masks, under the chrome). -->
 	<include name="Bald_IdleFrame">
 		<!-- Idle masks: the zoomed frame spills 66 px above and below the big rect (and its settle zoom a little round
 		     it), so the background is laid back over everything outside it, from the start until the frame has shrunk. -->
 		<control type="group">
-			<include content="Bald_AnimIdleLayer"><param name="time">0</param><param name="out">80</param><param name="out_delay">600</param></include>
+			<include content="Bald_AnimIdleLayer"><param name="in">0</param><param name="out">Bald_IdleMasksOutTime</param><param name="out_delay">Bald_IdleMasksOutDelay</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">0</param><param name="y">0</param><param name="w">96</param><param name="h">1080</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">0</param><param name="w">96</param><param name="h">1080</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">96</param><param name="y">0</param><param name="w">1728</param><param name="h">120</param></include>
@@ -234,13 +281,13 @@
 		</control>
 		<!-- Full-size layer: the frame's art (the current row's followed item, which ambient movement advances) at the
 		     big rect, cropped by aspectratio scale; <fadetime> crossfades each new item as the frame's layers do. In
-		     over the grow (900), out over the shrink (480). -->
+		     over the grow, out over the shrink. -->
 		<control type="group">
 			<left>Bald_SafeLeft</left>
 			<top>120</top>
 			<width>1728</width>
 			<height>840</height>
-			<include content="Bald_AnimIdleLayer"><param name="time">900</param><param name="delay">300</param><param name="out">480</param></include>
+			<include content="Bald_AnimIdleLayer"><param name="in">Bald_IdleGrowTime</param><param name="in_delay">Bald_IdleGrowDelay</param><param name="out">Bald_IdleShrinkTime</param></include>
 			<control type="image">
 				<width>1728</width>
 				<height>840</height>
@@ -266,15 +313,15 @@
 				</animation>
 			</control>
 		</control>
-		<!-- The clearlogo in the big frame's lower left (64 px in, 56 px up), on the frame's logo scrim stretched to the big
-		     frame; in once the frame has grown, out at once on waking. The live $VAR[Bald_Logo] follows ambient movement,
+		<!-- The clearlogo in the big frame's lower left (64 px in, 56 px up), on the frame's logo scrim stretched to the
+		     big frame; in as the frame settles, out at once on waking. The live $VAR[Bald_Logo] follows ambient movement,
 		     crossfading. -->
 		<control type="group">
 			<left>Bald_SafeLeft</left>
 			<top>120</top>
 			<width>1728</width>
 			<height>840</height>
-			<include content="Bald_AnimIdleLayer"><param name="time">500</param><param name="delay">800</param><param name="out">150</param></include>
+			<include content="Bald_AnimIdleLayer"><param name="in">Bald_IdleLogoInTime</param><param name="in_delay">Bald_IdleLogoInDelay</param><param name="out">Bald_IdleCornerOutTime</param></include>
 			<control type="image">
 				<width>1728</width>
 				<height>840</height>
@@ -300,14 +347,14 @@
 		</control>
 		<!-- A small clock in the big frame's lower right, 32 px in from its right and bottom edges, over the logo scrim
 		     mirrored (pure black, so it never tints the art). The time as Appearance › Date & time sets it; hidden with
-		     Home's clock (Bald.HideHomeClock). In after the grow (400 after 400), out at once on waking. -->
+		     Home's clock (Bald.HideHomeClock). In as the frame settles, out at once on waking. -->
 		<control type="group">
 			<left>Bald_SafeLeft</left>
 			<top>120</top>
 			<width>1728</width>
 			<height>840</height>
 			<visible>$EXP[Bald_ShowHomeClock]</visible>
-			<include content="Bald_AnimIdleLayer"><param name="time">400</param><param name="delay">700</param><param name="out">150</param></include>
+			<include content="Bald_AnimIdleLayer"><param name="in">Bald_IdleClockInTime</param><param name="in_delay">Bald_IdleClockInDelay</param><param name="out">Bald_IdleCornerOutTime</param></include>
 			<control type="image">
 				<left>1104</left>
 				<top>489</top>

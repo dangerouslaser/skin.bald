@@ -44,9 +44,9 @@
 	</include>
 	<!-- Idle (Appearance › Behavior, Skin.String(Bald.IdleTime)): how long Home and Now Playing wait untouched before
 	     the idle state (Home closes its menu, parks focus on the wake button, expands its art frame over the rows,
-	     Bald_IdleExpand, and, with Ambient movement on, advances the row; Now Playing dims). Empty is 1 minute (docs/SPEC.md 5.1), then 2, 5 or 10; "off"
-	     never goes idle. Any other value counts as 1 minute. Timers.xml repeats these bodies literally ($EXP does not
-	     trigger there; tests/test_idle.py keeps them equal). -->
+	     Bald_IdleExpand, and, with Ambient movement on, advances the row; Now Playing dims). Empty is 1 minute
+	     (docs/SPEC.md 5.1), then 2, 5 or 10; "off" never goes idle. Any other value counts as 1 minute. Timers.xml
+	     repeats these bodies literally ($EXP does not trigger there; tests/test_idle.py keeps them equal). -->
 	<!-- Window(home).Property(Bald.IdlePreview), set, counts as idle reached: a test switch to show ambient mode
 	     without waiting (SetProperty(Bald.IdlePreview,1,home); clear it and press a key to wake). -->
 	<expression name="Bald_IdleReached">[[System.IdleTime(60) + !Skin.String(Bald.IdleTime,2) + !Skin.String(Bald.IdleTime,5) + !Skin.String(Bald.IdleTime,10) + !Skin.String(Bald.IdleTime,off)] | [System.IdleTime(120) + Skin.String(Bald.IdleTime,2)] | [System.IdleTime(300) + Skin.String(Bald.IdleTime,5)] | [System.IdleTime(600) + Skin.String(Bald.IdleTime,10)] | !String.IsEmpty(Window(home).Property(Bald.IdlePreview))]</expression>
