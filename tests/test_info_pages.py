@@ -4,7 +4,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import equivalent, find_value, implies
-from kodi_includes import expand_call, expand_follow, parse
+from kodi_includes import expand_call, expand_follow, expressions, parse
 from skin_strings import loc
 
 
@@ -74,15 +74,18 @@ class InfoPagesTests(unittest.TestCase):
     def test_episode_overview_uses_episode_identity_and_cast_poster_crops(self):
         title = self.shared.find("variable[@name='Bald_InfoTitle']")
         episode = 'String.IsEqual(ListItem.DBType,episode)'
-        values = [(value.get('condition'), value.text) for value in title.findall('value')]
-        self.assertEqual(find_value(values, episode), '$INFO[ListItem.Title]')
+        # Every item's title is its own (an episode's too).
+        self.assertEqual([(value.get('condition'), value.text) for value in title.findall('value')], [(None, '$INFO[ListItem.Title]')])
         meta = find_value([(value.get('condition'), value.text)
                            for value in self.shared.findall("variable[@name='Bald_InfoMeta']/value")], episode)
         for field in ('ListItem.TVShowTitle', 'ListItem.Season', 'ListItem.Episode'):
             self.assertIn(field, meta)
-        overview_title = next(node for node in self.pages.findall("include[@name='Bald_InfoOverview']//control[@type='label']") if node.findtext('label') == '$VAR[Bald_InfoTitle]')
-        # An episode always shows its title as text (its show's clearlogo would name the show, not the episode).
-        self.assertTrue(implies(episode, overview_title.findtext('visible')))
+        # An episode never reaches the movie Overview (it has the TV Overview), so that page has no episode branches.
+        call = next(node for node in self.dialog.iter("include") if node.text == "Bald_InfoOverview")
+        self.assertEqual(call.get("condition"), "!$EXP[Bald_InfoTVItem]")
+        self.assertTrue(implies(episode, "$EXP[Bald_InfoTVItem]", expressions()))
+        overview = ET.tostring(self.pages.find("include[@name='Bald_InfoOverview']"), encoding="unicode")
+        self.assertNotIn("Bald_InfoTVIsEpisode", overview)
         poster = self.pages.find(".//control[@id='5204']")
         self.assertEqual(poster.findtext('aspectratio'), 'scale')
 
