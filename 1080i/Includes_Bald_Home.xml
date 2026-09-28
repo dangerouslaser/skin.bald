@@ -1083,20 +1083,22 @@
 		<include content="Bald_RowLandscape"><param name="art">$VAR[Bald_ItemThumbnail]</param><param name="spoiler">String.IsEqual(ListItem.DBType,episode)</param></include>
 	</include>
 	<include name="Bald_RowTiles_logo">
-		<include content="Bald_RowLandscape"><param name="overlay">Bald_TileLogo</param></include>
+		<include content="Bald_RowLandscape"><param name="overlay">Bald_TileLogo</param><param name="show_title">false</param></include>
 	</include>
 	<!-- Text: fanart-sized tiles that show the item's name instead of art (channel groups, genres, folders); the big art
 	     frame is unchanged. The tile is the empty-art placeholder box with Bald_TileText over it. -->
 	<include name="Bald_RowTiles_text">
-		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param><param name="cover">false</param></include>
+		<include content="Bald_RowLandscape"><param name="art" /><param name="overlay">Bald_TileText</param><param name="cover">false</param><param name="show_title">false</param></include>
 	</include>
 	<!-- Landscape row: 176 x 99 tiles in 192 px slots. art is the tile texture; overlay names an include drawn over each
-	     tile (it gets the tile's diffuse); cover shows an album's or song's square cover over the tile (Bald_TileCover). -->
+	     tile (it gets the tile's diffuse); cover shows an album's or song's square cover over the tile (Bald_TileCover);
+	     show_title allows the item's name on the tile (Bald_TileTitle; logo and text rows name their items already). -->
 	<include name="Bald_RowLandscape">
 		<param name="art">$VAR[Bald_RowItemArt]</param>
 		<param name="spoiler">false</param>
 		<param name="overlay">Bald_TileOverlayNone</param>
 		<param name="cover">true</param>
+		<param name="show_title">true</param>
 		<definition>
 			<left>86</left>
 			<top>884</top>
@@ -1106,6 +1108,7 @@
 				<include content="Bald_LandscapeTile"><param name="art">$PARAM[art]</param><param name="spoiler">$PARAM[spoiler]</param></include>
 				<include content="$PARAM[overlay]" />
 				<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param></include>
+				<include content="Bald_TileTitle"><param name="visible">$PARAM[show_title] + $EXP[Bald_TileTitlesAlways]</param></include>
 			</itemlayout>
 			<focusedlayout width="192" height="119">
 				<control type="group">
@@ -1129,6 +1132,7 @@
 					</include>
 					<include content="$PARAM[overlay]"><param name="diffuse">FFFFFFFF</param></include>
 					<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param><param name="diffuse">FFFFFFFF</param></include>
+					<include content="Bald_TileTitle"><param name="visible">$PARAM[show_title] + $EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param></include>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -1145,6 +1149,7 @@
 		<itemlayout width="156" height="234">
 			<include content="Bald_PosterLowTile" />
 			<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
+			<include content="Bald_TileTitle"><param name="visible">$EXP[Bald_TileTitlesAlways]</param><param name="diffuse">bald_poster_dim</param><param name="x">12</param><param name="y">12</param><param name="w">140</param><param name="h">210</param><param name="label_y">180</param><param name="label_w">124</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">78,117</param></include>
 		</itemlayout>
 		<focusedlayout width="156" height="234">
 			<control type="group">
@@ -1157,6 +1162,7 @@
 					<param name="focused">!$EXP[Bald_OverlayOpen]</param>
 				</include>
 				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
+				<include content="Bald_TileTitle"><param name="visible">$EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param><param name="x">12</param><param name="y">12</param><param name="w">140</param><param name="h">210</param><param name="label_y">180</param><param name="label_w">124</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">78,117</param></include>
 			</control>
 		</focusedlayout>
 	</include>
@@ -1191,11 +1197,12 @@
 	<!-- Weather (Includes_Bald_Weather.xml): square tiles showing the tile's label, weather icon and label2 instead of
 	     art, on the square row's rail and frame. -->
 	<include name="Bald_RowTiles_weather">
-		<include content="Bald_RowSquare"><param name="art" /><param name="overlay">Bald_WeatherTileFace</param></include>
+		<include content="Bald_RowSquare"><param name="art" /><param name="overlay">Bald_WeatherTileFace</param><param name="titles">false</param></include>
 	</include>
 	<include name="Bald_RowSquare">
 		<param name="art">$VAR[Bald_SquareArt]</param>
 		<param name="overlay">Bald_TileOverlayNone</param>
+		<param name="titles">true</param>
 		<definition>
 			<left>Bald_SafeLeft</left>
 			<top>Bald_LowRailTop</top>
@@ -1204,6 +1211,7 @@
 			<itemlayout width="208" height="234">
 				<include content="Bald_SquareTile"><param name="art">$PARAM[art]</param><param name="overlay">$PARAM[overlay]</param></include>
 				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
+				<include content="Bald_TileTitle"><param name="visible">$PARAM[titles] + $EXP[Bald_TileTitlesAlways]</param><param name="diffuse">bald_poster_dim</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
 			</itemlayout>
 			<focusedlayout width="208" height="234">
 				<control type="group">
@@ -1217,6 +1225,7 @@
 						<param name="overlay">$PARAM[overlay]</param>
 					</include>
 					<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
+					<include content="Bald_TileTitle"><param name="visible">$PARAM[titles] + $EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -1242,6 +1251,56 @@
 	</include>
 	<include name="Bald_RowLabelTop_weather">
 		<include>Bald_RowLabelTop_poster</include>
+	</include>
+	<!-- Titles on Home tiles (Appearance › Information, Skin.String(Bald.TileTitles)): empty is Bald's default, no title on
+	     the tiles (the caption names the focused item); focus puts the name on the focused tile while the row has focus;
+	     always on every tile. -->
+	<expression name="Bald_TileTitlesAlways">[String.IsEqual(Skin.String(Bald.TileTitles),always)]</expression>
+	<expression name="Bald_TileTitlesFocused">[$EXP[Bald_TileTitlesAlways] | [String.IsEqual(Skin.String(Bald.TileTitles),focus) + !$EXP[Bald_OverlayOpen]]]</expression>
+	<variable name="Bald_TileTitlesLabel">
+		<value condition="String.IsEqual(Skin.String(Bald.TileTitles),focus)">$LOCALIZE[31338]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.TileTitles),always)">$LOCALIZE[20422]</value>
+		<value>$LOCALIZE[20420]</value>
+	</variable>
+	<!-- The item's name over a bottom scrim inside a tile, as on the TV episode cards: x, y, w, h are the tile's rectangle
+	     in its slot, mask its corners (bald/tile.png for the 3 px landscape corners, bald/white.png for square ones),
+	     label_y and label_w the one-line name 8 px in (h - 30, w - 16) and diffuse the text colour (the tile's own, dim
+	     unfocused, full ink focused). Posters and squares pop inside their own include, so their title pops with them
+	     (pop 102.5 about the tile's centre); a landscape tile's whole focused layout pops, so its title keeps pop 100. -->
+	<include name="Bald_TileTitle">
+		<param name="visible">false</param>
+		<param name="diffuse">bald_tile_dim</param>
+		<param name="x">10</param>
+		<param name="y">10</param>
+		<param name="w">176</param>
+		<param name="h">99</param>
+		<param name="label_y">69</param>
+		<param name="label_w">160</param>
+		<param name="mask">bald/tile.png</param>
+		<param name="pop">100</param>
+		<param name="center">98,59</param>
+		<definition>
+			<control type="group">
+				<left>$PARAM[x]</left>
+				<top>$PARAM[y]</top>
+				<visible>$PARAM[visible] + !String.IsEmpty(ListItem.Label)</visible>
+				<animation type="Focus"><effect type="zoom" start="100" end="$PARAM[pop]" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
+				<control type="image">
+					<width>$PARAM[w]</width>
+					<height>$PARAM[h]</height>
+					<texture diffuse="$PARAM[mask]" colordiffuse="bald_field">bald/scrim_card.png</texture>
+				</control>
+				<control type="label">
+					<left>8</left>
+					<top>$PARAM[label_y]</top>
+					<width>$PARAM[label_w]</width>
+					<height>22</height>
+					<font>Bald_CastName</font>
+					<textcolor>$PARAM[diffuse]</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</control>
+		</definition>
 	</include>
 	<include name="Bald_TileOverlayNone">
 		<definition />

@@ -699,7 +699,7 @@ class RatingsTests(unittest.TestCase):
     def test_control_ids_are_recorded(self):
         ids = (SKIN / "IDs").read_text()
         self.assertIn("9641-9663", ids)
-        self.assertIn("1, 2, 6, 3 and 5", ids)
+        self.assertIn("1, 2, 6, 3, 7 and 5", ids)
         for control_id in ALL_ROWS:
             self.assertIn(control_id, ids)
 

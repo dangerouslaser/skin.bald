@@ -22,7 +22,7 @@
 			<aligny>center</aligny>
 			<font>Bald_InfoMeta</font>
 			<textcolor>bald_ink70</textcolor>
-			<label>$INFO[System.Time]</label>
+			<label>$VAR[Bald_ClockTime]</label>
 		</control>
 		<control type="label">
 			<left>Bald_SafeLeft</left>

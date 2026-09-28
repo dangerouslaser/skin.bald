@@ -516,7 +516,7 @@
 				<height>132</height>
 				<font>Bald_Clock</font>
 				<textcolor>bald_ink</textcolor>
-				<label>$INFO[System.Time(hh:mm)]</label>
+				<label>$VAR[Bald_Clock]</label>
 			</control>
 			<control type="grouplist">
 				<top>144</top>

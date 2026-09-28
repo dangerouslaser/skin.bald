@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+	<!-- An item's watch state in list rows; each mark follows its Appearance switch (Bald_ShowProgressMarks,
+	     Bald_ShowWatchedMarks, Includes_Bald_Common.xml). -->
 	<variable name="Bald_ListWatchState">
-		<value condition="ListItem.IsResumable">$LOCALIZE[13404]</value>
-		<value condition="Integer.IsGreater(ListItem.Playcount,0)">$LOCALIZE[16102]</value>
+		<value condition="ListItem.IsResumable + $EXP[Bald_ShowProgressMarks]">$LOCALIZE[13404]</value>
+		<value condition="Integer.IsGreater(ListItem.Playcount,0) + $EXP[Bald_ShowWatchedMarks]">$LOCALIZE[16102]</value>
 		<value></value>
 	</variable>
 	<include name="Bald_CompactMovieRow">

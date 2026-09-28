@@ -151,8 +151,71 @@
 	</include>
 	<expression name="Bald_ShowClearlogo">[!Skin.HasSetting(Bald.HideClearlogo)]</expression>
 	<expression name="Bald_ShowMediaFlags">[!Skin.HasSetting(Bald.HideMediaFlags)]</expression>
+	<!-- Watch-state marks (Appearance › Information): the watched check and the progress bar on TV episode cards and the
+	     Resume / Watched note in list rows. Negative names, so unset shows them. -->
+	<expression name="Bald_ShowWatchedMarks">[!Skin.HasSetting(Bald.HideWatchedMarks)]</expression>
+	<expression name="Bald_ShowProgressMarks">[!Skin.HasSetting(Bald.HideProgressMarks)]</expression>
 	<!-- Global Search's right-hand options menu has focus (script-globalsearch.xml sets it on its own window). -->
 	<expression name="Bald_SearchMenuOpen">[!String.IsEmpty(Window.Property(Bald.SearchMenu))]</expression>
+
+	<!-- ============ Clock ============ -->
+	<!-- Appearance › Date & time. Skin.String(Bald.ClockFormat): empty follows Kodi's region (its time format decides
+	     12 or 24 hours), 12 or 24 forces one. Kodi 22 has no format that forces a 24-hour hour: System.Time(hh) is the
+	     region's hour (h in a 12-hour region), so Bald_Clock24 names the hour from the 24 one-hour System.Time(start,end)
+	     ranges (minute of day, end exclusive; 23:00-00:00 wraps). System.Time(h) is always the 12-hour hour. -->
+	<!-- The big clock (Home, the player's seek layer): hours and minutes, no AM or PM, as the region's hh:mm. -->
+	<variable name="Bald_Clock">
+		<value condition="String.IsEqual(Skin.String(Bald.ClockFormat),12)">$INFO[System.Time(h)]:$INFO[System.Time(mm)]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.ClockFormat),24)">$VAR[Bald_Clock24]</value>
+		<value>$INFO[System.Time(hh:mm)]</value>
+	</variable>
+	<!-- The small clock in page headers (Live TV, the guide, the login screen): with AM or PM on a 12-hour clock
+	     (Kodi's own 378 and 379, the words its region settings use), as the region's plain System.Time. -->
+	<variable name="Bald_ClockTime">
+		<value condition="String.IsEqual(Skin.String(Bald.ClockFormat),12) + System.Time(00:00,12:00)">$INFO[System.Time(h)]:$INFO[System.Time(mm)] $LOCALIZE[378]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.ClockFormat),12)">$INFO[System.Time(h)]:$INFO[System.Time(mm)] $LOCALIZE[379]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.ClockFormat),24)">$VAR[Bald_Clock24]</value>
+		<value>$INFO[System.Time]</value>
+	</variable>
+	<variable name="Bald_ClockFormatLabel">
+		<value condition="String.IsEqual(Skin.String(Bald.ClockFormat),12)">$LOCALIZE[12383]</value>
+		<value condition="String.IsEqual(Skin.String(Bald.ClockFormat),24)">$LOCALIZE[12384]</value>
+		<value>$LOCALIZE[14271]</value>
+	</variable>
+	<variable name="Bald_Clock24">
+		<value condition="System.Time(00:00,01:00)">00:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(01:00,02:00)">01:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(02:00,03:00)">02:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(03:00,04:00)">03:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(04:00,05:00)">04:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(05:00,06:00)">05:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(06:00,07:00)">06:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(07:00,08:00)">07:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(08:00,09:00)">08:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(09:00,10:00)">09:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(10:00,11:00)">10:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(11:00,12:00)">11:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(12:00,13:00)">12:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(13:00,14:00)">13:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(14:00,15:00)">14:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(15:00,16:00)">15:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(16:00,17:00)">16:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(17:00,18:00)">17:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(18:00,19:00)">18:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(19:00,20:00)">19:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(20:00,21:00)">20:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(21:00,22:00)">21:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(22:00,23:00)">22:$INFO[System.Time(mm)]</value>
+		<value condition="System.Time(23:00,00:00)">23:$INFO[System.Time(mm)]</value>
+		<value>$INFO[System.Time(hh:mm)]</value>
+	</variable>
+	<!-- Headers that pair the date with the time: the date goes when Appearance turns the date off (Bald.HideClockDate). -->
+	<variable name="Bald_ClockDateTime">
+		<value condition="Skin.HasSetting(Bald.HideClockDate)">$VAR[Bald_ClockTime]</value>
+		<value>$INFO[System.Date] · $VAR[Bald_ClockTime]</value>
+	</variable>
+	<expression name="Bald_ShowClockDate">[!Skin.HasSetting(Bald.HideClockDate)]</expression>
+	<expression name="Bald_ShowHomeClock">[!Skin.HasSetting(Bald.HideHomeClock)]</expression>
 
 	<!-- ============ Artwork fallbacks ============ -->
 	<!-- Named by what they pick, suffixed with the container id when they read Container(id).ListItem.* (Kodi variables

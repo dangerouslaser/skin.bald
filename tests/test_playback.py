@@ -293,9 +293,10 @@ class PlaybackStyleTests(unittest.TestCase):
     def test_seek_layer_has_homes_clock(self):
         root = resolve_window("DialogSeekBar.xml")
         clocks = [node for node in root.iter("control")
-                  if node.findtext("font") == "Bald_Clock" and "System.Time" in (node.findtext("label") or "")]
+                  if node.findtext("font") == "Bald_Clock" and "Bald_Clock]" in (node.findtext("label") or "")]
         self.assertEqual(len(clocks), 1)
-        self.assertEqual(clocks[0].findtext("label"), "$INFO[System.Time(hh:mm)]")
+        # Home's clock variable, so the seek layer follows Appearance › Date & time too.
+        self.assertEqual(clocks[0].findtext("label"), "$VAR[Bald_Clock]")
 
     def test_osd_settings_rows_use_the_settings_row(self):
         root = resolve_window("Custom_1101_SettingsDialog.xml")

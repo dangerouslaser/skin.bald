@@ -170,7 +170,9 @@ class InfoTvTests(unittest.TestCase):
         pop = card.find(".//animation[@type='Focus']/effect")
         self.assertEqual((pop.get("end"), pop.get("time"), pop.get("tween")), ("105", "280", "back"))
         visible = [n.findtext("visible") for n in card.iter("control") if n.findtext("visible")]
-        for state in ("Integer.IsGreater(ListItem.PlayCount,0)", "ListItem.IsResumable"):
+        # Each mark also follows its Appearance switch (Bald.HideWatchedMarks, Bald.HideProgressMarks).
+        for state in ("Integer.IsGreater(ListItem.PlayCount,0) + $EXP[Bald_ShowWatchedMarks]",
+                      "ListItem.IsResumable + $EXP[Bald_ShowProgressMarks]"):
             self.assertTrue(any(equivalent(v, state) for v in visible), state)
         self.assertEqual(card.find(".//control[@type='progress']").findtext("info"), "ListItem.PercentPlayed")
         # Episode detail reuses the shared flag row on the episode list's item.

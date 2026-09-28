@@ -204,7 +204,8 @@
 
 	<!-- Episode card: 320 x 180 in a 344 px slot, drawn 12 px in so the 1.05 pop (280 POP) and ring are not
 	     clipped. Home's landscape tile with the episode still; number and title over a bottom scrim, a watched check,
-	     and a progress bar while in progress. Cards sit at 78% while the row is unfocused; with focus every card is
+	     and a progress bar while in progress (each can be turned off in Appearance › Information, Bald_ShowWatchedMarks
+	     and Bald_ShowProgressMarks). Cards sit at 78% while the row is unfocused; with focus every card is
 	     full (focus_fade 100): the ring and the pop mark the focused one. -->
 	<include name="Bald_InfoTVEpisodeCard">
 		<param name="ring">false</param>
@@ -257,7 +258,7 @@
 				<control type="group">
 					<left>292</left>
 					<top>24</top>
-					<visible>Integer.IsGreater(ListItem.PlayCount,0)</visible>
+					<visible>Integer.IsGreater(ListItem.PlayCount,0) + $EXP[Bald_ShowWatchedMarks]</visible>
 					<control type="image">
 						<width>28</width>
 						<height>28</height>
@@ -274,7 +275,7 @@
 				<control type="group">
 					<left>28</left>
 					<top>180</top>
-					<visible>ListItem.IsResumable</visible>
+					<visible>ListItem.IsResumable + $EXP[Bald_ShowProgressMarks]</visible>
 					<control type="image">
 						<width>288</width>
 						<height>4</height>

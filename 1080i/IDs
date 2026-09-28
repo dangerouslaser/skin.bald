@@ -402,8 +402,8 @@ Custom_1117_BaldHomeScreens.xml (window 1117)
 		target, 9405 clear target, 9406 move up, 9407 move down, 9408 remove hub, 9409 add hub
 
 Custom_1118_BaldAppearance.xml (window 1118)
-9500	Category list; static items 1, 2, 6, 3 and 5 (Artwork, Information, Ratings, Behavior, Typography;
-		item 4 was "Estuary windows", folded into the others); the item ids pick the rows (Bald_SettingRow)
+9500	Category list; static items 1, 2, 6, 3, 7 and 5 (Artwork, Information, Ratings, Behavior, Date & time,
+		Typography; item 4 was "Estuary windows", folded into the others); the item ids pick the rows (Bald_SettingRow)
 9600	Row grouplist
 9601-9609	Artwork: clearlogos, blurred backgrounds (9608 strength, 9609 brightness), fanart behind other library pages, music video
 		posters; genre background, weather background and weather icon packs
@@ -416,6 +416,10 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		enabled), 9628 the same row while Bald Helper is missing or disabled (installs or enables it)
 9629	Behavior: Select on a hub opens its library (Bald.HubSelectOpens; listed after 9623)
 9631	Typography: font (fontset)
+9632-9634	Date & time (Includes_Bald_Common.xml, Clock): 9632 time format (region, 12 hours, 24 hours), 9633 date
+		with the clock, 9634 clock on Home
+9635-9637	Information (listed after 9612): 9635 titles on Home tiles (none, on focus, always), 9636 watched marks,
+		9637 progress marks
 9641-9663	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; 9657 online ratings from TMDb Helper,
 		9658 TMDb Helper settings (both listed after 9641); sources 9642 IMDb, 9643 TMDb,
 		9644 Rotten Tomatoes critics, 9645 Rotten Tomatoes audience, 9646 Metacritic, 9647 Trakt,

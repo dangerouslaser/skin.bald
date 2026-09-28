@@ -722,6 +722,48 @@ msgctxt "#31333"
 msgid "MDbList API key"
 msgstr ""
 
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Date & time: the category's note
+msgctxt "#31334"
+msgid "How the time reads on Home, in the player and in Live TV."
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Date & time: show the date beside the clock (Home, Live TV headers)
+msgctxt "#31335"
+msgid "Date with the clock"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Date & time: show the big clock on Home
+msgctxt "#31336"
+msgid "Clock on Home"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: item names on Home's row tiles
+msgctxt "#31337"
+msgid "Titles on Home tiles"
+msgstr ""
+
+#: /1080i/Includes_Bald_Home.xml
+#. Appearance > Information > Titles on Home tiles: only on the focused tile
+msgctxt "#31338"
+msgid "On focus"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: the watched check on episode cards and the Watched note in lists
+msgctxt "#31339"
+msgid "Watched marks"
+msgstr ""
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: the progress bar on episode cards and the Resume note in lists
+msgctxt "#31340"
+msgid "Progress marks"
+msgstr ""
+
 #: /1080i/View_550_Bald_Music.xml
 #. Music library view: square covers beside the preview
 msgctxt "#31400"

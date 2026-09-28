@@ -226,9 +226,10 @@
 				<include>Bald_HomeFrameMasks</include>
 			</control>
 
-			<!-- Clock and date -->
+			<!-- Clock and date (Appearance › Date & time: format, the date line, the clock on Home at all) -->
 			<control type="group">
 				<include>Bald_AnimInfoChrome</include>
+				<visible>$EXP[Bald_ShowHomeClock]</visible>
 				<left>Bald_RightColumn</left>
 				<top>104</top>
 				<width>384</width>
@@ -236,7 +237,7 @@
 					<height>132</height>
 					<font>Bald_Clock</font>
 					<textcolor>bald_ink</textcolor>
-					<label>$INFO[System.Time(hh:mm)]</label>
+					<label>$VAR[Bald_Clock]</label>
 				</control>
 				<control type="label">
 					<top>144</top>
@@ -244,6 +245,7 @@
 					<font>Bald_Date</font>
 					<textcolor>bald_ink70</textcolor>
 					<label>$INFO[System.Date(DDDD)], $INFO[System.Date(MMMM D)]</label>
+					<visible>$EXP[Bald_ShowClockDate]</visible>
 				</control>
 			</control>
 

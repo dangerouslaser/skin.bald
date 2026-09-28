@@ -25,7 +25,9 @@ class CompactListTests(unittest.TestCase):
     def test_status_prioritizes_resume_and_columns_fit(self):
         root = ET.parse(ROOT / 'Includes_Bald_LibraryList.xml').getroot()
         values = root.findall("variable[@name='Bald_ListWatchState']/value")
-        self.assertTrue(equivalent(values[0].get('condition'), 'ListItem.IsResumable'))
+        # Each mark follows its Appearance switch (Bald.HideProgressMarks, Bald.HideWatchedMarks).
+        self.assertTrue(equivalent(values[0].get('condition'), 'ListItem.IsResumable + $EXP[Bald_ShowProgressMarks]'))
+        self.assertTrue(equivalent(values[1].get('condition'), 'Integer.IsGreater(ListItem.Playcount,0) + $EXP[Bald_ShowWatchedMarks]'))
         self.assertEqual(values[0].text, '$LOCALIZE[13404]')  # Kodi's "Resume"
         self.assertEqual(values[1].text, '$LOCALIZE[16102]')  # Kodi's "Watched"
         self.assertFalse(values[2].text)
