@@ -44,7 +44,7 @@ def hub_actions(hubs):
 
 
 class PickerTests(unittest.TestCase):
-    def test_rows_can_come_from_video_music_favourites_and_channel_groups(self):
+    def test_rows_can_come_from_video_music_favourites_weather_and_channel_groups(self):
         entries = {e["name"]: e for e in grouping_entries("grouping://shortcuts/")}
         expected = {
             "Video library": ("library://video/", "videos"),
@@ -54,6 +54,7 @@ class PickerTests(unittest.TestCase):
             "Bald music playlists": ("grouping://bald/musicplaylists/", "music"),
             "Music add-ons": ("addons://sources/audio/", "music"),
             "Favourites": ("favourites://", "favouritesbrowser"),
+            "Weather": ("grouping://bald/weather/", "weather"),
             "Live TV channel groups": ("pvr://channels/tv/", "tvchannels"),
             "Radio channel groups": ("pvr://channels/radio/", "radiochannels"),
             "Recently played TV channels": ("pvr://channels/tv/*?view=lastplayed", "tvchannels"),
@@ -61,7 +62,8 @@ class PickerTests(unittest.TestCase):
         }
         self.assertEqual({name: (e["path"], e["node"]) for name, e in entries.items()}, expected)
         # Rows need folders (a row is a list's content): no builtins here. The recently played channels are picked
-        # directly (link), since browsing into them would list channels to pick one from.
+        # directly (link), since browsing into them would list channels to pick one from. Weather is a folder of the
+        # two weather rows (tests/test_weather_rows.py).
         self.assertTrue(all(e["link"] == "false" or e["path"].startswith("pvr://") for e in entries.values()))
 
     def test_hubs_can_open_music_favourites_weather_pictures_programs_and_radio(self):

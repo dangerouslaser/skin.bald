@@ -180,6 +180,15 @@
 		<value condition="String.IsEqual(Container(9100).ListItem.Property(sortorder),descending)">$LOCALIZE[585]</value>
 		<value>$LOCALIZE[584]</value>
 	</variable>
+	<!-- The widget editor's selected row is a weather row (Choose content > Weather, Includes_Bald_Weather.xml): it has
+	     no path to limit or sort and a fixed style, so those rows of the editor hide, and the note describes the row
+	     instead of showing its path. -->
+	<expression name="Bald_WidgetIsWeather">[String.StartsWith(Container(9100).ListItem.Property(path),weather://)]</expression>
+	<variable name="Bald_WidgetNote">
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(path),weather://daily)">$LOCALIZE[31452]</value>
+		<value condition="String.IsEqual(Container(9100).ListItem.Property(path),weather://hourly)">$LOCALIZE[31453]</value>
+		<value>$INFO[Container(9100).ListItem.Property(path)]</value>
+	</variable>
 	<!-- The widget editor's Clearlogo on artwork value (1116): the selected row's logo field, empty meaning on. -->
 	<variable name="Bald_WidgetLogoLabel">
 		<value condition="String.IsEqual(Container(9100).ListItem.Property(logo),off)">$LOCALIZE[31725]</value>

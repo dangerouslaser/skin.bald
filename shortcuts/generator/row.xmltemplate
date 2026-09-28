@@ -12,7 +12,6 @@
     <param name="style">{row_style}</param>
     <param name="slot">{row_slot}</param>
     <param name="start">{row_start}</param>
-    <content target="{item_target_escaped}" limit="{item_limit_escaped}" browse="never"{content_sort}>{item_path_escaped}</content>
-    {secondary_content}
+    {row_content}
     {next_start}
 </include>

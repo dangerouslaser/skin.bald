@@ -112,6 +112,23 @@
 					<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param></include>
 					<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param></include>
 				</control>
+				<!-- Weather rows with a folder weather pack: the current conditions' pictures (Bald_WeatherFolderArt). -->
+				<control type="multiimage">
+					<width>1248</width>
+					<height>702</height>
+					<aspectratio>scale</aspectratio>
+					<timeperimage>12000</timeperimage>
+					<fadetime>700</fadetime>
+					<randomize>true</randomize>
+					<imagepath background="true">$INFO[Skin.String(Bald.WeatherFanart.path)]$INFO[Weather.Data(Current.FanartCode)]</imagepath>
+					<visible>$EXP[Bald_WeatherFolderArt] + !$EXP[Bald_VideoPosterFrame]</visible>
+					<animation type="Visible">
+						<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
+					</animation>
+					<animation type="Hidden">
+						<effect type="fade" start="100" end="0" time="700" tween="sine" easing="inout" />
+					</animation>
+				</control>
 				<!-- Poster rows with background video: the frame's bottom mask cannot be drawn over video, so the art is a
 				     1248 x 576 copy, 63 px down in the nudged group: the same 120-696 frame the mask would leave. -->
 				<control type="group">

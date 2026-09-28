@@ -2,7 +2,7 @@ BALD CONTROL-ID MAP
 Plain-text reference, not loaded by Kodi. Control IDs are scoped to their window, so the
 same number can mean different things in different windows (e.g. 9000, 9100, 50).
 Keep this file in step when adding or moving IDs in Bald-native files.
-Last surveyed: 2026-09-26.
+Last surveyed: 2026-09-28.
 
 
 KODI CONTRACT IDS (Kodi or an add-on binds these by number; do not renumber)
@@ -263,6 +263,8 @@ HOME (Home.xml, Includes_Bald_Home.xml)
 		builds no controls. None of these ranges meets another: 9001-9029 menu and
 		bridges, 9051-9070, 9101-9120, then x01-x20 per hundred up to 9920, and the fixed
 		9180 and 9193-9199 below sit above 9120.
+		A weather row (Choose content > Weather: weather://daily or weather://hourly) is one of these
+		row ids too; its tiles are static items (Includes_Bald_Weather.xml) and add no control ids.
 9180	Startup splash: hidden list of random fanart that drives the background
 9193	Home hidden: shows while focus is stranded on one of Home's rows (Timers.xml bald_home_start reads it)
 9194	Startup splash: shows once every row has loaded (Timers.xml bald_preload reads it)

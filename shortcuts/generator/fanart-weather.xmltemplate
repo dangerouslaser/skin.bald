@@ -1,0 +1,2 @@
+<value condition="{prefix} + !String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) + !String.IsEmpty(Skin.String(Bald.WeatherFanart.ext)) + !String.IsEmpty(Container({row_id}).ListItem.Property(Bald.WeatherCode))">$INFO[Skin.String(Bald.WeatherFanart.path)]$INFO[Container({row_id}).ListItem.Property(Bald.WeatherCode)]$INFO[Skin.String(Bald.WeatherFanart.ext)]</value>
+<value condition="{prefix}"></value>

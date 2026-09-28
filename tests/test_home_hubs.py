@@ -489,7 +489,8 @@ class ChannelGroupSelectTests(unittest.TestCase):
         self.assertEqual(clicks, [
             ("$EXP[Bald_TVChannelGroupItem]", "ActivateWindow(TVGuide,$ESCINFO[ListItem.FolderPath],return)"),
             ("$EXP[Bald_RadioChannelGroupItem]", "ActivateWindow(RadioGuide,$ESCINFO[ListItem.FolderPath],return)"),
-            ("!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem] + !$EXP[Bald_FavouriteItem]", "Action(Info)")])
+            ("!$EXP[Bald_TVChannelGroupItem] + !$EXP[Bald_RadioChannelGroupItem] + !$EXP[Bald_FavouriteItem]"
+             " + !$EXP[Bald_WeatherTileItem]", "Action(Info)")])
         self.assertEqual(home.findtext("expression[@name='Bald_TVChannelGroupItem']"),
                          "[ListItem.IsFolder + String.StartsWith(ListItem.FolderPath,pvr://channels/tv/)]")
 

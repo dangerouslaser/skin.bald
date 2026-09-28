@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Values of Bald_Fanart for each configured row, while the menu previews its screen (Bald.Row.<screen>). -->
+<!-- Values of Bald_Fanart for each configured row, while the menu previews its screen (Bald.Row.<screen>). A weather
+     row (path weather://...) shows the weather background pack's picture for its tile (fanart-weather.xmltemplate). -->
 <contents>
     <items>
         <item>
             <items menu="{menu}" item="{node}" mode="{mode}">
                 <item>
+                    <condition>{item_path}!&lt;weather://</condition>
                     <template>generator/fanart.xmltemplate</template>
+                    <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    <value name="prefix">$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),$MATH[{base} + 1 + {item_x}])</value>
+                </item>
+                <item>
+                    <condition>{item_path}&lt;&lt;weather://</condition>
+                    <template>generator/fanart-weather.xmltemplate</template>
                     <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                     <value name="prefix">$EXP[Bald_Preview{title}] + String.IsEqual(Window(home).Property(Bald.Row.{screen}),$MATH[{base} + 1 + {item_x}])</value>
                 </item>

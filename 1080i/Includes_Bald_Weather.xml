@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Weather rows on Home (docs/NOTES.md, Weather rows). The widget editor's Choose content > Weather offers two rows:
+     Weather forecast (path weather://daily) and Hourly weather (weather://hourly). The generator gives such a row the
+     weather style whatever its style field says (shortcuts/generator/screen.xml), and lists these static items in
+     place of a path, so the row is a Bald_Row like any other: same fixedlist, focus, row swap, dots and nudges, with
+     square tiles (Bald_RowTiles_weather) under the poster-row art frame.
+
+     Everything comes from Kodi's own weather infolabels (Weather.Plugin, Weather.IsFetched, Weather.Data(...)), which
+     the weather add-on fills: Current.*, the Daily.<n>.* forecast (or the older Day<n>.* one when the add-on has no
+     Daily.IsFetched) and Hourly.<n>.* when it has Hourly.IsFetched. The first tile is the current conditions ("Now");
+     without a weather service one tile opens Kodi's weather settings instead, and while the service is still fetching
+     one quiet tile waits in its place. Select on any other tile opens the weather page.
+
+     Each item carries what its tile and caption show: label (top of the tile), label2 (under the icon), the icon from
+     the weather icon pack (WeatherOutlookIconPrefixVar, Kodi's default pack without one), and the properties
+     Bald.Weather (the tile's kind), Bald.WeatherCode (the condition's fanart code, for the weather background pack),
+     Bald.Title, Bald.Meta, Bald.Detail, Bald.Accent and Bald.Note (the caption's lines, Bald_WeatherCaption). -->
+<includes>
+	<!-- A weather service is set up and has data. -->
+	<expression name="Bald_WeatherReady">[!String.IsEmpty(Weather.Plugin) + Weather.IsFetched]</expression>
+	<!-- The focused row item is a weather tile: Select runs the tile's own action, not Info (Bald_Row). -->
+	<expression name="Bald_WeatherTileItem">[!String.IsEmpty(ListItem.Property(Bald.Weather))]</expression>
+	<!-- The art frame of a weather row with a folder pack (one folder of pictures per condition, no file extension):
+	     the current conditions' pictures cycle there (Home.xml), since an image control cannot show a folder. A pack
+	     of single pictures comes through $VAR[Bald_Fanart] for each tile instead (generator/fanart-weather.xmltemplate). -->
+	<expression name="Bald_WeatherFolderArt">[String.IsEqual(Window(home).Property(Bald.RowStyle),weather) + !String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) + String.IsEmpty(Skin.String(Bald.WeatherFanart.ext)) + $EXP[Bald_WeatherReady]]</expression>
+
+	<!-- ============ Row content ============ -->
+	<include name="Bald_WeatherDailyContent">
+		<content>
+			<include>Bald_WeatherStatusItems</include>
+			<include>Bald_WeatherNowItem</include>
+			<include content="Bald_WeatherDailyItem"><param name="n">1</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">2</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">3</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">4</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">5</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">6</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">7</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">0</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">1</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">2</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">3</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">4</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">5</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">6</param></include>
+		</content>
+	</include>
+	<include name="Bald_WeatherHourlyContent">
+		<content>
+			<include>Bald_WeatherStatusItems</include>
+			<include>Bald_WeatherNowItem</include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">1</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">2</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">3</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">4</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">5</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">6</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">7</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">8</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">9</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">10</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">11</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">12</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">13</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">14</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">15</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">16</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">17</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">18</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">19</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">20</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">21</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">22</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">23</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">24</param></include>
+		</content>
+	</include>
+
+	<!-- ============ Items ============ -->
+	<!-- No weather service: one tile that opens Kodi's weather settings (Services > Weather). A service still fetching:
+	     one quiet tile in the place of the forecast, which opens the weather page. -->
+	<include name="Bald_WeatherStatusItems">
+		<item>
+			<label>$LOCALIZE[8]</label>
+			<label2>$LOCALIZE[31451]</label2>
+			<icon>$VAR[WeatherOutlookIconPrefixVar]na$VAR[WeatherOutlookIconPostfixVar]</icon>
+			<property name="Bald.Weather">setup</property>
+			<property name="Bald.Title">$LOCALIZE[8]</property>
+			<property name="Bald.Meta">$LOCALIZE[31450]</property>
+			<onclick>ActivateWindow(servicesettings,weather)</onclick>
+			<visible>String.IsEmpty(Weather.Plugin)</visible>
+		</item>
+		<item>
+			<label>$LOCALIZE[8]</label>
+			<icon>$VAR[WeatherOutlookIconPrefixVar]na$VAR[WeatherOutlookIconPostfixVar]</icon>
+			<property name="Bald.Weather">fetching</property>
+			<property name="Bald.Title">$LOCALIZE[8]</property>
+			<property name="Bald.Meta">$LOCALIZE[410]</property>
+			<onclick>ActivateWindow(Weather)</onclick>
+			<visible>!String.IsEmpty(Weather.Plugin) + !Weather.IsFetched</visible>
+		</item>
+	</include>
+	<!-- Current conditions: the temperature big in the caption, the conditions, how it feels, where, and humidity,
+	     wind and precipitation as the note. -->
+	<include name="Bald_WeatherNowItem">
+		<item>
+			<label>$LOCALIZE[19030]</label>
+			<label2>$INFO[Weather.Data(Current.Temperature)]</label2>
+			<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Current.FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+			<property name="Bald.Weather">now</property>
+			<property name="Bald.WeatherCode">$INFO[Weather.Data(Current.FanartCode)]</property>
+			<property name="Bald.Title">$INFO[Weather.Data(Current.Temperature)]</property>
+			<property name="Bald.Meta">$INFO[Weather.Data(Current.Condition)]</property>
+			<property name="Bald.Detail">$INFO[Weather.Data(Current.FeelsLike),$LOCALIZE[402] ,]</property>
+			<property name="Bald.Accent">$INFO[Weather.Data(Current.Location)]</property>
+			<property name="Bald.Note">$INFO[Weather.Data(Current.Humidity),$LOCALIZE[406] ,]$INFO[Weather.Data(Current.Wind),[CR]$LOCALIZE[404] ,]$INFO[Weather.Data(Current.Precipitation),[CR]$LOCALIZE[33021] ,]</property>
+			<onclick>ActivateWindow(Weather)</onclick>
+			<visible>$EXP[Bald_WeatherReady]</visible>
+		</item>
+	</include>
+	<!-- Day n of the add-on's Daily forecast (weather.multi, Gismeteo and most current add-ons). -->
+	<include name="Bald_WeatherDailyItem">
+		<param name="n" />
+		<definition>
+			<item>
+				<label>$INFO[Weather.Data(Daily.$PARAM[n].ShortDay)]</label>
+				<label2>$INFO[Weather.Data(Daily.$PARAM[n].HighTemperature)]$INFO[Weather.Data(Daily.$PARAM[n].LowTemperature), · ,]</label2>
+				<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Daily.$PARAM[n].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+				<property name="Bald.Weather">day</property>
+				<property name="Bald.WeatherCode">$INFO[Weather.Data(Daily.$PARAM[n].FanartCode)]</property>
+				<property name="Bald.Title">$INFO[Weather.Data(Daily.$PARAM[n].LongDay)]</property>
+				<property name="Bald.Meta">$INFO[Weather.Data(Daily.$PARAM[n].Outlook)]</property>
+				<property name="Bald.Detail">$INFO[Weather.Data(Daily.$PARAM[n].HighTemperature),$LOCALIZE[419] ,]$INFO[Weather.Data(Daily.$PARAM[n].LowTemperature), · $LOCALIZE[418] ,]</property>
+				<property name="Bald.Accent">$INFO[Weather.Data(Daily.$PARAM[n].ShortDate)]</property>
+				<property name="Bald.Note">$INFO[Weather.Data(Current.Location)]</property>
+				<onclick>ActivateWindow(Weather)</onclick>
+				<visible>$EXP[Bald_WeatherReady] + !String.IsEmpty(Weather.Data(Daily.IsFetched)) + !String.IsEmpty(Weather.Data(Daily.$PARAM[n].Outlook))</visible>
+			</item>
+		</definition>
+	</include>
+	<!-- Day n (0 today) of the older forecast, for an add-on without Daily.* (as Estuary's weather page falls back). -->
+	<include name="Bald_WeatherDayItem">
+		<param name="n" />
+		<definition>
+			<item>
+				<label>$INFO[Weather.Data(Day$PARAM[n].Title)]</label>
+				<label2>$INFO[Weather.Data(Day$PARAM[n].HighTemp)]$INFO[Weather.Data(Day$PARAM[n].LowTemp), · ,]</label2>
+				<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Day$PARAM[n].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+				<property name="Bald.Weather">day</property>
+				<property name="Bald.WeatherCode">$INFO[Weather.Data(Day$PARAM[n].FanartCode)]</property>
+				<property name="Bald.Title">$INFO[Weather.Data(Day$PARAM[n].Title)]</property>
+				<property name="Bald.Meta">$INFO[Weather.Data(Day$PARAM[n].Outlook)]</property>
+				<property name="Bald.Detail">$INFO[Weather.Data(Day$PARAM[n].HighTemp),$LOCALIZE[419] ,]$INFO[Weather.Data(Day$PARAM[n].LowTemp), · $LOCALIZE[418] ,]</property>
+				<property name="Bald.Note">$INFO[Weather.Data(Current.Location)]</property>
+				<onclick>ActivateWindow(Weather)</onclick>
+				<visible>$EXP[Bald_WeatherReady] + String.IsEmpty(Weather.Data(Daily.IsFetched)) + !String.IsEmpty(Weather.Data(Day$PARAM[n].Outlook))</visible>
+			</item>
+		</definition>
+	</include>
+	<!-- Hour n of the add-on's Hourly forecast. -->
+	<include name="Bald_WeatherHourlyItem">
+		<param name="n" />
+		<definition>
+			<item>
+				<label>$INFO[Weather.Data(Hourly.$PARAM[n].Time)]</label>
+				<label2>$INFO[Weather.Data(Hourly.$PARAM[n].Temperature)]</label2>
+				<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Hourly.$PARAM[n].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+				<property name="Bald.Weather">hour</property>
+				<property name="Bald.WeatherCode">$INFO[Weather.Data(Hourly.$PARAM[n].FanartCode)]</property>
+				<property name="Bald.Title">$INFO[Weather.Data(Hourly.$PARAM[n].Time)]</property>
+				<property name="Bald.Meta">$INFO[Weather.Data(Hourly.$PARAM[n].Outlook)]</property>
+				<property name="Bald.Detail">$INFO[Weather.Data(Hourly.$PARAM[n].Temperature)]$INFO[Weather.Data(Hourly.$PARAM[n].Precipitation), · $LOCALIZE[33021] ,]</property>
+				<property name="Bald.Accent">$INFO[Weather.Data(Hourly.$PARAM[n].ShortDate)]</property>
+				<property name="Bald.Note">$INFO[Weather.Data(Current.Location)]</property>
+				<onclick>ActivateWindow(Weather)</onclick>
+				<visible>$EXP[Bald_WeatherReady] + !String.IsEmpty(Weather.Data(Hourly.IsFetched)) + !String.IsEmpty(Weather.Data(Hourly.$PARAM[n].Outlook))</visible>
+			</item>
+		</definition>
+	</include>
+
+	<!-- ============ Tiles ============ -->
+	<!-- A weather tile's face, over the square tile's placeholder (Bald_SquareTile, 184 x 184 at 12,12): the label at
+	     the top, the icon in the middle, label2 below it. Dim unfocused and full ink focused, like the art on other
+	     tiles ($PARAM[diffuse]). -->
+	<include name="Bald_WeatherTileFace">
+		<param name="diffuse">bald_poster_dim</param>
+		<definition>
+			<control type="label">
+				<left>24</left>
+				<top>24</top>
+				<width>160</width>
+				<height>28</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>$PARAM[diffuse]</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="image">
+				<left>56</left>
+				<top>58</top>
+				<width>96</width>
+				<height>96</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="$PARAM[diffuse]" background="true">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<left>24</left>
+				<top>156</top>
+				<width>160</width>
+				<height>30</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>Bald_Section</font>
+				<textcolor>$PARAM[diffuse]</textcolor>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+		</definition>
+	</include>
+
+	<!-- ============ Art frame and caption ============ -->
+	<!-- The focused tile's weather icon, large in the middle of the art frame while there is no background picture for
+	     it (no weather background pack, or a tile without a condition code). Drawn with the clearlogos (Home.xml's logo
+	     group, which slides up 126 px on this row's 576 px frame), in their motion, per row and parity like
+	     Bald_ArtLogo: 480,270 there is the frame's centre, 720,408 on screen. -->
+	<include name="Bald_WeatherArtIcon">
+		<param name="c" />
+		<param name="p" />
+		<param name="preview">false</param>
+		<definition>
+			<control type="group">
+				<visible>$PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]</visible>
+				<include>Bald_AnimLogoIn</include>
+				<control type="image">
+					<left>480</left>
+					<top>270</top>
+					<width>288</width>
+					<height>288</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true">$INFO[Container($PARAM[c]).ListItem.Icon]</texture>
+					<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) | String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.WeatherCode))]</visible>
+					<include>Bald_AnimLogoIn</include>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- A weather row's caption, in Bald_Caption's place and motion: the tile's Bald.Title as the title (the
+	     temperature, a day or an hour), then Bald.Meta and Bald.Detail as meta lines, Bald.Accent on the accent line
+	     and Bald.Note as the plot. Empty lines close up. -->
+	<include name="Bald_WeatherCaption">
+		<param name="c" />
+		<param name="p" />
+		<param name="preview">false</param>
+		<definition>
+			<control type="group">
+				<visible>$PARAM[preview] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
+				<animation type="Hidden">
+					<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
+					<effect type="slide" start="0,0" end="-14,0" time="130" tween="cubic" easing="out" />
+				</animation>
+				<control type="grouplist">
+					<left>1420</left>
+					<top>332</top>
+					<width>440</width>
+					<height>132</height>
+					<orientation>vertical</orientation>
+					<align>right</align>
+					<usecontrolcoords>true</usecontrolcoords>
+					<control type="textbox">
+						<left>20</left>
+						<width>384</width>
+						<height max="132">auto</height>
+						<font>Bald_CaptionTitle</font>
+						<textcolor>bald_ink</textcolor>
+						<label>$INFO[Container($PARAM[c]).ListItem.Property(Bald.Title)]</label>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
+						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">180</param></include>
+					</control>
+				</control>
+				<control type="grouplist">
+					<left>1420</left>
+					<top>464</top>
+					<width>440</width>
+					<height>396</height>
+					<orientation>vertical</orientation>
+					<itemgap>0</itemgap>
+					<usecontrolcoords>true</usecontrolcoords>
+					<include content="Bald_CaptionMeta">
+						<param name="c">$PARAM[c]</param>
+						<param name="p">$PARAM[p]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Property(Bald.Meta)]</param>
+						<param name="visible">!String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.Meta))</param>
+					</include>
+					<include content="Bald_CaptionMeta">
+						<param name="c">$PARAM[c]</param>
+						<param name="p">$PARAM[p]</param>
+						<param name="label">$INFO[Container($PARAM[c]).ListItem.Property(Bald.Detail)]</param>
+						<param name="visible">!String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.Detail))</param>
+					</include>
+					<control type="label">
+						<top>8</top>
+						<left>20</left>
+						<width>384</width>
+						<height>24</height>
+						<font>Bald_Accent</font>
+						<textcolor>bald_accent</textcolor>
+						<label>$INFO[Container($PARAM[c]).ListItem.Property(Bald.Accent)]</label>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.Accent))</visible>
+						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">300</param></include>
+					</control>
+					<control type="label">
+						<top>18</top>
+						<left>20</left>
+						<width>384</width>
+						<height>116</height>
+						<wrapmultiline>true</wrapmultiline>
+						<aligny>top</aligny>
+						<font>Bald_CaptionPlot</font>
+						<textcolor>bald_ink80</textcolor>
+						<label>$INFO[Container($PARAM[c]).ListItem.Property(Bald.Note)]</label>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + !String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.Note))</visible>
+						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="delay">350</param></include>
+					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+</includes>

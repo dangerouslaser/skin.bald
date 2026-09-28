@@ -139,8 +139,14 @@
                         <value name="row_index">$MATH[1 + {item_x}]</value>
                         <value name="dots_width">$MATH[12 * {item_length_x} - 6]</value>
                         <!-- The row's style (widget editor, row field "style"); anything else, or none, is fanart. Text is a landscape
-                             row whose tiles show the name (Bald_RowTiles_text); the frame treats it as fanart. -->
+                             row whose tiles show the name (Bald_RowTiles_text); the frame treats it as fanart. A weather row
+                             (Choose content > Weather: path weather://daily or weather://hourly) is always the weather style,
+                             whatever its style field still says from earlier content. -->
                         <rules name="row_style">
+                            <rule>
+                                <condition>{item_path}&lt;&lt;weather://</condition>
+                                <value>weather</value>
+                            </rule>
                             <rule>
                                 <condition>{item_style}==thumbnail</condition>
                                 <value>thumbnail</value>
@@ -231,6 +237,21 @@
                                 <value></value>
                             </rule>
                         </rules>
+                        <!-- What the row lists: a weather row's tiles are static items reading Kodi's weather infolabels
+                             (Includes_Bald_Weather.xml); any other row lists its path, and its secondary path when set. -->
+                        <rules name="row_content">
+                            <rule>
+                                <condition>{item_path}==weather://daily</condition>
+                                <value>&lt;include&gt;Bald_WeatherDailyContent&lt;/include&gt;</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}==weather://hourly</condition>
+                                <value>&lt;include&gt;Bald_WeatherHourlyContent&lt;/include&gt;</value>
+                            </rule>
+                            <rule>
+                                <value>&lt;content target="{item_target_escaped}" limit="{item_limit_escaped}" browse="never"{content_sort}&gt;{item_path_escaped}&lt;/content&gt;{secondary_content}</value>
+                            </rule>
+                        </rules>
                         <!-- The next row is hidden (and already loaded) while this one has focus: move it back to its first
                              item now, so it never shows the fixedlist's pristine item at its focus slot (docs/NOTES.md,
                              Fixedlist focus). Bald_RowStart_<next row> is written with that row's own slot (row_parts). -->
@@ -307,6 +328,10 @@
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                         <rules name="row_style">
                             <rule>
+                                <condition>{item_path}&lt;&lt;weather://</condition>
+                                <value>weather</value>
+                            </rule>
+                            <rule>
                                 <condition>{item_style}==thumbnail</condition>
                                 <value>thumbnail</value>
                             </rule>
@@ -367,21 +392,40 @@
             </value>
             <value name="art_logos">
                 <!-- Rows with the art-frame clearlogo off (row field "logo" = off; empty or on shows it) get no
-                     clearlogo instances, and no branch in the logo expressions below, so the frame shows no logo or scrim. -->
+                     clearlogo instances, and no branch in the logo expressions below, so the frame shows no logo or scrim.
+                     A weather row has no clearlogos: its place on the art holds the focused tile's weather icon while
+                     there is no background picture (Bald_WeatherArtIcon). -->
                 <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <condition>{item_logo}!=off</condition>
+                        <condition>{item_path}!&lt;weather://</condition>
                         <!-- As row-binding, with no listing clearlogo fallback (Home has no media container). -->
                         <template>generator/logo-binding.xmltemplate</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                     </item>
+                    <item>
+                        <condition>{item_path}&lt;&lt;weather://</condition>
+                        <template>generator/row-binding.xmltemplate</template>
+                        <value name="content">Bald_WeatherArtIcon</value>
+                        <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
+                    </item>
                 </items>
             </value>
+            <!-- A weather row's caption reads the tile's own lines (Bald_WeatherCaption); every other row's, the item's
+                 video or music details (Bald_Caption). -->
             <value name="captions">
                 <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <template>generator/row-binding.xmltemplate</template>
-                        <value name="content">Bald_Caption</value>
+                        <rules name="content">
+                            <rule>
+                                <condition>{item_path}&lt;&lt;weather://</condition>
+                                <value>Bald_WeatherCaption</value>
+                            </rule>
+                            <rule>
+                                <value>Bald_Caption</value>
+                            </rule>
+                        </rules>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                     </item>
                 </items>

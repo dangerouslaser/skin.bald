@@ -812,6 +812,30 @@ msgctxt "#31414"
 msgid "bit"
 msgstr ""
 
+#: /1080i/Includes_Bald_Weather.xml
+#. Home weather row: the tile shown without a weather service
+msgctxt "#31450"
+msgid "Choose a weather service in Settings to see the forecast here."
+msgstr ""
+
+#: /1080i/Includes_Bald_Weather.xml
+#. Home weather row: under the tile shown without a weather service
+msgctxt "#31451"
+msgid "Set up"
+msgstr ""
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Widget editor: note for a Weather forecast row
+msgctxt "#31452"
+msgid "Current weather and the forecast for the coming days, from Kodi's weather service."
+msgstr ""
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Widget editor: note for an Hourly weather row
+msgctxt "#31453"
+msgid "Current weather and the forecast hour by hour, from Kodi's weather service."
+msgstr ""
+
 #: /xml/Includes_SettingsDialog.xml
 #. Button to select Player Process Info window
 msgctxt "#31597"

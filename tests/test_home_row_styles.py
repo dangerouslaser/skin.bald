@@ -170,7 +170,8 @@ class PosterRowTests(unittest.TestCase):
     def test_the_frame_follows_a_window_property(self):
         body = ET.parse(XML / "Includes_Bald_Home.xml").getroot().findtext("expression[@name='Bald_PosterRow']")
         self.assertTrue(equivalent(body, "String.IsEqual(Window(home).Property(Bald.RowStyle),poster)"
-                                         " | String.IsEqual(Window(home).Property(Bald.RowStyle),square)"))
+                                         " | String.IsEqual(Window(home).Property(Bald.RowStyle),square)"
+                                         " | String.IsEqual(Window(home).Property(Bald.RowStyle),weather)"))
         self.assertNotIn("Container(", body)
 
 

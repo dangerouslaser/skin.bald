@@ -9,6 +9,13 @@
             "link": "false",
             "node": "favouritesbrowser"
         },
+        {
+            "name": "Weather",
+            "path": "grouping://bald/weather/",
+            "icon": "DefaultAddonWeather.png",
+            "link": "false",
+            "node": "weather"
+        },
         "grouping://bald/pvr/"
     ],
     "grouping://hubs/": [
@@ -126,6 +133,20 @@
             "icon": "DefaultMusicArtists.png",
             "link": "false",
             "node": "music"
+        }
+    ],
+    "grouping://bald/weather/": [
+        {
+            "name": "Weather forecast",
+            "path": "weather://daily",
+            "icon": "DefaultAddonWeather.png",
+            "link": "true"
+        },
+        {
+            "name": "Hourly weather",
+            "path": "weather://hourly",
+            "icon": "DefaultAddonWeather.png",
+            "link": "true"
         }
     ],
     "grouping://bald/pvr/": [
