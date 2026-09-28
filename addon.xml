@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.bald" version="0.5.1" name="Bald" provider-name="dangerouslaser">
+<addon id="skin.bald" version="0.5.2" name="Bald" provider-name="dangerouslaser">
 	<requires>
 		<import addon="xbmc.gui" version="5.18.0"/>
 		<import addon="xbmc.python" version="3.0.1"/>
