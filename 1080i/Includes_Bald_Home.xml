@@ -1197,12 +1197,12 @@
 	<!-- Weather (Includes_Bald_Weather.xml): square tiles showing the tile's label, weather icon and label2 instead of
 	     art, on the square row's rail and frame. -->
 	<include name="Bald_RowTiles_weather">
-		<include content="Bald_RowSquare"><param name="art" /><param name="overlay">Bald_WeatherTileFace</param><param name="titles">false</param></include>
+		<include content="Bald_RowSquare"><param name="art" /><param name="overlay">Bald_WeatherTileFace</param><param name="caption">Bald_TileOverlayNone</param></include>
 	</include>
 	<include name="Bald_RowSquare">
 		<param name="art">$VAR[Bald_SquareArt]</param>
 		<param name="overlay">Bald_TileOverlayNone</param>
-		<param name="titles">true</param>
+		<param name="caption">Bald_TileTitle</param>
 		<definition>
 			<left>Bald_SafeLeft</left>
 			<top>Bald_LowRailTop</top>
@@ -1211,7 +1211,7 @@
 			<itemlayout width="208" height="234">
 				<include content="Bald_SquareTile"><param name="art">$PARAM[art]</param><param name="overlay">$PARAM[overlay]</param></include>
 				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
-				<include content="Bald_TileTitle"><param name="visible">$PARAM[titles] + $EXP[Bald_TileTitlesAlways]</param><param name="diffuse">bald_poster_dim</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
+				<include content="$PARAM[caption]"><param name="visible">$EXP[Bald_TileTitlesAlways]</param><param name="diffuse">bald_poster_dim</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
 			</itemlayout>
 			<focusedlayout width="208" height="234">
 				<control type="group">
@@ -1225,7 +1225,7 @@
 						<param name="overlay">$PARAM[overlay]</param>
 					</include>
 					<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
-					<include content="Bald_TileTitle"><param name="visible">$PARAM[titles] + $EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
+					<include content="$PARAM[caption]"><param name="visible">$EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
 				</control>
 			</focusedlayout>
 		</definition>

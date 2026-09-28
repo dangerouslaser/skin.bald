@@ -207,10 +207,17 @@ class AppearanceOptionsTests(unittest.TestCase):
         root = ET.fromstring(home)
         tiles = {node.get("name"): node for node in root.findall("include") if node.get("name", "").startswith("Bald_RowTiles_")}
         landscape = root.find("include[@name='Bald_RowLandscape']")
-        for style in ("poster", "square"):
+        # Square and weather rows share Bald_RowSquare; weather passes an empty include as its title (the tile's face
+        # already names the day or hour).
+        square = root.find("include[@name='Bald_RowSquare']")
+        self.assertEqual(square.findtext("param[@name='caption']"), "Bald_TileTitle")
+        weather = tiles["Bald_RowTiles_weather"].find("include[@content='Bald_RowSquare']")
+        self.assertEqual(weather.findtext("param[@name='caption']"), "Bald_TileOverlayNone")
+        for style, node, content in (("poster", tiles["Bald_RowTiles_poster"], "Bald_TileTitle"),
+                                     ("square", square.find("definition"), "$PARAM[caption]")):
             with self.subTest(style=style):
-                item = tiles[f"Bald_RowTiles_{style}"].find("itemlayout/include[@content='Bald_TileTitle']")
-                focused = tiles[f"Bald_RowTiles_{style}"].find("focusedlayout//include[@content='Bald_TileTitle']")
+                item = node.find(f"itemlayout/include[@content='{content}']")
+                focused = node.find(f"focusedlayout//include[@content='{content}']")
                 self.assertEqual(item.findtext("param[@name='visible']"), "$EXP[Bald_TileTitlesAlways]")
                 self.assertEqual(focused.findtext("param[@name='visible']"), "$EXP[Bald_TileTitlesFocused]")
                 self.assertEqual(focused.findtext("param[@name='pop']"), "102.5", "the title pops with the tile")
