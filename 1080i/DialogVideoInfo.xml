@@ -23,13 +23,13 @@
 	<onunload>ClearProperty(Bald.MoreFor,movieinformation)</onunload>
 	<include content="Bald_UnfollowContainerOnUnload"><param name="window">movieinformation</param></include>
 	<controls>
-		<!-- Opaque sharp fallback for library/add-on entry points. -->
+		<!-- Opened away from Home (library, Search, add-ons; Bald_InfoOwnBackdrop): an opaque sharp backdrop of its own,
+		     in and out over Bald_InfoBackdropTime. Leaving, the art dissolves over that while the text leaves in
+		     Bald_InfoOutTime (a 130 fade of the full-screen art read as a snap). -->
 		<control type="group">
 			<visible>$EXP[Bald_InfoOwnBackdrop]</visible>
-			<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout">WindowOpen</animation>
-			<!-- Back to the library: the art dissolves over the same 380 as it came in, while the text leaves in 130 (a 130
-			     fade of the full-screen art read as a snap). -->
-			<animation effect="fade" start="100" end="0" time="380" tween="sine" easing="inout">WindowClose</animation>
+			<animation effect="fade" start="0" end="100" time="Bald_InfoBackdropTime" tween="sine" easing="inout">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="Bald_InfoBackdropTime" tween="sine" easing="inout">WindowClose</animation>
 			<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field">bald/white.png</texture></control>
 			<control type="image"><width>1920</width><height>1080</height><aspectratio>scale</aspectratio><texture background="true">$VAR[Bald_ItemFanart]</texture></control>
 		</control>
@@ -37,36 +37,37 @@
 		<control type="button" id="8"><include>HiddenObject</include></control>
 		<control type="button" id="9"><include>HiddenObject</include></control>
 		<control type="button" id="11"><include>HiddenObject</include></control>
-		<!-- The scrims and the TV dim that darken the art. From Home they wait for the frame zoom (260 after); over
-		     the library's own backdrop they arrive with it, or the sharp fanart showed undimmed for a moment and then
-		     darkened (a bright flash on opening a show from the library). -->
+		<!-- What lies over the art: the Overview's scrims, or the Cast and More backdrop. From Home they wait for the frame
+		     zoom and leave with the text; over the dialog's own backdrop they come and go with it (arriving later, the
+		     sharp fanart showed undimmed for a moment and then darkened; leaving sooner, the Cast and More backdrop
+		     uncovered the sharp fanart before it dissolved). -->
 		<control type="group">
-			<animation type="WindowOpen" condition="!$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout" /></animation>
-			<animation type="WindowOpen" condition="$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
-			<animation type="WindowClose" condition="!$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" /></animation>
-			<animation type="WindowClose" condition="$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="100" end="0" time="380" tween="sine" easing="inout" /></animation>
+			<animation type="WindowOpen" condition="!$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="0" end="100" time="Bald_InfoInTime" delay="Bald_InfoInDelay" tween="sine" easing="inout" /></animation>
+			<animation type="WindowOpen" condition="$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="0" end="100" time="Bald_InfoBackdropTime" tween="sine" easing="inout" /></animation>
+			<animation type="WindowClose" condition="!$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="100" end="0" time="Bald_InfoOutTime" tween="sine" easing="inout" /></animation>
+			<animation type="WindowClose" condition="$EXP[Bald_InfoOwnBackdrop]"><effect type="fade" start="100" end="0" time="Bald_InfoBackdropTime" tween="sine" easing="inout" /></animation>
 			<!-- Only Overview needs the hero's directional scrims. -->
 			<control type="group">
 				<visible>$EXP[Bald_InfoOnOverview]</visible>
-				<animation effect="fade" start="0" end="100" time="460" tween="sine" easing="inout">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="460" tween="sine" easing="inout">Hidden</animation>
+				<animation effect="fade" start="0" end="100" time="Bald_InfoPageFadeTime" tween="sine" easing="inout">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="Bald_InfoPageFadeTime" tween="sine" easing="inout">Hidden</animation>
 				<include>Bald_InfoScrims</include>
 			</control>
-		</control>
-		<control type="group">
-			<animation effect="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="130" tween="sine" easing="inout">WindowClose</animation>
-			<!-- Crossfade to the SAME cached blur, field and multiplier used by Home (over background video, the dimmed
-			     video instead, so Home's zoomed fanart never shows through the Cast and More pages).
-			     Bald Helper (or TMDb Helper) follows the dialog's own item until More like this names its container
-			     (Bald_FollowContainer, 5100). -->
+			<!-- Cast and More like this: the SAME cached blur, field and multiplier used by Home (over background video, the
+			     dimmed video instead, so Home's zoomed fanart never shows through). Bald Helper (or TMDb Helper) follows
+			     the dialog's own item until More like this names its container (Bald_FollowContainer, 5100). -->
 			<control type="group" id="5200">
 				<visible>!$EXP[Bald_InfoOnOverview]</visible>
-				<animation effect="fade" start="0" end="100" time="460" tween="sine" easing="inout">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="460" tween="sine" easing="inout">Hidden</animation>
+				<animation effect="fade" start="0" end="100" time="Bald_InfoPageFadeTime" tween="sine" easing="inout">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="Bald_InfoPageFadeTime" tween="sine" easing="inout">Hidden</animation>
 				<include>Bald_WindowBase</include>
 				<include>Bald_BackdropImage</include>
 			</control>
+		</control>
+		<!-- The pages and hints: in after the frame zoom, out first on closing. -->
+		<control type="group">
+			<animation effect="fade" start="0" end="100" time="Bald_InfoInTime" delay="Bald_InfoInDelay" tween="sine" easing="inout">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="Bald_InfoOutTime" tween="sine" easing="inout">WindowClose</animation>
 			<include condition="!$EXP[Bald_InfoTVItem]">Bald_InfoOverview</include>
 			<include condition="$EXP[Bald_InfoTVItem]">Bald_InfoTVOverview</include>
 			<include>Bald_InfoCastPage</include>

@@ -228,6 +228,16 @@
 	</map>
 
 	<!-- ============ Animations ============ -->
+	<!-- The dialog's timings (DialogVideoInfo.xml; Home's frame zoom is Bald_InfoZoom* and Bald_InfoReturn*,
+	     Includes_Bald_Home.xml). From Home: the art layers (scrims, Cast and More backdrop) and the pages fade in over
+	     InTime after InDelay, once the zoom is under way, and leave over OutTime before the frame returns. Opened away
+	     from Home, the dialog's own backdrop and the art layers come and go together over BackdropTime (the pages keep
+	     InTime / OutTime). Changing page, the scrims and the backdrop crossfade over PageFadeTime. -->
+	<constant name="Bald_InfoInDelay">260</constant>
+	<constant name="Bald_InfoInTime">360</constant>
+	<constant name="Bald_InfoOutTime">130</constant>
+	<constant name="Bald_InfoBackdropTime">380</constant>
+	<constant name="Bald_InfoPageFadeTime">460</constant>
 	<!-- Info content in: fade 400 and rise 18 px over 560, base delay 380 plus the stagger (0, 60, 100, 140, 180, 220,
 	     270, 310 in the prototype). -->
 	<include name="Bald_AnimInfoIn">
