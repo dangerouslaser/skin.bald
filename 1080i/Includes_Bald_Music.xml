@@ -228,7 +228,7 @@
 		<definition>
 			<include>Bald_MusicBackdrop</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>$PARAM[title_width]</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_MusicHeading]</label></control>
-			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<include>Bald_LibrarySort</include>
 		</definition>
 	</include>
 	<!-- A view container's shared behaviour: remember it for the letter bar, follow it for the blur, route Up / Left at

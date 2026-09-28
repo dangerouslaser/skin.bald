@@ -87,6 +87,15 @@
 		</control>
 		</definition>
 	</include>
+	<!-- The library's "sort method · order" line at the top right, over the preview column (or, on the full-width
+	     views, the right column). -->
+	<include name="Bald_LibrarySort">
+		<param name="left">Bald_PreviewLeft</param>
+		<param name="width">528</param>
+		<definition>
+			<control type="label"><left>$PARAM[left]</left><top>120</top><width>$PARAM[width]</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+		</definition>
+	</include>
 	<!-- Rows of the library options menu (list 9150). -->
 	<include name="Bald_MenuRowUnfocused">
 		<definition>
@@ -257,7 +266,7 @@
 			<include>Bald_Field</include>
 			<include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_LibraryMoviesHeading]</label></control>
-			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<include>Bald_LibrarySort</include>
 			<control type="list" id="510">
 				<left>84</left><top>210</top><width>1152</width><height>648</height>
 				<orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems>

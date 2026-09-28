@@ -50,7 +50,7 @@
 			<visible>Control.IsVisible(515)</visible>
 			<include>Bald_Field</include>
 			<include>Bald_BackdropImage</include>
-			<control type="label"><left>Bald_RightColumn</left><top>120</top><width>384</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<include content="Bald_LibrarySort"><param name="left">Bald_RightColumn</param><param name="width">384</param></include>
 			<control type="group">
 				<visible>!Container(515).ListItem.IsParentFolder + !String.IsEmpty(Container(515).ListItem.Title)</visible>
 				<include>Bald_LibraryDim</include>

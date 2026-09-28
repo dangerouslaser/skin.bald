@@ -34,7 +34,7 @@
 			<include>Bald_Field</include>
 			<include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>624</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_LibraryMoviesHeading]</label></control>
-			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<include>Bald_LibrarySort</include>
 			<control type="list" id="514">
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>624</width><height>616</height><orientation>vertical</orientation>
 				<viewtype label="31854">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
