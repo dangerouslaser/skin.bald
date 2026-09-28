@@ -333,6 +333,24 @@ class FollowerTests(Case):
         self.settle()
         self.assertEqual(self.window.get("Bald.Blur"), self.blurrer.path_for("/a.jpg"))
 
+    def test_blur_strength_follows_the_skin_setting_and_republishes(self):
+        FakeFile.files["/a.jpg"] = jpeg()
+        self.focus("9101", "/a.jpg")
+        self.settle()
+        self.assertTrue(self.window.get("Bald.Blur").endswith("-r40.jpg"))
+        labels = dict(self.xbmc.labels)
+        labels[blur.STRENGTH_SETTING] = "strong"
+        self.xbmc.labels = labels
+        self.clock.advance(blur.STRENGTH_SECONDS)
+        self.settle()
+        self.assertEqual(self.blurrer.radius, blur.STRENGTHS["strong"])
+        self.assertTrue(self.window.get("Bald.Blur").endswith("-r70.jpg"))
+        labels[blur.STRENGTH_SETTING] = ""
+        self.clock.advance(blur.STRENGTH_SECONDS)
+        self.settle()
+        self.assertEqual(self.blurrer.radius, blur.RADIUS)
+        self.assertTrue(self.window.get("Bald.Blur").endswith("-r40.jpg"))
+
     def test_a_cache_hit_is_published_after_100_ms_even_while_scrolling(self):
         FakeFile.files.update({"/a.jpg": jpeg(), "/b.jpg": jpeg(colour=(200, 0, 0))})
         self.blurrer.make("/b.jpg")

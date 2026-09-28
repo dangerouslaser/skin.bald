@@ -48,6 +48,7 @@ class NativeSettingsTests(unittest.TestCase):
         cls.windows = {name: resolve_window(name, definitions) for name in WINDOWS}
         cls.fonts = tokens(SKIN / "Font.xml", "font")
         cls.colors = {name for name in tokens(ROOT / "colors" / "defaults.xml", "color") if name.startswith("bald_")}
+        cls.colors |= {"$VAR[Bald_BlurDiffuse]"}  # the blurred background's brightness: a bald_backdrop* colour
 
     def controls(self, window, control_id):
         return [node for node in self.windows[window].iter("control") if node.get("id") == control_id]

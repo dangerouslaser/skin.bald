@@ -36,6 +36,11 @@ from .common import ADDON_ID, HOME_WINDOW, SKIN_ID
 # Output: a cover-cropped 480 x 270 copy (a quarter of 1080p, drawn stretched to 1920 x 1080) blurred at RADIUS.
 SIZE = (480, 270)
 RADIUS = 40
+# Appearance › Blur strength (Skin.String(Bald.BlurStrength)): the radius per value; unset is RADIUS (medium). The
+# radius is part of each cached file's name, so a change blurs afresh and never reuses another strength's files.
+STRENGTH_SETTING = "Skin.String(Bald.BlurStrength)"
+STRENGTHS = {"light": 20, "strong": 70}
+STRENGTH_SECONDS = 2.0  # how often the follower reads the setting again
 QUALITY = 90
 CACHE_DIR = "special://profile/addon_data/script.bald.helper/blur"
 CACHE_MAX_BYTES = 60 * 1024 * 1024
@@ -103,6 +108,7 @@ class Blurrer:
         self.thumbnails = thumbnails if thumbnails is not None else xbmcvfs.translatePath(THUMBNAILS)
         self.log = log or (lambda text, level=None: None)
         self.writes = 0
+        self.radius = RADIUS
         self._pil = None
         self._pil_failed = False
 
@@ -123,7 +129,7 @@ class Blurrer:
 
     # --- the cache ---
     def path_for(self, source: str) -> str:
-        return os.path.join(self.cache_dir, cache_name(source))
+        return os.path.join(self.cache_dir, cache_name(source, self.radius))
 
     def has(self, source: str) -> bool:
         """Whether the source's blur is in the cache (one stat; does not count as use)."""
@@ -232,7 +238,7 @@ class Blurrer:
             image = image.convert("RGB")
         resample = getattr(getattr(Image, "Resampling", Image), "BILINEAR")
         image = ImageOps.fit(image, SIZE, method=resample, centering=(0.5, 0.5))
-        image = image.filter(ImageFilter.GaussianBlur(RADIUS))
+        image = image.filter(ImageFilter.GaussianBlur(self.radius))
         out = io.BytesIO()
         image.save(out, "JPEG", quality=QUALITY, subsampling=0)
         return out.getvalue()
@@ -282,6 +288,7 @@ class Follower(common.Threads):
         self.published = None   # the source Bald.Blur was last published for
         self.wanted = None      # the source being blurred on the worker
         self._job = None
+        self._strength_checked = float("-inf")
 
     # --- reading Kodi ---
     def resting(self) -> bool:
@@ -312,11 +319,26 @@ class Follower(common.Threads):
         self.window.setProperty(PROPERTY_FOR, source)
         self.published = source
 
+    def update_strength(self) -> None:
+        """Follow Appearance › Blur strength; on a change, blur the shown item again at the new radius."""
+        now = self.clock()
+        if now < self._strength_checked + STRENGTH_SECONDS:
+            return
+        self._strength_checked = now
+        radius = STRENGTHS.get(self.xbmc.getInfoLabel(STRENGTH_SETTING).strip().lower(), RADIUS)
+        if radius != self.blurrer.radius:
+            with self.lock:
+                self.blurrer.radius = radius
+                self.published = None  # republish the current item at the new strength
+                self.candidate = None
+                self.wanted = None
+
     def tick(self) -> float:
         """One poll. Returns how long to wait before the next."""
         if self.resting():
             self.candidate = None
             return IDLE_SECONDS
+        self.update_strength()
         if not self.blurrer.available():
             return IDLE_SECONDS
         source, scrolling = self.source()

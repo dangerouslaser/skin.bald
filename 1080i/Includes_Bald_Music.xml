@@ -57,13 +57,13 @@
 			<width>1920</width><height>1080</height><aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_MusicBlur]</texture>
 			<visible>$EXP[Bald_MusicHasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
-			<colordiffuse>bald_backdrop</colordiffuse>
+			<colordiffuse>$VAR[Bald_BlurDiffuse]</colordiffuse>
 		</control>
 		<control type="image">
 			<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>800</fadetime>
 			<texture background="true">$VAR[Bald_MusicBlur]</texture>
 			<visible>$EXP[Bald_MusicHasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
-			<colordiffuse>bald_backdrop</colordiffuse>
+			<colordiffuse>$VAR[Bald_BlurDiffuse]</colordiffuse>
 		</control>
 	</include>
 

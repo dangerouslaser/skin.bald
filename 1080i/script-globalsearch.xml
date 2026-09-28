@@ -26,7 +26,7 @@
 			<width>1920</width><height>1080</height><aspectratio>scale</aspectratio><fadetime>800</fadetime>
 			<texture background="true">$VAR[Bald_SearchBlur]</texture>
 			<visible>!$EXP[Bald_VideoBackdropOn] + !Skin.HasSetting(Bald.DisableBlur) + [[$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.Blur))] | [!$EXP[Bald_HasHelper] + $EXP[Bald_HasTMDbHelper] + !String.IsEmpty(Window.Property(TMDbHelper.ListItem.BlurImage))]]</visible>
-			<colordiffuse>bald_backdrop</colordiffuse>
+			<colordiffuse>$VAR[Bald_BlurDiffuse]</colordiffuse>
 		</control>
 		<control type="image"><width>1920</width><height>1080</height><texture colordiffuse="bald_field60">bald/white.png</texture><visible>!$EXP[Bald_VideoBackdropOn]</visible></control>
 		<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[137]</label></control>

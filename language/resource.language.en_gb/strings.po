@@ -1218,6 +1218,41 @@ msgctxt "#31687"
 msgid "Right for channels"
 msgstr ""
 
+#. Appearance, Blur strength: a light blur
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31688"
+msgid "Light"
+msgstr ""
+
+#. Appearance, Blur strength: the default blur
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31689"
+msgid "Medium"
+msgstr ""
+
+#. Appearance, Blur strength: a strong blur
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31690"
+msgid "Strong"
+msgstr ""
+
+#. Appearance, Artwork: how strongly the background is blurred (Bald Helper)
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31691"
+msgid "Blur strength"
+msgstr ""
+
+#. Appearance, Artwork: how bright the blurred background is
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31692"
+msgid "Background brightness"
+msgstr ""
+
 #: /1080i/DialogPVRGuideControls.xml
 #. Guide controls: jump to the first programme or channel
 msgctxt "#31670"

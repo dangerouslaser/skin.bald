@@ -41,7 +41,7 @@
 			<aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_CurtainBlur]</texture>
 			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
-			<colordiffuse>bald_backdrop</colordiffuse>
+			<colordiffuse>$VAR[Bald_BlurDiffuse]</colordiffuse>
 		</control>
 	</controls>
 </window>

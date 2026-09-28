@@ -26,6 +26,19 @@
 				<!-- Artwork -->
 				<control type="radiobutton" id="9601"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31761]</label><selected>!Skin.HasSetting(Bald.HideClearlogo)</selected><onclick>Skin.ToggleSetting(Bald.HideClearlogo)</onclick></control>
 				<control type="radiobutton" id="9602"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31762]</label><selected>!Skin.HasSetting(Bald.DisableBlur)</selected><onclick>Skin.ToggleSetting(Bald.DisableBlur)</onclick></control>
+				<!-- Blur strength (Bald Helper reads Skin.String(Bald.BlurStrength): light 20, medium 40, strong 70 px radius) and
+				     the blurred background's brightness (Bald_BlurDiffuse). Both need the blurred background on. -->
+				<control type="button" id="9608"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31691]</label><label2>$VAR[Bald_BlurStrengthLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.BlurStrength))">Skin.SetString(Bald.BlurStrength,strong)</onclick>
+					<onclick condition="Skin.String(Bald.BlurStrength,strong)">Skin.SetString(Bald.BlurStrength,light)</onclick>
+					<onclick condition="Skin.String(Bald.BlurStrength,light)">Skin.Reset(Bald.BlurStrength)</onclick>
+				</control>
+				<control type="button" id="9609"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31692]</label><label2>$VAR[Bald_BlurBrightnessLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.BlurBrightness))">Skin.SetString(Bald.BlurBrightness,40)</onclick>
+					<onclick condition="Skin.String(Bald.BlurBrightness,40)">Skin.SetString(Bald.BlurBrightness,50)</onclick>
+					<onclick condition="Skin.String(Bald.BlurBrightness,50)">Skin.SetString(Bald.BlurBrightness,20)</onclick>
+					<onclick condition="Skin.String(Bald.BlurBrightness,20)">Skin.Reset(Bald.BlurBrightness)</onclick>
+				</control>
 				<!-- Library pages outside the Bald views: the focused item's fanart behind the page (DefaultBackground). -->
 				<control type="radiobutton" id="9603"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param></include><label>$LOCALIZE[31985]</label><selected>!Skin.HasSetting(Bald.HideBrowseFanart)</selected><onclick>Skin.ToggleSetting(Bald.HideBrowseFanart)</onclick></control>
 				<!-- Music videos as posters rather than 16:9 thumbs in walls 500 and 54. -->

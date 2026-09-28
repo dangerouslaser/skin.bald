@@ -114,7 +114,7 @@ class SettingsScaffoldTests(unittest.TestCase):
         definitions = include_definitions()
         cls.windows = {name: resolve_window(name, definitions) for name in WINDOWS}
         cls.fonts = tokens(SKIN / "Font.xml", "font")
-        cls.colors = tokens(ROOT / "colors" / "defaults.xml", "color")
+        cls.colors = set(tokens(ROOT / "colors" / "defaults.xml", "color")) | {"$VAR[Bald_BlurDiffuse]"}
 
     def control(self, window, control_id):
         return self.windows[window].find(f".//control[@id='{control_id}']")

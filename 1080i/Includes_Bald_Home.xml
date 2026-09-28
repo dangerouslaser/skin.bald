@@ -148,7 +148,7 @@
 			<aspectratio>scale</aspectratio>
 			<texture>$VAR[Bald_BlurImage]</texture>
 			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
-			<colordiffuse>bald_backdrop</colordiffuse>
+			<colordiffuse>$VAR[Bald_BlurDiffuse]</colordiffuse>
 		</control>
 		<control type="image">
 			<width>1920</width>
@@ -158,13 +158,31 @@
 			<texture background="true">$VAR[Bald_BlurImage]</texture>
 			<!-- Optional enhancement: the field underneath is the supported no-helper fallback. -->
 			<visible>$EXP[Bald_BlurOn] + $EXP[Bald_HasBlur] + !$EXP[Bald_VideoBackdropOn]</visible>
-			<colordiffuse>bald_backdrop</colordiffuse>
+			<colordiffuse>$VAR[Bald_BlurDiffuse]</colordiffuse>
 		</control>
 	</include>
 	<!-- The blurred background. Bald Helper publishes Home's Bald.Blur (the followed item's blur, empty where there is
 	     no item: settings, the guide) and Bald.Blur.Last (the last non-empty one); without it, TMDb Helper publishes
 	     TMDbHelper.ListItem.BlurImage and Bald_CurtainHandoff keeps the last one as each window is left (Bald.LastBlur).
 	     Windows without an item show the last blur; Home and the library keep the plain field for an item without art. -->
+	<!-- The blurred background's brightness (Appearance › Background brightness, Skin.String(Bald.BlurBrightness)). -->
+	<variable name="Bald_BlurDiffuse">
+		<value condition="Skin.String(Bald.BlurBrightness,20)">bald_backdrop20</value>
+		<value condition="Skin.String(Bald.BlurBrightness,40)">bald_backdrop40</value>
+		<value condition="Skin.String(Bald.BlurBrightness,50)">bald_backdrop50</value>
+		<value>bald_backdrop</value>
+	</variable>
+	<variable name="Bald_BlurStrengthLabel">
+		<value condition="Skin.String(Bald.BlurStrength,light)">$LOCALIZE[31688]</value>
+		<value condition="Skin.String(Bald.BlurStrength,strong)">$LOCALIZE[31690]</value>
+		<value>$LOCALIZE[31689]</value>
+	</variable>
+	<variable name="Bald_BlurBrightnessLabel">
+		<value condition="Skin.String(Bald.BlurBrightness,20)">20%</value>
+		<value condition="Skin.String(Bald.BlurBrightness,40)">40%</value>
+		<value condition="Skin.String(Bald.BlurBrightness,50)">50%</value>
+		<value>30%</value>
+	</variable>
 	<expression name="Bald_BlurOn">[!Skin.HasSetting(Bald.DisableBlur) + [$EXP[Bald_HasHelper] | $EXP[Bald_HasTMDbHelper]]]</expression>
 	<expression name="Bald_BlurNow">[[$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.Blur))] | [!$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.BlurImage))]]</expression>
 	<expression name="Bald_BlurLastSet">[[$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.Blur.Last))] | [!$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.LastBlur))]]</expression>

@@ -400,7 +400,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 9500	Category list; static items 1, 2, 6, 3 and 5 (Artwork, Information, Ratings, Behavior, Typography;
 		item 4 was "Estuary windows", folded into the others); the item ids pick the rows (Bald_SettingRow)
 9600	Row grouplist
-9601-9607	Artwork: clearlogos, blurred backgrounds, fanart behind other library pages, music video
+9601-9609	Artwork: clearlogos, blurred backgrounds (9608 strength, 9609 brightness), fanart behind other library pages, music video
 		posters; genre background, weather background and weather icon packs
 9611-9615	Information: media flags, row item count, titles in list views, profile name and
 		temperature in page headers

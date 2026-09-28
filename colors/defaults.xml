@@ -34,6 +34,10 @@
 	<color name="bald_ink10">1AECEEF2</color>
 	<!-- Blurred fanart background brightness (multiplies the image): 30%. -->
 	<color name="bald_backdrop">FF4D4D4D</color>
+	<!-- Appearance › Background brightness for the blurred background (Bald_BlurDiffuse): 20, 40 or 50 %; unset is 30. -->
+	<color name="bald_backdrop20">FF333333</color>
+	<color name="bald_backdrop40">FF666666</color>
+	<color name="bald_backdrop50">FF808080</color>
 	<!-- Info dialog scrim layer. -->
 	<color name="bald_field60">990B0C10</color>
 	<!-- The context menu's scrim when it opens away from Home. -->
