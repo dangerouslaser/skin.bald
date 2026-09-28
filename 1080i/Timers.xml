@@ -170,6 +170,14 @@
         <stop>!System.IdleTime(60) | Control.HasFocus(9199)</stop>
     </timer>
     <!-- Bald Home ambient: while idle, advance the current row every 8 s (Skin setting Bald.AmbientOff turns it off). -->
+    <!-- Idle drift (Bald_IdleDrift): runs while Home, or Now Playing without its OSD, has been idle a minute; stops at 12
+         minutes and, still idle, starts again, so the drift's four 3-minute steps loop. Literal conditions: $EXP in a
+         timer condition did not trigger (docs/NOTES.md). -->
+    <timer>
+        <name>bald_drift</name>
+        <start reset="true">System.IdleTime(60) + [Window.IsActive(home) | [Window.IsActive(visualisation) + !Window.IsVisible(musicosd)]]</start>
+        <stop>!System.IdleTime(60) | Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_drift),720)</stop>
+    </timer>
     <timer>
         <name>bald_ambient</name>
         <start reset="true">Window.IsActive(home) + System.IdleTime(60) + !Skin.HasSetting(Bald.AmbientOff) + String.IsEmpty(Window(home).Property(Bald.Preload))</start>

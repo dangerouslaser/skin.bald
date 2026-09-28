@@ -43,14 +43,9 @@
 			<animation type="WindowClose">
 				<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 			</animation>
-			<!-- Idle: a slow drift and a dim, so nothing burns in over a long album (as Home's idle; sine in-out drift
-			     slides, the same deliberate exception to the move curve). -->
-			<animation type="Conditional" condition="$EXP[Bald_NowPlayingIdle]" pulse="true">
-				<effect type="slide" start="0,0" end="12,0" time="23000" tween="sine" easing="inout" />
-			</animation>
-			<animation type="Conditional" condition="$EXP[Bald_NowPlayingIdle]" pulse="true">
-				<effect type="slide" start="0,0" end="0,8" time="31000" tween="sine" easing="inout" />
-			</animation>
+			<!-- Idle: a dim, and a step round a 12 x 8 px square every 3 minutes (Bald_IdleDrift), so nothing burns in over
+			     a long album. -->
+			<include content="Bald_IdleDrift"><param name="x">12</param><param name="y">8</param></include>
 			<animation type="Conditional" condition="$EXP[Bald_NowPlayingIdle]">
 				<effect type="fade" start="100" end="70" time="600" tween="sine" easing="inout" />
 			</animation>

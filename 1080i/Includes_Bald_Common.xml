@@ -32,6 +32,22 @@
 			<visible>!$EXP[Bald_VideoBackdropOn]</visible>
 		</control>
 	</include>
+	<!-- Idle burn-in guard: while Home or Now Playing sits idle, the content steps round a small square (x, y px), one
+	     corner every 3 minutes (Timers.xml bald_drift loops every 12 minutes). Each step is instant and the screen is
+	     still in between, so Kodi redraws the whole screen once per step instead of every frame, as a continuous
+	     pulsing drift made it. -->
+	<expression name="Bald_DriftStep1">[Skin.TimerIsRunning(bald_drift) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_drift),180) + Integer.IsLess(Skin.TimerElapsedSecs(bald_drift),360)]</expression>
+	<expression name="Bald_DriftStep2">[Skin.TimerIsRunning(bald_drift) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_drift),360) + Integer.IsLess(Skin.TimerElapsedSecs(bald_drift),540)]</expression>
+	<expression name="Bald_DriftStep3">[Skin.TimerIsRunning(bald_drift) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(bald_drift),540)]</expression>
+	<include name="Bald_IdleDrift">
+		<param name="x">2</param>
+		<param name="y">2</param>
+		<definition>
+			<animation type="Conditional" condition="$EXP[Bald_DriftStep1]"><effect type="slide" start="0,0" end="$PARAM[x],0" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="$EXP[Bald_DriftStep2]"><effect type="slide" start="0,0" end="$PARAM[x],$PARAM[y]" time="0" tween="cubic" easing="out" /></animation>
+			<animation type="Conditional" condition="$EXP[Bald_DriftStep3]"><effect type="slide" start="0,0" end="0,$PARAM[y]" time="0" tween="cubic" easing="out" /></animation>
+		</definition>
+	</include>
 	<!-- A window's base: the field, or the dimmed video behind it. -->
 	<include name="Bald_WindowBase">
 		<include>Bald_Field</include>

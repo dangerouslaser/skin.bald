@@ -172,3 +172,20 @@ class BackgroundVideoTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class IdleDriftTests(unittest.TestCase):
+    """The idle burn-in drift steps every 3 minutes instead of pulsing (a pulsing slide redraws every frame)."""
+
+    def test_no_pulsing_animation_in_bald_windows(self):
+        for name in ("Home.xml", "MusicVisualisation.xml"):
+            root = includes(name)
+            self.assertFalse(any(a.get("pulse") == "true" for a in root.iter("animation")), name)
+
+    def test_the_steps_are_instant_and_driven_by_a_looping_timer(self):
+        drift = includes("Includes_Bald_Common.xml").find("include[@name='Bald_IdleDrift']/definition")
+        effects = [a.find("effect") for a in drift.findall("animation")]
+        self.assertEqual([e.get("time") for e in effects], ["0", "0", "0"])
+        timer = next(t for t in includes("Timers.xml").iter("timer") if t.findtext("name") == "bald_drift")
+        self.assertIn("System.IdleTime(60)", timer.findtext("start"))
+        self.assertIn("Skin.TimerElapsedSecs(bald_drift),720", timer.findtext("stop"))

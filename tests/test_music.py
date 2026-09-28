@@ -178,8 +178,11 @@ class NowPlayingTests(unittest.TestCase):
 
     def test_idle_drift_and_dim(self):
         idle = [a for a in self.raw.iter("animation") if a.get("condition") == "$EXP[Bald_NowPlayingIdle]"]
-        self.assertEqual(sum(a.get("pulse") == "true" for a in idle), 2)
         self.assertTrue(any(e.get("type") == "fade" for a in idle for e in a))
+        # The drift steps (Bald_IdleDrift), it never pulses: a pulsing drift redrew the whole screen every frame.
+        self.assertFalse(any(a.get("pulse") == "true" for a in self.raw.iter("animation")))
+        drift = [i for i in self.raw.iter("include") if i.get("content") == "Bald_IdleDrift"]
+        self.assertEqual([{p.get("name"): p.text for p in i.findall("param")} for i in drift], [{"x": "12", "y": "8"}])
 
     def test_motion_uses_only_the_spec_curves(self):
         for path in ("MusicVisualisation.xml", "Includes_Bald_Music.xml", "View_550_Bald_Music.xml", "MyMusicNav.xml"):

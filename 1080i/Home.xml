@@ -87,17 +87,11 @@
 		<include>Bald_WindowBase</include>
 		<include>Bald_BackdropImage</include>
 
-		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). The drift slides are sine in-out, a
-		     deliberate exception to the move curve (cubic out): a pulsing drift must ease at both ends. -->
+		<!-- While idle, everything steps round a 2 px square every 3 minutes (burn-in guard, Bald_IdleDrift). -->
 		<control type="group">
 			<!-- Home is the root: it is always returned to (in from the left) and always left deeper (out to the left). -->
 			<include content="Bald_AnimWindowDepth"><param name="back_in">true</param></include>
-			<animation type="Conditional" condition="$EXP[Bald_Idle]" pulse="true">
-				<effect type="slide" start="0,0" end="2,0" time="23000" tween="sine" easing="inout" />
-			</animation>
-			<animation type="Conditional" condition="$EXP[Bald_Idle]" pulse="true">
-				<effect type="slide" start="0,0" end="0,2" time="31000" tween="sine" easing="inout" />
-			</animation>
+			<include>Bald_IdleDrift</include>
 
 			<!-- Art frame -->
 			<control type="group">
