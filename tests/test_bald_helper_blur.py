@@ -324,6 +324,17 @@ class FollowerTests(Case):
         self.follower.tick()
         self.assertEqual(self.window.get("Bald.Blur.For"), "/a.jpg")
 
+    @needs_pillow
+    def test_a_weather_tiles_picture_blurs_from_its_thumb(self):
+        # Weather tiles (static items, Includes_Bald_Weather.xml) have no fanart: their thumb is the weather
+        # background pack's picture, a resource:// path Kodi reads through xbmcvfs.
+        source = "resource://resource.images.weatherfanart.multi/32/sunny-2.jpg"
+        FakeFile.files[source] = jpeg()
+        self.focus("9101", thumb=source)
+        self.settle()
+        self.assertEqual(self.window.get("Bald.Blur.For"), source)
+        self.assertEqual(self.window.get("Bald.Blur"), self.blurrer.path_for(source))
+
     def test_a_cache_hit_publishes_without_blurring(self):
         FakeFile.files["/a.jpg"] = jpeg()
         self.blurrer.make("/a.jpg")
@@ -621,6 +632,13 @@ class WarmerTests(Case):
         self.rows(r9101=["https://example/a.jpg", "/b.jpg"])
         self.remote.add("https://example/a.jpg")
         self.assertEqual(self.warmer.sources(), ["/b.jpg"])
+
+    def test_warms_weather_tiles_pictures_from_their_thumbs(self):
+        source = "resource://resource.images.weatherfanart.multi/32/sunny-2.jpg"
+        self.xbmc.labels["Container(9101).NumItems"] = "3"
+        self.xbmc.labels["Container(9101).ListItem.Art(thumb)"] = source
+        del self.blurrer.local  # the real check: an installed resource add-on counts as local
+        self.assertEqual(self.warmer.sources(), [source])
 
     def test_a_queue_stops_when_home_is_left(self):
         self.warmer.queue = ["/a.jpg", "/b.jpg"]

@@ -14,16 +14,27 @@
      Each item carries what its tile and caption show: label (top of the tile), label2 (under the icon), the icon from
      the weather icon pack (WeatherOutlookIconPrefixVar, Bald's own Meteocons icons without one), and the properties
      Bald.Weather (the tile's kind), Bald.WeatherCode (the condition's fanart code, for the weather background pack),
-     Bald.Title, Bald.Meta, Bald.Detail, Bald.Accent and Bald.Note (the caption's lines, Bald_WeatherCaption). -->
+     Bald.Title, Bald.Meta, Bald.Detail, Bald.Accent and Bald.Note (the caption's lines, Bald_WeatherCaption).
+
+     With a weather background pack chosen, each item's thumb is its condition's picture from the pack, which Bald
+     Helper resolves (resources/lib/weather.py) and publishes per tile on Home as Bald.Weather.Art.<slot>
+     (Bald.Weather.Art.Current, .Daily.<n>, .Day<n>, .Hourly.<n>). Per tile rather than per condition code because a
+     property name cannot hold another infolabel: Property(Bald.Weather.Art.$INFO[Weather.Data(...)]) never resolves
+     in Kodi. A static item's <thumb> with $INFO is updated live (CGUIStaticItem), so the thumb follows the property.
+     The row's art frame (generator/fanart-weather.xmltemplate) and the blurred background (Bald Helper's blur
+     follower, which falls back to an item's thumb) both show it; the tile itself keeps drawing the icon (the weather
+     row passes no art to Bald_RowSquare). -->
 <includes>
 	<!-- A weather service is set up and has data. -->
 	<expression name="Bald_WeatherReady">[!String.IsEmpty(Weather.Plugin) + Weather.IsFetched]</expression>
 	<!-- The focused row item is a weather tile: Select runs the tile's own action, not Info (Bald_Row). -->
 	<expression name="Bald_WeatherTileItem">[!String.IsEmpty(ListItem.Property(Bald.Weather))]</expression>
-	<!-- The art frame of a weather row with a folder pack (one folder of pictures per condition, no file extension):
-	     the current conditions' pictures cycle there (Home.xml), since an image control cannot show a folder. A pack
-	     of single pictures comes through $VAR[Bald_Fanart] for each tile instead (generator/fanart-weather.xmltemplate). -->
-	<expression name="Bald_WeatherFolderArt">[String.IsEqual(Window(home).Property(Bald.RowStyle),weather) + !String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) + String.IsEmpty(Skin.String(Bald.WeatherFanart.ext)) + $EXP[Bald_WeatherReady]]</expression>
+	<!-- The art frame of a weather row shows the focused tile's picture through $VAR[Bald_Fanart] (its thumb, from Bald
+	     Helper; generator/fanart-weather.xmltemplate). Until Bald Helper has resolved the pictures for the chosen pack
+	     (Bald.Weather.ArtReady, within its first 10 s pass) a folder pack (one folder of pictures per condition, no
+	     file extension) cycles the current conditions' folder in its place (Home.xml), since an image control cannot
+	     show a folder, and a pack of single pictures names the tile's file directly. -->
+	<expression name="Bald_WeatherFolderArt">[String.IsEqual(Window(home).Property(Bald.RowStyle),weather) + !String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) + String.IsEmpty(Skin.String(Bald.WeatherFanart.ext)) + String.IsEmpty(Window(home).Property(Bald.Weather.ArtReady)) + $EXP[Bald_WeatherReady]]</expression>
 
 	<!-- ============ Row content ============ -->
 	<include name="Bald_WeatherDailyContent">
@@ -108,6 +119,7 @@
 			<label>$LOCALIZE[19030]</label>
 			<label2>$INFO[Weather.Data(Current.Temperature)]</label2>
 			<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Current.FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+			<thumb>$INFO[Window(home).Property(Bald.Weather.Art.Current)]</thumb>
 			<property name="Bald.Weather">now</property>
 			<property name="Bald.WeatherCode">$INFO[Weather.Data(Current.FanartCode)]</property>
 			<property name="Bald.Title">$INFO[Weather.Data(Current.Temperature)]</property>
@@ -130,6 +142,7 @@
 				<label>$INFO[Weather.Data(Daily.$PARAM[n].ShortDay)]</label>
 				<label2>$INFO[Window(home).Property(Bald.Weather.Daily.$PARAM[n].HighTemperature)]$INFO[Window(home).Property(Bald.Weather.Daily.$PARAM[n].LowTemperature), · ,]</label2>
 				<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Daily.$PARAM[n].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+				<thumb>$INFO[Window(home).Property(Bald.Weather.Art.Daily.$PARAM[n])]</thumb>
 				<property name="Bald.Weather">day</property>
 				<property name="Bald.WeatherCode">$INFO[Weather.Data(Daily.$PARAM[n].FanartCode)]</property>
 				<property name="Bald.Title">$INFO[Weather.Data(Daily.$PARAM[n].LongDay)]</property>
@@ -150,6 +163,7 @@
 				<label>$INFO[Weather.Data(Day$PARAM[n].Title)]</label>
 				<label2>$INFO[Weather.Data(Day$PARAM[n].HighTemp)]$INFO[Weather.Data(Day$PARAM[n].LowTemp), · ,]</label2>
 				<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Day$PARAM[n].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+				<thumb>$INFO[Window(home).Property(Bald.Weather.Art.Day$PARAM[n])]</thumb>
 				<property name="Bald.Weather">day</property>
 				<property name="Bald.WeatherCode">$INFO[Weather.Data(Day$PARAM[n].FanartCode)]</property>
 				<property name="Bald.Title">$INFO[Weather.Data(Day$PARAM[n].Title)]</property>
@@ -169,6 +183,7 @@
 				<label>$INFO[Window(home).Property(Bald.Weather.Hourly.$PARAM[n].Time)]</label>
 				<label2>$INFO[Window(home).Property(Bald.Weather.Hourly.$PARAM[n].Temperature)]</label2>
 				<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Hourly.$PARAM[n].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+				<thumb>$INFO[Window(home).Property(Bald.Weather.Art.Hourly.$PARAM[n])]</thumb>
 				<property name="Bald.Weather">hour</property>
 				<property name="Bald.WeatherCode">$INFO[Weather.Data(Hourly.$PARAM[n].FanartCode)]</property>
 				<property name="Bald.Title">$INFO[Window(home).Property(Bald.Weather.Hourly.$PARAM[n].Time)]</property>
@@ -224,9 +239,10 @@
 
 	<!-- ============ Art frame and caption ============ -->
 	<!-- The focused tile's weather icon, large in the middle of the art frame while there is no background picture for
-	     it (no weather background pack, or a tile without a condition code). Drawn with the clearlogos (Home.xml's logo
-	     group, which slides up 126 px on this row's 576 px frame), in their motion, per row and parity like
-	     Bald_ArtLogo: 480,270 there is the frame's centre, 720,408 on screen. -->
+	     it: no weather background pack, a tile without a condition code, or a folder pack without pictures for the
+	     tile's code once Bald Helper has looked (no thumb, Bald.Weather.ArtReady set). Drawn with the clearlogos
+	     (Home.xml's logo group, which slides up 126 px on this row's 576 px frame), in their motion, per row and parity
+	     like Bald_ArtLogo: 480,270 there is the frame's centre, 720,408 on screen. -->
 	<include name="Bald_WeatherArtIcon">
 		<param name="c" />
 		<param name="p" />
@@ -242,7 +258,7 @@
 					<height>288</height>
 					<aspectratio>keep</aspectratio>
 					<texture background="true">$INFO[Container($PARAM[c]).ListItem.Icon]</texture>
-					<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) | String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.WeatherCode))]</visible>
+					<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) | String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.WeatherCode)) | [String.IsEmpty(Container($PARAM[c]).ListItem.Art(thumb)) + String.IsEmpty(Skin.String(Bald.WeatherFanart.ext)) + !String.IsEmpty(Window(home).Property(Bald.Weather.ArtReady))]]</visible>
 					<include>Bald_AnimLogoIn</include>
 				</control>
 			</control>

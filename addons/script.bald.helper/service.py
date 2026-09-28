@@ -1,7 +1,7 @@
 """Bald Helper service: Bald's keymaps (resources/lib/keymap.py), its blurred backgrounds (resources/lib/blur.py),
 its latency-sensitive skin actions (resources/lib/actions.py), its online ratings (resources/lib/ratings.py), its
 spoiler stills (resources/lib/spoilers.py), its typeface and text size (resources/lib/lookandfeel.py) and its
-tidied weather values (resources/lib/weather.py).
+tidied weather values and weather tiles' pictures (resources/lib/weather.py).
 
 The blur follower, the ratings follower and the action worker run on their own threads; the keymap manager runs here,
 on the thread whose monitor receives the skin's notifications (and whose player receives playback events), and keeps
@@ -91,13 +91,14 @@ def start_lookandfeel():
 
 
 def start_weather():
-    """The tidier of forecast values for Bald's weather rows; its step runs in the keymap loop."""
+    """The tidier of forecast values (and each tile's weather background picture) for Bald's weather rows; its step
+    runs in the keymap loop."""
     try:
         import time
 
         from resources.lib.weather import Tidier
 
-        return Tidier(xbmc, xbmcgui.Window(10000), time.monotonic)
+        return Tidier(xbmc, xbmcgui.Window(10000), time.monotonic, xbmcvfs)
     except Exception as error:  # noqa: BLE001 - the rows show the add-on's own values
         xbmc.log(f"script.bald.helper: weather tidier did not start: {type(error).__name__}: {error}", xbmc.LOGERROR)
         return None
