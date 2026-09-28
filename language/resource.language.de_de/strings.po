@@ -854,7 +854,7 @@ msgid "Onest"
 msgstr "Onest"
 
 #: /1080i/Custom_1119_BaldPlayback.xml
-#. Bald Settings > Playback > Controls: show the big clock at the top right of the player controls
+#. Bald Settings > Playback > Controls: show the big clock and the finish time at the top right of the player controls
 msgctxt "#31416"
 msgid "Clock on the controls"
 msgstr "Uhr bei der Steuerung"

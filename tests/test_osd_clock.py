@@ -13,7 +13,7 @@ class OSDClockTests(unittest.TestCase):
         self.assertEqual(row.findtext("selected"), "!Skin.HasSetting(Bald.OSD.HideClock)")
         self.assertEqual(row.findtext("onclick"), "Skin.ToggleSetting(Bald.OSD.HideClock)")
 
-    def test_hidden_clock_lifts_the_finish_time(self):
+    def test_hidden_clock_hides_the_finish_time_and_lifts_the_mute_mark(self):
         root = ET.parse(SKIN / "Includes_Bald_Playback.xml").getroot()
         group = root.find("include[@name='Bald_PlaybackClock']/control")
         clock = group.find("control[@type='label']")
@@ -24,6 +24,10 @@ class OSDClockTests(unittest.TestCase):
         self.assertEqual((lift.text, lift.get("end"), lift.get("condition")),
                          ("Conditional", "0,-144", "Skin.HasSetting(Bald.OSD.HideClock)"))
         self.assertEqual(line.findtext("top"), "144")
+        ends = line.find("control[@type='label']")
+        self.assertEqual(ends.findtext("label"), "$VAR[Bald_PlaybackEnds]")
+        self.assertEqual(ends.findtext("visible"), "!Skin.HasSetting(Bald.OSD.HideClock)")
+        self.assertEqual(line.find("control[@type='image']").findtext("visible"), "Player.Muted")
 
 
 if __name__ == "__main__":
