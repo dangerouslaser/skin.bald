@@ -5,7 +5,7 @@
      keep Estuary's actions and navigation. -->
 <window id="1110" type="dialog">
 	<!-- Parks the video OSD's auto-close while this dialog is open over it (Includes_Bald_OSD.xml). -->
-	<include>Bald_OSDSuspendAutoClose</include>
+	<include content="Bald_OSDSuspendAutoClose"><param name="name">1110</param></include>
 	<defaultcontrol>11</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD+</depth>

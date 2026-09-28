@@ -46,7 +46,7 @@ class PlaylistEditorFooterTests(unittest.TestCase):
 
 class TimerIconTests(unittest.TestCase):
     def test_pvr_timer_icons_are_tinted_with_bald_tokens(self):
-        # Estuary's icons stay but take a Bald tint (recording in the accent, the reminder bell in ink).
+        # Estuary's icons stay but take a Bald tint (recording in the record red, the reminder bell in ink).
         known = tokens()
         for name in ("DialogSelect.xml",):
             root = Skin().window(name)
@@ -56,7 +56,7 @@ class TimerIconTests(unittest.TestCase):
                 with self.subTest(window=name, texture=node.text):
                     self.assertIn(node.get("colordiffuse"), known)
                     if node.text.endswith("recording.png"):
-                        self.assertEqual(node.get("colordiffuse"), "bald_accent")
+                        self.assertEqual(node.get("colordiffuse"), "bald_record")
         for name in ("Includes.xml", "Includes_Bald_Foundations.xml"):
             root = ET.parse(SKIN / name).getroot()
             for node in root.iter("texture"):

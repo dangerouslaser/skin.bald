@@ -5,8 +5,8 @@
      it with the channel's programmes, selects the one on now and opens information on Select; scrollbar 60 is the
      list's page control. -->
 <window>
-	<!-- The video OSD's auto-close stops while the guide is browsed. -->
-	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<!-- The video OSD's auto-close waits while this panel is browsed (Includes_Bald_OSD.xml). -->
+	<include content="Bald_OSDSuspendAutoClose"><param name="name">guide</param></include>
 	<defaultcontrol always="true">11</defaultcontrol>
 	<depth>DepthOSD</depth>
 	<include>Bald_PVRAnimOverlay</include>
@@ -24,14 +24,15 @@
 			<control type="fixedlist" id="11">
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>780</width><height>672</height>
 				<onleft>11</onleft><onup>11</onup>
-				<!-- Opened from the video OSD's down chain (Includes_Bald_OSD.xml): Right, or Down past the last programme,
-				     swaps in the Channels tab (the guide closes first, so the two never stack). Otherwise they wrap. -->
-				<onright condition="![Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]]">11</onright>
-				<onright condition="Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]">Dialog.Close(pvrchannelguide,true)</onright>
-				<onright condition="Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</onright>
-				<ondown condition="![Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]]">11</ondown>
-				<ondown condition="Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]">Dialog.Close(pvrchannelguide,true)</ondown>
-				<ondown condition="Window.IsVisible(videoosd) + $EXP[Bald_OSDChainChannels]">ActivateWindow(pvrosdchannels)</ondown>
+				<!-- Over Live TV in full screen (the Guide key, or the OSD's guide): Right, or Down past the last programme,
+				     swaps in the Channels tab (the guide closes first, so the two never stack). Elsewhere (the music OSD's
+				     radio guide, a channel's context menu) they wrap. -->
+				<onright condition="!$EXP[Bald_PVRGuideToChannels]">11</onright>
+				<onright condition="$EXP[Bald_PVRGuideToChannels]">Dialog.Close(pvrchannelguide,true)</onright>
+				<onright condition="$EXP[Bald_PVRGuideToChannels]">ActivateWindow(pvrosdchannels)</onright>
+				<ondown condition="!$EXP[Bald_PVRGuideToChannels]">11</ondown>
+				<ondown condition="$EXP[Bald_PVRGuideToChannels]">Dialog.Close(pvrchannelguide,true)</ondown>
+				<ondown condition="$EXP[Bald_PVRGuideToChannels]">ActivateWindow(pvrosdchannels)</ondown>
 				<movement>4</movement><focusposition>4</focusposition>
 				<pagecontrol>60</pagecontrol><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<itemlayout width="780" height="64"><include>Bald_PVREpgRow</include></itemlayout>
@@ -41,7 +42,7 @@
 			<include content="Bald_PVRDetailPane"><param name="item">Container(11).ListItem.</param></include>
 			<include content="Bald_PVRHints">
 				<param name="first">$LOCALIZE[31668]</param>
-				<param name="second">$LOCALIZE[31687]</param>
+				<param name="second">$VAR[Bald_PVRGuideHint]</param>
 			</include>
 		</control>
 	</controls>

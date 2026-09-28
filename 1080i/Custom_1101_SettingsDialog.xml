@@ -7,7 +7,7 @@
      (default focus), 11100 row list, 22101-22110 rows. -->
 <window type="dialog" id="1101">
 	<!-- Parks the video OSD's auto-close while this dialog is open over it (Includes_Bald_OSD.xml). -->
-	<include>Bald_OSDSuspendAutoClose</include>
+	<include content="Bald_OSDSuspendAutoClose"><param name="name">1101</param></include>
 	<defaultcontrol always="true">11000</defaultcontrol>
 	<depth>DepthDialog</depth>
 	<onunload>ClearProperty(settingsdialog_header,Home)</onunload>

@@ -22,7 +22,8 @@ WINDOWS = (["VideoOSD.xml", "DialogSeekBar.xml", "VideoOSDBookmarks.xml", "Custo
             "Custom_1128_OSDDetails.xml"] + list(COMPANIONS) + UPNEXT)
 # The row's buttons in order: transport, then tools.
 ROW = ["602", "600", "607", "603", "804", "70045", "70047", "70043", "70060", "70061", "70063", "70062"]
-CHAIN = ["pvrchannelguide", "pvrosdchannels", "1125", "videobookmarks", "1126"]
+# The down chain in order; the one-channel guide left it (the channel list shows each channel's now and next).
+CHAIN = ["pvrosdchannels", "1125", "videobookmarks", "1126"]
 FOCUSABLE = {"button", "radiobutton", "togglebutton", "slider", "sliderex", "spincontrol", "spincontrolex", "edit",
              "list", "fixedlist", "wraplist", "panel", "grouplist"}
 TEXTURE_TAGS = {"texture", "texturefocus", "texturenofocus", "texturebg", "lefttexture", "midtexture", "righttexture",
@@ -77,6 +78,22 @@ class OSDContractTests(unittest.TestCase):
                 self.assertIn("Player.Seeking", nib.findtext("visible"))
                 hidden = [a for a in nib.findall("animation") if a.get("type") == "Hidden"]
                 self.assertEqual(hidden[0].find("effect").get("delay"), "300")
+
+    def test_live_tv_bar_uses_one_scale(self):
+        # Timeshifting, every fill is on the timeshift window's scale (the seek slider 88's): the programme's played
+        # part as a range from its start to the play position (Estuary's pattern). The programme's own progress only
+        # when not timeshifting or for a channel preview; one such fill.
+        fills = {}
+        for node in self.windows["DialogSeekBar.xml"].iter("control"):
+            info = node.findtext("info") or ""
+            if node.get("type") == "progress" and info.startswith("PVR."):
+                fills.setdefault((info, node.findtext("info2")), []).append(node.findtext("visible"))
+        timeshift = "Player.SeekEnabled + !Player.ChannelPreviewActive"
+        self.assertEqual(fills[("PVR.TimeshiftProgressPlayPos", "PVR.TimeshiftProgressEpgStart")], [timeshift])
+        self.assertEqual(fills[("PVR.TimeshiftProgressBufferEnd", "PVR.TimeshiftProgressBufferStart")], [timeshift])
+        self.assertEqual(fills[("PVR.TimeshiftProgressEpgEnd", "PVR.TimeshiftProgressPlayPos")],
+                         [timeshift + " + VideoPlayer.HasEpg"])
+        self.assertEqual(fills[("PVR.EpgEventProgress", None)], ["!Player.SeekEnabled | Player.ChannelPreviewActive"])
 
     def test_osd_row_order_and_seek_sliders(self):
         osd = self.windows["VideoOSD.xml"]
@@ -141,6 +158,19 @@ class OSDContractTests(unittest.TestCase):
                 if hidden_parent:
                     with self.subTest(window=name, id=control.get("id")):
                         self.assertIsNotNone(control.find("visible"))
+
+    def test_navigation_goes_to_controls_that_exist(self):
+        # Estuary leftovers (704's 1000, the music seek sliders' 8010 and 650) named controls these windows lack.
+        for name in ["PlayerControls.xml", "MusicOSD.xml"] + WINDOWS:
+            root = self.windows.get(name) if name in self.windows else resolve_window(name)
+            known = set(ids(root))
+            for control in root.iter("control"):
+                for tag in ("onup", "ondown", "onleft", "onright"):
+                    for node in control.findall(tag):
+                        target = (node.text or "").strip()
+                        if target.isdigit():
+                            with self.subTest(window=name, id=control.get("id"), tag=tag):
+                                self.assertIn(target, known)
 
     def test_no_onback_previousmenu(self):
         for name in WINDOWS + [OSD_INCLUDES]:
@@ -211,7 +241,10 @@ class ChainTests(unittest.TestCase):
         return activations(holder)
 
     def test_chain_order_and_each_stage_skips_the_ones_before(self):
-        for stage in range(5):
+        # Stage 1 (after the channels) has no include: the channels are Live TV only, the rest never are.
+        self.assertNotIn("Bald_OSDChainFrom_1", self.definitions)
+        self.assertNotIn("Bald_OSDChainFrom_4", self.definitions)
+        for stage in (0, 2, 3):
             targets = [window for _, window in self.chain(stage)]
             with self.subTest(stage=stage):
                 self.assertEqual(targets, CHAIN[stage:])
@@ -220,7 +253,7 @@ class ChainTests(unittest.TestCase):
                     self.assertEqual(condition.count("!$EXP[Bald_OSDChain"), index)
 
     def test_every_stage_can_be_switched_off(self):
-        self.assertEqual(self.bodies["Bald_OSDChainGuide"], "[false]")  # the guide left the chain
+        self.assertNotIn("Bald_OSDChainGuide", self.bodies)  # the guide left the chain
         for name, setting in (("Channels", "NoChannelsPanel"),
                               ("Playlist", "NoPlaylistPanel"), ("Bookmarks", "NoBookmarksPanel"),
                               ("Cast", "NoCastPanel")):
@@ -233,20 +266,55 @@ class ChainTests(unittest.TestCase):
             with self.subTest(button=button):
                 self.assertEqual([w for _, w in activations(osd[button])], CHAIN)
         playlist = ids(resolve_window("Custom_1125_OSDPlaylist.xml"))["8150"]
-        self.assertEqual([w for _, w in activations(playlist)], CHAIN[3:])
+        self.assertEqual([w for _, w in activations(playlist)], CHAIN[2:])
         self.assertEqual(playlist.findtext("onup"), "Dialog.Close(1125)")
         bookmarks = ids(resolve_window("VideoOSDBookmarks.xml"))
-        self.assertEqual([w for _, w in activations(bookmarks["11"])], CHAIN[4:])
+        self.assertEqual([w for _, w in activations(bookmarks["11"])], CHAIN[3:])
         self.assertEqual(bookmarks["9001"].findtext("onup"), "Dialog.Close(videobookmarks)")
-        guide = ids(resolve_window("DialogPVRChannelGuide.xml"))["11"]
-        self.assertEqual([w for _, w in activations(guide)], ["pvrosdchannels"])
+
+    def test_guide_swaps_to_the_channels_over_full_screen_live_tv(self):
+        # The guide opens from the Guide key over full-screen video, the music OSD's radio button or a channel's
+        # context menu, never from the OSD: the swap keys on full-screen video, and the hint and the header's
+        # Channels tab follow the same condition.
+        self.assertTrue(equivalent(self.bodies["Bald_PVRGuideToChannels"],
+                                   "Window.IsActive(fullscreenvideo) + $EXP[Bald_OSDChainChannels]"))
+        guide_root = resolve_window("DialogPVRChannelGuide.xml")
+        guide = ids(guide_root)["11"]
+        for tag in ("onright", "ondown"):
+            with self.subTest(tag=tag):
+                self.assertEqual(activations(guide, tag), [("$EXP[Bald_PVRGuideToChannels]", "pvrosdchannels")])
+                wraps = [n.get("condition") for n in guide.findall(tag) if n.text == "11"]
+                self.assertEqual(wraps, ["!$EXP[Bald_PVRGuideToChannels]"])
+        text = ET.tostring(guide_root, encoding="unicode")
+        self.assertNotIn("Window.IsVisible(videoosd)", text)
+        self.assertIn("$VAR[Bald_PVRGuideHint]", text)
+        hint = ET.parse(SKIN / "Includes_Bald_PVR.xml").getroot().find("variable[@name='Bald_PVRGuideHint']")
+        self.assertEqual([(v.get("condition"), v.text) for v in hint.findall("value")],
+                         [("$EXP[Bald_PVRGuideToChannels]", "$LOCALIZE[31687]"), (None, "$LOCALIZE[31669]")])
+        # Header tabs: the guide shows Channels as the other tab only when it can swap; the channel list shows no
+        # Guide tab (it cannot reach the guide).
+        labels = {name: [(n.findtext("label"), n.findtext("visible")) for n in resolve_window(name).iter("control")
+                         if n.get("type") == "label" and n.findtext("font") == "Bald_CaptionTitle"]
+                  for name in ("DialogPVRChannelGuide.xml", "DialogPVRChannelsOSD.xml")}
+        self.assertIn(("$LOCALIZE[19019]", "!String.IsEqual(guide,channels) + $EXP[Bald_PVRGuideToChannels]"),
+                      labels["DialogPVRChannelGuide.xml"])
+        channels = labels["DialogPVRChannelsOSD.xml"]
+        self.assertEqual([label for label, visible in channels if visible == "String.IsEqual(channels,channels)"],
+                         ["$LOCALIZE[19019]"])
+        self.assertEqual([visible for label, visible in channels if label == "$LOCALIZE[19069]"],
+                         ["String.IsEqual(channels,guide)"])
 
     def test_chain_panels_stop_the_auto_close(self):
+        # Browsed, not glanced at: the alarm waits while a chain panel is open and comes back when it closes (focus
+        # returns to the OSD button without its onfocus).
         for name in ("Custom_1125_OSDPlaylist.xml", "Custom_1126_OSDCast.xml", "VideoOSDBookmarks.xml",
                      "DialogPVRChannelGuide.xml", "DialogPVRChannelsOSD.xml"):
-            onload = [n.text for n in ET.parse(SKIN / name).getroot().findall("onload")]
+            root = resolve_window(name)
+            onload = [n.text for n in root.findall("onload")]
+            onunload = [n.text for n in root.findall("onunload")]
             with self.subTest(window=name):
                 self.assertIn("CancelAlarm(bald_osd_close,true)", onload)
+                self.assertTrue(any(text.startswith("AlarmClock(bald_osd_close,") for text in onunload), onunload)
 
 
 class HelperGuardTests(unittest.TestCase):
@@ -379,6 +447,27 @@ class SettingsTests(unittest.TestCase):
             with self.subTest(dialog=name):
                 self.assertIn("Bald_OSDSuspendAutoClose", (SKIN / name).read_text())
 
+    def test_each_window_parks_the_auto_close_under_its_own_flag(self):
+        # Stacked dialogs (the audio settings, then DialogSlider over them): one shared flag let the inner dialog's
+        # close re-arm the alarm and close the OSD under the still open outer one.
+        flags = {}
+        for path in sorted(SKIN.glob("*.xml")):
+            root = ET.parse(path).getroot()
+            for node in root.findall("include"):
+                if node.get("content") == "Bald_OSDSuspendAutoClose" or node.text == "Bald_OSDSuspendAutoClose":
+                    name = node.findtext("param[@name='name']")
+                    with self.subTest(window=path.name):
+                        self.assertTrue(name)
+                        self.assertNotIn(name, flags.values())
+                    flags[path.name] = name
+        self.assertGreaterEqual(len(flags), 10)
+        for name, flag in flags.items():
+            root = resolve_window(name)
+            rearm = [n for n in root.findall("onunload") if (n.text or "").startswith("AlarmClock(bald_osd_close,")]
+            with self.subTest(window=name):
+                self.assertEqual(len(rearm), 1)
+                self.assertIn(f"Property(Bald.OSD.Suspended.{flag})", rearm[0].get("condition"))
+
 
 class OSDStyleTests(unittest.TestCase):
     @classmethod
@@ -424,6 +513,38 @@ class OSDStyleTests(unittest.TestCase):
                 with self.subTest(window=name, effect=kind):
                     self.assertIn(kind, TWEENS)
                     self.assertIn((effect.get("tween"), effect.get("easing")), TWEENS[kind])
+
+    def test_live_tv_panel_keeps_its_black_and_information_shades_only_over_video(self):
+        definitions = include_definitions()
+
+        def text(name):
+            holder = ET.Element("x")
+            holder.extend(definitions[name])
+            return ET.tostring(holder, encoding="unicode")
+
+        # The channel list and guide: a solid 85% black whatever Background shading says (the user asked for it).
+        self.assertNotIn("Bald_OSDShade", text("Bald_PVRPanelBase"))
+        self.assertIn('colordiffuse="bald_scrim85"', text("Bald_PVRPanelBase"))
+        # Programme and RDS information over a Live TV window (no video) do not follow a Playback setting.
+        scrims = ET.parse(SKIN / "Includes_Bald_PVR.xml").getroot().find("include[@name='Bald_PVRScrims']")
+        shade = [n for n in scrims.iter("include") if (n.get("content") or n.text) == "Bald_OSDShade"]
+        self.assertEqual([n.findtext("param[@name='when']") for n in shade], ["Window.IsActive(fullscreenvideo)"])
+        # No second dim: the OSD's tall scrim steps aside under the Live TV panel.
+        seek = self.roots["DialogSeekBar.xml"]
+        tall = [n.findtext("visible") for n in seek.iter("control") if "Bald_OSDTallScrim" in (n.findtext("visible") or "")]
+        self.assertEqual(tall, ["$EXP[Bald_OSDTallScrim] + !$EXP[Bald_OSDPVRPanelUp]"])
+
+    def test_popup_animation_uses_the_bald_curves(self):
+        # Shared by DialogSlider, 1110, DialogSubtitles, PlayerControls and the Live TV managers: open pops and fades,
+        # close only fades.
+        popup = include_definitions()["Animation_DialogPopupOpenClose"]
+        kinds = {}
+        for animation in popup:
+            if animation.tag != "animation":
+                continue
+            kinds[animation.get("type")] = [(e.get("type"), e.get("tween"), e.get("easing")) for e in animation]
+        self.assertEqual(kinds["WindowOpen"], [("zoom", "back", "out"), ("fade", "sine", "inout")])
+        self.assertEqual(kinds["WindowClose"], [("fade", "sine", "inout")])
 
     def test_hints_sit_on_the_hint_line(self):
         # The OSD and its companions sit 36 px lower than the page layout, so their hints do too (990); the

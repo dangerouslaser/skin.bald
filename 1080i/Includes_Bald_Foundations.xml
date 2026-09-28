@@ -147,7 +147,7 @@
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
 				<aligny>center</aligny>
-				<texture colordiffuse="bald_accent">icons/pvr/timers/recording.png</texture>
+				<texture colordiffuse="bald_record">icons/pvr/timers/recording.png</texture>
 				<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
 			</control>
 			<control type="image">
