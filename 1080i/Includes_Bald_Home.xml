@@ -124,7 +124,7 @@
 		     as a landscape row's. Waking, the first Conditional above nudges it again. A pure move: under Reduce motion
 		     the frame keeps its shape and the full-size layer fades in over it. -->
 		<animation type="Conditional" condition="[$EXP[Bald_PosterRow] + $EXP[Bald_IdleZoom]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="slide" start="0,-63" end="0,0" time="900" tween="cubic" easing="out" />
+			<effect type="slide" start="0,-63" end="0,0" time="900" delay="300" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<!-- The frame's bottom edge: the bottom mask, and the logo scrim and clearlogo. -->
@@ -168,7 +168,7 @@
 	<!-- The art frame group (Home.xml): grow and shrink. Pure moves: under Reduce motion the frame stays as it is. -->
 	<include name="Bald_AnimIdleFrame">
 		<animation type="Conditional" condition="[$EXP[Bald_IdleExpand]] + $EXP[Bald_FullMotion]" reversible="false">
-			<effect type="zoom" start="100" end="138.462" center="96,291.6" time="900" tween="cubic" easing="out" />
+			<effect type="zoom" start="100" end="138.462" center="96,291.6" time="900" delay="300" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="[!$EXP[Bald_IdleExpand]] + $EXP[Bald_FullMotion]" reversible="false">
 			<effect type="zoom" start="138.462" end="100" center="96,291.6" time="480" tween="cubic" easing="out" />
@@ -178,7 +178,7 @@
 	     corner), back once it is home again. -->
 	<include name="Bald_AnimIdleArtOverlay">
 		<animation type="Conditional" condition="$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="100" end="0" time="200" tween="sine" easing="inout" />
+			<effect type="fade" start="100" end="0" time="200" delay="300" tween="sine" easing="inout" />
 		</animation>
 		<animation type="Conditional" condition="!$EXP[Bald_IdleExpand]" reversible="false">
 			<effect type="fade" start="0" end="100" time="400" delay="400" tween="sine" easing="inout" />
@@ -189,16 +189,20 @@
 	     handoff (a gap between them showed the frame's overflow for a moment at the end of the wake, a judder). -->
 	<include name="Bald_AnimIdleMasks">
 		<animation type="Conditional" condition="$EXP[Bald_IdleExpand]" reversible="false">
-			<effect type="fade" start="100" end="0" time="150" tween="sine" easing="inout" />
+			<effect type="fade" start="100" end="0" time="150" delay="300" tween="sine" easing="inout" />
 		</animation>
 		<animation type="Conditional" condition="!$EXP[Bald_IdleExpand]" reversible="false">
 			<effect type="fade" start="0" end="100" time="100" delay="450" tween="sine" easing="inout" />
 		</animation>
 	</include>
-	<!-- Everything the big frame covers (rows, caption, clock and date, section line): out 600, back as it reverses. -->
+	<!-- Everything the big frame covers (rows, caption, clock and date, section line): out first (300; the frame starts to
+	     grow after it, delay 300), back last (360 once the frame has shrunk, after 480). -->
 	<include name="Bald_AnimIdleChrome">
-		<animation type="Conditional" condition="$EXP[Bald_IdleExpand]">
-			<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
+		<animation type="Conditional" condition="$EXP[Bald_IdleExpand]" reversible="false">
+			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="inout" />
+		</animation>
+		<animation type="Conditional" condition="!$EXP[Bald_IdleExpand]" reversible="false">
+			<effect type="fade" start="0" end="100" time="360" delay="480" tween="sine" easing="inout" />
 		</animation>
 	</include>
 	<!-- A layer shown only while expanded: in over time after delay, out over out after out_delay as idle ends; alpha 0
@@ -236,7 +240,7 @@
 			<top>120</top>
 			<width>1728</width>
 			<height>840</height>
-			<include content="Bald_AnimIdleLayer"><param name="time">900</param><param name="out">480</param></include>
+			<include content="Bald_AnimIdleLayer"><param name="time">900</param><param name="delay">300</param><param name="out">480</param></include>
 			<control type="image">
 				<width>1728</width>
 				<height>840</height>
@@ -270,7 +274,7 @@
 			<top>120</top>
 			<width>1728</width>
 			<height>840</height>
-			<include content="Bald_AnimIdleLayer"><param name="time">500</param><param name="delay">500</param><param name="out">150</param></include>
+			<include content="Bald_AnimIdleLayer"><param name="time">500</param><param name="delay">800</param><param name="out">150</param></include>
 			<control type="image">
 				<width>1728</width>
 				<height>840</height>
@@ -303,7 +307,7 @@
 			<width>1728</width>
 			<height>840</height>
 			<visible>$EXP[Bald_ShowHomeClock]</visible>
-			<include content="Bald_AnimIdleLayer"><param name="time">400</param><param name="delay">400</param><param name="out">150</param></include>
+			<include content="Bald_AnimIdleLayer"><param name="time">400</param><param name="delay">700</param><param name="out">150</param></include>
 			<control type="image">
 				<left>1104</left>
 				<top>489</top>

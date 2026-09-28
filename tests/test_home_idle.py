@@ -157,11 +157,19 @@ class IdleLayerAnimationTests(unittest.TestCase):
             self.assertEqual((effect.get("tween"), effect.get("easing")), ("sine", "inout"))
 
     def test_the_chrome_fades_out_under_the_big_frame(self):
+        # Out first, before the frame grows (its zoom waits 300); back last, once the 480 shrink is done.
         chrome = conditionals(definition("Bald_AnimIdleChrome"))
-        self.assertEqual(len(chrome), 1)
-        self.assertEqual(chrome[0].get("condition"), "$EXP[Bald_IdleExpand]")
-        self.assertEqual(fade(chrome[0])[:3], ("100", "0", "600"))
-        self.assertEqual([e.get("type") for e in chrome[0].findall("effect")], ["fade"])
+        self.assertEqual([c.get("condition") for c in chrome], ["$EXP[Bald_IdleExpand]", "!$EXP[Bald_IdleExpand]"])
+        out, back = chrome
+        self.assertEqual((out.find("effect").get("start"), out.find("effect").get("end"), out.find("effect").get("time")), ("100", "0", "300"))
+        self.assertEqual((back.find("effect").get("start"), back.find("effect").get("end"), back.find("effect").get("time"),
+                          back.find("effect").get("delay")), ("0", "100", "360", "480"))
+        grow = conditionals(definition("Bald_AnimIdleFrame"))[0].find("effect")
+        self.assertEqual(grow.get("delay"), out.find("effect").get("time"), "the frame grows once the chrome is out")
+        shrink = conditionals(definition("Bald_AnimIdleFrame"))[1].find("effect")
+        self.assertEqual(int(back.find("effect").get("delay")), int(shrink.get("time")), "the chrome returns once it has shrunk")
+        for anim in chrome:
+            self.assertEqual([e.get("type") for e in anim.findall("effect")], ["fade"])
 
     def test_home_uses_them(self):
         raw = ET.parse(XML / "Home.xml").getroot()
