@@ -42,7 +42,8 @@
 		</definition>
 	</include>
 
-	<!-- The list's page indicator (61): a 4 px bar like the settings pages', never a focus stop in normal use. -->
+	<!-- The list's page indicator (61): a 4 px bar like the settings pages'. It is a focus stop between the list and
+	     the actions: Right from the list lands here, Left goes back to the list and Right moves on to the actions. -->
 	<include name="Bald_SelectScrollbar">
 		<param name="left" />
 		<definition>
@@ -92,7 +93,8 @@
 				<top>80</top>
 				<onleft>61</onleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
-				<onright>3</onright>
+				<onright condition="Control.IsVisible(3)">3</onright>
+				<onright condition="Control.IsVisible(6)">6</onright>
 				<include content="DefaultDialogButton">
 					<param name="id" value="5" />
 					<param name="label" value="" />
