@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Weather rows on Home (docs/NOTES.md, Weather rows). The widget editor's Choose content > Weather offers two rows:
+<!-- Weather rows on Home. The widget editor's Choose content > Weather offers two rows:
      Weather forecast (path weather://daily) and Hourly weather (weather://hourly). The generator gives such a row the
      weather style whatever its style field says (shortcuts/generator/screen.xml), and lists these static items in
      place of a path, so the row is a Bald_Row like any other: same fixedlist, focus, row swap, dots and nudges, with

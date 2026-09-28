@@ -172,8 +172,13 @@
                             </rule>
                         </rules>
                         <!-- Focus slot and the item a fresh fixedlist selects there (focusposition + 1): poster rows let focus
-                             travel to slot 5 (docs/SPEC.md 5.1), landscape rows to slot 2. -->
+                             travel to slot 5 (docs/SPEC.md 5.1), landscape rows to slot 2, and so do square and weather
+                             rows (a weather row by its path, whatever its style field says). -->
                         <rules name="row_slot">
+                            <rule>
+                                <condition>{item_path}&lt;&lt;weather://</condition>
+                                <value>2</value>
+                            </rule>
                             <rule>
                                 <condition>{item_style}==poster</condition>
                                 <value>5</value>
@@ -183,6 +188,10 @@
                             </rule>
                         </rules>
                         <rules name="row_start">
+                            <rule>
+                                <condition>{item_path}&lt;&lt;weather://</condition>
+                                <value>3</value>
+                            </rule>
                             <rule>
                                 <condition>{item_style}==poster</condition>
                                 <value>6</value>
@@ -276,6 +285,10 @@
                         <!-- As in rows above. -->
                         <rules name="row_slot">
                             <rule>
+                                <condition>{item_path}&lt;&lt;weather://</condition>
+                                <value>2</value>
+                            </rule>
+                            <rule>
                                 <condition>{item_style}==poster</condition>
                                 <value>5</value>
                             </rule>
@@ -284,6 +297,10 @@
                             </rule>
                         </rules>
                         <rules name="row_start">
+                            <rule>
+                                <condition>{item_path}&lt;&lt;weather://</condition>
+                                <value>3</value>
+                            </rule>
                             <rule>
                                 <condition>{item_style}==poster</condition>
                                 <value>6</value>
