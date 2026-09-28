@@ -1231,7 +1231,23 @@
 						<font>Bald_CaptionPlot</font>
 						<textcolor>bald_ink80</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Plot]</label>
-						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [!String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | !String.IsEmpty(Container($PARAM[c]).ListItem.Plot)]</visible>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [!String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | !String.IsEmpty(Container($PARAM[c]).ListItem.Plot)] + ![$EXP[Bald_ShowProgressMarks] + Container($PARAM[c]).ListItem.IsResumable]</visible>
+						<include content="Bald_SpoilerPlotShown"><param name="item">Container($PARAM[c]).ListItem.</param></include>
+						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">$PARAM[ignore_home_row]</param><param name="delay">350</param></include>
+					</control>
+					<!-- With the progress line showing (a part-watched movie or episode) the plot keeps to three lines, so the
+					     caption ends where it does for any other item and never reaches the hints below. -->
+					<control type="label">
+						<top>18</top>
+						<left>20</left>
+						<width>$PARAM[width]</width>
+						<height>87</height>
+						<wrapmultiline>true</wrapmultiline>
+						<aligny>top</aligny>
+						<font>Bald_CaptionPlot</font>
+						<textcolor>bald_ink80</textcolor>
+						<label>$INFO[Container($PARAM[c]).ListItem.Plot]</label>
+						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [!String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | !String.IsEmpty(Container($PARAM[c]).ListItem.Plot)] + [$EXP[Bald_ShowProgressMarks] + Container($PARAM[c]).ListItem.IsResumable]</visible>
 						<include content="Bald_SpoilerPlotShown"><param name="item">Container($PARAM[c]).ListItem.</param></include>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">$PARAM[ignore_home_row]</param><param name="delay">350</param></include>
 					</control>
