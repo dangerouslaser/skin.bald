@@ -161,65 +161,91 @@ LIBRARY_CAPTIONS = (
 
 def landing_page(repository_zip: str, repository_version: str, skin_version: str) -> str:
     """The site's index.html. Links use double quotes and the files are listed plainly, so Kodi can also browse the
-    site as a file source (its HTTP directory parser only reads href="...")."""
-    shots = "".join(
-        f'<figure><a class="shot" href="kodi/skin.bald/resources/screenshot-{i:02d}.jpg">'
-        f'<img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt="{caption}" loading="lazy" '
-        f'width="1920" height="1080"></a><figcaption>{caption}</figcaption></figure>'
-        for i, caption in enumerate(SCREENSHOT_CAPTIONS[1:], start=2)
-    )
-    views = "".join(
-        f'<figure><a class="shot" href="kodi/skin.bald/resources/screenshot-{i:02d}.jpg">'
-        f'<img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt="{caption}" loading="lazy" '
-        f'width="1920" height="1080"></a><figcaption>{caption}</figcaption></figure>'
-        for i, caption in enumerate(LIBRARY_CAPTIONS, start=len(SCREENSHOT_CAPTIONS) + 1)
-    )
+    site as a file source (its HTTP directory parser only reads href="..." and keeps a link only when its text is its
+    target: on this page that is the repository zip alone)."""
+    def figure(i: int, caption: str, lazy: bool = True) -> str:
+        # The caption is the image's text for screen readers (alt="" so it is not read twice).
+        loading = ' loading="lazy"' if lazy else ' fetchpriority="high"'
+        return (f'<figure><a class="shot" href="kodi/skin.bald/resources/screenshot-{i:02d}.jpg">'
+                f'<img src="kodi/skin.bald/resources/screenshot-{i:02d}.jpg" alt=""{loading} '
+                f'width="1920" height="1080"></a><figcaption>{caption}</figcaption></figure>')
+    shots = "".join(figure(i, caption) for i, caption in enumerate(SCREENSHOT_CAPTIONS[1:], start=2))
+    views = "".join(figure(i, caption)
+                    for i, caption in enumerate(LIBRARY_CAPTIONS, start=len(SCREENSHOT_CAPTIONS) + 1))
+    hero = figure(1, SCREENSHOT_CAPTIONS[0], lazy=False).replace("<figure>", '<figure class="hero">', 1)
+    image = f"{SITE_URL}kodi/skin.bald/resources/screenshot-01.jpg"
+    description = ("A minimal, artwork-first Kodi 22 skin: hubs you arrange, rich info screens, six library views, "
+                   "Live TV and quiet, fluid motion.")
     return f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bald for Kodi 22</title>
-<meta name="description" content="Bald: a minimal, artwork-first skin for Kodi 22.">
+<title>Bald: a minimal skin for Kodi 22</title>
+<meta name="description" content="{description}">
+<meta name="theme-color" content="#0b0c10">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/png" href="kodi/skin.bald/resources/icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bald: a minimal skin for Kodi 22">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{SITE_URL}">
+<meta property="og:image" content="{image}">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bald: a minimal skin for Kodi 22">
+<meta name="twitter:description" content="{description}">
+<meta name="twitter:image" content="{image}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-:root {{ --field: #0b0c10; --ink: #eceef2; --ink60: rgba(236,238,242,.6); --ink34: rgba(236,238,242,.34);
-  --ink10: rgba(236,238,242,.1); --accent: #ffffff; }}
+/* ink55 is the floor for text (4.5:1 or better on the field); ink10 and ink34 are only for rules and dots. */
+:root {{ --field: #0b0c10; --ink: #eceef2; --ink60: rgba(236,238,242,.6); --ink55: rgba(236,238,242,.55);
+  --ink34: rgba(236,238,242,.34); --ink10: rgba(236,238,242,.1); --accent: #ffffff; }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--field); color: var(--ink); font: 400 17px/1.55 "DM Sans", system-ui, sans-serif; }}
+body:has(dialog[open]) {{ overflow: hidden; }}
 main {{ max-width: 1200px; margin: 0 auto; padding: 72px 24px 96px; }}
-header {{ display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr) 360px; align-items: end; }}
+/* A centred column: the wordmark and lede, then the install card. */
+header {{ display: grid; justify-items: center; gap: 48px; text-align: center; }}
+.intro {{ display: grid; justify-items: center; }}
 h1 {{ margin: 0; font-weight: 600; font-size: clamp(56px, 9vw, 104px); line-height: .95; letter-spacing: -.02em; }}
-/* The full stop drops in from above the page and bounces to rest: falls ease-in, rises ease-out, each bounce lower. */
-h1 .dot {{ display: inline-block; animation: bald-drop 1.6s .25s both; }}
+/* The full stop drops in from above the page, bounces once and settles (falls ease-in, rises ease-out). */
+h1 .dot {{ display: inline-block; animation: bald-drop 1.05s .25s both; }}
 @keyframes bald-drop {{
   0%   {{ transform: translateY(-120vh); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
-  46%  {{ transform: translateY(0);      animation-timing-function: cubic-bezier(0, .55, .45, 1); }}
-  62%  {{ transform: translateY(-.28em); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
-  76%  {{ transform: translateY(0);      animation-timing-function: cubic-bezier(0, .55, .45, 1); }}
-  85%  {{ transform: translateY(-.1em);  animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
+  58%  {{ transform: translateY(0);      animation-timing-function: cubic-bezier(0, .55, .45, 1); }}
+  78%  {{ transform: translateY(-.18em); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
   92%  {{ transform: translateY(0);      animation-timing-function: cubic-bezier(0, .55, .45, 1); }}
-  96%  {{ transform: translateY(-.03em); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
+  96%  {{ transform: translateY(-.04em); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }}
   100% {{ transform: translateY(0); }}
 }}
-@media (prefers-reduced-motion: reduce) {{ h1 .dot {{ animation: none; }} }}
-.lede {{ margin: 18px 0 0; color: var(--ink60); font-size: 20px; max-width: 34ch; }}
-.install {{ border-left: 1px solid var(--ink10); padding-left: 28px; }}
+.lede {{ margin: 20px 0 0; color: var(--ink60); font-size: 20px; max-width: 40ch; }}
+.lede strong {{ color: var(--ink); font-weight: 500; }}
+.install {{ width: 100%; max-width: 640px; padding: 28px 32px; border: 1px solid var(--ink10); border-radius: 16px;
+  background: rgba(236,238,242,.03); text-align: left; }}
+.install .more {{ display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 4px; }}
 .install h2 {{ margin: 0 0 12px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
   color: var(--accent); }}
 .install ol {{ margin: 0 0 20px; padding-left: 20px; color: var(--ink60); font-size: 15px; }}
 .install li {{ margin: 6px 0; }}
-.install code {{ padding: 1px 6px; border-radius: 4px; background: var(--ink10); color: var(--ink); font-size: 14px;
-  word-break: break-all; user-select: all; }}
-.install .alt {{ margin: -8px 0 16px; color: var(--ink34); font-size: 13px; }}
 .install strong {{ color: var(--ink); font-weight: 500; }}
-.button {{ display: inline-block; padding: 12px 20px; border-radius: 999px; background: var(--ink); color: var(--field);
-  font-weight: 600; text-decoration: none; }}
-.button:hover {{ background: var(--accent); }}
-.version {{ display: block; margin-top: 10px; color: var(--ink34); font-size: 13px; }}
-.hero {{ margin: 56px 0 0; }}
+.source {{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0 4px; }}
+.source code {{ flex: 1 1 250px; min-width: 0; padding: 8px 12px; border-radius: 8px; background: var(--ink10); color: var(--ink);
+  font: 500 14px/1.4 "DM Sans", system-ui, sans-serif; overflow-wrap: break-word; user-select: all; }}
+.button {{ display: inline-block; padding: 11px 20px; border: 1px solid var(--ink); border-radius: 999px;
+  background: var(--ink); color: var(--field); font: 600 15px/1.2 "DM Sans", system-ui, sans-serif; text-decoration: none;
+  cursor: pointer; transition: background .16s, box-shadow .16s, color .16s; }}
+.button:hover {{ background: var(--accent); box-shadow: 0 0 0 4px var(--ink10); }}
+.button.ghost {{ background: transparent; color: var(--ink); border-color: var(--ink34); }}
+.button.ghost:hover {{ border-color: var(--ink); background: var(--ink10); }}
+.button:focus-visible, .nav:focus-visible, .close:focus-visible, footer a:focus-visible {{
+  outline: 2px solid var(--accent); outline-offset: 3px; }}
+.alt {{ margin: 0; color: var(--ink55); font-size: 13px; }}
+.version {{ display: block; margin-top: 16px; color: var(--ink55); font-size: 13px; }}
+.hero {{ margin: 72px 0 0; }}
 img {{ display: block; width: 100%; height: auto; border-radius: 6px; background: var(--ink10); }}
 .hero img {{ box-shadow: 0 30px 80px rgba(0,0,0,.5); }}
 .gallery {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 28px; margin-top: 64px; }}
@@ -230,7 +256,9 @@ figcaption::before {{ content: ""; display: inline-block; width: 7px; height: 7p
 .views h2 {{ margin: 96px 0 8px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
   color: var(--accent); }}
 .views p {{ margin: 0; color: var(--ink60); }}
-.views .gallery {{ grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 24px; margin-top: 32px; }}
+.views .gallery {{ gap: 32px 24px; margin-top: 32px; }}
+@media (min-width: 1280px) {{ .views .gallery {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }} }}
+.visually-hidden {{ position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }}
 .shot {{ display: block; border-radius: 6px; cursor: zoom-in; }}
 .shot img {{ transition: transform .32s cubic-bezier(.22,1,.36,1), opacity .2s; }}
 .shot:hover img, .shot:focus-visible img {{ transform: scale(1.012); }}
@@ -241,47 +269,61 @@ dialog::backdrop {{ background: rgba(6,7,10,.94); }}
 dialog[open] {{ display: grid; place-items: center; animation: fade .24s ease-out; }}
 @keyframes fade {{ from {{ opacity: 0; }} to {{ opacity: 1; }} }}
 .lightbox {{ margin: 0; width: min(calc(100vw - 176px), calc((100vh - 120px) * 16 / 9)); }}
-.lightbox img {{ border-radius: 8px; box-shadow: 0 30px 90px rgba(0,0,0,.6); }}
+.lightbox img {{ border-radius: 8px; box-shadow: 0 30px 90px rgba(0,0,0,.6); cursor: pointer; touch-action: pan-y; }}
 .lightbox figcaption {{ display: flex; justify-content: space-between; gap: 16px; }}
 .lightbox figcaption::before {{ display: none; }}
 dialog:focus {{ outline: none; }}
-.count {{ color: var(--ink34); font-variant-numeric: tabular-nums; }}
+.count {{ color: var(--ink55); font-variant-numeric: tabular-nums; }}
 .nav, .close {{ position: fixed; border: 0; background: rgba(236,238,242,.08); color: var(--ink); cursor: pointer;
   width: 48px; height: 48px; border-radius: 50%; font: 400 22px/48px "DM Sans", system-ui, sans-serif; }}
 .nav:hover, .close:hover {{ background: rgba(236,238,242,.18); }}
 .nav {{ top: 50%; margin-top: -24px; }}
 .prev {{ left: 24px; }} .next {{ right: 24px; }} .close {{ top: 20px; right: 24px; }}
-@media (max-width: 820px) {{ .nav {{ top: auto; bottom: 20px; margin: 0; }} .lightbox {{ width: 94vw; }} }}
-.files {{ margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--ink10); color: var(--ink34); font-size: 13px; }}
-.files a {{ color: var(--ink60); }}
-@media (max-width: 820px) {{ header {{ grid-template-columns: 1fr; }} .install {{ border-left: 0; padding-left: 0; }}
-  .gallery, .views .gallery {{ grid-template-columns: 1fr; }} main {{ padding: 48px 16px 64px; }} }}
+footer {{ margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--ink10); color: var(--ink55); font-size: 13px; }}
+footer a {{ color: var(--ink60); }}
+footer a:hover {{ color: var(--ink); }}
+@media (prefers-reduced-motion: reduce) {{
+  h1 .dot, dialog[open] {{ animation: none; }}
+  .shot img, .button {{ transition: none; }}
+  .shot:hover img, .shot:focus-visible img {{ transform: none; }}
+}}
+@media (max-width: 820px) {{
+  .nav {{ top: auto; bottom: 20px; margin: 0; }} .lightbox {{ width: 94vw; }}
+  /* Phones: the title, then the first screenshot, then the install steps. */
+  main {{ display: flex; flex-direction: column; padding: 48px 16px 64px; }}
+  main > *, header > * {{ min-width: 0; }}  /* flex items: never wider than the screen (the images are 1920 wide) */
+  header {{ display: contents; }}
+  .intro {{ order: 1; }} .hero {{ order: 2; margin-top: 32px; }} .install {{ order: 3; margin-top: 40px; padding: 20px; }}
+  .gallery {{ order: 4; }} .views {{ order: 5; }} footer {{ order: 6; }}
+  .gallery, .views .gallery {{ grid-template-columns: minmax(0, 1fr); }}
+}}
 </style>
 </head>
 <body>
 <main>
 <header>
-<div>
+<div class="intro">
 <h1>Bald<span class="dot">.</span></h1>
-<p class="lede">A minimal, artwork-first skin for Kodi 22, with fluid motion and nothing in the way of your library.</p>
+<p class="lede">A minimal, artwork-first skin for <strong>Kodi 22</strong> (not 21), with fluid motion and nothing in the way of your library.</p>
 </div>
 <div class="install">
 <h2>Install</h2>
 <ol>
-<li>In Kodi, open <strong>Settings › File manager › Add source</strong>, enter <code>{SITE_URL}</code> and name it <strong>Bald</strong>.</li>
+<li>Turn on <strong>Settings › System › Add-ons › Unknown sources</strong>.</li>
+<li>Open <strong>Settings › File manager › Add source</strong>, enter this address and name it <strong>Bald</strong>:
+<div class="source"><code id="source-url">{SITE_URL.replace(".io/", ".io/<wbr>")}</code><button class="button copy" type="button" data-copy="{SITE_URL}">Copy</button></div></li>
 <li>Choose <strong>Add-ons › Install from zip file › Bald › {repository_zip}</strong>.</li>
 <li>Then <strong>Install from repository › Bald Add-on Repository › Look and feel › Skin › Bald</strong>.</li>
 </ol>
-<p class="alt">Or download the repository zip and install it from a file.</p>
-<a class="button" href="{repository_zip}">Download repository</a>
+<div class="more"><a class="button ghost" href="{repository_zip}">Download repository</a><p class="alt">or install the zip from a file</p></div>
 <span class="version">Bald {skin_version} · repository {repository_version} · Kodi 22 only</span>
 </div>
 </header>
-<figure class="hero"><a class="shot" href="kodi/skin.bald/resources/screenshot-01.jpg"><img src="kodi/skin.bald/resources/screenshot-01.jpg" alt="{SCREENSHOT_CAPTIONS[0]}" width="1920" height="1080"></a><figcaption>{SCREENSHOT_CAPTIONS[0]}</figcaption></figure>
-<section class="gallery">{shots}</section>
+{hero}
+<section class="gallery" aria-labelledby="screens"><h2 class="visually-hidden" id="screens">Screenshots</h2>{shots}</section>
 <section class="views"><h2>Library views</h2><p>Six ways to browse a library, switched from the options menu.</p>
 <div class="gallery">{views}</div></section>
-<p class="files"><a href="https://github.com/dangerouslaser/skin.bald">Source on GitHub</a> · <a href="https://forum.kodi.tv/showthread.php?tid=388804">Kodi forum thread</a> · Files: <a href="{repository_zip}">{repository_zip}</a> · <a href="kodi/">Kodi repository files</a></p>
+<footer><a href="https://github.com/dangerouslaser/skin.bald">Source on GitHub</a> · <a href="https://forum.kodi.tv/showthread.php?tid=388804">Kodi forum thread</a> · Files: <a href="{repository_zip}">{repository_zip}</a> · <a href="kodi/addons.xml">Kodi repository index</a></footer>
 </main>
 <dialog id="viewer" aria-label="Screenshot" tabindex="-1">
 <figure class="lightbox"><img id="viewer-img" alt=""><figcaption><span id="viewer-caption"></span><span class="count" id="viewer-count"></span></figcaption></figure>
@@ -291,6 +333,14 @@ dialog:focus {{ outline: none; }}
 </dialog>
 <script>
 (() => {{
+  const copy = document.querySelector("button.copy");
+  if (copy && navigator.clipboard) {{
+    copy.addEventListener("click", () => navigator.clipboard.writeText(copy.dataset.copy).then(() => {{
+      copy.textContent = "Copied"; setTimeout(() => {{ copy.textContent = "Copy"; }}, 1600);
+    }}));
+  }} else if (copy) {{
+    copy.hidden = true;  // No clipboard API: the address still selects in one click.
+  }}
   const shots = [...document.querySelectorAll("a.shot")];
   const viewer = document.getElementById("viewer");
   const img = document.getElementById("viewer-img");
@@ -301,9 +351,9 @@ dialog:focus {{ outline: none; }}
   const show = (i) => {{
     index = (i + shots.length) % shots.length;
     const shot = shots[index];
-    const alt = shot.querySelector("img").alt;
-    img.src = shot.href; img.alt = alt;
-    caption.textContent = alt;
+    const text = shot.parentElement.querySelector("figcaption").textContent;
+    img.src = shot.href; img.alt = text;
+    caption.textContent = text;
     count.textContent = `${{index + 1}} / ${{shots.length}}`;
     new Image().src = shots[(index + 1) % shots.length].href;  // Preload the next one.
   }};
@@ -313,17 +363,25 @@ dialog:focus {{ outline: none; }}
   viewer.querySelector(".prev").addEventListener("click", () => show(index - 1));
   viewer.querySelector(".next").addEventListener("click", () => show(index + 1));
   viewer.querySelector(".close").addEventListener("click", () => viewer.close());
+  let swiped = false;
+  img.addEventListener("click", () => {{ if (swiped) {{ swiped = false; return; }} show(index + 1); }});  // Click: next.
   viewer.addEventListener("click", (event) => {{ if (event.target === viewer) viewer.close(); }});
   viewer.addEventListener("keydown", (event) => {{
     if (event.key === "ArrowLeft") show(index - 1);
     if (event.key === "ArrowRight") show(index + 1);
+  }});
+  let startX = null;  // Swipe on touch screens.
+  img.addEventListener("pointerdown", (event) => {{ startX = event.clientX; }});
+  img.addEventListener("pointerup", (event) => {{
+    if (startX === null) return;
+    const dx = event.clientX - startX; startX = null;
+    if (Math.abs(dx) > 40) {{ swiped = true; show(index + (dx < 0 ? 1 : -1)); }}  // The click that follows is skipped.
   }});
 }})();
 </script>
 </body>
 </html>
 """
-
 
 def main() -> None:
     parser = argparse.ArgumentParser()

@@ -79,4 +79,5 @@ class KodiSourceTests(unittest.TestCase):
             if "://" not in href and unquote(href).rstrip("/") == html_module.unescape(text).rstrip("/"):
                 listed.append(href)
         self.assertEqual(listed, ["repository.bald-9.9.9.zip"])
-        self.assertIn(f"<code>{build.SITE_URL}</code>", page)
+        self.assertIn(f'data-copy="{build.SITE_URL}"', page)
+        self.assertIn(f'>{build.SITE_URL.replace(".io/", ".io/<wbr>")}</code>', page)
