@@ -95,7 +95,7 @@
 		<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
 		<animation type="WindowClose"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
 	</include>
-	<!-- Overlays on the left of the video (channel switcher, mini guide): the menu-open move, from the left. -->
+	<!-- Overlays over the video (the Live TV panel's channel list and guide): fade in 380, out 160, in place. -->
 	<include name="Bald_PVRAnimOverlay">
 		<animation type="WindowOpen">
 			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
@@ -271,7 +271,7 @@
 	<!-- ============ List rows ============ -->
 	<!-- A channel: number, logo, name and the programme on now with its progress; a status mark (recording or timer in
 	     the record red, archive or reminder in the accent) at the end. Unfocused text sits at 70/45% ink; focus is full ink and the accent dot.
-	     84 px rows; text_width fits the list (872 in the Channels window, 592 in the channel switcher). -->
+	     84 px rows; text_width fits the list (872 in the Channels window, 500 in the channel switcher). -->
 	<include name="Bald_PVRChannelRow">
 		<param name="list_id" />
 		<param name="focused">false</param>

@@ -6,10 +6,11 @@
 
      Layout, 1080i, 96 px safe margin:
        track pieces: a 4 px line with fills and markers, positioned by the caller (the seek layer draws it from x 264,
-         1392 px wide, at y 930, lifted to y 794 while an OSD is up).
-       music OSD buttons: 64 x 84 icon buttons at y 818 with an 8 px accent dot under the focused one; transport on the
-         left from x 96, tools on the right ending at x 1824. Its title block sits over the seek layer's status line.
-       hints: y 954, sentence case, right-aligned to x 1824 with the dot separator (Bald_InfoHintPair).
+         1392 px wide, at y 930, lifted to y 830 while an OSD is up).
+       music OSD buttons: the video OSD's 80 x 96 buttons at y 872 (Bald_OSDButtonBody); transport on the left from
+         x 96, tools on the right ending at x 1824. Its title block sits over the seek layer's status line.
+       hints: y 954 (y 990 under the OSDs, Bald_OSDHintTop), sentence case, right-aligned to x 1824 with the dot
+         separator (Bald_InfoHintPair).
      Only fade, slide and zoom; move = cubic out, fade = sine in-out, pop = back out (docs/SPEC.md 4). -->
 <includes>
 	<!-- ============ Conditions ============ -->
@@ -113,21 +114,17 @@
 	</variable>
 
 	<!-- ============ Motion ============ -->
-	<!-- Bottom chrome windows: in 380 FADE and a 40 px rise over 480 MOVE; out 160 FADE and a 40 px drop over 180. -->
+	<!-- Bottom chrome windows: in 380 FADE, out 160 FADE; they fade in place, without a rise. -->
 	<include name="Bald_PlaybackAnimWindow">
-		<param name="y">40</param>
-		<definition>
-			<animation type="WindowOpen" reversible="false">
-				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
-			</animation>
-			<animation type="WindowClose" reversible="false">
-				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
-			</animation>
-		</definition>
+		<animation type="WindowOpen" reversible="false">
+			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+		</animation>
+		<animation type="WindowClose" reversible="false">
+			<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+		</animation>
 	</include>
-	<!-- The same motion on a group's visibility; y -40 for the top header. -->
+	<!-- The same motion on a group's visibility, after an optional delay. -->
 	<include name="Bald_PlaybackAnimVisible">
-		<param name="y">40</param>
 		<param name="delay">0</param>
 		<definition>
 			<animation type="Visible" reversible="false">
@@ -307,9 +304,9 @@
 			<textureslidernibdisabled />
 		</definition>
 	</include>
-	<!-- Body of an OSD mouse-seek slider laid over the seek layer's lifted bar (Includes_Bald_OSD.xml, x 264 to 1656,
-	     y 796): invisible, since the seek dialog already
-	     draws the playhead, but still a seek target for the mouse (Estuary's sliders with <action>seek</action>). -->
+	<!-- Body of an OSD seek slider laid over the seek layer's lifted bar (Includes_Bald_OSD.xml, x 264 to 1656, y 824 to
+	     840, centre 832): the seek dialog already draws the playhead, so it shows at most a focused nib, and it is a
+	     seek target for the mouse (Estuary's sliders with <action>seek</action>). -->
 	<include name="Bald_PlaybackSeekArea">
 		<!-- The focused nib: none by default (the music OSD's mouse targets); the video OSD's sliders show the accent nib. -->
 		<param name="nib" />
@@ -326,7 +323,7 @@
 			<textureslidernibdisabled />
 		</definition>
 	</include>
-	<!-- Focus mark for the seek row: the menu's accent dot, 12 px left of the seek layer's lifted bar (x 264, y 796),
+	<!-- Focus mark for the seek row: the menu's accent dot, 12 px left of the seek layer's lifted bar (x 264, y 832),
 	     while the hidden seek button (87) has focus. -->
 	<include name="Bald_PlaybackSeekFocus">
 		<param name="top">828</param>
@@ -477,7 +474,7 @@
 			<scrolltime tween="cubic" easing="out">320</scrolltime>
 		</definition>
 	</include>
-	<!-- Hints on the y 954 line, right-aligned to x 1824. -->
+	<!-- Hints on the y 954 line (callers under an OSD pass Bald_OSDHintTop), right-aligned to x 1824. -->
 	<include name="Bald_PlaybackHints">
 		<param name="top">Bald_HintTop</param>
 		<definition>

@@ -5,14 +5,15 @@
      Layers, bottom to top:
        seek layer (DialogSeekBar, zorder 0): bottom field gradient, clock, status line, times either side of a thin
          accent bar with the cache line, chapter and cut ticks and the 401/402/403 seek-preview nib. It rests low (bar
-         at y 932) and lifts 136 px while the OSD or a companion panel is up, and 496 px while a down-chain panel is up.
+         at y 930) and lifts 100 px (to y 830) while the OSD or a companion panel is up, and 496 px (to y 434) while a
+         down-chain panel is up.
        VideoOSD (zorder 1): transport buttons on the left (play/pause, back, forward, stop), tools on the right (info,
          audio, subtitles, video), an invisible seek slider over the lifted bar. 80 x 96 buttons at y 872.
        companion panels (1120-1124, zorder 1): opened by focusing a tool (or the forward button). Each repeats the
          button row: the focused button for real, the others as invisible buttons with the same ids that close the
          panel and hand focus back to the OSD (the "fake button" pattern).
-       down-chain panels (PVR guide, PVR channels, 1125 playlist or episodes, videobookmarks, 1126 cast): Down from the
-         buttons opens the first one that is enabled and applies; Down in each opens the next.
+       down-chain panels (PVR channels, 1125 playlist or episodes, videobookmarks, 1126 cast): Down from the buttons
+         opens the first one that is enabled and applies; Down in each opens the next.
        info overlay (1127) and details on controls (1128): auto-shown dialogs with the playing item's details.
 
      Settings (Bald Settings, Playback, window 1119) are skin settings named so that unset means the default:
@@ -34,9 +35,11 @@
 	<expression name="Bald_OSDControlsUp">[Window.IsVisible(videoosd) | Window.IsVisible(musicosd) | Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124)]</expression>
 	<!-- A bottom panel that sits under the lifted bar: a down-chain row or Up Next. -->
 	<expression name="Bald_OSDPanelUp">[Window.IsVisible(1125) | Window.IsVisible(1126) | Window.IsVisible(videobookmarks) | Window.IsVisible(script-upnext-upnext.xml) | Window.IsVisible(script-upnext-stillwatching.xml) | Window.IsVisible(script-upnext-upnext-simple.xml) | Window.IsVisible(script-upnext-stillwatching-simple.xml)]</expression>
-	<!-- The Live TV lists, which fill the left of the screen: the bar steps aside. -->
-	<!-- A panel of the down chain is up (channels, playlist, bookmarks, cast): the seek layer's clock gives way. -->
+	<!-- A panel of the down chain (channels, playlist, bookmarks, cast) or the one-channel guide is up: the seek layer's
+	     clock gives way. -->
 	<expression name="Bald_OSDDownPanelUp">[Window.IsVisible(pvrosdchannels) | Window.IsVisible(pvrchannelguide) | Window.IsVisible(1125) | Window.IsVisible(1126) | Window.IsVisible(videobookmarks)]</expression>
+	<!-- The in-player Live TV panel (channel list or one-channel guide) is up: it brings its own black
+	     (Bald_PVRPanelBase), so the seek layer's scrims step aside. -->
 	<expression name="Bald_OSDPVRPanelUp">[Window.IsVisible(pvrosdchannels) | Window.IsVisible(pvrchannelguide)]</expression>
 	<!-- The pause delay has run: System.IdleTime counts from the last key, so from the pause itself. -->
 	<expression name="Bald_OSDPauseDelayDone">[System.IdleTime(3) | [System.IdleTime(2) + Skin.String(Bald.OSD.PauseDelay,2)] | [System.IdleTime(1) + Skin.String(Bald.OSD.PauseDelay,1)] | Skin.String(Bald.OSD.PauseDelay,0)]</expression>
@@ -234,7 +237,8 @@
 	</variable>
 
 	<!-- ============ Motion ============ -->
-	<!-- Seek layer lift: 136 px while the buttons are up, 496 px under a bottom panel (480 MOVE either way). -->
+	<!-- Seek layer lift: 100 px while the buttons are up (bar to y 830), 496 px under a bottom panel (to y 434); 480 MOVE
+	     either way. -->
 	<include name="Bald_OSDLift">
 		<animation type="Conditional" condition="$EXP[Bald_OSDControlsUp] + !$EXP[Bald_OSDPanelUp]">
 			<effect type="slide" start="0,0" end="0,-100" time="480" tween="cubic" easing="out" />
@@ -243,7 +247,7 @@
 			<effect type="slide" start="0,0" end="0,-496" time="480" tween="cubic" easing="out" />
 		</animation>
 	</include>
-	<!-- A panel or overlay window: in 380 FADE and a 40 px rise over 480 MOVE, out 160 FADE. -->
+	<!-- A panel or overlay window: in 380 FADE, out 160 FADE (it fades in place). -->
 	<include name="Bald_OSDAnimPanel">
 		<animation type="WindowOpen" reversible="false">
 			<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
@@ -940,7 +944,7 @@
 			</include>
 		</definition>
 	</include>
-	<!-- The seek sliders over the lifted bar (x 264, 1392 wide, centre y 796): invisible but for an accent nib while
+	<!-- The seek sliders over the lifted bar (x 264, 1392 wide, centre y 832): invisible but for an accent nib while
 	     focused. Left and Right seek (Kodi's slider "seek" and "pvr.seek" actions); Down returns to the buttons. Kodi
 	     scales a slider's nib by the control height over the bar texture's height, so the bar is the transparent,
 	     nib-sized bald/slider_clear.png (an empty bar ballooned the nib on CoreELEC). -->
@@ -984,8 +988,8 @@
 			<include>Bald_OSDAnimFade</include>
 		</control>
 	</include>
-	<!-- OSD hints on the y 954 line, right-aligned to x 1824. The OSD's own hints fade while a companion panel draws
-	     its copy (<hidden>), so the two never overlap. -->
+	<!-- OSD hints on the y 990 line (Bald_OSDHintTop), right-aligned to x 1824. The OSD's own hints fade while a
+	     companion panel draws its copy (<hidden>), so the two never overlap. -->
 	<include name="Bald_OSDHints">
 		<param name="hidden">false</param>
 		<definition>
@@ -1184,7 +1188,7 @@
 		<value>3 $LOCALIZE[31637]</value>
 	</variable>
 	<!-- ============ Down-chain panels (1125, videobookmarks, 1126) ============
-	     A bottom panel sits under the seek layer, which lifts its bar to y 436 and dims the video (Bald_OSDPanelUp):
+	     A bottom panel sits under the seek layer, which lifts its bar to y 434 and dims the video (Bald_OSDPanelUp):
 	     a heading at y 484, the row from y 528 and, where the row has details, a tray from y 800; hints on y 954. The
 	     OSD's buttons fade meanwhile. Up closes the panel (back to the one above), Down opens the next in the chain. -->
 	<variable name="Bald_OSDPlaylistPath">
