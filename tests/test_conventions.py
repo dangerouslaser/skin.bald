@@ -49,7 +49,7 @@ LAYOUT = {("left", "96"): "Bald_SafeLeft", ("top", "954"): "Bald_HintTop", ("lef
 
 class ConstantTests(unittest.TestCase):
     def test_bald_constants_load_at_every_screen_height(self):
-        # Constants_720/1080.xml are conditional on the screen height; Bald's 1080i values must not be.
+        # Bald's 1080i values load at every screen height (no condition on their include).
         registered = {node.get("file"): node.get("condition") for node in ET.parse(SKIN / "Includes.xml").getroot().findall("include")
                       if node.get("file")}
         self.assertIn("Includes_Bald_Constants.xml", registered)

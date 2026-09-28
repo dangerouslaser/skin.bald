@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bald layout constants: 1080i coordinates with a 96 px safe margin (CLAUDE.md). Loaded for every screen height,
-     since Bald lays out in 1080i only, unlike Estuary's Constants_720/1080 pair. Kodi substitutes a constant only
+     since Bald lays out in 1080i only (as is Constants.xml). Kodi substitutes a constant only
      when it is the whole value of a position or size tag and cannot do arithmetic, so offsets from these (a 12 px
      focus-ring inset, a width that ends on the right safe edge at x 1824) stay literal, and $PARAM values that an
      include negates (Bald_BackdropWindow's x and y) must stay numbers. -->

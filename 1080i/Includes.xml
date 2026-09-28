@@ -57,8 +57,7 @@
 	<include file="View_502_FanArt.xml" />
 	<include file="View_504_MediaList.xml" />
 	<include file="Variables.xml" />
-	<include condition="Integer.IsLessOrEqual(System.ScreenHeight,720)" file="Constants_720.xml" />
-	<include condition="Integer.IsGreater(System.ScreenHeight,720)" file="Constants_1080.xml" />
+	<include file="Constants.xml" />
 	<!-- Load last. Kodi keeps the first definition of an include, variable or expression name
 	     (CGUIIncludes uses try_emplace), so these shipped defaults only apply where the generated file above
 	     is missing. Rebuild with tools/build_home_defaults.py. -->
