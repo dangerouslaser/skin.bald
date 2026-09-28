@@ -168,8 +168,8 @@
 	     are paired non-reversible Conditionals, as for the info handoff: the one whose condition rises starts from the
 	     end state the other would have reached. So a key pressed while the frame is still growing snaps it to full size
 	     before it shrinks (Kodi resets the dropped animation and cannot start the other part-way).
-	     Reduce motion (Bald_IdleZoom false): no zoom; the full-size layer crossfades over the frame and back, with the
-	     same fades round it.
+	     Reduce motion (Bald_IdleZoom false): no zoom and the frame's masks stay; the full-size layer crossfades over the
+	     frame and back, with the same fades round it.
 	     The layers rest at a Conditional alpha of 0 rather than a <visible>, so their textures keep following the
 	     current item: Kodi still processes a control at alpha 0 but does not draw it (CGUIControl::DoProcess, Render). -->
 	<!-- Enter. The chrome fades out over the first step; everything else starts once it is out. -->
@@ -259,9 +259,11 @@
 			<param name="back_delay">Bald_IdleOverlayBackDelay</param>
 		</include>
 	</include>
-	<!-- The frame's own masks: out as the zoom starts, back as it ends. -->
+	<!-- The frame's own masks: out as the zoom starts, back as it ends. Only with the zoom: under Reduce motion they keep
+	     a poster row's frame its shape under the crossfade. -->
 	<include name="Bald_AnimIdleMasks">
 		<include content="Bald_AnimIdleHide">
+			<param name="when">$EXP[Bald_IdleZoom]</param>
 			<param name="out">Bald_IdleFrameMasksOutTime</param>
 			<param name="out_delay">Bald_IdleGrowDelay</param>
 			<param name="back">Bald_IdleFrameMasksBackTime</param>
@@ -295,7 +297,10 @@
 				<fadetime>700</fadetime>
 				<texture background="true">$VAR[Bald_Fanart]</texture>
 			</control>
-			<!-- Weather rows with a folder weather pack: the current conditions' pictures, as in the frame. -->
+			<!-- Weather rows with a folder weather pack (before Bald Helper's pictures): the current conditions' pictures,
+			     as in the frame, under Reduce motion only. A second shuffled slideshow would show another picture than the
+			     frame's; with the zoom, the frame's own shows through instead ($VAR[Bald_Fanart] is empty then), cropped
+			     by the idle masks to the same rect. -->
 			<control type="multiimage">
 				<width>1728</width>
 				<height>840</height>
@@ -304,7 +309,7 @@
 				<fadetime>700</fadetime>
 				<randomize>true</randomize>
 				<imagepath background="true">$INFO[Skin.String(Bald.WeatherFanart.path)]$INFO[Weather.Data(Current.FanartCode)]</imagepath>
-				<visible>$EXP[Bald_WeatherFolderArt]</visible>
+				<visible>$EXP[Bald_WeatherFolderArt] + $EXP[Bald_ReduceMotion]</visible>
 				<animation type="Visible">
 					<effect type="fade" start="0" end="100" time="700" tween="sine" easing="inout" />
 				</animation>

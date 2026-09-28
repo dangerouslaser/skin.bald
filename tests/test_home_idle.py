@@ -130,7 +130,7 @@ class IdleTimingTableTests(unittest.TestCase):
         self.assertEqual(span(self.layers["full"][EXPAND]), grow)
         # The frame's logo overlay and masks leave as the zoom starts; the idle masks are there at once.
         self.assertEqual(span(self.overlay[EXPAND])[0], grow[0])
-        self.assertEqual(span(self.frame_masks[EXPAND])[0], grow[0])
+        self.assertEqual(span(self.frame_masks["$EXP[Bald_IdleZoom]"])[0], grow[0])
         self.assertEqual(span(self.layers["masks"][EXPAND]), (0, 0))
         # The small clock, then the big clearlogo, come in once the zoom is well under way (cubic out: most of the move
         # is done in its first half), before it settles.
@@ -148,7 +148,7 @@ class IdleTimingTableTests(unittest.TestCase):
         self.assertEqual(span(self.chrome[WAKE])[0], shrink[1])
         # The frame's masks come back as the shrink ends, and are fully back before the idle masks start to leave, which
         # they do only once the frame has shrunk: the two overlap, so the art's edges are never uncovered.
-        masks_back = span(self.frame_masks[WAKE])
+        masks_back = span(self.frame_masks["!$EXP[Bald_IdleZoom]"])
         idle_masks_out = span(self.layers["masks"][WAKE])
         self.assertLess(masks_back[0], shrink[1])
         self.assertGreaterEqual(masks_back[1], shrink[1])
@@ -235,6 +235,16 @@ class IdleFrameGeometryTests(unittest.TestCase):
         # It crossfades a new item as the frame's layers do.
         frame_fade = include_definitions()["Bald_ArtLayer"].find(".//control[@type='image']").findtext("fadetime")
         self.assertEqual(image.findtext("fadetime"), frame_fade)
+
+    def test_a_folder_weather_pack_shows_the_frames_own_slideshow_while_zoomed(self):
+        # A second shuffled slideshow would show another picture than the frame's; with the zoom the frame's own shows
+        # through ($VAR[Bald_Fanart] is empty for a folder pack), so the big layer has one only under Reduce motion.
+        slideshow = layers()["full"].find("control[@type='multiimage']")
+        self.assertEqual(slideshow.findtext("visible"), "$EXP[Bald_WeatherFolderArt] + $EXP[Bald_ReduceMotion]")
+        home = ET.parse(XML / "Home.xml").getroot()
+        frame = [m for m in home.iter("control") if m.get("type") == "multiimage"]
+        self.assertEqual(len(frame), 1)
+        self.assertEqual(frame[0].findtext("imagepath"), slideshow.findtext("imagepath"))
 
     def test_idle_masks_cover_everything_outside_the_big_rect(self):
         body = include_definitions()["Bald_IdleFrame"]
@@ -343,14 +353,16 @@ class IdleReduceMotionTests(unittest.TestCase):
         text = ET.tostring(includes().find("include[@name='Bald_AnimIdleFrame']"), encoding="unicode")
         self.assertNotIn(REDUCE, text)
         # The fades that make the crossfade are ungated, so they run under Reduce motion too.
-        for name in ("Bald_AnimIdleLayer", "Bald_AnimIdleHide", "Bald_AnimIdleChrome", "Bald_AnimIdleArtOverlay",
-                     "Bald_AnimIdleMasks"):
+        for name in ("Bald_AnimIdleLayer", "Bald_AnimIdleHide", "Bald_AnimIdleChrome", "Bald_AnimIdleArtOverlay"):
             text = ET.tostring(expanded(name, {"in": "1", "out": "1", "back": "1"}), encoding="unicode")
             self.assertNotIn(FULL, text, name)
             self.assertNotIn(REDUCE, text, name)
             self.assertNotIn("Bald_IdleZoom", text, name)
-        # Under Reduce motion a poster row keeps its nudge (the frame does not change) while idle.
+        # Under Reduce motion a poster row keeps its nudge (the frame does not change) while idle, and the frame's
+        # masks stay: fading out with no zoom, they uncovered the art below a poster row's frame.
         self.assertTrue(implies("$EXP[Bald_ReduceMotion]", "!$EXP[Bald_IdleZoom]"))
+        masks = [a.get("condition") for a in conditionals(expanded("Bald_AnimIdleMasks"))]
+        self.assertEqual(masks, ["$EXP[Bald_IdleZoom]", "!$EXP[Bald_IdleZoom]"])
 
 
 class IdleOverSkinTests(unittest.TestCase):
