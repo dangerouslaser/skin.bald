@@ -859,6 +859,12 @@ msgctxt "#31416"
 msgid "Clock on the controls"
 msgstr "Uhr bei der Steuerung"
 
+#: /1080i/Includes_Bald_Home.xml
+#. After the time left on a part-watched item in the Home caption, e.g. "36m left"
+msgctxt "#31417"
+msgid "left"
+msgstr "übrig"
+
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Bald Settings > Appearance > Typography: how large the whole interface is drawn (Kodi's skin zoom)
 msgctxt "#31430"

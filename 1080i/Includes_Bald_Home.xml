@@ -965,6 +965,41 @@
 						<param name="label">$INFO[Container($PARAM[c]).ListItem.Artist]$INFO[Container($PARAM[c]).ListItem.Album,$COMMA ,]</param>
 						<param name="visible">String.IsEqual(Container($PARAM[c]).ListItem.DBType,song)</param>
 					</include>
+					<!-- Progress: a movie or episode part way through, a bar and the time left ("36m left", Bald Helper's
+					     Bald.Remaining; Kodi has no time-left label for a list item). Progress marks (Bald_ShowProgressMarks).
+					     Shows and seasons have their episodes-watched line above instead. The bar is one progress control
+					     whose own background is the track, so the fill always lies exactly on it. -->
+					<control type="group">
+						<top>12</top>
+						<left>20</left>
+						<width>$PARAM[width]</width>
+						<height>24</height>
+						<visible>$EXP[Bald_ShowProgressMarks] + Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + Container($PARAM[c]).ListItem.IsResumable</visible>
+						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">$PARAM[ignore_home_row]</param><param name="delay">275</param></include>
+						<control type="progress">
+							<top>10</top>
+							<width>160</width>
+							<height>4</height>
+							<texturebg border="2" colordiffuse="bald_mark_track">bald/bar.png</texturebg>
+							<lefttexture />
+							<midtexture border="2" colordiffuse="bald_ink">bald/bar.png</midtexture>
+							<righttexture />
+							<info>Container($PARAM[c]).ListItem.PercentPlayed</info>
+						</control>
+						<control type="label">
+							<left>174</left>
+							<width>210</width>
+							<height>24</height>
+							<aligny>center</aligny>
+							<font>Bald_Progress</font>
+							<textcolor>bald_ink70</textcolor>
+							<label>$INFO[Window(home).Property(Bald.Remaining),, $LOCALIZE[31417]]</label>
+							<!-- Only once Bald Helper's value is this item's (Bald.Remaining.For): the bar holds the line's
+							     place at once, and the time fades in without first showing the previous item's. -->
+							<visible>String.IsEqual(Window(home).Property(Bald.Remaining.For),Container($PARAM[c]).ListItem.FileNameAndPath)</visible>
+							<animation effect="fade" start="0" end="100" time="160" tween="sine" easing="inout">Visible</animation>
+						</control>
+					</control>
 					<!-- Media flags: movies only -->
 					<control type="grouplist">
 						<top>10</top>
@@ -1196,7 +1231,7 @@
 					<include content="$PARAM[overlay]"><param name="diffuse">FFFFFFFF</param></include>
 					<include content="Bald_TileCover"><param name="shown">$PARAM[cover]</param><param name="diffuse">FFFFFFFF</param></include>
 					<include content="Bald_TileTitle"><param name="visible">$PARAM[show_title] + $EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param></include>
-					<include content="$PARAM[marks]"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param></include>
+					<include content="$PARAM[marks]"><param name="diffuse">bald_ink</param></include>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -1214,7 +1249,7 @@
 			<include content="Bald_PosterLowTile" />
 			<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
 			<include content="Bald_TileTitle"><param name="visible">$EXP[Bald_TileTitlesAlways]</param><param name="diffuse">bald_poster_dim</param><param name="x">12</param><param name="y">12</param><param name="w">140</param><param name="h">210</param><param name="label_y">180</param><param name="label_w">124</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">78,117</param></include>
-			<include content="Bald_TileMarks"><param name="diffuse">bald_poster_dim</param><param name="check_x">120</param><param name="check_y">20</param><param name="bar_x">20</param><param name="bar_y">214</param><param name="bar_w">124</param><param name="pop">102.5</param><param name="center">78,117</param></include>
+			<include content="Bald_TileMarks"><param name="diffuse">bald_poster_dim</param><param name="check_x">120</param><param name="check_y">20</param><param name="pop">102.5</param><param name="center">78,117</param></include>
 		</itemlayout>
 		<focusedlayout width="156" height="234">
 			<control type="group">
@@ -1228,7 +1263,7 @@
 				</include>
 				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
 				<include content="Bald_TileTitle"><param name="visible">$EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param><param name="x">12</param><param name="y">12</param><param name="w">140</param><param name="h">210</param><param name="label_y">180</param><param name="label_w">124</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">78,117</param></include>
-				<include content="Bald_TileMarks"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param><param name="check_x">120</param><param name="check_y">20</param><param name="bar_x">20</param><param name="bar_y">214</param><param name="bar_w">124</param><param name="pop">102.5</param><param name="center">78,117</param></include>
+				<include content="Bald_TileMarks"><param name="diffuse">bald_ink</param><param name="check_x">120</param><param name="check_y">20</param><param name="pop">102.5</param><param name="center">78,117</param></include>
 			</control>
 		</focusedlayout>
 	</include>
@@ -1283,7 +1318,7 @@
 				<include content="Bald_SquareTile"><param name="art">$PARAM[art]</param><param name="overlay">$PARAM[overlay]</param></include>
 				<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
 				<include content="$PARAM[caption]"><param name="visible">$EXP[Bald_TileTitlesAlways]</param><param name="diffuse">bald_poster_dim</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
-				<include content="$PARAM[marks]"><param name="diffuse">bald_poster_dim</param><param name="check_x">164</param><param name="check_y">20</param><param name="bar_x">20</param><param name="bar_y">188</param><param name="bar_w">168</param><param name="pop">102.5</param><param name="center">104,104</param></include>
+				<include content="$PARAM[marks]"><param name="diffuse">bald_poster_dim</param><param name="check_x">164</param><param name="check_y">20</param><param name="pop">102.5</param><param name="center">104,104</param></include>
 			</itemlayout>
 			<focusedlayout width="208" height="234">
 				<control type="group">
@@ -1298,7 +1333,7 @@
 					</include>
 					<include content="Bald_TileLogoPreload"><param name="x">12</param><param name="y">12</param></include>
 					<include content="$PARAM[caption]"><param name="visible">$EXP[Bald_TileTitlesFocused]</param><param name="diffuse">bald_ink</param><param name="x">12</param><param name="y">12</param><param name="w">184</param><param name="h">184</param><param name="label_y">154</param><param name="label_w">168</param><param name="mask">bald/white.png</param><param name="pop">102.5</param><param name="center">104,104</param></include>
-					<include content="$PARAM[marks]"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param><param name="check_x">164</param><param name="check_y">20</param><param name="bar_x">20</param><param name="bar_y">188</param><param name="bar_w">168</param><param name="pop">102.5</param><param name="center">104,104</param></include>
+					<include content="$PARAM[marks]"><param name="diffuse">bald_ink</param><param name="check_x">164</param><param name="check_y">20</param><param name="pop">102.5</param><param name="center">104,104</param></include>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -1405,12 +1440,12 @@
 	<expression name="Bald_TileWatched">[Integer.IsGreater(ListItem.PlayCount,0) + !$EXP[Bald_TileInProgress]]</expression>
 	<include name="Bald_TileMarks">
 		<param name="diffuse">bald_tile_dim</param>
-		<param name="track">bald_mark_track_dim</param>
+		
 		<param name="check_x">154</param>
 		<param name="check_y">18</param>
-		<param name="bar_x">18</param>
-		<param name="bar_y">101</param>
-		<param name="bar_w">160</param>
+		
+		
+		
 		<param name="pop">100</param>
 		<param name="center">98,59</param>
 		<definition>
@@ -1432,36 +1467,6 @@
 						<width>14</width>
 						<height>14</height>
 						<texture colordiffuse="$PARAM[diffuse]">bald/check.png</texture>
-					</control>
-				</control>
-				<control type="group">
-					<left>$PARAM[bar_x]</left>
-					<top>$PARAM[bar_y]</top>
-					<visible>$EXP[Bald_TileInProgress] + $EXP[Bald_ShowProgressMarks]</visible>
-					<control type="image">
-						<width>$PARAM[bar_w]</width>
-						<height>4</height>
-						<texture border="2" colordiffuse="$PARAM[track]">bald/bar.png</texture>
-					</control>
-					<control type="progress">
-						<width>$PARAM[bar_w]</width>
-						<height>4</height>
-						<texturebg />
-						<lefttexture />
-						<midtexture border="2" colordiffuse="$PARAM[diffuse]">bald/bar.png</midtexture>
-						<righttexture />
-						<info>ListItem.PercentPlayed</info>
-						<visible>ListItem.IsResumable</visible>
-					</control>
-					<control type="progress">
-						<width>$PARAM[bar_w]</width>
-						<height>4</height>
-						<texturebg />
-						<lefttexture />
-						<midtexture border="2" colordiffuse="$PARAM[diffuse]">bald/bar.png</midtexture>
-						<righttexture />
-						<info>ListItem.Property(WatchedEpisodePercent)</info>
-						<visible>!ListItem.IsResumable</visible>
 					</control>
 				</control>
 			</control>

@@ -1,5 +1,4 @@
-"""Watch-state marks on Home's row tiles (Bald_TileMarks, Includes_Bald_Home.xml): a watched check and a progress bar
-on every tile style that shows one library item (fanart, thumbnail, poster, square), none on logo, text and weather
+"""Watch-state marks on Home's row tiles (Bald_TileMarks, Includes_Bald_Home.xml): a watched check on every tile style that shows one library item (fanart, thumbnail, poster, square), none on logo, text and weather
 rows. They follow the Appearance switches (9636 Bald.HideWatchedMarks, 9637 Bald.HideProgressMarks), keep to opaque
 colours (tiles sit over background video), sit over the tile title and pop with the tile."""
 
@@ -62,16 +61,14 @@ class TileMarksTests(unittest.TestCase):
         for style, ((x, y, w, h), _, _, _) in TILES.items():
             for layout in layouts(style):
                 group = marks(layout)[0]
-                check, bar = [node for node in group if node.tag == "control" and node.get("type") == "group"]
+                (check,) = [node for node in group if node.tag == "control" and node.get("type") == "group"]
                 with self.subTest(style=style, layout=layout.tag):
                     # Check: a 24 px dot 8 px in from the top right corner.
                     self.assertEqual((int(check.findtext("left")), int(check.findtext("top"))), (x + w - 32, y + 8))
                     dot = check.find("control")
                     self.assertEqual((dot.findtext("width"), dot.findtext("height")), ("24", "24"))
-                    # Bar: 4 px, 8 px in from the sides, its bottom 4 px above the tile's bottom edge.
-                    self.assertEqual((int(bar.findtext("left")), int(bar.findtext("top"))), (x + 8, y + h - 8))
-                    for node in bar.findall("control"):
-                        self.assertEqual((int(node.findtext("width")), node.findtext("height")), (w - 16, "4"))
+                    # No progress bar on the tile: progress lives in the caption (Bald_Caption).
+                    self.assertFalse([node for node in group.iter("control") if node.get("type") == "progress"])
 
     def test_marks_follow_the_appearance_switches(self):
         common = ET.parse(XML / "Includes_Bald_Common.xml").getroot()
@@ -79,12 +76,10 @@ class TileMarksTests(unittest.TestCase):
         self.assertEqual(common.findtext("expression[@name='Bald_ShowProgressMarks']"), "[!Skin.HasSetting(Bald.HideProgressMarks)]")
         for style in TILES:
             group = marks(layouts(style)[0])[0]
-            check, bar = [node for node in group if node.tag == "control" and node.get("type") == "group"]
+            (check,) = [node for node in group if node.tag == "control" and node.get("type") == "group"]
             with self.subTest(style=style):
                 self.assertTrue(equivalent(check.findtext("visible"), "$EXP[Bald_TileWatched] + $EXP[Bald_ShowWatchedMarks]"))
-                self.assertTrue(equivalent(bar.findtext("visible"), "$EXP[Bald_TileInProgress] + $EXP[Bald_ShowProgressMarks]"))
                 self.assertTrue(implies(check.findtext("visible"), "!Skin.HasSetting(Bald.HideWatchedMarks)"))
-                self.assertTrue(implies(bar.findtext("visible"), "!Skin.HasSetting(Bald.HideProgressMarks)"))
 
     def test_which_items_get_which_mark(self):
         bodies = expressions()
@@ -98,12 +93,6 @@ class TileMarksTests(unittest.TestCase):
         self.assertTrue(implies("[String.IsEqual(ListItem.DBType,tvshow) + Integer.IsGreater(ListItem.Property(WatchedEpisodes),0)"
                                 " + Integer.IsGreater(ListItem.Property(UnWatchedEpisodes),0)]", "$EXP[Bald_TileInProgress]", bodies))
         self.assertTrue(implies("$EXP[Bald_TileWatched]", "!$EXP[Bald_TileShowInProgress]", bodies))
-        # The bar reads the item's resume percentage, else the show's watched-episode percentage.
-        group = marks(layouts("fanart")[0])[0]
-        bars = [node for node in group.iter("control") if node.get("type") == "progress"]
-        self.assertEqual([(node.findtext("info"), node.findtext("visible")) for node in bars],
-                         [("ListItem.PercentPlayed", "ListItem.IsResumable"),
-                          ("ListItem.Property(WatchedEpisodePercent)", "!ListItem.IsResumable")])
 
     def test_colours_are_opaque_and_follow_focus(self):
         self.assertEqual(COLORS["bald_mark_track"], "FF4A4B4F")
@@ -118,8 +107,6 @@ class TileMarksTests(unittest.TestCase):
                     self.assertIn("bald_field", used)  # The check's dot, the episode card's bald_field60 made solid.
                     check = next(node for node in group.iter("texture") if node.text == "bald/check.png")
                     self.assertEqual(check.get("colordiffuse"), fill)
-                    track = "bald_mark_track" if fill == "bald_ink" else "bald_mark_track_dim"
-                    self.assertIn(track, used)
 
     def test_marks_pop_with_the_tile_and_sit_over_the_title(self):
         for style, (_, _, pop, center) in TILES.items():
@@ -144,6 +131,22 @@ class TileMarksTests(unittest.TestCase):
                               and node.findtext("control[@type='image']/texture") == "bald/scrim_card.png"]
                     self.assertTrue(titles)
                     self.assertGreater(children.index(group), max(titles))
+
+    def test_caption_shows_progress_and_time_left(self):
+        caption = HOME.find("include[@name='Bald_Caption']")
+        group = next(node for node in caption.iter("control") if node.get("type") == "group"
+                     and "ListItem.IsResumable" in (node.findtext("visible") or ""))
+        self.assertTrue(implies(group.findtext("visible"), "!Skin.HasSetting(Bald.HideProgressMarks)", expressions()))
+        (bar,) = [node for node in group if node.get("type") == "progress"]
+        # One control: its own background is the track, so the fill cannot sit off it (a separate track image
+        # left Kodi's fill 2 px low).
+        self.assertEqual(bar.find("texturebg").text, "bald/bar.png")
+        self.assertTrue(opaque(bar.find("texturebg").get("colordiffuse")))
+        self.assertEqual(bar.findtext("info"), "Container($PARAM[c]).ListItem.PercentPlayed")
+        label = next(node for node in group if node.get("type") == "label")
+        self.assertEqual(label.findtext("label"), "$INFO[Window(home).Property(Bald.Remaining),, $LOCALIZE[31417]]")
+        self.assertEqual(label.findtext("visible"),
+                         "String.IsEqual(Window(home).Property(Bald.Remaining.For),Container($PARAM[c]).ListItem.FileNameAndPath)")
 
     def test_settings_rows_and_ids_say_they_cover_home_tiles(self):
         appearance = (XML / "Custom_1118_BaldAppearance.xml").read_text(encoding="utf-8")

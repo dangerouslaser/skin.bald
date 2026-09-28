@@ -270,7 +270,7 @@ class ServiceTests(unittest.TestCase):
         self.assertIn("from resources.lib.lookandfeel import Keeper", text)
         self.assertIn("each=(actions.refresh, *loop_steps)", text)
         self.assertIn("each=loop_steps", text)
-        self.assertIn("step.tick for step in (lookandfeel, weather)", text)
+        self.assertIn("step.tick for step in (lookandfeel, weather, remaining)", text)
 
     def test_each_step_is_guarded_on_its_own(self):
         class Xbmc:

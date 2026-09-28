@@ -1,7 +1,8 @@
 """Bald Helper service: Bald's keymaps (resources/lib/keymap.py), its blurred backgrounds (resources/lib/blur.py),
 its latency-sensitive skin actions (resources/lib/actions.py), its online ratings (resources/lib/ratings.py), its
-spoiler stills (resources/lib/spoilers.py), its typeface and text size (resources/lib/lookandfeel.py) and its
-tidied weather values and weather tiles' pictures (resources/lib/weather.py).
+spoiler stills (resources/lib/spoilers.py), its typeface and text size (resources/lib/lookandfeel.py) its
+tidied weather values and weather tiles' pictures (resources/lib/weather.py) and the focused item's time left
+(resources/lib/remaining.py).
 
 The blur follower, the ratings follower and the action worker run on their own threads; the keymap manager runs here,
 on the thread whose monitor receives the skin's notifications (and whose player receives playback events), and keeps
@@ -104,6 +105,17 @@ def start_weather():
         return None
 
 
+def start_remaining():
+    """The time left on the focused item, for the caption's progress line; its step runs in the keymap loop."""
+    try:
+        from resources.lib.remaining import Remaining
+
+        return Remaining(xbmc, xbmcgui.Window(10000), xbmcgui.getCurrentWindowId)
+    except Exception as error:  # noqa: BLE001 - the caption shows the bar without the time
+        xbmc.log(f"script.bald.helper: time left did not start: {type(error).__name__}: {error}", xbmc.LOGERROR)
+        return None
+
+
 if __name__ == "__main__":
     blur = start_blur()
     ratings, player = start_ratings()
@@ -111,7 +123,8 @@ if __name__ == "__main__":
     actions, monitor = start_actions()
     lookandfeel = start_lookandfeel()
     weather = start_weather()
-    loop_steps = tuple(step.tick for step in (lookandfeel, weather) if step is not None)
+    remaining = start_remaining()
+    loop_steps = tuple(step.tick for step in (lookandfeel, weather, remaining) if step is not None)
     try:
         if actions is not None:
             from resources.lib.actions import WAKE_SECONDS
