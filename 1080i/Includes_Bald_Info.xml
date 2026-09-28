@@ -35,7 +35,6 @@
 	</variable>
 	<!-- ============ Variables (ListItem.* is the dialog's item) ============ -->
 	<variable name="Bald_InfoTitle">
-		<value condition="$EXP[Bald_InfoTVIsEpisode]">$INFO[ListItem.Title]</value>
 		<value>$INFO[ListItem.Title]</value>
 	</variable>
 	<variable name="Bald_InfoMeta">

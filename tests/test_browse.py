@@ -222,7 +222,10 @@ class EstuaryParityTests(unittest.TestCase):
                 with self.subTest(view=name, id=view_id):
                     self.assertEqual(control.find("viewtype").get("label"), original.find("viewtype").get("label"))
                     self.assertEqual(control.findtext("viewtype"), original.findtext("viewtype"))
-                    self.assertEqual(control.findtext("pagecontrol"), original.findtext("pagecontrol"))
+                    # Estuary's scrollbar 531 is 5198 in Bald: 531 is Bald's seasons view (1080i/IDs).
+                    renumbered = {"531": "5198"}
+                    self.assertEqual(control.findtext("pagecontrol"),
+                                     renumbered.get(original.findtext("pagecontrol"), original.findtext("pagecontrol")))
                     ours_visible = " + ".join(f"[{v.text}]" for v in control.findall("visible")) or "true"
                     theirs_visible = " + ".join(f"[{v.text}]" for v in original.findall("visible")) or "true"
                     self.assertTrue(equivalent(ours_visible, theirs_visible), (ours_visible, theirs_visible))
@@ -239,6 +242,17 @@ class EstuaryParityTests(unittest.TestCase):
             ids = {n.get("id") for n in skin.window(name).iter("control") if n.get("id")}
             with self.subTest(window=name):
                 self.assertLessEqual(wanted, ids)
+
+
+class SetPlotTests(unittest.TestCase):
+    def test_a_set_shows_its_plot_else_its_movies(self):
+        # As Estuary: the plot shows unless the item is a set without one, which lists its movies instead.
+        root = ET.parse(SKIN / "Includes_Bald_Browse.xml").getroot()
+        plot = next(c for c in root.iter("control") if c.get("type") == "textbox" and c.findtext("label") == "$VAR[Bald_BrowsePlot]")
+        self.assertTrue(equivalent(plot.findtext("visible"),
+                                   "Integer.Is$PARAM[p](Container.CurrentItem) + ![ListItem.IsCollection + String.IsEmpty(ListItem.Plot)]"))
+        movies = next(c for c in root.iter("control") if c.findtext("visible") == "ListItem.IsCollection + String.IsEmpty(ListItem.Plot)")
+        self.assertIsNotNone(movies.find("include[@content='InfoList']"))
 
 
 if __name__ == "__main__":

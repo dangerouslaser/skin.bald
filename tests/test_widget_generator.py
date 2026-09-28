@@ -120,6 +120,23 @@ class WidgetGeneratorTests(unittest.TestCase):
             for node in ET.parse(path).getroot().iter("condition"):
                 self.assertRegex(node.text, r"==|!=|>>|<<|!>|!<", path.name)
 
+    def test_copied_row_rules_agree(self):
+        # Skin Variables scopes <rules> to their item, so rows, row_parts and row_styles each carry their own copy of
+        # the row style, focus slot and start item rules: keep the copies identical.
+        screen = ET.parse(SHORTCUTS / "generator" / "screen.xml").getroot()
+        copies = {}
+        for value in screen.iter("value"):
+            if value.get("name") not in ("rows", "row_parts", "row_styles"):
+                continue
+            for rules in value.find("items/item").findall("rules"):
+                if rules.get("name") in ("row_style", "row_slot", "row_start"):
+                    copies.setdefault(rules.get("name"), []).append(
+                        [(r.findtext("condition"), r.findtext("value")) for r in rules.findall("rule")])
+        self.assertEqual({name: len(found) for name, found in copies.items()}, {"row_style": 2, "row_slot": 2, "row_start": 2})
+        for name, found in copies.items():
+            with self.subTest(rules=name):
+                self.assertEqual(found[0], found[1])
+
     def test_fallback_and_build_version_are_current(self):
         builder = load_builder()
         self.assertEqual(FALLBACK.read_text(), builder.fallback_text(),
@@ -144,7 +161,7 @@ class WidgetGeneratorTests(unittest.TestCase):
                 self.assertEqual([node.text for node in contents], paths)
                 self.assertTrue(all(node.get("limit") == item["limit"] for node in contents))
                 self.assertTrue(all(node.get("target") == item["target"] for node in contents))
-                up = "SetFocus(9000,0,absolute)" if position == 0 else str(ids[position - 1])
+                up = "noop" if position == 0 else str(ids[position - 1])  # the first row opens the menu itself
                 down = str(ids[position + 1]) if position + 1 < len(ids) else ""
                 self.assertEqual(param(row, "up"), up)
                 self.assertEqual(param(row, "down"), down)

@@ -30,7 +30,7 @@
 				</control>
 			</control>
 			<control type="list" id="53">
-				<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
+				<include>Bald_BaldViewRedirect</include>
 				<left>Bald_BrowseWallLeft</left>
 				<top>534</top>
 				<width>1152</width>

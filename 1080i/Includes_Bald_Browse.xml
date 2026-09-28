@@ -69,6 +69,16 @@
 		<value>$LOCALIZE[24170]</value>
 	</variable>
 
+	<!-- Movies and TV always show in a Bald view (MyVideoNav.xml's onload sets it on entry): an Estuary view that
+	     gets focus on movie or TV content (a folder change within the window) hands over to the Bald view for it. Used
+	     by every Estuary view the video library lists. -->
+	<include name="Bald_BaldViewRedirect">
+		<onfocus condition="Container.Content(movies)">Container.SetViewMode(510)</onfocus>
+		<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus>
+		<onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus>
+		<onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
+	</include>
+
 	<!-- ============ Motion ============ -->
 	<!-- Views dim to 72% while the options menu covers the preview column (SPEC 5.5). -->
 	<include name="Bald_BrowseDim">
@@ -328,7 +338,7 @@
 					<left>20</left><width>528</width><height max="88">auto</height>
 					<font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
 					<visible>Integer.Is$PARAM[p](Container.CurrentItem)</visible>
-					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">180</param></include>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="ignore_home_row">true</param><param name="delay">180</param></include>
 				</control>
 			</control>
 			<control type="grouplist">
@@ -338,12 +348,12 @@
 					<left>20</left><top>14</top><width>528</width><height>26</height>
 					<font>Bald_CaptionMeta</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowseMeta]</label>
 					<visible>Integer.Is$PARAM[p](Container.CurrentItem)</visible>
-					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">250</param></include>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="ignore_home_row">true</param><param name="delay">250</param></include>
 				</control>
 				<control type="grouplist">
 					<left>20</left><top>10</top><width>528</width><height>26</height><orientation>horizontal</orientation><itemgap>8</itemgap>
 					<visible>!Skin.HasSetting(Bald.HideMediaFlags) + Integer.Is$PARAM[p](Container.CurrentItem) + $EXP[Bald_BrowseVideoItem] + $EXP[Bald_BrowseHasFlags]</visible>
-					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">275</param></include>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="ignore_home_row">true</param><param name="delay">275</param></include>
 					<include content="Bald_MediaFlags" />
 				</control>
 				<!-- Ratings for video items (library folders, plugins): closes up when there are none. -->
@@ -352,20 +362,20 @@
 					<param name="left">20</param>
 					<param name="top">10</param>
 					<param name="width">528</param>
-					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">288</param></include>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="ignore_home_row">true</param><param name="delay">288</param></include>
 				</include>
 				<control type="label">
 					<left>20</left><top>8</top><width>528</width><height>24</height>
 					<font>Bald_Accent</font><textcolor>bald_accent</textcolor><label>$INFO[ListItem.Genre]</label>
 					<visible>Integer.Is$PARAM[p](Container.CurrentItem) + !String.IsEmpty(ListItem.Genre)</visible>
-					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">300</param></include>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="ignore_home_row">true</param><param name="delay">300</param></include>
 				</control>
 				<control type="textbox">
 					<left>20</left><top>18</top><width>528</width><height>150</height>
 					<font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_BrowsePlot]</label>
 					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(Bald.ScrollPlots) + !System.HasActiveModalDialog</autoscroll>
-					<visible>Integer.Is$PARAM[p](Container.CurrentItem) + !ListItem.IsCollection</visible>
-					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="delay">350</param></include>
+					<visible>Integer.Is$PARAM[p](Container.CurrentItem) + ![ListItem.IsCollection + String.IsEmpty(ListItem.Plot)]</visible>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="ignore_home_row">true</param><param name="delay">350</param></include>
 				</control>
 			</control>
 		</definition>

@@ -6,7 +6,7 @@
 			<include>Bald_Field</include>
 			<include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_LibraryMoviesHeading]</label></control>
-			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<include>Bald_LibrarySort</include>
 			<control type="group"><left>Bald_SafeLeft</left><top>180</top>
 				<control type="label"><left>26</left><width>702</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[369]</label></control>
 				<control type="label"><left>752</left><width>80</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[345]</label></control>
@@ -17,7 +17,7 @@
 				<viewtype label="31853">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,513,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">513</param><param name="window">videos</param></include><include content="Bald_UnfollowContainer"><param name="window">videos</param></include>
 				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|513)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,513)</onright><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|513)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,513)</ondown>
-				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="[$EXP[Bald_LibraryMenuOpen]] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
+				<include>Bald_LibraryDim</include>
 				<itemlayout width="1140" height="48"><include>Bald_CompactMovieRow</include></itemlayout>
 				<focusedlayout width="1140" height="48">
 					<control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(513) | $EXP[Bald_LibraryLettersOpen]</visible></control>

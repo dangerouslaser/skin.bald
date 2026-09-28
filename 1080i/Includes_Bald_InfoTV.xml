@@ -129,7 +129,7 @@
 			<width>1920</width>
 			<height>1080</height>
 			<texture colordiffuse="bald_field60">bald/white.png</texture>
-			<animation effect="fade" start="70" end="70" time="0" condition="[true] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
+			<animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
 
@@ -211,7 +211,7 @@
 		<param name="focus_fade">100</param>
 		<definition>
 			<control type="group">
-				<animation type="Conditional" condition="[!$EXP[Bald_InfoTVEpisodesFocused]] + !$EXP[Bald_VideoBackdropOn]">
+				<animation type="Conditional" condition="!$EXP[Bald_InfoTVEpisodesFocused]">
 					<effect type="fade" start="100" end="78" time="300" tween="sine" easing="inout" />
 				</animation>
 				<animation type="Conditional" condition="$EXP[Bald_InfoTVEpisodesFocused]">
@@ -429,7 +429,7 @@
 	<include name="Bald_InfoTVEpisodeSwap">
 		<animation type="Conditional" condition="Container(5302).IsUpdating" reversible="false">
 			<effect type="fade" start="100" end="0" time="140" tween="sine" easing="inout" />
-			<effect type="slide" start="0,0" end="0,14" time="140" tween="sine" easing="inout" />
+			<effect type="slide" start="0,0" end="0,14" time="140" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Conditional" condition="!Container(5302).IsUpdating" reversible="false">
 			<effect type="fade" start="0" end="100" time="340" tween="sine" easing="inout" />

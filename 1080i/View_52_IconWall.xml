@@ -2,22 +2,22 @@
 <!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
      Bald: a full-width wall of square icons and covers with their labels (files, sources, genres, tags, years,
      studios, playlists, favourites and plain folders), 8 columns in the Bald tile language. Id, viewtype, visibility,
-     page control 531 and navigation are Estuary's. -->
+     page control (Estuary's 531, here 5198) and navigation are Estuary's. -->
 <includes>
 	<include name="View_52_IconWall">
 		<control type="group">
 			<visible>Control.IsVisible(52)</visible>
 			<include>Bald_BrowseViewIn</include>
 			<control type="panel" id="52">
-				<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
+				<include>Bald_BaldViewRedirect</include>
 				<left>Bald_BrowseWallLeft</left>
 				<top>Bald_BrowseWallTop</top>
 				<width>1728</width>
 				<height>648</height>
 				<orientation>vertical</orientation>
 				<onleft>9000</onleft>
-				<onright>531</onright>
-				<pagecontrol>531</pagecontrol>
+				<onright>5198</onright>
+				<pagecontrol>5198</pagecontrol>
 				<preloaditems>2</preloaditems>
 				<onup>52</onup>
 				<ondown>52</ondown>

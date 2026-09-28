@@ -22,6 +22,10 @@ SUFFIXES = {"": "ListItem.", "0": "Container(0).ListItem.", "540": "Container(54
             "541": "Container(541).ListItem.", "542": "Container(542).ListItem.", "50": "Container(50).ListItem.",
             "5100": "Container(5100).ListItem.", "8140": "Container(8140).ListItem.",
             "8150": "Container(8150).ListItem."}
+# The per-container copies that something uses (unused ones were removed; plots mostly go through the includes).
+PLOT_SUFFIXES = ("", "8150")
+THUMB_SUFFIXES = ("", "0", "540", "541", "542", "50", "5100", "8140")
+ART_SUFFIXES = ("", "0", "540", "541", "542", "5100", "8140")
 
 
 def unwatched(p):
@@ -65,7 +69,7 @@ class RuleTests(unittest.TestCase):
 
     def test_settings_are_opt_in(self):
         off = "!Skin.HasSetting(Bald.Spoilers)"
-        for name in ("Bald_SpoilerPlotsOn", "Bald_SpoilerMoviesOn", "Bald_SpoilerLiveTVOn", "Bald_SpoilersOn"):
+        for name in ("Bald_SpoilerPlotsOn", "Bald_SpoilerMoviesOn", "Bald_SpoilerLiveTVOn"):
             self.assertTrue(implies(off, f"!$EXP[{name}]", self.bodies), name)
         # Only Kodi's own "Episode thumb" option turns the stills on without Bald's switch.
         self.assertTrue(implies(f"{off} + !System.Setting(hideunwatchedepisodethumbs)", "!$EXP[Bald_SpoilerThumbsOn]",
@@ -79,10 +83,12 @@ class RuleTests(unittest.TestCase):
         self.assertTrue(implies(f"{on} + !Skin.HasSetting(Bald.Spoilers.LiveTV)", "!$EXP[Bald_SpoilerLiveTVOn]", self.bodies))
 
     def test_every_item_prefix_has_the_same_rule(self):
-        for suffix, prefix in SUFFIXES.items():
-            with self.subTest(prefix=prefix):
-                self.assertTrue(equivalent(f"$EXP[Bald_SpoilerPlot{suffix}]", plot_rule(prefix), self.bodies))
-                self.assertTrue(equivalent(f"$EXP[Bald_SpoilerThumb{suffix}]", thumb_rule(prefix), self.bodies))
+        for suffix in PLOT_SUFFIXES:
+            with self.subTest(prefix=SUFFIXES[suffix]):
+                self.assertTrue(equivalent(f"$EXP[Bald_SpoilerPlot{suffix}]", plot_rule(SUFFIXES[suffix]), self.bodies))
+        for suffix in THUMB_SUFFIXES:
+            with self.subTest(prefix=SUFFIXES[suffix]):
+                self.assertTrue(equivalent(f"$EXP[Bald_SpoilerThumb{suffix}]", thumb_rule(SUFFIXES[suffix]), self.bodies))
 
     def test_the_includes_repeat_the_rule_for_any_prefix(self):
         def visible(name):
@@ -255,7 +261,7 @@ class StillSitesTests(unittest.TestCase):
                 self.assertTrue(implies(own[0], "!$EXP[Bald_SpoilerThumb]", expressions()))
 
     def test_spoiler_art_is_never_the_still(self):
-        for suffix, prefix in SUFFIXES.items():
+        for suffix in ART_SUFFIXES:
             for _, value in self.variables[f"Bald_SpoilerArt{suffix}"]:
                 self.assertNotIn("Art(thumb)", value)
                 self.assertNotIn("Icon", value)

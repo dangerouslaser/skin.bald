@@ -13,11 +13,12 @@
 	<onload condition="Window.Previous(home)">SetProperty(Bald.HubPath,$ESCINFO[Container.FolderPath],home)</onload>
 	<include content="Bald_UnfollowContainerOnUnload"><param name="window">videos</param></include>
 	<include>Bald_CurtainHandoff</include>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.UseLocalWidgetContainer)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<!-- Blur: Bald Helper's, else TMDb Helper's, never both (Home.xml). -->
-	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
-	<!-- Estuary remains a fallback for content we have not redesigned; movie libraries always enter a Bald view. -->
+	<!-- Estuary remains a fallback for content we have not redesigned; movie and TV libraries always enter a Bald view
+	     (here on entry, and from an Estuary view on a folder change, Bald_BaldViewRedirect). -->
 	<onload condition="Container.Content(movies) + !$EXP[Bald_LibraryMovieView]">Container.SetViewMode(510)</onload>
 	<onload condition="Container.Content(tvshows) + !$EXP[Bald_LibrarySeriesView]">Container.SetViewMode(520)</onload>
 	<onload condition="Container.Content(seasons) + !$EXP[Bald_LibrarySeasonView]">Container.SetViewMode(530)</onload>
@@ -29,7 +30,8 @@
 			<onfocus condition="$EXP[Bald_LibraryViewActive]">SetFocus(9150)</onfocus>
 			<onfocus condition="!$EXP[Bald_LibraryViewActive]">SetFocus(9000)</onfocus>
 		</control>
-		<include>DefaultBackground</include>
+		<!-- Bald_VideoBackdrop draws the video, so DefaultBackground leaves its own videowindow out. -->
+		<include content="DefaultBackground"><param name="video">false</param></include>
 		<include>Bald_VideoBackdrop</include>
 		<control type="group">
 			<!-- Entered from Home (in from the right); returned to from anything deeper, such as playback. Leaving for Home
@@ -38,7 +40,7 @@
 				<param name="back_in">!Window.Previous(home)</param>
 				<param name="back_out">Window.Next(home)</param>
 			</include>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" easing="inout" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_510_Bald_Posters</include>
 			<include>View_511_Bald_Wall</include>
 			<include>View_512_Bald_WallPreview</include>

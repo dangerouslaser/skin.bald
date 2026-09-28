@@ -43,7 +43,8 @@
 			<animation type="WindowClose">
 				<effect type="fade" start="100" end="0" time="130" tween="sine" easing="inout" />
 			</animation>
-			<!-- Idle: a slow drift and a dim, so nothing burns in over a long album (as Home's idle). -->
+			<!-- Idle: a slow drift and a dim, so nothing burns in over a long album (as Home's idle; sine in-out drift
+			     slides, the same deliberate exception to the move curve). -->
 			<animation type="Conditional" condition="$EXP[Bald_NowPlayingIdle]" pulse="true">
 				<effect type="slide" start="0,0" end="12,0" time="23000" tween="sine" easing="inout" />
 			</animation>

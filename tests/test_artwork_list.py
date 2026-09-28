@@ -24,7 +24,7 @@ class ArtworkListTests(unittest.TestCase):
 
     def test_logo_geometry_keeps_home_defaults(self):
         # Called with only a row and parity (as Home does), every fallback image sits in Home's logo box.
-        images = expand_call('Bald_ArtLogo', {'c': '9101', 'p': 'Odd'})
+        images = [c for group in expand_call('Bald_ArtLogo', {'c': '9101', 'p': 'Odd'}) for c in group.findall('control')]
         self.assertEqual(len(images), 3)
         for image in images:
             self.assertEqual([image.findtext(key) for key in ('left', 'top', 'width', 'height')], ['52', '486', '560', '170'])

@@ -191,3 +191,20 @@ class LibraryViewTests(unittest.TestCase):
         cell = self.view.find("include[@name='Bald_LibraryLetterCell']")
         self.assertTrue(any('Bald.AvailableLetters' in (n.text or '') for n in cell.iter('visible')))
         self.assertIn('bald/dot.png', [n.text for n in cell.iter('texture')])
+
+
+class LibraryCaptionMotionTests(unittest.TestCase):
+    def test_library_captions_leave_out_the_home_row_conditional(self):
+        def kinds(params):
+            return [a.get("type") for a in expand_call("Bald_AnimCaptionIn", params)]
+
+        self.assertEqual(kinds({"c": "9101", "delay": "180"}), ["Conditional", "Visible"])
+        self.assertEqual(kinds({"c": "514", "delay": "180", "ignore_home_row": "true"}), ["Visible"])
+        root = Path(__file__).resolve().parents[1] / "1080i"
+        for name in ("Includes_Bald_Browse.xml", "Includes_Bald_Music.xml", "View_511_Bald_Wall.xml",
+                     "View_514_Bald_ArtworkList.xml", "View_520_Bald_TV.xml", "View_521_Bald_TV_Alternates.xml",
+                     "View_550_Bald_Music.xml"):
+            for call in ET.parse(root / name).getroot().iter("include"):
+                if call.get("content") == "Bald_AnimCaptionIn":
+                    with self.subTest(view=name):
+                        self.assertEqual(call.findtext("param[@name='ignore_home_row']"), "true")

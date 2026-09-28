@@ -144,6 +144,15 @@ class HubSlotTests(unittest.TestCase):
         bridge = includes.find("include[@name='Bald_HubBridge']/definition/control")
         self.assertEqual(bridge.get("id"), "902$PARAM[n]")
         self.assertEqual(bridge.find("include").get("content"), "Bald_HubOpen_hub$PARAM[n]")
+        # A target that leaves Home active hands focus back to the entry: after the target, and on any key.
+        back = bridge.findall("include")[-1]
+        self.assertEqual((back.get("content"), back.findtext("param[@name='menu']")), ("Bald_BridgeReturn", "901$PARAM[n]"))
+        home = ET.parse(XML / "Home.xml").getroot()
+        live = home.find(".//control[@id='9029']/include[@content='Bald_BridgeReturn']")
+        self.assertEqual(live.findtext("param[@name='menu']"), "9004")
+        ret = includes.find("include[@name='Bald_BridgeReturn']/definition")
+        self.assertEqual([(n.tag, n.text) for n in ret],
+                         [(tag, "SetFocus($PARAM[menu])") for tag in ("onfocus", "onup", "ondown", "onleft", "onright", "onback")])
 
 
 class LiveTVRowTests(unittest.TestCase):
@@ -195,6 +204,10 @@ class MigrationWiringTests(unittest.TestCase):
         self.assertTrue(equivalent(started[0], idle))
         self.assertTrue(any(action == "SetProperty(Bald.HubsMigrating,1,home)" and equivalent(cond, idle)
                             for cond, action in home))
+        # A run that fails before clearing the flag cannot leave it set for good.
+        safety = "AlarmClock(bald_hubs_migrating,ClearProperty(Bald.HubsMigrating,home),00:30,silent)"
+        self.assertIn((unset, safety), startup)
+        self.assertTrue(any(action == safety and equivalent(cond, idle) for cond, action in home))
         # The build waits for the marker, so it never builds from the old screens.
         build = next(cond for cond, action in home if action.startswith("RunScript(script.skinvariables,action=buildtemplate"))
         self.assertTrue(implies(build, "!" + unset))
@@ -367,11 +380,11 @@ class RowSortTests(unittest.TestCase):
 
     def test_editor_offers_kodi_sort_methods_and_orders(self):
         window = ET.parse(XML / "Custom_1116_BaldHomeWidgets.xml").getroot()
-        sort = window.find(".//control[@id='9210']").findtext("onclick")
+        sort = window.find(".//control[@id='9210']/onclick[2]").text
         pairs = dict(p.split("=") for p in re.search(r"&&sortby&&(.*?)&&", sort).group(1).split("&"))
         self.assertEqual(pairs.pop("$LOCALIZE[571]"), "null")
         self.assertEqual(set(pairs.values()), self.METHODS)
-        order = window.find(".//control[@id='9211']").findtext("onclick")
+        order = window.find(".//control[@id='9211']/onclick[2]").text
         self.assertIn("&&sortorder&&$LOCALIZE[584]=ascending&$LOCALIZE[585]=descending&&", order)
         self.assertIn("!String.IsEqual(Container(9100).ListItem.Property(sortby),random)", window.find(".//control[@id='9211']").findtext("visible"))
 
@@ -500,3 +513,16 @@ class HubHeadingTests(unittest.TestCase):
             with self.subTest(view=name):
                 text = (XML / name).read_text(encoding="utf-8")
                 self.assertRegex(text, r"\$VAR\[Bald_Library(Movies|Shows)Heading\]")
+
+
+class MenuSafeMarginTests(unittest.TestCase):
+    def test_the_menu_and_its_note_end_on_the_safe_margin(self):
+        home = ET.parse(XML / "Home.xml").getroot()
+        menu = home.find(".//control[@id='9000']")
+        self.assertEqual((menu.findtext("left"), menu.findtext("width")), ("Bald_RightColumn", "384"))
+        self.assertEqual(1440 + 384, 1920 - 96)
+        includes = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
+        button = includes.find("include[@name='Bald_HomeMenuButton']/definition/control")
+        self.assertEqual(int(button.findtext("left")) + int(button.findtext("width")), 384)
+        note = {p.get("name"): p.text for p in includes.findall("include[@name='Bald_MenuNote']/param")}
+        self.assertLessEqual(int(note["x"]) + int(note["width"]), 1920 - 96)

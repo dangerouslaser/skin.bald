@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Started from Kodi 22's bundled Estuary (skin.estuary, GPL-2.0-or-later; see LICENSE-Estuary.txt).
      Bald: the wall with preview (SPEC 5.7 geometry): 5 posters across, or 4 stills, or 5 covers, beside the preview
-     column the window supplies. Id, viewtype, visibility, page control 531 and navigation are Estuary's. -->
+     column the window supplies. Id, viewtype, visibility, page control (Estuary's 531, here 5198) and navigation are Estuary's. -->
 <includes>
 	<include name="View_54_InfoWall">
 		<control type="group">
 			<visible>Control.IsVisible(54)</visible>
 			<include>Bald_BrowseViewIn</include>
 			<control type="panel" id="54">
-				<onfocus condition="Container.Content(tvshows)">Container.SetViewMode(520)</onfocus><onfocus condition="Container.Content(seasons)">Container.SetViewMode(530)</onfocus><onfocus condition="Container.Content(episodes)">Container.SetViewMode(540)</onfocus>
+				<include>Bald_BaldViewRedirect</include>
 				<left>Bald_BrowseWallLeft</left>
 				<top>Bald_BrowseWallTop</top>
 				<width>1152</width>
 				<height>624</height>
 				<orientation>vertical</orientation>
 				<onleft>9000</onleft>
-				<onright>531</onright>
+				<onright>5198</onright>
 				<onup condition="Integer.IsGreater(Container.NumPages,1)">54</onup>
 				<onup condition="!Integer.IsGreater(Container.NumPages,1)">9000</onup>
 				<ondown>54</ondown>
 				<viewtype label="31101">icon</viewtype>
 				<preloaditems>2</preloaditems>
-				<pagecontrol>531</pagecontrol>
+				<pagecontrol>5198</pagecontrol>
 				<scrolltime tween="cubic" easing="out">440</scrolltime>
 				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(sets) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(musicvideos) | Container.Content(images) | Container.Content(videos) | Container.Content(games) | $EXP[videoasset_true]</visible>
 				<include>Bald_BrowseDim</include>

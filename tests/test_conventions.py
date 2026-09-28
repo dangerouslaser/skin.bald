@@ -173,3 +173,23 @@ class InfoLabelNameTests(unittest.TestCase):
                 continue
             with self.subTest(file=path.name):
                 self.assertNotRegex(path.read_text(encoding='utf-8'), r'ListItem\.IsEpisode\b')
+
+
+class CurveTests(unittest.TestCase):
+    """CLAUDE.md: move = cubic out, fade = sine in-out. The one exception is the idle burn-in drift, a pulsing slow
+    slide that eases at both ends (Home, Now Playing)."""
+
+    def test_native_slides_use_the_move_curve_and_fades_ease(self):
+        for path in NATIVE:
+            if path.name.startswith('script-skinvariables'):
+                continue
+            for anim in ET.parse(path).getroot().iter('animation'):
+                effects = list(anim) or [anim]
+                for effect in effects:
+                    kind = effect.get('type') if effect is not anim else effect.get('effect')
+                    if kind == 'slide' and anim.get('pulse') != 'true' and effect.get('time') != '0':
+                        with self.subTest(file=path.name, effect=ET.tostring(effect, encoding='unicode')[:90]):
+                            self.assertEqual((effect.get('tween'), effect.get('easing')), ('cubic', 'out'))
+                    if kind == 'fade' and effect.get('tween'):
+                        with self.subTest(file=path.name, effect=ET.tostring(effect, encoding='unicode')[:90]):
+                            self.assertIsNotNone(effect.get('easing'))

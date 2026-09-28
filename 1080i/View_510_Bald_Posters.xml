@@ -87,7 +87,41 @@
 		</control>
 		</definition>
 	</include>
+	<!-- The library's "sort method · order" line at the top right, over the preview column (or, on the full-width
+	     views, the right column). -->
+	<include name="Bald_LibrarySort">
+		<param name="left">Bald_PreviewLeft</param>
+		<param name="width">528</param>
+		<definition>
+			<control type="label"><left>$PARAM[left]</left><top>120</top><width>$PARAM[width]</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+		</definition>
+	</include>
+	<!-- Rows of the library options menu (list 9150). -->
+	<include name="Bald_MenuRowUnfocused">
+		<definition>
+			<control type="label"><left>20</left><width>400</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><label>$INFO[ListItem.Label]</label></control>
+		</definition>
+	</include>
+	<include name="Bald_MenuRowFocused">
+		<param name="always_dot">true</param>
+		<definition>
+			<control type="image"><top>23</top><width>10</width><height>10</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>$PARAM[always_dot]</visible></control>
+			<control type="label"><left>26</left><width>394</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
+				<animation type="Focus" reversible="false"><effect type="fade" start="34" end="100" time="240" tween="sine" easing="inout" /><effect type="slide" start="-6,0" end="0,0" time="320" tween="cubic" easing="out" /></animation>
+			</control>
+			<!-- A quiet disclosure cue for screen entries whose full native library opens with Right. -->
+			<control type="label"><left>374</left><width>28</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink70</textcolor><label>›</label><visible>!String.IsEmpty(ListItem.Property(library))</visible></control>
+		</definition>
+	</include>
 	<expression name="Bald_LibraryMenuOpen">[Control.HasFocus(9150)]</expression>
+	<!-- Library views dim (to 72%, or <end>) while the options menu is open, as Bald_BrowseDim; not over background
+	     video, where a partial fade would let the video through. -->
+	<include name="Bald_LibraryDim">
+		<param name="end">72</param>
+		<definition>
+			<animation effect="fade" start="100" end="$PARAM[end]" time="180" tween="sine" easing="inout" condition="[$EXP[Bald_LibraryMenuOpen]] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
+		</definition>
+	</include>
 	<variable name="Bald_LibraryMenuNote">
 		<!-- Sentences stay whole strings around the live value; the IsEmpty guards keep the old $INFO rule that an
 		     empty value shows no note (the fallback below is empty for these option items). -->
@@ -232,7 +266,7 @@
 			<include>Bald_Field</include>
 			<include>Bald_BackdropImage</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_LibraryMoviesHeading]</label></control>
-			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<include>Bald_LibrarySort</include>
 			<control type="list" id="510">
 				<left>84</left><top>210</top><width>1152</width><height>648</height>
 				<orientation>horizontal</orientation><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>3</preloaditems>
@@ -240,7 +274,7 @@
 				<onfocus>SetProperty(Bald.LibraryContainer,510,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">510</param><param name="window">videos</param></include>
 				<include content="Bald_UnfollowContainer"><param name="window">videos</param></include>
 				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|510)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,510)</ondown><onleft>noop</onleft><onright>noop</onright>
-				<animation effect="fade" start="100" end="72" time="180" tween="sine" easing="inout" condition="[$EXP[Bald_LibraryMenuOpen]] + !$EXP[Bald_VideoBackdropOn]">Conditional</animation>
+				<include>Bald_LibraryDim</include>
 				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
 				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>

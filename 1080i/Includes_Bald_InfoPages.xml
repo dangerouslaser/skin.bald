@@ -22,7 +22,7 @@
 						<height>170</height>
 						<aspectratio align="left" aligny="bottom">keep</aspectratio>
 						<texture background="true">$VAR[Bald_ItemLogo]</texture>
-						<visible>$EXP[Bald_ShowClearlogo] + !$EXP[Bald_InfoTVIsEpisode]</visible>
+						<visible>$EXP[Bald_ShowClearlogo]</visible>
 					</control>
 					<control type="label">
 						<top>80</top>
@@ -31,7 +31,7 @@
 						<font>Bald_InfoTitle</font>
 						<textcolor>bald_ink</textcolor>
 						<label>$VAR[Bald_InfoTitle]</label>
-						<visible>!$EXP[Bald_ShowClearlogo] | $EXP[Bald_InfoTVIsEpisode] | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
+						<visible>!$EXP[Bald_ShowClearlogo] | [String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</visible>
 					</control>
 				</control>
 				<control type="label">
@@ -58,7 +58,7 @@
 					<height>30</height>
 					<orientation>horizontal</orientation>
 					<itemgap>8</itemgap>
-					<visible>$EXP[Bald_ShowMediaFlags] + [String.IsEqual(ListItem.DBType,movie) | $EXP[Bald_InfoTVIsEpisode]]</visible>
+					<visible>$EXP[Bald_ShowMediaFlags] + String.IsEqual(ListItem.DBType,movie)</visible>
 					<include content="Bald_AnimInfoIn"><param name="delay">520</param></include>
 					<include content="Bald_MediaFlags"><param name="height">30</param><param name="font">Bald_FlagL</param></include>
 				</control>

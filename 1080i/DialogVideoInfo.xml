@@ -11,7 +11,7 @@
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<include content="Bald_UnfollowContainerOnLoad"><param name="window">movieinformation</param></include>
 	<include>Bald_InfoTVClear</include>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.UseLocalWidgetContainer)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<!-- Bald Helper's bald.info does both recommendations and (TV items) tvinfo; without it, two scripts. -->
 	<onload condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.info|$INFO[ListItem.DBType]|$INFO[ListItem.DBID])</onload>
 	<onload condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,recommendations,$INFO[ListItem.DBType],$INFO[ListItem.DBID])</onload>
@@ -54,14 +54,15 @@
 		<control type="group">
 			<animation effect="fade" start="0" end="100" time="360" delay="260" tween="sine" easing="inout">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="130" tween="sine" easing="inout">WindowClose</animation>
-			<!-- Crossfade to the SAME cached blur, field and multiplier used by Home.
+			<!-- Crossfade to the SAME cached blur, field and multiplier used by Home (over background video, the dimmed
+			     video instead, so Home's zoomed fanart never shows through the Cast and More pages).
 			     Bald Helper (or TMDb Helper) follows the dialog's own item until More like this names its container
 			     (Bald_FollowContainer, 5100). -->
 			<control type="group" id="5200">
 				<visible>!$EXP[Bald_InfoOnOverview]</visible>
 				<animation effect="fade" start="0" end="100" time="460" tween="sine" easing="inout">Visible</animation>
 				<animation effect="fade" start="100" end="0" time="460" tween="sine" easing="inout">Hidden</animation>
-				<include>Bald_Field</include>
+				<include>Bald_WindowBase</include>
 				<include>Bald_BackdropImage</include>
 			</control>
 			<include condition="!$EXP[Bald_InfoTVItem]">Bald_InfoOverview</include>

@@ -131,7 +131,7 @@ class MusicLibraryTests(unittest.TestCase):
 
     def test_tmdb_blur_only_without_the_helper(self):
         loads = [(n.get("condition"), n.text) for n in self.nav.findall("onload")]
-        self.assertIn(("$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]", "Skin.SetBool(TMDbHelper.EnableBlur)"), loads)
+        self.assertIn(("$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)", "Skin.SetBool(TMDbHelper.EnableBlur)"), loads)
         self.assertIn(("$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)", "Skin.Reset(TMDbHelper.EnableBlur)"), loads)
 
 
@@ -202,7 +202,7 @@ class MusicInfoTests(unittest.TestCase):
         window = resolve_window("DialogMusicInfo.xml")
         self.assertLessEqual({"6", "7", "8", "10", "12", "50", "13"}, ids(window))
         play_next = next(c for c in window.iter("control") if c.get("id") == "13")
-        self.assertEqual(play_next.findtext("onclick"), "QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/,isdir)")
+        self.assertEqual(play_next.findtext("onclick"), "QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/,isdir,playnext)")
         self.assertIn("String.IsEqual(ListItem.DBType,album)", play_next.findtext("visible"))
 
     def test_discography_is_covers(self):

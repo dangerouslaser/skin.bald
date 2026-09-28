@@ -88,6 +88,15 @@ class GeneratedRowLogoTests(unittest.TestCase):
         self.assertIn(off, [call.findtext("param[@name='c']") for call in captions])
 
 
+class HomeLogoCostTests(unittest.TestCase):
+    def test_home_logos_skip_the_listing_clearlogo(self):
+        # Home has no media container, so Container.Art(tvshow.clearlogo) is always empty there.
+        root = ET.parse(FALLBACK).getroot()
+        calls = root.findall(".//include[@content='Bald_ArtLogo']")
+        self.assertTrue(calls)
+        self.assertEqual({call.findtext("param[@name='container_logo']") for call in calls}, {"false"})
+
+
 class FrameLogoWiringTests(unittest.TestCase):
     def test_the_frame_logo_scrim_and_dialog_logo_use_the_generated_names(self):
         home = Skin().window("Home.xml")
@@ -111,8 +120,8 @@ class EditorLogoTests(unittest.TestCase):
         self.assertEqual(button.findtext("label"), "$LOCALIZE[31768]")
         self.assertEqual(button.findtext("label2"), "$VAR[Bald_WidgetLogoLabel]")
         match = re.fullmatch(r"RunPlugin\(\$VAR\[Bald_WidgetItemUrl\]&func=do_edit"
-                             r"&&logo&&(?P<pairs>[^,]+?)&&(?P<heading>[^&]+)&&True\)", button.findtext("onclick"))
-        self.assertIsNotNone(match, button.findtext("onclick"))
+                             r"&&logo&&(?P<pairs>[^,]+?)&&(?P<heading>[^&]+)&&True\)", button.find("onclick[2]").text)
+        self.assertIsNotNone(match, button.find("onclick[2]").text)
         pairs = [pair.split("=") for pair in match.group("pairs").split("&")]
         self.assertEqual([value for _, value in pairs], ["on", "off"])
         names = bald_strings()

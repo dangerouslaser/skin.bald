@@ -38,10 +38,9 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertIn("$INFO[Window(home).Property(Bald.ConfigureItem),&node=,]", content)
         self.assertIn("mode=$INFO[Window(home).Property(Bald.ConfigureMode)]", content)
         self.assertIn("skin=skin.bald", content)
-        # Closing the editor stamps the rows; Home rebuilds when the stamp it passes to Skin Variables changes.
-        stamp = root.findtext("onunload")
-        self.assertTrue(stamp.startswith("Skin.SetString(Bald.WidgetsStamp,"))
-        self.assertIn("System.Time(hh:mm:ss)", stamp)
+        # Closing the editor after a change stamps the rows; Home rebuilds when the stamp it passes to Skin Variables
+        # changes.
+        self.assert_stamps_only_after_a_change("Custom_1116_BaldHomeWidgets.xml")
         self.assertNotIn("buildtemplate", ET.tostring(root, encoding="unicode"))
 
     def test_home_builds_its_rows_on_load_only_when_inputs_change(self):
@@ -76,8 +75,28 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertIn("edit=true", hubs.findtext("content"))
         self.assertNotIn("Bald.Screen.Movies", ET.tostring(root, encoding="unicode"))
         self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(root, encoding="unicode"))
-        # Closing it rebuilds Home on its next load, as the widget editor does.
-        self.assertTrue(any(n.text.startswith("Skin.SetString(Bald.WidgetsStamp,") for n in root.findall("onunload")))
+        # Closing it after a change rebuilds Home on its next load, as the widget editor does.
+        self.assert_stamps_only_after_a_change("Custom_1117_BaldHomeScreens.xml")
+
+    def assert_stamps_only_after_a_change(self, name):
+        window = resolve_window(name)
+        unloads = [(n.get("condition"), n.text) for n in window.findall("onunload")]
+        stamp = next(u for u in unloads if u[1].startswith("Skin.SetString(Bald.WidgetsStamp,"))
+        self.assertIn("System.Time(hh:mm:ss)", stamp[1])
+        self.assertEqual(stamp[0], "!String.IsEmpty(Window(home).Property(Bald.WidgetsDirty))")
+        self.assertIn((None, "ClearProperty(Bald.WidgetsDirty,home)"), unloads[unloads.index(stamp) + 1:])
+        # Every Skin Variables action marks the rows changed first, under the same condition.
+        runs = 0
+        for parent in window.iter():
+            clicks = [n for n in parent if n.tag == "onclick"]
+            for i, click in enumerate(clicks):
+                if click.text.startswith("RunPlugin("):
+                    runs += 1
+                    with self.subTest(window=name, action=click.text[:60]):
+                        self.assertGreater(i, 0)
+                        mark = clicks[i - 1]
+                        self.assertEqual((mark.get("condition"), mark.text), (click.get("condition"), "SetProperty(Bald.WidgetsDirty,1,home)"))
+        self.assertGreater(runs, 5)
 
     def test_hub_rows_run_skin_variables_actions_on_the_selected_hub(self):
         root = resolve_window("Custom_1117_BaldHomeScreens.xml")
@@ -178,7 +197,7 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertTrue(same_actions(home_menu.live(home_menu.actions(livetv, "onleft"), off), [("true", "Action(Select)")], off))
         self.assertTrue(same_actions(home_menu.live(home_menu.actions(livetv, "onright"), off), [("true", "9029")], off))
         self.assertEqual([n.text for n in home_menu.control(9029).findall("onfocus")],
-                         ["SetProperty(Bald.ReturnMenu,9004,home)", "ActivateWindow(TVGuide)"])
+                         ["SetProperty(Bald.ReturnMenu,9004,home)", "ActivateWindow(TVGuide)", "SetFocus(9004)"])
         live_rows = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().findtext(
             "expression[@name='Bald_LiveTVRows']")
         self.assertTrue(equivalent(live_rows, "System.HasPVRAddon + $EXP[Bald_HasRows_livetv]"))
@@ -268,16 +287,15 @@ class BaldSettingsTests(unittest.TestCase):
     def test_menu_preview_suppresses_the_previously_active_rows_clearlogo(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
         logo = root.find(".//include[@name='Bald_ArtLogo']")
-        images = logo.findall("definition/control[@type='image']")
-
-        self.assertEqual(len(images), 3)
-        for image in images:
-            visibility = image.findtext("visible")
-            self.assertIn("$PARAM[preview]", atoms(visibility))
-            # Outside its own preview, a row's logo shows only for the current row while no widget preview is open.
-            self.assertTrue(implies(
-                visibility, "!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
-                assume={"$PARAM[preview]": False, "$PARAM[ignore_home_row]": False}))
+        group = logo.find("definition/control[@type='group']")
+        self.assertEqual(len(group.findall("control[@type='image']")), 3)
+        # The row's group holds the three images (Kodi skips them while it is hidden).
+        visibility = group.findtext("visible")
+        self.assertIn("$PARAM[preview]", atoms(visibility))
+        # Outside its own preview, a row's logo shows only for the current row while no widget preview is open.
+        self.assertTrue(implies(
+            visibility, "!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+            assume={"$PARAM[preview]": False, "$PARAM[ignore_home_row]": False}))
 
     def test_widget_rows_reopen_menu_on_the_active_screen(self):
         root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
@@ -294,7 +312,7 @@ class BaldSettingsTests(unittest.TestCase):
                 self.assertEqual(call.findtext("param[@name='screen']"), screen)
 
     def test_main_menu_accent_dot_follows_focus(self):
-        root = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot()
+        root = ET.parse(ROOT / "1080i" / "View_510_Bald_Posters.xml").getroot()
         focused = root.find(".//include[@name='Bald_MenuRowFocused']")
         unfocused = root.find(".//include[@name='Bald_MenuRowUnfocused']")
 
@@ -327,15 +345,16 @@ class BaldSettingsTests(unittest.TestCase):
                          "ActivateWindow(videos,videodb://movies/titles/,return)")
         self.assertEqual(fallback.findtext("include[@name='Bald_HubOpen_hub2']/definition/onfocus"),
                          "ActivateWindow(videos,videodb://tvshows/titles/,return)")
-        # The bridge remembers its menu entry for the return to Home (Bald_ReturnToMenu), then opens the target.
+        # The bridge remembers its menu entry for the return to Home (Bald_ReturnToMenu), opens the target, then hands
+        # focus back to the entry (a target that leaves Home active would otherwise strand it on the bridge).
         self.assertEqual([n.text for n in home_menu.control(9021).findall("onfocus")],
                          ["SetProperty(Bald.ReturnMenu,9011,home)", "SetProperty(Bald.HubTitle,$ESCVAR[Bald_HubLabel_hub1],home)",
-                          "ActivateWindow(videos,videodb://movies/titles/,return)"])
+                          "ActivateWindow(videos,videodb://movies/titles/,return)", "SetFocus(9011)"])
         self.assertIsNone(fallback.find("include[@name='Bald_HubOpen_hub3']/definition/onfocus"))
         suffix = fallback.find("variable[@name='Bald_HubSuffix_hub1']/value")
         self.assertEqual((suffix.get("condition"), suffix.text), ("$EXP[Bald_HubHasOpen_hub1]", "  ›"))
 
-        focused = ET.parse(ROOT / "1080i" / "Includes_Bald_Home.xml").getroot().find(
+        focused = ET.parse(ROOT / "1080i" / "View_510_Bald_Posters.xml").getroot().find(
             ".//include[@name='Bald_MenuRowFocused']"
         )
         disclosure = next(label for label in focused.findall(".//control[@type='label']") if label.findtext("label") == "›")

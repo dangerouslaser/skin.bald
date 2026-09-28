@@ -4,7 +4,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 from conditions import equivalent, find_value, implies
-from kodi_includes import expand_call, expand_follow, parse
+from kodi_includes import expand_call, expand_follow, expressions, parse
 from skin_strings import loc
 
 
@@ -74,15 +74,18 @@ class InfoPagesTests(unittest.TestCase):
     def test_episode_overview_uses_episode_identity_and_cast_poster_crops(self):
         title = self.shared.find("variable[@name='Bald_InfoTitle']")
         episode = 'String.IsEqual(ListItem.DBType,episode)'
-        values = [(value.get('condition'), value.text) for value in title.findall('value')]
-        self.assertEqual(find_value(values, episode), '$INFO[ListItem.Title]')
+        # Every item's title is its own (an episode's too).
+        self.assertEqual([(value.get('condition'), value.text) for value in title.findall('value')], [(None, '$INFO[ListItem.Title]')])
         meta = find_value([(value.get('condition'), value.text)
                            for value in self.shared.findall("variable[@name='Bald_InfoMeta']/value")], episode)
         for field in ('ListItem.TVShowTitle', 'ListItem.Season', 'ListItem.Episode'):
             self.assertIn(field, meta)
-        overview_title = next(node for node in self.pages.findall("include[@name='Bald_InfoOverview']//control[@type='label']") if node.findtext('label') == '$VAR[Bald_InfoTitle]')
-        # An episode always shows its title as text (its show's clearlogo would name the show, not the episode).
-        self.assertTrue(implies(episode, overview_title.findtext('visible')))
+        # An episode never reaches the movie Overview (it has the TV Overview), so that page has no episode branches.
+        call = next(node for node in self.dialog.iter("include") if node.text == "Bald_InfoOverview")
+        self.assertEqual(call.get("condition"), "!$EXP[Bald_InfoTVItem]")
+        self.assertTrue(implies(episode, "$EXP[Bald_InfoTVItem]", expressions()))
+        overview = ET.tostring(self.pages.find("include[@name='Bald_InfoOverview']"), encoding="unicode")
+        self.assertNotIn("Bald_InfoTVIsEpisode", overview)
         poster = self.pages.find(".//control[@id='5204']")
         self.assertEqual(poster.findtext('aspectratio'), 'scale')
 
@@ -133,18 +136,19 @@ class InfoPagesTests(unittest.TestCase):
         some_logo = " | ".join(f"!String.IsEmpty({art})" for art in (
             "Container($PARAM[c]).ListItem.Art(clearlogo)", "Container($PARAM[c]).ListItem.Art(tvshow.clearlogo)",
             "Container.Art(tvshow.clearlogo)"))
-        for image in shared.findall("definition/control"):
-            visible = image.findtext("visible")
-            # On Home the logo follows the current row; ignore_home_row="true" (used above) lifts that for the dialog.
-            self.assertTrue(implies(visible, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
-                                    assume={"$PARAM[ignore_home_row]": False, "$PARAM[preview]": False}))
-            self.assertFalse(implies(visible, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
-                                     assume={"$PARAM[ignore_home_row]": True}))
-            self.assertTrue(implies(visible, some_logo))
+        group = shared.find("definition/control[@type='group']")
+        row = group.findtext("visible")
+        # On Home the logo follows the current row; ignore_home_row="true" (used above) lifts that for the dialog.
+        self.assertTrue(implies(row, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+                                assume={"$PARAM[ignore_home_row]": False, "$PARAM[preview]": False}))
+        self.assertFalse(implies(row, "String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])",
+                                 assume={"$PARAM[ignore_home_row]": True}))
+        for image in group.findall("control[@type='image']"):
+            self.assertTrue(implies(image.findtext("visible"), some_logo))
 
     def test_reuses_home_blur_and_clears_local_override(self):
         self.assertEqual([n.text for n in self.dialog.findall(".//control[@id='5200']/include")],
-                         ["Bald_Field", "Bald_BackdropImage"])
+                         ["Bald_WindowBase", "Bald_BackdropImage"])
         unloads = [node.text for node in expand_follow(self.dialog) if node.tag == "onunload"]
         for name in ("Bald_InfoToOverview", "Bald_InfoBackToCast"):
             actions = [node.text for node in expand_follow(self.shared.find(f"include[@name='{name}']"))]

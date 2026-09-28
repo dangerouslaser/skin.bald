@@ -185,10 +185,11 @@
                                 <value>3</value>
                             </rule>
                         </rules>
+                        <!-- The first row's Up is Bald_Row's own (it opens the menu), which never reads this value. -->
                         <rules name="row_up">
                             <rule>
                                 <condition>{item_x}==0</condition>
-                                <value>SetFocus(9000,0,absolute)</value>
+                                <value>noop</value>
                             </rule>
                             <rule>
                                 <value>$MATH[{base} + {item_x}]</value>
@@ -370,8 +371,8 @@
                 <items menu="{menu}" item="{node}" mode="{mode}">
                     <item>
                         <condition>{item_logo}!=off</condition>
-                        <template>generator/row-binding.xmltemplate</template>
-                        <value name="content">Bald_ArtLogo</value>
+                        <!-- As row-binding, with no listing clearlogo fallback (Home has no media container). -->
+                        <template>generator/logo-binding.xmltemplate</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                     </item>
                 </items>

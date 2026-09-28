@@ -7,7 +7,7 @@
 	<!-- Build the Home rows (Skin Variables, shortcuts/skinvariables-generator.json). It hashes these arguments, its
 	     config (with the generator's build version) and the current output, and returns at once when none changed;
 	     after writing it reloads the skin. So it builds on first run, after a skin update that changed the generator,
-	     and after the widget editor or Home Screens closes (Custom_1116 and 1117 stamp Bald.WidgetsStamp).
+	     and after the widget editor or Home Screens closes with a change (Custom_1116 and 1117 stamp Bald.WidgetsStamp).
 	     Not before the hubs migration has run (docs/NOTES.md, Home hubs): until Bald.HubsMigrated is set, Home starts
 	     it instead (unless Startup.xml already has, Bald.HubsMigrating), and the script builds when it has written the
 	     hubs list. Startup does not run on a live skin update or ReloadSkin, so Home must be able to start it too. -->
@@ -17,11 +17,14 @@
 	     back to Default) but logs a warning each load, so it is moved to Default once; Kodi then reloads the skin. -->
 	<onload condition="String.IsEqual(Skin.Font,DMSans)">RunScript(skin.bald,font,Default)</onload>
 	<!-- Offer Bald's recommended Kodi settings once, after the startup splash (scripts/recommended.py; it says nothing
-	     when they are already in place). Bald Settings > Appearance > Behavior offers them again any time. -->
+	     when they are already in place): here without the splash, else as it lifts (9195). Bald Settings > Appearance >
+	     Behavior offers them again any time. -->
 	<onload condition="!Skin.HasSetting(Bald.RecommendedOffered) + !$EXP[Bald_Preloading]">RunScript(skin.bald,recommended,prompt)</onload>
 	<onload condition="!Skin.HasSetting(Bald.RecommendedOffered) + !$EXP[Bald_Preloading]">Skin.SetBool(Bald.RecommendedOffered)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">SetProperty(Bald.HubsMigrating,1,home)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">RunScript(skin.bald,hubs)</onload>
+	<!-- As in Startup.xml: a failed run cannot leave Bald.HubsMigrating set for good. -->
+	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">AlarmClock(bald_hubs_migrating,ClearProperty(Bald.HubsMigrating,home),00:30,silent)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
 	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load, except when
 	     returning to the menu entry Home was left from (Bald_ReturningToMenu), which keeps the state it was left in.
@@ -47,7 +50,7 @@
 	     lookups). Never both: with Bald Helper, TMDb Helper's blur is switched off. -->
 	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
-	<onload condition="$EXP[Bald_HasTMDbHelper]">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
+	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.UseLocalWidgetContainer)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
 	<!-- Online ratings (Appearance > Ratings): TMDb Helper's ListItem monitor, which publishes the followed item's
 	     ratings, runs only while the skin sets TMDbHelper.Service. On with the setting, off without it
 	     (Includes_Bald_Ratings.xml, Bald_RatingsOnline). -->
@@ -79,12 +82,13 @@
 	<onload>ClearProperty(Bald.InfoSwitch,home)</onload>
 	<include>Bald_CurtainHandoff</include>
 	<controls>
-		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_Backdrop); or the playing video,
+		<!-- Background: neutral field, with the darkened blurred fanart over it (see Bald_BackdropImage); or the playing video,
 		     dimmed (Bald_WindowBase). -->
 		<include>Bald_WindowBase</include>
-		<include content="Bald_Backdrop" />
+		<include>Bald_BackdropImage</include>
 
-		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). -->
+		<!-- Everything drifts 2 px on a slow cycle while idle (burn-in guard). The drift slides are sine in-out, a
+		     deliberate exception to the move curve (cubic out): a pulsing drift must ease at both ends. -->
 		<control type="group">
 			<!-- Home is the root: it is always returned to (in from the left) and always left deeper (out to the left). -->
 			<include content="Bald_AnimWindowDepth"><param name="back_in">true</param></include>
@@ -126,30 +130,20 @@
 					</control>
 					<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param><param name="height">576</param><param name="center">624,288</param></include>
 					<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param><param name="height">576</param><param name="center">624,288</param></include>
-					<control type="image">
-						<width>1248</width>
-						<height>576</height>
-						<aspectratio>scale</aspectratio>
-						<texture background="true">$VAR[Bald_Fanart]</texture>
-						<visible>$EXP[Bald_DialogOver]</visible>
-					</control>
+					<include content="Bald_DialogArt"><param name="height">576</param></include>
 				</control>
 				<!-- Dialog art. Kodi evaluates <visible> and animation conditions without a window context
 				     (CGUIControl::UpdateVisibility), so with a modal dialog over Home, Container(9101..9103) in them
 				     resolves against the dialog and the parity layers above flip or blank. Textures and variables are
 				     evaluated with the control's window (CGUIImage::UpdateInfo, CSkinVariableString::GetValue), so this
 				     image, whose texture is the live $VAR[Bald_Fanart] and whose visibility needs no container, shows the
-				     right art for as long as a dialog is up, and lingers while the layers settle after it closes. -->
-				<control type="image">
-					<width>1248</width>
-					<height>702</height>
-					<aspectratio>scale</aspectratio>
-					<texture background="true">$VAR[Bald_Fanart]</texture>
-					<visible>$EXP[Bald_DialogOver] + !$EXP[Bald_VideoPosterFrame]</visible>
-					<animation type="Hidden">
-						<effect type="fade" start="100" end="0" time="250" delay="900" tween="sine" easing="inout" />
-					</animation>
-				</control>
+				     right art for as long as a dialog is up, and lingers while the layers settle after it closes (the
+				     576 copy above does the same for a poster row over background video; this one gives way to it at
+				     once, Bald_DialogArt). -->
+				<include content="Bald_DialogArt">
+					<param name="visible">$EXP[Bald_DialogOver] + !$EXP[Bald_VideoPosterFrame]</param>
+					<param name="cut">$EXP[Bald_VideoPosterFrame]</param>
+				</include>
 				<!-- The current info item can change independently of the originating Home tile.
 				     Keep its artwork inside this zoomed frame; fade it back to the tile on final close. -->
 				<control type="group">
@@ -264,9 +258,10 @@
 				<include content="Bald_MenuNote"><param name="text">$VAR[Bald_MenuPreviewNote]</param></include>
 			</control>
 			<control type="grouplist" id="9000">
+				<!-- 384 wide: its right edge on the 96 px safe margin (x 1824). -->
 				<left>Bald_RightColumn</left>
 				<top>395</top>
-				<width>420</width>
+				<width>384</width>
 				<height>310</height>
 				<orientation>vertical</orientation>
 				<itemgap>6</itemgap>
@@ -421,6 +416,9 @@
 			<texturenofocus />
 			<onfocus>ClearProperty(Bald.Preload,home)</onfocus>
 			<onfocus>CancelAlarm(bald_preload,silent)</onfocus>
+			<!-- The recommended-settings offer Home's onload skips behind the splash comes as it lifts. -->
+			<onfocus condition="!Skin.HasSetting(Bald.RecommendedOffered)">RunScript(skin.bald,recommended,prompt)</onfocus>
+			<onfocus condition="!Skin.HasSetting(Bald.RecommendedOffered)">Skin.SetBool(Bald.RecommendedOffered)</onfocus>
 			<!-- Home's default: row 1 (its onfocus makes it the current row), or the menu with no Home rows; while Home is
 			     hidden, the start screen's first row or the menu (Bald_StartRow, Bald_StartMenuEntry). -->
 			<onfocus condition="!$EXP[Bald_HomeHidden] + $EXP[Bald_HasRows_home]">SetFocus(9101)</onfocus>
@@ -455,6 +453,7 @@
 			<width>1</width><height>1</height><texturefocus /><texturenofocus />
 			<onfocus>SetProperty(Bald.ReturnMenu,9004,home)</onfocus>
 			<onfocus>ActivateWindow(TVGuide)</onfocus>
+			<include content="Bald_BridgeReturn"><param name="menu">9004</param></include>
 		</control>
 		<!-- Startup splash: the top layer while Bald.Preload is set; fades out 600 as it lifts. -->
 		<include>Bald_Splash</include>

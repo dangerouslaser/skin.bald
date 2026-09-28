@@ -5,6 +5,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from kodi_includes import include_definitions, resolve_window
+
 ROOT = Path(__file__).resolve().parents[1]
 XML = ROOT / "1080i"
 ON = "$EXP[Bald_VideoBackdropOn]"
@@ -31,9 +33,10 @@ class BackgroundVideoTests(unittest.TestCase):
         video = self.common.find("include[@name='Bald_VideoBackdrop']/control")
         self.assertEqual(video.findtext("visible"), ON)
         self.assertEqual([c.get("type") for c in video.findall("control")], ["videowindow"] + ["image"] * 4)
-        # One dim per level; unset is 80 %.
+        # One dim per level; anything else (unset) is 80 %, so no value leaves the video undimmed.
         dims = {c.findtext("visible"): c.find("texture").get("colordiffuse") for c in video.findall("control[@type='image']")}
-        self.assertEqual(dims, {"String.IsEmpty(Skin.String(Bald.OSD.BackgroundVideoDim))": "bald_video_dim",
+        levels = " + ".join(f"!Skin.String(Bald.OSD.BackgroundVideoDim,{n})" for n in (60, 70, 90))
+        self.assertEqual(dims, {levels: "bald_video_dim",
                                 "Skin.String(Bald.OSD.BackgroundVideoDim,60)": "bald_video_dim60",
                                 "Skin.String(Bald.OSD.BackgroundVideoDim,70)": "bald_video_dim70",
                                 "Skin.String(Bald.OSD.BackgroundVideoDim,90)": "bald_video_dim90"})
@@ -47,14 +50,69 @@ class BackgroundVideoTests(unittest.TestCase):
             text = (XML / name).read_text(encoding="utf-8")
             with self.subTest(window=name):
                 self.assertTrue("Bald_WindowBase" in text or "Bald_VideoBackdrop" in text)
+        # The library windows draw it over DefaultBackground, whose own videowindow they leave out (one videowindow).
         for name in ("MyVideoNav.xml", "MyMusicNav.xml"):
-            text = (XML / name).read_text(encoding="utf-8")
-            self.assertIn("<include>DefaultBackground</include>\n\t\t<include>Bald_VideoBackdrop</include>", text)
+            window = resolve_window(name)
+            with self.subTest(window=name):
+                shown = [c for c in window.iter("control") if c.get("type") == "videowindow"
+                         and not any((v.text or "").startswith("false + ") for v in c.findall("visible"))]
+                self.assertEqual(len(shown), 1)
+                self.assertIn('<include content="DefaultBackground"><param name="video">false</param></include>\n\t\t<include>Bald_VideoBackdrop</include>',
+                              (XML / name).read_text(encoding="utf-8"))
+        # Estuary windows show the video under their field only while the setting is on.
+        background = includes("Includes.xml").find("include[@name='DefaultBackground']")
+        video = background.find("definition/control[@type='videowindow']")
+        self.assertEqual([v.text for v in video.findall("visible")], [f"$PARAM[video] + {ON}", "!Slideshow.IsActive"])
+        self.assertEqual(background.findtext("param[@name='video']"), "true")
+        fanart = background.find(".//control[@id='31111']")
+        self.assertIn(f"![{ON} |", fanart.findtext("visible"))
         # Library views and pages draw no opaque full-screen field over it.
         for path in sorted(XML.glob("View_5*.xml")):
             text = path.read_text(encoding="utf-8")
             with self.subTest(view=path.name):
                 self.assertNotIn(FIELD + "<include>Bald_BackdropImage</include>", text)
+
+    def test_info_pages_show_it(self):
+        # Cast and More like this: the dimmed video, not Home's zoomed sharp fanart, behind the page.
+        page = includes("DialogVideoInfo.xml").find(".//control[@id='5200']")
+        self.assertEqual([n.text for n in page.findall("include")], ["Bald_WindowBase", "Bald_BackdropImage"])
+
+    def test_no_second_full_screen_dim_over_it(self):
+        # A window that shows the video already dims it: a full-screen 60 % field layer on top must give way.
+        definitions = include_definitions()
+        checked = []
+        for path in sorted(XML.glob("*.xml")):
+            if path.name.startswith(("Includes", "View_", "script-skinvariables", "Font", "Constants", "Defaults")):
+                continue
+            window = resolve_window(path.name, definitions)
+            # The info dialog's layers dim Home's art frame (the Overview), which shows over the video.
+            if path.name == "DialogVideoInfo.xml":
+                continue
+            if window.tag != "window" or not any(t.get("colordiffuse") == "bald_video_dim" for t in window.iter("texture")):
+                continue
+            checked.append(path.name)
+            parents = {child: parent for parent in window.iter() for child in parent}
+
+            def full_screen(image, colour):
+                texture = image.find("texture")
+                return (image.get("type") == "image" and texture is not None and texture.get("colordiffuse") == colour
+                        and (image.findtext("width"), image.findtext("height")) == ("1920", "1080"))
+
+            for image in window.iter("control"):
+                if not full_screen(image, "bald_field60"):
+                    continue
+                # Over an opaque field of its own (the library Series page's backdrop), it dims that, not the video.
+                siblings = list(parents[image])
+                if any(full_screen(s, "bald_field") and s.find("visible") is None for s in siblings[:siblings.index(image)]):
+                    continue
+                gates, node = [], image
+                while node is not None:
+                    gates += [v.text or "" for v in node.findall("visible")]
+                    node = parents.get(node)
+                # Conditional overlays (channel number entry) dim on purpose; a standing layer must give way.
+                with self.subTest(window=path.name):
+                    self.assertTrue(gates, "a full-screen 60 % field layer that stays over the video")
+        self.assertTrue({"Home.xml", "script-globalsearch.xml", "MyVideoNav.xml", "MyPVRGuide.xml"} <= set(checked), checked)
 
     def test_the_blur_gives_way(self):
         for image in self.home.findall("include[@name='Bald_BackdropImage']/control"):
@@ -78,7 +136,13 @@ class BackgroundVideoTests(unittest.TestCase):
         group = next(g for g in frame.iter("control") if g.findtext("visible") == "$EXP[Bald_VideoPosterFrame]")
         self.assertEqual(group.findtext("top"), "63")
         heights = [p.text for p in group.iter("param") if p.get("name") == "height"]
-        self.assertEqual(heights, ["576", "576"])
+        self.assertEqual(heights, ["576", "576", "576"])
+        # Both dialog-art copies linger after a dialog closes; the 702 one gives way at once to the 576 frame.
+        calls = [c for c in frame.iter("include") if c.get("content") == "Bald_DialogArt"]
+        self.assertEqual([c.findtext("param[@name='cut']") for c in calls], [None, "$EXP[Bald_VideoPosterFrame]"])
+        art = self.home.find("include[@name='Bald_DialogArt']/definition/control")
+        hidden = {a.get("condition"): [(e.get("time"), e.get("delay")) for e in a] for a in art.findall("animation[@type='Hidden']")}
+        self.assertEqual(hidden, {"![$PARAM[cut]]": [("250", "900")], "$PARAM[cut]": [("130", None)]})
 
     def test_back_from_the_menu_returns_to_the_video(self):
         button = self.home.find("include[@name='Bald_HomeMenuButton']/definition/control")
