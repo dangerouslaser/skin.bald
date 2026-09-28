@@ -87,7 +87,7 @@
 			<icon>$VAR[WeatherOutlookIconPrefixVar]na$VAR[WeatherOutlookIconPostfixVar]</icon>
 			<property name="Bald.Weather">setup</property>
 			<property name="Bald.Title">$LOCALIZE[8]</property>
-			<property name="Bald.Meta">$LOCALIZE[31450]</property>
+			<property name="Bald.Note">$LOCALIZE[31450]</property>
 			<onclick>ActivateWindow(servicesettings,weather)</onclick>
 			<visible>String.IsEmpty(Weather.Plugin)</visible>
 		</item>

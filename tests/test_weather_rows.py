@@ -167,7 +167,7 @@ class FallbackTests(unittest.TestCase):
                                             bodies={"Bald_WeatherReady": "[!String.IsEmpty(Weather.Plugin) + Weather.IsFetched]"}),
                                     kind)
             self.assertEqual(item.findtext("label2"), "$LOCALIZE[31451]")
-            self.assertEqual(item.findtext("property[@name='Bald.Meta']"), "$LOCALIZE[31450]")
+            self.assertEqual(item.findtext("property[@name='Bald.Note']"), "$LOCALIZE[31450]", "the hint wraps on the note line")
 
     def test_while_fetching_one_quiet_tile_waits(self):
         bodies = {"Bald_WeatherReady": "[!String.IsEmpty(Weather.Plugin) + Weather.IsFetched]"}

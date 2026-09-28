@@ -1197,6 +1197,10 @@
 	<!-- Weather (Includes_Bald_Weather.xml): square tiles showing the tile's label, weather icon and label2 instead of
 	     art, on the square row's rail and frame. -->
 	<include name="Bald_RowTiles_weather">
+		<!-- Without a weather service, or while it fetches, the row holds one tile, and a fixedlist can't bring a lone
+		     item back from its focus slot (2); the row slides two slots left in those states so the tile starts at the
+		     safe margin like any row's first item. -->
+		<animation effect="slide" end="-416,0" time="0" condition="String.IsEmpty(Weather.Plugin) | !Weather.IsFetched">Conditional</animation>
 		<include content="Bald_RowSquare"><param name="art" /><param name="overlay">Bald_WeatherTileFace</param><param name="caption">Bald_TileOverlayNone</param></include>
 	</include>
 	<include name="Bald_RowSquare">
