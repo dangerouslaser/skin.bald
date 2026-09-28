@@ -522,7 +522,7 @@
 		<value condition="$EXP[Bald_MenuPreview_search]">$LOCALIZE[31706]</value>
 		<value condition="$EXP[Bald_MenuPreview_settings]">$LOCALIZE[31707]</value>
 	</variable>
-	<expression name="Bald_Idle">[System.IdleTime(60) + Window.IsActive(home)]</expression>
+	<expression name="Bald_Idle">[$EXP[Bald_IdleReached] + Window.IsActive(home)]</expression>
 	<variable name="Bald_ScreenLabel">
 		<value condition="$EXP[Bald_Screen_livetv]">$LOCALIZE[31700]</value>
 		<value condition="$EXP[Bald_Screen_hub1]">$VAR[Bald_HubLabel_hub1]</value>

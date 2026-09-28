@@ -149,7 +149,17 @@
 				<include content="Bald_RatingsSettingRow"><param name="id">9654</param><param name="label">$LOCALIZE[31317]</param><param name="setting">Bald.Ratings.NoOSD</param><param name="level">advanced</param></include>
 				<control type="radiobutton" id="9655"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">6</param><param name="level">advanced</param></include><label>$LOCALIZE[31318]</label><selected>Skin.HasSetting(Bald.Ratings.ShowVotes)</selected><onclick>Skin.ToggleSetting(Bald.Ratings.ShowVotes)</onclick><enable>!Skin.HasSetting(Bald.Ratings.Hide)</enable></control>
 				<!-- Behavior -->
-				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick></control>
+				<!-- Idle after (Bald_IdleReached, Includes_Bald_Common.xml): 1 minute (empty, the default), 2, 5, 10, Off. Off keeps
+				     Home awake and Now Playing undimmed; the burn-in drift still runs (after a minute). Any other value resets. -->
+				<control type="button" id="9680"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31370]</label><label2>$VAR[Bald_IdleTimeLabel]</label2>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.IdleTime))">Skin.SetString(Bald.IdleTime,2)</onclick>
+					<onclick condition="Skin.String(Bald.IdleTime,2)">Skin.SetString(Bald.IdleTime,5)</onclick>
+					<onclick condition="Skin.String(Bald.IdleTime,5)">Skin.SetString(Bald.IdleTime,10)</onclick>
+					<onclick condition="Skin.String(Bald.IdleTime,10)">Skin.SetString(Bald.IdleTime,off)</onclick>
+					<onclick condition="!String.IsEmpty(Skin.String(Bald.IdleTime)) + !Skin.String(Bald.IdleTime,2) + !Skin.String(Bald.IdleTime,5) + !Skin.String(Bald.IdleTime,10)">Skin.Reset(Bald.IdleTime)</onclick>
+				</control>
+				<!-- Ambient movement happens while idle, so it greys out with idle off. -->
+				<control type="radiobutton" id="9621"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31764]</label><selected>!Skin.HasSetting(Bald.AmbientOff)</selected><onclick>Skin.ToggleSetting(Bald.AmbientOff)</onclick><enable>!Skin.String(Bald.IdleTime,off)</enable></control>
 				<!-- Reduce motion (Bald_ReduceMotion, Includes_Bald_Common.xml): zooms and slides become plain fades, for slower boxes. -->
 				<control type="radiobutton" id="9681"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31371]</label><selected>Skin.HasSetting(Bald.ReduceMotion)</selected><onclick>Skin.ToggleSetting(Bald.ReduceMotion)</onclick></control>
 				<control type="radiobutton" id="9622"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31765]</label><selected>!Skin.HasSetting(Bald.AutoHideMenuHint)</selected><onclick>Skin.ToggleSetting(Bald.AutoHideMenuHint)</onclick></control>

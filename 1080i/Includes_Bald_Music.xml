@@ -339,8 +339,9 @@
 	<expression name="Bald_NowPlayingFull">[!Visualisation.Enabled | Player.ShowInfo | Window.IsVisible(musicosd)]</expression>
 	<!-- The seek layer (DialogSeekBar.xml) is up with its own bar: Now Playing's bar and hints give way. -->
 	<expression name="Bald_NowPlayingSeekLayer">[Window.IsVisible(seekbar)]</expression>
-	<!-- Idle for a minute: the screen drifts and dims (burn-in, docs/SPEC.md 7). -->
-	<expression name="Bald_NowPlayingIdle">[System.IdleTime(60) + !Window.IsVisible(musicosd)]</expression>
+	<!-- Idle (a minute unless Appearance › Behavior › Idle after says otherwise): the screen dims (burn-in,
+	     docs/SPEC.md 7); the drift runs on its own timer (Bald_DriftIdle). -->
+	<expression name="Bald_NowPlayingIdle">[$EXP[Bald_IdleReached] + !Window.IsVisible(musicosd)]</expression>
 	<!-- What Bald Helper blurs for the background (hidden list 5500): the artist's fanart, else the cover. -->
 	<variable name="Bald_NowPlayingBlurSource">
 		<value condition="!String.IsEmpty(Player.Art(fanart))">$INFO[Player.Art(fanart)]</value>

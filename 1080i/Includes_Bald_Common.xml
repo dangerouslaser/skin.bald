@@ -42,6 +42,21 @@
 			<visible>!$EXP[Bald_VideoBackdropOn]</visible>
 		</control>
 	</include>
+	<!-- Idle (Appearance › Behavior, Skin.String(Bald.IdleTime)): how long Home and Now Playing wait untouched before
+	     the idle state (Home closes its menu, parks focus on the wake button, dims its rows and hints and, with Ambient
+	     movement on, advances the row; Now Playing dims). Empty is 1 minute (docs/SPEC.md 5.1), then 2, 5 or 10; "off"
+	     never goes idle. Any other value counts as 1 minute. Timers.xml repeats these bodies literally ($EXP does not
+	     trigger there; tests/test_idle.py keeps them equal). -->
+	<expression name="Bald_IdleReached">[[System.IdleTime(60) + !Skin.String(Bald.IdleTime,2) + !Skin.String(Bald.IdleTime,5) + !Skin.String(Bald.IdleTime,10) + !Skin.String(Bald.IdleTime,off)] | [System.IdleTime(120) + Skin.String(Bald.IdleTime,2)] | [System.IdleTime(300) + Skin.String(Bald.IdleTime,5)] | [System.IdleTime(600) + Skin.String(Bald.IdleTime,10)]]</expression>
+	<!-- The burn-in drift keeps its guard with idle off: it then starts after the default minute. -->
+	<expression name="Bald_DriftIdle">[[[System.IdleTime(60) + !Skin.String(Bald.IdleTime,2) + !Skin.String(Bald.IdleTime,5) + !Skin.String(Bald.IdleTime,10) + !Skin.String(Bald.IdleTime,off)] | [System.IdleTime(120) + Skin.String(Bald.IdleTime,2)] | [System.IdleTime(300) + Skin.String(Bald.IdleTime,5)] | [System.IdleTime(600) + Skin.String(Bald.IdleTime,10)]] | [System.IdleTime(60) + Skin.String(Bald.IdleTime,off)]]</expression>
+	<variable name="Bald_IdleTimeLabel">
+		<value condition="Skin.String(Bald.IdleTime,off)">$LOCALIZE[351]</value>
+		<value condition="Skin.String(Bald.IdleTime,2)">2 $LOCALIZE[31710]</value>
+		<value condition="Skin.String(Bald.IdleTime,5)">5 $LOCALIZE[31710]</value>
+		<value condition="Skin.String(Bald.IdleTime,10)">10 $LOCALIZE[31710]</value>
+		<value>1 $LOCALIZE[31710]</value>
+	</variable>
 	<!-- Idle burn-in guard: while Home or Now Playing sits idle, the content steps round a small square (x, y px), one
 	     corner every 3 minutes (Timers.xml bald_drift loops every 12 minutes). Each step is instant and the screen is
 	     still in between, so Kodi redraws the whole screen once per step instead of every frame, as a continuous

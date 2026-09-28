@@ -745,6 +745,12 @@ msgid "Progress marks"
 msgstr "Fortschrittsanzeigen"
 
 #: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Behavior: how long Home and Now Playing wait untouched before they go idle (dim, drift, ambient movement)
+msgctxt "#31370"
+msgid "Idle after"
+msgstr "Leerlauf nach"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance > Behavior: zooms and slides become plain fades
 msgctxt "#31371"
 msgid "Reduce motion"
