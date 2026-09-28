@@ -3,8 +3,9 @@
 <includes>
 	<expression name="Bald_InfoOwnBackdrop">[!Window.IsVisible(home)]</expression>
 	<!-- The page in view (Bald.InfoSec on Home, set by each page's focusable controls): 0 Overview, 1 Cast & details,
-	     2 More like this. -->
-	<expression name="Bald_InfoOnOverview">[String.IsEqual(Window(home).Property(Bald.InfoSec),0)]</expression>
+	     2 More like this. Unset counts as Overview: the dialog's onload sets 0 only after Kodi has drawn its first
+	     frames, and until then the Cast and More backdrop faded in over the fanart and straight out again. -->
+	<expression name="Bald_InfoOnOverview">[String.IsEmpty(Window(home).Property(Bald.InfoSec)) | String.IsEqual(Window(home).Property(Bald.InfoSec),0)]</expression>
 	<expression name="Bald_InfoOnCast">[String.IsEqual(Window(home).Property(Bald.InfoSec),1)]</expression>
 	<expression name="Bald_InfoOnMore">[String.IsEqual(Window(home).Property(Bald.InfoSec),2)]</expression>
 	<expression name="Bald_InfoHasCast">[Integer.IsGreater(Container(50).NumItems,0)]</expression>
