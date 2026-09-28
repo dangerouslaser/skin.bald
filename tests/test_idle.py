@@ -108,6 +108,17 @@ class IdleTests(unittest.TestCase):
                 n.get("condition") or "" for n in timer if n.tag in ("onstart", "onstop")]
             self.assertNotIn("$EXP", " ".join(conditions))
 
+    def test_ambient_movement_waits_while_a_dialog_is_over_home(self):
+        # Window.IsActive(home) holds under a dialog: the row moved under an info page left open, so closing it
+        # returned to another item. The guard is Bald_DialogOver written out (without the transient Bald.InfoSwitch).
+        ambient = {t.findtext("name"): t for t in root("Timers.xml").iter("timer")}["bald_ambient"]
+        guard = "!System.HasActiveModalDialog + !Window.IsVisible(movieinformation) + !Window.IsVisible(contextmenu)"
+        self.assertTrue(ambient.findtext("start").endswith(f" + {guard}"))
+        self.assertTrue(ambient.find("onstop").get("condition").endswith(f" + {guard}"))
+        over = expression("Bald_DialogOver")
+        for atom in ("System.HasActiveModalDialog", "Window.IsVisible(movieinformation)", "Window.IsVisible(contextmenu)"):
+            self.assertIn(atom, over + expression("Bald_InfoOpen"))
+
     def test_the_setting_row_cycles_every_value(self):
         row = root("Custom_1118_BaldAppearance.xml").find(".//control[@id='9680']")
         self.assertEqual(row.get("type"), "button")
