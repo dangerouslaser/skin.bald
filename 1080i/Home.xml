@@ -112,7 +112,8 @@
 					<include content="Bald_ArtLayer"><param name="visible">$EXP[Bald_EffectiveItemOdd]</param></include>
 					<include content="Bald_ArtLayer"><param name="visible">!$EXP[Bald_EffectiveItemOdd]</param></include>
 				</control>
-				<!-- Weather rows with a folder weather pack: the current conditions' pictures (Bald_WeatherFolderArt). -->
+				<!-- Weather rows with a folder weather pack, until Bald Helper has picked each tile's picture: the current
+				     conditions' pictures (Bald_WeatherFolderArt). -->
 				<control type="multiimage">
 					<width>1248</width>
 					<height>702</height>

@@ -30,7 +30,15 @@ NATIVE_INFO = re.compile(r"^(Weather\.(Plugin|IsFetched|Data\(("
                          r")\))"
                          r"|Skin\.String\(Bald\.Weather(Fanart|Icons)\.(path|ext)\)"
                          r"|Window\(home\)\.Property\(Bald\.(Row|RowStyle)\)"
-                         r"|(Container\(\d+\)\.)?ListItem\.(Label|Label2|Icon|CurrentItem|Property\(Bald\.[A-Za-z]+\)))$")
+                         r"|(Container\(\d+\)\.)?ListItem\.(Label|Label2|Icon|CurrentItem|Art\(thumb\)|Property\(Bald\.[A-Za-z]+\)))$")
+
+
+def helper_weather():
+    """Bald Helper's weather module (the slot names it publishes)."""
+    import sys
+    sys.path.insert(0, str(ROOT / "addons" / "script.bald.helper"))
+    from resources.lib import weather
+    return weather
 
 
 def row(label, path, **fields):
@@ -109,16 +117,54 @@ class GeneratorTests(unittest.TestCase):
         root = generated([row("Weather forecast", "weather://daily")])
         values = [(value.get("condition"), value.text) for value in root.findall("variable[@name='Bald_Fanart']/value")]
         current = [(c, t) for c, t in values if c and c.startswith("String.IsEqual(Window(home).Property(Bald.Row),9101)")]
-        self.assertEqual(len(current), 2)
+        self.assertEqual(len(current), 3)
+        # The focused tile's own picture, its thumb (Bald Helper's Bald.Weather.Art.<slot>), for either kind of pack.
         condition, texture = current[0]
-        # A pack of single pictures (it has a file extension): the focused tile's condition picture.
+        self.assertTrue(implies(condition, "!String.IsEmpty(Skin.String(Bald.WeatherFanart.path))"))
+        self.assertTrue(implies(condition, "!String.IsEmpty(Container(9101).ListItem.Art(thumb))"))
+        self.assertEqual(texture, "$INFO[Container(9101).ListItem.Art(thumb)]")
+        # Until then a pack of single pictures (it has a file extension) names the tile's file from its code.
+        condition, texture = current[1]
         self.assertTrue(implies(condition, "!String.IsEmpty(Skin.String(Bald.WeatherFanart.ext))"))
         self.assertEqual(texture, "$INFO[Skin.String(Bald.WeatherFanart.path)]"
                                   "$INFO[Container(9101).ListItem.Property(Bald.WeatherCode)]"
                                   "$INFO[Skin.String(Bald.WeatherFanart.ext)]")
-        self.assertIsNone(current[1][1])
-        # Never the media art chain on a weather row.
-        self.assertFalse(any("Art(" in (t or "") for c, t in values if c and "9101" in c))
+        self.assertIsNone(current[2][1])
+        # Never the media art chain on a weather row (fanart, landscape, poster): only the tile's thumb.
+        arts = set(re.findall(r"Art\((\w[\w.]*)\)", " ".join(f"{c} {t}" for c, t in values if c and "9101" in c)))
+        self.assertEqual(arts, {"thumb"})
+
+    def test_every_tile_carries_its_slots_picture_as_its_thumb(self):
+        slots = {"Bald_WeatherDailyContent": ["Current"] + [f"Daily.{n}" for n in range(1, 8)]
+                 + [f"Day{n}" for n in range(7)],
+                 "Bald_WeatherHourlyContent": ["Current"] + [f"Hourly.{n}" for n in range(1, 25)]}
+        for name, expected in slots.items():
+            items = [item for item in expanded_items(name)
+                     if item.findtext("property[@name='Bald.Weather']") in ("now", "day", "hour")]
+            self.assertEqual([item.findtext("thumb") for item in items],
+                             [f"$INFO[Window(home).Property(Bald.Weather.Art.{slot})]" for slot in expected])
+            # The set-up and fetching tiles have no picture.
+            for item in expanded_items(name):
+                if item.findtext("property[@name='Bald.Weather']") in ("setup", "fetching"):
+                    self.assertIsNone(item.find("thumb"))
+        # The same slot names Bald Helper publishes.
+        published = {slot for slot, _ in helper_weather().art_slots()}
+        self.assertEqual(published, set(slots["Bald_WeatherDailyContent"] + slots["Bald_WeatherHourlyContent"]))
+
+    def test_the_big_icon_steps_aside_for_a_picture(self):
+        icon = ET.parse(WEATHER).getroot().find("include[@name='Bald_WeatherArtIcon']")
+        visible = [node.findtext("visible") for node in icon.iter("control") if node.get("type") == "image"][0]
+        # No pack, or no code: the icon. A folder pack whose pictures Bald Helper has resolved but found none for the
+        # tile: the icon too. A tile with a picture: never.
+        self.assertIn("String.IsEmpty(Skin.String(Bald.WeatherFanart.path))", visible)
+        self.assertIn("String.IsEmpty(Container($PARAM[c]).ListItem.Property(Bald.WeatherCode))", visible)
+        self.assertIn("[String.IsEmpty(Container($PARAM[c]).ListItem.Art(thumb)) + String.IsEmpty(Skin.String("
+                      "Bald.WeatherFanart.ext)) + !String.IsEmpty(Window(home).Property(Bald.Weather.ArtReady))]", visible)
+
+    def test_the_folder_pack_slideshow_is_only_a_stopgap(self):
+        body = ET.parse(WEATHER).getroot().findtext("expression[@name='Bald_WeatherFolderArt']")
+        self.assertIn("String.IsEmpty(Window(home).Property(Bald.Weather.ArtReady))", body)
+        self.assertIn("String.IsEmpty(Skin.String(Bald.WeatherFanart.ext))", body)
 
 
 class InfolabelTests(unittest.TestCase):
@@ -128,7 +174,9 @@ class InfolabelTests(unittest.TestCase):
         tidied = set(re.findall(r"Window\(home\)\.Property\(Bald\.Weather\.([^)]+)\)", text))
         self.assertEqual(tidied, {"Current.Precipitation", "Daily.$PARAM[n].HighTemperature",
                                   "Daily.$PARAM[n].LowTemperature", "Hourly.$PARAM[n].Time",
-                                  "Hourly.$PARAM[n].Temperature", "Hourly.$PARAM[n].Precipitation"})
+                                  "Hourly.$PARAM[n].Temperature", "Hourly.$PARAM[n].Precipitation",
+                                  "Art.Current", "Art.Daily.$PARAM[n]", "Art.Day$PARAM[n]", "Art.Hourly.$PARAM[n]",
+                                  "ArtReady"})
         text = re.sub(r"Window\(home\)\.Property\(Bald\.Weather\.[^)]+\)", "Weather.Data(Current.Temperature)", text)
         labels = set(infolabels(text))
         self.assertTrue(labels)
@@ -231,6 +279,10 @@ class LayoutTests(unittest.TestCase):
             labels = [label.findtext("label") for label in node.iter("control") if label.get("type") == "label"]
             self.assertEqual(labels, ["$INFO[ListItem.Label]", "$INFO[ListItem.Label2]"])
             self.assertIn("$INFO[ListItem.Icon]", [texture.text for texture in node.iter("texture")])
+            # The tile face keeps the icon: the item's thumb (its background picture) is never drawn on the tile.
+            textures = " ".join(texture.text or "" for texture in node.iter("texture"))
+            for art in ("Art(thumb)", "ListItem.Thumb", "Bald_SquareArt"):
+                self.assertNotIn(art, textures)
             # The square tile's pop and ring, not a copy of them.
             self.assertEqual(len([a for a in node.iter("animation") if a.get("type") == "Focus"]), 1)
         self.assertIn("bald/focus_ring.png", [t.text for t in weather.find("focusedlayout").iter("texture")])

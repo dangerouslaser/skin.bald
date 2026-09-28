@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Values of Bald_Fanart for each configured row, while the menu previews its screen (Bald.Row.<screen>). A weather
-     row (path weather://...) shows the weather background pack's picture for its tile (fanart-weather.xmltemplate). -->
+     row (path weather://...) shows the weather background pack's picture for its tile: its thumb, which Bald Helper sets
+     per tile, else a single-picture pack's file named from the tile's code (fanart-weather.xmltemplate). -->
 <contents>
     <items>
         <item>
