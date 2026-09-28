@@ -121,7 +121,7 @@
 	</include>
 	<!-- Day n of the add-on's Daily forecast (weather.multi, Gismeteo and most current add-ons). Times, temperatures
 	     and precipitation come tidied from Bald Helper (the Bald.Weather.* properties on Home,
-	     addons/script.bald.helper/resources/lib/weather.py): add-ons write them in their own formats ("10:00:00 AM",
+	     its resources/lib/weather.py): add-ons write them in their own formats ("10:00:00 AM",
 	     "65 °F") and Weather.Data() adds "%" to every precipitation value. -->
 	<include name="Bald_WeatherDailyItem">
 		<param name="n" />
