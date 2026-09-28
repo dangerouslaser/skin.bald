@@ -435,13 +435,13 @@ msgstr "Öffnet"
 
 #: /1080i/Includes_Bald_Configure.xml
 msgctxt "#31204"
-msgid "One of your hubs. Right in the main menu opens its target, and so does Select while it has no rows."
-msgstr "Ein eigener Hub. Rechts im Hauptmenü öffnet sein Ziel, ebenso OK, solange er keine Zeilen hat."
+msgid "One of your hubs. Select in the main menu enters its rows and Right opens its target (Appearance > Behavior can swap the two); without rows, Select opens the target."
+msgstr "Ein eigener Hub. OK im Hauptmenü öffnet seine Zeilen und Rechts sein Ziel (unter Erscheinungsbild > Verhalten lässt sich das tauschen); ohne Zeilen öffnet OK das Ziel."
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31205"
-msgid "Show Live TV in the main menu. Select and Right open the guide; Left enters its rows."
-msgstr "Live-TV im Hauptmenü anzeigen. OK und Rechts öffnen den TV-Guide, Links führt zu seinen Zeilen."
+msgid "Show Live TV in the main menu. Select enters its rows and Right opens the guide (Appearance > Behavior can swap the two); without rows, Select opens the guide."
+msgstr "Live-TV im Hauptmenü anzeigen. OK öffnet seine Zeilen und Rechts den TV-Guide (unter Erscheinungsbild > Verhalten lässt sich das tauschen); ohne Zeilen öffnet OK den TV-Guide."
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31206"
@@ -462,6 +462,53 @@ msgstr "Hub entfernen"
 msgctxt "#31209"
 msgid "Clear target"
 msgstr "Ziel entfernen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31210"
+msgid "Select on a hub opens its library"
+msgstr "OK auf einem Hub öffnet seine Bibliothek"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: the spoiler protection switch
+msgctxt "#31260"
+msgid "Hide spoilers for unwatched items"
+msgstr "Spoiler bei ungesehenen Einträgen ausblenden"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: blur unwatched episodes' stills
+msgctxt "#31261"
+msgid "Blur episode thumbnails"
+msgstr "Vorschaubilder von Folgen unscharf darstellen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide unwatched episodes' plots
+msgctxt "#31262"
+msgid "Hide episode plots"
+msgstr "Handlung von Folgen ausblenden"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide unwatched movies' plots
+msgctxt "#31263"
+msgid "Hide movie plots"
+msgstr "Handlung von Filmen ausblenden"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide programme descriptions and images, and unwatched recordings
+msgctxt "#31264"
+msgid "Hide Live TV descriptions and recordings"
+msgstr "Live-TV-Beschreibungen und Aufnahmen ausblenden"
+
+#: /1080i/Includes_Bald_Spoilers.xml
+#. In place of the plot of an unwatched episode, movie or recording
+msgctxt "#31265"
+msgid "Plot hidden, not watched yet"
+msgstr "Handlung ausgeblendet, noch nicht gesehen"
+
+#: /1080i/Includes_Bald_Spoilers.xml
+#. In place of a Live TV programme's description
+msgctxt "#31266"
+msgid "Description hidden to avoid spoilers"
+msgstr "Beschreibung ausgeblendet, um Spoiler zu vermeiden"
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance category: ratings in media views
@@ -654,6 +701,96 @@ msgstr "Bald-Helper-Einstellungen"
 msgctxt "#31333"
 msgid "MDbList API key"
 msgstr "MDbList-API-Schlüssel"
+
+#: /1080i/View_550_Bald_Music.xml
+#. Music library view: square covers beside the preview
+msgctxt "#31400"
+msgid "Bald covers"
+msgstr "Bald Cover"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Search note
+msgctxt "#31401"
+msgid "Search your music library."
+msgstr "Die Musikbibliothek durchsuchen."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Party mode note
+msgctxt "#31402"
+msgid "Play random songs from your library, one after another."
+msgstr "Zufällige Titel aus der Bibliothek nacheinander abspielen."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Update library note
+msgctxt "#31403"
+msgid "Scan your music sources for new or changed items."
+msgstr "Die Musikquellen nach neuen oder geänderten Einträgen durchsuchen."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Stop update note
+msgctxt "#31404"
+msgid "Stop the current music-library scan."
+msgstr "Die laufende Durchsuchung der Musikbibliothek stoppen."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Now playing note
+msgctxt "#31405"
+msgid "Show what is playing."
+msgstr "Anzeigen, was gerade läuft."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Go to playlist note
+msgctxt "#31406"
+msgid "Open the music playlist."
+msgstr "Die Musikwiedergabeliste öffnen."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library letter bar: the list is not sorted by name
+msgctxt "#31407"
+msgid "Choose a name sort in options"
+msgstr "In den Optionen nach Name sortieren"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library letter bar: nothing to browse
+msgctxt "#31408"
+msgid "Nothing to browse"
+msgstr "Nichts zum Durchstöbern"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library: empty view
+msgctxt "#31409"
+msgid "Nothing to show. Open options to adjust your filters."
+msgstr "Nichts vorhanden. In den Optionen die Filter anpassen."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: hint for the music controls
+msgctxt "#31410"
+msgid "Select for controls"
+msgstr "OK für die Steuerung"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: hint for the visualisation
+msgctxt "#31411"
+msgid "Info for the visualisation"
+msgstr "Info für die Visualisierung"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: bitrate unit
+msgctxt "#31412"
+msgid "kbps"
+msgstr "kbit/s"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: sample rate unit
+msgctxt "#31413"
+msgid "kHz"
+msgstr "kHz"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: bit depth unit, as in 24-bit
+msgctxt "#31414"
+msgid "bit"
+msgstr "Bit"
 
 # empty strings from id 31177 to 31596
 #: /xml/Includes_SettingsDialog.xml
@@ -962,6 +1099,67 @@ msgstr "Links und Rechts ändern die Geschwindigkeit"
 msgctxt "#31646"
 msgid "Time display"
 msgstr "Zeitanzeige"
+
+#: /scripts/recommended.py
+#. Recommended Kodi settings dialog: heading and notification title
+msgctxt "#31837"
+msgid "Recommended Kodi settings"
+msgstr "Empfohlene Kodi-Einstellungen"
+
+#: /scripts/recommended.py
+#. Recommended Kodi settings dialog: what changes; [CR] is a line break
+msgctxt "#31838"
+msgid "Bald works best with three of Kodi's own settings:[CR]- no parent folder item (\"..\") at the top of lists[CR]- selecting a movie or episode shows its information first[CR]- shows always open on their seasons, even with only one, so the series page is available[CR][CR]Apply them now? You can change them back in Kodi's settings."
+msgstr "Bald funktioniert am besten mit drei von Kodis eigenen Einstellungen:[CR]- kein übergeordneter Ordner (\"..\") am Anfang von Listen[CR]- die Auswahl eines Films oder einer Folge zeigt zuerst die Informationen[CR]- Serien öffnen sich immer mit ihren Staffeln, auch wenn es nur eine gibt, damit die Serienseite verfügbar ist[CR][CR]Jetzt anwenden? Sie lassen sich in Kodis Einstellungen wieder zurückstellen."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /scripts/recommended.py
+#. Bald Settings > Appearance > Behavior row, and the dialog's yes button
+msgctxt "#31839"
+msgid "Apply recommended Kodi settings"
+msgstr "Empfohlene Kodi-Einstellungen anwenden"
+
+#: /scripts/recommended.py
+#. Notification when nothing needs changing
+msgctxt "#31840"
+msgid "Kodi's settings already match Bald's recommendations."
+msgstr "Kodis Einstellungen entsprechen bereits den Empfehlungen von Bald."
+
+#: /scripts/recommended.py
+#. Notification after applying
+msgctxt "#31841"
+msgid "Recommended settings applied."
+msgstr "Empfohlene Einstellungen angewendet."
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode: the Seasons level drawn as the TV information page
+msgctxt "#31846"
+msgid "Bald series page"
+msgstr "Bald Serienseite"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Library Series page hint, while a season tab has focus
+msgctxt "#31847"
+msgid "Down for episodes"
+msgstr "Runter für Folgen"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Bald Settings, Appearance, Behavior: Select on a TV show in the video library opens its information page (Bald Helper)
+msgctxt "#31848"
+msgid "Open TV shows on their info page"
+msgstr "Serien auf ihrer Informationsseite öffnen"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Right-hand note on the Behavior row above while the Bald Helper add-on is not installed; Select installs it
+msgctxt "#31849"
+msgid "Needs the Bald Helper add-on"
+msgstr "Benötigt das Addon Bald Helper"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Right-hand note on the Behavior row "Open TV shows on their info page" while Bald Helper is installed but disabled; Select enables it
+msgctxt "#31866"
+msgid "Bald Helper is disabled"
+msgstr "Bald Helper ist deaktiviert"
 
 #: /1080i/Custom_1119_BaldPlayback.xml
 msgctxt "#31880"
@@ -1344,8 +1542,8 @@ msgstr "Startbildschirme"
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31741"
-msgid "The default screen. Home cannot be removed."
-msgstr "Der Standardbildschirm. Der Startbildschirm kann nicht entfernt werden."
+msgid "Your everyday rows, mixed from all your libraries, and the screen Bald starts on. Turn it off to start on your first hub instead; Home comes back whenever no hub is shown."
+msgstr "Die Zeilen für jeden Tag, gemischt aus allen Bibliotheken, und der Bildschirm, mit dem Bald startet. Ausschalten, um stattdessen mit dem ersten Hub zu starten; der Startbildschirm kehrt zurück, sobald kein Hub angezeigt wird."
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31745"

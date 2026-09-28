@@ -143,5 +143,32 @@ class LocalizationTests(unittest.TestCase):
                 self.assertNotRegex(literal_text(text), r"[A-Za-z]{2,}", f"{path.name} {where}: {text}")
 
 
+# One live (not #~ obsolete) entry: msgctxt, then msgid, each possibly continued on "..." lines.
+_PO_ENTRY = re.compile(r'^msgctxt ("(?:[^"\\]|\\.)*"(?:\n"(?:[^"\\]|\\.)*")*)\n'
+                       r'msgid ("(?:[^"\\]|\\.)*"(?:\n"(?:[^"\\]|\\.)*")*)', re.M)
+
+
+def po_msgids(path):
+    """msgctxt -> msgid of every live entry in a strings.po, continuation lines joined."""
+    join = lambda quoted: "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', quoted))
+    return {join(ctxt): join(msgid) for ctxt, msgid in _PO_ENTRY.findall(path.read_text(encoding="utf-8"))}
+
+
+class TranslationSourceTests(unittest.TestCase):
+    """A translation is of an en_gb string: when en_gb's wording changes, every language's msgid must follow (and its
+    msgstr be redone), so a stale translation cannot hide behind an old msgid."""
+
+    def test_every_translated_msgid_matches_en_gb(self):
+        english = po_msgids(PO)
+        self.assertIn("#31000", english)
+        languages = [path for path in sorted(PO.parents[1].glob("resource.language.*/strings.po")) if path != PO]
+        self.assertTrue(languages)
+        for path in languages:
+            for ctxt, msgid in po_msgids(path).items():
+                with self.subTest(language=path.parent.name, msgctxt=ctxt):
+                    self.assertIn(ctxt, english)
+                    self.assertEqual(msgid, english[ctxt])
+
+
 if __name__ == "__main__":
     unittest.main()
