@@ -300,7 +300,7 @@ class Follower(common.Threads):
             return "", None
         for art in ART:
             value = self.xbmc.getInfoLabel(prefix + art)
-            if value:
+            if value and ("/" in value or "\\" in value):  # a bare name (DefaultAddonSkin.png) is a skin icon
                 return value, scrolling
         return "", scrolling
 

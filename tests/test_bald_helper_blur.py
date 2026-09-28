@@ -446,6 +446,12 @@ class FollowerTests(Case):
         self.settle()
         self.assertEqual(self.window.get("Bald.Blur.For"), "/show.jpg")
 
+    def test_a_skin_icon_name_is_not_art(self):
+        # The add-on browser's items carry Kodi's own icons as bare names; there is nothing to blur.
+        self.focus("9101", "", thumb="DefaultAddonSkin.png")
+        self.settle()
+        self.assertEqual(self.window.get("Bald.Blur"), "")
+
     def test_info_dialog_and_media_window_fallbacks(self):
         FakeFile.files.update({"/info.jpg": jpeg(), "/view.jpg": jpeg()})
         self.xbmc.labels = {"ListItem.Art(fanart)": "/info.jpg", "Container.ListItem.Art(fanart)": "/view.jpg"}
