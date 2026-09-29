@@ -692,7 +692,7 @@ def open_dialog_mode() -> None:
 
     # VS10 is the Amlogic Dolby Vision engine; nothing else has one to drive.
     if not platform.is_amlogic():
-        _notify_error(32589)
+        _notify_error(33900)
         return
 
     ensure_fonts()
