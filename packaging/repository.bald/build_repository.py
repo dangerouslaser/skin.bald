@@ -20,7 +20,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 REPOSITORY_SOURCE = "packaging/repository.bald"  # the repository add-on, in the checkout
-BUNDLED_ADDONS = ("addons/script.bald.xcsetup", "addons/script.bald.helper")
+# addons/script.tinyppi is a git subtree of the LibreELEC fork (dangerouslaser/script.tinyppi, branch libreelec).
+BUNDLED_ADDONS = ("addons/script.bald.xcsetup", "addons/script.bald.helper", "addons/script.tinyppi")
 # The published site (GitHub Pages). Kodi can add it as a file source: its HTTP directory listing keeps the links whose
 # text is their target, which on the landing page is only the repository zip.
 SITE_URL = "https://dangerouslaser.github.io/skin.bald/"
