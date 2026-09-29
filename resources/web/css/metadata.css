@@ -1,0 +1,175 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later
+   Copyright (c) 2026 U3knOwn */
+
+/* ---------------------------------------------------------------------------
+   The Dolby Vision metadata tab.
+
+   A tab of its own rather than a section of the live one: the list runs to a
+   hundred readings and more, and on a second screen it is worth the whole
+   screen.  Nothing here is picked out or interpreted -- the rows arrive as
+   info.dvmetadata builds them for the on-screen view, so what is listed is
+   what the bitstream said.
+--------------------------------------------------------------------------- */
+
+/* --- L5 active picture -------------------------------------------------- */
+
+.framewrap {
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+.frame {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 16 / 9;
+  background: #05070a;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.frame > i {
+  position: absolute;
+  background: linear-gradient(135deg,
+              color-mix(in srgb, var(--accent) 34%, transparent),
+              color-mix(in srgb, var(--accent-2) 24%, transparent));
+  border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  border-radius: 3px;
+  transition: inset .35s ease;
+  inset: 0;
+}
+.framenote { font-size: 12px; color: var(--muted); }
+
+.metarows { padding: 6px 0 14px; }
+
+/* One column on a phone, more as the window widens: the sections stand alone,
+   so they read fine side by side and the page stops being a mile long. */
+@media (min-width: 900px)  { .metarows { columns: 2; column-gap: 28px; padding: 10px 8px 16px; } }
+@media (min-width: 1500px) { .metarows { columns: 3; } }
+.mblock { break-inside: avoid; }
+
+/* The name of a block of readings, marked the way a card's own heading is --
+   an accent tick beside it rather than colour in the letters (see
+   .panel-toggle in css/live-panels.css).  There are a dozen of these down a
+   column, so the mark has to be the quiet kind. */
+.msection {
+  margin: 18px 16px 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text);
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.msection::before {
+  content: "";
+  flex: none;
+  width: 3px;
+  height: 13px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+/* The first block in a column starts level with the padding above it rather
+   than a heading's worth further down. */
+.mblock:first-child .msection { margin-top: 8px; }
+.msection .state {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--dim);
+  text-transform: none;
+}
+
+.mrow {
+  display: grid;
+  grid-template-columns: minmax(110px, 45%) 1fr;
+  gap: 10px;
+  padding: 4px 16px;
+  font-size: 12.5px;
+  transition: background .12s;
+}
+@media (hover: hover) {
+  .mrow:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+}
+/* As on the dashboard's own rows (see .row .k there): the name is half of what
+   the row says, so it is not held back from the reading beside it -- and both
+   wrapping values are given, for the reason .now h1 in css/live-panels.css
+   sets out: the first is what an older browser breaks a long reading with,
+   the second also keeps the column from growing to fit an unbroken one. */
+.mrow .k {
+  color: var(--text);
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.mrow .v {
+  text-align: right;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  transition: color .45s ease-out;
+}
+.mrow.changed .v { color: var(--accent-2); transition: none; }
+
+.mwide {
+  padding: 4px 16px;
+  font-size: 12.5px;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* A trim pass only means anything read against its neighbours, so its cells go
+   in fixed slots rather than wrapping into each other -- and the whole table
+   is one grid, so a reading always sits under the heading that names it.
+
+   Turned on its side against the on-screen view: there a pass is a row, which
+   fits because a row there is 1195 px wide, but a column of this page is a
+   fifth of that and the six-to-eight controls ran off the edge.  The controls
+   go down the left instead and each pass takes a column, which is the shape a
+   narrow column holds -- there are only ever a handful of passes, one per
+   target display. */
+.mtable { padding: 2px 16px 8px; overflow-x: auto; }
+.mgrid {
+  /* The track list is set on the element -- a count inside repeat() cannot be
+     a variable everywhere this page is opened -- from these two widths. */
+  --lead: 88px;
+  --cell: 54px;
+  display: grid;
+  grid-template-columns: minmax(var(--lead), auto) minmax(var(--cell), 1fr);
+  gap: 3px 12px;
+  min-width: max-content;
+  font-size: 12.5px;
+}
+.mgrid > span {
+  text-align: right;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  transition: color .45s ease-out;
+}
+.mgrid > span.changed { color: var(--accent-2); transition: none; }
+.mgrid .lead, .mgrid .corner { text-align: left; }
+/* A trim table's row names are the same kind of thing as .mrow's, so they go
+   the same way.  The headings above them do not: those name the columns rather
+   than the readings, and stay the quieter colour below. */
+.mgrid .lead { color: var(--text); }
+.mgrid .corner, .mgrid .head {
+  color: var(--dim);
+  font-size: 10.5px;
+  line-height: 1.6;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+/* The rule under the headings is a cell of its own across the whole grid: a
+   border on each heading would break at every gap between the columns. */
+.mgrid .rule {
+  grid-column: 1 / -1;
+  height: 1px;
+  margin-bottom: 3px;
+  background: var(--line-soft);
+}
+
+.empty p { max-width: 46ch; }

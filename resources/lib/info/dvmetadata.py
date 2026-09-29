@@ -1,0 +1,1407 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2026 U3knOwn
+
+"""Row model for the Dolby Vision metadata view.
+
+``dvinfo`` picks the handful of readings the overlay has room for and formats
+each one for its row.  This module does the opposite: it walks the whole parse
+result ``script.module.sidedata`` returns -- flags, structure, the dvcC/dvvC
+configuration record, every RPU block from the header through L255, the
+composer's own reshaping curves, and the static MDCV / CLL SEIs (plus the
+HDR10+ payload when the stream carries one) -- and lays it out as
+``(kind, name, value)`` rows for ui.dvmetadata to put in a list.
+Nothing is left out and nothing is interpreted: the metadata view is where you go
+to see what the bitstream actually says.
+
+Two things are asked for rather than found.  The composer subtree is the one
+part of a parse big enough to be worth not building, so it is left out of an
+ordinary one and this module asks for it by the frame (see
+``info.dvinfo.get_sidedata``) -- the overlay's own polling never pays for it.
+And its coefficients are the one reading here that is derived rather than
+printed, because the RPU splits each of them into halves that say nothing apart
+and the arithmetic that puts them back together is the RPU syntax's own (see
+``_coefficient``).
+
+Field names, units and value scalings follow the module's own FIELDS.md, so a
+row here reads the same as the documented field it comes from.  Only readings
+the bitstream actually carries make it into the list: a field the stream leaves
+out is dropped rather than shown as a dash, and a section left with nothing to
+say drops with it, so the view is what this stream has rather than a form with
+most of its boxes blank.  Everything is read live: the per-frame blocks (L1,
+L2, L4, L5, L8) move with the picture, the title-level ones stand still.
+
+Carries what a frame omits, though.  Under DM metadata compression an RPU
+refers back to an earlier frame's metadata rather than repeating it, so a block
+this stream plainly has -- L2, L8, the source range, the title-level levels --
+is missing from most frames of it.  Read strictly frame by frame those sections
+would come and go every second or two; instead the last block that arrived
+stands until a new one replaces it (see _hold).
+
+Formatting only, apart from the stream labels and the parser version the first
+section names, and the held blocks the live path fills in: hand ``build_rows``
+a parse result of your own and it yields the same rows anywhere, holding
+nothing.
+"""
+
+import xbmc
+import xbmcaddon
+
+from info.dvinfo import get_sidedata
+
+# Row kinds, which ui.dvmetadata turns into the fields of a list item: a heading,
+# a name / value pair, one line of text across the full width -- for a value
+# with no name worth giving it, which needs the name column's room too -- and
+# an empty row.
+#
+# The empty row is what sets the headings apart.  A Kodi list scrolls by one
+# uniform item size, so a heading cannot simply be given a taller layout than
+# the rows under it; a blank row of the same height ahead of each one buys the
+# same air without putting the container's scrolling out of step.
+SECTION = "section"
+ROW     = "row"
+WIDE    = "wide"
+SPACE   = "space"
+
+# And two that make a table: a row of column headings and a row of readings
+# under it, each carrying its cells as a list rather than as one string.  A
+# trim pass is a set of readings that only mean anything read against each
+# other, and a proportional font cannot be padded into columns -- so the cells
+# go to the skin one at a time, and it draws each in a fixed slot of its own.
+HEADINGS = "headings"
+COLUMNS  = "columns"
+
+# Cells such a row can hold.  The list is 1195 px wide and the grid divides it
+# exactly: the name column takes 235, then six cells of 160 reach the right
+# edge with nothing left over.  A level with more controls than that -- L8,
+# with eight -- takes a second table underneath the first, headings and all,
+# rather than a column running off the edge.
+MAX_COLUMNS = 6
+
+# A table wider than the ordinary trim grid can instead use the compact grid
+# ui.dvmetadata and the skin reserve for it.  HDR10+'s distribution has nine
+# short percentile headings and readings, which fit there as one table without
+# changing the six-column L2 / L8 layout above.
+MAX_COMPACT_COLUMNS = 9
+
+# What a formatter returns wherever the bitstream carries no reading: an absent
+# block, a field the parser could not fill.  It never reaches the list -- see
+# _section, which drops the rows that come back holding it -- so it is the
+# internal "nothing here", not a label anyone reads.
+EMPTY = "—"
+
+# Where the block under a section heading came from.  Only CACHED is ever said
+# out loud, on the heading of a section this frame did not carry and that is
+# standing on the last frame that did (see _hold); LIVE is what the rest are,
+# and a heading with nothing after it is the ordinary case worth no ink.
+LIVE   = "Live"
+CACHED = "Cached"
+
+_SIDEDATA_ID = "script.module.sidedata"
+
+# What is playing, which is what the held blocks are kept against: they
+# describe this title's grade and nothing of the next one's (see _hold).
+_SOURCE_LABEL = "Player.FilenameAndPath"
+
+# Between the parts of a composite value ("2081 | 1000").
+_JOIN = " | "
+
+# Percentiles of the HDR10+ maxRGB distribution worth printing, in the order
+# the spec lists them.
+_HDR10PLUS_PERCENTILES = (1, 5, 10, 25, 50, 75, 90, 95, 99)
+
+
+# --- Value formatting ------------------------------------------------------
+
+def _text(value) -> str:
+    """Return a plain string value, or EMPTY when there is nothing to show."""
+    if value is None:
+        return EMPTY
+    text = str(value).strip()
+    return text or EMPTY
+
+
+def _num(value) -> str:
+    """Format a number, dropping a redundant ``.0`` tail (``1000.0`` ->
+    ``1000``).  Anything that is not a number reads as EMPTY."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return EMPTY
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return str(value)
+
+
+def _lum(value) -> str:
+    """Format a luminance in nits: whole numbers at or above 1 cd/m², four
+    decimals below it, trailing zeros trimmed.  Mirrors dvinfo's formatting so
+    a value reads the same here as it does on the overlay."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return EMPTY
+    if value and abs(value) < 1.0:
+        return f"{value:.4f}".rstrip("0").rstrip(".")
+    return str(int(round(value)))
+
+
+def _scaled(value) -> str:
+    """Format a value that lives on a fixed 0..1 or -1..1 scale (the Dolby UI
+    trims, the HDR10+ knee point), or EMPTY when the block leaves it out --
+    which is how a disabled trim control reads."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return EMPTY
+    return f"{value:.4f}"
+
+
+def _percent(value) -> str:
+    """Format a percentage to one decimal, or EMPTY."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return EMPTY
+    return f"{value:.1f} %"
+
+
+def _flag(value) -> str:
+    """Format a presence flag as Kodi's own Yes / No, EMPTY when unknown."""
+    if value is None:
+        return EMPTY
+    return xbmc.getLocalizedString(107 if value else 106)
+
+
+def _joined(*values: str) -> str:
+    """Join the parts of a composite value, leaving out the parts the stream
+    does not carry.  EMPTY when none of them survive, which is what drops the
+    row."""
+    present = [value for value in values if value != EMPTY]
+    return _JOIN.join(present) if present else EMPTY
+
+
+def _coords(pair) -> str:
+    """Format a CIE ``(x, y)`` coordinate pair, raw codes or floats alike."""
+    if not isinstance(pair, (tuple, list)) or len(pair) != 2:
+        return EMPTY
+    x, y = pair
+    if isinstance(x, float) or isinstance(y, float):
+        return _joined(f"{x:.4f}", f"{y:.4f}")
+    return _joined(_num(x), _num(y))
+
+
+def _module_version() -> str:
+    """Return the installed script.module.sidedata version, or EMPTY when the
+    module is not there -- which is also why every parsed row would be empty."""
+    try:
+        return xbmcaddon.Addon(_SIDEDATA_ID).getAddonInfo("version") or EMPTY
+    except Exception:
+        return EMPTY
+
+
+# --- Sections --------------------------------------------------------------
+
+def _section(rows: list, title: str, entries, state: str = "") -> None:
+    """Append a heading and its entries to *rows*, skipping what is not there.
+
+    An entry is either a ``(name, value)`` pair for a two-column row, or an
+    already complete ``(kind, name, value)`` triple for one that is not.  An
+    entry whose value came back EMPTY is left out, and a heading whose entries
+    all went that way is left out with them: an absent block should take no
+    room at all rather than a screenful of dashes.
+
+    A blank row is the one entry that carries no value and is meant to: it is
+    kept, but only between readings.  One that ends up at either end of a
+    section is dropped, so a section can never open or close on a gap it does
+    not need -- the row before the next heading is already there.
+
+    *state* is CACHED for a section standing on a block held from an earlier
+    frame, and empty for one the frame itself carried.  The heading row takes
+    it as its value, beside the title rather than in it: the title is what a
+    section is known by -- it is what the view remembers the viewer's place
+    with -- and a word that came and went with the frame would take their place
+    with it.  ui.dvmetadata is what puts the two together for the eye.
+    """
+    kept = [
+        entry if len(entry) == 3 else (ROW, entry[0], entry[1])
+        for entry in entries
+    ]
+    kept = [row for row in kept
+            if row[0] == SPACE or (row[2] and row[2] != EMPTY)]
+    while kept and kept[0][0] == SPACE:
+        kept.pop(0)
+    while kept and kept[-1][0] == SPACE:
+        kept.pop()
+    if not kept:
+        return
+    if rows:
+        # Air ahead of the heading -- not before the first one, which needs no
+        # separating from what is above it.
+        rows.append((SPACE, f"space.{title}", ""))
+    rows.append((SECTION, title, state))
+    rows.extend(kept)
+
+
+def _payload_summary(parsed: dict) -> str:
+    """Name the sections the payload actually carried, e.g. ``config, rpu,
+    mdcv``.  EMPTY when none of them arrived at all."""
+    present = [
+        key for key in ("config", "rpu", "hdr10plus", "mdcv", "cll")
+        if parsed.get(key)
+    ]
+    return ", ".join(present) if present else EMPTY
+
+
+def _stream_pairs(parsed: dict, carried: str) -> list:
+    """Kodi's own view of the stream, plus what the raw label delivered.
+
+    *carried* names the sections this frame's own payload brought, which is not
+    the same as the sections below it: those may be held from an earlier frame
+    (see _hold), and this row is where a reader can tell.
+    """
+    flags = parsed.get("flags") or []
+    return [
+        ("HDR type (Kodi)", _text(xbmc.getInfoLabel("VideoPlayer.HdrType"))),
+        ("HDR detail (Kodi)", _text(xbmc.getInfoLabel("VideoPlayer.HdrDetail"))),
+        ("Side data", carried),
+        ("Flags", ", ".join(flags) if flags else EMPTY),
+        ("Structure", _text(parsed.get("structure"))),
+        ("Parser module", _module_version()),
+    ]
+
+
+def _config_pairs(config: dict | None) -> list:
+    """The dvcC / dvvC configuration record: container-level truth, so it still
+    names the source profile after a 4/7 -> 8 conversion."""
+    config = config or {}
+    major = _num(config.get("version_major"))
+    minor = _num(config.get("version_minor"))
+    version = EMPTY if EMPTY in (major, minor) else f"{major}.{minor}"
+    return [
+        ("Record version", version),
+        ("Profile", _num(config.get("profile"))),
+        ("Compatibility ID", _num(config.get("compat_id"))),
+        ("Level", _num(config.get("level"))),
+        ("RPU present", _flag(config.get("rpu_present"))),
+        ("BL present", _flag(config.get("bl_present"))),
+        ("EL present", _flag(config.get("el_present"))),
+        ("MD compression", _num(config.get("md_compression"))),
+    ]
+
+
+def _rpu_pairs(rpu: dict | None) -> list:
+    """The RPU header and the two facts that sit beside it: the profile libdovi
+    guesses from the RPU shape, and whether this frame's DM data is compressed
+    (which is what empties the source range below)."""
+    rpu = rpu or {}
+    header = rpu.get("header") or {}
+    return [
+        ("Guessed profile", _num(rpu.get("profile"))),
+        ("CM version", _text(rpu.get("cm_version"))),
+        ("DM compression", _flag(rpu.get("compressed"))),
+        # The DM metadata ids and the scene refresh flag are the RPU's own,
+        # not the header's, and they are read whether or not the DM data is
+        # compressed -- which is precisely when they are worth reading: they
+        # are how a compressed frame names the metadata it is referring back
+        # to, and where a new scene starts.
+        ("Affected DM metadata ID", _num(rpu.get("affected_dm_metadata_id"))),
+        ("Current DM metadata ID", _num(rpu.get("current_dm_metadata_id"))),
+        ("Scene refresh", _num(rpu.get("scene_refresh_flag"))),
+        # How many extension blocks the DM data declares for itself, across
+        # both the CM v2.9 and the CM v4.0 group -- which is the count the
+        # levels listed further up were read out of.
+        ("Extension blocks", _num(rpu.get("num_ext_blocks"))),
+        ("RPU type", _num(header.get("rpu_type"))),
+        ("RPU format", _num(header.get("rpu_format"))),
+        ("VDR RPU profile", _num(header.get("vdr_rpu_profile"))),
+        ("VDR RPU level", _num(header.get("vdr_rpu_level"))),
+        ("VDR RPU normalized IDC", _num(header.get("vdr_rpu_normalized_idc"))),
+        # The two presence flags the header carries for what is under it: the
+        # sequence info is what the three bit depths below come from, and the
+        # DM metadata flag is what the extension blocks and the source range
+        # come from.  Worth reading precisely where those are missing.
+        ("VDR sequence info", _flag(header.get("vdr_seq_info_present_flag"))),
+        ("VDR DM metadata", _flag(header.get("vdr_dm_metadata_present_flag"))),
+        ("BL bit depth", _num(header.get("bl_bit_depth"))),
+        ("EL bit depth", _num(header.get("el_bit_depth"))),
+        ("VDR bit depth", _num(header.get("vdr_bit_depth"))),
+        ("BL full range", _flag(header.get("bl_video_full_range_flag"))),
+        ("EL type", _text(header.get("el_type"))),
+        (
+            "EL spatial resampling",
+            _flag(header.get("el_spatial_resampling_filter_flag")),
+        ),
+        (
+            "Spatial resampling",
+            _flag(header.get("spatial_resampling_filter_flag")),
+        ),
+        (
+            "Chroma resampling filter",
+            _flag(header.get("chroma_resampling_explicit_filter_flag")),
+        ),
+        ("Residual disabled", _flag(header.get("disable_residual_flag"))),
+        ("Coefficient data type", _num(header.get("coefficient_data_type"))),
+        ("Coefficient log2 denom", _num(header.get("coefficient_log2_denom"))),
+        ("Reuses previous VDR RPU", _flag(header.get("use_prev_vdr_rpu_flag"))),
+        ("Previous VDR RPU ID", _num(header.get("prev_vdr_rpu_id"))),
+        # Last, the two the header carries that mean nothing in themselves: the
+        # NAL prefix libdovi's own header calls deprecated and not part of the
+        # bitstream, and a reserved field with no defined meaning.  Shown for
+        # the same reason as the rest -- what the RPU holds is what this says.
+        ("RPU NAL prefix", _num(header.get("rpu_nal_prefix"))),
+        ("Reserved (3 bits)", _num(header.get("reserved_zero_3bits"))),
+    ]
+
+
+def _l1_pairs(rpu: dict | None) -> list:
+    """L1 frame luminance, each reading as its raw PQ code and the nits it
+    decodes to.  Per frame: these move with the picture."""
+    l1 = (rpu or {}).get("l1") or {}
+    return [
+        (name, _joined(_num(l1.get(pq)), _lum(l1.get(nits))))
+        for name, pq, nits in (
+            ("Min (PQ | nits)", "min_pq", "min_nits"),
+            ("Max (PQ | nits)", "max_pq", "max_nits"),
+            ("Average (PQ | nits)", "avg_pq", "avg_nits"),
+        )
+    ]
+
+
+def _source_pairs(rpu: dict | None) -> list:
+    """The master the grade was made from: the PQ range it covered and how big
+    the display was.  Only frames whose DM data is uncompressed carry any of
+    it, so it reads EMPTY on the rest."""
+    source = (rpu or {}).get("source") or {}
+    return [
+        ("Min (PQ | nits)", _joined(_num(source.get("min_pq")),
+                                    _lum(source.get("min_nits")))),
+        ("Max (PQ | nits)", _joined(_num(source.get("max_pq")),
+                                    _lum(source.get("max_nits")))),
+        ("Display diagonal (in)", _num(source.get("diagonal"))),
+    ]
+
+
+# The two 9-coefficient matrices the colorimetry block carries, as (field, row
+# name).  Both are the same shape, so they share one table: the coefficient's
+# position is what says what it is, and that is a column heading.
+_COLORIMETRY_MATRICES = (
+    ("ycc_to_rgb_coef", "YCC to RGB"),
+    ("rgb_to_lms_coef", "RGB to LMS"),
+)
+# What the name column says on that table's heading row, and the headings
+# themselves: the coefficient's index, nine abreast on the compact grid.
+_MATRIX_LEGEND  = "Matrix (raw)"
+_MATRIX_COLUMNS = [str(index + 1) for index in range(MAX_COMPACT_COLUMNS)]
+
+
+def _colorimetry_entries(rpu: dict | None) -> list:
+    """The VDR DM signal description and its colour transform matrices.
+
+    Raw codes throughout, which is all the module publishes for them: there is
+    no second implementation to check a derived scaling against, so nothing is
+    derived here either.  Carried by the same frames as the source block --
+    the uncompressed ones -- and absent from the rest.
+    """
+    block = (rpu or {}).get("colorimetry") or {}
+    entries: list = []
+
+    matrices = [
+        (name, [_num(value) for value in block.get(key) or []])
+        for key, name in _COLORIMETRY_MATRICES
+    ]
+    matrices = [(name, cells) for name, cells in matrices
+                if len(cells) == MAX_COMPACT_COLUMNS
+                and not all(cell == EMPTY for cell in cells)]
+    if matrices:
+        entries.append((HEADINGS, _MATRIX_LEGEND, list(_MATRIX_COLUMNS)))
+        entries.extend(
+            (COLUMNS, name, ["" if cell == EMPTY else cell for cell in cells])
+            for name, cells in matrices
+        )
+        # Air between the matrices and the signal description under them.
+        entries.append((SPACE, "space.colorimetry", ""))
+
+    offsets = block.get("ycc_to_rgb_offset") or []
+    entries.extend([
+        ("YCC to RGB offset",
+         _joined(*(_num(value) for value in offsets)) if offsets else EMPTY),
+        ("Signal EOTF", _num(block.get("signal_eotf"))),
+        ("EOTF parameters",
+         _joined(*(_num(block.get(f"signal_eotf_param{index}"))
+                   for index in range(3)))),
+        ("Signal bit depth", _num(block.get("signal_bit_depth"))),
+        ("Colour space", _num(block.get("signal_color_space"))),
+        ("Chroma format", _num(block.get("signal_chroma_format"))),
+        ("Full range", _num(block.get("signal_full_range_flag"))),
+    ])
+    return entries
+
+
+def _l3_pairs(rpu: dict | None) -> list:
+    """L3 PQ offsets."""
+    l3 = (rpu or {}).get("l3") or {}
+    return [
+        ("Min PQ offset", _num(l3.get("min_pq_offset"))),
+        ("Max PQ offset", _num(l3.get("max_pq_offset"))),
+        ("Average PQ offset", _num(l3.get("avg_pq_offset"))),
+    ]
+
+
+def _l4_pairs(rpu: dict | None) -> list:
+    """L4 temporal stability: the anchor the display management holds a scene
+    steady against, in raw codes -- the module derives nothing for them and
+    neither does this."""
+    l4 = (rpu or {}).get("l4") or {}
+    return [
+        ("Anchor PQ", _num(l4.get("anchor_pq"))),
+        ("Anchor power", _num(l4.get("anchor_power"))),
+    ]
+
+
+def _l5_pairs(rpu: dict | None) -> list:
+    """L5 active area: the black bars the RPU declares for this frame."""
+    l5 = (rpu or {}).get("l5") or {}
+    return [
+        (f"{edge.capitalize()} offset", _num(l5.get(edge)))
+        for edge in ("left", "right", "top", "bottom")
+    ]
+
+
+def _l6_pairs(rpu: dict | None) -> list:
+    """L6: the mastering display and content light the RPU itself declares,
+    which is not the same thing as the static SEIs further down."""
+    l6 = (rpu or {}).get("l6") or {}
+    return [
+        ("MaxCLL", _num(l6.get("max_cll"))),
+        ("MaxFALL", _num(l6.get("max_fall"))),
+        ("Max luminance", _lum(l6.get("max_lum_nits"))),
+        ("Min luminance", _lum(l6.get("min_lum_nits"))),
+    ]
+
+
+# Raw trim controls, 12 bit with 2048 neutral, in the order Dolby lists them,
+# as (field, column heading).  A pass fills one row of the table, a control per
+# cell, under a heading row naming them.
+_TRIM_RAW = (
+    ("slope",        "Slope"),
+    ("offset",       "Offset"),
+    ("power",        "Power"),
+    ("chromaweight", "Chroma"),
+    ("saturation",   "Saturation"),
+    ("tonedetail",   "Detail"),
+)
+# L8 carries two controls L2 does not, which is what takes it past MAX_COLUMNS.
+_TRIM_RAW_L8 = _TRIM_RAW + (
+    ("mid_contrast", "Mid contrast"),
+    ("clip_trim",    "Clip trim"),
+)
+# The same pass on the -1..1 scale the Dolby UI shows.  Gain, lift and gamma
+# are derived from the slope / offset / power controls above, the rest are
+# those rescaled.
+_TRIM_UI = (
+    ("gain",         "Gain"),
+    ("lift",         "Lift"),
+    ("gamma",        "Gamma"),
+    ("chromaweight", "Chroma"),
+    ("saturation",   "Saturation"),
+    ("tonedetail",   "Detail"),
+)
+
+# L8's secondary trims, which are six readings of one control rather than the
+# single controls above.  Read from the parser's ``saturation_vector`` /
+# ``hue_vector``, which are only filled when the L8 block is long enough to
+# carry them (serialized length 19 / 25), so a grade made without them shows
+# neither rather than a table of blanks.
+_TRIM_VECTORS = (
+    ("saturation_vector", "Legend (sat)"),
+    ("hue_vector",        "Legend (hue)"),
+)
+# A column per field of such a vector, named by position: six fields, which is
+# exactly the width of the trim grid, so a vector is one row of it.  Positions
+# rather than colour names because the module documents these as raw codes in
+# bitstream order and names no meaning for them, and this view interprets
+# nothing it was not told.
+_VECTOR_FIELDS = tuple((index, f"Field {index + 1}") for index in range(6))
+
+# What the name column says on each heading row.
+_LEGEND_RAW   = "Legend (raw)"
+_LEGEND_UI    = "Legend (UI)"
+_LEGEND_BLOCK = "Legend (block)"
+
+# The one reading an L8 pass carries that is not a trim: the block's own
+# serialized length, which is what decides how much of the pass is there at all
+# -- mid contrast above 10, clip trim above 12, the secondary vectors above
+# 18 / 24.  A table of its own rather than a column on the raw trims, because
+# it says what the block is rather than what the colourist did.
+_TRIM_BLOCK = (("length", "Length"),)
+
+# The target displays a trim table shows a pass for.  A grade carries a pass
+# per display its CM was run against, which on a full L8 is a dozen rows of
+# near-identical cells; these four are the reference points the rest sit
+# between, so the table stays one screen worth of readings rather than a wall
+# of them.  A pass graded for any other display is left out of the view.
+_TRIM_TARGETS = (100, 600, 1000, 2000)
+
+
+def _target_nits(trim: dict) -> int | None:
+    """The whole-nits brightness of the display a pass was graded for, or None
+    when the pass does not name one."""
+    value = trim.get("nits")
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return int(round(value))
+
+
+def _target(trim: dict) -> str:
+    """Name a pass by the display it was graded for.
+
+    The brightness alone, which is the reading anyone comparing passes is
+    after.  The codes a pass also carries -- L8's index into L10, the raw
+    target PQ code L2's nits were decoded from -- say the same display a
+    second time in a form nothing here reads against, so they are left out
+    and the row keeps the width for its cells.
+    """
+    return f"{_num(trim.get('nits'))} nits"
+
+
+def _vector_block(trim: dict, key: str) -> dict:
+    """One of a pass's L8 vectors as a block keyed by field position, which is
+    what lets a vector go through _table as an ordinary row of readings.
+
+    A pass carrying no such vector -- a parser older than the field, or an L8
+    block too short to hold one -- comes back with nothing, which leaves its
+    cells blank and, when no pass in the level has one, drops the table.
+    """
+    vector = trim.get(key)
+    if not isinstance(vector, (list, tuple)):
+        return {}
+    return dict(enumerate(vector))
+
+
+def _table(legend: str, controls, trims: list, block_of, formatter) -> list:
+    """One trim table: a heading row, then a row of cells per pass.
+
+    Only the controls some pass actually sets get a column -- a column of
+    nothing but blanks is a column's width spent saying so.  A cell the pass
+    itself leaves out comes out blank rather than as a dash, which is how a
+    disabled trim reads, and a pass that sets nothing in this table gets no
+    row at all.
+
+    More controls than a row holds means a second table under the first,
+    headings repeated, rather than columns running off the edge of the list.
+    """
+    used = [
+        (key, heading) for key, heading in controls
+        if any(formatter(block_of(trim).get(key)) != EMPTY for trim in trims)
+    ]
+    if not used:
+        return []
+
+    entries: list = []
+    for start in range(0, len(used), MAX_COLUMNS):
+        chunk = used[start:start + MAX_COLUMNS]
+        if entries:
+            entries.append((SPACE, f"space.{legend}.{start}", ""))
+        entries.append((HEADINGS, legend, [heading for _key, heading in chunk]))
+        for trim in trims:
+            cells = [formatter(block_of(trim).get(key)) for key, _h in chunk]
+            if all(cell == EMPTY for cell in cells):
+                continue
+            entries.append((COLUMNS, _target(trim),
+                            ["" if cell == EMPTY else cell for cell in cells]))
+    return entries
+
+
+def _trim_entries(level: str, trims: list | None) -> list:
+    """The trim passes of *level* (l2 / l8) as tables.
+
+    A pass is a set of readings that only mean anything read against each
+    other and against the other passes, so they are laid out as the table they
+    are: the controls across the top, one row per pass, the target display it
+    was graded for down the left.  The raw codes and the -1..1 scale a
+    colourist would recognise are two tables rather than two interleaved rows,
+    because the column a reading sits in is what says what it is, and a
+    heading is worth repeating far less often than it is worth reading.
+
+    L8 adds a table per secondary vector under those, for the streams that
+    carry them: raw codes like the first table's, but six readings of one
+    control rather than one of each, so they take columns of their own rather
+    than a run of unlabelled cells on the end of a row that means something
+    else.  A vector no pass carries is a table that is never built.
+
+    Only the passes graded for one of the reference displays (_TRIM_TARGETS)
+    are laid out; a level whose remaining passes set nothing returns nothing,
+    which drops its section.
+    """
+    raw_controls = _TRIM_RAW_L8 if level == "l8" else _TRIM_RAW
+    trims = [trim for trim in (trims or [])
+             if _target_nits(trim) in _TRIM_TARGETS]
+    entries: list = []
+
+    tables = [
+        (_LEGEND_RAW, raw_controls, lambda trim: trim, _num),
+        (_LEGEND_UI, _TRIM_UI, lambda trim: trim.get("ui") or {}, _scaled),
+    ]
+    tables.extend(
+        (legend, _VECTOR_FIELDS,
+         lambda trim, key=key: _vector_block(trim, key), _num)
+        for key, legend in (_TRIM_VECTORS if level == "l8" else ())
+    )
+    if level == "l8":
+        tables.append((_LEGEND_BLOCK, _TRIM_BLOCK, lambda trim: trim, _num))
+
+    for legend, controls, block_of, formatter in tables:
+        table = _table(legend, controls, trims, block_of, formatter)
+        if not table:
+            continue
+        if entries:
+            # Air between the tables, so each reads as one.
+            entries.append((SPACE, f"space.{level}.{legend}", ""))
+        entries.extend(table)
+    return entries
+
+
+def _l9_pairs(rpu: dict | None) -> list:
+    """L9: the primaries the content was graded against, plus the CIE
+    coordinates the block carries when it names no known index."""
+    block = (rpu or {}).get("l9") or {}
+    pairs = [
+        ("Index", _num(block.get("index"))),
+        ("Primaries", _text(block.get("name"))),
+    ]
+    coords = block.get("coords") or {}
+    if coords:
+        pairs.extend(
+            (f"{key.capitalize()} (x | y)", _coords(coords.get(key)))
+            for key in ("red", "green", "blue", "white")
+        )
+    # The serialized length, which is what decided whether the coordinates
+    # above are here at all: a short block names an index and stops.
+    pairs.append(("Block length", _num(block.get("length"))))
+    return pairs
+
+
+def _l10_pairs(targets: list | None) -> list:
+    """The target displays L8's trim passes are graded against, each as one row
+    naming what the display is and the PQ range it covers."""
+    pairs = []
+    for target in targets or []:
+        name = f"{_num(target.get('nits'))} nits"
+        index = target.get("target_display_index")
+        if index is not None:
+            name += f" (#{_num(index)})"
+        readings = []
+        primary = _text(target.get("primary_name"))
+        if primary != EMPTY:
+            readings.append(primary)
+        for label, key in (("max PQ", "target_max_pq"),
+                           ("min PQ", "target_min_pq"),
+                           ("length", "length")):
+            reading = _num(target.get(key))
+            if reading != EMPTY:
+                readings.append(f"{label} {reading}")
+        if readings:
+            pairs.append((name, "  ".join(readings)))
+    return pairs
+
+
+def _l11_pairs(rpu: dict | None) -> list:
+    """L11: what the grade was made for, and under which whitepoint."""
+    l11 = (rpu or {}).get("l11") or {}
+    return [
+        ("Content type", _text(l11.get("content_type_name"))),
+        ("Whitepoint", _text(l11.get("whitepoint_name"))),
+        ("Reference mode", _flag(l11.get("reference_mode"))),
+        ("Reserved bytes", _joined(_num(l11.get("reserved_byte2")),
+                                   _num(l11.get("reserved_byte3")))),
+    ]
+
+
+def _l254_pairs(rpu: dict | None) -> list:
+    """L254: the CM v4.0 marker block, which is what ``cm_version`` above is
+    read from -- here as the two raw codes it actually carries."""
+    l254 = (rpu or {}).get("l254") or {}
+    return [
+        ("DM mode", _num(l254.get("dm_mode"))),
+        ("DM version index", _num(l254.get("dm_version_index"))),
+    ]
+
+
+def _l255_pairs(rpu: dict | None) -> list:
+    """L255: the debug run mode block, which encoded content is not expected
+    to carry at all.  Shown for the same reason as everything else here -- a
+    block the stream has is a block the view says it has."""
+    l255 = (rpu or {}).get("l255") or {}
+    return [
+        ("Run mode", _num(l255.get("dm_run_mode"))),
+        ("Run version", _num(l255.get("dm_run_version"))),
+        ("Debug", _joined(*(_num(l255.get(f"dm_debug{index}"))
+                            for index in range(4)))),
+    ]
+
+
+# --- Composer (RPU data mapping) -------------------------------------------
+
+# The three reshaping curves a mapping carries, in the module's own order: the
+# luma curve first, then the two chroma ones.  Named by the component each one
+# reshapes rather than by its index, which is the reading anyone looking at a
+# curve is after -- and, for the NLQ table further down, the three columns it
+# has one value in each of.
+_CURVE_COMPONENTS = ("Y", "Cb", "Cr")
+
+# How a curve says it is shaped.  A code this does not name reads as itself:
+# the view names what it was told and guesses at nothing.
+_MAPPING_IDC_NAMES = {0: "Polynomial", 1: "MMR"}
+
+# What the name column says on each composer heading row, and what its first
+# columns are.  A polynomial segment names its own shape before its
+# coefficients; an MMR one names its order and the constant term it adds.
+_LEGEND_SEGMENT   = "Segment"
+_LEGEND_TERM      = "Term"
+_LEGEND_COMPONENT = "Component"
+_POLY_HEADINGS    = ("Order", "Linear interp")
+_MMR_HEADINGS     = ("Order", "Constant")
+
+
+def _coefficient(int_part, frac_part, denom) -> str:
+    """Combine a composer coefficient's two halves into the value the decoder
+    works with: ``int_part + frac_part / 2 ** coefficient_log2_denom``.
+
+    The RPU splits every one of them in two and the module publishes both
+    halves raw, as it publishes everything else raw.  This is the one reading
+    in the view that is derived rather than printed, and it is derived because
+    the arithmetic is the RPU syntax's own rather than anyone's interpretation
+    -- a pair of halves read apart says nothing, and there are hundreds of
+    them.  Without the header's denominator there is nothing to put them back
+    together with, and the cell goes empty.
+    """
+    if isinstance(denom, bool) or not isinstance(denom, int) or denom < 0:
+        return EMPTY
+    if isinstance(int_part, bool) or not isinstance(int_part, int):
+        return EMPTY
+    if isinstance(frac_part, bool) or not isinstance(frac_part, int):
+        frac_part = 0
+    return f"{int_part + frac_part / float(1 << denom):.6g}"
+
+
+def _grid(legend: str, headings, rows) -> list:
+    """Lay readings out as a table: a heading row, then a row of cells each.
+
+    *rows* are ``(name, cells)`` pairs with the cells in the order of
+    *headings*; a row shorter than the headings simply leaves its last cells
+    blank, and one with nothing in it at all gets no row.  More headings than a
+    row of the list holds means a second table under the first with the
+    headings repeated, exactly as the trim tables handle it -- the six-cell
+    width belongs to the list, not to what is being laid out in it.
+
+    Every row a table yields is the width of its heading row, short ones padded
+    out rather than left ragged.  That is what lets the on-screen view place a
+    narrow table by its width alone and still have each reading land under the
+    heading naming it -- see ui.dvmetadata._paint, which right-aligns one into
+    the fixed slots so the list has a single right edge.
+    """
+    entries: list = []
+    for start in range(0, len(headings), MAX_COLUMNS):
+        stop  = start + MAX_COLUMNS
+        chunk = list(headings[start:stop])
+        body  = []
+        for name, cells in rows:
+            part = ["" if cell == EMPTY else cell for cell in cells[start:stop]]
+            if any(part):
+                body.append((COLUMNS, name, part + [""] * (len(chunk) - len(part))))
+        if not body:
+            continue
+        if entries:
+            entries.append((SPACE, f"space.{legend}.{start}", ""))
+        entries.append((HEADINGS, legend, chunk))
+        entries.extend(body)
+    return entries
+
+
+def _mapping(rpu: dict | None) -> dict:
+    """The composer half of the RPU, or an empty dict.
+
+    Absent from an ordinary parse: it is asked for only while the metadata
+    view is open (see ``info.dvinfo.get_sidedata``), and a module older than
+    1.6.0 has no such thing to give at all.  Either way every section built
+    from it comes back empty and drops, exactly as a block the stream does not
+    carry does.
+    """
+    return (rpu or {}).get("data_mapping") or {}
+
+
+def _denominator(rpu: dict | None):
+    """The header's ``coefficient_log2_denom``, which every coefficient below
+    is scaled by."""
+    return ((rpu or {}).get("header") or {}).get("coefficient_log2_denom")
+
+
+def _composer_pairs(rpu: dict | None) -> list:
+    """The composer's own scalars: which VDR RPU the mapping belongs to, the
+    colour space and chroma format it maps in, how the picture is tiled, and
+    the NLQ pivot description the dual-layer profiles carry."""
+    mapping = _mapping(rpu)
+    pivots  = mapping.get("nlq_pred_pivot_value") or []
+    return [
+        ("VDR RPU ID", _num(mapping.get("vdr_rpu_id"))),
+        ("Mapping colour space", _num(mapping.get("mapping_color_space"))),
+        ("Mapping chroma format",
+         _num(mapping.get("mapping_chroma_format_idc"))),
+        ("Partitions (x | y)", _joined(_num(mapping.get("num_x_partitions")),
+                                       _num(mapping.get("num_y_partitions")))),
+        ("NLQ method", _num(mapping.get("nlq_method_idc"))),
+        ("NLQ pivots", _num(mapping.get("nlq_num_pivots"))),
+        ("NLQ pivot values", _joined(*(_num(value) for value in pivots))),
+    ]
+
+
+def _polynomial_entries(polynomial: dict | None, denom) -> list:
+    """A piecewise polynomial curve as one table: a segment per row, the order
+    it is fitted at and whether it is forced linear regardless, then its
+    coefficients lowest order term first."""
+    polynomial = polynomial or {}
+    orders     = polynomial.get("poly_order") or []
+    interp     = polynomial.get("linear_interp_flag") or []
+    coef_int   = polynomial.get("poly_coef_int") or []
+    coef_frac  = polynomial.get("poly_coef") or []
+
+    width    = max((len(terms) for terms in coef_int), default=0)
+    headings = list(_POLY_HEADINGS) + [f"c{term}" for term in range(width)]
+    rows     = []
+    for segment in range(max(len(orders), len(coef_int))):
+        ints  = coef_int[segment] if segment < len(coef_int) else []
+        fracs = coef_frac[segment] if segment < len(coef_frac) else []
+        cells = [
+            _num(orders[segment]) if segment < len(orders) else EMPTY,
+            _flag(interp[segment]) if segment < len(interp) else EMPTY,
+        ]
+        cells.extend(
+            _coefficient(value, fracs[term] if term < len(fracs) else 0, denom)
+            for term, value in enumerate(ints)
+        )
+        rows.append((f"Segment {segment + 1}", cells))
+    return _grid(_LEGEND_SEGMENT, headings, rows)
+
+
+def _mmr_entries(mmr: dict | None, denom) -> list:
+    """An MMR curve as two tables: a segment per row with its order and the
+    constant it adds, then the cross-component coefficients under it.
+
+    Those come a row per order level rather than a row per segment, because a
+    level's row grows with it -- MMR adds product terms of the three components
+    as the order goes up.  They are laid out by position and named by the level
+    they belong to: the module publishes the raw arrays and names no meaning
+    for the individual terms, so neither does this.
+    """
+    mmr        = mmr or {}
+    orders     = mmr.get("mmr_order") or []
+    const_int  = mmr.get("mmr_constant_int") or []
+    const_frac = mmr.get("mmr_constant") or []
+    coef_int   = mmr.get("mmr_coef_int") or []
+    coef_frac  = mmr.get("mmr_coef") or []
+
+    segments  = max(len(orders), len(const_int), len(coef_int))
+    head_rows = []
+    coef_rows = []
+    width     = 0
+    for segment in range(segments):
+        head_rows.append((f"Segment {segment + 1}", [
+            _num(orders[segment]) if segment < len(orders) else EMPTY,
+            _coefficient(
+                const_int[segment] if segment < len(const_int) else None,
+                const_frac[segment] if segment < len(const_frac) else 0,
+                denom,
+            ),
+        ]))
+        levels = coef_int[segment] if segment < len(coef_int) else []
+        fracs  = coef_frac[segment] if segment < len(coef_frac) else []
+        for level, ints in enumerate(levels):
+            row   = fracs[level] if level < len(fracs) else []
+            width = max(width, len(ints))
+            # One segment is the ordinary case by far, and naming it in every
+            # row would spend the name column saying the same thing twice.
+            name  = (f"Order {level + 1}" if segments == 1 else
+                     f"Segment {segment + 1} · order {level + 1}")
+            coef_rows.append((name, [
+                _coefficient(value, row[term] if term < len(row) else 0, denom)
+                for term, value in enumerate(ints)
+            ]))
+
+    entries = _grid(_LEGEND_SEGMENT, list(_MMR_HEADINGS), head_rows)
+    terms   = _grid(_LEGEND_TERM,
+                    [str(term + 1) for term in range(width)], coef_rows)
+    if entries and terms:
+        # Air between the two, so each reads as one table.
+        entries.append((SPACE, "space.mmr", ""))
+    entries.extend(terms)
+    return entries
+
+
+def _curve_entries(rpu: dict | None, index: int) -> list:
+    """One component's reshaping curve: how it is shaped, where its segments
+    divide the input range, and the coefficients of each of them."""
+    curves = _mapping(rpu).get("curves") or []
+    curve  = (curves[index] if index < len(curves) else None) or {}
+    if not curve:
+        return []
+
+    idc     = curve.get("mapping_idc")
+    pivots  = curve.get("pivots") or []
+    entries: list = [
+        ("Shape", _text(_MAPPING_IDC_NAMES.get(idc, _num(idc)))),
+        ("Pivots", _num(curve.get("num_pivots"))),
+        ("Pivot codewords", _joined(*(_num(value) for value in pivots))),
+    ]
+
+    denom = _denominator(rpu)
+    table = (_polynomial_entries(curve.get("polynomial"), denom) +
+             _mmr_entries(curve.get("mmr"), denom))
+    if table:
+        entries.append((SPACE, f"space.curve.{index}", ""))
+        entries.extend(table)
+    return entries
+
+
+def _nlq_entries(rpu: dict | None) -> list:
+    """The NLQ dequantization data, a column per component.
+
+    Dual-layer only: it is what reconstructs the enhancement layer's residual,
+    so profiles 4 and 7 carry it and every single-layer stream carries none of
+    it -- which is what drops this section on nearly everything played.
+    """
+    nlq = _mapping(rpu).get("nlq") or {}
+    if not nlq:
+        return []
+
+    denom = _denominator(rpu)
+    rows  = [("Offset", [_num(value) for value in nlq.get("nlq_offset") or []])]
+    for name, int_key, frac_key in (
+        ("VDR in max", "vdr_in_max_int", "vdr_in_max"),
+        ("Deadzone slope",
+         "linear_deadzone_slope_int", "linear_deadzone_slope"),
+        ("Deadzone threshold",
+         "linear_deadzone_threshold_int", "linear_deadzone_threshold"),
+    ):
+        ints  = nlq.get(int_key) or []
+        fracs = nlq.get(frac_key) or []
+        rows.append((name, [
+            _coefficient(value, fracs[at] if at < len(fracs) else 0, denom)
+            for at, value in enumerate(ints)
+        ]))
+    return _grid(_LEGEND_COMPONENT, list(_CURVE_COMPONENTS), rows)
+
+
+def _static_pairs(mdcv: dict | None, cll: dict | None) -> list:
+    """The static MDCV / CLL SEIs: the stream's own HDR10 layer, shown apart
+    from the RPU's L6 because they are separate declarations that need not
+    agree."""
+    mdcv = mdcv or {}
+    cll  = cll or {}
+    primaries = mdcv.get("primaries") or {}
+    pairs = [
+        ("Max luminance", _lum(mdcv.get("max_luminance"))),
+        ("Min luminance", _lum(mdcv.get("min_luminance"))),
+        ("Primaries", _text(primaries.get("name"))),
+    ]
+    if primaries:
+        pairs.extend(
+            (f"{key.capitalize()} (x | y)", _coords(primaries.get(key)))
+            for key in ("red", "green", "blue")
+        )
+    pairs.extend((
+        ("White point (x | y)", _coords(mdcv.get("white_point"))),
+        ("MaxCLL", _num(cll.get("max_cll"))),
+        ("MaxFALL", _num(cll.get("max_fall"))),
+    ))
+    return pairs
+
+
+def _hdr10plus_pairs(hdr10plus: dict) -> list:
+    """The ST 2094-40 payload, for a stream that carries HDR10+ alongside its
+    Dolby Vision metadata."""
+    maxscl = hdr10plus.get("maxscl") or []
+    profile_b = hdr10plus.get("profile") == "B"
+    anchors = hdr10plus.get("bezier_anchors") or []
+    distribution = {
+        entry.get("percentage"): entry.get("nits")
+        for entry in hdr10plus.get("distribution") or []
+    }
+    pairs = [
+        ("Profile", _text(hdr10plus.get("profile"))),
+        ("Application version", _num(hdr10plus.get("application_version"))),
+        ("Windows", _num(hdr10plus.get("num_windows"))),
+        (
+            "Target display (nits)",
+            _lum(hdr10plus.get("targeted_system_display_maximum_luminance")),
+        ),
+        (
+            "MaxSCL (R | G | B)",
+            _joined(*(_lum(value) for value in maxscl)) if maxscl else EMPTY,
+        ),
+        ("Average maxRGB", _lum(hdr10plus.get("average_maxrgb"))),
+        ("Bright pixels", _percent(hdr10plus.get("fraction_bright_pixels"))),
+    ]
+    if profile_b:
+        pairs.extend((
+            ("Knee point (x | y)",
+             _joined(_scaled(hdr10plus.get("knee_point_x")),
+                     _scaled(hdr10plus.get("knee_point_y")))),
+            ("Bézier anchors", " ".join(_num(value) for value in anchors)
+                               or EMPTY),
+        ))
+    # The maxRGB percentiles are one compact table: percentage headings over
+    # fixed value cells, all nine abreast.  L2 / L8 keep the wider six-cell
+    # grid; ui.dvmetadata chooses the compact one from this row's cell count.
+    percentile_values = []
+    for percent in _HDR10PLUS_PERCENTILES:
+        value = _lum(distribution.get(percent))
+        percentile_values.append("" if value == EMPTY else value)
+    if any(percentile_values):
+        pairs.extend((
+            (HEADINGS, "Distribution",
+             [f"{percent}%" for percent in _HDR10PLUS_PERCENTILES]),
+            (COLUMNS, "maxRGB (nits)", percentile_values),
+        ))
+    return pairs
+
+
+# --- Held blocks -----------------------------------------------------------
+
+# The blocks a frame may leave out and still be described by, at the top level
+# and inside the RPU.  Under DM metadata compression a frame's RPU refers back
+# to an earlier one's metadata instead of carrying its own, so these arrive
+# once and then stay away for as long as the grade does not change -- the
+# reading still holds for the frame on screen, it is simply not repeated in it.
+#
+# Per block and never per field.  A block that is here is this frame's own, so
+# a control it leaves out is one this pass disables, not one to fill in from an
+# older pass -- the whole point of the trim tables is what a pass sets.
+_HELD_TOP = ("config", "rpu", "mdcv", "cll", "hdr10plus")
+_HELD_RPU = ("header", "data_mapping", "source", "colorimetry", "l1", "l2",
+             "l3", "l4", "l5", "l6", "l8", "l9", "l10", "l11", "l254", "l255")
+
+# The blocks last seen, by name, and what was playing when they were: nothing
+# is carried from one title into the next, and stopping playback empties the
+# label, which empties this with it.  Only the metadata view's own refresh
+# reaches these, one call at a time.
+_held: dict = {}
+_held_source: str | None = None
+
+
+def _fill_in(current: dict, names: tuple, prefix: str) -> tuple[dict, dict]:
+    """Return *current* with the blocks it omits filled in from _held, and the
+    ones it carries remembered in their place.
+
+    Alongside it, where each block came from: LIVE for one this frame brought,
+    CACHED for one put back from an earlier frame, and no entry at all for one
+    neither has -- there is nothing to say about a block the stream does not
+    carry, and its section is not there to say it on.
+    """
+    filled: dict = dict(current)
+    origin: dict = {}
+    for name in names:
+        block = current.get(name)
+        key   = prefix + name
+        if block:
+            _held[key]   = block
+            origin[key]  = LIVE
+        elif _held.get(key) is not None:
+            filled[name] = _held[key]
+            origin[key]  = CACHED
+    return filled, origin
+
+
+def _hold(parsed: dict) -> tuple[dict, dict]:
+    """Fill *parsed* out with the blocks the frame on screen does not repeat.
+
+    What a compressed frame leaves out is not absent from the stream, only
+    from this RPU, so the view keeps the last block of each kind and puts it
+    back when the next frame comes without one.  Rows that would otherwise
+    blink out every second or two -- L2 and L8 trims above all, whole sections
+    of them -- then stand still, and a reading that really does change still
+    replaces the held one on the frame that carries it.
+
+    Returns the origin map with it, which is what the headings say Live or
+    Cached from: holding readings quietly would make a still reading and a
+    stale one look alike.
+
+    Kept against what is playing: a title change clears them, and so does the
+    end of playback, which is what empties the label they are kept against.
+    """
+    global _held_source
+
+    source = xbmc.getInfoLabel(_SOURCE_LABEL)
+    if source != _held_source:
+        _held.clear()
+        _held_source = source
+
+    parsed, origin = _fill_in(parsed, _HELD_TOP, "")
+    rpu = parsed.get("rpu")
+    if isinstance(rpu, dict):
+        filled, inside = _fill_in(rpu, _HELD_RPU, "rpu.")
+        # Hold the filled-out RPU rather than the frame's own, so a frame that
+        # carries no RPU at all still gets every block, not just the ones the
+        # last frame to carry one happened to have.
+        parsed["rpu"] = _held["rpu"] = filled
+        if origin.get("rpu") == CACHED:
+            # No RPU in this frame at all: every block in the one standing in
+            # for it is held, however live it looked when it was put away.
+            inside = dict.fromkeys(inside, CACHED)
+        origin.update(inside)
+    return parsed, origin
+
+
+def _state(origin: dict, *keys: str) -> str:
+    """CACHED when every block a section was built from was held, else "".
+
+    Every one of them and not merely one: a section with a reading from this
+    frame in it is a live section, whatever else it had to fall back on.  A
+    block the stream carries nowhere leaves no entry to judge, and its section
+    is not in the list to be judged.
+    """
+    seen = [origin[key] for key in keys if key in origin]
+    return CACHED if seen and all(state == CACHED for state in seen) else ""
+
+
+# --- Row model -------------------------------------------------------------
+
+def build_scene_rows(
+    parsed: dict | None = None,
+) -> tuple[list[tuple[str, str, str]], dict, dict, str]:
+    """Return the rows that can change every scene, plus the held-filled
+    parse result, its origin map and its payload summary for
+    ``build_static_rows`` to render the rest of the view from the same
+    frame's data without re-deriving any of it.
+
+    Reads the current side data unless a parse result is passed in.  L1 says
+    how bright the frame is, L2 and L8 say what was done about it, L5 and L3
+    describe the active area and its PQ offsets, and HDR10+'s dynamic
+    metadata is scene by scene too -- these are the readings a viewer is
+    watching move, so unlike the rest of the view (see build_static_rows)
+    they need re-reading on every poll rather than settling for a slower one.
+
+    Read live, the blocks a compressed frame omits are held from the last
+    frame that carried them and their heading says so (see _hold).  A parse
+    result passed in is taken as it comes and holds nothing, so a caller with
+    its own data gets its own data, every section of it live.
+    """
+    live   = parsed is None
+    # The composer subtree with it: this is the one caller that has anywhere to
+    # put it, and asking is what makes it parsed at all (see info.dvinfo).
+    parsed = get_sidedata(mapping=True) if live else parsed
+    parsed = parsed if isinstance(parsed, dict) else {}
+
+    # Which blocks this frame itself brought, named before the held ones are
+    # put back: the Stream section reports the payload in hand, and a held
+    # block is precisely one that is not in it.
+    carried = _payload_summary(parsed)
+    origin: dict = {}
+    if live:
+        parsed, origin = _hold(parsed)
+
+    rpu = parsed.get("rpu")
+    rows: list[tuple[str, str, str]] = []
+
+    # What moves with the picture, first, and the trims ahead of the rest of
+    # it: L1 says how bright the frame is, L2 and L8 say what was done about
+    # it, and those three are what there is to watch.
+    _section(rows, "L1 — Frame luminance", _l1_pairs(rpu),
+             _state(origin, "rpu.l1"))
+    _section(rows, "L2 — Trims", _trim_entries("l2", (rpu or {}).get("l2")),
+             _state(origin, "rpu.l2"))
+    _section(rows, "L8 — Trims", _trim_entries("l8", (rpu or {}).get("l8")),
+             _state(origin, "rpu.l8"))
+    _section(rows, "L5 — Active area", _l5_pairs(rpu), _state(origin, "rpu.l5"))
+    _section(rows, "L3 — PQ offsets", _l3_pairs(rpu), _state(origin, "rpu.l3"))
+    _section(rows, "L4 — Temporal stability", _l4_pairs(rpu),
+             _state(origin, "rpu.l4"))
+    hdr10plus = parsed.get("hdr10plus")
+    if hdr10plus:
+        # Dynamic too, scene by scene, so it belongs up here with the rest of
+        # what changes rather than at the far end of the list.
+        _section(rows, "HDR10+ (ST 2094-40)", _hdr10plus_pairs(hdr10plus),
+                 _state(origin, "hdr10plus"))
+
+    return rows, parsed, origin, carried
+
+
+def build_static_rows(parsed: dict, origin: dict, carried: str) -> list[tuple[str, str, str]]:
+    """Return the rows that settle before the film was ever played, from a
+    parse result, origin map and payload summary ``build_scene_rows`` already
+    produced for the same frame.
+
+    The source master, the colorimetry block, L6, L9, L10, L11, L254, L255,
+    the static SEIs, the RPU header and the file-level blocks are all the same
+    on every frame of a title, so
+    unlike build_scene_rows's readings a caller may re-render these on a
+    slower cadence -- their Live/Cached heading badge (see _state) reflects
+    whichever frame's origin map it was called with, not necessarily the one
+    on screen right now, which is the one place that trades off freshness for
+    the slower poll.
+
+    Returned without the blank row that would separate it from whatever
+    precedes it: a caller re-rendering this on its own slower cadence and
+    joining it against a scene list that is fresh every call (see
+    join_rows) needs that decided against the *current* scene rows, not
+    baked in here against whichever tick last rebuilt this list -- the two
+    can disagree on whether scene rows exist at all around the moment
+    detection resolves, and a blank row baked in against the wrong tick
+    would leave the joined list either missing its separator or opening on
+    an orphan one until this next re-renders.
+    """
+    rpu = parsed.get("rpu")
+    rows: list[tuple[str, str, str]] = []
+
+    # Then the grade: settled before the film was ever played, and the same on
+    # every frame of it.  The source range is here rather than above because
+    # it describes the master, however per-frame the RPU carrying it is.
+    _section(rows, "Source master", _source_pairs(rpu),
+             _state(origin, "rpu.source"))
+    _section(rows, "Colorimetry (VDR DM)", _colorimetry_entries(rpu),
+             _state(origin, "rpu.colorimetry"))
+    _section(rows, "L6 — RPU mastering display", _l6_pairs(rpu),
+             _state(origin, "rpu.l6"))
+    _section(rows, "L9 — Source primaries", _l9_pairs(rpu),
+             _state(origin, "rpu.l9"))
+    _section(rows, "L10 — Target displays", _l10_pairs((rpu or {}).get("l10")),
+             _state(origin, "rpu.l10"))
+    _section(rows, "L11 — Content type", _l11_pairs(rpu),
+             _state(origin, "rpu.l11"))
+    _section(rows, "L254 — CM v4.0", _l254_pairs(rpu),
+             _state(origin, "rpu.l254"))
+    _section(rows, "L255 — Debug run mode", _l255_pairs(rpu),
+             _state(origin, "rpu.l255"))
+    _section(rows, "Static metadata (MDCV / CLL)",
+             _static_pairs(parsed.get("mdcv"), parsed.get("cll")),
+             _state(origin, "mdcv", "cll"))
+
+    # And last what the file is, which answers a question asked once: it was
+    # the first thing on screen and took the whole of it, so a viewer after
+    # the readings had to scroll past what cannot change to reach what does.
+    # The RPU section is the header block plus the three readings that sit
+    # beside it, which are the frame's own whenever it has an RPU at all.
+    _section(rows, "RPU", _rpu_pairs(rpu),
+             _state(origin, "rpu", "rpu.header"))
+
+    # And the other half of it: the composer, which is what the decoder
+    # actually applies to the base layer to get the picture back.  After the
+    # header rather than among the levels, because it is not one -- the levels
+    # describe the grade, these curves reconstruct the image the grade was made
+    # on.  Absent unless the caller asked for it (see info.dvinfo.get_sidedata),
+    # which is what keeps it out of the overlay's own polling.
+    _section(rows, "Composer — Data mapping", _composer_pairs(rpu),
+             _state(origin, "rpu.data_mapping"))
+    for index, component in enumerate(_CURVE_COMPONENTS):
+        _section(rows, f"Composer — {component} curve",
+                 _curve_entries(rpu, index),
+                 _state(origin, "rpu.data_mapping"))
+    _section(rows, "Composer — NLQ", _nlq_entries(rpu),
+             _state(origin, "rpu.data_mapping"))
+
+    _section(rows, "Configuration record (dvcC / dvvC)",
+             _config_pairs(parsed.get("config")), _state(origin, "config"))
+    _section(rows, "Stream", _stream_pairs(parsed, carried))
+
+    return rows
+
+
+# The keys build_static_rows judges its headings' Live / Cached state by.
+_STATIC_STATE_KEYS = ("rpu.source", "rpu.colorimetry", "rpu.l6", "rpu.l9",
+                      "rpu.l10", "rpu.l11", "rpu.l254", "rpu.l255", "mdcv",
+                      "cll", "rpu", "rpu.header", "rpu.data_mapping", "config")
+
+
+def static_signature(parsed: dict, origin: dict, carried: str) -> tuple:
+    """What build_static_rows's rows are made from, as one comparable value.
+
+    A caller re-rendering those rows on a slower cadence than the scene rows
+    (see ui.dvmetadata's _merged_rows) can compare this against the last
+    tick's and re-render the moment a static block actually moves -- a DM
+    refresh that replaces the source range or a target display mid-title --
+    instead of up to a whole interval after it, which is the lag that reads
+    as rows changing out of step with the scene sections above them.  A tick
+    nothing moved in costs one tuple comparison and no formatting.
+
+    Almost everything build_static_rows reads from its three arguments is in
+    here, the heading states included.  The composer subtree is in it too, and
+    is the one entry that may genuinely move within a title -- the reshaping
+    curves are signalled per RPU, and a stream that re-sends them shot by shot
+    rebuilds this half on the frames it does.  That is the right answer rather
+    than a cost to dodge: the rows have to show the curve being applied now,
+    and the alternative -- reading it on the scene side -- would rebuild on
+    every tick instead of only the ones it moved on.  Left out on purpose: the Stream
+    section's own live reads outside them (the Kodi labels and the parser
+    module version, see _stream_pairs), and the scalars _rpu_pairs reads
+    straight off the RPU -- profile, cm_version, compressed, the two DM
+    metadata ids and the scene refresh flag.  Those are the frame's own, not
+    held (see _HELD_RPU), and compressed and the scene refresh flag above all
+    are genuinely per-frame: the one flips with DM compression's
+    key/compressed cadence and the other at every scene cut, so carrying them
+    here would rebuild on every such flip and defeat the throttle this
+    signature exists to protect.  Their rows ride the caller's slower fallback
+    interval instead, as they always did.
+    """
+    rpu = parsed.get("rpu") or {}
+    return (
+        carried,
+        parsed.get("flags"),
+        parsed.get("structure"),
+        parsed.get("config"),
+        parsed.get("mdcv"),
+        parsed.get("cll"),
+        rpu.get("header"),
+        rpu.get("data_mapping"),
+        rpu.get("source"),
+        rpu.get("colorimetry"),
+        rpu.get("l6"),
+        rpu.get("l9"),
+        rpu.get("l10"),
+        rpu.get("l11"),
+        rpu.get("l254"),
+        rpu.get("l255"),
+        tuple(origin.get(key) for key in _STATIC_STATE_KEYS),
+    )
+
+
+def join_rows(
+    scene_rows: list[tuple[str, str, str]], static_rows: list[tuple[str, str, str]],
+) -> list[tuple[str, str, str]]:
+    """Concatenate build_scene_rows's and build_static_rows's output, adding
+    back the blank row _section would have put ahead of the first static
+    heading if it had built straight into the scene rows rather than its own
+    fresh list.
+
+    Takes both lists as given rather than a ``preceded`` flag decided ahead
+    of time, so a caller re-rendering the two halves on different cadences
+    (see ui.dvmetadata's _merged_rows) gets this decided fresh against
+    whichever scene rows it is joining right now, not against whichever
+    tick's scene rows happened to be current when static_rows was last
+    rebuilt -- those can disagree for as long as the static side's own
+    refresh interval, and a stale decision baked into static_rows would
+    leave the joined list wrongly shaped for that whole window instead of
+    only the readings inside it being stale.
+    """
+    if scene_rows and static_rows:
+        static_rows = [(SPACE, f"space.{static_rows[0][1]}", "")] + static_rows
+    return scene_rows + static_rows
+
+
+def build_rows(parsed: dict | None = None) -> list[tuple[str, str, str]]:
+    """Return the metadata view's rows for the frame on screen, scene and
+    static sections together in one call.
+
+    Every section is laid out in the same order every time, but only the
+    readings the stream carries survive it: a block this stream has no data
+    for takes no room, so what is on screen is what the bitstream said and
+    the sections that are there can be read without hunting between empty
+    ones.
+
+    A caller polling on its own timer -- ui.dvmetadata's dialogs, which need
+    build_scene_rows fresh on every tick and build_static_rows only on a
+    slower one -- should call the two halves and join_rows directly instead
+    of this; this single-call form is for a caller with no such split (a
+    one-shot dump, a caller passing its own parse result rather than reading
+    the side data live) that just wants every row at once.
+    """
+    scene_rows, parsed, origin, carried = build_scene_rows(parsed)
+    rows = join_rows(scene_rows, build_static_rows(parsed, origin, carried))
+
+    if not rows:
+        # Nothing was parsed at all -- no module, no side data, a frame that
+        # arrived empty.  An empty window would read as a broken view rather
+        # than as an answer, so say which it is.
+        rows.append((SECTION, "No metadata in this frame", ""))
+
+    return rows
