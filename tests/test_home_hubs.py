@@ -56,11 +56,13 @@ class HubSlotTests(unittest.TestCase):
         for _, _, base, _ in SCREENS:
             self.assertIn(f"bald_rowstart_{base + 1}", timers)
 
-    def test_menu_order_is_home_hubs_live_tv_search_settings(self):
+    def test_menu_order_is_home_hubs_live_tv_search_settings_power(self):
         self.assertEqual([home_menu.previewed(node) for node in home_menu.entries()],
-                         ["home"] + HUBS + ["livetv", "search", "settings"])
+                         ["home"] + HUBS + ["livetv", "search", "settings", "power"])
         self.assertEqual([node.get("id") for node in home_menu.entries()],
-                         ["9001"] + [str(9010 + n) for n in range(1, HUB_SLOTS + 1)] + ["9004", "9005", "9006"])
+                         ["9001"] + [str(9010 + n) for n in range(1, HUB_SLOTS + 1)] + ["9004", "9005", "9006", "9007"])
+        power = home_menu.entries()[-1]
+        self.assertEqual([node.text for node in power.iter("onclick")], ["ActivateWindow(shutdownmenu)"])
 
     def test_control_ids_do_not_collide_with_every_slot_full(self):
         # Twenty rows on Home, Live TV and all eight hubs: the most Home can build.

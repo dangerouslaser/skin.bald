@@ -341,6 +341,11 @@
 					<onclick>SetProperty(Bald.ReturnMenu,9006,home)</onclick>
 					<onclick>ActivateWindow(settings)</onclick>
 				</include>
+				<!-- Kodi's power menu (DialogButtonMenu.xml): restart, shut down, exit and the rest. A dialog over Home, so
+				     closing it leaves focus here. -->
+				<include content="Bald_HomeMenuButton"><param name="id">9007</param><param name="label">$LOCALIZE[33060]</param><param name="preview">power</param>
+					<onclick>ActivateWindow(shutdownmenu)</onclick>
+				</include>
 			</control>
 
 			<!-- Section line: accent dot, screen name, "Back for menu" hint. -->

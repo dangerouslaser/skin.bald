@@ -707,6 +707,7 @@
 	<expression name="Bald_MenuPreview_livetv">[String.IsEqual(Window(home).Property(Bald.MenuPreview),livetv)]</expression>
 	<expression name="Bald_MenuPreview_search">[String.IsEqual(Window(home).Property(Bald.MenuPreview),search)]</expression>
 	<expression name="Bald_MenuPreview_settings">[String.IsEqual(Window(home).Property(Bald.MenuPreview),settings)]</expression>
+	<expression name="Bald_MenuPreview_power">[String.IsEqual(Window(home).Property(Bald.MenuPreview),power)]</expression>
 	<!-- The screen whose rows are showing (Bald.Screen), and whether a row is current (Bald.Row). -->
 	<expression name="Bald_Screen_livetv">[String.IsEqual(Window(home).Property(Bald.Screen),livetv)]</expression>
 	<expression name="Bald_Screen_hub1">[String.IsEqual(Window(home).Property(Bald.Screen),hub1)]</expression>
@@ -751,6 +752,7 @@
 		<value condition="$EXP[Bald_MenuPreview_hub8]">$VAR[Bald_HubLabel_hub8]</value>
 		<value condition="$EXP[Bald_MenuPreview_search]">$LOCALIZE[137]</value>
 		<value condition="$EXP[Bald_MenuPreview_settings]">$LOCALIZE[5]</value>
+		<value condition="$EXP[Bald_MenuPreview_power]">$LOCALIZE[33060]</value>
 	</variable>
 	<variable name="Bald_MenuPreviewNote">
 		<!-- The Home rows' labels, comma separated (generated; empty with no rows). -->
@@ -769,6 +771,7 @@
 		<value condition="$EXP[Bald_MenuPreview_hub8]">$VAR[Bald_HubNote_hub8]</value>
 		<value condition="$EXP[Bald_MenuPreview_search]">$LOCALIZE[31706]</value>
 		<value condition="$EXP[Bald_MenuPreview_settings]">$LOCALIZE[31707]</value>
+		<value condition="$EXP[Bald_MenuPreview_power]">$LOCALIZE[31709]</value>
 	</variable>
 	<expression name="Bald_Idle">[$EXP[Bald_IdleReached] + Window.IsActive(home)]</expression>
 	<variable name="Bald_ScreenLabel">

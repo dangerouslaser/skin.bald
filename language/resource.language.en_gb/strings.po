@@ -1450,6 +1450,12 @@ msgid "Configure Kodi, manage media sources, or change the skin."
 msgstr ""
 
 #: /1080i/Includes_Bald_Home.xml
+#. Home menu: the note under the Power entry
+msgctxt "#31709"
+msgid "Restart, shut down, or exit Kodi."
+msgstr ""
+
+#: /1080i/Includes_Bald_Home.xml
 #: /1080i/Includes_Bald_Music.xml
 #. Row position counter, "3 of 12"
 msgctxt "#31708"

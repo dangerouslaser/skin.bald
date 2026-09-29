@@ -208,12 +208,12 @@ class BaldSettingsTests(unittest.TestCase):
         menu = root.find(".//control[@id='9000']")
         self.assertEqual(menu.findtext("onup"), "noop")
         self.assertEqual(menu.findtext("ondown"), "noop")
-        # Menu order: Home, the eight hub slots (the user's order), Live TV, Search, Settings.
+        # Menu order: Home, the eight hub slots (the user's order), Live TV, Search, Settings, Power.
         entries = home_menu.entries()
         self.assertEqual([node.get("id") for node in entries],
-                         ["9001"] + [f"901{n}" for n in range(1, 9)] + ["9004", "9005", "9006"])
+                         ["9001"] + [f"901{n}" for n in range(1, 9)] + ["9004", "9005", "9006", "9007"])
         self.assertEqual([home_menu.previewed(node) for node in entries],
-                         ["home"] + HUBS + ["livetv", "search", "settings"])
+                         ["home"] + HUBS + ["livetv", "search", "settings", "power"])
         for node in entries:
             self.assertIsNone(node.find("onup"))
             self.assertIsNone(node.find("ondown"))

@@ -238,12 +238,13 @@ SmartPlaylistRule.xml	2 heading, 15 field, 16 operator, 17 value, 20 browse, 18 
 
 HOME (Home.xml, Includes_Bald_Home.xml)
 
-9000	Main menu grouplist; its entries in order: Home, the hubs, Live TV, Search, Settings
+9000	Main menu grouplist; its entries in order: Home, the hubs, Live TV, Search, Settings, Power
 9001	Menu entry: Home
 9011-9018	Menu entries: hub slots 1-8 (Bald_HomeMenuHub; hidden while the slot is empty or the hub is turned off)
 9004	Menu entry: Live TV
 9005	Menu entry: Search
 9006	Menu entry: Settings
+9007	Menu entry: Power (Kodi's shutdown menu)
 		9002 and 9003 (the old Movies and TV shows entries) are retired; Movies and TV shows are hubs now.
 9021-9028	Invisible bridges: focus opens hub slot 1-8's target (Bald_HubBridge; Right, or Select without rows)
 9029	Invisible bridge: focus opens the TV guide (Live TV's Right)
