@@ -37,6 +37,11 @@
 <expression name="Bald_PreviewRows_{screen}">[$EXP[Bald_Preview{title}] + {enabled} + $EXP[Bald_HasRows_{screen}]]</expression>
 <expression name="Bald_HubShown_{screen}">[false]{hub_shown}</expression>
 <expression name="Bald_HubHasOpen_{screen}">[false]{hub_has_open}</expression>
+<expression name="Bald_HasArt_{screen}">[!String.IsEmpty(Skin.String(Bald.Art.{screen}))]{hub_has_art}</expression>
+<variable name="Bald_ScreenArt_{screen}">
+    <value condition="!String.IsEmpty(Skin.String(Bald.Art.{screen}))">$INFO[Skin.String(Bald.Art.{screen})]</value>
+    <value>{hub_image}</value>
+</variable>
 <variable name="Bald_HubLabel_{screen}">
     <value>{hub_label}</value>
 </variable>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald_Fanart while the menu previews a screen with an image of its own (Home Screens > Background image) and none of
+     its rows matched above: a screen without rows shows its image, not the current row's art. -->
+<contents>
+    <items>
+        <item>
+            <template>&lt;value condition="$EXP[Bald_Preview{title}] + $EXP[Bald_HasArt_{screen}]"&gt;$VAR[Bald_ScreenArt_{screen}]&lt;/value&gt;</template>
+        </item>
+    </items>
+</contents>

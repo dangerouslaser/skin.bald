@@ -281,6 +281,11 @@
     <expression name="Bald_PreviewRows_home">[$EXP[Bald_PreviewHome] + !$EXP[Bald_HomeHidden] + $EXP[Bald_HasRows_home]]</expression>
     <expression name="Bald_HubShown_home">[false]</expression>
     <expression name="Bald_HubHasOpen_home">[false]</expression>
+    <expression name="Bald_HasArt_home">[!String.IsEmpty(Skin.String(Bald.Art.home))]</expression>
+    <variable name="Bald_ScreenArt_home">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.home))">$INFO[Skin.String(Bald.Art.home)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_home">
         <value/>
     </variable>
@@ -573,6 +578,11 @@
     <expression name="Bald_PreviewRows_livetv">[$EXP[Bald_PreviewLiveTV] + System.HasPVRAddon + $EXP[Bald_HasRows_livetv]]</expression>
     <expression name="Bald_HubShown_livetv">[false]</expression>
     <expression name="Bald_HubHasOpen_livetv">[false]</expression>
+    <expression name="Bald_HasArt_livetv">[!String.IsEmpty(Skin.String(Bald.Art.livetv))]</expression>
+    <variable name="Bald_ScreenArt_livetv">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.livetv))">$INFO[Skin.String(Bald.Art.livetv)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_livetv">
         <value/>
     </variable>
@@ -767,6 +777,11 @@
     <expression name="Bald_PreviewRows_hub1">[$EXP[Bald_PreviewHub1] + true + $EXP[Bald_HasRows_hub1]]</expression>
     <expression name="Bald_HubShown_hub1">[false]| [true]</expression>
     <expression name="Bald_HubHasOpen_hub1">[false]| [true]</expression>
+    <expression name="Bald_HasArt_hub1">[!String.IsEmpty(Skin.String(Bald.Art.hub1))]</expression>
+    <variable name="Bald_ScreenArt_hub1">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.hub1))">$INFO[Skin.String(Bald.Art.hub1)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_hub1">
         <value>$LOCALIZE[342]</value>
     </variable>
@@ -962,6 +977,11 @@
     <expression name="Bald_PreviewRows_hub2">[$EXP[Bald_PreviewHub2] + true + $EXP[Bald_HasRows_hub2]]</expression>
     <expression name="Bald_HubShown_hub2">[false]| [true]</expression>
     <expression name="Bald_HubHasOpen_hub2">[false]| [true]</expression>
+    <expression name="Bald_HasArt_hub2">[!String.IsEmpty(Skin.String(Bald.Art.hub2))]</expression>
+    <variable name="Bald_ScreenArt_hub2">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.hub2))">$INFO[Skin.String(Bald.Art.hub2)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_hub2">
         <value>$LOCALIZE[20343]</value>
     </variable>
@@ -1009,6 +1029,11 @@
     <expression name="Bald_PreviewRows_hub3">[$EXP[Bald_PreviewHub3] + true + $EXP[Bald_HasRows_hub3]]</expression>
     <expression name="Bald_HubShown_hub3">[false]</expression>
     <expression name="Bald_HubHasOpen_hub3">[false]</expression>
+    <expression name="Bald_HasArt_hub3">[!String.IsEmpty(Skin.String(Bald.Art.hub3))]</expression>
+    <variable name="Bald_ScreenArt_hub3">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.hub3))">$INFO[Skin.String(Bald.Art.hub3)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_hub3">
         <value/>
     </variable>
@@ -1055,6 +1080,11 @@
     <expression name="Bald_PreviewRows_hub4">[$EXP[Bald_PreviewHub4] + true + $EXP[Bald_HasRows_hub4]]</expression>
     <expression name="Bald_HubShown_hub4">[false]</expression>
     <expression name="Bald_HubHasOpen_hub4">[false]</expression>
+    <expression name="Bald_HasArt_hub4">[!String.IsEmpty(Skin.String(Bald.Art.hub4))]</expression>
+    <variable name="Bald_ScreenArt_hub4">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.hub4))">$INFO[Skin.String(Bald.Art.hub4)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_hub4">
         <value/>
     </variable>
@@ -1101,6 +1131,11 @@
     <expression name="Bald_PreviewRows_hub5">[$EXP[Bald_PreviewHub5] + true + $EXP[Bald_HasRows_hub5]]</expression>
     <expression name="Bald_HubShown_hub5">[false]</expression>
     <expression name="Bald_HubHasOpen_hub5">[false]</expression>
+    <expression name="Bald_HasArt_hub5">[!String.IsEmpty(Skin.String(Bald.Art.hub5))]</expression>
+    <variable name="Bald_ScreenArt_hub5">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.hub5))">$INFO[Skin.String(Bald.Art.hub5)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_hub5">
         <value/>
     </variable>
@@ -1147,6 +1182,11 @@
     <expression name="Bald_PreviewRows_hub6">[$EXP[Bald_PreviewHub6] + true + $EXP[Bald_HasRows_hub6]]</expression>
     <expression name="Bald_HubShown_hub6">[false]</expression>
     <expression name="Bald_HubHasOpen_hub6">[false]</expression>
+    <expression name="Bald_HasArt_hub6">[!String.IsEmpty(Skin.String(Bald.Art.hub6))]</expression>
+    <variable name="Bald_ScreenArt_hub6">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.hub6))">$INFO[Skin.String(Bald.Art.hub6)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_hub6">
         <value/>
     </variable>
@@ -1193,6 +1233,11 @@
     <expression name="Bald_PreviewRows_hub7">[$EXP[Bald_PreviewHub7] + true + $EXP[Bald_HasRows_hub7]]</expression>
     <expression name="Bald_HubShown_hub7">[false]</expression>
     <expression name="Bald_HubHasOpen_hub7">[false]</expression>
+    <expression name="Bald_HasArt_hub7">[!String.IsEmpty(Skin.String(Bald.Art.hub7))]</expression>
+    <variable name="Bald_ScreenArt_hub7">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.hub7))">$INFO[Skin.String(Bald.Art.hub7)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_hub7">
         <value/>
     </variable>
@@ -1239,6 +1284,11 @@
     <expression name="Bald_PreviewRows_hub8">[$EXP[Bald_PreviewHub8] + true + $EXP[Bald_HasRows_hub8]]</expression>
     <expression name="Bald_HubShown_hub8">[false]</expression>
     <expression name="Bald_HubHasOpen_hub8">[false]</expression>
+    <expression name="Bald_HasArt_hub8">[!String.IsEmpty(Skin.String(Bald.Art.hub8))]</expression>
+    <variable name="Bald_ScreenArt_hub8">
+        <value condition="!String.IsEmpty(Skin.String(Bald.Art.hub8))">$INFO[Skin.String(Bald.Art.hub8)]</value>
+        <value/>
+    </variable>
     <variable name="Bald_HubLabel_hub8">
         <value/>
     </variable>
@@ -1258,83 +1308,116 @@
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + !String.IsEmpty(Container(9101).ListItem.Art(fanart))">$INFO[Container(9101).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + !String.IsEmpty(Container(9101).ListItem.Art(tvshow.fanart))">$INFO[Container(9101).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + !String.IsEmpty(Container(9101).ListItem.Art(artist.fanart))">$INFO[Container(9101).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101) + $EXP[Bald_HasArt_home]">$VAR[Bald_ScreenArt_home]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9101)">$INFO[Container(9101).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102) + !String.IsEmpty(Container(9102).ListItem.Art(fanart))">$INFO[Container(9102).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102) + !String.IsEmpty(Container(9102).ListItem.Art(tvshow.fanart))">$INFO[Container(9102).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102) + !String.IsEmpty(Container(9102).ListItem.Art(artist.fanart))">$INFO[Container(9102).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102) + $EXP[Bald_HasArt_home]">$VAR[Bald_ScreenArt_home]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9102)">$INFO[Container(9102).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103) + !String.IsEmpty(Container(9103).ListItem.Art(fanart))">$INFO[Container(9103).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103) + !String.IsEmpty(Container(9103).ListItem.Art(tvshow.fanart))">$INFO[Container(9103).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103) + !String.IsEmpty(Container(9103).ListItem.Art(artist.fanart))">$INFO[Container(9103).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103) + $EXP[Bald_HasArt_home]">$VAR[Bald_ScreenArt_home]</value>
         <value condition="$EXP[Bald_PreviewHome] + String.IsEqual(Window(home).Property(Bald.Row.home),9103)">$INFO[Container(9103).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + !String.IsEmpty(Container(9051).ListItem.Art(fanart))">$INFO[Container(9051).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + !String.IsEmpty(Container(9051).ListItem.Art(tvshow.fanart))">$INFO[Container(9051).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + !String.IsEmpty(Container(9051).ListItem.Art(artist.fanart))">$INFO[Container(9051).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051) + $EXP[Bald_HasArt_livetv]">$VAR[Bald_ScreenArt_livetv]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9051)">$INFO[Container(9051).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + !String.IsEmpty(Container(9052).ListItem.Art(fanart))">$INFO[Container(9052).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + !String.IsEmpty(Container(9052).ListItem.Art(tvshow.fanart))">$INFO[Container(9052).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + !String.IsEmpty(Container(9052).ListItem.Art(artist.fanart))">$INFO[Container(9052).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052) + $EXP[Bald_HasArt_livetv]">$VAR[Bald_ScreenArt_livetv]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9052)">$INFO[Container(9052).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + !String.IsEmpty(Container(9053).ListItem.Art(fanart))">$INFO[Container(9053).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + !String.IsEmpty(Container(9053).ListItem.Art(tvshow.fanart))">$INFO[Container(9053).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + !String.IsEmpty(Container(9053).ListItem.Art(artist.fanart))">$INFO[Container(9053).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053) + $EXP[Bald_HasArt_livetv]">$VAR[Bald_ScreenArt_livetv]</value>
         <value condition="$EXP[Bald_PreviewLiveTV] + String.IsEqual(Window(home).Property(Bald.Row.livetv),9053)">$INFO[Container(9053).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + !String.IsEmpty(Container(9201).ListItem.Art(fanart))">$INFO[Container(9201).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + !String.IsEmpty(Container(9201).ListItem.Art(tvshow.fanart))">$INFO[Container(9201).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + !String.IsEmpty(Container(9201).ListItem.Art(artist.fanart))">$INFO[Container(9201).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201) + $EXP[Bald_HasArt_hub1]">$VAR[Bald_ScreenArt_hub1]</value>
         <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9201)">$INFO[Container(9201).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + !String.IsEmpty(Container(9202).ListItem.Art(fanart))">$INFO[Container(9202).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + !String.IsEmpty(Container(9202).ListItem.Art(tvshow.fanart))">$INFO[Container(9202).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + !String.IsEmpty(Container(9202).ListItem.Art(artist.fanart))">$INFO[Container(9202).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202) + $EXP[Bald_HasArt_hub1]">$VAR[Bald_ScreenArt_hub1]</value>
         <value condition="$EXP[Bald_PreviewHub1] + String.IsEqual(Window(home).Property(Bald.Row.hub1),9202)">$INFO[Container(9202).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + !String.IsEmpty(Container(9301).ListItem.Art(fanart))">$INFO[Container(9301).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + !String.IsEmpty(Container(9301).ListItem.Art(tvshow.fanart))">$INFO[Container(9301).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + !String.IsEmpty(Container(9301).ListItem.Art(artist.fanart))">$INFO[Container(9301).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301) + $EXP[Bald_HasArt_hub2]">$VAR[Bald_ScreenArt_hub2]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)">$INFO[Container(9301).ListItem.Art(thumb)]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + !String.IsEmpty(Container(9302).ListItem.Art(fanart))">$INFO[Container(9302).ListItem.Art(fanart)]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + !String.IsEmpty(Container(9302).ListItem.Art(tvshow.fanart))">$INFO[Container(9302).ListItem.Art(tvshow.fanart)]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + !String.IsEmpty(Container(9302).ListItem.Art(artist.fanart))">$INFO[Container(9302).ListItem.Art(artist.fanart)]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + $EXP[Bald_HasArt_hub2]">$VAR[Bald_ScreenArt_hub2]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)">$INFO[Container(9302).ListItem.Art(thumb)]</value>
+        <value condition="$EXP[Bald_PreviewHome] + $EXP[Bald_HasArt_home]">$VAR[Bald_ScreenArt_home]</value>
+        <value condition="$EXP[Bald_PreviewLiveTV] + $EXP[Bald_HasArt_livetv]">$VAR[Bald_ScreenArt_livetv]</value>
+        <value condition="$EXP[Bald_PreviewHub1] + $EXP[Bald_HasArt_hub1]">$VAR[Bald_ScreenArt_hub1]</value>
+        <value condition="$EXP[Bald_PreviewHub2] + $EXP[Bald_HasArt_hub2]">$VAR[Bald_ScreenArt_hub2]</value>
+        <value condition="$EXP[Bald_PreviewHub3] + $EXP[Bald_HasArt_hub3]">$VAR[Bald_ScreenArt_hub3]</value>
+        <value condition="$EXP[Bald_PreviewHub4] + $EXP[Bald_HasArt_hub4]">$VAR[Bald_ScreenArt_hub4]</value>
+        <value condition="$EXP[Bald_PreviewHub5] + $EXP[Bald_HasArt_hub5]">$VAR[Bald_ScreenArt_hub5]</value>
+        <value condition="$EXP[Bald_PreviewHub6] + $EXP[Bald_HasArt_hub6]">$VAR[Bald_ScreenArt_hub6]</value>
+        <value condition="$EXP[Bald_PreviewHub7] + $EXP[Bald_HasArt_hub7]">$VAR[Bald_ScreenArt_hub7]</value>
+        <value condition="$EXP[Bald_PreviewHub8] + $EXP[Bald_HasArt_hub8]">$VAR[Bald_ScreenArt_hub8]</value>
+        <value condition="$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_search] + !String.IsEmpty(Skin.String(Bald.Art.search))">$INFO[Skin.String(Bald.Art.search)]</value>
+        <value condition="$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_settings] + !String.IsEmpty(Skin.String(Bald.Art.settings))">$INFO[Skin.String(Bald.Art.settings)]</value>
+        <value condition="$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_power] + !String.IsEmpty(Skin.String(Bald.Art.power))">$INFO[Skin.String(Bald.Art.power)]</value>
         <value condition="$EXP[Bald_WidgetPreview]"/>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101) + !String.IsEmpty(Container(9101).ListItem.Art(fanart))">$INFO[Container(9101).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101) + !String.IsEmpty(Container(9101).ListItem.Art(tvshow.fanart))">$INFO[Container(9101).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101) + !String.IsEmpty(Container(9101).ListItem.Art(artist.fanart))">$INFO[Container(9101).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101) + $EXP[Bald_HasArt_home]">$VAR[Bald_ScreenArt_home]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101)">$INFO[Container(9101).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9102) + !String.IsEmpty(Container(9102).ListItem.Art(fanart))">$INFO[Container(9102).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9102) + !String.IsEmpty(Container(9102).ListItem.Art(tvshow.fanart))">$INFO[Container(9102).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9102) + !String.IsEmpty(Container(9102).ListItem.Art(artist.fanart))">$INFO[Container(9102).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9102) + $EXP[Bald_HasArt_home]">$VAR[Bald_ScreenArt_home]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9102)">$INFO[Container(9102).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103) + !String.IsEmpty(Container(9103).ListItem.Art(fanart))">$INFO[Container(9103).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103) + !String.IsEmpty(Container(9103).ListItem.Art(tvshow.fanart))">$INFO[Container(9103).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103) + !String.IsEmpty(Container(9103).ListItem.Art(artist.fanart))">$INFO[Container(9103).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103) + $EXP[Bald_HasArt_home]">$VAR[Bald_ScreenArt_home]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9103)">$INFO[Container(9103).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051) + !String.IsEmpty(Container(9051).ListItem.Art(fanart))">$INFO[Container(9051).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051) + !String.IsEmpty(Container(9051).ListItem.Art(tvshow.fanart))">$INFO[Container(9051).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051) + !String.IsEmpty(Container(9051).ListItem.Art(artist.fanart))">$INFO[Container(9051).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051) + $EXP[Bald_HasArt_livetv]">$VAR[Bald_ScreenArt_livetv]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9051)">$INFO[Container(9051).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052) + !String.IsEmpty(Container(9052).ListItem.Art(fanart))">$INFO[Container(9052).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052) + !String.IsEmpty(Container(9052).ListItem.Art(tvshow.fanart))">$INFO[Container(9052).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052) + !String.IsEmpty(Container(9052).ListItem.Art(artist.fanart))">$INFO[Container(9052).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052) + $EXP[Bald_HasArt_livetv]">$VAR[Bald_ScreenArt_livetv]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9052)">$INFO[Container(9052).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053) + !String.IsEmpty(Container(9053).ListItem.Art(fanart))">$INFO[Container(9053).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053) + !String.IsEmpty(Container(9053).ListItem.Art(tvshow.fanart))">$INFO[Container(9053).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053) + !String.IsEmpty(Container(9053).ListItem.Art(artist.fanart))">$INFO[Container(9053).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053) + $EXP[Bald_HasArt_livetv]">$VAR[Bald_ScreenArt_livetv]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9053)">$INFO[Container(9053).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201) + !String.IsEmpty(Container(9201).ListItem.Art(fanart))">$INFO[Container(9201).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201) + !String.IsEmpty(Container(9201).ListItem.Art(tvshow.fanart))">$INFO[Container(9201).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201) + !String.IsEmpty(Container(9201).ListItem.Art(artist.fanart))">$INFO[Container(9201).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201) + $EXP[Bald_HasArt_hub1]">$VAR[Bald_ScreenArt_hub1]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9201)">$INFO[Container(9201).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9202) + !String.IsEmpty(Container(9202).ListItem.Art(fanart))">$INFO[Container(9202).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9202) + !String.IsEmpty(Container(9202).ListItem.Art(tvshow.fanart))">$INFO[Container(9202).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9202) + !String.IsEmpty(Container(9202).ListItem.Art(artist.fanart))">$INFO[Container(9202).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9202) + $EXP[Bald_HasArt_hub1]">$VAR[Bald_ScreenArt_hub1]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9202)">$INFO[Container(9202).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9301) + !String.IsEmpty(Container(9301).ListItem.Art(fanart))">$INFO[Container(9301).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9301) + !String.IsEmpty(Container(9301).ListItem.Art(tvshow.fanart))">$INFO[Container(9301).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9301) + !String.IsEmpty(Container(9301).ListItem.Art(artist.fanart))">$INFO[Container(9301).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9301) + $EXP[Bald_HasArt_hub2]">$VAR[Bald_ScreenArt_hub2]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9301)">$INFO[Container(9301).ListItem.Art(thumb)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9302) + !String.IsEmpty(Container(9302).ListItem.Art(fanart))">$INFO[Container(9302).ListItem.Art(fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9302) + !String.IsEmpty(Container(9302).ListItem.Art(tvshow.fanart))">$INFO[Container(9302).ListItem.Art(tvshow.fanart)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9302) + !String.IsEmpty(Container(9302).ListItem.Art(artist.fanart))">$INFO[Container(9302).ListItem.Art(artist.fanart)]</value>
+        <value condition="String.IsEqual(Window(home).Property(Bald.Row),9302) + $EXP[Bald_HasArt_hub2]">$VAR[Bald_ScreenArt_hub2]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9302)">$INFO[Container(9302).ListItem.Art(thumb)]</value>
         <value/>
     </variable>
@@ -1359,6 +1442,19 @@
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9301)">$INFO[Container(9301).ListItem.Art(tvshow.clearlogo)]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302) + !String.IsEmpty(Container(9302).ListItem.Art(clearlogo))">$INFO[Container(9302).ListItem.Art(clearlogo)]</value>
         <value condition="$EXP[Bald_PreviewHub2] + String.IsEqual(Window(home).Property(Bald.Row.hub2),9302)">$INFO[Container(9302).ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="$EXP[Bald_PreviewHome] + $EXP[Bald_HasArt_home]"/>
+        <value condition="$EXP[Bald_PreviewLiveTV] + $EXP[Bald_HasArt_livetv]"/>
+        <value condition="$EXP[Bald_PreviewHub1] + $EXP[Bald_HasArt_hub1]"/>
+        <value condition="$EXP[Bald_PreviewHub2] + $EXP[Bald_HasArt_hub2]"/>
+        <value condition="$EXP[Bald_PreviewHub3] + $EXP[Bald_HasArt_hub3]"/>
+        <value condition="$EXP[Bald_PreviewHub4] + $EXP[Bald_HasArt_hub4]"/>
+        <value condition="$EXP[Bald_PreviewHub5] + $EXP[Bald_HasArt_hub5]"/>
+        <value condition="$EXP[Bald_PreviewHub6] + $EXP[Bald_HasArt_hub6]"/>
+        <value condition="$EXP[Bald_PreviewHub7] + $EXP[Bald_HasArt_hub7]"/>
+        <value condition="$EXP[Bald_PreviewHub8] + $EXP[Bald_HasArt_hub8]"/>
+        <value condition="$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_search] + !String.IsEmpty(Skin.String(Bald.Art.search))"/>
+        <value condition="$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_settings] + !String.IsEmpty(Skin.String(Bald.Art.settings))"/>
+        <value condition="$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_power] + !String.IsEmpty(Skin.String(Bald.Art.power))"/>
         <value condition="$EXP[Bald_WidgetPreview]"/>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101) + !String.IsEmpty(Container(9101).ListItem.Art(clearlogo))">$INFO[Container(9101).ListItem.Art(clearlogo)]</value>
         <value condition="String.IsEqual(Window(home).Property(Bald.Row),9101)">$INFO[Container(9101).ListItem.Art(tvshow.clearlogo)]</value>

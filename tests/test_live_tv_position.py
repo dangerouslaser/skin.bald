@@ -54,8 +54,9 @@ class LiveTVPositionTests(unittest.TestCase):
             visible = copy.findtext("visible")
             self.assertIn(f"String.IsEqual(Skin.String(Bald.LiveTVAfter),{n})", visible)
             self.assertIn(f"Integer.IsGreater(Container(9390).NumItems,{n})", visible)
-        self.assertEqual(kinds[-2], ("2", "livetv"))
-        self.assertEqual(items[-2].findtext("visible"), "$EXP[Bald_LiveTVAtEnd]")
+        end = kinds.index(("2", "livetv"))
+        self.assertEqual(kinds[end - 1], ("17", "hub"))
+        self.assertEqual(items[end].findtext("visible"), "$EXP[Bald_LiveTVAtEnd]")
 
     def step(self, button_id, stored, hubs):
         """What one Select on a move button stores, given Bald.LiveTVAfter and the number of hubs. Every condition is

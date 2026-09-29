@@ -44,6 +44,10 @@
 				<include content="Bald_LiveTVCategory"><param name="after">7</param></include>
 				<include content="Bald_HubCategory"><param name="n">7</param></include>
 				<item id="2"><label>$LOCALIZE[31700]</label><property name="kind">livetv</property><property name="note">$LOCALIZE[31205]</property><visible>$EXP[Bald_LiveTVAtEnd]</visible></item>
+				<!-- The fixed entries at the end of the main menu: only their background image is set here. -->
+				<item id="4"><label>$LOCALIZE[137]</label><property name="kind">search</property><property name="note">$LOCALIZE[31760]</property></item>
+				<item id="5"><label>$LOCALIZE[5]</label><property name="kind">settings</property><property name="note">$LOCALIZE[31760]</property></item>
+				<item id="6"><label>$LOCALIZE[33060]</label><property name="kind">power</property><property name="note">$LOCALIZE[31760]</property></item>
 				<item id="3">
 					<label>$LOCALIZE[31207]</label>
 					<property name="kind">add</property>
@@ -71,7 +75,7 @@
 				</control>
 				<!-- Rows: the widget editor (1116) on Home's, Live TV's or this hub's row list. -->
 				<control type="button" id="9402"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31745]</label>
-					<visible>!String.IsEqual(Container(9300).ListItem.Property(kind),add)</visible>
+					<visible>$EXP[Bald_ScreenCategorySelected]</visible>
 					<onclick>SetProperty(Bald.ConfigureLabel,$INFO[Container(9300).ListItem.Label],home)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">SetProperty(Bald.ConfigureNode,homewidgets,home)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv)">SetProperty(Bald.ConfigureNode,livetvwidgets,home)</onclick>
@@ -155,6 +159,33 @@
 					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),6) + !Integer.IsGreater(Container(9390).NumItems,7)">Skin.Reset(Bald.LiveTVAfter)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),7)">Skin.Reset(Bald.LiveTVAfter)</onclick>
 					<onclick>Control.Move(9300,1)</onclick>
+				</control>
+				<!-- Background image: the picture the menu shows while it previews this entry, and behind the entry's rows when
+				     the focused item has no fanart (Bald_ScreenArt_<screen>, Bald_Fanart). A hub keeps it in its own "image"
+				     field, so it follows the hub when it moves; Home, Live TV, Search, Settings and Power in Bald.Art.<kind>.
+				     A hub's pick goes through Bald.PickedArt: Skin.SetImage returns once the browser closes, and each action's
+				     $INFO is read as it runs, so an empty pick (cancelled) leaves the field as it was (do_edit ignores it). -->
+				<control type="button" id="9412"><include content="Bald_ConfigureRow"><param name="level">standard</param></include><label>$LOCALIZE[31743]</label><label2>$VAR[Bald_ScreenArtLabel]</label2>
+					<visible>$EXP[Bald_HubCategorySelected] | $EXP[Bald_ArtKindSelected]</visible>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">Skin.Reset(Bald.PickedArt)</onclick>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">Skin.SetImage(Bald.PickedArt)</onclick>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.WidgetsDirty,1,home)</onclick>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;image&amp;&amp;$INFO[Skin.String(Bald.PickedArt)])</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">Skin.SetImage(Bald.Art.home)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv)">Skin.SetImage(Bald.Art.livetv)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),search)">Skin.SetImage(Bald.Art.search)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),settings)">Skin.SetImage(Bald.Art.settings)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),power)">Skin.SetImage(Bald.Art.power)</onclick>
+				</control>
+				<control type="button" id="9413"><include content="Bald_ConfigureRow"><param name="level">standard</param></include><label>$LOCALIZE[31744]</label>
+					<visible>$EXP[Bald_ScreenArtSet]</visible>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.WidgetsDirty,1,home)</onclick>
+					<onclick condition="$EXP[Bald_HubCategorySelected]">RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;image&amp;&amp;null)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">Skin.Reset(Bald.Art.home)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv)">Skin.Reset(Bald.Art.livetv)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),search)">Skin.Reset(Bald.Art.search)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),settings)">Skin.Reset(Bald.Art.settings)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),power)">Skin.Reset(Bald.Art.power)</onclick>
 				</control>
 				<control type="button" id="9409"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31207]</label>
 					<visible>String.IsEqual(Container(9300).ListItem.Property(kind),add)</visible>

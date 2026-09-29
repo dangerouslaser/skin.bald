@@ -28,6 +28,25 @@
                     </item>
                 </items>
             </value>
+            <!-- The hub's own image (Home Screens > Background image, the hub's "image" field): the picture the menu shows
+                 while it previews the hub, and behind its rows when an item has no fanart (Bald_ScreenArt_<screen>). -->
+            <value name="hub_image">
+                <items menu="hubs" mode="submenu">
+                    <item>
+                        <condition>{item_x}=={node}</condition>
+                        <template>{item_image}</template>
+                    </item>
+                </items>
+            </value>
+            <value name="hub_has_art">
+                <items menu="hubs" mode="submenu">
+                    <item>
+                        <condition>{item_x}=={node}</condition>
+                        <condition>{item_image}!=</condition>
+                        <template>| [true]</template>
+                    </item>
+                </items>
+            </value>
             <!-- The optional open target (path and target, as Skin Variables' do_action stores them). -->
             <value name="hub_has_open">
                 <items menu="hubs" mode="submenu">

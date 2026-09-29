@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald_Logo while the menu previews a screen without rows that shows its own image (fanart-screen.xml): no clearlogo
+     from the current row over it. -->
+<contents>
+    <items>
+        <item>
+            <template>&lt;value condition="$EXP[Bald_Preview{title}] + $EXP[Bald_HasArt_{screen}]"&gt;&lt;/value&gt;</template>
+        </item>
+    </items>
+</contents>

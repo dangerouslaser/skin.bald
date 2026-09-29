@@ -202,13 +202,21 @@ class WidgetGeneratorTests(unittest.TestCase):
     def test_art_variables_prefer_the_previewed_screen_then_the_current_row(self):
         root = fallback()
         configured = sorted(base + index for screen, _, base in SCREENS for index in range(1, len(defaults(screen)) + 1))
-        for name, per_row in (("Bald_Fanart", 4), ("Bald_Logo", 2)):
+        fixed = ("search", "settings", "power")
+        for name, per_row in (("Bald_Fanart", 5), ("Bald_Logo", 2)):
             values = root.findall(f"variable[@name='{name}']/value")
             conditions = [value.get("condition") for value in values]
             catch_all = next(i for i, c in enumerate(conditions) if c and equivalent(c, "$EXP[Bald_WidgetPreview]"))
-            self.assertEqual(catch_all, per_row * len(configured))
-            # First the previewed screen's rows, then the widget preview's catch-all, then the current row's.
-            self.assertTrue(all(implies(c, "$EXP[Bald_WidgetPreview]") for c in conditions[:catch_all]))
+            rows_end = per_row * len(configured)
+            self.assertEqual(catch_all, rows_end + len(SCREENS) + len(fixed))
+            # First the previewed screen's rows, then each previewed screen's own image (a screen without rows),
+            # then Search, Settings and Power's images, the widget preview's catch-all, and the current row's.
+            self.assertTrue(all(implies(c, "$EXP[Bald_WidgetPreview]") for c in conditions[:rows_end]))
+            for (screen, title, _), condition in zip(SCREENS, conditions[rows_end:rows_end + len(SCREENS)]):
+                self.assertTrue(equivalent(condition, f"$EXP[Bald_Preview{title}] + $EXP[Bald_HasArt_{screen}]"), condition)
+            for kind, condition in zip(fixed, conditions[rows_end + len(SCREENS):catch_all]):
+                self.assertTrue(equivalent(condition, f"$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_{kind}]"
+                                                      f" + !String.IsEmpty(Skin.String(Bald.Art.{kind}))"), condition)
             self.assertTrue(all(any(implies(c, f"String.IsEqual(Window(home).Property(Bald.Row),{row})") for row in configured)
                                 for c in conditions[catch_all + 1:-1]))
             self.assertIsNone(conditions[-1])

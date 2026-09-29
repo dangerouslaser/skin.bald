@@ -63,10 +63,11 @@ class BaldSettingsTests(unittest.TestCase):
         self.assertEqual([item.get("id") for item in before], [f"2{n}" for n in range(8)])
         items = [item for item in every if item not in before]
         self.assertEqual([item.findtext("property[@name='kind']") for item in items],
-                         ["home"] + ["hub"] * 8 + ["livetv", "add"])
-        self.assertEqual([item.get("id") for item in items], ["1"] + [str(10 + n) for n in range(8)] + ["2", "3"])
+                         ["home"] + ["hub"] * 8 + ["livetv", "search", "settings", "power", "add"])
+        self.assertEqual([item.get("id") for item in items],
+                         ["1"] + [str(10 + n) for n in range(8)] + ["2", "4", "5", "6", "3"])
         self.assertEqual(items[0].findtext("label"), "$LOCALIZE[10000]")
-        self.assertEqual(items[-2].findtext("label"), loc("Live TV"))
+        self.assertEqual(items[-5].findtext("label"), loc("Live TV"))
         self.assertEqual(items[-1].findtext("label"), loc("Add hub"))
         # Hub n shows the entry at position n of the live hubs list 9390, while there is one.
         for n, item in enumerate(items[1:9]):
@@ -156,8 +157,8 @@ class BaldSettingsTests(unittest.TestCase):
         configure = root.find(".//control[@id='9402']")
         self.assertIn("Bald.Screen.HideLiveTV", ET.tostring(toggle, encoding="unicode"))
         # Its only other condition is its settings level (Basic: always shown).
-        self.assertTrue(equivalent(all_of([n.text for n in configure.findall("visible")]),
-                                   "!String.IsEqual(Container(9300).ListItem.Property(kind),add)"))
+        # Shown for every entry with rows: Home, Live TV and the hubs (not Search, Settings, Power or Add hub).
+        self.assertTrue(equivalent(all_of([n.text for n in configure.findall("visible")]), "$EXP[Bald_ScreenCategorySelected]"))
 
     def test_screens_restore_their_last_row_when_entered_from_menu(self):
         for screen in ["home"] + HUBS:

@@ -119,7 +119,11 @@ class GeneratorTests(unittest.TestCase):
         root = generated([row("Weather forecast", "weather://daily")])
         values = [(value.get("condition"), value.text) for value in root.findall("variable[@name='Bald_Fanart']/value")]
         current = [(c, t) for c, t in values if c and c.startswith("String.IsEqual(Window(home).Property(Bald.Row),9101)")]
-        self.assertEqual(len(current), 3)
+        self.assertEqual(len(current), 4)
+        # The screen's own image first, when Home Screens gave it one (a weather hub's picture beats the pack).
+        condition, texture = current.pop(0)
+        self.assertTrue(implies(condition, "$EXP[Bald_HasArt_home]"))
+        self.assertEqual(texture, "$VAR[Bald_ScreenArt_home]")
         # The focused tile's own picture, its thumb (Bald Helper's Bald.Weather.Art.<slot>), for either kind of pack.
         condition, texture = current[0]
         self.assertTrue(implies(condition, "!String.IsEmpty(Skin.String(Bald.WeatherFanart.path))"))

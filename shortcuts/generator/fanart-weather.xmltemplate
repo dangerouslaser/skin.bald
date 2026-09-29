@@ -1,3 +1,4 @@
+<value condition="{prefix} + $EXP[Bald_HasArt_{screen}]">$VAR[Bald_ScreenArt_{screen}]</value>
 <value condition="{prefix} + !String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) + !String.IsEmpty(Container({row_id}).ListItem.Art(thumb))">$INFO[Container({row_id}).ListItem.Art(thumb)]</value>
 <value condition="{prefix} + !String.IsEmpty(Skin.String(Bald.WeatherFanart.path)) + !String.IsEmpty(Skin.String(Bald.WeatherFanart.ext)) + !String.IsEmpty(Container({row_id}).ListItem.Property(Bald.WeatherCode))">$INFO[Skin.String(Bald.WeatherFanart.path)]$INFO[Container({row_id}).ListItem.Property(Bald.WeatherCode)]$INFO[Skin.String(Bald.WeatherFanart.ext)]</value>
 <value condition="{prefix}"></value>

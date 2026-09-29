@@ -464,6 +464,23 @@ msgctxt "#31209"
 msgid "Clear target"
 msgstr "Ziel entfernen"
 
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#. Home Screens: the row that picks an entry's background image (menu preview, and rows without fanart)
+msgctxt "#31743"
+msgid "Background image"
+msgstr "Hintergrundbild"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31744"
+msgid "Clear background image"
+msgstr "Hintergrundbild entfernen"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#. Home Screens: note for Search, Settings and Power, whose only option is their background image
+msgctxt "#31760"
+msgid "A fixed entry of the main menu. Choose the picture it shows while it is selected."
+msgstr "Ein fester Eintrag im Hauptmenü. Hier lässt sich das Bild wählen, das es zeigt, solange er ausgewählt ist."
+
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance > Behavior: Home starts on its rows instead of the main menu (a fresh start only)
 msgctxt "#31742"
