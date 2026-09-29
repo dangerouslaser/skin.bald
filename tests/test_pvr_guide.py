@@ -71,9 +71,14 @@ class PVRGuideTests(unittest.TestCase):
                        'PVR.EpgGridControl(CurrentProgramme)',
                        'PVR.EpgGridControl(SelectGroup)',
                        'PVR.EpgGridControl(SelectDate)',
-                       'ActivateWindow(TVSearch)',
                        'PreviousMenu'):
             self.assertIn(action, actions)
+        # The other Live TV windows (timers, recordings, ...), TV or radio as the guide is.
+        areas = [node.text for node in tools.findall(".//include[@content='Bald_PVRGuideAreaButton']/param[@name='area']")]
+        self.assertEqual(areas, ['Channels', 'Recordings', 'Timers', 'TimerRules', 'Search'])
+        area = includes.find("include[@name='Bald_PVRGuideAreaButton']")
+        clicks = [node.text for node in area.iter('onclick')]
+        self.assertEqual(clicks, ['ActivateWindow(TV$PARAM[area])', 'ActivateWindow(Radio$PARAM[area])'])
         self.assertNotIn('PVR.EpgGridControl(PreviousGroup)', actions)
         self.assertNotIn('PVR.EpgGridControl(NextGroup)', actions)
 
