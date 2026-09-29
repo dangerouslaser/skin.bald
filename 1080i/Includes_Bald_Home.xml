@@ -732,7 +732,10 @@
 	<expression name="Bald_PreviewHub8">[$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_hub8]]</expression>
 	<expression name="Bald_WidgetPreview">[$EXP[Bald_PreviewHome] | $EXP[Bald_PreviewLiveTV] | $EXP[Bald_PreviewHub1] | $EXP[Bald_PreviewHub2] | $EXP[Bald_PreviewHub3] | $EXP[Bald_PreviewHub4] | $EXP[Bald_PreviewHub5] | $EXP[Bald_PreviewHub6] | $EXP[Bald_PreviewHub7] | $EXP[Bald_PreviewHub8]]</expression>
 	<expression name="Bald_EffectiveItemOdd">[[$EXP[Bald_WidgetPreview] + $EXP[Bald_PreviewItemOdd]] | [!$EXP[Bald_WidgetPreview] + $EXP[Bald_ItemOdd]]]</expression>
-	<expression name="Bald_EffectiveHasLogo">[[$EXP[Bald_WidgetPreview] + $EXP[Bald_PreviewHasLogo]] | [!$EXP[Bald_WidgetPreview] + $EXP[Bald_HasLogo]]]</expression>
+	<!-- The menu previews Search, Settings or Power with a background image of its own (Home Screens; Bald_Fanart shows
+	     it): the current row's clearlogo and its scrim stay off, since they belong to the art the image replaced. -->
+	<expression name="Bald_PreviewFixedArt">[$EXP[Bald_MenuOpen] + [[$EXP[Bald_MenuPreview_search] + !String.IsEmpty(Skin.String(Bald.Art.search))] | [$EXP[Bald_MenuPreview_settings] + !String.IsEmpty(Skin.String(Bald.Art.settings))] | [$EXP[Bald_MenuPreview_power] + !String.IsEmpty(Skin.String(Bald.Art.power))]]]</expression>
+	<expression name="Bald_EffectiveHasLogo">[[[$EXP[Bald_WidgetPreview] + $EXP[Bald_PreviewHasLogo]] | [!$EXP[Bald_WidgetPreview] + $EXP[Bald_HasLogo]]] + !$EXP[Bald_PreviewFixedArt]]</expression>
 	<!-- The main menu or the context menu (restyled as the same menu over Home) is open: the caption slides out,
 	     the section line hides, the rows dim. -->
 	<expression name="Bald_OverlayOpen">[$EXP[Bald_MenuOpen] | Window.IsVisible(contextmenu)]</expression>
@@ -1084,7 +1087,7 @@
 		<param name="x">52</param><param name="y">486</param><param name="width">560</param><param name="height">170</param>
 		<definition>
 			<control type="group">
-				<visible>$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]</visible>
+				<visible>$PARAM[ignore_home_row] | $PARAM[preview] | [!$EXP[Bald_WidgetPreview] + !$EXP[Bald_PreviewFixedArt] + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])]</visible>
 				<include>Bald_AnimLogoIn</include>
 				<control type="image">
 					<left>$PARAM[x]</left>
