@@ -1,0 +1,942 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later
+   Copyright (c) 2026 U3knOwn */
+
+/* --- The live panels ----------------------------------------------------
+   What is playing, the stat tiles and the luminance chart: markup and
+   behaviour in live-panels.js, styling here, because both pages show them.
+------------------------------------------------------------------------ */
+
+/* --- Card headings ------------------------------------------------------
+
+   Every panel on the page folds, and this is the row it folds from.  Three
+   things across it: an accent tick, the name, and the caret at the far right.
+
+   The tick is what carries the colour now.  A heading set entirely in the
+   accent put five or six lines of bright text down a page whose readings are
+   the point of it -- and under the adaptive theme, where the accent is the
+   film's, it made a wall of the poster's colour out of what is only furniture.
+   One mark each says the same thing at a fraction of the volume, and it is
+   still the token, so the adaptive theme keeps its colour here for free.
+
+   The caret takes margin-left:auto rather than the row taking
+   justify-content:space-between: a group heading is a bare text node with no
+   element around it (see renderGroups in js/dashboard.js), and space-between
+   would have pushed that text into the middle of the row while the cards that
+   do wrap their title kept theirs on the left.
+------------------------------------------------------------------------ */
+
+.panel-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 12px 16px;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  transition: color .15s, background .15s;
+}
+.panel-toggle::-webkit-details-marker { display: none; }
+.panel-toggle::before {
+  content: "";
+  flex: none;
+  width: 3px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.panel-toggle::after {
+  content: "";
+  margin-left: auto;
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  color: var(--dim);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform .15s ease, color .15s;
+}
+@media (hover: hover) {
+  .panel-toggle:hover { color: var(--text); }
+  .panel-toggle:hover::after { color: var(--accent); }
+}
+.card[open] > .panel-toggle {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* Opening or closing a card marks its heading with the accent for a moment
+   and then lets go of it again.  The colour says the fold has just moved,
+   which is the one thing worth colouring: whether it is open or shut is
+   already written in the chevron beside it and in the card under it, so a
+   heading that stayed lit for as long as the card was open was spending the
+   accent on something nothing had to look for.
+
+   Only a `from`, so whatever the heading is at rest is what it settles back
+   to -- the muted grey of the text, the dimmer grey of the mark -- without
+   either colour being named twice. */
+@keyframes toggle-flash { from { color: var(--accent); } }
+.panel-toggle.flash,
+.panel-toggle.flash::after { animation: toggle-flash .6s ease-out; }
+.card[open] > .panel-toggle::after {
+  transform: rotate(225deg) translate(-2px, -2px);
+}
+.panel-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* --- Now playing -------------------------------------------------------- */
+
+.now {
+  /* The poster's own 18 px at the foot as well as at the head, so the last
+     row of format badges and the bottom edge of the poster finish on one
+     line (see .formats). */
+  padding: 18px;
+  /* A column, and never wider than the card holds.  It was a grid once, with
+     its one track said outright as minmax(0,1fr): an implicit grid column is
+     `auto`, at least as wide as the widest thing in it wants to be, and a
+     badge that could not wrap or a file name a browser would not split made
+     the column wider than the poster had left it.  A flex column has no track
+     of its own to grow -- its items are the width it is, and .now itself is
+     held to its share of the card by .hero's minmax(0,1fr) -- and it is what
+     lets the badges be pushed to the foot of it. */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* As tall as the poster beside it, not as tall as what it holds. */
+  align-self: stretch;
+}
+/* And the items in it, for the same reason one step down: a grid item's own
+   automatic minimum size is its min-content, so an item can still stand wider
+   than the track it was placed in. */
+.hero > *,
+.now > * { min-width: 0; }
+
+/* Clear of the chevron in the corner and of nothing else: the two numbers it
+   is drawn with are named on .hero, so this reserves exactly what that button
+   takes rather than a figure that has to be kept in step with it by hand. */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-right: calc(var(--toggle-inset) + var(--toggle-size));
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  /* A badge is one short phrase and gets one line wherever there is a line to
+     give it: the row wraps between badges before it wraps inside one, because
+     a flex row breaks on an item that does not fit before it squeezes the
+     items already on it.
+
+     What this leaves out is the old `white-space: nowrap`, and that is the
+     point.  The row is what the poster and the chevron have left of the card,
+     and on a narrow phone "DOLBY VISION" is wider than that -- a badge that
+     could not wrap simply stood over the chevron instead.  It now takes a
+     second line inside its own pill, and only ever when it must. */
+  max-width: 100%;
+  text-align: center;
+}
+.badge.alt {
+  border-color: color-mix(in srgb, var(--warn) 45%, transparent);
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+}
+.badge .ui-icon { width: 12px; height: 12px; }
+/* The row holds only the paused badge now (see renderBadges), so most of the
+   time it is empty -- and then the title is what stands beside the chevron
+   and has to keep clear of it instead. */
+.badges:empty { display: none; }
+.badges:empty + h1 {
+  /* .now already holds its contents 18 px in, the chevron's own inset. */
+  padding-right: calc(var(--toggle-size) + 6px);
+}
+
+/* A title is often a file name -- forty characters with no space in them --
+   and it has to break somewhere inside itself or run off the card.  Both
+   values are given, in this order, on every line of text here that can be
+   handed one of those:
+
+     break-word  what every browser has understood for years;
+     anywhere    the same break, and the only one of the two that also tells
+                 the layout above it how narrow this text is willing to go.
+
+   A browser that does not know the second keeps the first and still breaks
+   the word.  Written the other way round -- `anywhere` alone -- an older
+   phone browser understood neither, left the name in one piece, and the
+   column it stood in grew to fit it: the title ran off the right of the card
+   and took the format logos under it along. */
+.now h1 {
+  margin: 0;
+  font-size: clamp(20px, 4.4vw, 28px);
+  line-height: 1.18;
+  font-weight: 680;
+  letter-spacing: -.015em;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.now .file {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--dim);
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.progress {
+  display: grid;
+  gap: 7px;
+}
+/* Both bars in this card -- the time and the volume -- are drawn the same way:
+   an outline in the accent with nothing behind it, and the part that has run
+   filled inside it.  The volume slider is a range input, whose track the
+   browser draws for itself, so it is taken over further down rather than left
+   to match by accident. */
+.track {
+  /* Twelve rather than ten: box-sizing is border-box, so the outline is inside
+     the height and what is left for the fill is the ten it looks like. */
+  height: 12px;
+  border: 1px solid var(--bar-line);
+  border-radius: 999px;
+  background: transparent;
+  overflow: hidden;
+}
+.track > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width .35s linear;
+}
+.times {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+/* The position and the length take an equal share of what the middle reading
+   leaves, which is what puts that reading over the centre of the bar rather
+   than over the centre of the gap between them.  Space-between alone would
+   only agree with the bar while the two outer figures happened to be the same
+   width, and they stop being that the moment a title passes the hour. */
+.times > span:first-child,
+.times > span:last-child {
+  flex: 1 1 0;
+}
+.times > span:last-child {
+  text-align: right;
+}
+/* When the title will be over.  Written in the same colour and the same
+   weight as the two clocks either side of it -- it is the third reading of
+   the row, not an aside about them -- and the only thing that sets it apart
+   is the face: the figures are monospaced and its label is not. */
+.times > .finish {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--font-ui);
+}
+/* On a narrow phone the two clocks either side are what the row is for, and
+   the words in the middle are the first thing that can go: the figure stays,
+   and it stays whole rather than ending in an ellipsis. */
+@media (max-width: 380px) {
+  .times > .finish > span:first-child { display: none; }
+}
+/* Unfilled like the keys it folds out, and for the same reason: it sits on the
+   card rather than in the top bar, so the card is what should show through it.
+   The .iconbtn fill it would otherwise take belongs to the buttons up there,
+   which stand on the bar's own colour. */
+.control-toggle {
+  display: inline-grid;
+  place-items: center;
+  position: absolute;
+  top: var(--toggle-inset);
+  right: var(--toggle-inset);
+  z-index: 1;
+  min-width: var(--toggle-size);
+  min-height: 28px;
+  height: 28px;
+  padding: 0 7px;
+  background: transparent;
+  /* Outlined the way the badge across the card from it is, rather than in
+     --line: that is a colour for a line between two surfaces, and with no fill
+     behind it there was nothing for it to divide -- the button all but
+     disappeared.  The accent is the film's inside this card, so the two marks
+     at the top of it answer to the same thing. */
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+/* Painted in the accent rather than drawn: js/live-panels.js makes this one a
+   span for it, and the chevron file is the mask the colour comes through.  The
+   badge across the card and the outline around this button are already the
+   film's colour; the mark inside it is the third of the same thing. */
+.control-toggle .control-chevron {
+  opacity: 1;
+  background: var(--accent);
+  -webkit-mask: url("/icons/chevron-down.svg") no-repeat center / contain;
+  mask: url("/icons/chevron-down.svg") no-repeat center / contain;
+}
+@media (hover: hover) {
+  .control-toggle:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+}
+.control-toggle[aria-expanded="true"] {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.control-chevron {
+  transition: transform .15s ease;
+}
+.control-toggle[aria-expanded="true"] .control-chevron {
+  transform: rotate(180deg);
+}
+.control-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- Stat tiles --------------------------------------------------------- */
+
+.tilegrid {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--line-soft);
+}
+
+.tile {
+  background: var(--panel);
+  padding: 18px 15px 16px;
+  display: grid;
+  /* The name at the top, the reading -- and its unit, if it has one, beside
+     rather than under it -- centred in whatever is left under the name.
+     Every tile in a row is as tall as the tallest, and it is the reading that
+     should sit in the middle of that -- the name is a heading and belongs at
+     the top of its tile whatever the tile's height turns out to be. */
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+}
+/* The reading's own name, in the reading's colour -- the same way round as the
+   detail rows (see .row .k in dashboard.css). */
+.tile .k {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+/* The reading and its unit run in one line, not two: a unit beside the number
+   it qualifies reads as one reading, where a line of its own under the number
+   read as a second, lesser one. */
+.tile .vwrap {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  align-self: center;
+}
+.tile .v {
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: -.02em;
+}
+/* Out of the way entirely when there is no unit to put beside the reading,
+   rather than holding an empty gap open next to it. */
+.tile .u { font-size: 12px; color: var(--dim); font-weight: 600; }
+.tile .u:empty { display: none; }
+/* Which way the reading last moved, as a small arrow beside the reading
+   itself.  The number alone says what the rate is; the arrow is what says it
+   has just come down to it or gone up to it.  Same dimmed colour both ways,
+   for the reason the event list gives (see .event .trend): a rate falling is
+   the ordinary case, not a fault.  Gone entirely, gap and all, until there is
+   a direction to show -- as with the unit above it. */
+.tile .trend { font-size: 11px; line-height: 1; color: var(--dim); }
+.tile .trend:empty { display: none; }
+
+@media (max-width: 620px) {
+  .tilegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tilegrid .tile:last-child { grid-column: auto; }
+}
+
+/* --- Chart -------------------------------------------------------------- */
+
+.chartwrap { padding: 12px 14px 14px; }
+.chart {
+  display: block;
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--panel-2);
+}
+@media (max-width: 640px) { .chart { height: 152px; } }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 12px 4px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 12px; height: 3px; border-radius: 2px; background: var(--accent); }
+.swatch.band { height: 10px; border-radius: 3px; opacity: .4; }
+.swatch.avg {
+  background: transparent;
+  border-top: 2px dashed var(--accent-2);
+  height: 0;
+}
+
+/* --- The hero card ------------------------------------------------------
+   Poster and what is playing, side by side where there is room.  The poster
+   column is fixed so the title gets the remaining space.
+------------------------------------------------------------------------ */
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  /* The outline both bars in this card are drawn with -- the time and the
+     volume.  Neither has a fill any more, so this is the whole of what says
+     where a bar is; it is the accent at the strength the badges use.
+
+     Declared here rather than beside the rest of the palette in base.css, and
+     that is load-bearing: a var() inside a custom property is resolved where
+     the property is declared, not where it is used.  On :root it would have
+     resolved against the theme's own accent and stayed that colour inside a
+     card the adaptive theme had given the film's. */
+  --bar-line: color-mix(in srgb, var(--accent) 45%, transparent);
+  /* Where the chevron in the corner sits and how wide it is.  Named here
+     because the badge row across the top of the card has to keep clear of it
+     and nothing else, and a figure copied into two rules is a figure that
+     stops matching the first time one of them is changed (see .badges).
+
+     The inset is the card's own 18 px, and it is the same number on both
+     axes on purpose: down the side it lines the button up with the badge
+     beside it, because 18 px is also what .now holds its contents in from
+     the top.  A narrower screen does not change it -- a button drawn higher
+     than the badge it stands next to reads as a mistake, and the 6 px it
+     bought back is nothing the row needs. */
+  --toggle-inset: 18px;
+  --toggle-size: 34px;
+}
+/* The bar, the buttons and the pickers span every column: what is left of the
+   middle column once a poster stands beside it is no width to lay a remote
+   out in, and a control that has to wrap is worse than one further down. */
+.hero .foot {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 14px;
+  padding: 4px 18px 18px;
+}
+.art {
+  padding: 18px 0 18px 18px;
+  line-height: 0;
+}
+.art img {
+  width: 112px;
+  height: 168px;
+  aspect-ratio: 2 / 3;
+  max-width: 30vw;
+  max-height: 45vw;
+  object-fit: cover;
+  object-position: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  display: block;
+}
+/* Room enough for the poster to be looked at rather than merely identified.
+   The column it stands in is fixed, so what it takes is taken from the title
+   beside it -- which on a screen this wide has more than it needs. */
+@media (min-width: 900px) {
+  .art img { width: 136px; height: 204px; }
+}
+
+.now .meta {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.now .meta:empty { display: none; }
+
+/* --- Format badges ------------------------------------------------------
+   What the picture is and what the sound is, a row each, drawn the way the
+   mobile app draws them: a quiet pill tinted from the card's accent -- the
+   film's, on the adaptive theme -- with the words in the muted grey the year
+   and genre are set in.  These say what a film is rather than what it is
+   called, and a row of them at full strength would read as more titles.
+------------------------------------------------------------------------ */
+
+.formats {
+  display: grid;
+  gap: 6px;
+  /* All of the slack above the badges, which lands them on the bottom edge
+     of the poster beside the column, as the mobile app does.  Without a
+     poster the column is only as tall as its contents and this is nothing. */
+  margin-top: auto;
+}
+.format-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.format-row:empty { display: none; }
+.format {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--accent) 21%, var(--panel-2));
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* --- The hero on a phone ------------------------------------------------
+
+   The same card with a good deal less to lay it out in: a poster stands in
+   the left of it, and what is left of a 320 px screen has to hold a title
+   and two rows of format badges.  Nothing is moved or dropped here -- the
+   marks are simply drawn at the size that column can hold.
+------------------------------------------------------------------------ */
+@media (max-width: 620px) {
+  .badges { gap: 5px; }
+  .badge { font-size: 10.5px; letter-spacing: .05em; padding: 5px 8px; }
+  .formats, .format-row { gap: 5px; }
+  .format { font-size: 10.5px; padding: 4px 8px; }
+}
+
+/* --- Transport ---------------------------------------------------------- */
+
+/* Only drawn when the add-on will take orders; the page hides the whole row
+   otherwise rather than showing buttons that answer with a refusal. */
+/* Two deliberate full-width rows: seven even keys, then stop, the slider and
+   mute at the far right. */
+.transport { display: grid; gap: 8px; }
+.control-drawer:not(.open) { display: none; }
+.control-body {
+  display: grid;
+  gap: 14px;
+  /* Set off from the bar above it, so the drawer reads as a thing that opened
+     rather than as more of the card. */
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.tkeys {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+/* Seven keys, sharing the row out between them the way the six above do.
+   Nothing in it carries writing of its own, so nothing in it needs a width of
+   its own either. */
+.tvol {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+@media (max-width: 620px) {
+  .tvol { gap: 5px; }
+}
+/* The keys share the row out between them, so they carry no width of their
+   own; the square ones in the row below keep theirs. */
+.tkeys .tbtn {
+  min-width: 0;
+  padding: 0 2px;
+  font-size: clamp(10px, 3vw, 12.5px);
+}
+.tvol .tbtn { min-width: 0; padding: 0; }
+/* A speaker and a sign side by side, tight enough to read as one mark rather
+   than as two things that have run together.  The icon centres itself on every
+   other key by taking the room around it; here it has a sign to sit beside,
+   and the pair is centred instead. */
+.tbtn.vol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+.tbtn.vol .ui-icon { margin: 0; width: 15px; height: 15px; }
+.tbtn.vol .sign {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+.tbtn .ui-icon { margin: auto; }
+/* Unfilled: the card behind them carries straight through, and each key is
+   held together by its outline alone.  A filled key was a slab of --panel-2 on
+   whatever the card happened to be, which on the adaptive theme meant a row of
+   cold grey boxes under a poster-coloured card; the outline says the same
+   thing without standing on anything. */
+.tbtn {
+  appearance: none;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .08s;
+}
+@media (hover: hover) {
+  .tbtn:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+}
+.tbtn:active { transform: scale(.96); }
+/* A key with nowhere to go -- the chapter keys on a film that has no chapters.
+   Dimmed rather than taken out, so the row keeps its shape. */
+.tbtn:disabled {
+  opacity: .38;
+  cursor: default;
+  transform: none;
+}
+@media (hover: hover) {
+  .tbtn:disabled:hover { border-color: var(--line); background: transparent; }
+}
+.tbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tbtn.mute.on { color: var(--warn); border-color: var(--warn); }
+
+/* A seekable bar is worth a finger's worth of height, and says so.  The bar
+   itself is a pseudo-element inside that padding, so the outline goes there
+   with it and the element keeps none of its own. */
+.track.seekable {
+  cursor: pointer;
+  padding: 8px 0;
+  height: auto;
+  border: 0;
+  background: none;
+  overflow: visible;
+}
+.track.seekable::before {
+  content: "";
+  display: block;
+  /* The reset in base.css is `*`, which does not reach a pseudo-element -- so
+     this one would have added its outline to the twelve and come out two
+     taller than the volume slider beside it. */
+  box-sizing: border-box;
+  height: 12px;
+  border: 1px solid var(--bar-line);
+  border-radius: 999px;
+  background: transparent;
+  /* One less than its own height, so the fill that follows lands a pixel down
+     -- inside the outline rather than over it. */
+  margin-bottom: -11px;
+}
+.track.seekable > i {
+  height: 10px;
+  box-shadow: none;
+}
+.track:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* --- Track pickers ------------------------------------------------------ */
+
+.tracks {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.pick {
+  display: grid;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  flex: 1 1 180px;
+  min-width: 0;
+}
+.pick select {
+  appearance: none;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 34px 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: pointer;
+  /* The arrow is drawn rather than fetched: the page loads no image it does
+     not already have a route for. */
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+@media (hover: hover) {
+  .pick select:hover { border-color: var(--accent); }
+}
+.pick select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* --- The range keys ------------------------------------------------------
+
+   How far back a chart draws, as a strip of keys of its own between the
+   heading and the picture.  Ruled off from the chart below it so the strip
+   reads as a control rather than as part of the drawing. */
+.chart-options {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.ranges {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: var(--panel-2);
+}
+.range {
+  appearance: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .12s, background .12s, border-color .12s;
+}
+@media (hover: hover) {
+  .range:hover { color: var(--text); }
+}
+.range.on {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.range:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* --- Events ------------------------------------------------------------- */
+
+/* The list scrolls inside its own card, whether a film is running or one has
+   just ended: it is the one panel with no ceiling on it -- a long title writes
+   sixty entries -- and a card that simply grew pushed everything under it off
+   the page while nothing was playing, and made the page itself several
+   screens long while something was.
+
+   A fixed height rather than a share of the screen: a share of a tall phone
+   is a card that still reaches the bottom of it, and the three idle cards
+   together have to fit above that bottom.  Five or six entries, and the rest
+   under the reader's thumb.
+
+   The card keeps its own scrolling to itself, so reaching the end of the list
+   does not carry on into the page behind it. */
+.events {
+  padding: 4px 0 6px;
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* A bar the reader can see and take hold of, in the page's own colours
+     rather than the browser's: this is the one panel here that scrolls, so
+     nothing else says that it does.  Drawn through the -webkit- rules below
+     and not through scrollbar-width/-color, which read better but hand a
+     phone back the overlay bar that is only there while a finger is moving --
+     and a bar nobody can see until they have already guessed is no answer to
+     "is there more of this?".  The gutter is held open either way, so the
+     rows do not shift when it appears. */
+  scrollbar-gutter: stable;
+}
+.events::-webkit-scrollbar { width: 9px; }
+.events::-webkit-scrollbar-track { background: transparent; }
+.events::-webkit-scrollbar-thumb {
+  background: var(--scroll);
+  border-radius: 999px;
+}
+.events::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+
+/* And a shade over the last rows while there are rows under them, because a
+   browser that draws its scrollbar only under a moving finger says nothing at
+   all until the reader has already guessed there is more.  js/live-panels.js
+   puts the class on and takes it off as the list is scrolled, so the shade is
+   there exactly while something is under it. */
+.eventswrap { position: relative; }
+#eventsCard > .tilegrid { border-bottom: 1px solid var(--line-soft); }
+.eventswrap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 9px;              /* clear of the scrollbar's own gutter */
+  bottom: 0;
+  height: 34px;
+  background: linear-gradient(to top, var(--panel), transparent);
+  opacity: 0;
+  transition: opacity .15s ease;
+  pointer-events: none;
+}
+.eventswrap.more::after { opacity: 1; }
+.events.empty {
+  padding: 20px 16px 22px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.event {
+  display: grid;
+  grid-template-columns: 7px 72px minmax(112px, 168px) minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: center;
+  min-height: 50px;
+  padding: 8px 0px 8px 14px;
+}
+/* What kind of thing happened, as a dot before the time it happened at.  The
+   list is read down rather than across -- a run of stutters, a switch in the
+   middle of them -- and a colour is what separates those at a glance, where
+   four labels in the same grey do not.
+
+   The colours are the page's own and mean here what they mean everywhere
+   else: the accent for the output the film is being shown in, the second
+   accent for the display following it, warn for the cache, bad for the frames
+   that went missing. */
+.event::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dim);
+}
+.event.shift::before { background: #42b8d5; }
+.event.temperature::before,
+.event.cpu::before { background: var(--warn); }
+.event + .event { border-top: 1px solid var(--line-soft); }
+.event .at {
+  font-size: 12.5px;
+  color: var(--dim);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.event .what {
+  min-width: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+.event .detail {
+  min-width: 0;
+  font-size: 13px;
+  text-align: right;
+  line-height: 1.45;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  color: var(--text);
+}
+
+/* Which way a figure went, as a small arrow to the right of the figure
+   itself.  It is the second half of a frame-rate event: the row prints the
+   rate the title is on now, and the arrow is what says it went up to it or
+   down to it without spending a column on the rate it left.
+
+   Both directions are drawn in the same dimmed colour on purpose.  A rate
+   going down is not a fault -- a title's next part simply being 24 rather
+   than 60 is the ordinary case -- and warn/accent here would read as one.
+   The shape carries the direction; the colour keeps it out of the way of the
+   value it belongs to. */
+.event .trend {
+  margin-left: 6px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--dim);
+  /* Never left behind on a line of its own when a long value wraps. */
+  white-space: nowrap;
+}
+
+/* In a narrow card the row above is what breaks: a transition's "detail" (two
+   whole VS10 output states, easily wider than the row) claims the auto column
+   for itself and squeezes "what" down until overflow-wrap:anywhere splits the
+   label mid-word.  There is no such squeeze once the card itself is wide,
+   which is why the card is what is measured rather than the window: the same
+   card is the width of a phone on a phone and the width of the idle column
+   when a film has just ended on a desktop, and it needs this in both. */
+#eventsCard { container: eventscard / inline-size; }
+
+@container eventscard (max-width: 620px) {
+  /* On a narrow card the time gets the first line and the event name the one
+     under it, so the label is no longer stranded to the right of the
+     timestamp and the left of the row reads from top to bottom.  The value
+     keeps the right of the row, where there is no width to put it under
+     anything. */
+  .event {
+    grid-template-columns: 7px max-content minmax(0, 1fr);
+    /* Dot and value each hold both lines rather than sitting on one of them:
+       the two on the left are read as a pair -- when it happened, then what
+       -- and a dot pinned to the first of them and a value pinned to the
+       second leave the row looking like two half-rows.  Given the whole
+       height, both centre against the pair instead. */
+    grid-template-areas: "dot at     detail"
+                         "dot what   detail";
+    gap: 4px 10px;
+    align-items: start;
+    min-height: 58px;
+    padding-right: 14px;
+  }
+  .event::before { grid-area: dot; align-self: center; }
+  .event .at {
+    grid-area: at;
+  }
+  .event .what {
+    grid-area: what;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .event .detail {
+    grid-area: detail;
+    align-self: center;
+    font-size: 12px;
+  }
+}

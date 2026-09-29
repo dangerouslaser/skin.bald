@@ -1,0 +1,772 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later
+   Copyright (c) 2026 U3knOwn */
+
+/* TinyPPI main dashboard only.  Shared chrome and live-player components are
+   kept in base.css and live-panels.css. */
+
+/* --- VS10 --------------------------------------------------------------- */
+
+.vs10 { padding: 14px 16px 16px; display: grid; gap: 14px; }
+/* What the box is putting out at the moment, above the keys that change it.
+   Set on a surface of its own rather than run as a line of text: it is the
+   thing the buttons under it act on, and it is worth being able to find
+   without reading. */
+.vs10 .out {
+  font-size: 13px;
+  /* The name reads as brightly as the reading beside it.  There are two words
+     on this surface and both of them matter: which output, and what it is --
+     a dimmed name here was the label of a control rather than half of a
+     sentence. */
+  color: var(--text);
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+}
+.vs10 .out b {
+  color: var(--text);
+  font-weight: 650;
+  font-size: 14px;
+  margin-left: auto;
+}
+
+.modes {
+  display: grid;
+  gap: 10px;
+  /* The 180 is a floor for a key, not for the card: min() lets a column
+     narrower than one key still hold it, the way the group grid below
+     does (see .groups). */
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+}
+.mode {
+  appearance: none;
+  min-height: var(--tap);
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .08s;
+}
+@media (hover: hover) {
+  .mode:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+}
+.mode:active:not(:disabled) { transform: scale(.985); }
+.mode:disabled { opacity: .5; cursor: progress; }
+.mode.busy {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+}
+
+/* --- Detail groups ------------------------------------------------------ */
+
+/* As many cards to a row as will fit, and the row decides that for itself
+   rather than being told by the width of the window: this band runs the whole
+   width of a wide screen and the whole width of a phone, and a count fixed in
+   a media query would have had to be right for both.  Three across a desktop,
+   two on a tablet and one on a phone emerge from the dashboard's 1440px page
+   width and the cards' 400px minimum below.
+
+   A grid row is as tall as the tallest card in it, so which card sits next to
+   which is what decides whether that shows: GROUP_ORDER puts blocks of a like
+   length beside each other, and a row then ends level rather
+   than one card standing over a hole. */
+.groups {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+  align-items: start;
+  min-width: 0;
+}
+
+/* Out of the page's way until there is something in it.  An empty grid item
+   still takes the gap around it, which on the first snapshot of a film -- the
+   groups arrive a beat after the poster does -- was a band of nothing under
+   the now-playing card. */
+.groups:empty { display: none; }
+
+/* The static HDR card takes the whole row.  It is two readings long, so as
+   half a row it would leave its partner standing over a hole -- and it only
+   appears at all on an HDR title that is not Dolby Vision, where it is the
+   last card and has nothing to pair with anyway.  The id comes from the
+   snapshot (see renderGroups). */
+.groups > [data-group="hdr"] { grid-column: 1 / -1; }
+
+.rows { padding: 4px 0 6px; }
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(96px, 40%) 1fr;
+  gap: 12px;
+  align-items: baseline;
+  padding: 8px 16px;
+  transition: background .12s;
+}
+.row + .row { border-top: 1px solid var(--line-soft); }
+
+/* Keep the desktop grid level when a group carries only six readings.  The
+   generated line is decorative, so it never enters the DOM or the reading
+   order, and it disappears with the multi-column layout on smaller screens. */
+@media (min-width: 1080px) {
+  .groups .rows:has(> .row:nth-child(6):last-child)::after {
+    content: "";
+    display: block;
+    min-height: 36px;
+    border-top: 1px solid var(--line-soft);
+  }
+}
+
+/* A reading under the pointer, picked out from the sixty around it.  A list
+   this dense is read by running a finger or a cursor down it, and the row that
+   lights up is the one being read. */
+@media (hover: hover) {
+  .row:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+}
+/* The same colour as the reading beside it.  A quieter label is the usual way
+   round -- a name is scanned past, a value is read -- but these names are half
+   of what the row says: which reading this is.  The value keeps the mono face
+   and its own size, which is what still tells the two apart.
+
+   Both wrapping values, in this order: a browser that knows only break-word
+   still breaks a long reading, and one that knows anywhere also keeps the
+   column from growing to fit an unbroken one (see .now h1 in
+   css/live-panels.css). */
+.row .k {
+  color: var(--text);
+  font-size: 13px;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.row .v {
+  font-size: 13.5px;
+  text-align: right;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  transition: color .45s ease-out;
+}
+.row .d { color: var(--dim); font-size: 12.5px; }
+.row.changed .v { color: var(--accent-2); transition: none; }
+
+.empty p { max-width: 42ch; }
+
+/* --- What was playing before ------------------------------------------- */
+
+/* A card of its own under the idle one: the title that just ended and the
+   three figures it came to.  The tiles are the very ones the metrics card uses
+   while a film runs (.tilegrid in live-panels.css), so the same reading is
+   read in the same place before and after. */
+#lastCard {
+  display: grid;
+  gap: 1px;
+  background: var(--line-soft);
+}
+.lasthead {
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  background: var(--panel);
+}
+.lasthead .k {
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.lasthead b { font-size: 16px; font-weight: 650; letter-spacing: -.01em; }
+
+/* Two tiles, side by side at every width.  The metrics card's grid is three
+   across and hands its last tile the whole row where there is no room for
+   three (.tilegrid in live-panels.css); for a pair that would be one tile
+   beside a hole. */
+#lastTiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#lastTiles .tile:last-child { grid-column: auto; }
+
+/* --- The film library --------------------------------------------------- */
+
+/* The card the idle page ends on: every film the box has, as posters.
+
+   It folds away under its own heading like every other card here, and wears
+   that heading's own furniture -- the accent stripe, the grey of a panel
+   name, the chevron -- because a card that is the only one on the page
+   lettered differently reads as something other than a card.
+
+   How many films there are goes up beside the name rather than into the body:
+   folded away, that count is the whole of what the card still has to say. */
+.panel-toggle .filmscount {
+  /* All of the free space, with the number at the right-hand end of it: an
+     auto margin here would have shared that space with the chevron's own,
+     which leaves the count stranded in the middle of the heading. */
+  flex: 1;
+  text-align: right;
+  color: var(--dim);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: none;
+}
+
+/* The shelf itself: what to narrow it down with, and then the wall. */
+.filmsbody {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+
+.filmsearch {
+  appearance: none;
+  min-height: var(--tap);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+.filmsearch::placeholder { color: var(--muted); }
+.filmsearch:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* The cross a browser puts in a search field of its own accord: gone, because
+   the one drawn below it is on every browser rather than on some, sits where
+   the theme puts it, and does not come and go with the focus. */
+.filmsearch::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+
+/* The field and the cross inside it.  The cross sits over the field rather
+   than beside it -- a button in the row would have taken width off a box that
+   is already the width of a phone -- and the field is given room on its right
+   so a long title does not run under it. */
+.searchbox { position: relative; display: grid; }
+.searchbox .filmsearch { padding-right: 40px; }
+
+/* Drawn rather than lettered: a multiplication sign is a different shape and
+   weight in every font a box might have, and this one has to read as a cross
+   at fourteen pixels on all of them.
+
+   Shown only while there is something to clear.  A cross over an empty field
+   is a control that does nothing, and a phone has no room for one. */
+.searchclear {
+  appearance: none;
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.searchclear::before,
+.searchclear::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 13px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+}
+.searchclear::before { transform: translate(-50%, -50%) rotate(45deg); }
+.searchclear::after  { transform: translate(-50%, -50%) rotate(-45deg); }
+@media (hover: hover) {
+  .searchclear:hover { color: var(--text); }
+}
+.searchclear:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.filmgrid {
+  display: grid;
+  /* As many posters to a row as fit, and never fewer than two: a phone that
+     shows one film at a time is a list with pictures in it, and the point of
+     a poster wall is that a glance covers a shelf.  The min() lets a column
+     narrower than the floor still hold a tile, the way the mode keys and the
+     group cards above do. */
+  grid-template-columns: repeat(auto-fill, minmax(min(124px, 44%), 1fr));
+  gap: 12px;
+}
+
+.film {
+  appearance: none;
+  /* A tile the browser can see is out of view is skipped entirely -- not laid
+     out, not painted -- and stands in for itself at the size below until it
+     scrolls up.  Without this, a shelf of six hundred films is six hundred
+     tiles laid out again every time anything anywhere on the page moves, and
+     something moves five times a second because that is how often the box
+     builds a snapshot.  That is what a phone feels as a stutter while it is
+     being scrolled.
+
+     ``auto`` in front of the height means the guess is only a guess: once a
+     tile has been drawn, its own height is what the browser remembers it by,
+     so the page is as long as it really is and the scrollbar does not shift
+     under the finger. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 232px;
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+.film[hidden] { display: none; }
+
+/* The poster, or the space one would have taken.  A fixed ratio rather than
+   whatever the picture turns out to be: a wall of posters that each set their
+   own height is a wall with steps in it, and most of a library scrapes its
+   art from the same places at the same shape. */
+.filmposter {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--panel-2);
+  overflow: hidden;
+  transition: border-color .15s, transform .08s;
+}
+.filmposter img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@media (hover: hover) {
+  .film:hover .filmposter { border-color: var(--accent); }
+}
+.film:active .filmposter { transform: scale(.985); }
+.film:focus-visible { outline: none; }
+.film:focus-visible .filmposter {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* How far the box got last time, along the bottom edge of the poster: a film
+   half watched is the one most likely to be pressed next, and the bar says so
+   without costing the tile a line of type. */
+.filmresume {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: color-mix(in srgb, var(--text) 22%, transparent);
+}
+.filmresume span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+/* The two things a poster says in a corner: what the houses made of it, and
+   how many episodes of it are still waiting.
+
+   One pill, worn in either corner, because they are the same kind of remark
+   about the same picture -- a shelf where one of them was a coloured disc and
+   the other a dark tablet read as two unrelated marks that happened to land on
+   the same posters.  What tells them apart is the star, which is the one of
+   the two that is a rating.
+
+   Dark with white on it rather than themed: what they sit on is a photograph,
+   not the page, so they have to read on a poster that is black at that corner
+   and on one that is white there.  That is the same argument the tick's shadow
+   makes, and these wear one too. */
+.filmrating,
+.seriesnew {
+  position: absolute;
+  top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .72);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .5);
+}
+
+/* The rating goes left, because the other corner is taken by whichever of the
+   tick and the count the picture is wearing. */
+.filmrating { left: 6px; }
+.seriesnew  { right: 6px; }
+
+/* The star, which is what says the number beside it is a rating and not a
+   count.  Amber rather than white: it is the colour a rating star is
+   everywhere somebody has ever seen one, and it carries that meaning before
+   the number has been read. */
+.filmrating::before {
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 12px;
+  background: #f4c04f;
+  -webkit-mask: url('/icons/star.svg') no-repeat center / contain;
+  mask: url('/icons/star.svg') no-repeat center / contain;
+}
+
+/* A film already seen wears a mark in the corner of its poster.
+
+   A mark rather than a dimmed poster, which is what this was: dimming says
+   "not this one" about whatever it touches, and on a shelf where most of the
+   films have been watched that is most of the wall greyed out -- which reads
+   as artwork that failed to load rather than as an answer.  The mark costs
+   one corner of one poster and says the same thing about the smaller group.
+
+   Two layers, because one cannot be both: the disc is the element's own
+   background and the tick is a mask over the colour on top of it.  A single
+   circle-with-a-tick file used as a mask would knock the tick out of the disc
+   and show the poster through it. */
+.filmseen {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  /* Posters are photographs, and a light disc on a light one has nothing to
+     stand on; the shadow is what gives it an edge on every picture. */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .55);
+}
+.filmseen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  -webkit-mask: url('/icons/check.svg') no-repeat center / 62%;
+  mask: url('/icons/check.svg') no-repeat center / 62%;
+}
+
+.filmtitle {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  /* Two lines and then the ellipsis, so a long title does not push the tile
+     beside it out of line with the rest of the row. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.filmyear { color: var(--muted); font-size: 11.5px; }
+
+/* The film a press is waiting on, until the snapshot says it is playing. */
+.film.busy .filmposter {
+  border-color: var(--accent);
+  opacity: .6;
+}
+.film:disabled { cursor: progress; }
+
+.filmsempty {
+  margin: 0;
+  padding: 6px 0 10px;
+  color: var(--muted);
+  font-size: 13.5px;
+  text-align: center;
+}
+
+/* --- Continue watching -------------------------------------------------- */
+
+/* The films and episodes left half-watched, as one row that scrolls sideways
+   rather than a wall: it is a handful of titles, newest first, and the one
+   somebody is after is nearly always the first.  The tiles are the film
+   wall's own, at the width a wall column settles on. */
+.continuerow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 124px;
+  gap: 12px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  /* Room for the focus ring and the pressed tile's border, which the scroll
+     box would otherwise clip. */
+  padding: 3px 3px 6px;
+  margin: -3px -3px -6px;
+}
+.continuerow .film {
+  scroll-snap-align: start;
+  /* A row of a few dozen tiles gains nothing from being skipped, and a tile
+     skipped in a sideways scroller is one whose width the row has to guess. */
+  content-visibility: visible;
+  /* Every tile as tall as the tallest on the row, with the spare height under
+     the type rather than shared out between the lines of it. */
+  align-content: start;
+}
+/* Which episode, and its name, on the one line: a tile a line taller than its
+   neighbours is a row with a step in it. */
+.continuerow .filmyear {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- The series library ------------------------------------------------- */
+
+/* The shelf under the films, and then the one show somebody opened.
+
+   The wall itself is the film wall: the same grid, the same tiles, the same
+   posters at the same ratio, because a shelf of series lettered differently
+   from the shelf above it reads as a different page rather than a second
+   shelf.  What is new here is everything the second floor needs -- the way
+   back out, the name of the show that is open, and its episodes. */
+
+/* How many episodes are still waiting wears the rating's own pill, in the
+   corner a watched film wears its tick in -- see .filmrating above, where both
+   are drawn. */
+
+/* The way back to the wall.  Quiet, because it is furniture rather than an
+   offer: what the card is for is the list under it. */
+.seriesback {
+  appearance: none;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap);
+  padding: 0 12px 0 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .seriesback:hover { color: var(--text); border-color: var(--accent); }
+}
+.seriesback:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* The name of the show that is open.  It is already in the heading of the
+   card as a count and nowhere as a name, and a list of episodes with no title
+   over it is a list of episodes of nothing. */
+.seriesopen {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* The episodes themselves: rows rather than a wall.  An episode is chosen by
+   its number and its name -- the still is a reminder of which one it was, not
+   what it is recognised by -- and a row is where a number and a name fit. */
+.episodes {
+  display: grid;
+  gap: 8px;
+}
+
+.episode {
+  appearance: none;
+  /* The same bargain as a poster tile: a season of forty rows is forty stills
+     nobody is looking at (see .film). */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 78px;
+  display: grid;
+  /* The still, and then everything else.  A fixed column rather than a share
+     of the width, so every still down the list is the same size and the names
+     beside them start on one line. */
+  grid-template-columns: 116px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .episode:hover { background: var(--panel-2); border-color: var(--line-soft); }
+}
+.episode:active { transform: scale(.995); }
+.episode:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* A frame at the shape a television picture is, held even for an episode with
+   no still at all: a list whose rows are each as tall as whatever art turned
+   up is a list that cannot be scanned. */
+.episodestill {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--panel-2);
+  overflow: hidden;
+}
+.episodestill img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* The tick on a still is the tick on a poster, and a still is a third of the
+   size; at 22px it would be the picture. */
+.episodestill .filmseen {
+  top: 4px;
+  right: 4px;
+  width: 17px;
+  height: 17px;
+}
+
+.episodemeta {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.episodenumber {
+  color: var(--dim);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+.episodetitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  /* Two lines and then the ellipsis: an episode with a sentence for a name
+     should not make its row twice the height of the ones above it. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Each season folds away under its own heading, and arrives folded.
+
+   A show that has run for nine years is several hundred rows, and the list
+   that opens on all of them opens in the middle of season one.  Folded, a
+   whole show is a dozen lines: which season, and how many episodes are in it.
+
+   The heading wears the card headings' own furniture -- the same grey, the
+   same chevron on the right -- at the size of a line inside a card rather than
+   of a card's own name.  A rule above rather than a band behind: the list is a
+   column of pictures, and a filled heading between them would be a third thing
+   competing for the eye. */
+.seasonfold { border-top: 1px solid var(--line-soft); }
+.seasonfold:first-child { border-top: 0; }
+
+.season {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  color: var(--dim);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  transition: color .15s;
+}
+.season::-webkit-details-marker { display: none; }
+/* How many episodes are in it, which folded away is the whole of what the
+   season still has to say.  All of the free space with the number at the
+   right-hand end of it, so it lands beside the chevron rather than beside the
+   name -- the same bargain the film count strikes in its card heading. */
+.seasoncount {
+  flex: 1;
+  text-align: right;
+  color: var(--dim);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: none;
+}
+.season::after {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform .15s ease;
+}
+.seasonfold[open] > .season::after {
+  transform: rotate(225deg) translate(-2px, -2px);
+}
+@media (hover: hover) {
+  .season:hover, .season:hover .seasoncount { color: var(--text); }
+}
+.season:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* The rows of one season, under its heading. */
+.seasonepisodes {
+  display: grid;
+  gap: 8px;
+  padding-bottom: 10px;
+}
+/* A shut fold is its heading and nothing else.  Saying so outright, the same
+   way a folded card has to say it (see details.card in css/base.css): the
+   browser hides a shut fold's contents with a display of its own, and the grid
+   above takes that back -- an author's rule outranks the one the browser
+   brought, so without this every season stands open however shut it says it
+   is. */
+.seasonfold:not([open]) > .seasonepisodes { display: none; }
+
+/* The episode a press is waiting on, until the snapshot says it is playing. */
+.episode.busy .episodestill {
+  border-color: var(--accent);
+  opacity: .6;
+}
+.episode:disabled { cursor: progress; }
+
+/* --- What a press asks ------------------------------------------------------ */
+
+/* The three answers a press on a title is given, one above the other at the
+   dialog's full width: they are the whole of what it asks, and three side by
+   side would cut every name short on a phone.  Playing it comes first and in
+   the accent, being what a press on a poster has always been for. */
+.markoptions { display: grid; gap: 8px; }
+.markoptions button[hidden] { display: none; }
+.markoptions button {
+  appearance: none;
+  min-height: var(--tap);
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.markoptions button[value="play"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #05131c;
+}
+@media (hover: hover) {
+  .markoptions button:hover { border-color: var(--accent); }
+}
+.markoptions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+#markTitle {
+  overflow-wrap: anywhere;
+}
