@@ -1,0 +1,154 @@
+name: Follow TinyPPI
+
+# addons/script.tinyppi is a git subtree of dangerouslaser/script.tinyppi
+# (branch libreelec), which itself follows CE-Repo upstream every morning (see
+# follow-upstream.yml there). When the fork moves, this pulls it into a
+# tinyppi-update branch, builds and checks the feed, runs the tests, and opens a
+# pull request against main (or, when Actions may not open pull requests, a
+# tinyppi-update issue linking the branch). A release still needs the usual version bump and
+# v* tag. Anything that fails opens (or updates) a tinyppi-sync issue assigned to
+# the owner; a later clean run closes it.
+
+on:
+  schedule:
+    - cron: "53 5 * * *"
+  workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: Fail on purpose, to check that an issue is opened
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: follow-tinyppi
+  cancel-in-progress: false
+
+env:
+  FORK: https://github.com/dangerouslaser/script.tinyppi.git
+  PREFIX: addons/script.tinyppi
+  BRANCH: tinyppi-update
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Pull the fork
+        id: pull
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          fork=$(git ls-remote "$FORK" refs/heads/libreelec | cut -f1)
+          current=$(git log -1 --grep="^git-subtree-dir: $PREFIX\$" --format=%B | sed -n 's/^git-subtree-split: //p')
+          echo "fork=$fork current=$current"
+          if [ "$fork" = "$current" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git checkout -B "$BRANCH"
+          if ! git subtree pull --prefix="$PREFIX" "$FORK" libreelec --squash -m "Update TinyPPI (LibreELEC fork)" > /tmp/pull.log 2>&1; then
+            { echo "### git subtree pull failed"; echo '```'; tail -n 40 /tmp/pull.log; echo '```'; } > /tmp/problem.md
+            exit 1
+          fi
+          version=$(python3 -c "import xml.etree.ElementTree as E; print(E.parse('$PREFIX/addon.xml').getroot().get('version'))")
+          git commit --amend -m "Update TinyPPI to $version (LibreELEC fork)"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "fork=$fork" >> "$GITHUB_OUTPUT"
+
+      - name: Simulated failure
+        if: inputs.simulate_failure
+        run: |
+          echo "Simulated failure requested by workflow_dispatch; nothing is wrong." > /tmp/problem.md
+          exit 1
+
+      - name: Test
+        if: steps.pull.outputs.changed == 'true'
+        run: |
+          set -o pipefail
+          pip install --quiet pillow
+          {
+            python3 packaging/repository.bald/build_repository.py --output "$RUNNER_TEMP/site/kodi" --revision HEAD
+            python3 packaging/repository.bald/test_repository.py "$RUNNER_TEMP/site/kodi"
+            (cd "$PREFIX" && python3 -m unittest discover -s tests)
+            python3 -m unittest discover -s tests
+          } 2>&1 | tee /tmp/test.log
+
+      - name: Open or update the pull request
+        if: steps.pull.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.pull.outputs.version }}
+          FORK_SHA: ${{ steps.pull.outputs.fork }}
+        run: |
+          set -euo pipefail
+          git push --force origin "HEAD:$BRANCH"
+          body="Pulls dangerouslaser/script.tinyppi \`libreelec\` at ${FORK_SHA:0:7} (TinyPPI $VERSION) into \`$PREFIX\`.
+
+          The feed builds and validates, and the skin and TinyPPI tests pass. After merging, bump \`addon.xml\` and push a \`v*\` tag to publish."
+          existing=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh pr edit "$existing" --title "Update TinyPPI to $VERSION" --body "$body"
+          elif ! gh pr create --base main --head "$BRANCH" --title "Update TinyPPI to $VERSION" --body "$body" \
+              --assignee "$GITHUB_REPOSITORY_OWNER"; then
+            # Actions may not open pull requests here (Settings > Actions > General >
+            # "Allow GitHub Actions to create and approve pull requests" is off):
+            # hand over the pushed branch in an issue instead.
+            compare="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/compare/main...$BRANCH?expand=1"
+            api="repos/$GITHUB_REPOSITORY/issues"
+            note="TinyPPI $VERSION is ready on branch \`$BRANCH\`: open the pull request at $compare
+
+          $body"
+            existing=$(gh api "$api?labels=tinyppi-update&state=open" --jq '.[0].number // empty')
+            if [ -n "$existing" ]; then
+              gh api -X PATCH "$api/$existing" -f title="TinyPPI $VERSION ready to merge" -f body="$note" --jq .html_url
+            else
+              gh api "$api" -f title="TinyPPI $VERSION ready to merge" -f body="$note" \
+                -f "labels[]=tinyppi-update" -f "assignees[]=$GITHUB_REPOSITORY_OWNER" --jq .html_url
+            fi
+          fi
+
+      - name: Close resolved sync issues
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          api="repos/$GITHUB_REPOSITORY/issues"
+          for n in $(gh api "$api?labels=tinyppi-sync&state=open" --jq '.[].number'); do
+            gh api "$api/$n/comments" -f body="Resolved: run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID is green." >/dev/null
+            gh api -X PATCH "$api/$n" -f state=closed >/dev/null
+          done
+
+      - name: Flag the problem
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "Bringing the TinyPPI fork (dangerouslaser/script.tinyppi, libreelec) into the Bald repository failed."
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            if [ -f /tmp/problem.md ]; then cat /tmp/problem.md; fi
+            if [ -f /tmp/test.log ]; then
+              echo "### Test output (tail)"; echo '```'; tail -n 60 /tmp/test.log; echo '```'
+            fi
+          } > /tmp/issue.md
+          api="repos/$GITHUB_REPOSITORY/issues"
+          existing=$(gh api "$api?labels=tinyppi-sync&state=open" --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh api "$api/$existing/comments" -F body=@/tmp/issue.md --jq .html_url
+          else
+            gh api "$api" -f title="TinyPPI update failed" -F body=@/tmp/issue.md \
+              -f "labels[]=tinyppi-sync" -f "assignees[]=$GITHUB_REPOSITORY_OWNER" --jq .html_url
+          fi

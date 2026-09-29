@@ -11,6 +11,10 @@ and **TinyPPI**, the player process info overlay, from the LibreELEC fork
 (dangerouslaser/script.tinyppi, branch `libreelec`). It lives in
 `addons/script.tinyppi` as a git subtree; update it with
 `git subtree pull --prefix=addons/script.tinyppi https://github.com/dangerouslaser/script.tinyppi.git libreelec --squash`.
+`.github/workflows/follow-tinyppi.yml` does that pull every morning, after the
+fork has followed its upstream. When the fork has moved, it opens a
+`tinyppi-update` pull request once the feed and tests pass. If anything fails, it
+opens a `tinyppi-sync` issue instead.
 
 Only tagged, committed revisions are published. The release workflow rejects a
 tag whose version does not match `skin.bald/addon.xml`.
