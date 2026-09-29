@@ -27,15 +27,23 @@
 			<ondown>9090</ondown>
 			<content>
 				<item id="1"><label>$LOCALIZE[10000]</label><property name="kind">home</property><property name="note">$LOCALIZE[31741]</property></item>
+				<include content="Bald_LiveTVCategory"><param name="after">0</param></include>
 				<include content="Bald_HubCategory"><param name="n">0</param></include>
+				<include content="Bald_LiveTVCategory"><param name="after">1</param></include>
 				<include content="Bald_HubCategory"><param name="n">1</param></include>
+				<include content="Bald_LiveTVCategory"><param name="after">2</param></include>
 				<include content="Bald_HubCategory"><param name="n">2</param></include>
+				<include content="Bald_LiveTVCategory"><param name="after">3</param></include>
 				<include content="Bald_HubCategory"><param name="n">3</param></include>
+				<include content="Bald_LiveTVCategory"><param name="after">4</param></include>
 				<include content="Bald_HubCategory"><param name="n">4</param></include>
+				<include content="Bald_LiveTVCategory"><param name="after">5</param></include>
 				<include content="Bald_HubCategory"><param name="n">5</param></include>
+				<include content="Bald_LiveTVCategory"><param name="after">6</param></include>
 				<include content="Bald_HubCategory"><param name="n">6</param></include>
+				<include content="Bald_LiveTVCategory"><param name="after">7</param></include>
 				<include content="Bald_HubCategory"><param name="n">7</param></include>
-				<item id="2"><label>$LOCALIZE[31700]</label><property name="kind">livetv</property><property name="note">$LOCALIZE[31205]</property></item>
+				<item id="2"><label>$LOCALIZE[31700]</label><property name="kind">livetv</property><property name="note">$LOCALIZE[31205]</property><visible>$EXP[Bald_LiveTVAtEnd]</visible></item>
 				<item id="3">
 					<label>$LOCALIZE[31207]</label>
 					<property name="kind">add</property>
@@ -104,6 +112,49 @@
 				<control type="button" id="9408"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31208]</label>
 					<visible>$EXP[Bald_HubCategorySelected]</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_delete)</onclick>
+				</control>
+				<!-- Move Live TV among the hubs (Bald.LiveTVAfter: after how many hub slots; unset, after all of them). Marks
+				     the rows changed, so Home rebuilds and reloads the skin, which places its menu entry (Bald_HomeMenuLiveTVAt).
+				     Conditions are evaluated before any action runs, so each Select moves one step. -->
+				<control type="button" id="9410"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[13332]</label>
+					<visible>String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !String.IsEqual(Skin.String(Bald.LiveTVAfter),0) + $EXP[Bald_HasHubs]</visible>
+					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),1)">Skin.SetString(Bald.LiveTVAfter,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),2)">Skin.SetString(Bald.LiveTVAfter,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),3)">Skin.SetString(Bald.LiveTVAfter,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),4)">Skin.SetString(Bald.LiveTVAfter,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),5)">Skin.SetString(Bald.LiveTVAfter,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),6)">Skin.SetString(Bald.LiveTVAfter,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),7)">Skin.SetString(Bald.LiveTVAfter,6)</onclick>
+					<onclick condition="$EXP[Bald_LiveTVAtEnd] + Integer.IsEqual(Container(9390).NumItems,1)">Skin.SetString(Bald.LiveTVAfter,0)</onclick>
+					<onclick condition="$EXP[Bald_LiveTVAtEnd] + Integer.IsEqual(Container(9390).NumItems,2)">Skin.SetString(Bald.LiveTVAfter,1)</onclick>
+					<onclick condition="$EXP[Bald_LiveTVAtEnd] + Integer.IsEqual(Container(9390).NumItems,3)">Skin.SetString(Bald.LiveTVAfter,2)</onclick>
+					<onclick condition="$EXP[Bald_LiveTVAtEnd] + Integer.IsEqual(Container(9390).NumItems,4)">Skin.SetString(Bald.LiveTVAfter,3)</onclick>
+					<onclick condition="$EXP[Bald_LiveTVAtEnd] + Integer.IsEqual(Container(9390).NumItems,5)">Skin.SetString(Bald.LiveTVAfter,4)</onclick>
+					<onclick condition="$EXP[Bald_LiveTVAtEnd] + Integer.IsEqual(Container(9390).NumItems,6)">Skin.SetString(Bald.LiveTVAfter,5)</onclick>
+					<onclick condition="$EXP[Bald_LiveTVAtEnd] + Integer.IsEqual(Container(9390).NumItems,7)">Skin.SetString(Bald.LiveTVAfter,6)</onclick>
+					<onclick condition="$EXP[Bald_LiveTVAtEnd] + Integer.IsEqual(Container(9390).NumItems,8)">Skin.SetString(Bald.LiveTVAfter,7)</onclick>
+					<onclick>Control.Move(9300,-1)</onclick>
+				</control>
+				<control type="button" id="9411"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[13333]</label>
+					<visible>String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !$EXP[Bald_LiveTVAtEnd]</visible>
+					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),0) + Integer.IsGreater(Container(9390).NumItems,1)">Skin.SetString(Bald.LiveTVAfter,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),0) + !Integer.IsGreater(Container(9390).NumItems,1)">Skin.Reset(Bald.LiveTVAfter)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),1) + Integer.IsGreater(Container(9390).NumItems,2)">Skin.SetString(Bald.LiveTVAfter,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),1) + !Integer.IsGreater(Container(9390).NumItems,2)">Skin.Reset(Bald.LiveTVAfter)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),2) + Integer.IsGreater(Container(9390).NumItems,3)">Skin.SetString(Bald.LiveTVAfter,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),2) + !Integer.IsGreater(Container(9390).NumItems,3)">Skin.Reset(Bald.LiveTVAfter)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),3) + Integer.IsGreater(Container(9390).NumItems,4)">Skin.SetString(Bald.LiveTVAfter,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),3) + !Integer.IsGreater(Container(9390).NumItems,4)">Skin.Reset(Bald.LiveTVAfter)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),4) + Integer.IsGreater(Container(9390).NumItems,5)">Skin.SetString(Bald.LiveTVAfter,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),4) + !Integer.IsGreater(Container(9390).NumItems,5)">Skin.Reset(Bald.LiveTVAfter)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),5) + Integer.IsGreater(Container(9390).NumItems,6)">Skin.SetString(Bald.LiveTVAfter,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),5) + !Integer.IsGreater(Container(9390).NumItems,6)">Skin.Reset(Bald.LiveTVAfter)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),6) + Integer.IsGreater(Container(9390).NumItems,7)">Skin.SetString(Bald.LiveTVAfter,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),6) + !Integer.IsGreater(Container(9390).NumItems,7)">Skin.Reset(Bald.LiveTVAfter)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),7)">Skin.Reset(Bald.LiveTVAfter)</onclick>
+					<onclick>Control.Move(9300,1)</onclick>
 				</control>
 				<control type="button" id="9409"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31207]</label>
 					<visible>String.IsEqual(Container(9300).ListItem.Property(kind),add)</visible>

@@ -202,6 +202,23 @@
 	<!-- One sidebar entry per hub slot: the hub at position n (0-7) of the live hubs list 9390, shown while it exists.
 	     Its properties carry what the detail rows act on: the Skin Variables url of that entry, its open target path
 	     and its "disabled" field. The ids 10-17 keep hub entries apart from Home (1), Live TV (2) and Add hub (3). -->
+	<!-- Home Screens' Live TV entry where Home's menu places it: before hub `after` (0-based) when Bald.LiveTVAfter is
+	     that many and the hub exists; else the item after the hubs (Custom_1117, Bald_LiveTVAtEnd). -->
+	<include name="Bald_LiveTVCategory">
+		<param name="after" />
+		<definition>
+			<item id="2$PARAM[after]">
+				<label>$LOCALIZE[31700]</label>
+				<property name="kind">livetv</property>
+				<property name="note">$LOCALIZE[31205]</property>
+				<visible>String.IsEqual(Skin.String(Bald.LiveTVAfter),$PARAM[after]) + Integer.IsGreater(Container(9390).NumItems,$PARAM[after]) + $EXP[Bald_HasHubs]</visible>
+			</item>
+		</definition>
+	</include>
+	<!-- Live TV comes after every hub: unset, or moved past the last hub there is. -->
+	<expression name="Bald_LiveTVAtEnd">[String.IsEmpty(Skin.String(Bald.LiveTVAfter)) | [String.IsEqual(Skin.String(Bald.LiveTVAfter),0) + !Integer.IsGreater(Container(9390).NumItems,0)] | [String.IsEqual(Skin.String(Bald.LiveTVAfter),1) + !Integer.IsGreater(Container(9390).NumItems,1)] | [String.IsEqual(Skin.String(Bald.LiveTVAfter),2) + !Integer.IsGreater(Container(9390).NumItems,2)] | [String.IsEqual(Skin.String(Bald.LiveTVAfter),3) + !Integer.IsGreater(Container(9390).NumItems,3)] | [String.IsEqual(Skin.String(Bald.LiveTVAfter),4) + !Integer.IsGreater(Container(9390).NumItems,4)] | [String.IsEqual(Skin.String(Bald.LiveTVAfter),5) + !Integer.IsGreater(Container(9390).NumItems,5)] | [String.IsEqual(Skin.String(Bald.LiveTVAfter),6) + !Integer.IsGreater(Container(9390).NumItems,6)] | [String.IsEqual(Skin.String(Bald.LiveTVAfter),7) + !Integer.IsGreater(Container(9390).NumItems,7)] | !$EXP[Bald_HasHubs]]</expression>
+	<!-- Home Screens lists at least one hub (not Skin Variables' empty-list placeholder). -->
+	<expression name="Bald_HasHubs">[Integer.IsGreater(Container(9390).NumItems,0) + String.IsEmpty(Container(9390).ListItemAbsolute(0).Property(blank))]</expression>
 	<include name="Bald_HubCategory">
 		<param name="n" />
 		<definition>

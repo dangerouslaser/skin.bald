@@ -56,7 +56,12 @@ class BaldSettingsTests(unittest.TestCase):
 
     def test_screen_editor_lists_home_the_hubs_live_tv_and_add_hub(self):
         root = resolve_window("Custom_1117_BaldHomeScreens.xml")
-        items = root.findall(".//control[@id='9300']/content/item")
+        every = root.findall(".//control[@id='9300']/content/item")
+        # Live TV is listed where Home's menu places it (Bald.LiveTVAfter): a copy before each hub, and one after them,
+        # each shown only at its place (tests/test_live_tv_position.py). Here: every item but the copies before hubs.
+        before = [item for item in every if item.get("id", "").startswith("2") and item.get("id") != "2"]
+        self.assertEqual([item.get("id") for item in before], [f"2{n}" for n in range(8)])
+        items = [item for item in every if item not in before]
         self.assertEqual([item.findtext("property[@name='kind']") for item in items],
                          ["home"] + ["hub"] * 8 + ["livetv", "add"])
         self.assertEqual([item.get("id") for item in items], ["1"] + [str(10 + n) for n in range(8)] + ["2", "3"])

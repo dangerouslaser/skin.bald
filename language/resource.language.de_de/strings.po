@@ -439,6 +439,7 @@ msgid "One of your hubs. Select in the main menu enters its rows and Right opens
 msgstr "Ein eigener Hub. OK im Hauptmenü öffnet seine Zeilen und Rechts sein Ziel (unter Erscheinungsbild > Verhalten lässt sich das tauschen); ohne Zeilen öffnet OK das Ziel."
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Includes_Bald_Configure.xml
 msgctxt "#31205"
 msgid "Show Live TV in the main menu. Select enters its rows and Right opens the guide (Appearance > Behavior can swap the two); without rows, Select opens the guide."
 msgstr "Live-TV im Hauptmenü anzeigen. OK öffnet seine Zeilen und Rechts den TV-Guide (unter Erscheinungsbild > Verhalten lässt sich das tauschen); ohne Zeilen öffnet OK den TV-Guide."
@@ -1461,6 +1462,7 @@ msgid "Right for options"
 msgstr "Rechts für Optionen"
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Includes_Bald_Home.xml
 #: /1080i/MyPVRGuide.xml
 msgctxt "#31700"

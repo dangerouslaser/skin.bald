@@ -10,6 +10,7 @@ from pathlib import Path
 
 import home_menu
 from conditions import implies
+from kodi_includes import resolve_window
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +22,7 @@ RETURNING = "$EXP[Bald_ReturningToRow]"
 class HomeReturnTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.home = ET.parse(XML / "Home.xml").getroot()
+        cls.home = resolve_window("Home.xml")
         cls.includes = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
         cls.onload = [(node.get("condition") or "true", node.text) for node in cls.home.findall("onload")]
 
@@ -29,7 +30,8 @@ class HomeReturnTests(unittest.TestCase):
         return self.includes.findtext(f"expression[@name='{name}']")
 
     def test_leaving_home_marks_the_next_load_as_a_return(self):
-        self.assertEqual([node.text for node in self.home.findall("onunload")], ["SetProperty(Bald.Left,1,home)"])
+        unload = [(node.get("condition"), node.text) for node in self.home.findall("onunload")]
+        self.assertIn((None, "SetProperty(Bald.Left,1,home)"), unload)
         clear = self.onload.index(("true", "ClearProperty(Bald.Left,home)"))
         # Cleared last, after the onloads that read it.
         for index, (condition, _) in enumerate(self.onload):

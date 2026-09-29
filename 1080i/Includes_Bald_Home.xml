@@ -2108,6 +2108,26 @@
 		<value condition="$EXP[Bald_MenuPreview_home]">9001</value>
 		<value>$VAR[Bald_StartMenuEntry]</value>
 	</variable>
+	<!-- Open the menu on the start screen's entry, previewing that screen (the art frame takes its remembered row's
+	     style), under `condition`: as Home's onload, and as the splash's 9195 onfocus. -->
+	<include name="Bald_OpenStartMenuOnLoad">
+		<param name="condition" />
+		<definition>
+			<onload condition="$PARAM[condition]">SetProperty(Bald.Menu,1,home)</onload>
+			<onload condition="$PARAM[condition]">SetProperty(Bald.MenuPreview,$VAR[Bald_StartScreen],home)</onload>
+			<onload condition="$PARAM[condition]">SetProperty(Bald.RowStyle,$VAR[Bald_PreviewRowStyle],home)</onload>
+			<onload condition="$PARAM[condition]">SetFocus($VAR[Bald_StartMenuEntry])</onload>
+		</definition>
+	</include>
+	<include name="Bald_OpenStartMenuOnFocus">
+		<param name="condition" />
+		<definition>
+			<onfocus condition="$PARAM[condition]">SetProperty(Bald.Menu,1,home)</onfocus>
+			<onfocus condition="$PARAM[condition]">SetProperty(Bald.MenuPreview,$VAR[Bald_StartScreen],home)</onfocus>
+			<onfocus condition="$PARAM[condition]">SetProperty(Bald.RowStyle,$VAR[Bald_PreviewRowStyle],home)</onfocus>
+			<onfocus condition="$PARAM[condition]">SetFocus($VAR[Bald_StartMenuEntry])</onfocus>
+		</definition>
+	</include>
 	<!-- A fresh start opens the menu on the start screen's entry; Appearance > Behavior can start on the rows instead. -->
 	<expression name="Bald_StartOnMenu">[!Skin.HasSetting(Bald.HomeStartsOnRows)]</expression>
 	<!-- A library page's heading (the movie and series views): the hub's name while the library shows the folder that
@@ -2263,6 +2283,15 @@
 	<!-- Live TV's entry, with its own rows (Home Screens, Live TV), like a hub: Select (and Left) enters the rows while
 	     there are rows and a PVR add-on, else opens the guide; Right opens the guide (bridge 9029). With
 	     Bald_SelectOpens and rows (Bald_LiveTVSwap), Select opens the guide and Right and Left enter the rows. -->
+	<!-- Live TV's menu entry when Home Screens placed it after `after` hub slots (Bald.LiveTVAfter, "0" to "7"; unset is
+	     after all eight, Home.xml). Kodi evaluates an include's condition as the skin loads, so the entry keeps its one
+	     id (9004); a move marks the rows changed, and Home's rebuild reloads the skin. -->
+	<include name="Bald_HomeMenuLiveTVAt">
+		<param name="after" />
+		<definition>
+			<include condition="String.IsEqual(Skin.String(Bald.LiveTVAfter),$PARAM[after])">Bald_HomeMenuLiveTV</include>
+		</definition>
+	</include>
 	<include name="Bald_HomeMenuLiveTV">
 		<definition>
 			<include content="Bald_HomeMenuButton">

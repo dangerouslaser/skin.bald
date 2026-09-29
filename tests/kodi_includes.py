@@ -23,6 +23,41 @@ SKIN = Path(__file__).resolve().parents[1] / "1080i"
 XML = SKIN
 GENERATED = "script-skinvariables-generator-includes.xml"
 PARAM = re.compile(r"\$PARAM\[([^\]]+)\]")
+# Skin strings as the skin loads, for <include condition> (Kodi evaluates those once, at load). Unset, as on a fresh
+# install; a test sets a value and clears it again to see another load.
+SKIN_STRINGS = {}
+_SKIN_STRING = re.compile(r"^(?:String\.IsEqual\(Skin\.String\(([^)]+)\),([^)]*)\)|String\.IsEmpty\(Skin\.String\(([^)]+)\)\))$")
+
+
+def include_applies(call):
+    """Whether a conditional include is taken. Only conditions made of Skin.String tests are evaluated (against
+    SKIN_STRINGS); any other condition is taken, as before."""
+    from conditions import parse
+    condition = call.get("condition")
+    if not condition:
+        return True
+    tree = parse(condition)
+
+    def value(node):
+        if isinstance(node, bool):
+            return node
+        kind, body = node
+        if kind == "atom":
+            match = _SKIN_STRING.match(body)
+            if not match:
+                raise LookupError(body)
+            if match.group(1):
+                return SKIN_STRINGS.get(match.group(1), "") == match.group(2)
+            return not SKIN_STRINGS.get(match.group(3), "")
+        if kind == "not":
+            return not value(body)
+        results = [value(term) for term in body]
+        return all(results) if kind == "and" else any(results)
+
+    try:
+        return value(tree)
+    except LookupError:
+        return True
 
 # Bald-native files (CLAUDE.md); the rest of 1080i is Estuary and keeps Estuary's style.
 NATIVE = sorted(
@@ -158,7 +193,8 @@ def _expand_in_place(parent, definitions):
     children = []
     for child in list(parent):
         if child.tag == "include" and not child.get("file"):
-            children.extend(_expand_include(child, definitions))
+            if include_applies(child):
+                children.extend(_expand_include(child, definitions))
         else:
             _expand_in_place(child, definitions)
             children.append(child)
@@ -264,6 +300,8 @@ class Skin:
                 break
             index = list(node).index(call)
             node.remove(call)
+            if not include_applies(call):
+                continue
             name = call.get("content") or (call.text or "").strip()
             if name not in self.includes:
                 self.missing.append(name)

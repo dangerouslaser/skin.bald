@@ -173,9 +173,9 @@ class SplashTests(unittest.TestCase):
             (f"{hidden} + {start_rows}", "SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)"),
             (f"{hidden} + {start_rows}", "SetFocus($INFO[Window(home).Property(Bald.Row)])"),
             (f"!{start_rows}", "SetFocus($VAR[Bald_StartMenuEntry])"),
-            # A fresh start opens on the menu, after the row above is made current (Bald_StartOnMenu).
-            (f"{start_rows} + $EXP[Bald_StartOnMenu]", "SetFocus($VAR[Bald_StartMenuEntry])"),
         ]), actions)
+        # A fresh start then opens on the menu (Bald_StartOnMenu; tests/test_home_return.py).
+        self.assertIsNotNone(lift.find("include[@content='Bald_OpenStartMenuOnFocus']"))
         self.assertTrue(home_menu.same_under(f"!{start_rows}", "!$EXP[Bald_HasRows_home]", home_menu.HOME_SHOWN))
         self.assertEqual(home_menu.variable_value("Bald_StartMenuEntry", home_menu.HOME_SHOWN), "9001")
 

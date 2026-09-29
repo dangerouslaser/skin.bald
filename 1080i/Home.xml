@@ -69,9 +69,10 @@
 	     row cannot take focus yet, Timers.xml bald_home_start finishes the move (Bald_HomeRowStranded). Behind the
 	     startup splash 9195 does it as the splash lifts. -->
 	<onload condition="!$EXP[Bald_Restoring] + !$EXP[Bald_Preloading] + $EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onload>
-	<!-- A fresh start: the menu, on the start screen's entry (its onfocus opens the menu and previews that screen; Back
-	     goes to the start row). Behind the startup splash 9195 does it as the splash lifts. -->
-	<onload condition="!$EXP[Bald_Restoring] + !$EXP[Bald_Preloading] + $EXP[Bald_StartHasRows] + $EXP[Bald_StartOnMenu]">SetFocus($VAR[Bald_StartMenuEntry])</onload>
+	<!-- A fresh start: the menu, on the start screen's entry; Back goes to the start row. Behind the startup splash 9195
+	     does it as the splash lifts. The menu is opened here, not by the entry's onfocus: an entry focused while the
+	     menu is still hidden does not run it (as Timers.xml bald_focus_lost and Bald_ReturnToMenuEntry). -->
+	<include content="Bald_OpenStartMenuOnLoad"><param name="condition">!$EXP[Bald_Restoring] + !$EXP[Bald_Preloading] + $EXP[Bald_StartHasRows] + $EXP[Bald_StartOnMenu]</param></include>
 	<!-- Back from another window: where Home was left, the menu entry it was on or the row. -->
 	<onload condition="$EXP[Bald_ReturningToRow] + !$EXP[Bald_Preloading] + $EXP[Bald_MenuOpen]">SetFocus($VAR[Bald_MenuPreviewEntry])</onload>
 	<onload condition="$EXP[Bald_ReturningToRow] + !$EXP[Bald_Preloading] + !$EXP[Bald_MenuOpen]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onload>
@@ -329,16 +330,25 @@
 				<include content="Bald_HomeMenuButton"><param name="id">9001</param><param name="label">$LOCALIZE[10000]</param><param name="preview">home</param><param name="visible">!$EXP[Bald_HomeHidden]</param>
 					<include content="Bald_HomeMenuScreen"><param name="screen">home</param></include>
 				</include>
-				<!-- The user's hubs, in their Home Screens order (Movies and TV shows by default); empty slots are hidden. -->
+				<!-- The user's hubs, in their Home Screens order (Movies and TV shows by default); empty slots are hidden. Live TV
+				     sits after as many hub slots as Home Screens moved it to (Bald.LiveTVAfter; unset, after all of them). -->
+				<include content="Bald_HomeMenuLiveTVAt"><param name="after">0</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">1</param></include>
+				<include content="Bald_HomeMenuLiveTVAt"><param name="after">1</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">2</param></include>
+				<include content="Bald_HomeMenuLiveTVAt"><param name="after">2</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">3</param></include>
+				<include content="Bald_HomeMenuLiveTVAt"><param name="after">3</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">4</param></include>
+				<include content="Bald_HomeMenuLiveTVAt"><param name="after">4</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">5</param></include>
+				<include content="Bald_HomeMenuLiveTVAt"><param name="after">5</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">6</param></include>
+				<include content="Bald_HomeMenuLiveTVAt"><param name="after">6</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">7</param></include>
+				<include content="Bald_HomeMenuLiveTVAt"><param name="after">7</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">8</param></include>
-				<include>Bald_HomeMenuLiveTV</include>
+				<include condition="String.IsEmpty(Skin.String(Bald.LiveTVAfter))">Bald_HomeMenuLiveTV</include>
 				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="label">$LOCALIZE[137]</param><param name="preview">search</param>
 					<onclick>SetProperty(Bald.SearchOrigin,home,home)</onclick>
 					<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
@@ -487,7 +497,7 @@
 			<onfocus condition="!$EXP[Bald_StartHasRows]">SetFocus($VAR[Bald_StartMenuEntry])</onfocus>
 			<!-- A fresh start opens on the menu (Bald_StartOnMenu): the row above is made current first, so Back from the
 			     menu reaches it. -->
-			<onfocus condition="$EXP[Bald_StartHasRows] + $EXP[Bald_StartOnMenu]">SetFocus($VAR[Bald_StartMenuEntry])</onfocus>
+			<include content="Bald_OpenStartMenuOnFocus"><param name="condition">$EXP[Bald_StartHasRows] + $EXP[Bald_StartOnMenu]</param></include>
 			<!-- Should the row still refuse focus (Home hidden, its list not loaded yet), any key tries again. -->
 			<onup>SetFocus($VAR[Bald_RowFocus])</onup>
 			<ondown>SetFocus($VAR[Bald_RowFocus])</ondown>
