@@ -117,9 +117,23 @@ class PosterRowTests(unittest.TestCase):
         line = next(node for node in holder.iter("control") if node.get("type") == "grouplist")
         return line.findtext("top")
 
+    def test_the_cursor_never_leaves_the_visible_tiles(self):
+        # A fixedlist's cursor reaches min(focus slot + movement, items per page), Kodi counting
+        # (width - slot) / slot + 1 items per page (CGUIBaseContainer::CalculateLayout). That slot must be on screen:
+        # at 1248 a poster row reached slot 8, one past its eighth tile, and focused the last item off-screen.
+        from test_home_short_rows import STYLES, row_geometry
+        for style, slot in STYLES.items():
+            item, per_page, holder = row_geometry(style)
+            width = float(holder.findtext("width"))
+            # Tiles drawn whole, counting one a pixel short (the poster row's last) as whole.
+            whole = int((width + 1) // item)
+            with self.subTest(style=style):
+                self.assertLess(min(2 * slot, per_page), whole)
+
     def test_poster_rows_reuse_the_poster_low_rail(self):
         elements, row = self.row("poster", "5")
-        self.assertEqual(tuple(row.findtext(tag) for tag in ("left", "top", "width", "height")), ("96", "738", "1248", "234"))
+        # 1247, not 1248: see test_the_cursor_never_leaves_the_visible_tiles.
+        self.assertEqual(tuple(row.findtext(tag) for tag in ("left", "top", "width", "height")), ("96", "738", "1247", "234"))
         for layout in ("itemlayout", "focusedlayout"):
             node = row.find(layout)
             self.assertEqual((node.get("width"), node.get("height")), ("156", "234"), layout)

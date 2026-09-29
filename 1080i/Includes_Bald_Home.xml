@@ -1525,10 +1525,14 @@
 	     (Bald_PosterLowTile) in 156 px slots, eight across the 1248 px frame width, under an art frame that
 	     Bald_PosterRow shrinks to 1248 x 576. Episodes fall back to the season's, then the show's poster
 	     (Bald_LibraryPoster). -->
+	<!-- 1247 wide, not 1248: Kodi's fixedlist lets the cursor reach min(focus slot + movement, items per page), and it
+	     counts (width - slot) / slot + 1 items per page. At 1248 that is 8, so from slot 5 the cursor reached slot 8, one
+	     past the eighth tile, and the row's last item was focused off-screen. At 1247 it counts 7 and stops on the
+	     eighth tile; all eight still draw (Kodi draws what fits the width), the last one pixel short. -->
 	<include name="Bald_RowTiles_poster">
 		<left>Bald_SafeLeft</left>
 		<top>Bald_LowRailTop</top>
-		<width>1248</width>
+		<width>1247</width>
 		<height>234</height>
 		<itemlayout width="156" height="234">
 			<include content="Bald_PosterLowTile" />
