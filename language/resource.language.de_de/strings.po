@@ -493,6 +493,12 @@ msgctxt "#31744"
 msgid "Clear background image"
 msgstr "Hintergrundbild entfernen"
 
+#: /1080i/Includes_Bald_Configure.xml
+#. Home Screens: the Background image row's value once a picture is chosen
+msgctxt "#31786"
+msgid "Chosen"
+msgstr "Gewählt"
+
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 #. Home Screens: note for Search, Settings and Power, whose only option is their background image
 msgctxt "#31760"

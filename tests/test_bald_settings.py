@@ -122,8 +122,13 @@ class BaldSettingsTests(unittest.TestCase):
             self.assertTrue(implies(all_of([n.text for n in node.findall("visible")]), "$EXP[Bald_HubCategorySelected]")
                             or control_id == "9401", control_id)
         # Moving keeps the sidebar selection on the moved hub.
-        self.assertIn("Control.Move(9300,-1)", [n.text for n in root.find(".//control[@id='9406']").findall("onclick")])
-        self.assertIn("Control.Move(9300,1)", [n.text for n in root.find(".//control[@id='9407']").findall("onclick")])
+        # The moved hub is selected again and focus stays on a Move button (scripts/focus.py), by guid or by name.
+        for button, other in (("9406", "9407"), ("9407", "9406")):
+            clicks = [n.text for n in root.find(f".//control[@id='{button}']").findall("onclick")]
+            self.assertIn(f"RunScript(skin.bald,keepfocus,9300|{button}|{other}|guid|"
+                          "$INFO[Container(9300).ListItem.Property(guid)]|$INFO[Container(9300).CurrentItem])", clicks)
+            self.assertIn(f"RunScript(skin.bald,keepfocus,9300|{button}|{other}|Label|"
+                          "$INFO[Container(9300).ListItem.Label]|$INFO[Container(9300).CurrentItem])", clicks)
         # The widget editor opens on the hub's own rows.
         rows = [(n.get("condition"), n.text) for n in root.find(".//control[@id='9402']").findall("onclick")]
         self.assertTrue(has_action(rows, "$EXP[Bald_HubCategorySelected]", "SetProperty(Bald.ConfigureNode,hubs,home)"))

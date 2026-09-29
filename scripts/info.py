@@ -446,6 +446,11 @@ def run(action="", media_type="", dbid=""):
         # RunScript(skin.bald,textsize,<zoom>): 0, 4 or 8.
         set_text_size(xbmc, media_type)
         return
+    if action == "keepfocus":
+        # RunScript(skin.bald,keepfocus,<list>|<button>|<other>|<property>|<value>|<old>): see focus.py.
+        from focus import keep
+        keep(xbmc, media_type)
+        return
 
     handle(xbmc, xbmcgui, action, media_type, dbid)
 

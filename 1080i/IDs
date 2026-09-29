@@ -400,7 +400,8 @@ Custom_1117_BaldHomeScreens.xml (window 1117)
 9300	Sidebar list; static items 1 Home, 10-17 hub positions 0-7 (Bald_HubCategory), 2 Live TV, 3 Add hub
 9390	Hidden 1 x 1 list of the hubs menu (Skin Variables); the sidebar reads its items
 9400	Action grouplist: 9401 show in the main menu, 9402 configure widgets, 9403 rename, 9404 open
-		target, 9405 clear target, 9406 move up, 9407 move down, 9408 remove hub, 9409 add hub
+		target, 9405 clear target, 9406 move up, 9407 move down, 9408 remove hub, 9409 add hub, 9410 / 9411 move Live TV
+		up / down, 9412 background image, 9413 clear background image
 
 Custom_1118_BaldAppearance.xml (window 1118)
 9500	Category list; static items 1, 2, 6, 3, 7 and 5 (Artwork, Information, Ratings, Behavior, Date & time,

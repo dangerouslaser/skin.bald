@@ -220,13 +220,17 @@
 	<expression name="Bald_ScreenCategorySelected">[String.IsEqual(Container(9300).ListItem.Property(kind),home) | String.IsEqual(Container(9300).ListItem.Property(kind),livetv) | $EXP[Bald_HubCategorySelected]]</expression>
 	<expression name="Bald_ArtKindSelected">[String.IsEqual(Container(9300).ListItem.Property(kind),home) | String.IsEqual(Container(9300).ListItem.Property(kind),livetv) | String.IsEqual(Container(9300).ListItem.Property(kind),search) | String.IsEqual(Container(9300).ListItem.Property(kind),settings) | String.IsEqual(Container(9300).ListItem.Property(kind),power)]</expression>
 	<expression name="Bald_ScreenArtSet">[[$EXP[Bald_HubCategorySelected] + !String.IsEmpty(Container(9300).ListItem.Property(image))] | [String.IsEqual(Container(9300).ListItem.Property(kind),home) + !String.IsEmpty(Skin.String(Bald.Art.home))] | [String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !String.IsEmpty(Skin.String(Bald.Art.livetv))] | [String.IsEqual(Container(9300).ListItem.Property(kind),search) + !String.IsEmpty(Skin.String(Bald.Art.search))] | [String.IsEqual(Container(9300).ListItem.Property(kind),settings) + !String.IsEmpty(Skin.String(Bald.Art.settings))] | [String.IsEqual(Container(9300).ListItem.Property(kind),power) + !String.IsEmpty(Skin.String(Bald.Art.power))]]</expression>
-	<variable name="Bald_ScreenArtLabel">
+	<variable name="Bald_ScreenArtImage">
 		<value condition="$EXP[Bald_HubCategorySelected] + !String.IsEmpty(Container(9300).ListItem.Property(image))">$INFO[Container(9300).ListItem.Property(image)]</value>
 		<value condition="String.IsEqual(Container(9300).ListItem.Property(kind),home) + !String.IsEmpty(Skin.String(Bald.Art.home))">$INFO[Skin.String(Bald.Art.home)]</value>
 		<value condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !String.IsEmpty(Skin.String(Bald.Art.livetv))">$INFO[Skin.String(Bald.Art.livetv)]</value>
 		<value condition="String.IsEqual(Container(9300).ListItem.Property(kind),search) + !String.IsEmpty(Skin.String(Bald.Art.search))">$INFO[Skin.String(Bald.Art.search)]</value>
 		<value condition="String.IsEqual(Container(9300).ListItem.Property(kind),settings) + !String.IsEmpty(Skin.String(Bald.Art.settings))">$INFO[Skin.String(Bald.Art.settings)]</value>
 		<value condition="String.IsEqual(Container(9300).ListItem.Property(kind),power) + !String.IsEmpty(Skin.String(Bald.Art.power))">$INFO[Skin.String(Bald.Art.power)]</value>
+	</variable>
+	<!-- The row's value: whether an image is chosen (the picture itself shows beside the rows, Custom_1117). -->
+	<variable name="Bald_ScreenArtLabel">
+		<value condition="$EXP[Bald_ScreenArtSet]">$LOCALIZE[31786]</value>
 		<value>$LOCALIZE[231]</value>
 	</variable>
 	<!-- Live TV comes after every hub: unset, or moved past the last hub there is. -->
@@ -247,6 +251,7 @@
 				<property name="path">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(path)]</property>
 				<property name="disabled">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(disabled)]</property>
 				<property name="image">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(image)]</property>
+				<property name="guid">$INFO[Container(9390).ListItemAbsolute($PARAM[n]).Property(guid)]</property>
 				<property name="note">$LOCALIZE[31204]</property>
 				<visible>Integer.IsGreater(Container(9390).NumItems,$PARAM[n]) + String.IsEmpty(Container(9390).ListItemAbsolute($PARAM[n]).Property(blank))</visible>
 			</item>

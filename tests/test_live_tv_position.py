@@ -107,7 +107,9 @@ class LiveTVPositionTests(unittest.TestCase):
             button = self.screens().find(f".//control[@id='{button_id}']")
             actions = [node.text for node in button.findall("onclick")]
             self.assertEqual(actions[0], "SetProperty(Bald.WidgetsDirty,1,home)")
-            self.assertTrue(actions[-1].startswith("Control.Move(9300,"))
+            other = "9411" if button_id == "9410" else "9410"
+            self.assertEqual(actions[-1], f"RunScript(skin.bald,keepfocus,9300|{button_id}|{other}|kind|livetv|"
+                                          "$INFO[Container(9300).CurrentItem])")
 
 
 if __name__ == "__main__":
