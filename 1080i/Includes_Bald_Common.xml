@@ -244,6 +244,18 @@
 	<expression name="Bald_ShowClockDate">[!Skin.HasSetting(Bald.HideClockDate)]</expression>
 	<expression name="Bald_ShowHomeClock">[!Skin.HasSetting(Bald.HideHomeClock)]</expression>
 
+	<!-- ============ Weather in headers ============ -->
+	<!-- Appearance › Information, "Weather in headers and on Home" (Bald.HeaderWeather): the temperature and conditions
+	     end each page header's right-hand meta line (sort, clock) and sit under Home's date. -->
+	<expression name="Bald_HeaderWeatherOn">[Skin.HasSetting(Bald.HeaderWeather) + !String.IsEmpty(Weather.Plugin) + Weather.IsFetched]</expression>
+	<variable name="Bald_HeaderWeather">
+		<value condition="$EXP[Bald_HeaderWeatherOn]">$INFO[Weather.Temperature]$INFO[Weather.Conditions, · ,]</value>
+	</variable>
+	<!-- The same, appended to a meta line. -->
+	<variable name="Bald_HeaderWeatherSuffix">
+		<value condition="$EXP[Bald_HeaderWeatherOn]">$INFO[Weather.Temperature, · ,]$INFO[Weather.Conditions, · ,]</value>
+	</variable>
+
 	<!-- ============ Artwork fallbacks ============ -->
 	<!-- Named by what they pick, suffixed with the container id when they read Container(id).ListItem.* (Kodi variables
 	     take no params); the plain names read ListItem.*, so they follow the list layout or window that uses them. -->

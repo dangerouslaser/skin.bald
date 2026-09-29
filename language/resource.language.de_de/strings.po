@@ -2714,10 +2714,10 @@ msgid "Profile name in page headers"
 msgstr "Profilname in Seitenköpfen"
 
 #: /1080i/Custom_1118_BaldAppearance.xml
-#. Appearance > Information: current temperature on the library page header
+#. Appearance > Information: current temperature and conditions at the right of page headers and under Home's date
 msgctxt "#31992"
-msgid "Temperature in page headers"
-msgstr "Temperatur in Seitenköpfen"
+msgid "Weather in page headers and on Home"
+msgstr "Wetter in Seitenköpfen und auf der Startseite"
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance > Behavior: long plots scroll on their own

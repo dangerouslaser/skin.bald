@@ -169,7 +169,8 @@ class AppearanceOptionsTests(unittest.TestCase):
                     with self.subTest(file=path.name):
                         self.assertNotIn("System.Time", node.text or "")
         uses = {"Home.xml": "$VAR[Bald_Clock]", "Includes_Bald_Playback.xml": "$VAR[Bald_Clock]",
-                "Includes_Bald_PVR.xml": "$VAR[Bald_ClockDateTime]", "MyPVRGuide.xml": "$VAR[Bald_ClockDateTime]",
+                "Includes_Bald_PVR.xml": "$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]",
+                "MyPVRGuide.xml": "$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]",
                 "LoginScreen.xml": "$VAR[Bald_ClockTime]"}
         for name, label in uses.items():
             self.assertIn(f"<label>{label}</label>", (SKIN / name).read_text(), name)
@@ -192,6 +193,20 @@ class AppearanceOptionsTests(unittest.TestCase):
         self.assertEqual(self.pick("Bald_ClockDateTime", lambda a: a == "Skin.HasSetting(Bald.HideClockDate)"),
                          "$VAR[Bald_ClockTime]")
         self.assertEqual(self.pick("Bald_ClockDateTime", lambda a: False), "$INFO[System.Date] · $VAR[Bald_ClockTime]")
+
+    # ---- weather in headers and on Home ----
+
+    def test_header_weather_reaches_the_bald_headers_and_home(self):
+        # Bald's library views hide Estuary's TopBar, so the setting must reach Bald's own header meta lines.
+        for name in ("View_510_Bald_Posters.xml", "View_520_Bald_TV.xml", "Includes_Bald_PVR.xml", "MyPVRGuide.xml"):
+            self.assertIn("$VAR[Bald_HeaderWeatherSuffix]</label>", (SKIN / name).read_text(), name)
+        home = resolve_window("Home.xml")
+        weather = [node for node in home.iter("control") if node.findtext("label") == "$VAR[Bald_HeaderWeather]"]
+        self.assertEqual(len(weather), 2, "under the date, or in its place")
+        for node in weather:
+            self.assertIn("$EXP[Bald_HeaderWeatherOn]", node.findtext("visible"))
+        common = (SKIN / "Includes_Bald_Common.xml").read_text()
+        self.assertRegex(common, r'name="Bald_HeaderWeatherOn">\[Skin.HasSetting\(Bald.HeaderWeather\)')
 
     # ---- titles on Home tiles ----
 

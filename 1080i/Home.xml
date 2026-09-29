@@ -256,6 +256,23 @@
 					<label>$INFO[System.Date(DDDD)], $INFO[System.Date(MMMM D)]</label>
 					<visible>$EXP[Bald_ShowClockDate]</visible>
 				</control>
+				<!-- The current weather (Bald_HeaderWeather) under the date, or in the date's place when it is off. -->
+				<control type="label">
+					<top>180</top>
+					<height>30</height>
+					<font>Bald_Date</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$VAR[Bald_HeaderWeather]</label>
+					<visible>$EXP[Bald_HeaderWeatherOn] + $EXP[Bald_ShowClockDate]</visible>
+				</control>
+				<control type="label">
+					<top>144</top>
+					<height>30</height>
+					<font>Bald_Date</font>
+					<textcolor>bald_ink60</textcolor>
+					<label>$VAR[Bald_HeaderWeather]</label>
+					<visible>$EXP[Bald_HeaderWeatherOn] + !$EXP[Bald_ShowClockDate]</visible>
+				</control>
 			</control>
 
 			<!-- Caption: out 180 and slide 40 px right as the menu or context menu opens; back 380 / 480 after 140 as it closes. -->

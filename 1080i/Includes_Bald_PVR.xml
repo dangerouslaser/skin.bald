@@ -151,7 +151,7 @@
 				<control type="label"><width>auto</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink28</textcolor><label>$LOCALIZE[19019]</label><visible>![$PARAM[channels]] + $EXP[Bald_PVRGuideToChannels]</visible></control>
 			</control>
 			<control type="label"><left>Bald_SafeLeft</left><top>174</top><width>780</width><height>28</height><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[section]</label></control>
-			<control type="label"><left>1000</left><top>120</top><width>824</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_ClockDateTime]</label></control>
+			<control type="label"><left>1000</left><top>120</top><width>824</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]</label></control>
 		</definition>
 	</include>
 	<!-- The detail pane (x 1000, 824 wide). `item` is the focused item's prefix; a channel (next=true) adds what is on
@@ -188,7 +188,7 @@
 		<definition>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>$PARAM[width]</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$PARAM[title]</label></control>
 			<control type="label"><left>Bald_SafeLeft</left><top>174</top><width>$PARAM[width]</width><height>28</height><font>Bald_Section</font><textcolor>bald_accent</textcolor><label>$PARAM[section]</label></control>
-			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_ClockDateTime]</label><visible>$PARAM[clock]</visible></control>
+			<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]</label><visible>$PARAM[clock]</visible></control>
 		</definition>
 	</include>
 	<!-- Guide progress: a 4 px ink track with the elapsed part in the accent, as in the TV guide. -->

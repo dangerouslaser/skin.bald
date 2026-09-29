@@ -93,7 +93,7 @@
 		<param name="left">Bald_PreviewLeft</param>
 		<param name="width">528</param>
 		<definition>
-			<control type="label"><left>$PARAM[left]</left><top>120</top><width>$PARAM[width]</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]</label></control>
+			<control type="label"><left>$PARAM[left]</left><top>120</top><width>$PARAM[width]</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Container.SortMethod] · $INFO[Container.SortOrder]$VAR[Bald_HeaderWeatherSuffix]</label></control>
 		</definition>
 	</include>
 	<!-- Rows of the library options menu (list 9150). -->
