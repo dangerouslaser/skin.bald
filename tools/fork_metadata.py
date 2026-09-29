@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-FORK_REVISION = 1
+FORK_REVISION = 2
 
 PROVIDER = "dangerouslaser"
 SOURCE = "https://github.com/dangerouslaser/script.tinyppi"

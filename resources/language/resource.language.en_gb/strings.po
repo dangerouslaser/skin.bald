@@ -55,11 +55,6 @@ msgctxt "#32017"
 msgid "The Kodi version could not be detected"
 msgstr ""
 
-# LibreELEC fork
-msgctxt "#33900"
-msgid "VS10 modes need a CoreELEC Amlogic box"
-msgstr ""
-
 msgctxt "#32018"
 msgid "Temperature"
 msgstr ""
