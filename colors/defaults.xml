@@ -34,6 +34,8 @@
 	<color name="bald_ink10">1AECEEF2</color>
 	<!-- Blurred fanart background brightness (multiplies the image): 30%. -->
 	<color name="bald_backdrop">FF4D4D4D</color>
+	<!-- The weather page's unblurred photo, without a blur helper (Bald_WeatherBackdrop): 12%. -->
+	<color name="bald_backdrop12">FF1F1F1F</color>
 	<!-- Appearance › Background brightness for the blurred background (Bald_BlurDiffuse): 20, 40 or 50 %; unset is 30. -->
 	<color name="bald_backdrop20">FF333333</color>
 	<color name="bald_backdrop40">FF666666</color>

@@ -139,7 +139,9 @@ class FollowTests(unittest.TestCase):
                     found.setdefault(params["window"], set()).add(params["id"])
         # The letter bar names its library window through a param (videos by default, music in MyMusicNav).
         found.pop("$PARAM[window]", None)
-        self.assertEqual(set(found), {"home", "videos", "movieinformation", "music", "visualisation"})
+        self.assertEqual(set(found), {"home", "videos", "movieinformation", "music", "visualisation", "weather"})
+        # The weather page follows the current conditions (hidden list 9170) and its forecast rows.
+        self.assertEqual(found["weather"], {"9170", "$PARAM[id]"})
         # The music views follow through Bald_MusicViewNav, which each view calls with its own id.
         self.assertEqual(found["music"], {"$PARAM[id]"})
         views = ET.parse(XML / "View_550_Bald_Music.xml").getroot()
@@ -160,6 +162,11 @@ class FollowTests(unittest.TestCase):
             actions = {(n.tag, n.text) for n in expand_follow(root)}
             for tag in ("onload", "onunload"):
                 self.assertIn((tag, f"ClearProperty(Bald.FocusContainer,{window})"), actions)
+        # The weather page starts on the current conditions and lets go as it closes.
+        root = ET.parse(XML / "MyWeather.xml").getroot()
+        actions = {(n.tag, n.text) for n in expand_follow(root)}
+        self.assertIn(("onload", "SetProperty(Bald.FocusContainer,9170,weather)"), actions)
+        self.assertIn(("onunload", "ClearProperty(Bald.FocusContainer,weather)"), actions)
 
     def test_global_search_follows_its_results(self):
         root = ET.parse(XML / "script-globalsearch.xml").getroot()

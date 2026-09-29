@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<!-- From Kodi 22 Estuary's MyWeather.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt), restyled for Bald
-	     (docs/NOTES.md, "Media windows restyle"). CGUIWindowWeather's ids (2, 3, 11, 223-228, 31-35) were never in
-	     Estuary: the page reads Weather.* infolabels and switches location with Weather.LocationNext. 2000 is the
-	     page grouplist, 20 the current conditions (Select: next location), 15100 / 15200 the daily and hourly
-	     forecasts, 70010-70059 the maps; 20000 / 20001 bump the page at its ends and 10000 (Menu) opens the weather
-	     settings. -->
-	<defaultcontrol always="true">15100</defaultcontrol>
+	<!-- The weather page. Started from Kodi 22 Estuary's MyWeather.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt); the
+	     layout is Bald's (Includes_Weather.xml, docs/NOTES.md "Weather page"). CGUIWindowWeather's ids (2, 3, 11,
+	     223-228, 31-35) were never in Estuary: the page reads Weather.* infolabels and switches location with
+	     Weather.LocationNext. 9100 is the tab row (Now, Daily, Hourly, Maps), 20 the current conditions (Select: next
+	     location), 15100 / 15200 the daily and hourly forecasts, 2000 the maps (70010-70050 their focus buttons), 9170
+	     the hidden list the backdrop follows on Now, and 10000 (Menu) opens the weather settings. -->
+	<defaultcontrol always="true">9100</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<menucontrol>10000</menucontrol>
+	<!-- The backdrop follows the current conditions' tile until a forecast row takes focus (Bald_FollowContainer). -->
+	<onload>SetProperty(Bald.FocusContainer,9170,weather)</onload>
+	<onunload>ClearProperty(Bald.FocusContainer,weather)</onunload>
 	<controls>
-		<control type="button" id="20000">
-			<include>HiddenObject</include>
-			<animation effect="fade" time="300" start="100" end="0">Focus</animation>
-			<onfocus>SetFocus(2000)</onfocus>
-			<onclick>noop</onclick>
-			<visible allowhiddenfocus="true">Control.HasFocus(20000)</visible>
-		</control>
-		<control type="button" id="20001">
-			<include>HiddenObject</include>
-			<animation effect="fade" time="300" start="100" end="0">Focus</animation>
-			<onfocus>SetFocus(2000)</onfocus>
-			<onclick>noop</onclick>
-			<visible allowhiddenfocus="true">Control.HasFocus(20001)</visible>
-		</control>
 		<control type="button" id="10000">
 			<include>HiddenObject</include>
 			<onfocus>ActivateWindow(servicesettings,weather)</onfocus>
@@ -45,180 +34,69 @@
 			<animation effect="fade" start="100" end="bg_alpha" time="0" condition="Player.HasMedia">Conditional</animation>
 			<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout" condition="Window.Previous(fullscreenvideo) | Window.Previous(FullscreenGame) | Window.Previous(startup)">WindowOpen</animation>
 		</control>
-		<control type="multiimage">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<fadetime>800</fadetime>
-			<include>Bald_MediaOpenClose</include>
-			<animation effect="fade" time="800" tween="sine" easing="inout">VisibleChange</animation>
-			<imagepath background="true" colordiffuse="bald_backdrop">$VAR[WeatherFanartVar]</imagepath>
-			<visible>!Player.HasMedia</visible>
+		<include>Bald_WeatherBackdrop</include>
+		<!-- The current conditions as one static item, for the backdrop to follow: its thumb is the weather background
+		     pack's picture (Bald Helper). Kodi only fills a visible list, so it is 1 x 1 and draws nothing. -->
+		<control type="list" id="9170">
+			<width>1</width>
+			<height>1</height>
+			<itemlayout width="1" height="1" />
+			<focusedlayout width="1" height="1" />
+			<content><include>Bald_WeatherNowItem</include></content>
 		</control>
-		<control type="grouplist" id="2000">
-			<orientation>vertical</orientation>
-			<top>0</top>
-			<height>100%</height>
-			<left>0</left>
-			<ondown>20001</ondown>
-			<usecontrolcoords>true</usecontrolcoords>
-			<animation type="Conditional" condition="[Control.IsVisible(20000)] + $EXP[Bald_FullMotion]" reversible="false">
-				<effect type="slide" end="0,14" time="110" tween="cubic" easing="out" />
-				<effect type="slide" end="0,-14" time="110" tween="cubic" easing="out" delay="110" />
-			</animation>
-			<animation type="Conditional" condition="[Control.IsVisible(20001)] + $EXP[Bald_FullMotion]" reversible="false">
-				<effect type="slide" end="0,-14" time="110" tween="cubic" easing="out" />
-				<effect type="slide" end="0,14" time="110" tween="cubic" easing="out" delay="110" />
-			</animation>
-			<scrolltime tween="cubic" easing="out">440</scrolltime>
+		<control type="group">
 			<include>Bald_MediaOpenClose</include>
-			<itemgap>0</itemgap>
-			<control type="group" id="567">
-				<description>Weather info</description>
-				<height>560</height>
-				<include content="Bald_MediaPageTitle">
-					<param name="label">$LOCALIZE[8]$INFO[Weather.Data(Current.Location), · ,]</param>
-					<param name="width">1728</param>
-				</include>
-				<!-- Select switches to the next location; focus shows a quiet tile behind the block. -->
-				<control type="button" id="20">
-					<left>72</left>
-					<top>190</top>
-					<width>1776</width>
-					<height>330</height>
-					<texturefocus border="8" colordiffuse="bald_ink10">bald/tile_256.png</texturefocus>
-					<texturenofocus />
-					<onup>20000</onup>
-					<ondown>15100</ondown>
-					<onclick>Weather.LocationNext</onclick>
-					<label></label>
-				</control>
-				<control type="label">
-					<left>Bald_SafeLeft</left>
-					<top>210</top>
-					<width>560</width>
-					<height>150</height>
-					<aligny>center</aligny>
-					<font>Bald_Clock</font>
-					<textcolor>bald_ink</textcolor>
-					<label>$INFO[Weather.Data(Current.Temperature)]</label>
-				</control>
-				<control type="label">
-					<left>680</left>
-					<top>238</top>
-					<width>1140</width>
-					<height>40</height>
-					<aligny>center</aligny>
-					<font>Bald_InfoTagline</font>
-					<textcolor>bald_ink</textcolor>
-					<label>$INFO[Weather.Data(Current.Condition)]</label>
-				</control>
-				<control type="label">
-					<left>680</left>
-					<top>286</top>
-					<width>1140</width>
-					<height>32</height>
-					<aligny>center</aligny>
-					<font>Bald_InfoMeta</font>
-					<textcolor>bald_ink70</textcolor>
-					<label>$INFO[Weather.Data(Current.FeelsLike),$LOCALIZE[402] ]</label>
-				</control>
-				<control type="grouplist">
-					<left>Bald_SafeLeft</left>
-					<top>400</top>
-					<width>1728</width>
-					<height>56</height>
-					<orientation>horizontal</orientation>
-					<itemgap>24</itemgap>
-					<include content="Bald_WeatherStat">
-						<param name="info">Weather.Data(Current.Wind)</param>
-						<param name="texture">icons/weather/wind.png</param>
-						<param name="header">$LOCALIZE[404]</param>
-					</include>
-					<include content="Bald_WeatherStat">
-						<param name="info">Weather.Data(Current.Humidity)</param>
-						<param name="texture">icons/weather/humidity.png</param>
-						<param name="header">$LOCALIZE[406]</param>
-					</include>
-					<include content="Bald_WeatherStat">
-						<param name="info">Weather.Data(Current.Precipitation)</param>
-						<param name="texture">icons/weather/rain.png</param>
-						<param name="header">$LOCALIZE[33021]</param>
-					</include>
-					<include content="Bald_WeatherStat">
-						<param name="info">Weather.Data(Today.Sunrise)</param>
-						<param name="texture">icons/weather/sunrise.png</param>
-						<param name="header">$LOCALIZE[405]</param>
-					</include>
-					<include content="Bald_WeatherStat">
-						<param name="info">Weather.Data(Today.Sunset)</param>
-						<param name="texture">icons/weather/sunset.png</param>
-						<param name="header">$LOCALIZE[403]</param>
-					</include>
-				</control>
-				<control type="label">
-					<left>Bald_SafeLeft</left>
-					<top>474</top>
-					<width>1728</width>
-					<height>24</height>
-					<aligny>center</aligny>
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$LOCALIZE[31154]$INFO[Weather.LastUpdated, · $LOCALIZE[12014]: ,]</label>
-					<visible>Control.HasFocus(20)</visible>
-					<animation effect="fade" time="380" tween="sine" easing="inout">VisibleChange</animation>
-				</control>
+			<!-- Header: the page title, and where the weather is for at the right. -->
+			<include content="Bald_MediaPageTitle">
+				<param name="label">$LOCALIZE[8]</param>
+				<param name="width">1100</param>
+			</include>
+			<control type="label">
+				<left>Bald_PreviewLeft</left>
+				<top>120</top>
+				<width>528</width>
+				<height>28</height>
+				<align>right</align>
+				<font>Bald_CaptionMeta</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$INFO[Weather.Data(Current.Location)]</label>
 			</control>
-			<include content="WeatherWidget">
-				<param name="content_include" value="DailyItems" />
-				<param name="list_id" value="15100" />
-				<param name="widget_header" value="$LOCALIZE[31019]"/>
-				<param name="visible" value="!String.IsEmpty(Weather.Data(Daily.IsFetched))" />
-				<param name="width" value="258" />
+			<include>Bald_WeatherTabs</include>
+			<include>Bald_WeatherNowView</include>
+			<include content="Bald_WeatherForecastView">
+				<param name="id">15100</param>
+				<param name="view">daily</param>
+				<param name="content">Bald_WeatherPageDaily</param>
 			</include>
-			<include content="WeatherWidget">
-				<param name="content_include" value="HourlyItems" />
-				<param name="list_id" value="15200" />
-				<param name="widget_header" value="$LOCALIZE[33036]"/>
-				<param name="visible" value="!String.IsEmpty(Weather.Data(Hourly.IsFetched))" />
-				<param name="width" value="258" />
+			<include content="Bald_WeatherForecastView">
+				<param name="id">15200</param>
+				<param name="view">hourly</param>
+				<param name="content">Bald_WeatherPageHourly</param>
 			</include>
-			<include content="WeatherMapItem">
-				<param name="item_id" value="1" />
-				<param name="onup_id" value="15200" />
-				<param name="ondown_id" value="70020" />
-			</include>
-			<include content="WeatherMapItem">
-				<param name="item_id" value="2" />
-				<param name="onup_id" value="70010" />
-				<param name="ondown_id" value="70030" />
-			</include>
-			<include content="WeatherMapItem">
-				<param name="item_id" value="3" />
-				<param name="onup_id" value="70020" />
-				<param name="ondown_id" value="70040" />
-			</include>
-			<include content="WeatherMapItem">
-				<param name="item_id" value="4" />
-				<param name="onup_id" value="70030" />
-				<param name="ondown_id" value="70050" />
-			</include>
-			<include content="WeatherMapItem">
-				<param name="item_id" value="5" />
-				<param name="onup_id" value="70040" />
-				<param name="ondown_id" value="20001" />
-			</include>
+			<include>Bald_WeatherMapsView</include>
 		</control>
-		<!-- Footer: the provider, and the page's hints. -->
+		<!-- Footer: the provider, and the page's hints (the tab row's, else a view's). -->
 		<include content="Bald_MediaFooter">
 			<param name="label">$INFO[Weather.Data(WeatherProvider)]</param>
-			<param name="width">1200</param>
+			<param name="width">1080</param>
 		</include>
 		<control type="group">
-			<left>Bald_RightColumn</left>
+			<left>1224</left>
 			<top>Bald_HintTop</top>
+			<visible>Control.HasFocus(9100)</visible>
 			<include content="Bald_InfoHintPair">
-				<param name="first">$LOCALIZE[31966]</param>
+				<param name="width">600</param>
+				<param name="first">$LOCALIZE[31701]</param>
+				<param name="second">$LOCALIZE[31984]</param>
+			</include>
+		</control>
+		<control type="group">
+			<left>1224</left>
+			<top>Bald_HintTop</top>
+			<visible>!Control.HasFocus(9100)</visible>
+			<include content="Bald_InfoHintPair">
+				<param name="width">600</param>
+				<param name="first">$LOCALIZE[31704]</param>
 				<param name="second">$LOCALIZE[31984]</param>
 			</include>
 		</control>

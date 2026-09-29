@@ -587,7 +587,8 @@
 				</control>
 				<control type="multiimage">
 					<left>60</left><top>96</top><width>120</width><height>120</height>
-					<imagepath>$INFO[ListItem.Icon]</imagepath>
+					<!-- The icon itself: ListItem.Icon gives the thumb when there is one (a weather tile's photo). -->
+					<imagepath>$INFO[ListItem.Art(icon)]</imagepath>
 					<aspectratio>keep</aspectratio>
 					<timeperimage>20</timeperimage>
 					<fadetime>10</fadetime>
@@ -597,36 +598,6 @@
 					<left>12</left><top>236</top><width>216</width><height>30</height>
 					<align>center</align><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink</textcolor>
 					<label>$INFO[ListItem.Label2]</label>
-				</control>
-			</control>
-		</definition>
-	</include>
-	<!-- Current conditions figure (MyWeather.xml): Estuary's weather icon in 60% ink, the name over the value of the
-	     infolabel named by `info`. -->
-	<include name="Bald_WeatherStat">
-		<param name="info" />
-		<param name="texture" />
-		<param name="header" />
-		<definition>
-			<control type="group">
-				<width>280</width>
-				<height>56</height>
-				<visible>!String.IsEmpty($PARAM[info])</visible>
-				<include content="Bald_MediaIcon">
-					<param name="texture">$PARAM[texture]</param>
-					<param name="left">0</param>
-					<param name="top">8</param>
-					<param name="ink">bald_ink60</param>
-				</include>
-				<control type="label">
-					<left>56</left><top>0</top><width>220</width><height>22</height>
-					<font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor>
-					<label>$PARAM[header]</label>
-				</control>
-				<control type="label">
-					<left>56</left><top>24</top><width>220</width><height>30</height>
-					<font>Bald_DetailValue</font><textcolor>bald_ink</textcolor>
-					<label>$INFO[$PARAM[info]]</label>
 				</control>
 			</control>
 		</definition>

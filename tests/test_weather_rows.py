@@ -28,7 +28,7 @@ NATIVE_INFO = re.compile(r"^(Weather\.(Plugin|IsFetched|Data\(("
                          r"|Daily\.IsFetched|Hourly\.IsFetched"
                          r"|Daily\.\d+\.(ShortDay|LongDay|HighTemperature|LowTemperature|Outlook|ShortDate|FanartCode)"
                          r"|Day\d\.(Title|HighTemp|LowTemp|Outlook|FanartCode)"
-                         r"|Hourly\.\d+\.(Time|Temperature|Precipitation|Outlook|ShortDate|FanartCode)"
+                         r"|Hourly\.\d+\.(Time|Temperature|Precipitation|Outlook|ShortDate|FanartCode|Humidity|WindSpeed)"
                          r")\))"
                          r"|Skin\.String\(Bald\.Weather(Fanart|Icons)\.(path|ext)\)"
                          r"|Window\(home\)\.Property\(Bald\.(Row|RowStyle)\)"
@@ -179,7 +179,7 @@ class InfolabelTests(unittest.TestCase):
         # Bald Helper's tidied values (resources/lib/weather.py) are the one exception: only the fields it publishes.
         tidied = set(re.findall(r"Window\(home\)\.Property\(Bald\.Weather\.([^)]+)\)", text))
         self.assertEqual(tidied, {"Current.Precipitation", "Daily.$PARAM[n].HighTemperature",
-                                  "Daily.$PARAM[n].LowTemperature", "Hourly.$PARAM[n].Time",
+                                  "Daily.$PARAM[n].LowTemperature", "Daily.$PARAM[n].Precipitation", "Hourly.$PARAM[n].Time",
                                   "Hourly.$PARAM[n].Temperature", "Hourly.$PARAM[n].Precipitation",
                                   "Art.Current", "Art.Daily.$PARAM[n]", "Art.Day$PARAM[n]", "Art.Hourly.$PARAM[n]",
                                   "ArtReady"})

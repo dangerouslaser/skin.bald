@@ -149,6 +149,7 @@
 				<property name="Bald.Meta">$INFO[Weather.Data(Daily.$PARAM[n].Outlook)]</property>
 				<property name="Bald.Detail">$INFO[Window(home).Property(Bald.Weather.Daily.$PARAM[n].HighTemperature),$LOCALIZE[419] ,]$INFO[Window(home).Property(Bald.Weather.Daily.$PARAM[n].LowTemperature), · $LOCALIZE[418] ,]</property>
 				<property name="Bald.Accent">$INFO[Weather.Data(Daily.$PARAM[n].ShortDate)]</property>
+				<property name="Bald.Extra">$INFO[Window(home).Property(Bald.Weather.Daily.$PARAM[n].Precipitation),$LOCALIZE[33021] ,]</property>
 				<property name="Bald.Note">$INFO[Weather.Data(Current.Location)]</property>
 				<onclick>ActivateWindow(Weather)</onclick>
 				<visible>$EXP[Bald_WeatherReady] + !String.IsEmpty(Weather.Data(Daily.IsFetched)) + !String.IsEmpty(Weather.Data(Daily.$PARAM[n].Outlook))</visible>
@@ -190,6 +191,7 @@
 				<property name="Bald.Meta">$INFO[Weather.Data(Hourly.$PARAM[n].Outlook)]</property>
 				<property name="Bald.Detail">$INFO[Window(home).Property(Bald.Weather.Hourly.$PARAM[n].Temperature)]$INFO[Window(home).Property(Bald.Weather.Hourly.$PARAM[n].Precipitation), · $LOCALIZE[33021] ,]</property>
 				<property name="Bald.Accent">$INFO[Weather.Data(Hourly.$PARAM[n].ShortDate)]</property>
+				<property name="Bald.Extra">$INFO[Weather.Data(Hourly.$PARAM[n].Humidity),$LOCALIZE[406] ,]$INFO[Weather.Data(Hourly.$PARAM[n].WindSpeed), · $LOCALIZE[404] ,]</property>
 				<property name="Bald.Note">$INFO[Weather.Data(Current.Location)]</property>
 				<onclick>ActivateWindow(Weather)</onclick>
 				<visible>$EXP[Bald_WeatherReady] + !String.IsEmpty(Weather.Data(Hourly.IsFetched)) + !String.IsEmpty(Weather.Data(Hourly.$PARAM[n].Outlook))</visible>

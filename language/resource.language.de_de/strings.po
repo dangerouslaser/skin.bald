@@ -464,6 +464,24 @@ msgctxt "#31209"
 msgid "Clear target"
 msgstr "Ziel entfernen"
 
+#: /1080i/MyWeather.xml
+#. Weather page: hint while the tab row (Now, Daily, Hourly, Maps) has focus
+msgctxt "#31701"
+msgid "Left / Right for views"
+msgstr "Links / Rechts für Ansichten"
+
+#: /1080i/MyWeather.xml
+#. Weather page: hint while a view has focus
+msgctxt "#31704"
+msgid "Up for views"
+msgstr "Hoch für Ansichten"
+
+#: /1080i/Includes_Weather.xml
+#. Weather page: the tab of the day-by-day forecast
+msgctxt "#31759"
+msgid "Daily"
+msgstr "Täglich"
+
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 #. Home Screens: the row that picks an entry's background image (menu preview, and rows without fanart)
 msgctxt "#31743"
@@ -2611,7 +2629,6 @@ msgid "Select a profile to edit it, or add a new one."
 msgstr "Ein Profil zum Bearbeiten auswählen oder ein neues hinzufügen."
 
 #: /1080i/DialogPictureInfo.xml
-#: /1080i/MyWeather.xml
 #: /1080i/SettingsSystemInfo.xml
 msgctxt "#31966"
 msgid "Up and down to browse"

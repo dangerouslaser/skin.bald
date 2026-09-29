@@ -487,9 +487,10 @@ DialogGameControllers.xml (Includes_Games.xml)
 		Controllers: 2, 3, 5, 7, 8, 9, 10, 17-22, 31, 32; 61, 62 scrollbars, 9001 actions
 		Ports: 2, 3, 18, 19; 62, 9001. Players: 2, 3, 4, 7, 18; 10 actions, 61 scrollbar
 		Disc manager: 3 menu (items 108323-108327), 108321 disc list, 108322 scrollbar
-MyWeather.xml		Kodi binds none that Estuary or Bald ship. 2000 page grouplist, 567 current block,
-		20 location button, 15100 daily, 15200 hourly (+666 row captions), 7001-7005 map groups,
-		70010-70059 maps (in group 700N: 700N0 button ... 700N9 heading), 20000 / 20001 end bumps, 10000 Menu to weather settings
+MyWeather.xml		Kodi binds none that Estuary or Bald ship. 9100 tab row (Now, Daily, Hourly, Maps), 20 current
+		conditions (Select: next location), 15100 daily, 15200 hourly, 2000 maps grouplist, 7001-7005 map
+		groups, 70010-70059 maps (in group 700N: 700N0 button ... 700N9 heading), 9170 hidden current-conditions
+		list the backdrop follows, 10000 Menu to weather settings
 MyPics.xml		6 slideshow, 7 recursive slideshow, 9 shuffle (Estuary side panel, unchanged)
 MyMusicPlaylistEditor.xml	6 load, 7 save, 8 clear, 50 files, 100 playlist; 60 / 61 scrollbars, 9000 actions
 

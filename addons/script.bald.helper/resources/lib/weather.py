@@ -76,6 +76,9 @@ def tidy_precipitation(value: str) -> str:
 def fields():
     """(Weather.Data field, kind) for every value the rows show that needs tidying."""
     yield "Current.Precipitation", "precipitation"
+    # The weather page's sunrise and sunset (1080i/Includes_Weather.xml): "06:39:01 AM" as "6:39 AM".
+    yield "Today.Sunrise", "time"
+    yield "Today.Sunset", "time"
     for n in DAYS:
         yield f"Daily.{n}.HighTemperature", "temperature"
         yield f"Daily.{n}.LowTemperature", "temperature"

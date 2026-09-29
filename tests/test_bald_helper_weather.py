@@ -59,7 +59,8 @@ class TidierTests(unittest.TestCase):
         self.xbmc = Xbmc({"Weather.Plugin": "weather.ha", "System.TemperatureUnits": "°F",
                           raw("Hourly.1.Time"): "10:00:00 AM", raw("Hourly.1.Temperature"): "62 °F",
                           raw("Hourly.1.Precipitation"): "0.0 in", raw("Daily.1.HighTemperature"): "65 °F",
-                          raw("Daily.1.LowTemperature"): "58 °F", raw("Current.Precipitation"): "20"})
+                          raw("Daily.1.LowTemperature"): "58 °F", raw("Current.Precipitation"): "20",
+                          raw("Today.Sunrise"): "06:39:01 AM", raw("Today.Sunset"): "06:27:31 PM"})
         self.window = Window()
         self.tidier = weather.Tidier(self.xbmc, self.window, lambda: self.now[0])
 
@@ -72,6 +73,9 @@ class TidierTests(unittest.TestCase):
         self.assertEqual(p["Bald.Weather.Daily.1.HighTemperature"], "65°F")
         self.assertEqual(p["Bald.Weather.Daily.1.LowTemperature"], "58°F")
         self.assertEqual(p["Bald.Weather.Current.Precipitation"], "20%")
+        # The weather page's sunrise and sunset, without seconds.
+        self.assertEqual(p["Bald.Weather.Today.Sunrise"], "6:39 AM")
+        self.assertEqual(p["Bald.Weather.Today.Sunset"], "6:27 PM")
         self.assertNotIn("Bald.Weather.Hourly.2.Time", p, "empty values are not published")
 
     def test_runs_every_ten_seconds_and_writes_only_changes(self):

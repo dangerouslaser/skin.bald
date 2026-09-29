@@ -1,334 +1,433 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<!-- Weather includes for MyWeather.xml, from Kodi 22 Estuary's Includes_Home.xml (GPL-2.0-or-later, see
-	     LICENSE-Estuary.txt). Estuary's Home widget includes that shared the file were removed with Estuary's Home.
-	     Restyled for Bald (docs/NOTES.md, "Media windows restyle"): forecast rows are captioned Bald rows of
-	     forecast cards, and the maps sit on the safe margin. Item content and ids are Estuary's. -->
-	<!-- Row caption, shown while its panel has items (or is still loading). -->
-	<include name="CategoryLabel">
-		<param name="visible">true</param>
-		<param name="item_treshold">0</param>
+	<!-- The weather page (MyWeather.xml). It started as Kodi 22 Estuary's weather page (GPL-2.0-or-later, see
+	     LICENSE-Estuary.txt); the layout is now Bald's (docs/NOTES.md, "Weather page"): a tab row picks one of four
+	     views, Now, Daily, Hourly and Maps, over a blurred backdrop of the followed tile's weather picture. The forecast
+	     rows list the same items as Home's weather rows (Includes_Bald_Weather.xml), with Bald Helper's tidied values. -->
+
+	<!-- ============ Views ============ -->
+	<!-- The view the tab row (9100) has selected. Its selected item is the state, focused or not. -->
+	<expression name="Bald_WeatherView_now">[String.IsEqual(Container(9100).ListItem.Property(view),now)]</expression>
+	<expression name="Bald_WeatherView_daily">[String.IsEqual(Container(9100).ListItem.Property(view),daily)]</expression>
+	<expression name="Bald_WeatherView_hourly">[String.IsEqual(Container(9100).ListItem.Property(view),hourly)]</expression>
+	<expression name="Bald_WeatherView_maps">[String.IsEqual(Container(9100).ListItem.Property(view),maps)]</expression>
+	<expression name="Bald_WeatherHasHourly">[!String.IsEmpty(Weather.Data(Hourly.IsFetched))]</expression>
+	<expression name="Bald_WeatherHasMaps">[Weather.IsFetched + !String.IsEmpty(Weather.Data(Map.IsFetched))]</expression>
+	<expression name="Bald_WeatherLocations">[Integer.IsGreater(Weather.Data(Locations),1)]</expression>
+
+	<!-- Tab row: Left and Right change the view at once (the list wraps), Down enters it. -->
+	<include name="Bald_WeatherTabs">
+		<control type="list" id="9100">
+			<left>Bald_SafeLeft</left>
+			<top>192</top>
+			<width>1728</width>
+			<height>48</height>
+			<orientation>horizontal</orientation>
+			<scrolltime>0</scrolltime>
+			<include content="Bald_FollowContainer"><param name="id">9170</param><param name="window">weather</param></include>
+			<ondown condition="$EXP[Bald_WeatherView_now]">SetFocus(20)</ondown>
+			<ondown condition="$EXP[Bald_WeatherView_daily]">SetFocus(15100)</ondown>
+			<ondown condition="$EXP[Bald_WeatherView_hourly]">SetFocus(15200)</ondown>
+			<ondown condition="$EXP[Bald_WeatherView_maps]">SetFocus(70010)</ondown>
+			<itemlayout width="176" height="48"><include content="Bald_WeatherTab" /></itemlayout>
+			<focusedlayout width="176" height="48"><include content="Bald_WeatherTab"><param name="selected">true</param></include></focusedlayout>
+			<content>
+				<item><label>$LOCALIZE[19030]</label><property name="view">now</property><onclick>SetFocus(20)</onclick></item>
+				<item><label>$LOCALIZE[31759]</label><property name="view">daily</property><onclick>SetFocus(15100)</onclick></item>
+				<item><label>$LOCALIZE[33036]</label><property name="view">hourly</property><onclick>SetFocus(15200)</onclick><visible>$EXP[Bald_WeatherHasHourly]</visible></item>
+				<item><label>$LOCALIZE[33035]</label><property name="view">maps</property><onclick>SetFocus(70010)</onclick><visible>$EXP[Bald_WeatherHasMaps]</visible></item>
+			</content>
+		</control>
+	</include>
+	<!-- One tab: 45% ink, the selected one full ink, with the accent dot just right of its name while the row has focus.
+	     The dot is a bullet in the label: an auto-width label inside a list layout's grouplist is not drawn. -->
+	<include name="Bald_WeatherTab">
+		<param name="selected">false</param>
 		<definition>
-			<control type="label" id="$PARAM[list_id]666">
-				<left>Bald_SafeLeft</left>
-				<top>0</top>
-				<width>1200</width>
-				<height>32</height>
+			<control type="label">
+				<width>172</width>
+				<height>36</height>
 				<aligny>center</aligny>
-				<font>Bald_RowLabel</font>
-				<textcolor>bald_ink60</textcolor>
-				<label>$PARAM[label]</label>
-				<visible>$PARAM[visible]</visible>
-				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold]) | [Container($PARAM[list_id]).IsUpdating + Integer.IsEqual(Container($PARAM[list_id]).NumItems,0)]</visible>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink45</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+				<visible>!$PARAM[selected]</visible>
+			</control>
+			<control type="label">
+				<width>172</width>
+				<height>36</height>
+				<aligny>center</aligny>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+				<visible>$PARAM[selected] + !Control.HasFocus(9100)</visible>
+			</control>
+			<control type="label">
+				<width>172</width>
+				<height>36</height>
+				<aligny>center</aligny>
+				<font>Bald_Section</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[ListItem.Label]  [COLOR bald_accent]•[/COLOR]</label>
+				<visible>$PARAM[selected] + Control.HasFocus(9100)</visible>
 			</control>
 		</definition>
 	</include>
-	<!-- One forecast row: caption and a horizontal panel of cards (Bald_WeatherCard), 400 px in the page. -->
-	<include name="WeatherWidget">
-		<param name="width">266</param>
+	<!-- ============ Backdrop ============ -->
+	<!-- The followed tile's weather picture, blurred like Home's backdrop (Bald Helper's Bald.Blur, else TMDb Helper's),
+	     at Appearance's background brightness. Not the last blur of another window: a tile without a picture (no
+	     weather background pack) leaves the plain field. Without a blur helper, the pack's picture for the current
+	     conditions, much darker than Home's art. -->
+	<expression name="Bald_WeatherBlur">[$EXP[Bald_BlurOn] + [[$EXP[Bald_HasHelper] + !String.IsEmpty(Window(home).Property(Bald.Blur))] | [!$EXP[Bald_HasHelper] + !String.IsEmpty(Window.Property(TMDbHelper.ListItem.BlurImage))]]]</expression>
+	<variable name="Bald_WeatherBlurImage">
+		<value condition="$EXP[Bald_HasHelper]">$INFO[Window(home).Property(Bald.Blur)]</value>
+		<value>$INFO[Window.Property(TMDbHelper.ListItem.BlurImage)]</value>
+	</variable>
+	<include name="Bald_WeatherBackdrop">
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<width>1920</width>
+			<height>1080</height>
+			<aspectratio>scale</aspectratio>
+			<fadetime>800</fadetime>
+			<texture background="true">$VAR[Bald_WeatherBlurImage]</texture>
+			<colordiffuse>$VAR[Bald_BlurDiffuse]</colordiffuse>
+			<visible>$EXP[Bald_WeatherBlur] + !Player.HasMedia</visible>
+		</control>
+		<control type="multiimage">
+			<depth>DepthBackground</depth>
+			<width>1920</width>
+			<height>1080</height>
+			<aspectratio>scale</aspectratio>
+			<fadetime>800</fadetime>
+			<imagepath background="true" colordiffuse="bald_backdrop12">$VAR[WeatherFanartVar]</imagepath>
+			<visible>!$EXP[Bald_BlurOn] + !Player.HasMedia</visible>
+		</control>
+	</include>
+
+	<!-- ============ Now ============ -->
+	<!-- One current-conditions figure: its name in 60% ink over the value, shown only when the service gives the
+	     infolabel `info` (`value` is what shows: the same, or Bald Helper's tidied copy). -->
+	<include name="Bald_WeatherStat">
+		<param name="info" />
+		<param name="value" />
+		<param name="header" />
 		<definition>
 			<control type="group">
-				<height>400</height>
-				<visible>$PARAM[visible]</visible>
-				<include content="CategoryLabel">
-					<param name="label">$PARAM[widget_header]</param>
-					<param name="list_id" value="$PARAM[list_id]"/>
-				</include>
-				<control type="panel" id="$PARAM[list_id]">
-					<left>76</left>
-					<top>44</top>
-					<right>76</right>
-					<height>340</height>
-					<include content="WidgetListCommon">
-						<param name="list_id" value="$PARAM[list_id]"/>
-					</include>
-					<itemlayout width="$PARAM[width]" height="340">
-						<include content="Bald_WeatherCard" />
-					</itemlayout>
-					<focusedlayout width="$PARAM[width]" height="340">
-						<include content="Bald_WeatherCard">
-							<param name="focused">true</param>
-						</include>
-					</focusedlayout>
-					<include>$PARAM[content_include]</include>
+				<width>400</width>
+				<height>76</height>
+				<visible>!String.IsEmpty($PARAM[info])</visible>
+				<control type="label">
+					<width>400</width><height>26</height>
+					<font>Bald_DetailLabel</font><textcolor>bald_ink60</textcolor>
+					<label>$PARAM[header]</label>
+				</control>
+				<control type="label">
+					<top>28</top><width>400</width><height>36</height>
+					<font>Bald_Section</font><textcolor>bald_ink</textcolor>
+					<label>$PARAM[value]</label>
 				</control>
 			</control>
 		</definition>
 	</include>
-	<include name="HourlyItems">
-		<content>
-			<item>
-				<icon>$VAR[WeatherOutlookIconPrefixVar]na$VAR[WeatherOutlookIconPostfixVar]</icon>
-				<onclick>noop</onclick>
-				<visible>String.IsEmpty(Weather.Data(Hourly.IsFetched))</visible>
-			</item>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="1" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="2" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="3" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="4" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="5" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="6" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="7" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="8" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="9" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="10" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="11" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="12" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="13" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="14" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="15" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="16" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="17" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="18" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="19" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="20" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="21" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="22" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="23" />
-			</include>
-			<include content="WeatherHourlyItem">
-				<param name="item_index" value="24" />
-			</include>
-		</content>
-	</include>
-	<include name="DailyItems">
-		<content>
-			<item>
-				<icon>$VAR[WeatherOutlookIconPrefixVar]na$VAR[WeatherOutlookIconPostfixVar]</icon>
-				<onclick>noop</onclick>
-				<visible>!Weather.IsFetched</visible>
-			</item>
-			<include content="WeatherDayItem">
-				<param name="item_index" value="0" />
-			</include>
-			<include content="WeatherDayItem">
-				<param name="item_index" value="1" />
-			</include>
-			<include content="WeatherDayItem">
-				<param name="item_index" value="2" />
-			</include>
-			<include content="WeatherDayItem">
-				<param name="item_index" value="3" />
-			</include>
-			<include content="WeatherDayItem">
-				<param name="item_index" value="4" />
-			</include>
-			<include content="WeatherDayItem">
-				<param name="item_index" value="5" />
-			</include>
-			<include content="WeatherDayItem">
-				<param name="item_index" value="6" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="1" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="2" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="3" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="4" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="5" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="6" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="7" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="8" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="9" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="10" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="11" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="12" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="13" />
-			</include>
-			<include content="WeatherDailyItem">
-				<param name="item_index" value="14" />
-			</include>
-		</content>
-	</include>
-	<include name="WeatherHourlyItem">
-		<item>
-			<label>$INFO[Weather.Data(Hourly.$PARAM[item_index].Time)]</label>
-			<label2>$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)]$INFO[Weather.Data(Hourly.$PARAM[item_index].Precipitation), · ]</label2>
-			<property name="Temperature">$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)]</property>
-			<property name="Outlook">$INFO[Weather.Data(Hourly.$PARAM[item_id].Outlook)]</property>
-			<property name="Cloudiness">$INFO[Weather.Data(Hourly.$PARAM[item_index].Cloudiness)]</property>
-			<property name="ShortDate">$INFO[Weather.Data(Hourly.$PARAM[item_index].ShortDate)]</property>
-			<property name="FanartCode">$INFO[Weather.Data(Hourly.$PARAM[item_index].FanartCode)]</property>
-			<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Hourly.$PARAM[item_index].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
-			<onclick>noop</onclick>
-			<visible>!String.IsEmpty(Weather.Data(Hourly.$PARAM[item_index].Outlook))</visible>
-		</item>
-	</include>
-	<include name="WeatherDailyItem">
-		<item>
-			<label>$INFO[Weather.Data(Daily.$PARAM[item_index].ShortDay)]</label>
-			<label2>$INFO[Weather.Data(Daily.$PARAM[item_index].HighTemperature)]$INFO[Weather.Data(Daily.$PARAM[item_index].LowTemperature), · [COLOR bald_ink60],[/COLOR]]</label2>
-			<property name="LongDay">$INFO[Weather.Data(Daily.$PARAM[item_index].LongDay)]</property>
-			<property name="TempDay">$INFO[Weather.Data(Daily.$PARAM[item_index].TempDay)]</property>
-			<property name="Cloudiness">$INFO[Weather.Data(Daily.$PARAM[item_index].Cloudiness)]</property>
-			<property name="Outlook">$INFO[Weather.Data(Daily.$PARAM[item_index].Outlook)]</property>
-			<property name="ShortDate">$INFO[Weather.Data(Daily.$PARAM[item_index].ShortDate)]</property>
-			<property name="FanartCode">$INFO[Weather.Data(Daily.$PARAM[item_index].FanartCode)]</property>
-			<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Daily.$PARAM[item_index].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
-			<onclick>noop</onclick>
-			<visible>!String.IsEmpty(Weather.Data(Daily.IsFetched)) + !String.IsEmpty(Weather.Data(Daily.$PARAM[item_index].Outlook))</visible>
-		</item>
-	</include>
-	<include name="WeatherDayItem">
-		<item>
-			<label>$INFO[Weather.Data(Day$PARAM[item_index].Title)]</label>
-			<label2>$INFO[Weather.Data(Day$PARAM[item_index].HighTemp)]$INFO[Weather.Data(Day$PARAM[item_index].LowTemp), · [COLOR bald_ink60],[/COLOR]]</label2>
-			<property name="LongDay"></property>
-			<property name="TempDay"></property>
-			<property name="Cloudiness"></property>
-			<property name="Outlook"></property>
-			<property name="ShortDate"></property>
-			<property name="FanartCode">$INFO[Weather.Data(Day$PARAM[item_index].FanartCode)]</property>
-			<icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Day$PARAM[item_index].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
-			<onclick>noop</onclick>
-			<visible>String.IsEmpty(Weather.Data(Daily.IsFetched)) + !String.IsEmpty(Weather.Data(Day$PARAM[item_index].Outlook))</visible>
-		</item>
-	</include>
-	<!-- One weather map page: heading, the map area with its layer, and the legend on a field chip. The page is
-	     1000 px tall so the grouplist brings one map at a time into view. -->
-	<include name="WeatherMapItem">
-		<control type="group" id="700$PARAM[item_id]">
-			<height>1000</height>
-			<visible>Weather.IsFetched + !String.IsEmpty(Weather.Data(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Weather.Data(Map.IsFetched))</visible>
-			<control type="label" id="700$PARAM[item_id]9">
-				<left>Bald_SafeLeft</left>
-				<top>Bald_PageTitleTop</top>
-				<width>1200</width>
-				<height>52</height>
-				<aligny>center</aligny>
-				<font>Bald_CaptionTitle</font>
-				<textcolor>bald_ink</textcolor>
-				<label>$INFO[Weather.Data(Map.$PARAM[item_id].Heading)]</label>
-			</control>
-			<control type="button" id="700$PARAM[item_id]0">
-				<left>84</left>
-				<top>198</top>
-				<width>1752</width>
-				<height>744</height>
-				<texturefocus border="8" colordiffuse="bald_ink">bald/focus_ring.png</texturefocus>
+	<!-- Tidied by Bald Helper where it can ("06:39:01 AM" to "6:39 AM", "0.0 in%" to "0.0 in"), else as Kodi gives it. -->
+	<variable name="Bald_WeatherSunrise">
+		<value condition="!String.IsEmpty(Window(home).Property(Bald.Weather.Today.Sunrise))">$INFO[Window(home).Property(Bald.Weather.Today.Sunrise)]</value>
+		<value>$INFO[Weather.Data(Today.Sunrise)]</value>
+	</variable>
+	<variable name="Bald_WeatherSunset">
+		<value condition="!String.IsEmpty(Window(home).Property(Bald.Weather.Today.Sunset))">$INFO[Window(home).Property(Bald.Weather.Today.Sunset)]</value>
+		<value>$INFO[Weather.Data(Today.Sunset)]</value>
+	</variable>
+	<variable name="Bald_WeatherPrecipitation">
+		<value condition="!String.IsEmpty(Window(home).Property(Bald.Weather.Current.Precipitation))">$INFO[Window(home).Property(Bald.Weather.Current.Precipitation)]</value>
+		<value>$INFO[Weather.Data(Current.Precipitation)]</value>
+	</variable>
+	<include name="Bald_WeatherNowView">
+		<control type="group">
+			<visible>$EXP[Bald_WeatherView_now]</visible>
+			<include>Bald_MediaVisibleRise</include>
+			<!-- The whole block takes focus; Select switches to the next location when there are several. -->
+			<control type="button" id="20">
+				<left>72</left>
+				<top>276</top>
+				<width>1776</width>
+				<height>560</height>
+				<texturefocus />
 				<texturenofocus />
-				<onup>$PARAM[onup_id]</onup>
-				<ondown>$PARAM[ondown_id]</ondown>
+				<label></label>
+				<include content="Bald_FollowContainer"><param name="id">9170</param><param name="window">weather</param></include>
+				<onup>9100</onup>
+				<onleft>9100</onleft>
+				<onright>9100</onright>
+				<onclick condition="$EXP[Bald_WeatherLocations]">Weather.LocationNext</onclick>
 			</control>
-			<control type="image" id="700$PARAM[item_id]1">
+			<control type="label">
 				<left>Bald_SafeLeft</left>
-				<top>210</top>
-				<width>1728</width>
-				<height>720</height>
-				<texture colordiffuse="bald_tile_placeholder">bald/white.png</texture>
+				<top>290</top>
+				<width>800</width>
+				<height>150</height>
+				<aligny>center</aligny>
+				<font>Bald_Clock</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[Weather.Data(Current.Temperature)]</label>
 			</control>
-			<control type="image" id="700$PARAM[item_id]2">
+			<control type="label">
 				<left>Bald_SafeLeft</left>
-				<top>210</top>
-				<width>1728</width>
-				<height>720</height>
-				<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Area)]</texture>
-				<aspectratio>scale</aspectratio>
+				<top>460</top>
+				<width>800</width>
+				<height>44</height>
+				<aligny>center</aligny>
+				<font>Bald_InfoTagline</font>
+				<textcolor>bald_ink</textcolor>
+				<label>$INFO[Weather.Data(Current.Condition)]</label>
 			</control>
-			<control type="image" id="700$PARAM[item_id]3">
+			<control type="label">
 				<left>Bald_SafeLeft</left>
-				<top>210</top>
-				<width>1728</width>
-				<height>720</height>
-				<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Layer)]</texture>
-				<aspectratio>scale</aspectratio>
-				<colordiffuse>bald_ink70</colordiffuse>
+				<top>512</top>
+				<width>800</width>
+				<height>32</height>
+				<aligny>center</aligny>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink70</textcolor>
+				<label>$INFO[Weather.Data(Current.FeelsLike),$LOCALIZE[402] ,]</label>
 			</control>
-			<control type="image" id="700$PARAM[item_id]4">
-				<left>1400</left>
-				<top>846</top>
+			<control type="label">
+				<left>Bald_SafeLeft</left>
+				<top>548</top>
+				<width>800</width>
+				<height>32</height>
+				<aligny>center</aligny>
+				<font>Bald_InfoMeta</font>
+				<textcolor>bald_ink70</textcolor>
+				<label>$INFO[Window(home).Property(Bald.Weather.Daily.1.HighTemperature),$LOCALIZE[419] ,]$INFO[Window(home).Property(Bald.Weather.Daily.1.LowTemperature), · $LOCALIZE[418] ,]</label>
+			</control>
+			<control type="label">
+				<left>Bald_SafeLeft</left>
+				<top>800</top>
+				<width>800</width>
+				<height>24</height>
+				<aligny>center</aligny>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink60</textcolor>
+				<label>$LOCALIZE[31154]</label>
+				<visible>Control.HasFocus(20) + $EXP[Bald_WeatherLocations]</visible>
+			</control>
+			<!-- The figures, in two columns on the right half: wind to clouds, then dew point to sunset. -->
+			<control type="grouplist">
+				<left>1000</left>
+				<top>300</top>
 				<width>400</width>
-				<height>64</height>
-				<texture border="27" colordiffuse="bald_field60">bald/pill.png</texture>
+				<height>520</height>
+				<orientation>vertical</orientation>
+				<itemgap>24</itemgap>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Current.Wind)</param><param name="value">$INFO[Weather.Data(Current.Wind)]</param><param name="header">$LOCALIZE[404]</param></include>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Current.Humidity)</param><param name="value">$INFO[Weather.Data(Current.Humidity)]</param><param name="header">$LOCALIZE[406]</param></include>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Current.Precipitation)</param><param name="value">$VAR[Bald_WeatherPrecipitation]</param><param name="header">$LOCALIZE[33021]</param></include>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Current.Cloudiness)</param><param name="value">$INFO[Weather.Data(Current.Cloudiness)]</param><param name="header">$LOCALIZE[387]</param></include>
 			</control>
-			<control type="image" id="700$PARAM[item_id]5">
+			<control type="grouplist">
 				<left>1424</left>
-				<top>854</top>
-				<width>352</width>
-				<height>48</height>
-				<aspectratio>keep</aspectratio>
-				<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Legend)]</texture>
+				<top>300</top>
+				<width>400</width>
+				<height>520</height>
+				<orientation>vertical</orientation>
+				<itemgap>24</itemgap>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Current.DewPoint)</param><param name="value">$INFO[Weather.Data(Current.DewPoint)]</param><param name="header">$LOCALIZE[405]</param></include>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Current.UVIndex)</param><param name="value">$INFO[Weather.Data(Current.UVIndex)]</param><param name="header">$LOCALIZE[403]</param></include>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Current.Pressure)</param><param name="value">$INFO[Weather.Data(Current.Pressure)]</param><param name="header">$LOCALIZE[1376]</param></include>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Today.Sunrise)</param><param name="value">$VAR[Bald_WeatherSunrise]</param><param name="header">$LOCALIZE[33027]</param></include>
+				<include content="Bald_WeatherStat"><param name="info">Weather.Data(Today.Sunset)</param><param name="value">$VAR[Bald_WeatherSunset]</param><param name="header">$LOCALIZE[33028]</param></include>
 			</control>
 		</control>
 	</include>
-	<include name="WidgetListCommon">
-		<scrolltime tween="cubic" easing="out">500</scrolltime>
-		<orientation>horizontal</orientation>
-		<onleft>9000</onleft>
-		<onright>noop</onright>
-		<onunfocus>SetProperty(listposition,$INFO[Container($PARAM[list_id]).Position],home)</onunfocus>
-		<onfocus>Control.Move($PARAM[list_id],-$INFO[Container($PARAM[list_id]).Position])</onfocus>
-		<onfocus>Control.Move($PARAM[list_id],$INFO[Window(home).Property(listposition)])</onfocus>
-		<onback condition="!Container($PARAM[list_id]).Position(0)">SetFocus($PARAM[list_id],0,absolute)</onback>
-		<onback condition="Container($PARAM[list_id]).Position(0)">9000</onback>
-		<preloaditems>2</preloaditems>
+
+	<!-- ============ Daily and Hourly ============ -->
+	<!-- A forecast view: a row of cards (Bald_WeatherCard) and the focused card's caption under it. The row's items are
+	     Home's (Includes_Bald_Weather.xml); their own Select (open the weather page) is replaced by nothing here. -->
+	<include name="Bald_WeatherForecastView">
+		<param name="id" />
+		<param name="view" />
+		<param name="content" />
+		<definition>
+			<control type="group">
+				<visible>$EXP[Bald_WeatherView_$PARAM[view]]</visible>
+				<include>Bald_MediaVisibleRise</include>
+				<control type="panel" id="$PARAM[id]">
+					<left>76</left>
+					<top>276</top>
+					<width>1768</width>
+					<height>340</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">440</scrolltime>
+					<preloaditems>2</preloaditems>
+					<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">weather</param></include>
+					<onup>9100</onup>
+					<onclick>noop</onclick>
+					<itemlayout width="252" height="340"><include content="Bald_WeatherCard" /></itemlayout>
+					<focusedlayout width="252" height="340"><include content="Bald_WeatherCard"><param name="focused">true</param></include></focusedlayout>
+					<include>$PARAM[content]</include>
+				</control>
+				<control type="group">
+					<left>Bald_SafeLeft</left>
+					<top>660</top>
+					<control type="label">
+						<width>1728</width><height>52</height><aligny>center</aligny>
+						<font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor>
+						<label>$VAR[Bald_WeatherCaptionTitle]</label>
+					</control>
+					<control type="label">
+						<top>64</top><width>1728</width><height>44</height><aligny>center</aligny>
+						<font>Bald_InfoTagline</font><textcolor>bald_ink</textcolor>
+						<label>$INFO[Container($PARAM[id]).ListItem.Property(Bald.Meta)]</label>
+					</control>
+					<control type="label">
+						<top>116</top><width>1728</width><height>32</height><aligny>center</aligny>
+						<font>Bald_InfoMeta</font><textcolor>bald_ink70</textcolor>
+						<label>$INFO[Container($PARAM[id]).ListItem.Property(Bald.Detail)]</label>
+					</control>
+					<control type="label">
+						<top>152</top><width>1728</width><height>32</height><aligny>center</aligny>
+						<font>Bald_InfoMeta</font><textcolor>bald_ink70</textcolor>
+						<label>$INFO[Container($PARAM[id]).ListItem.Property(Bald.Extra)]</label>
+					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<!-- The focused card's name: the day's long name or the hour; an add-on without long day names gives the short one. -->
+	<variable name="Bald_WeatherCaptionTitle">
+		<value condition="$EXP[Bald_WeatherView_daily] + !String.IsEmpty(Container(15100).ListItem.Property(Bald.Title))">$INFO[Container(15100).ListItem.Property(Bald.Title)]</value>
+		<value condition="$EXP[Bald_WeatherView_daily]">$INFO[Container(15100).ListItem.Label]</value>
+		<value>$INFO[Container(15200).ListItem.Property(Bald.Title)]</value>
+	</variable>
+	<include name="Bald_WeatherPageDaily">
+		<content>
+			<include content="Bald_WeatherDailyItem"><param name="n">1</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">2</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">3</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">4</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">5</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">6</param></include>
+			<include content="Bald_WeatherDailyItem"><param name="n">7</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">0</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">1</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">2</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">3</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">4</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">5</param></include>
+			<include content="Bald_WeatherDayItem"><param name="n">6</param></include>
+		</content>
+	</include>
+	<include name="Bald_WeatherPageHourly">
+		<content>
+			<include content="Bald_WeatherHourlyItem"><param name="n">1</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">2</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">3</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">4</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">5</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">6</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">7</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">8</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">9</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">10</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">11</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">12</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">13</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">14</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">15</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">16</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">17</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">18</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">19</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">20</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">21</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">22</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">23</param></include>
+			<include content="Bald_WeatherHourlyItem"><param name="n">24</param></include>
+		</content>
+	</include>
+
+	<!-- ============ Maps ============ -->
+	<!-- Up to five maps, one at a time: Up and Down move between them (Up from the first returns to the tabs; the map
+	     buttons sit in groups, so they chain themselves). The map
+	     fills the left of the page at 16:9 with its layer over it; its heading and legend sit in the right column. -->
+	<include name="Bald_WeatherMapsView">
+		<control type="grouplist" id="2000">
+			<left>0</left>
+			<top>276</top>
+			<width>1920</width>
+			<height>720</height>
+			<orientation>vertical</orientation>
+			<itemgap>0</itemgap>
+			<scrolltime tween="cubic" easing="out">440</scrolltime>
+			<visible>$EXP[Bald_WeatherView_maps]</visible>
+			<include>Bald_MediaVisibleRise</include>
+			<include content="WeatherMapItem"><param name="item_id">1</param><param name="up">9100</param><param name="down">70020</param></include>
+			<include content="WeatherMapItem"><param name="item_id">2</param><param name="up">70010</param><param name="down">70030</param></include>
+			<include content="WeatherMapItem"><param name="item_id">3</param><param name="up">70020</param><param name="down">70040</param></include>
+			<include content="WeatherMapItem"><param name="item_id">4</param><param name="up">70030</param><param name="down">70050</param></include>
+			<include content="WeatherMapItem"><param name="item_id">5</param><param name="up">70040</param><param name="down">noop</param></include>
+		</control>
+	</include>
+	<include name="WeatherMapItem">
+		<param name="item_id" />
+		<param name="up" />
+		<param name="down" />
+		<definition>
+			<control type="group" id="700$PARAM[item_id]">
+				<height>720</height>
+				<visible>Weather.IsFetched + !String.IsEmpty(Weather.Data(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Weather.Data(Map.IsFetched))</visible>
+				<control type="button" id="700$PARAM[item_id]0">
+					<left>84</left>
+					<top>-12</top>
+					<width>1126</width>
+					<height>644</height>
+					<texturefocus border="8" colordiffuse="bald_ink">bald/focus_ring.png</texturefocus>
+					<texturenofocus />
+					<label></label>
+					<onup>$PARAM[up]</onup>
+					<ondown>$PARAM[down]</ondown>
+				</control>
+				<control type="image" id="700$PARAM[item_id]1">
+					<left>Bald_SafeLeft</left>
+					<width>1102</width>
+					<height>620</height>
+					<texture colordiffuse="bald_tile_placeholder">bald/white.png</texture>
+				</control>
+				<control type="image" id="700$PARAM[item_id]2">
+					<left>Bald_SafeLeft</left>
+					<width>1102</width>
+					<height>620</height>
+					<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Area)]</texture>
+					<aspectratio>scale</aspectratio>
+				</control>
+				<control type="image" id="700$PARAM[item_id]3">
+					<left>Bald_SafeLeft</left>
+					<width>1102</width>
+					<height>620</height>
+					<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Layer)]</texture>
+					<aspectratio>scale</aspectratio>
+					<colordiffuse>bald_ink70</colordiffuse>
+				</control>
+				<control type="label" id="700$PARAM[item_id]9">
+					<left>Bald_PreviewLeft</left>
+					<width>528</width>
+					<height>52</height>
+					<aligny>center</aligny>
+					<font>Bald_CaptionTitle</font>
+					<textcolor>bald_ink</textcolor>
+					<label>$INFO[Weather.Data(Map.$PARAM[item_id].Heading)]</label>
+				</control>
+				<control type="image" id="700$PARAM[item_id]5">
+					<left>Bald_PreviewLeft</left>
+					<top>76</top>
+					<width>528</width>
+					<height>72</height>
+					<aspectratio align="left">keep</aspectratio>
+					<texture>$INFO[Weather.Data(Map.$PARAM[item_id].Legend)]</texture>
+				</control>
+			</control>
+		</definition>
 	</include>
 </includes>
