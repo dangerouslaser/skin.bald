@@ -10,7 +10,7 @@ LibreELEC has no `Player.Process(amlogic.*)` labels, so `resources/lib/core/plat
 
 What does not work on LibreELEC:
 
-- **VS10 modes** (the mode dialog and the dashboard's mode buttons): VS10 is the Amlogic Dolby Vision engine. On the Intel DV build, the output mode is Kodi's own *Dolby Vision output* setting.
+- **VS10 modes** (the mode dialog and the dashboard's mode buttons): VS10 is the Amlogic Dolby Vision engine. A launch mode or keymap set to the VS10 dialog opens the overlay instead. On the Intel DV build, the output mode is Kodi's own *Dolby Vision output* setting.
 - **RPU metadata** (L1, L5, L6, the metadata view): Kodi on LibreELEC has no `Player.Process(video.sidedata)` label, so `script.module.sidedata` has nothing to parse. It is an optional dependency here.
 - **Dropped frames** in the FPS row: the Amlogic `fps_info` node has no LibreELEC equivalent, so the drop count reads 0.
 
