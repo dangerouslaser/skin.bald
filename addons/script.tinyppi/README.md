@@ -6,22 +6,6 @@ A CoreELEC addon that displays detailed playback information in a custom overlay
 
 ---
 
-## LibreELEC fork
-
-This fork ([dangerouslaser/script.tinyppi](https://github.com/dangerouslaser/script.tinyppi), branch `libreelec`) also runs on **LibreELEC** (Kodi 22), including the Intel Dolby Vision build [intel-dv-libreelec](https://github.com/CroqueMr/intel-dv-libreelec). CoreELEC behaviour is unchanged.
-
-LibreELEC has no `Player.Process(amlogic.*)` labels, so `resources/lib/core/platform.py` rebuilds them, in the Amlogic spelling, from:
-
-- `VideoPlayer.HdrDetail`, which the Intel DV build ends with `· HDMI DV` or `· HDR10 output` while its bridge drives the output (profile, FEL and CM version come from the same label);
-- the DRM connector's `HDR_OUTPUT_METADATA` blob, read through Kodi's own DRM descriptor, for HDR10 and HLG;
-- the DRM debugfs (`state`, and `i915_display_info` on Intel) for the pixel encoding, bit depth, colorimetry and exact mode.
-
-What does not work on LibreELEC:
-
-- **VS10 modes** (the mode dialog and the dashboard's mode buttons): VS10 is the Amlogic Dolby Vision engine. On the Intel DV build, the output mode is Kodi's own *Dolby Vision output* setting.
-- **RPU metadata** (L1, L5, L6, the metadata view): Kodi on LibreELEC has no `Player.Process(video.sidedata)` label, so `script.module.sidedata` has nothing to parse. It is an optional dependency here.
-- **Dropped frames** in the FPS row: the Amlogic `fps_info` node has no LibreELEC equivalent, so the drop count reads 0.
-
 ## Screenshots
 <p align="center">
 <img width="1200" alt="No Convert" src="https://github.com/user-attachments/assets/b083e2b2-bff2-40de-bdc4-361688e4df5c" />
