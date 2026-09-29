@@ -397,7 +397,8 @@ Custom_1116_BaldHomeWidgets.xml (window 1116)
 9200	Action grouplist; 9201-9211 buttons (9210 sort by, 9211 order)
 
 Custom_1117_BaldHomeScreens.xml (window 1117)
-9300	Sidebar list; static items 1 Home, 10-17 hub positions 0-7 (Bald_HubCategory), 2 Live TV, 3 Add hub
+9300	Sidebar list; static items 1 Home, 10-17 hub positions 0-7 (Bald_HubCategory), 20-27 Live TV before hub
+		position 0-7 and 2 Live TV after the hubs (one shows, Bald.LiveTVAfter), 4 Search, 5 Settings, 6 Power, 3 Add hub
 9390	Hidden 1 x 1 list of the hubs menu (Skin Variables); the sidebar reads its items
 9400	Action grouplist: 9401 show in the main menu, 9402 configure widgets, 9403 rename, 9404 open
 		target, 9405 clear target, 9406 move up, 9407 move down, 9408 remove hub, 9409 add hub, 9410 / 9411 move Live TV
