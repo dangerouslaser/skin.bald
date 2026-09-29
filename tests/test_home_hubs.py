@@ -440,9 +440,9 @@ class ReturnKeepsStateTests(unittest.TestCase):
         onload = {node.text: node.get("condition") for node in loads}
         for action in self.RESETS:
             with self.subTest(action=action):
-                self.assertTrue(equivalent(onload[action], "!$EXP[Bald_ReturningToMenu]"), onload[action])
+                self.assertTrue(equivalent(onload[action], "!$EXP[Bald_Restoring]"), onload[action])
         self.assertTrue(equivalent(onload["SetProperty(TMDbHelper.WidgetContainer,$VAR[Bald_StartRow],home)"],
-                                   "!$EXP[Bald_ReturningToMenu] + $EXP[Bald_TMDbHelperFollows]"))
+                                   "!$EXP[Bald_Restoring] + $EXP[Bald_TMDbHelperFollows]"))
 
     def test_returning_matches_the_restored_entries(self):
         home = ET.parse(XML / "Includes_Bald_Home.xml").getroot()
@@ -464,9 +464,9 @@ class ReturnDefaultFocusTests(unittest.TestCase):
         for action in ("SetProperty(Bald.Row,$PARAM[id],home)", "SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)",
                        "SetProperty(Bald.FocusContainer,$PARAM[id],home)", "SetProperty(Bald.RowStyle,$PARAM[style],home)"):
             with self.subTest(action=action):
-                self.assertTrue(equivalent(guarded[action], "!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]"), guarded[action])
+                self.assertTrue(equivalent(guarded[action], "!$EXP[Bald_Restoring] + $PARAM[enabled]"), guarded[action])
         self.assertTrue(equivalent(guarded["SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)"],
-                                   "!$EXP[Bald_ReturningToMenu] + $PARAM[enabled] + $EXP[Bald_TMDbHelperFollows]"))
+                                   "!$EXP[Bald_Restoring] + $PARAM[enabled] + $EXP[Bald_TMDbHelperFollows]"))
 
 
 class ContentPickerTests(unittest.TestCase):

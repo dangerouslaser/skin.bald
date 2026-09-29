@@ -26,25 +26,26 @@
 	<!-- As in Startup.xml: a failed run cannot leave Bald.HubsMigrating set for good. -->
 	<onload condition="String.IsEmpty(Skin.String(Bald.HubsMigrated)) + String.IsEmpty(Window(home).Property(Bald.HubsMigrating))">AlarmClock(bald_hubs_migrating,ClearProperty(Bald.HubsMigrating,home),00:30,silent)</onload>
 	<onload condition="!String.IsEmpty(Skin.String(Bald.HubsMigrated))">RunScript(script.skinvariables,action=buildtemplate,lastbuildtime=$INFO[Skin.String(Bald.WidgetsStamp)])</onload>
-	<!-- Window properties survive ReloadSkin and returning from other windows; start clean every load, except when
-	     returning to the menu entry Home was left from (Bald_ReturningToMenu), which keeps the state it was left in.
-	     Focus always starts on row 1 (defaultcontrol always), unless an onload below moves it. -->
+	<!-- Window properties survive ReloadSkin and returning from other windows; start clean on a fresh load, and keep the
+	     state Home was left in when returning to it (Bald_Restoring: to the menu entry it was left from, or to the row).
+	     Kodi focuses row 1 first (defaultcontrol always); the onloads below move focus: back to the row or menu entry
+	     Home was left on, else to the start screen's menu entry (Bald_StartOnMenu) or its first row. -->
 	<!-- Home's own rows, or while Home is hidden (Home Screens) the screen it starts on instead (Bald_StartScreen:
 	     the first shown hub with rows, Live TV's rows, else the menu). With Home shown, Bald_Start* are Home's. -->
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row,$VAR[Bald_StartRow],home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.home,9101,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.livetv,9051,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub1,9201,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub2,9301,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub3,9401,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub4,9501,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub5,9601,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub6,9701,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub7,9801,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Row.hub8,9901,home)</onload>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.Screen,$VAR[Bald_StartScreen],home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row,$VAR[Bald_StartRow],home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.home,9101,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.livetv,9051,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.hub1,9201,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.hub2,9301,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.hub3,9401,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.hub4,9501,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.hub5,9601,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.hub6,9701,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.hub7,9801,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Row.hub8,9901,home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.Screen,$VAR[Bald_StartScreen],home)</onload>
 	<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
-	<onload condition="!$EXP[Bald_ReturningToMenu]">SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)</onload>
+	<onload condition="!$EXP[Bald_Restoring]">SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)</onload>
 	<!-- Background: the current row item's blurred fanart, following the current row (Bald_FollowContainer). Bald
 	     Helper makes it (Bald.Blur); without it, TMDb Helper's image service does (TMDbHelper.EnableBlur; no TMDB
 	     lookups). Never both: with Bald Helper, TMDb Helper's blur is switched off. -->
@@ -57,8 +58,8 @@
 	<onload condition="$EXP[Bald_RatingsOnline] + !Skin.HasSetting(TMDbHelper.Service)">Skin.SetBool(TMDbHelper.Service)</onload>
 	<onload condition="!$EXP[Bald_RatingsOnline] + Skin.HasSetting(TMDbHelper.Service)">Skin.Reset(TMDbHelper.Service)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper]">SetProperty(TMDbHelper.Blur.SourceImage,Art(fanart)|Art(tvshow.fanart)|Art(thumb),home)</onload>
-	<include content="Bald_FollowContainerOnLoad"><param name="id">$VAR[Bald_StartRow]</param><param name="window">home</param><param name="condition">!$EXP[Bald_ReturningToMenu]</param></include>
-	<onload condition="!$EXP[Bald_ReturningToMenu]">ClearProperty(Bald.Menu,home)</onload>
+	<include content="Bald_FollowContainerOnLoad"><param name="id">$VAR[Bald_StartRow]</param><param name="window">home</param><param name="condition">!$EXP[Bald_Restoring]</param></include>
+	<onload condition="!$EXP[Bald_Restoring]">ClearProperty(Bald.Menu,home)</onload>
 	<!-- No rows to start on (no Home rows: the widget editor keeps one, but a row list can be emptied by hand; or Home
 	     hidden and no shown hub or Live TV with rows): no current row, and focus goes to the menu's first entry, which
 	     opens the menu. Search's return below still takes precedence. -->
@@ -67,11 +68,20 @@
 	<!-- Home hidden: focus the start row (Kodi has already focused the default control, Home's hidden row 1). If that
 	     row cannot take focus yet, Timers.xml bald_home_start finishes the move (Bald_HomeRowStranded). Behind the
 	     startup splash 9195 does it as the splash lifts. -->
-	<onload condition="!$EXP[Bald_ReturningToMenu] + !$EXP[Bald_Preloading] + $EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onload>
+	<onload condition="!$EXP[Bald_Restoring] + !$EXP[Bald_Preloading] + $EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onload>
+	<!-- A fresh start: the menu, on the start screen's entry (its onfocus opens the menu and previews that screen; Back
+	     goes to the start row). Behind the startup splash 9195 does it as the splash lifts. -->
+	<onload condition="!$EXP[Bald_Restoring] + !$EXP[Bald_Preloading] + $EXP[Bald_StartHasRows] + $EXP[Bald_StartOnMenu]">SetFocus($VAR[Bald_StartMenuEntry])</onload>
+	<!-- Back from another window: where Home was left, the menu entry it was on or the row. -->
+	<onload condition="$EXP[Bald_ReturningToRow] + !$EXP[Bald_Preloading] + $EXP[Bald_MenuOpen]">SetFocus($VAR[Bald_MenuPreviewEntry])</onload>
+	<onload condition="$EXP[Bald_ReturningToRow] + !$EXP[Bald_Preloading] + !$EXP[Bald_MenuOpen]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onload>
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetProperty(Bald.Menu,1,home)</onload>
 	<onload condition="!String.IsEmpty(Window(home).Property(Bald.ReturnSearch))">SetFocus(9005)</onload>
 	<onload>ClearProperty(Bald.ReturnSearch,home)</onload>
 	<include>Bald_ReturnToMenu</include>
+	<onload>ClearProperty(Bald.Left,home)</onload>
+	<!-- Marks the next load as a return (Bald_ReturningToRow). -->
+	<onunload>SetProperty(Bald.Left,1,home)</onunload>
 	<!-- A hub's name is only for the library its bridge opens next (Bald_LibraryMoviesHeading). -->
 	<onload>ClearProperty(Bald.HubTitle,home)</onload>
 	<!-- Startup splash (Bald_Splash). No current row until it lifts, so the first row, its art, clearlogo and caption
@@ -468,13 +478,16 @@
 			<!-- The recommended-settings offer Home's onload skips behind the splash comes as it lifts. -->
 			<onfocus condition="!Skin.HasSetting(Bald.RecommendedOffered)">RunScript(skin.bald,recommended,prompt)</onfocus>
 			<onfocus condition="!Skin.HasSetting(Bald.RecommendedOffered)">Skin.SetBool(Bald.RecommendedOffered)</onfocus>
-			<!-- Home's default: row 1 (its onfocus makes it the current row), or the menu with no Home rows; while Home is
+			<!-- Home's first focus: row 1 (its onfocus makes it the current row), or the menu with no Home rows; while Home is
 			     hidden, the start screen's first row or the menu (Bald_StartRow, Bald_StartMenuEntry). -->
 			<onfocus condition="!$EXP[Bald_HomeHidden] + $EXP[Bald_HasRows_home]">SetFocus(9101)</onfocus>
 			<onfocus condition="$EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]">SetProperty(Bald.Row,$VAR[Bald_StartRow],home)</onfocus>
 			<onfocus condition="$EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]">SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)</onfocus>
 			<onfocus condition="$EXP[Bald_HomeHidden] + $EXP[Bald_StartHasRows]">SetFocus($INFO[Window(home).Property(Bald.Row)])</onfocus>
 			<onfocus condition="!$EXP[Bald_StartHasRows]">SetFocus($VAR[Bald_StartMenuEntry])</onfocus>
+			<!-- A fresh start opens on the menu (Bald_StartOnMenu): the row above is made current first, so Back from the
+			     menu reaches it. -->
+			<onfocus condition="$EXP[Bald_StartHasRows] + $EXP[Bald_StartOnMenu]">SetFocus($VAR[Bald_StartMenuEntry])</onfocus>
 			<!-- Should the row still refuse focus (Home hidden, its list not loaded yet), any key tries again. -->
 			<onup>SetFocus($VAR[Bald_RowFocus])</onup>
 			<ondown>SetFocus($VAR[Bald_RowFocus])</ondown>

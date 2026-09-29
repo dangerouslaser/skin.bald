@@ -430,10 +430,10 @@ class RatingsTests(unittest.TestCase):
         focus = {n.text: n.get("condition") for n in expand_follow(fixedlist) if n.tag == "onfocus"}
         condition = focus["SetProperty(TMDbHelper.WidgetContainer,$PARAM[id],home)"]
         # (An enabled row: Home's rows while Home is hidden set nothing.)
-        self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_ReturningToMenu] + $PARAM[enabled]", condition))
+        self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_Restoring] + $PARAM[enabled]", condition))
         home = ET.parse(SKIN / "Home.xml").getroot()
         loads = {n.text: n.get("condition") for n in expand_follow(home) if n.tag == "onload"}
-        self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_ReturningToMenu]",
+        self.assertTrue(implies("$EXP[Bald_RatingsOnline] + !$EXP[Bald_Restoring]",
                                 loads["SetProperty(TMDbHelper.WidgetContainer,$VAR[Bald_StartRow],home)"]))
         import home_menu
         self.assertEqual(home_menu.variable_value("Bald_StartRow", home_menu.HOME_SHOWN), "9101")

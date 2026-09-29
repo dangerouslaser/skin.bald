@@ -34,7 +34,7 @@ class HomeZeroRowsTests(unittest.TestCase):
         self.assertTrue(home_menu.same_under(NO_ROWS, "!$EXP[Bald_HasRows_home]", home_menu.HOME_SHOWN))
         self.assertEqual(home_menu.variable_value("Bald_StartMenuEntry", home_menu.HOME_SHOWN), "9001")
         # After the current-row setup (skipped only when returning to a menu entry), before Search's own return focus.
-        self.assertLess(position("!$EXP[Bald_ReturningToMenu]", "SetProperty(Bald.Row,$VAR[Bald_StartRow],home)"), clear)
+        self.assertLess(position("!$EXP[Bald_Restoring]", "SetProperty(Bald.Row,$VAR[Bald_StartRow],home)"), clear)
         search_focus = next(i for i, (_, action) in enumerate(onload) if action == "SetFocus(9005)")
         self.assertLess(focus, search_focus)
 

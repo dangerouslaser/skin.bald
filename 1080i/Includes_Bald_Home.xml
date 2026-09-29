@@ -1978,11 +1978,11 @@
 				     then resize it. -->
 				<!-- Nor from a disabled row: Home's rows while Home is hidden get that same default focus, and must not make
 				     themselves the current row over the screen Home starts on (Bald_HomeHidden). -->
-				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
-				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
-				<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">home</param><param name="condition">!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]</param></include>
+				<onfocus condition="!$EXP[Bald_Restoring] + $PARAM[enabled]">SetProperty(Bald.Row,$PARAM[id],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_Restoring] + $PARAM[enabled]">SetProperty(Bald.Row.$PARAM[screen],$PARAM[id],home)</onfocus>
+				<include content="Bald_FollowContainer"><param name="id">$PARAM[id]</param><param name="window">home</param><param name="condition">!$EXP[Bald_Restoring] + $PARAM[enabled]</param></include>
 				<!-- The art frame's shape follows the displayed row's style (Bald_PosterRow). -->
-				<onfocus condition="!$EXP[Bald_ReturningToMenu] + $PARAM[enabled]">SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
+				<onfocus condition="!$EXP[Bald_Restoring] + $PARAM[enabled]">SetProperty(Bald.RowStyle,$PARAM[style],home)</onfocus>
 				<!-- Row start: a fixedlist first selects item slot + 1 (start) at its focus slot. The row above moves this one back while
 				     it is hidden (generated onfocus, see shortcuts/generator/screen.xml) and Timers.xml covers the rows shown
 				     before they are focused; if the row is still pristine when it gains focus, move it here. Loaded rows are
@@ -2083,6 +2083,33 @@
 	     than resetting it: Kodi sets each control's initial animation state from the properties as they were when Home
 	     was left, so any reset and restore flips conditions and animates the frame away and back. -->
 	<expression name="Bald_ReturningToMenu">[[String.IsEqual(Window(home).Property(Bald.ReturnMenu),9011) + Control.IsVisible(9011)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9012) + Control.IsVisible(9012)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9013) + Control.IsVisible(9013)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9014) + Control.IsVisible(9014)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9015) + Control.IsVisible(9015)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9016) + Control.IsVisible(9016)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9017) + Control.IsVisible(9017)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9018) + Control.IsVisible(9018)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9004) + Control.IsVisible(9004)] | [String.IsEqual(Window(home).Property(Bald.ReturnMenu),9006) + Control.IsVisible(9006)]]</expression>
+	<!-- Home is loading back from any other window (a library, playback, a reload after a rebuild): it keeps the state
+	     it was left in, as above, and focus returns to where it was: the previewed menu entry with the menu open
+	     (Bald_MenuPreviewEntry), else the current row. Bald.Left is set by Home's onunload
+	     and cleared at the end of its onload, and by the widget editor and Home Screens when they change the rows, so
+	     Home starts fresh after a rebuild. The first load of a Kodi session starts fresh too (window properties start
+	     empty). -->
+	<expression name="Bald_ReturningToRow">[!String.IsEmpty(Window(home).Property(Bald.Left)) + $EXP[Bald_HasRow] + !$EXP[Bald_ReturningToMenu]]</expression>
+	<expression name="Bald_Restoring">[$EXP[Bald_ReturningToMenu] | $EXP[Bald_ReturningToRow]]</expression>
+	<!-- The menu entry of the previewed screen (Bald.MenuPreview). -->
+	<variable name="Bald_MenuPreviewEntry">
+		<value condition="$EXP[Bald_MenuPreview_hub1]">9011</value>
+		<value condition="$EXP[Bald_MenuPreview_hub2]">9012</value>
+		<value condition="$EXP[Bald_MenuPreview_hub3]">9013</value>
+		<value condition="$EXP[Bald_MenuPreview_hub4]">9014</value>
+		<value condition="$EXP[Bald_MenuPreview_hub5]">9015</value>
+		<value condition="$EXP[Bald_MenuPreview_hub6]">9016</value>
+		<value condition="$EXP[Bald_MenuPreview_hub7]">9017</value>
+		<value condition="$EXP[Bald_MenuPreview_hub8]">9018</value>
+		<value condition="$EXP[Bald_MenuPreview_livetv]">9004</value>
+		<value condition="$EXP[Bald_MenuPreview_search]">9005</value>
+		<value condition="$EXP[Bald_MenuPreview_settings]">9006</value>
+		<value condition="$EXP[Bald_MenuPreview_power]">9007</value>
+		<value condition="$EXP[Bald_MenuPreview_home]">9001</value>
+		<value>$VAR[Bald_StartMenuEntry]</value>
+	</variable>
+	<!-- A fresh start opens the menu on the start screen's entry; Appearance > Behavior can start on the rows instead. -->
+	<expression name="Bald_StartOnMenu">[!Skin.HasSetting(Bald.HomeStartsOnRows)]</expression>
 	<!-- A library page's heading (the movie and series views): the hub's name while the library shows the folder that
 	     hub opened (Bald.HubTitle, set by the hub's bridge; Bald.HubPath, taken by MyVideoNav's onload when it opens
 	     from Home), else the section's own name. -->

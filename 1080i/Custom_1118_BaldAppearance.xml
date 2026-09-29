@@ -168,6 +168,9 @@
 				<!-- Select on a hub (or Live TV) in the Home menu opens its library (or the guide) and Right enters its rows;
 				     off, the reverse (Includes_Bald_Home.xml, Bald_SelectOpens). Unset is off, so installs keep today's keys. -->
 				<control type="radiobutton" id="9629"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">advanced</param></include><label>$LOCALIZE[31210]</label><selected>Skin.HasSetting(Bald.HubSelectOpens)</selected><onclick>Skin.ToggleSetting(Bald.HubSelectOpens)</onclick></control>
+				<!-- Home opens on the start screen's rows instead of the menu (Includes_Bald_Home.xml, Bald_StartOnMenu). Only a
+				     fresh start: returning to Home always goes back to where it was left. Unset opens on the menu. -->
+				<control type="radiobutton" id="9630"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31742]</label><selected>Skin.HasSetting(Bald.HomeStartsOnRows)</selected><onclick>Skin.ToggleSetting(Bald.HomeStartsOnRows)</onclick></control>
 				<!-- Date & time (Includes_Bald_Common.xml, Clock): the time format everywhere Bald draws a clock (Home, the player's
 				     seek layer, Live TV and guide headers, the login screen), the date beside it, and Home's clock at all.
 				     Select cycles region (empty), 12 hours, 24 hours; an unknown value goes back to the region. -->

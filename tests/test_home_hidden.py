@@ -91,7 +91,7 @@ class HiddenHomeTests(unittest.TestCase):
 
     def test_onload_sets_the_start_state_and_focus_unless_returning_to_a_menu_entry(self):
         loads = [(n.get("condition"), n.text) for n in expand_follow(self.home) if n.tag == "onload"]
-        returning = "!$EXP[Bald_ReturningToMenu]"
+        returning = "!$EXP[Bald_Restoring]"
         for action in ("SetProperty(Bald.Row,$VAR[Bald_StartRow],home)", "SetProperty(Bald.Screen,$VAR[Bald_StartScreen],home)",
                        "SetProperty(Bald.RowStyle,$VAR[Bald_StartRowStyle],home)",
                        "SetProperty(Bald.FocusContainer,$VAR[Bald_StartRow],home)"):

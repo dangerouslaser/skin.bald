@@ -255,6 +255,8 @@
 	<include name="Bald_StampWidgetsOnUnload">
 		<onunload condition="!String.IsEmpty(Window(home).Property(Bald.WidgetsDirty))">Skin.SetString(Bald.WidgetsStamp,$INFO[System.Date(yyyy-mm-dd)]_$INFO[System.Time(hh:mm:ss)])</onunload>
 		<onunload>ClearProperty(Bald.WidgetsDirty,home)</onunload>
+		<!-- The rows may have changed: Home starts fresh instead of returning to the row it was left on. -->
+		<onunload>ClearProperty(Bald.Left,home)</onunload>
 	</include>
 
 	<!-- Appearance > Typography (1118): the current fontset (Skin.Font is lookandfeel.font, a Font.xml fontset id). -->
