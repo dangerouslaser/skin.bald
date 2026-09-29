@@ -16,7 +16,7 @@
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height><orientation>vertical</orientation>
 				<viewtype label="31853">list</viewtype><visible>Container.Content(movies)</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,513,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">513</param><param name="window">videos</param></include><include content="Bald_UnfollowContainer"><param name="window">videos</param></include>
-				<onup>9150</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|513)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,513)</onright><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|513)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,513)</ondown>
+				<onup>513</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|513)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,513)</onright>
 				<include>Bald_LibraryDim</include>
 				<itemlayout width="1140" height="48"><include>Bald_CompactMovieRow</include></itemlayout>
 				<focusedlayout width="1140" height="48">

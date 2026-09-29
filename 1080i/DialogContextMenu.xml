@@ -64,9 +64,7 @@
 				<itemgap>6</itemgap>
 				<scrolltime>0</scrolltime>
 				<usecontrolcoords>true</usecontrolcoords>
-				<!-- Kodi wires the intermediate buttons; these stop wrapping at the ends, like Home. -->
-				<onup>noop</onup>
-				<ondown>noop</ondown>
+				<!-- Kodi wires the intermediate buttons; with no onup/ondown here the ends wrap, like Home's menu. -->
 			</control>
 			<include content="Bald_MenuNote"><param name="id">995</param><param name="text">$VAR[Bald_ContextNote]</param></include>
 		</control>

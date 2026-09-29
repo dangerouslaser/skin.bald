@@ -77,7 +77,7 @@
 				<left>Bald_SafeLeft</left><top>Bald_LowRailTop</top><width>1248</width><height>234</height><orientation>horizontal</orientation>
 				<viewtype label="31855">icon</viewtype><visible>Container.Content(movies)</visible><preloaditems>4</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<onfocus>SetProperty(Bald.LibraryContainer,515,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">515</param><param name="window">videos</param></include><include content="Bald_UnfollowContainer"><param name="window">videos</param></include>
-				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|515)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,515)</ondown><onleft>noop</onleft><onright>noop</onright>
+				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|515)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,515)</ondown>
 				<include>Bald_LibraryDim</include>
 				<itemlayout width="156" height="234"><include content="Bald_PosterLowTile" /></itemlayout>
 				<focusedlayout width="156" height="234"><include content="Bald_PosterLowTile"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(515) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>

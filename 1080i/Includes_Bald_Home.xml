@@ -2000,8 +2000,10 @@
 				<onup condition="Integer.IsEqual($PARAM[index],1)">SetFocus($PARAM[menu])</onup>
 				<onup condition="!Integer.IsEqual($PARAM[index],1)">$PARAM[up]</onup>
 				<ondown>$PARAM[down]</ondown>
-				<onleft>SetProperty(Bald.NudgeL,$VAR[Bald_NudgeLNext],home)</onleft>
-				<onright>SetProperty(Bald.NudgeR,$VAR[Bald_NudgeRNext],home)</onright>
+				<!-- Left and Right wrap at the row's ends (a container wraps when none of its onleft/onright holds,
+				     CGUIBaseContainer::OnLeft). A row of one item has nowhere to go: it nudges instead. -->
+				<onleft condition="!Integer.IsGreater(Container($PARAM[id]).NumItems,1)">SetProperty(Bald.NudgeL,$VAR[Bald_NudgeLNext],home)</onleft>
+				<onright condition="!Integer.IsGreater(Container($PARAM[id]).NumItems,1)">SetProperty(Bald.NudgeR,$VAR[Bald_NudgeRNext],home)</onright>
 				<onback>SetProperty(Bald.Menu,1,home)</onback>
 				<onback>SetProperty(Bald.MenuPreview,$PARAM[screen],home)</onback>
 				<onback>SetProperty(Bald.RowStyle,$PARAM[style],home)</onback>

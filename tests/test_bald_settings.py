@@ -206,8 +206,9 @@ class BaldSettingsTests(unittest.TestCase):
     def test_menu_entries_leave_up_and_down_to_the_grouplist(self):
         root = ET.parse(ROOT / "1080i" / "Home.xml").getroot()
         menu = root.find(".//control[@id='9000']")
-        self.assertEqual(menu.findtext("onup"), "noop")
-        self.assertEqual(menu.findtext("ondown"), "noop")
+        # The ends wrap: the grouplist joins the last entry to the first when it has no onup/ondown of its own.
+        self.assertIsNone(menu.find("onup"))
+        self.assertIsNone(menu.find("ondown"))
         # Menu order: Home, the eight hub slots (the user's order), Live TV, Search, Settings, Power.
         entries = home_menu.entries()
         self.assertEqual([node.get("id") for node in entries],

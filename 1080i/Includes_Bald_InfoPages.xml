@@ -197,7 +197,6 @@
 				<onfocus>SetProperty(Bald.InfoSec,1,home)</onfocus>
 				<include content="Bald_UnfollowContainerOnFocus"><param name="window">movieinformation</param></include>
 				<include>Bald_InfoToOverview</include><include>Bald_InfoToMore</include>
-				<onleft>noop</onleft><onright>noop</onright>
 				<itemlayout width="240" height="234"><include>Bald_CastItem</include></itemlayout>
 				<focusedlayout width="240" height="234"><include content="Bald_CastItem"><param name="focused">Control.HasFocus(50)</param></include></focusedlayout>
 			</control>
@@ -270,7 +269,7 @@
 				<onfocus>SetProperty(Bald.InfoSec,2,home)</onfocus>
 				<include content="Bald_FollowContainer"><param name="id">5100</param><param name="window">movieinformation</param></include>
 				<include>Bald_InfoBackToCast</include>
-				<ondown>noop</ondown><onleft>noop</onleft><onright>noop</onright>
+				<ondown>noop</ondown>
 				<onclick condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.open|$INFO[Container(5100).ListItem.DBType]|$INFO[Container(5100).ListItem.DBID])</onclick>
 				<onclick condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,open,$INFO[Container(5100).ListItem.DBType],$INFO[Container(5100).ListItem.DBID])</onclick>
 				<itemlayout width="192" height="119"><include>Bald_LandscapeTile</include></itemlayout>

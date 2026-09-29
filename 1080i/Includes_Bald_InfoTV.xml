@@ -584,8 +584,6 @@
 				<include>Bald_InfoTVOnOverview</include>
 				<onup>SetFocus(5000)</onup>
 				<include>Bald_InfoTVSeasonsDown</include>
-				<onleft>noop</onleft>
-				<onright>noop</onright>
 				<content target="videos" browse="never">$VAR[Bald_InfoTVSeasonsPath]</content>
 			</control>
 			<!-- Episodes (i7) and the focused episode's detail. -->
@@ -600,8 +598,6 @@
 					<onup condition="$EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</onup>
 					<onup condition="!$EXP[Bald_InfoTVHasSeasons]">SetFocus(5000)</onup>
 					<include>Bald_InfoActionToCast</include>
-					<onleft>noop</onleft>
-					<onright>noop</onright>
 					<content target="videos" browse="never">$INFO[Container(5301).ListItem.FolderPath]</content>
 				</control>
 				<include>Bald_InfoTVEpisodeDetail</include>

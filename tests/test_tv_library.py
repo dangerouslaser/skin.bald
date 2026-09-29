@@ -196,7 +196,8 @@ class SeriesPageTests(unittest.TestCase):
 
     def test_navigation_contract(self):
         self.assertEqual(self.tabs.findtext('onup'), '9150')
-        self.assertEqual((self.tabs.findtext('onleft'), self.tabs.findtext('onright')), ('noop', 'noop'))
+        # Left and Right wrap at the ends of the seasons.
+        self.assertEqual((self.tabs.find('onleft'), self.tabs.find('onright')), (None, None))
         down = [(n.get('condition') or 'true', n.text) for n in self.built.find(".//control[@id='532']").findall('ondown')]
         self.assertTrue(down)
         for condition, action in down:
@@ -207,8 +208,10 @@ class SeriesPageTests(unittest.TestCase):
         self.assertIn('SetFocus(5302,0,absolute)', [a for _, a in down])
         self.assertEqual(self.row.findtext('onup'), 'SetFocus(532)')
         self.assertEqual([n.text for n in self.row.findall('onback')], ['SetFocus(532)', 'Action(Back)'])
-        for key in ('ondown', 'onleft', 'onright'):
-            self.assertEqual(self.row.findtext(key), 'noop')
+        self.assertEqual(self.row.findtext('ondown'), 'noop')
+        # Left and Right wrap at the ends of the season.
+        for key in ('onleft', 'onright'):
+            self.assertIsNone(self.row.find(key))
         built_row = self.built.find(".//control[@id='5302']")
         self.assertEqual([n.text for n in built_row.findall('onclick')],
                          ['NotifyAll(skin.bald,bald.play|episode|$INFO[Container(5302).ListItem.DBID])',

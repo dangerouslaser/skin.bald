@@ -26,9 +26,10 @@ class ContextMenuTests(unittest.TestCase):
         maximum = int(self.group.find('height').get('max'))
         self.assertGreaterEqual(background - maximum, 1080)
 
-    def test_navigation_does_not_wrap(self):
-        self.assertEqual(self.group.findtext('onup'), 'noop')
-        self.assertEqual(self.group.findtext('ondown'), 'noop')
+    def test_navigation_wraps(self):
+        # With no onup/ondown of its own the grouplist joins its last entry to its first.
+        self.assertIsNone(self.group.find('onup'))
+        self.assertIsNone(self.group.find('ondown'))
 
     def test_note_is_shared_and_below_maximum_viewport(self):
         bottom = int(self.group.findtext('top')) + int(self.group.find('height').get('max'))

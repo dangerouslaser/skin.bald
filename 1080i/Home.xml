@@ -312,9 +312,7 @@
 				<orientation>vertical</orientation>
 				<itemgap>6</itemgap>
 				<scrolltime tween="cubic" easing="out">320</scrolltime>
-				<!-- The ends do not wrap (with no onup/ondown the grouplist would join the last entry to the first). -->
-				<onup>noop</onup>
-				<ondown>noop</ondown>
+				<!-- The ends wrap: with no onup/ondown of its own, the grouplist joins the last entry to the first. -->
 				<visible allowhiddenfocus="true">$EXP[Bald_MenuOpen]</visible>
 				<include>Bald_AnimMenuShows</include>
 				<!-- Hidden while Home is hidden in Home Screens (never with no hub shown, Bald_HomeHidden). -->

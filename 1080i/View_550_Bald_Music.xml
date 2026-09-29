@@ -15,7 +15,7 @@
 				<viewtype label="31400">list</viewtype><visible>$EXP[Bald_MusicCoverContent]</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
 				<include content="Bald_MusicViewNav"><param name="id">550</param></include>
 				<onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|550)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,550)</onright>
-				<ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|550)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,550)</ondown>
+				
 				<itemlayout width="216" height="300"><include>Bald_MusicTile</include></itemlayout>
 				<focusedlayout width="216" height="300"><include content="Bald_MusicTile"><param name="diffuse">bald_ink</param><param name="ink">bald_ink</param><param name="focused">Control.HasFocus(550) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
@@ -34,9 +34,9 @@
 			<control type="list" id="551">
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height><orientation>vertical</orientation>
 				<viewtype label="31853">list</viewtype><visible>$EXP[Bald_MusicListContent]</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
-				<include content="Bald_MusicViewNav"><param name="id">551</param></include>
+				<include content="Bald_MusicViewNav"><param name="id">551</param><param name="up">551</param></include>
 				<onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|551)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,551)</onright>
-				<ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|551)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,551)</ondown>
+				
 				<itemlayout width="1140" height="48"><include>Bald_MusicCompactRow</include></itemlayout>
 				<focusedlayout width="1140" height="48">
 					<control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(551) | $EXP[Bald_LibraryLettersOpen]</visible></control>
@@ -70,9 +70,9 @@
 			<control type="list" id="552">
 				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>624</width><height>616</height><orientation>vertical</orientation>
 				<viewtype label="31854">list</viewtype><visible>$EXP[Bald_MusicCoverContent]</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
-				<include content="Bald_MusicViewNav"><param name="id">552</param></include>
+				<include content="Bald_MusicViewNav"><param name="id">552</param><param name="up">552</param></include>
 				<onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|552)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,552)</onright>
-				<ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|552)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,552)</ondown>
+				
 				<itemlayout width="624" height="88"><include>Bald_MusicArtworkRow</include></itemlayout>
 				<focusedlayout width="624" height="88">
 					<control type="image"><left>0</left><top>40</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(552) | $EXP[Bald_LibraryLettersOpen]</visible></control>

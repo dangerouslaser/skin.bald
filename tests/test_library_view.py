@@ -113,8 +113,10 @@ class LibraryViewTests(unittest.TestCase):
         self.assertEqual((menu.findtext('left'), menu.findtext('top'), menu.findtext('width')), ('1440', '392', '420'))
         self.assertEqual(int(menu.findtext('height')), 5 * int(menu.find('itemlayout').get('height')))
         self.assertEqual(menu.findtext('scrolltime'), '0')
-        for direction in ('onup', 'ondown', 'onright'):
-            self.assertEqual(menu.findtext(direction), 'noop')
+        self.assertEqual(menu.findtext('onright'), 'noop')
+        # Up and Down wrap at the ends.
+        for direction in ('onup', 'ondown'):
+            self.assertIsNone(menu.find(direction))
         for direction in ('onleft', 'onback'):
             self.assertEqual(menu.findtext(direction), '50')
         actions = [n.text for n in menu.iter('onclick')]

@@ -86,7 +86,8 @@ class CallSiteTests(unittest.TestCase):
                 expected = "play" if action == "play" else ("info" if action == "recommendations" else action)
                 self.assertEqual(sent.action, expected)
         self.assertEqual(set(found), set(MOVED))
-        self.assertEqual(len(found["letters"]), 21)  # 15 video call sites, Right and Down on each music view
+        # 10 video call sites and Right on each music view: Down wraps in the vertical lists and grids.
+        self.assertEqual(len(found["letters"]), 13)
 
     def test_every_notifyall_needs_the_helper_and_parses(self):
         sent = set()

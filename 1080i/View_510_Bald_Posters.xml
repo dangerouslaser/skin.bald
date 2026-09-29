@@ -145,7 +145,7 @@
 		<control type="list" id="9150">
 			<left>Bald_RightColumn</left><top>392</top><width>420</width><height>310</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
 			<visible allowhiddenfocus="true">$EXP[Bald_LibraryMenuOpen]</visible><include>Bald_AnimMenuShows</include>
-			<onleft>50</onleft><onback>50</onback><onright>noop</onright><onup>noop</onup><ondown>noop</ondown>
+			<onleft>50</onleft><onback>50</onback><onright>noop</onright>
 			<itemlayout width="420" height="62"><include>Bald_MenuRowUnfocused</include></itemlayout>
 			<focusedlayout width="420" height="62"><include content="Bald_MenuRowFocused"><param name="always_dot">true</param></include></focusedlayout>
 			<content><include>$PARAM[items]</include></content>
@@ -274,7 +274,7 @@
 				<viewtype label="31850">icon</viewtype><visible>Container.Content(movies)</visible>
 				<onfocus>SetProperty(Bald.LibraryContainer,510,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">510</param><param name="window">videos</param></include>
 				<include content="Bald_UnfollowContainer"><param name="window">videos</param></include>
-				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|510)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,510)</ondown><onleft>noop</onleft><onright>noop</onright>
+				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|510)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,510)</ondown>
 				<include>Bald_LibraryDim</include>
 				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
 				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>

@@ -99,7 +99,9 @@ class MusicLibraryTests(unittest.TestCase):
         self.assertNotIn("Window(videos)", text)
         for view in VIEWS:
             control = self.views.find(f".//control[@id='{view}']")
-            self.assertIn(f"RunScript(skin.bald,letters,{view})", [n.text for n in control.findall("ondown")])
+            self.assertIn(f"RunScript(skin.bald,letters,{view})", [n.text for n in control.findall("onright")])
+            # Down wraps to the top.
+            self.assertEqual(control.findall("ondown"), [])
 
     def test_views_follow_their_container_for_the_blur(self):
         for view in VIEWS:
