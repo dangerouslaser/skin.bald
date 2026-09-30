@@ -475,8 +475,8 @@ class ContentPickerTests(unittest.TestCase):
     entry's node as the row's target (the editor passes use_rawpath)."""
 
     def test_channel_groups_can_be_chosen_as_rows(self):
-        from test_hub_targets import grouping_entries
-        entries = {e["path"]: e for e in grouping_entries("grouping://shortcuts/")}
+        from test_hub_targets import all_entries
+        entries = {e["path"]: e for e in all_entries("grouping://shortcuts/")}
         self.assertEqual((entries["pvr://channels/tv/"]["node"], entries["pvr://channels/tv/"]["link"]), ("tvchannels", "false"))
         self.assertEqual((entries["pvr://channels/radio/"]["node"], entries["pvr://channels/radio/"]["link"]), ("radiochannels", "false"))
 

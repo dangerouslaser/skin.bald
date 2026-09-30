@@ -16,7 +16,20 @@
             "link": "false",
             "node": "weather"
         },
-        "grouping://bald/pvr/"
+        {
+            "name": "Live TV",
+            "path": "grouping://bald/pvr/",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "tvchannels"
+        },
+        {
+            "name": "Radio",
+            "path": "grouping://bald/radio/",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "false",
+            "node": "radiochannels"
+        }
     ],
     "grouping://hubs/": [
         "grouping://bald/video/",
@@ -57,7 +70,20 @@
             "icon": "DefaultAddonPVRClient.png",
             "link": "true"
         },
-        "grouping://bald/pvr/"
+        {
+            "name": "Live TV",
+            "path": "grouping://bald/pvr/",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "tvchannels"
+        },
+        {
+            "name": "Radio lists",
+            "path": "grouping://bald/radio/",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "false",
+            "node": "radiochannels"
+        }
     ],
     "grouping://bald/video/": [
         {
@@ -69,7 +95,7 @@
         },
         {
             "name": "Bald playlists",
-            "path": "special://skin/playlists/",
+            "path": "grouping://bald/videoplaylists/",
             "icon": "DefaultVideoPlaylists.png",
             "link": "false",
             "node": "videos"
@@ -78,6 +104,335 @@
             "name": "Video add-ons",
             "path": "addons://sources/video/",
             "icon": "DefaultAddonVideo.png",
+            "link": "false",
+            "node": "videos"
+        }
+    ],
+    "grouping://bald/videoplaylists/": [
+        {
+            "name": "Movies",
+            "path": "grouping://bald/playlists/movies/",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Movies by quality",
+            "path": "grouping://bald/playlists/quality/",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Movies by decade",
+            "path": "grouping://bald/playlists/decades/",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "TV shows",
+            "path": "grouping://bald/playlists/tvshows/",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Episodes",
+            "path": "grouping://bald/playlists/episodes/",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Music videos",
+            "path": "grouping://bald/playlists/musicvideos/",
+            "icon": "DefaultMusicVideos.png",
+            "link": "false",
+            "node": "videos"
+        }
+    ],
+    "grouping://bald/playlists/movies/": [
+        {
+            "name": "Random movies",
+            "path": "special://skin/playlists/random_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Unwatched movies",
+            "path": "special://skin/playlists/unwatched_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Recently added unwatched movies",
+            "path": "special://skin/playlists/recent_unwatched_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Recently played movies",
+            "path": "special://skin/playlists/recently_played_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "In-progress movies",
+            "path": "special://skin/playlists/inprogress_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Top rated movies",
+            "path": "special://skin/playlists/top_rated_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Top 250 movies",
+            "path": "special://skin/playlists/top_250_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Critically acclaimed, unwatched",
+            "path": "special://skin/playlists/acclaimed_unwatched_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Favourites",
+            "path": "special://skin/playlists/favourite_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Worth a rewatch",
+            "path": "special://skin/playlists/rewatch_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Quick watch",
+            "path": "special://skin/playlists/quick_watch_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Epics",
+            "path": "special://skin/playlists/epic_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        }
+    ],
+    "grouping://bald/playlists/quality/": [
+        {
+            "name": "Movies in 4K",
+            "path": "special://skin/playlists/movies_4k.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Unwatched 4K",
+            "path": "special://skin/playlists/unwatched_4k_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Dolby Vision and HDR",
+            "path": "special://skin/playlists/hdr_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Lossless audio",
+            "path": "special://skin/playlists/lossless_audio_movies.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        }
+    ],
+    "grouping://bald/playlists/decades/": [
+        {
+            "name": "Movies from the 1970s",
+            "path": "special://skin/playlists/movies_1970s.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Movies from the 1980s",
+            "path": "special://skin/playlists/movies_1980s.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Movies from the 1990s",
+            "path": "special://skin/playlists/movies_1990s.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Movies from the 2000s",
+            "path": "special://skin/playlists/movies_2000s.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Movies from the 2010s",
+            "path": "special://skin/playlists/movies_2010s.xsp",
+            "icon": "DefaultMovies.png",
+            "link": "false",
+            "node": "videos"
+        }
+    ],
+    "grouping://bald/playlists/tvshows/": [
+        {
+            "name": "Random TV shows",
+            "path": "special://skin/playlists/random_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Unwatched TV shows",
+            "path": "special://skin/playlists/unwatched_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Recently added unwatched TV shows",
+            "path": "special://skin/playlists/recent_unwatched_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Recently played TV shows",
+            "path": "special://skin/playlists/recently_played_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Recently finished",
+            "path": "special://skin/playlists/recently_finished_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Top rated TV shows",
+            "path": "special://skin/playlists/top_rated_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Binge-worthy, not started",
+            "path": "special://skin/playlists/bingeworthy_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Short series",
+            "path": "special://skin/playlists/short_series_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        }
+    ],
+    "grouping://bald/playlists/episodes/": [
+        {
+            "name": "In-progress episodes",
+            "path": "special://skin/playlists/inprogress_episodes.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "New episodes this week",
+            "path": "special://skin/playlists/new_episodes_week.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Recently added unwatched episodes",
+            "path": "special://skin/playlists/recent_unwatched_episodes.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Recently played episodes",
+            "path": "special://skin/playlists/recently_played_episodes.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Random episodes",
+            "path": "special://skin/playlists/random_episodes.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Top rated episodes",
+            "path": "special://skin/playlists/top_rated_episodes.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Unwatched episodes",
+            "path": "special://skin/playlists/unwatched_episodes.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        }
+    ],
+    "grouping://bald/playlists/musicvideos/": [
+        {
+            "name": "Random music videos",
+            "path": "special://skin/playlists/random_musicvideos.xsp",
+            "icon": "DefaultMusicVideos.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Random music video artists",
+            "path": "special://skin/playlists/random_musicvideo_artists.xsp",
+            "icon": "DefaultMusicVideos.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
+            "name": "Unwatched music videos",
+            "path": "special://skin/playlists/unwatched_musicvideos.xsp",
+            "icon": "DefaultMusicVideos.png",
             "link": "false",
             "node": "videos"
         }
@@ -165,6 +520,50 @@
             "node": "tvchannels"
         },
         {
+            "name": "Recent recordings",
+            "path": "pvr://recordings/tv/active?view=flat",
+            "icon": "DefaultTVShows.png",
+            "link": "true",
+            "node": "tvrecordings"
+        },
+        {
+            "name": "Recording folders",
+            "path": "pvr://recordings/tv/active/",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "tvrecordings"
+        },
+        {
+            "name": "Upcoming recordings",
+            "path": "pvr://timers/tv/timers/?view=hidedisabled",
+            "icon": "DefaultTVShows.png",
+            "link": "true",
+            "node": "tvtimers"
+        },
+        {
+            "name": "Timer rules",
+            "path": "pvr://timers/tv/rules/?view=hidedisabled",
+            "icon": "DefaultTVShows.png",
+            "link": "true",
+            "node": "tvtimerrules"
+        },
+        {
+            "name": "Saved searches",
+            "path": "pvr://search/tv/savedsearches/",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "tvsearch"
+        },
+        {
+            "name": "Providers",
+            "path": "pvr://providers/tv/",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "tvproviders"
+        }
+    ],
+    "grouping://bald/radio/": [
+        {
             "name": "Recently played radio channels",
             "path": "pvr://channels/radio/*?view=lastplayed",
             "icon": "DefaultMusicAlbums.png",
@@ -177,6 +576,20 @@
             "icon": "DefaultMusicAlbums.png",
             "link": "false",
             "node": "radiochannels"
+        },
+        {
+            "name": "Recent radio recordings",
+            "path": "pvr://recordings/radio/active?view=flat",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "true",
+            "node": "radiorecordings"
+        },
+        {
+            "name": "Upcoming radio recordings",
+            "path": "pvr://timers/radio/timers/?view=hidedisabled",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "true",
+            "node": "radiotimers"
         }
     ]
 }

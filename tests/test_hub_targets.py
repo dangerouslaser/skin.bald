@@ -29,6 +29,18 @@ def grouping_entries(path):
     return entries
 
 
+def all_entries(path):
+    """Every entry the browser can reach from a grouping: grouping_entries, with folder entries that are groupings
+    themselves (Bald playlists, Live TV, Radio) opened in turn."""
+    entries = []
+    for entry in grouping_entries(path):
+        if entry["path"].startswith("grouping://") and entry["path"] in CONFIG:
+            entries += all_entries(entry["path"])
+        else:
+            entries.append(entry)
+    return entries
+
+
 def browse_result(entry):
     """What the browser stores for a chosen entry with use_rawpath (the editors pass it): a link entry's path with an
     empty target; a folder's path (its "use this folder" item, or a folder inside it) with the entry's node as target
@@ -48,17 +60,15 @@ class PickerTests(unittest.TestCase):
         entries = {e["name"]: e for e in grouping_entries("grouping://shortcuts/")}
         expected = {
             "Video library": ("library://video/", "videos"),
-            "Bald playlists": ("special://skin/playlists/", "videos"),
+            "Bald playlists": ("grouping://bald/videoplaylists/", "videos"),
             "Video add-ons": ("addons://sources/video/", "videos"),
             "Music library": ("library://music/", "music"),
             "Bald music playlists": ("grouping://bald/musicplaylists/", "music"),
             "Music add-ons": ("addons://sources/audio/", "music"),
             "Favourites": ("favourites://", "favouritesbrowser"),
             "Weather": ("grouping://bald/weather/", "weather"),
-            "Live TV channel groups": ("pvr://channels/tv/", "tvchannels"),
-            "Radio channel groups": ("pvr://channels/radio/", "radiochannels"),
-            "Recently played TV channels": ("pvr://channels/tv/*?view=lastplayed", "tvchannels"),
-            "Recently played radio channels": ("pvr://channels/radio/*?view=lastplayed", "radiochannels"),
+            "Live TV": ("grouping://bald/pvr/", "tvchannels"),
+            "Radio": ("grouping://bald/radio/", "radiochannels"),
         }
         self.assertEqual({name: (e["path"], e["node"]) for name, e in entries.items()}, expected)
         # Rows need folders (a row is a list's content): no builtins here. The recently played channels are picked
@@ -77,8 +87,9 @@ class PickerTests(unittest.TestCase):
             "Weather": "ActivateWindow(Weather)",
             "Radio": "ActivateWindow(RadioChannels)",
         })
-        for name in ("Video library", "Music library", "Music add-ons", "Bald music playlists", "Live TV channel groups"):
+        for name in ("Video library", "Music library", "Music add-ons", "Bald music playlists", "Live TV", "Radio lists"):
             self.assertIn(name, entries)
+        self.assertIn("Live TV channel groups", [e["name"] for e in all_entries("grouping://hubs/")])
         # Favourites appears once: the window as a hub target (the folder is for rows).
         self.assertEqual([e["name"] for e in grouping_entries("grouping://hubs/")].count("Favourites"), 1)
 
@@ -90,6 +101,31 @@ class PickerTests(unittest.TestCase):
                 path = ROOT / "playlists" / entry["path"].rsplit("/", 1)[1]
                 kind = ET.parse(path).getroot().get("type")
                 self.assertIn(kind, {"albums", "artists", "songs"})
+
+    def test_the_bald_playlists_are_grouped_and_each_is_listed_once_by_its_name(self):
+        groups = CONFIG["grouping://bald/videoplaylists/"]
+        self.assertEqual([g["name"] for g in groups],
+                         ["Movies", "Movies by quality", "Movies by decade", "TV shows", "Episodes", "Music videos"])
+        listed = [e for g in groups for e in CONFIG[g["path"]]] + CONFIG["grouping://bald/musicplaylists/"]
+        files = sorted((ROOT / "playlists").glob("*.xsp"))
+        self.assertEqual(sorted(e["path"].rsplit("/", 1)[1] for e in listed), [f.name for f in files])
+        for entry in listed:
+            with self.subTest(entry=entry["path"]):
+                xsp = ET.parse(ROOT / "playlists" / entry["path"].rsplit("/", 1)[1]).getroot()
+                self.assertEqual(entry["name"], xsp.findtext("name"))
+                self.assertEqual(entry["link"], "false")
+        self.assertTrue(all(len(CONFIG[g["path"]]) <= 12 for g in groups))
+
+    def test_live_tv_and_radio_lists(self):
+        tv = {e["name"]: (e["path"], e["node"]) for e in CONFIG["grouping://bald/pvr/"]}
+        self.assertEqual(tv["Recent recordings"], ("pvr://recordings/tv/active?view=flat", "tvrecordings"))
+        self.assertEqual(tv["Upcoming recordings"], ("pvr://timers/tv/timers/?view=hidedisabled", "tvtimers"))
+        for name in ("Recently played TV channels", "Live TV channel groups", "Recording folders", "Timer rules",
+                     "Saved searches", "Providers"):
+            self.assertIn(name, tv)
+        radio = {e["name"] for e in CONFIG["grouping://bald/radio/"]}
+        self.assertEqual(radio, {"Recently played radio channels", "Radio channel groups", "Recent radio recordings",
+                                 "Upcoming radio recordings"})
 
     def test_every_grouping_named_is_defined(self):
         for key, entries in CONFIG.items():
@@ -156,7 +192,7 @@ class OpenActionTests(unittest.TestCase):
                 self.assertEqual(action, expected)
 
     def test_every_picker_entry_opens_in_a_window_that_shows_it(self):
-        for entry in grouping_entries("grouping://hubs/"):
+        for entry in all_entries("grouping://hubs/"):
             if entry["path"].startswith("grouping://"):
                 continue
             with self.subTest(entry=entry["name"]):

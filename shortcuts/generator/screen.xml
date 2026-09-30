@@ -63,8 +63,9 @@
                      Add-ons and Radio entries, or Edit's ActivateWindow(Weather)), or one that names a common builtin;
                    music, picture and program paths open their own window whatever the stored target says (Edit keeps
                      the old target, so a hub first set to a video node and then edited to musicdb:// still has "videos");
-                     Bald's album and artist playlists are music too, and channel paths (Browse's "Recently played"
-                     channels store no target) open the TV or radio channel window;
+                     Bald's album and artist playlists are music too, and Live TV paths (Browse's "Recently played"
+                     channels, recent and upcoming recordings and timer rules store no target) open their own window:
+                     channels, recordings, timers, timer rules, search or providers, TV or radio;
                    any other path opens in its target window (Browse stores the grouping entry's node: videos, music,
                      tvchannels, radiochannels, favouritesbrowser), or in videos when the target is empty. -->
             <value name="hub_open">
@@ -130,6 +131,34 @@
                             <rule>
                                 <condition>{item_path}&lt;&lt;pvr://channels/radio/</condition>
                                 <value>ActivateWindow(radiochannels,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;pvr://recordings/tv/</condition>
+                                <value>ActivateWindow(tvrecordings,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;pvr://recordings/radio/</condition>
+                                <value>ActivateWindow(radiorecordings,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;pvr://timers/tv/timers/</condition>
+                                <value>ActivateWindow(tvtimers,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;pvr://timers/tv/rules/</condition>
+                                <value>ActivateWindow(tvtimerrules,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;pvr://timers/radio/timers/</condition>
+                                <value>ActivateWindow(radiotimers,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;pvr://search/tv/</condition>
+                                <value>ActivateWindow(tvsearch,{item_path},return)</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_path}&lt;&lt;pvr://providers/tv/</condition>
+                                <value>ActivateWindow(tvproviders,{item_path},return)</value>
                             </rule>
                             <rule>
                                 <condition>{item_path}&lt;&lt;addons://sources/image</condition>
