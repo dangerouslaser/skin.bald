@@ -121,7 +121,7 @@ class RowHintTests(unittest.TestCase):
         labels = self.hint_line().findall("control")
         self.assertEqual([node.findtext("label") for node in labels],
                          ["$VAR[Bald_KeyUp]$VAR[P]", "·", "$VAR[Bald_KeyDown]$VAR[N]"])
-        self.assertEqual(labels[1].findtext("width"), "20")
+        self.assertEqual(labels[1].findtext("width"), "32")
         for node in labels:
             self.assertEqual((node.findtext("font"), node.findtext("textcolor")), ("Bald_Hint", "bald_ink60"))
         # The next pair (dot and name) hides when Down goes nowhere.

@@ -1913,8 +1913,8 @@
 	</include>
 	<!-- Home's hint line: the y 954 line, right-aligned on the right column's edge (x 1824), where every other Bald
 	     screen keeps its navigation hints; the section line sits above it. A chevron and where that key goes, pairs
-	     joined by the 20 px dot as Bald_InfoHintPair joins them. Each part is at most 180 px (with an ellipsis), so a
-	     pair never runs past the column (180 + 20 + 180 in 384). Shown while "Always show navigation hints" is on, or
+	     joined by the 32 px dot as Bald_InfoHintPair joins them. Each part is at most 176 px (with an ellipsis), so a
+	     pair never runs past the column (176 + 32 + 176 in 384). Shown while "Always show navigation hints" is on, or
 	     until the menu has been opened three times (Bald_HomeHintsShown). -->
 	<expression name="Bald_HomeHintsShown">[!Skin.HasSetting(Bald.AutoHideMenuHint) | !String.IsEqual(Skin.String(Bald.MenuOpens),3)]</expression>
 	<include name="Bald_HomeHintLine">
@@ -1939,9 +1939,9 @@
 				<animation type="Conditional" condition="$EXP[Bald_Idle]">
 					<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
 				</animation>
-				<control type="label"><width min="1" max="180">auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[first]</label></control>
-				<control type="label"><width>20</width><height>24</height><align>center</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label><visible>$PARAM[second_visible]</visible></control>
-				<control type="label"><width min="1" max="180">auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[second]</label><visible>$PARAM[second_visible]</visible></control>
+				<control type="label"><width min="1" max="176">auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[first]</label></control>
+				<control type="label"><width>32</width><height>24</height><align>center</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label><visible>$PARAM[second_visible]</visible></control>
+				<control type="label"><width min="1" max="176">auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[second]</label><visible>$PARAM[second_visible]</visible></control>
 			</control>
 		</definition>
 	</include>

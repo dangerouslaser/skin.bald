@@ -18,7 +18,7 @@ class InfoPagesTests(unittest.TestCase):
         self.pages = parse(ROOT / "Includes_Bald_InfoPages.xml")
         self.shared = ET.parse(ROOT / "Includes_Bald_Info.xml").getroot()
 
-    def test_hint_pair_right_aligns_as_a_unit_with_20px_separator(self):
+    def test_hint_pair_right_aligns_as_a_unit_with_32px_separator(self):
         # As the dialog calls it (two hints, default width): 384 wide, right-aligned, third hint hidden.
         pair, = expand_call("Bald_InfoHintPair", {"first": "a", "second": "b"})
         self.assertEqual(pair.get("type"), "grouplist")
@@ -28,7 +28,7 @@ class InfoPagesTests(unittest.TestCase):
         labels = pair.findall("control")
         self.assertEqual([node.findtext("visible") for node in labels[3:]], ["false", "false"])
         self.assertEqual(expand_call("Bald_InfoHintPair", {"width": "1024"})[0].findtext("width"), "1024")
-        self.assertEqual([node.findtext("width") for node in labels], ["auto", "20", "auto", "20", "auto"])
+        self.assertEqual([node.findtext("width") for node in labels], ["auto", "32", "auto", "32", "auto"])
         self.assertEqual(labels[1].findtext("label"), "·")
         self.assertTrue(all(node.findtext("height") == "24" for node in labels))
         overview = next(node for node in self.dialog.iter("control") if node.findtext("label") == "$VAR[Bald_KeyDown]" + loc("Cast & details"))
