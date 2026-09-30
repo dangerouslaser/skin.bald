@@ -1902,12 +1902,13 @@
 				<animation type="Conditional" condition="$EXP[Bald_Idle]">
 					<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
 				</animation>
+				<!-- The chevron boxes keep 3 px clear either side of the ink: 5 and 25 px here are 8 and 28 px on screen. -->
 				<include content="Bald_RowHintChevron"><param name="texture">bald/chevron_up.png</param></include>
-				<control type="group"><width>8</width></control>
+				<control type="group"><width>5</width></control>
 				<include content="Bald_RowHintLabel"><param name="label">$VAR[$PARAM[prev]]</param></include>
-				<control type="group"><width>28</width><visible>$EXP[$PARAM[has_next]]</visible></control>
+				<control type="group"><width>25</width><visible>$EXP[$PARAM[has_next]]</visible></control>
 				<include content="Bald_RowHintChevron"><param name="texture">bald/chevron_down.png</param><param name="visible">$EXP[$PARAM[has_next]]</param></include>
-				<control type="group"><width>8</width><visible>$EXP[$PARAM[has_next]]</visible></control>
+				<control type="group"><width>5</width><visible>$EXP[$PARAM[has_next]]</visible></control>
 				<include content="Bald_RowHintLabel"><param name="label">$VAR[$PARAM[next]]</param><param name="visible">$EXP[$PARAM[has_next]]</param></include>
 			</control>
 		</definition>
@@ -1916,10 +1917,13 @@
 		<param name="texture" />
 		<param name="visible">true</param>
 		<definition>
+			<!-- A 15 px box centred on the hint text (the middle of its capitals, measured on screen: capitals 10.0 to the
+			     baseline at 21.4 below the line's top, middle 15.7; Instrument Sans about 15). Top 7 lands the chevron's ink on
+			     15.6 on screen (measured). -->
 			<control type="image">
 				<top>7</top>
-				<width>12</width>
-				<height>12</height>
+				<width>15</width>
+				<height>15</height>
 				<texture colordiffuse="bald_ink60">$PARAM[texture]</texture>
 				<visible>$PARAM[visible]</visible>
 			</control>

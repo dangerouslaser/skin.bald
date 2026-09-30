@@ -147,16 +147,21 @@ def tv_info_textures():
 
 
 def row_hint_chevrons():
-    """Home's row hints (Bald_RowHints): up and down chevrons in a 24 px square, drawn for 12 px (1.5 px stroke, round
-    caps), the weight of the menu's disclosure chevron at the hint's size."""
-    size, k = 24, SS
-    for name, (y0, y1) in (("chevron_up.png", (15, 9)), ("chevron_down.png", (9, 15))):
+    """Home's row hints (Bald_RowHints): up and down chevrons for a 15 px box, drawn at 4x (60 px) so they stay clean at
+    any GUI scale. Sized from the hint text (Bald_Hint, 17): the ink is 9 x 4.5, about the capital height wide, with a
+    1.5 px round stroke like the text's stems, centred in the box so the box centres on the capitals' middle. The two are
+    exact mirror images. 3 px of box stay clear either side of the ink (the row's spacers allow for it)."""
+    box, scale = 15, 4
+    size, k = box * scale, scale * SS
+    cx, cy, half_w, half_h = 7.5, 7.5, 4.5, 2.25
+    for name, sign in (("chevron_up.png", -1), ("chevron_down.png", 1)):
         mark = Image.new("L", (size * SS, size * SS), 0)
         d = ImageDraw.Draw(mark)
-        pts = [(6 * k, y0 * k), (12 * k, y1 * k), (18 * k, y0 * k)]
-        width = round(3 * k)
+        tip = (cx * k, (cy + sign * half_h) * k)
+        pts = [((cx - half_w) * k, (cy - sign * half_h) * k), tip, ((cx + half_w) * k, (cy - sign * half_h) * k)]
+        width = round(1.5 * k)
         d.line(pts, fill=255, width=width, joint="curve")
-        for x, y in (pts[0], pts[-1]):
+        for x, y in pts:
             d.ellipse([x - width / 2, y - width / 2, x + width / 2, y + width / 2], fill=255)
         im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
         im.putalpha(mark.resize((size, size), Image.LANCZOS))

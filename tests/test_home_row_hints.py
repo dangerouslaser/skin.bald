@@ -123,13 +123,16 @@ class RowHintTests(unittest.TestCase):
                 kinds.append(node.findtext("label"))
             else:
                 kinds.append(int(node.findtext("width")))
-        self.assertEqual(kinds, ["bald/chevron_up.png", 8, "$VAR[P]", 28, "bald/chevron_down.png", 8, "$VAR[N]"])
+        # The chevron textures keep 3 px clear either side of the ink, so 5 and 25 are the design's 8 and 28 px.
+        self.assertEqual(kinds, ["bald/chevron_up.png", 5, "$VAR[P]", 25, "bald/chevron_down.png", 5, "$VAR[N]"])
         for node in hints.findall("control"):
             if node.get("type") == "label":
                 self.assertEqual((node.findtext("font"), node.findtext("textcolor")), ("Bald_Hint", "bald_ink60"))
                 self.assertEqual(node.find("width").get("max"), "260")
             if node.get("type") == "image":
-                self.assertEqual((node.findtext("width"), node.findtext("height")), ("12", "12"))
+                self.assertEqual((node.findtext("width"), node.findtext("height")), ("15", "15"))
+                # Centred on the hint text's capitals (about 15.6 below the line's top), not sitting on the baseline.
+                self.assertEqual(node.findtext("top"), "7")
                 self.assertEqual(node.find("texture").get("colordiffuse"), "bald_ink60")
         # The next pair (gap, chevron, gap, name) hides when Down goes nowhere.
         self.assertEqual([node.findtext("visible") for node in hints.findall("control")][3:],
