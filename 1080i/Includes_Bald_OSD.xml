@@ -232,12 +232,12 @@
 	</variable>
 	<!-- Second hint: where Up and Down lead from the buttons. -->
 	<variable name="Bald_OSDHint">
-		<value condition="Control.HasFocus(87) | Control.HasFocus(88) | Control.HasFocus(8110) | Control.HasFocus(8120) | Control.HasFocus(8131)">$VAR[Bald_ChevronDown]$LOCALIZE[31623]</value>
-		<value condition="Control.HasFocus(8132)">$VAR[Bald_ChevronLeft]$LOCALIZE[31645]$VAR[Bald_ChevronRight]</value>
-		<value condition="[Control.HasFocus(70060) + Integer.IsGreater(Container(8110).NumItems,0)] | [Control.HasFocus(70061) + Integer.IsGreater(Container(8120).NumItems,0)] | Control.HasFocus(70062)">$VAR[Bald_ChevronUp]$LOCALIZE[31633]</value>
-		<value condition="$EXP[Bald_OSDHasChain]">$VAR[Bald_ChevronDown]$LOCALIZE[31627]</value>
-		<value condition="Player.SeekEnabled">$VAR[Bald_ChevronUp]$LOCALIZE[31618]</value>
-		<value>$LOCALIZE[31619]</value>
+		<value condition="Control.HasFocus(87) | Control.HasFocus(88) | Control.HasFocus(8110) | Control.HasFocus(8120) | Control.HasFocus(8131)">$VAR[Bald_KeyDown]$LOCALIZE[31410]</value>
+		<value condition="Control.HasFocus(8132)">$VAR[Bald_KeyLeft]$LOCALIZE[31645]$VAR[Bald_KeyRight]</value>
+		<value condition="[Control.HasFocus(70060) + Integer.IsGreater(Container(8110).NumItems,0)] | [Control.HasFocus(70061) + Integer.IsGreater(Container(8120).NumItems,0)] | Control.HasFocus(70062)">$VAR[Bald_KeyUp]$LOCALIZE[31633]</value>
+		<value condition="$EXP[Bald_OSDHasChain]">$VAR[Bald_KeyDown]$LOCALIZE[31627]</value>
+		<value condition="Player.SeekEnabled">$VAR[Bald_KeyUp]$LOCALIZE[31618]</value>
+		<value>$VAR[Bald_KeyBack]$LOCALIZE[31619]</value>
 	</variable>
 
 	<!-- ============ Motion ============ -->
@@ -1242,8 +1242,8 @@
 		<value>$LOCALIZE[206]$INFO[VideoPlayer.Title, · ]</value>
 	</variable>
 	<variable name="Bald_OSDCastHint">
-		<value condition="String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">$VAR[Bald_ChevronUp]$LOCALIZE[31631]</value>
-		<value>$VAR[Bald_ChevronDown]$LOCALIZE[31629]</value>
+		<value condition="String.IsEqual(Window(home).Property(Bald.OSD.Credits),crew)">$VAR[Bald_KeyUp]$LOCALIZE[31631]</value>
+		<value>$VAR[Bald_KeyDown]$LOCALIZE[31629]</value>
 	</variable>
 	<variable name="Bald_OSDPersonText">
 		<value condition="!String.IsEmpty(Container(8160).ListItem.Plot)">$INFO[Container(8160).ListItem.Plot]</value>
@@ -1407,12 +1407,12 @@
 	</include>
 	<!-- A panel's second hint: "Down for more" while the chain goes on after it, else "Back to close". -->
 	<variable name="Bald_OSDHintAfter2">
-		<value condition="$EXP[Bald_OSDChainBookmarks] | $EXP[Bald_OSDChainCast]">$VAR[Bald_ChevronDown]$LOCALIZE[31627]</value>
-		<value>$LOCALIZE[31619]</value>
+		<value condition="$EXP[Bald_OSDChainBookmarks] | $EXP[Bald_OSDChainCast]">$VAR[Bald_KeyDown]$LOCALIZE[31627]</value>
+		<value>$VAR[Bald_KeyBack]$LOCALIZE[31619]</value>
 	</variable>
 	<variable name="Bald_OSDHintAfter3">
-		<value condition="$EXP[Bald_OSDChainCast]">$VAR[Bald_ChevronDown]$LOCALIZE[31627]</value>
-		<value>$LOCALIZE[31619]</value>
+		<value condition="$EXP[Bald_OSDChainCast]">$VAR[Bald_KeyDown]$LOCALIZE[31627]</value>
+		<value>$VAR[Bald_KeyBack]$LOCALIZE[31619]</value>
 	</variable>
 	<!-- ============ Companion panels (1120-1124) ============
 	     A panel window opened by focusing a tool: its content sits above the row, and the row is repeated with the

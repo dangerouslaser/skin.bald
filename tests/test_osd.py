@@ -291,7 +291,7 @@ class ChainTests(unittest.TestCase):
         self.assertIn("$VAR[Bald_PVRGuideHint]", text)
         hint = ET.parse(SKIN / "Includes_Bald_PVR.xml").getroot().find("variable[@name='Bald_PVRGuideHint']")
         self.assertEqual([(v.get("condition"), v.text) for v in hint.findall("value")],
-                         [("$EXP[Bald_PVRGuideToChannels]", "$LOCALIZE[31687]$VAR[Bald_ChevronRight]"), (None, "$LOCALIZE[31669]")])
+                         [("$EXP[Bald_PVRGuideToChannels]", "$LOCALIZE[31687]$VAR[Bald_KeyRight]"), (None, "$VAR[Bald_KeyBack]$LOCALIZE[31619]")])
         # Header tabs: the guide shows Channels as the other tab only when it can swap; the channel list shows no
         # Guide tab (it cannot reach the guide).
         labels = {name: [(n.findtext("label"), n.findtext("visible")) for n in resolve_window(name).iter("control")

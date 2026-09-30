@@ -91,9 +91,9 @@
 			</control>
 		</control>
 		<include content="Bald_PVRHints">
-			<param name="first">$VAR[Bald_ChevronUp]$LOCALIZE[31678]</param>
-			<param name="second">$VAR[Bald_ChevronLeft]$LOCALIZE[31633]$VAR[Bald_ChevronRight]</param>
-			<param name="third">$LOCALIZE[31669]</param>
+			<param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31678]</param>
+			<param name="second">$VAR[Bald_KeyLeft]$LOCALIZE[31633]$VAR[Bald_KeyRight]</param>
+			<param name="third">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param>
 			<param name="third_visible">true</param>
 		</include>
 	</controls>

@@ -16,7 +16,7 @@
 			<include content="Bald_PVRWindowChrome">
 				<param name="title">$LOCALIZE[137]</param>
 				<param name="section">$VAR[Bald_PVRArea]$INFO[Control.GetLabel(29), · ]$INFO[Control.GetLabel(30), · ]</param>
-				<param name="hint">$LOCALIZE[31666]</param>
+				<param name="hint">$VAR[Bald_KeySelect]$LOCALIZE[31666]</param>
 			</include>
 			<include content="Bald_PVRList">
 				<include content="Bald_PVRItemLayouts">

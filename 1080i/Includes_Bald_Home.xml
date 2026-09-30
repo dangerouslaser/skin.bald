@@ -1971,8 +1971,8 @@
 		<definition>
 			<include content="Bald_HomeHintLine">
 				<param name="visible">$PARAM[enabled] + String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]</param>
-				<param name="first">$VAR[Bald_ChevronUp]$VAR[$PARAM[prev]]</param>
-				<param name="second">$VAR[Bald_ChevronDown]$VAR[$PARAM[next]]</param>
+				<param name="first">$VAR[Bald_KeyUp]$VAR[$PARAM[prev]]</param>
+				<param name="second">$VAR[Bald_KeyDown]$VAR[$PARAM[next]]</param>
 				<param name="second_visible">$EXP[$PARAM[has_next]]</param>
 			</include>
 		</definition>
@@ -1984,12 +1984,12 @@
 	<expression name="Bald_MenuHintBrowse">[[Control.HasFocus(9011) + $EXP[Bald_HubHasOpen_hub1] + !$EXP[Bald_HubSwap_hub1]] | [Control.HasFocus(9012) + $EXP[Bald_HubHasOpen_hub2] + !$EXP[Bald_HubSwap_hub2]] | [Control.HasFocus(9013) + $EXP[Bald_HubHasOpen_hub3] + !$EXP[Bald_HubSwap_hub3]] | [Control.HasFocus(9014) + $EXP[Bald_HubHasOpen_hub4] + !$EXP[Bald_HubSwap_hub4]] | [Control.HasFocus(9015) + $EXP[Bald_HubHasOpen_hub5] + !$EXP[Bald_HubSwap_hub5]] | [Control.HasFocus(9016) + $EXP[Bald_HubHasOpen_hub6] + !$EXP[Bald_HubSwap_hub6]] | [Control.HasFocus(9017) + $EXP[Bald_HubHasOpen_hub7] + !$EXP[Bald_HubSwap_hub7]] | [Control.HasFocus(9018) + $EXP[Bald_HubHasOpen_hub8] + !$EXP[Bald_HubSwap_hub8]]]</expression>
 	<expression name="Bald_MenuHintGuide">[Control.HasFocus(9004) + !$EXP[Bald_LiveTVSwap]]</expression>
 	<variable name="Bald_MenuHintRight">
-		<value condition="$EXP[Bald_MenuHintGuide]">$LOCALIZE[31790]$VAR[Bald_ChevronRight]</value>
-		<value condition="$EXP[Bald_MenuHintBrowse]">$LOCALIZE[31789]$VAR[Bald_ChevronRight]</value>
+		<value condition="$EXP[Bald_MenuHintGuide]">$LOCALIZE[31790]$VAR[Bald_KeyRight]</value>
+		<value condition="$EXP[Bald_MenuHintBrowse]">$LOCALIZE[31789]$VAR[Bald_KeyRight]</value>
 	</variable>
 	<!-- The first place holds whichever hint shows, so a lone one still ends on the edge without a dot. -->
 	<variable name="Bald_MenuHintFirst">
-		<value condition="$EXP[Bald_MenuHintFeatured]">$VAR[Bald_ChevronLeft]$LOCALIZE[31788]</value>
+		<value condition="$EXP[Bald_MenuHintFeatured]">$VAR[Bald_KeyLeft]$LOCALIZE[31788]</value>
 		<value>$VAR[Bald_MenuHintRight]</value>
 	</variable>
 	<include name="Bald_MenuHints">

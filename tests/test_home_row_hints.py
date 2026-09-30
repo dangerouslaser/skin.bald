@@ -115,12 +115,12 @@ class RowHintTests(unittest.TestCase):
         # The row label line keeps only the label and the count.
         group = next(node for node in self.row() if node.get("type") == "group")
         text = ET.tostring(group, encoding="unicode")
-        self.assertNotIn("Bald_Chevron", text)
+        self.assertNotIn("Bald_Key", text)
 
     def test_up_first_then_down_joined_by_the_dot(self):
         labels = self.hint_line().findall("control")
         self.assertEqual([node.findtext("label") for node in labels],
-                         ["$VAR[Bald_ChevronUp]$VAR[P]", "·", "$VAR[Bald_ChevronDown]$VAR[N]"])
+                         ["$VAR[Bald_KeyUp]$VAR[P]", "·", "$VAR[Bald_KeyDown]$VAR[N]"])
         self.assertEqual(labels[1].findtext("width"), "20")
         for node in labels:
             self.assertEqual((node.findtext("font"), node.findtext("textcolor")), ("Bald_Hint", "bald_ink60"))

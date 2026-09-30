@@ -483,9 +483,9 @@
 			<animation type="Hidden"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
 			<control type="group">
 				<visible>Visualisation.Enabled</visible>
-				<include content="Bald_InfoHintPair"><param name="width">1728</param><param name="first">$LOCALIZE[31410]</param><param name="second">$LOCALIZE[31411]</param></include>
+				<include content="Bald_InfoHintPair"><param name="width">1728</param><param name="first">$VAR[Bald_KeySelect]$LOCALIZE[31410]</param><param name="second">$VAR[Bald_KeyInfo]$LOCALIZE[31411]</param></include>
 			</control>
-			<control type="label"><width>1728</width><height>24</height><align>right</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31410]</label><visible>!Visualisation.Enabled</visible></control>
+			<control type="label"><width>1728</width><height>24</height><align>right</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_KeySelect]$LOCALIZE[31410]</label><visible>!Visualisation.Enabled</visible></control>
 		</control>
 	</include>
 </includes>

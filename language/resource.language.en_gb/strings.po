@@ -911,16 +911,19 @@ msgctxt "#31409"
 msgid "Nothing to show. Open options to adjust your filters."
 msgstr ""
 
+#: /1080i/Custom_1119_BaldPlayback.xml
 #: /1080i/Includes_Bald_Music.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Playback.xml
 #. Now playing: hint for the music controls
 msgctxt "#31410"
-msgid "Select for controls"
+msgid "Controls"
 msgstr ""
 
 #: /1080i/Includes_Bald_Music.xml
 #. Now playing: hint for the visualisation
 msgctxt "#31411"
-msgid "Info for the visualisation"
+msgid "Visualisation"
 msgstr ""
 
 #: /1080i/Includes_Bald_Music.xml
@@ -1132,13 +1135,16 @@ msgctxt "#31618"
 msgid "Seek"
 msgstr ""
 
-#: /1080i/Includes_Bald_Playback.xml
-#: /1080i/Includes_Bald_OSD.xml
-#: /1080i/VideoOSDBookmarks.xml
+#: /1080i/DialogPVRInfo.xml
 #: /1080i/DialogPlayerProcessInfo.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_PVR.xml
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/VideoOSDBookmarks.xml
+#: /1080i/script-globalsearch.xml
 #. OSD hint when there is no seek row
 msgctxt "#31619"
-msgid "Back to close"
+msgid "Close"
 msgstr ""
 
 #: /1080i/Includes_Bald_Playback.xml
@@ -1163,14 +1169,6 @@ msgstr ""
 #. Prefix of the next item on the info overlay
 msgctxt "#31622"
 msgid "Up next"
-msgstr ""
-
-#: /1080i/Custom_1119_BaldPlayback.xml
-#: /1080i/Includes_Bald_OSD.xml
-#: /1080i/Includes_Bald_Playback.xml
-#. Seek row hint: the buttons are below
-msgctxt "#31623"
-msgid "Controls"
 msgstr ""
 
 #: /1080i/Includes_Bald_OSD.xml
@@ -1212,7 +1210,7 @@ msgstr ""
 #: /1080i/Custom_1126_OSDCast.xml
 #. Video OSD cast panel hint
 msgctxt "#31632"
-msgid "Select for the biography"
+msgid "Biography"
 msgstr ""
 
 #: /1080i/DialogPVRInfo.xml
@@ -1360,6 +1358,7 @@ msgstr ""
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
 #: /1080i/View_550_Bald_Music.xml
+#: /1080i/script-globalsearch.xml
 msgctxt "#31661"
 msgid "Options"
 msgstr ""
@@ -1368,45 +1367,52 @@ msgstr ""
 #: /1080i/MyPVRChannels.xml
 #: /1080i/Custom_1125_OSDPlaylist.xml
 msgctxt "#31662"
-msgid "Select to watch"
+msgid "Watch"
 msgstr ""
 
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_InfoTV.xml
 #: /1080i/Includes_Bald_PVR.xml
 #: /1080i/MyPVRRecordings.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31663"
-msgid "Select to play"
+msgid "Play"
 msgstr ""
 
+#: /1080i/DialogMusicInfo.xml
+#: /1080i/DialogPVRChannelGuide.xml
+#: /1080i/EventLog.xml
+#: /1080i/Includes.xml
 #: /1080i/Includes_Bald_PVR.xml
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /1080i/script-globalsearch.xml
 msgctxt "#31664"
-msgid "Info for details"
+msgid "Details"
 msgstr ""
 
 #: /1080i/MyPVRTimers.xml
 msgctxt "#31665"
-msgid "Select to edit"
+msgid "Edit"
 msgstr ""
 
+#: /1080i/DialogVideoInfo.xml
+#: /1080i/Includes_Bald_Configure.xml
 #: /1080i/MyPVRProviders.xml
 #: /1080i/MyPVRSearch.xml
+#: /1080i/Settings.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31666"
-msgid "Select to open"
+msgid "Open"
 msgstr ""
 
 #: /1080i/DialogPVRChannelsOSD.xml
 msgctxt "#31667"
 msgid "Channel groups"
-msgstr ""
-
-#: /1080i/DialogPVRChannelGuide.xml
-msgctxt "#31668"
-msgid "Select for details"
-msgstr ""
-
-#: /1080i/DialogPVRInfo.xml
-#: /1080i/Includes_Bald_PVR.xml
-msgctxt "#31669"
-msgid "Back to close"
 msgstr ""
 
 #. In-player Live TV panel, Guide tab over full-screen Live TV: Right swaps in the channel list
@@ -1711,16 +1717,7 @@ msgstr ""
 #: /1080i/SettingsProfile.xml
 #: /1080i/SettingsSystemInfo.xml
 msgctxt "#31738"
-msgid "Back for settings"
-msgstr ""
-
-#: /1080i/DialogVideoInfo.xml
-#: /1080i/Includes_Bald_Configure.xml
-#: /1080i/Settings.xml
-#: /1080i/View_520_Bald_TV.xml
-#: /1080i/View_521_Bald_TV_Alternates.xml
-msgctxt "#31739"
-msgid "Select to open"
+msgid "Settings"
 msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
@@ -1742,7 +1739,7 @@ msgstr ""
 #: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/Custom_1119_BaldPlayback.xml
 msgctxt "#31746"
-msgid "Back for Bald settings"
+msgid "Bald settings"
 msgstr ""
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
@@ -1757,7 +1754,7 @@ msgstr ""
 #: /1080i/Custom_1119_BaldPlayback.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31747"
-msgid "Select to change"
+msgid "Change"
 msgstr ""
 
 #: /1080i/Custom_1116_BaldHomeWidgets.xml
@@ -1788,7 +1785,7 @@ msgstr ""
 
 #: /1080i/Custom_1116_BaldHomeWidgets.xml
 msgctxt "#31753"
-msgid "Back to save and apply"
+msgid "Save and apply"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
@@ -1912,12 +1909,6 @@ msgstr ""
 #: /1080i/Includes_Bald_InfoTV.xml
 msgctxt "#31783"
 msgid "All seasons"
-msgstr ""
-
-#: /1080i/Includes_Bald_InfoTV.xml
-#: /1080i/View_521_Bald_TV_Alternates.xml
-msgctxt "#31784"
-msgid "Select to play"
 msgstr ""
 
 #: /1080i/Includes_Bald_InfoPages.xml
@@ -2084,17 +2075,6 @@ msgstr ""
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
-#: /1080i/Includes.xml
-#: /1080i/EventLog.xml
-#: /1080i/View_521_Bald_TV_Alternates.xml
-msgctxt "#31827"
-msgid "Info for details"
-msgstr ""
-
-#: /1080i/View_510_Bald_Posters.xml
-#: /1080i/View_511_Bald_Wall.xml
-#: /1080i/View_515_Bald_PosterLow.xml
-#: /1080i/View_520_Bald_TV.xml
 msgctxt "#31830"
 msgid "Jump letters"
 msgstr ""
@@ -2102,13 +2082,13 @@ msgstr ""
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31835"
-msgid "Select for seasons"
+msgid "Seasons"
 msgstr ""
 
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31836"
-msgid "Select for episodes"
+msgid "Episodes"
 msgstr ""
 
 #: /scripts/recommended.py
@@ -2146,12 +2126,6 @@ msgstr ""
 #. Name of a library layout, shown by Container.Viewmode: the Seasons level drawn as the TV information page
 msgctxt "#31846"
 msgid "Bald series page"
-msgstr ""
-
-#: /1080i/View_521_Bald_TV_Alternates.xml
-#. Library Series page hint, while a season tab has focus
-msgctxt "#31847"
-msgid "Episodes"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml
@@ -2318,7 +2292,13 @@ msgstr ""
 
 #: /1080i/MyPVRGuide.xml
 msgctxt "#31879"
-msgid "Back for guide tools · Select for programme actions"
+msgid "Guide tools"
+msgstr ""
+
+#: /1080i/MyPVRGuide.xml
+#. The guide's hint line: Select on a programme, after the Select key
+msgctxt "#31791"
+msgid "Programme actions"
 msgstr ""
 
 #: /1080i/script-globalsearch.xml
@@ -2334,11 +2314,6 @@ msgstr ""
 #: /1080i/script-globalsearch.xml
 msgctxt "#31892"
 msgid "New search"
-msgstr ""
-
-#: /1080i/script-globalsearch.xml
-msgctxt "#31893"
-msgid "Options · Info for details · Back to close"
 msgstr ""
 
 #: /1080i/script-globalsearch.xml
@@ -2599,7 +2574,7 @@ msgstr ""
 
 #: /1080i/Settings.xml
 msgctxt "#31963"
-msgid "Back to return"
+msgid "Return"
 msgstr ""
 
 #: /1080i/SettingsProfile.xml
@@ -2668,7 +2643,7 @@ msgstr ""
 
 #: /1080i/LoginScreen.xml
 msgctxt "#31980"
-msgid "Select to log in"
+msgid "Log in"
 msgstr ""
 
 #: /1080i/LoginScreen.xml
@@ -2681,14 +2656,9 @@ msgctxt "#31982"
 msgid "Change picture"
 msgstr ""
 
-#: /1080i/DialogMusicInfo.xml
-msgctxt "#31983"
-msgid "Details"
-msgstr ""
-
 #: /1080i/MyWeather.xml
 msgctxt "#31984"
-msgid "Menu for weather settings"
+msgid "Weather settings"
 msgstr ""
 
 #: /1080i/Custom_1118_BaldAppearance.xml

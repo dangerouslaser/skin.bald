@@ -212,7 +212,7 @@
 					</focusedlayout>
 				</control>
 				<include content="Bald_MediaCaption">
-					<param name="label">$LOCALIZE[31983]</param>
+					<param name="label">$LOCALIZE[31664]</param>
 					<param name="left">1296</param>
 					<param name="width">528</param>
 				</include>

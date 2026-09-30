@@ -32,6 +32,6 @@
 		<control type="label" id="29"><font></font><include>HiddenObject</include></control>
 		<control type="label" id="30"><font></font><include>HiddenObject</include></control>
 		<control type="label"><left>Bald_SafeLeft</left><top>1010</top><width>800</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Control.GetLabel(30)]</label></control>
-		<control type="label"><left>1024</left><top>1010</top><width>800</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31879]</label></control>
+		<control type="group"><left>1024</left><top>1010</top><include content="Bald_InfoHintPair"><param name="width">800</param><param name="first">$VAR[Bald_KeyBack]$LOCALIZE[31879]</param><param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31791]</param></include></control>
 	</controls>
 </window>

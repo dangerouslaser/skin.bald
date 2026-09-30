@@ -6,16 +6,21 @@
      (Container(511).ListItem.*). -->
 <includes>
 	<!-- ============ Navigation hints ============ -->
-	<!-- A hint names its key with a chevron and says where it goes: $VAR[Bald_ChevronDown]$LOCALIZE[31771] reads
-	     "˅ Cast & details". A right chevron follows its name ("Scroll by letters ›") and a hint for both Left and Right
-	     has one either side ("‹ Jump letters ›"), so a footer reads left to right: Left's hint first, Right's last,
-	     the others between. The chevrons are glyphs Bald's fonts carry in the Private Use Area (tools/hint_chevrons.py),
-	     centred on the capitals, with the space to the name built in; Select, Back and the other keys keep words. -->
-	<variable name="Bald_ChevronUp"><value>&#xE100;</value></variable>
-	<variable name="Bald_ChevronDown"><value>&#xE101;</value></variable>
-	<variable name="Bald_ChevronLeft"><value>&#xE102;</value></variable>
-	<variable name="Bald_ChevronRight"><value>&#xE103;</value></variable>
-	<variable name="Bald_ChevronUpDown"><value>&#xE105;</value></variable>
+	<!-- A hint shows the key it names and says what it does: $VAR[Bald_KeyDown]$LOCALIZE[31771] reads "▼ Cast & details",
+	     $VAR[Bald_KeySelect]$LOCALIZE[31663] "○ Play". A Right key follows its name ("Scroll by letters ▶") and a hint
+	     for both Left and Right has one either side ("◀ Jump letters ▶"), so a footer reads left to right: Left's hint
+	     first, then Up's, the other keys', Down's, and Right's last. The keys are glyphs Bald's fonts carry in the
+	     Private Use Area (tools/hint_keys.py): filled triangles for the arrows, Lucide's circle, undo-2, info and menu
+	     for Select, Back, Info and Menu, centred on the capitals with the space to the name built in. -->
+	<variable name="Bald_KeyUp"><value>&#xE100;</value></variable>
+	<variable name="Bald_KeyDown"><value>&#xE101;</value></variable>
+	<variable name="Bald_KeyLeft"><value>&#xE102;</value></variable>
+	<variable name="Bald_KeyRight"><value>&#xE103;</value></variable>
+	<variable name="Bald_KeyUpDown"><value>&#xE105;</value></variable>
+	<variable name="Bald_KeySelect"><value>&#xE106;</value></variable>
+	<variable name="Bald_KeyBack"><value>&#xE107;</value></variable>
+	<variable name="Bald_KeyInfo"><value>&#xE108;</value></variable>
+	<variable name="Bald_KeyMenu"><value>&#xE109;</value></variable>
 
 	<!-- ============ Shared conditions ============ -->
 	<!-- Expression bodies are wrapped in [...] so a name negates and combines safely wherever it is used. -->

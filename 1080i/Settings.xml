@@ -97,6 +97,6 @@
 			<param name="note">$INFO[Container(9000).ListItem.Label2]</param>
 			<include content="Bald_SettingsOpen"><param name="list">9000</param></include>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31963]</param><param name="second">$LOCALIZE[31739]</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$VAR[Bald_KeyBack]$LOCALIZE[31963]</param><param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31666]</param></include>
 	</controls>
 </window>

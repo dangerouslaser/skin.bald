@@ -86,8 +86,8 @@
 			<visible>Control.HasFocus(9100)</visible>
 			<include content="Bald_InfoHintPair">
 				<param name="width">600</param>
-				<param name="first">$VAR[Bald_ChevronLeft]$LOCALIZE[31701]$VAR[Bald_ChevronRight]</param>
-				<param name="second">$LOCALIZE[31984]</param>
+				<param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31701]$VAR[Bald_KeyRight]</param>
+				<param name="second">$VAR[Bald_KeyMenu]$LOCALIZE[31984]</param>
 			</include>
 		</control>
 		<control type="group">
@@ -96,8 +96,8 @@
 			<visible>!Control.HasFocus(9100)</visible>
 			<include content="Bald_InfoHintPair">
 				<param name="width">600</param>
-				<param name="first">$VAR[Bald_ChevronUp]$LOCALIZE[31701]</param>
-				<param name="second">$LOCALIZE[31984]</param>
+				<param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31701]</param>
+				<param name="second">$VAR[Bald_KeyMenu]$LOCALIZE[31984]</param>
 			</include>
 		</control>
 		<!-- Updating: the page dims under the field and an accent dot breathes at the centre. -->

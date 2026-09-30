@@ -283,13 +283,13 @@
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>
 			<control type="group"><left>800</left><top>Bald_HintTop</top>
 				<visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible>
-				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$VAR[Bald_ChevronUp]$LOCALIZE[31661]</param><param name="second">$LOCALIZE[31827]</param><param name="third">$VAR[Bald_ChevronDown]$LOCALIZE[31826]</param><param name="third_visible">true</param></include>
+				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31661]</param><param name="second">$VAR[Bald_KeyInfo]$LOCALIZE[31664]</param><param name="third">$VAR[Bald_KeyDown]$LOCALIZE[31826]</param><param name="third_visible">true</param></include>
 			</control>
 			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryLettersOpen]</visible>
-				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$VAR[Bald_ChevronUp]$LOCALIZE[31789]</param><param name="second">$VAR[Bald_ChevronLeft]$LOCALIZE[31830]$VAR[Bald_ChevronRight]</param></include>
+				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31789]</param><param name="second">$VAR[Bald_KeyLeft]$LOCALIZE[31830]$VAR[Bald_KeyRight]</param></include>
 			</control>
 			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible>
-				<include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">$VAR[Bald_ChevronLeft]$LOCALIZE[31789]</param><param name="second">$LOCALIZE[31747]</param></include>
+				<include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31789]</param><param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31747]</param></include>
 			</control>
 		</control>
 	</include>

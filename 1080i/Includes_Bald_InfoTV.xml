@@ -607,7 +607,7 @@
 			<left>Bald_RightColumn</left>
 			<top>Bald_HintTop</top>
 			<visible>$EXP[Bald_InfoOnOverview] + $EXP[Bald_InfoTVEpisodesFocused]</visible>
-			<include content="Bald_InfoHintPair"><param name="first">$LOCALIZE[31784]</param><param name="second">$VAR[Bald_ChevronDown]$LOCALIZE[31771]</param></include>
+			<include content="Bald_InfoHintPair"><param name="first">$VAR[Bald_KeySelect]$LOCALIZE[31663]</param><param name="second">$VAR[Bald_KeyDown]$LOCALIZE[31771]</param></include>
 		</control>
 	</include>
 </includes>

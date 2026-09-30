@@ -82,19 +82,19 @@
 				<control type="label">
 					<left>Bald_RightColumn</left><top>Bald_HintTop</top><width>384</width><height>24</height><align>right</align><aligny>center</aligny>
 					<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
-					<label>$VAR[Bald_ChevronDown]$LOCALIZE[31771]</label><visible>$EXP[Bald_InfoOnOverview] + !$EXP[Bald_InfoIsTV]</visible>
+					<label>$VAR[Bald_KeyDown]$LOCALIZE[31771]</label><visible>$EXP[Bald_InfoOnOverview] + !$EXP[Bald_InfoIsTV]</visible>
 				</control>
 				<include condition="$EXP[Bald_InfoTVItem]">Bald_InfoTVHints</include>
 				<control type="group">
 					<left>Bald_RightColumn</left><top>Bald_HintTop</top>
 					<visible>$EXP[Bald_InfoOnCast]</visible>
-					<include content="Bald_InfoHintPair"><param name="first">$VAR[Bald_ChevronUp]$LOCALIZE[31770]</param><param name="second">$VAR[Bald_ChevronDown]$LOCALIZE[31772]</param></include>
+					<include content="Bald_InfoHintPair"><param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31770]</param><param name="second">$VAR[Bald_KeyDown]$LOCALIZE[31772]</param></include>
 				</control>
 				<!-- Page hints switch immediately; they are not children of the animated page content. -->
 				<control type="group">
 					<left>Bald_RightColumn</left><top>Bald_HintTop</top>
 					<visible>$EXP[Bald_InfoOnMore]</visible>
-					<include content="Bald_InfoHintPair"><param name="first">$VAR[Bald_ChevronUp]$LOCALIZE[31771]</param><param name="second">$LOCALIZE[31739]</param></include>
+					<include content="Bald_InfoHintPair"><param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31771]</param><param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31666]</param></include>
 				</control>
 			</control>
 		</control>

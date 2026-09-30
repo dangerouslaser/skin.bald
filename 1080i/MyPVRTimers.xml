@@ -15,7 +15,7 @@
 			<include content="Bald_PVRWindowChrome">
 				<param name="title">$VAR[Bald_PVRTimersTitle]</param>
 				<param name="section">$VAR[Bald_PVRArea]$INFO[Control.GetLabel(29), · ]$INFO[PVR.NextTimer, · ]</param>
-				<param name="hint">$LOCALIZE[31665]</param>
+				<param name="hint">$VAR[Bald_KeySelect]$LOCALIZE[31665]</param>
 				<param name="extra">$INFO[ListItem.TimerType]$INFO[ListItem.Comment, · ]</param>
 				<param name="extra_visible">!String.IsEmpty(ListItem.TimerType) | !String.IsEmpty(ListItem.Comment)</param>
 			</include>

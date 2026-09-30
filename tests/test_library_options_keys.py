@@ -2,7 +2,7 @@
 
 Horizontal rows: Up opens the options (Left and Right wrap along the row), "˄ Options". Vertical lists: Left, and
 Up / Down wrap, "‹ Options". Grids: Left from the left column, and Up / Down wrap top to bottom, "‹ Options". The
-chevron names the key (Bald_Chevron*, Includes_Bald_Common.xml); the text is the same "Options" string."""
+key glyph names the key (Bald_Key*, Includes_Bald_Common.xml); the text is the same "Options" string."""
 
 import re
 import unittest
@@ -32,7 +32,7 @@ def control_text(text, cid):
     return text[start:end if end > 0 else len(text)]
 
 
-HINT = r'<param name="%s">\$VAR\[Bald_Chevron(\w+)\]\$LOCALIZE\[(\d+)\]</param>'
+HINT = r'<param name="%s">\$VAR\[Bald_Key(\w+)\]\$LOCALIZE\[(\d+)\]</param>'
 
 
 def footer_hint(text, cid, kind):

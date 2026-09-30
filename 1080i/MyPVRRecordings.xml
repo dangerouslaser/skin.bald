@@ -15,7 +15,7 @@
 			<include content="Bald_PVRWindowChrome">
 				<param name="title">$LOCALIZE[19017]</param>
 				<param name="section">$VAR[Bald_PVRArea]$INFO[Control.GetLabel(30), · ]$INFO[Control.GetLabel(29), · ]</param>
-				<param name="hint">$LOCALIZE[31663]</param>
+				<param name="hint">$VAR[Bald_KeySelect]$LOCALIZE[31663]</param>
 				<param name="footer_extra">$LOCALIZE[19116] $INFO[PVR.BackendDiskspace]</param>
 				<param name="footer_extra_visible">!String.IsEmpty(PVR.BackendDiskspace) + !Integer.IsGreater(PVR.BackendDiskspaceProgr,100)</param>
 			</include>

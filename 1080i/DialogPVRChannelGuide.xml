@@ -41,7 +41,7 @@
 			<include content="Bald_PVRScrollbar"><param name="id">60</param><param name="list_id">11</param><param name="left">892</param></include>
 			<include content="Bald_PVRDetailPane"><param name="item">Container(11).ListItem.</param></include>
 			<include content="Bald_PVRHints">
-				<param name="first">$LOCALIZE[31668]</param>
+				<param name="first">$VAR[Bald_KeySelect]$LOCALIZE[31664]</param>
 				<param name="second">$VAR[Bald_PVRGuideHint]</param>
 			</include>
 		</control>

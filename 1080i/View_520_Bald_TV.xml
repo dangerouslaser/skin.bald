@@ -9,14 +9,14 @@
 		<value>$INFO[Container.Art(tvshow.fanart)]</value>
 	</variable>
 	<include name="Bald_TVFooter">
-		<param name="c" /><param name="letters">false</param><param name="select_hint">$LOCALIZE[31739]</param><param name="options_hint">$VAR[Bald_ChevronUp]$LOCALIZE[31661]</param><param name="count_y">954</param>
+		<param name="c" /><param name="letters">false</param><param name="select_hint">$VAR[Bald_KeySelect]$LOCALIZE[31666]</param><param name="options_hint">$VAR[Bald_KeyUp]$LOCALIZE[31661]</param><param name="count_y">954</param>
 		<definition>
 			<control type="label"><left>Bald_SafeLeft</left><top>$PARAM[count_y]</top><width>600</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container($PARAM[c]).CurrentItem] / $INFO[Container($PARAM[c]).NumItems]</label></control>
 			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>!$EXP[Bald_LibraryMenuOpen] + !$EXP[Bald_LibraryLettersOpen]</visible>
-				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$PARAM[options_hint]</param><param name="second">$PARAM[select_hint]</param><param name="third">$LOCALIZE[31827]</param><param name="third_visible">true</param></include>
+				<include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$PARAM[options_hint]</param><param name="second">$PARAM[select_hint]</param><param name="third">$VAR[Bald_KeyInfo]$LOCALIZE[31664]</param><param name="third_visible">true</param></include>
 			</control>
-			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$PARAM[letters] + $EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$VAR[Bald_ChevronUp]$LOCALIZE[31789]</param><param name="second">$VAR[Bald_ChevronLeft]$LOCALIZE[31830]$VAR[Bald_ChevronRight]</param></include></control>
-			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">$VAR[Bald_ChevronLeft]$LOCALIZE[31789]</param><param name="second">$LOCALIZE[31747]</param></include></control>
+			<control type="group"><left>800</left><top>Bald_HintTop</top><visible>$PARAM[letters] + $EXP[Bald_LibraryLettersOpen]</visible><include content="Bald_InfoHintPair"><param name="width">1024</param><param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31789]</param><param name="second">$VAR[Bald_KeyLeft]$LOCALIZE[31830]$VAR[Bald_KeyRight]</param></include></control>
+			<control type="group"><left>1404</left><top>Bald_HintTop</top><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">420</param><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31789]</param><param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31747]</param></include></control>
 		</definition>
 	</include>
 	<include name="Bald_TVEpisodeRow">
@@ -51,7 +51,7 @@
 				<onfocus>SetProperty(Bald.LibraryContainer,520,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">520</param><param name="window">videos</param></include><include content="Bald_UnfollowContainer"><param name="window">videos</param></include><onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|520)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,520)</ondown>
 				<include>Bald_LibraryDim</include><itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout><focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(520) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
-			<include content="Bald_LibraryPreview"><param name="c">520</param></include><include content="Bald_TVFooter"><param name="c">520</param><param name="letters">true</param><param name="select_hint">$LOCALIZE[31835]</param></include>
+			<include content="Bald_LibraryPreview"><param name="c">520</param></include><include content="Bald_TVFooter"><param name="c">520</param><param name="letters">true</param><param name="select_hint">$VAR[Bald_KeySelect]$LOCALIZE[31835]</param></include>
 		</control>
 	</include>
 	<include name="View_530_Bald_Seasons">
@@ -63,7 +63,7 @@
 				<onfocus>SetProperty(Bald.LibraryContainer,530,videos)</onfocus><include content="Bald_FollowContainer"><param name="id">530</param><param name="window">videos</param></include><include content="Bald_UnfollowContainer"><param name="window">videos</param></include><onup>9150</onup><ondown>noop</ondown>
 				<include>Bald_LibraryDim</include><itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout><focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(530)</param></include></focusedlayout>
 			</control>
-			<include content="Bald_LibraryPreview"><param name="c">530</param><param name="show_logo">true</param></include><include content="Bald_TVFooter"><param name="c">530</param><param name="select_hint">$LOCALIZE[31836]</param></include>
+			<include content="Bald_LibraryPreview"><param name="c">530</param><param name="show_logo">true</param></include><include content="Bald_TVFooter"><param name="c">530</param><param name="select_hint">$VAR[Bald_KeySelect]$LOCALIZE[31836]</param></include>
 		</control>
 	</include>
 	<include name="View_540_Bald_Episodes">
@@ -79,7 +79,7 @@
 				<control type="group"><left>816</left><top>180</top><control type="image"><width>1008</width><height>567</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control><include content="Bald_TVEpisodeArt"><param name="p">Odd</param></include><include content="Bald_TVEpisodeArt"><param name="p">Even</param></include><include content="Bald_SpoilerFrame"><param name="item">Container(540).ListItem.</param><param name="w">1008</param><param name="h">567</param></include></control><include content="Bald_TVEpisodeCaption"><param name="p">Odd</param></include><include content="Bald_TVEpisodeCaption"><param name="p">Even</param></include>
 			</control>
 			<include content="Bald_BackdropWindow"><param name="x">790</param><param name="y">164</param><param name="w">26</param><param name="h">599</param></include><include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">164</param><param name="w">26</param><param name="h">599</param></include><include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">164</param><param name="w">1008</param><param name="h">16</param></include><include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">747</param><param name="w">1008</param><param name="h">16</param></include>
-			<include content="Bald_TVFooter"><param name="c">540</param><param name="options_hint">$VAR[Bald_ChevronLeft]$LOCALIZE[31661]</param><param name="select_hint">$LOCALIZE[31739]</param></include>
+			<include content="Bald_TVFooter"><param name="c">540</param><param name="options_hint">$VAR[Bald_KeyLeft]$LOCALIZE[31661]</param><param name="select_hint">$VAR[Bald_KeySelect]$LOCALIZE[31666]</param></include>
 		</control>
 	</include>
 </includes>

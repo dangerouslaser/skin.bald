@@ -69,6 +69,6 @@
 		</control>
 		<control type="label" id="999"><left>Bald_SafeLeft</left><top>460</top><width>1140</width><height>80</height><align>center</align><aligny>center</aligny><font>Bald_CaptionTitle</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[284]</label></control>
 		<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(50).CurrentItem] / $INFO[Container(50).NumItems]</label></control>
-		<control type="label"><left>1000</left><top>Bald_HintTop</top><width>824</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_ChevronUp]$LOCALIZE[31893]</label></control>
+		<control type="group"><left>1000</left><top>Bald_HintTop</top><include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31661]</param><param name="second">$VAR[Bald_KeyInfo]$LOCALIZE[31664]</param><param name="third">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param><param name="third_visible">true</param></include></control>
 	</controls>
 </window>

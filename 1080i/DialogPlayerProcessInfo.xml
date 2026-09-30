@@ -91,7 +91,7 @@
 			<aligny>center</aligny>
 			<font>Bald_Hint</font>
 			<textcolor>bald_ink60</textcolor>
-			<label>$LOCALIZE[31619]</label>
+			<label>$VAR[Bald_KeyBack]$LOCALIZE[31619]</label>
 		</control>
 	</controls>
 </window>

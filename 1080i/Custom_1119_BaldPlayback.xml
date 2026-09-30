@@ -15,7 +15,7 @@
 			<include content="Bald_SettingsCategories"><param name="id">9700</param><param name="right">9800</param></include>
 			<ondown>9090</ondown>
 			<content>
-				<item id="1"><label>$LOCALIZE[31623]</label><property name="note">$LOCALIZE[31971]</property></item>
+				<item id="1"><label>$LOCALIZE[31410]</label><property name="note">$LOCALIZE[31971]</property></item>
 				<item id="2"><label>$LOCALIZE[31621]</label><property name="note">$LOCALIZE[31972]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
 				<item id="3"><label>$LOCALIZE[31973]</label><property name="note">$LOCALIZE[31974]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
 				<item id="4"><label>$LOCALIZE[31975]</label><property name="note">$LOCALIZE[31976]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
@@ -87,6 +87,6 @@
 				<control type="radiobutton" id="9835"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param><param name="level">standard</param></include><label>$LOCALIZE[31638]</label><selected>!Skin.HasSetting(Bald.OSD.NoCastPanel) + $EXP[Bald_OSDCastProvider]</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoCastPanel)</onclick><enable>$EXP[Bald_OSDCastProvider]</enable></control>
 			</control>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$VAR[Bald_KeyBack]$LOCALIZE[31746]</param><param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31747]</param></include>
 	</controls>
 </window>

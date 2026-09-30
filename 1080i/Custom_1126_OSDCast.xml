@@ -46,7 +46,7 @@
 				<param name="text">$VAR[Bald_OSDPersonText]</param>
 			</include>
 			<include content="Bald_OSDPanelHints">
-				<param name="first">$LOCALIZE[31632]</param>
+				<param name="first">$VAR[Bald_KeySelect]$LOCALIZE[31632]</param>
 				<param name="second">$VAR[Bald_OSDCastHint]</param>
 			</include>
 		</control>

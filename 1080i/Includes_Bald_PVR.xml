@@ -54,8 +54,8 @@
 		<value>$LOCALIZE[19020]</value>
 	</variable>
 	<variable name="Bald_PVRGuideHint">
-		<value condition="$EXP[Bald_PVRGuideToChannels]">$LOCALIZE[31687]$VAR[Bald_ChevronRight]</value>
-		<value>$LOCALIZE[31669]</value>
+		<value condition="$EXP[Bald_PVRGuideToChannels]">$LOCALIZE[31687]$VAR[Bald_KeyRight]</value>
+		<value>$VAR[Bald_KeyBack]$LOCALIZE[31619]</value>
 	</variable>
 	<variable name="Bald_PVRTimersTitle">
 		<value condition="Window.IsActive(TVTimerRules) | Window.IsActive(RadioTimerRules)">$LOCALIZE[19138]</value>
@@ -491,12 +491,12 @@
 		<param name="extra_visible">false</param>
 		<param name="footer_extra" />
 		<param name="footer_extra_visible">false</param>
-		<param name="hint">$LOCALIZE[31663]</param>
+		<param name="hint">$VAR[Bald_KeySelect]$LOCALIZE[31663]</param>
 		<definition>
 			<include content="Bald_PVRHeader"><param name="title">$PARAM[title]</param><param name="section">$PARAM[section]</param></include>
 			<include content="Bald_PVRPreview"><param name="next">$PARAM[next]</param><param name="extra">$PARAM[extra]</param><param name="extra_visible">$PARAM[extra_visible]</param></include>
 			<include content="Bald_PVRFooter"><param name="extra">$PARAM[footer_extra]</param><param name="extra_visible">$PARAM[footer_extra_visible]</param></include>
-			<include content="Bald_PVRHints"><param name="first">$VAR[Bald_ChevronLeft]$LOCALIZE[31661]</param><param name="second">$PARAM[hint]</param><param name="third">$LOCALIZE[31664]</param><param name="third_visible">true</param></include>
+			<include content="Bald_PVRHints"><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31661]</param><param name="second">$PARAM[hint]</param><param name="third">$VAR[Bald_KeyInfo]$LOCALIZE[31664]</param><param name="third_visible">true</param></include>
 		</definition>
 	</include>
 

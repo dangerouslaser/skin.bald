@@ -135,7 +135,7 @@
 				</focusedlayout>
 			</control>
 			<include content="Bald_OSDPanelHints">
-				<param name="first">$LOCALIZE[31619]</param>
+				<param name="first">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param>
 				<param name="second">$VAR[Bald_OSDHintAfter3]</param>
 			</include>
 		</control>

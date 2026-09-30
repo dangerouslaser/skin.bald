@@ -219,6 +219,6 @@
 				</control>
 			</control>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31746]</param><param name="second">$LOCALIZE[31747]</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$VAR[Bald_KeyBack]$LOCALIZE[31746]</param><param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31747]</param></include>
 	</controls>
 </window>

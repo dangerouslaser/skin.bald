@@ -31,7 +31,7 @@ class InfoPagesTests(unittest.TestCase):
         self.assertEqual([node.findtext("width") for node in labels], ["auto", "20", "auto", "20", "auto"])
         self.assertEqual(labels[1].findtext("label"), "·")
         self.assertTrue(all(node.findtext("height") == "24" for node in labels))
-        overview = next(node for node in self.dialog.iter("control") if node.findtext("label") == "$VAR[Bald_ChevronDown]" + loc("Cast & details"))
+        overview = next(node for node in self.dialog.iter("control") if node.findtext("label") == "$VAR[Bald_KeyDown]" + loc("Cast & details"))
         self.assertEqual(overview.findtext("align"), "right")
         self.assertEqual(overview.findtext("height"), "24")
         self.assertEqual(overview.findtext("top"), "954")

@@ -68,7 +68,7 @@
 			<include content="Bald_BackdropWindow"><param name="x">1824</param><param name="y">164</param><param name="w">26</param><param name="h">599</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">164</param><param name="w">1008</param><param name="h">16</param></include>
 			<include content="Bald_BackdropWindow"><param name="x">816</param><param name="y">747</param><param name="w">1008</param><param name="h">16</param></include>
-			<include content="Bald_WallFooter"><param name="c">514</param><param name="letters_hint">$LOCALIZE[31826]$VAR[Bald_ChevronRight]</param><param name="options_hint">$VAR[Bald_ChevronLeft]$LOCALIZE[31661]</param></include>
+			<include content="Bald_WallFooter"><param name="c">514</param><param name="letters_hint">$LOCALIZE[31826]$VAR[Bald_KeyRight]</param><param name="options_hint">$VAR[Bald_KeyLeft]$LOCALIZE[31661]</param></include>
 		</control>
 	</include>
 </includes>

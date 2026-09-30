@@ -16,7 +16,7 @@
 				<param name="title">$LOCALIZE[19019]</param>
 				<param name="section">$VAR[Bald_PVRArea]$INFO[Control.GetLabel(29), · ]$INFO[Control.GetLabel(30), · ]</param>
 				<param name="next">true</param>
-				<param name="hint">$LOCALIZE[31662]</param>
+				<param name="hint">$VAR[Bald_KeySelect]$LOCALIZE[31662]</param>
 			</include>
 			<include content="Bald_PVRList">
 				<itemlayout width="1140" height="84" infoupdate="5000"><include content="Bald_PVRChannelRow"><param name="list_id">50</param></include></itemlayout>

@@ -1,9 +1,9 @@
-"""Navigation hints name their key with a chevron (Bald_Chevron*, Includes_Bald_Common.xml) and read left to right.
+"""Hints show the key they name (Bald_Key*, Includes_Bald_Common.xml) instead of spelling it out, and read left to right.
 
-The chevrons are glyphs tools/hint_chevrons.py draws into Bald's UI fonts. A left, up or down chevron comes before
-its name ("‹ Options", "˅ Cast & details"), a right one after it ("Scroll by letters ›"), and a hint for both Left
-and Right has one either side. A footer lists Left's hint first, then Up's, the keys without a direction, Down's,
-and Right's last.
+The keys are glyphs tools/hint_keys.py draws into Bald's UI fonts: triangles for the arrows, Lucide's circle, undo-2,
+info and menu for Select, Back, Info and Menu. A key comes before its name ("▼ Cast & details", "○ Play") except
+Right, which follows it ("Scroll by letters ▶"); a hint for both Left and Right has one either side. A footer lists
+Left's hint first, then Up's, the other keys', Down's, and Right's last.
 """
 
 import re
@@ -15,7 +15,8 @@ from test_fonts import characters
 
 ROOT = Path(__file__).resolve().parents[1]
 SKIN = ROOT / "1080i"
-CODEPOINTS = {"Up": 0xE100, "Down": 0xE101, "Left": 0xE102, "Right": 0xE103, "UpDown": 0xE105}
+CODEPOINTS = {"Up": 0xE100, "Down": 0xE101, "Left": 0xE102, "Right": 0xE103, "UpDown": 0xE105, "Select": 0xE106,
+              "Back": 0xE107, "Info": 0xE108, "Menu": 0xE109}
 HINT_INCLUDES = ("Bald_InfoHintPair", "Bald_PVRHints", "Bald_SettingsHints", "Bald_HomeHintLine")
 
 
@@ -23,21 +24,21 @@ def rank(value):
     """Where a hint belongs, left to right; None when it is only known at run time."""
     if "$PARAM[" in value or "$VAR[Bald_MenuHint" in value:
         return None
-    left, right = value.startswith("$VAR[Bald_ChevronLeft]"), value.endswith("$VAR[Bald_ChevronRight]")
+    left, right = value.startswith("$VAR[Bald_KeyLeft]"), value.endswith("$VAR[Bald_KeyRight]")
     if left and right:
         return 2
     if left:
         return 0
     if right:
         return 4
-    if value.startswith("$VAR[Bald_ChevronUp"):
+    if value.startswith("$VAR[Bald_KeyUp"):
         return 1
-    if value.startswith("$VAR[Bald_ChevronDown]"):
+    if value.startswith("$VAR[Bald_KeyDown]"):
         return 3
     return 2
 
 
-class HintChevronTests(unittest.TestCase):
+class HintKeyTests(unittest.TestCase):
     def test_every_ui_font_draws_the_chevrons(self):
         fonts = sorted(p for p in (ROOT / "fonts").glob("*.ttf") if not p.name.startswith("NotoSans"))
         self.assertEqual(len(fonts), 10)
@@ -48,24 +49,26 @@ class HintChevronTests(unittest.TestCase):
     def test_the_variables_name_the_glyphs(self):
         common = (SKIN / "Includes_Bald_Common.xml").read_text(encoding="utf-8")
         for name, codepoint in CODEPOINTS.items():
-            self.assertIn(f'<variable name="Bald_Chevron{name}"><value>&#x{codepoint:04X};</value></variable>', common)
+            self.assertIn(f'<variable name="Bald_Key{name}"><value>&#x{codepoint:04X};</value></variable>', common)
 
-    def test_no_hint_spells_out_a_direction(self):
+    def test_no_hint_spells_out_its_key(self):
         table = strings()
         for path in SKIN.glob("*.xml"):
             for num in re.findall(r"\$LOCALIZE\[(\d+)\]", path.read_text(encoding="utf-8")):
                 text = table.get(int(num), "")
-                if text == "Up next":  # a heading, not a hint
+                # A heading, a description (the menu notes), or the start of the context menu note's sentence
+                # ("Select to use “Play” on this item").
+                if text == "Up next" or text.endswith(".") or num == "31928":
                     continue
-                with self.subTest(file=path.name, string=num):
-                    self.assertNotRegex(text, r"^(Up|Down|Left|Right)( |$)|^(Up|Down|Left|Right) (/|and|or) ")
+                with self.subTest(file=path.name, string=num, text=text):
+                    self.assertNotRegex(text, r"^(Up|Down|Left|Right|Select|Back|Info|Menu) (to|for|/|and|or) ")
 
     def test_a_right_chevron_follows_its_name_and_the_others_lead(self):
         for path in SKIN.glob("*.xml"):
             text = path.read_text(encoding="utf-8")
             with self.subTest(file=path.name):
-                self.assertNotRegex(text, r"\$VAR\[Bald_ChevronRight\]\$LOCALIZE")
-                self.assertNotRegex(text, r"\$LOCALIZE\[\d+\]\$VAR\[Bald_Chevron(Up|Down|Left|UpDown)\]")
+                self.assertNotRegex(text, r"\$VAR\[Bald_KeyRight\]\$LOCALIZE")
+                self.assertNotRegex(text, r"\$LOCALIZE\[\d+\]\$VAR\[Bald_Key(Up|Down|Left|UpDown)\]")
 
     def test_footers_read_left_to_right(self):
         checked = 0
@@ -90,9 +93,9 @@ class HintChevronTests(unittest.TestCase):
         for n in range(1, 9):
             self.assertIn(f"[Control.HasFocus(901{n}) + $EXP[Bald_HubHasOpen_hub{n}] + !$EXP[Bald_HubSwap_hub{n}]]", browse)
         self.assertIn('<expression name="Bald_MenuHintGuide">[Control.HasFocus(9004) + !$EXP[Bald_LiveTVSwap]]</expression>', home)
-        self.assertIn("$VAR[Bald_ChevronLeft]$LOCALIZE[31788]", home)
-        self.assertIn("$LOCALIZE[31789]$VAR[Bald_ChevronRight]", home)
-        self.assertIn("$LOCALIZE[31790]$VAR[Bald_ChevronRight]", home)
+        self.assertIn("$VAR[Bald_KeyLeft]$LOCALIZE[31788]", home)
+        self.assertIn("$LOCALIZE[31789]$VAR[Bald_KeyRight]", home)
+        self.assertIn("$LOCALIZE[31790]$VAR[Bald_KeyRight]", home)
         self.assertIn("<include>Bald_MenuHints</include>", (SKIN / "Home.xml").read_text(encoding="utf-8"))
 
 
