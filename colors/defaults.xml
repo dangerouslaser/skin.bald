@@ -31,6 +31,8 @@
 	<color name="bald_ink45">73ECEEF2</color>
 	<color name="bald_ink34">57ECEEF2</color>
 	<color name="bald_ink28">47ECEEF2</color>
+	<!-- The TV guide ruler's half-hour ticks (2 px, so they never round away when the GUI is scaled). -->
+	<color name="bald_ink20">33ECEEF2</color>
 	<color name="bald_ink10">1AECEEF2</color>
 	<!-- The TV guide's quiet cells (programmes still to come). -->
 	<color name="bald_ink06">0FECEEF2</color>

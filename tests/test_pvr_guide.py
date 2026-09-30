@@ -83,6 +83,9 @@ class PVRGuideTests(unittest.TestCase):
         self.assertIn('RunScript(skin.bald,guidedate)', [n.text for n in guide.findall('onload')])
 
         self.assertEqual(grid.find("rulerlayout/control[@type='label']").findtext('label'), '$VAR[Bald_EpgRulerLabel]')
+        # The half-hour ticks are 2 px, so they survive a scaled GUI (1 px ones rounded away as the ruler scrolled).
+        tick = grid.find("rulerlayout/control[@type='image']")
+        self.assertEqual((tick.findtext('width'), tick.find('texture').get('colordiffuse')), ('2', 'bald_ink20'))
         # The ruler's first item is the day over the 190 px channel column: its label must fit there.
         self.assertLessEqual(int(grid.find("rulerlayout/control[@type='label']").findtext('width')),
                              int(grid.find('channellayout').get('width')))

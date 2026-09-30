@@ -43,7 +43,9 @@
 				<!-- The timeline is 1538 px (1728 less the 190 px channel column): 256 px a half hour. The first ruler item
 				     is the day, over the channel column, so the labels stop at 178 px to stay inside it. -->
 				<rulerlayout height="40" width="1538">
-					<control type="image"><left>0</left><top>12</top><width>1</width><height>16</height><texture colordiffuse="bald_ink28">bald/white.png</texture></control>
+					<!-- 2 px: a 1 px tick is under a pixel wide once Kodi scales the GUI (a window narrower than 1920), and it
+					     rounded to nothing at some of the positions the ruler scrolls through. -->
+					<control type="image"><left>0</left><top>12</top><width>2</width><height>16</height><texture colordiffuse="bald_ink20">bald/white.png</texture></control>
 					<control type="label"><width>178</width><height>40</height><font>Bald_Hint</font><label>$VAR[Bald_EpgRulerLabel]</label><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor></control>
 				</rulerlayout>
 				<!-- Channel: number and logo; the name only for a channel without a logo (providers' names are long and
