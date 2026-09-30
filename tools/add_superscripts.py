@@ -11,7 +11,10 @@ Instrument Sans and Onest do not have. For each character of these ranges a font
     U+2070-209F  superscripts and subscripts (⁰ ⁴ ... ⁿ ₀ ...)
 
 - a superscript or subscript (Unicode's <super> or <sub> of one letter or digit) is that letter from the same family,
-  scaled to 62% and raised so its capitals top out at the capital height (or lowered below the baseline);
+  scaled and raised to match the superscripts the font already has, so a drawn one sits with the font's own: letters
+  like its modifier letters (Onest's ʷ), digits like its superscript digits (² ³ ¹ in DM Sans and Onest), letters like
+  its digits when it has no modifier letters, and at 62% with the capitals topping out at the capital height when it
+  has neither (Instrument Sans); subscripts at the same size, dropped below the baseline;
 - a small capital (LATIN LETTER SMALL CAPITAL X) is the capital scaled to the x-height;
 - both are taken from the next heavier weight of the family (Regular from Medium, and so on), since scaling a letter
   down thins its stems;
@@ -82,11 +85,40 @@ def drawn(glyphset, name, matrix):
     return pen.glyph()
 
 
+def calibrate(font, kind):
+    """(scale, raise) of the font's own superscripts of one kind ("digit" or "letter"), from the characters it already
+    maps whose <super> base it also has: the native glyph's height and baseline against its base's. None if it has none."""
+    cmap, glyf = font.getBestCmap(), font["glyf"]
+    found = []
+    for codepoint, name in cmap.items():
+        if not wanted(codepoint):
+            continue
+        how = recipe(codepoint)
+        if not how or how[0] != "super" or how[1] not in cmap:
+            continue
+        base = chr(how[1])
+        if (kind == "digit") != base.isdigit() or not (base.isdigit() or base.isalpha()):
+            continue
+        native, plain = glyf[name], glyf[cmap[how[1]]]
+        native.recalcBounds(glyf)
+        plain.recalcBounds(glyf)
+        if not hasattr(native, "yMin") or not hasattr(plain, "yMin") or plain.yMax <= plain.yMin:
+            continue
+        scale = (native.yMax - native.yMin) / (plain.yMax - plain.yMin)
+        found.append((scale, native.yMin - scale * plain.yMin))
+    if not found:
+        return None
+    return sum(s for s, _ in found) / len(found), sum(r for _, r in found) / len(found)
+
+
 def add(target_path, source):
     font = TTFont(target_path)
     cmap = font.getBestCmap()
     upm = font["head"].unitsPerEm
     cap, xheight = font["OS/2"].sCapHeight, font["OS/2"].sxHeight
+    default = (SCALE, cap * (1 - SCALE))
+    digits = calibrate(font, "digit")
+    letters = calibrate(font, "letter") or digits
     base_font = TTFont(heavier(target_path))
     base_cmap, base_glyphs = base_font.getBestCmap(), base_font.getGlyphSet()
     base_scale = upm / base_font["head"].unitsPerEm
@@ -106,8 +138,8 @@ def add(target_path, source):
             if kind == "smallcap":
                 s, dy = xheight / cap, 0
             else:
-                s = SCALE
-                dy = cap * (1 - s) if kind == "super" else -SUB_DROP * upm
+                s, rise = (digits if chr(base).isdigit() else letters) or default
+                dy = rise if kind == "super" else -SUB_DROP * upm
             s *= base_scale
             side = SIDE * upm
             glyph = drawn(base_glyphs, base_name, (s, 0, 0, s, side, dy))
