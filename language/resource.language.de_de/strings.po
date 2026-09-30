@@ -908,7 +908,8 @@ msgid "Clock on the controls"
 msgstr "Uhr bei der Steuerung"
 
 #: /1080i/Includes_Bald_Home.xml
-#. After the time left on a part-watched item in the Home caption, e.g. "36m left"
+#: /1080i/Includes_Bald_InfoPages.xml
+#. After the time left on a part-watched item in the Home caption and the info page, e.g. "36m left"
 msgctxt "#31417"
 msgid "left"
 msgstr "übrig"

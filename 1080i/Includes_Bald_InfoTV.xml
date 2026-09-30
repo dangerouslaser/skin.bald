@@ -275,15 +275,11 @@
 					<left>28</left>
 					<top>180</top>
 					<visible>ListItem.IsResumable + $EXP[Bald_ShowProgressMarks]</visible>
-					<control type="image">
-						<width>288</width>
-						<height>4</height>
-						<texture border="2" colordiffuse="bald_ink28">bald/bar.png</texture>
-					</control>
+					<!-- One progress control whose own background is the track, so the fill lies exactly on it. -->
 					<control type="progress">
 						<width>288</width>
 						<height>4</height>
-						<texturebg />
+						<texturebg border="2" colordiffuse="bald_mark_track">bald/bar.png</texturebg>
 						<lefttexture />
 						<midtexture border="2" colordiffuse="bald_ink">bald/bar.png</midtexture>
 						<righttexture />
