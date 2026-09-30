@@ -12,3 +12,6 @@ AGENTS.md
 .codex/
 docs/
 real_defaults.xml
+
+# Kodi screenshots captured during development (debug.screenshotpath).
+.devshots/
