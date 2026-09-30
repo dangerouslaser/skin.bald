@@ -223,33 +223,21 @@ class WidgetGeneratorTests(unittest.TestCase):
             rows = [int(row) for row in re.findall(r"Container\((\d+)\)", " ".join(value.text or "" for value in values))]
             self.assertEqual(sorted(set(rows)), configured)
 
-    def test_each_row_draws_one_dot_per_row_of_its_screen(self):
+    def test_each_row_names_its_neighbours(self):
+        # The row hints' chains (tests/test_home_row_hints.py checks what they say).
         root = fallback()
         for screen, title, base in SCREENS:
             rows = definition(root, f"Bald_Generated_{title}Widgets").findall("include")
-            count = len(defaults(screen))
-            for index, row in enumerate(rows):
-                self.assertEqual(param(row, "dots"), f"Bald_RowDots_{param(row, 'id')}")
-                self.assertEqual(int(param(row, "dots_width")), 12 * count - 6)
-                dots = definition(root, param(row, "dots")).findall("control")
-                self.assertEqual([int(dot.findtext("left")) for dot in dots], [12 * n for n in range(count)])
-                self.assertTrue(all((dot.findtext("width"), dot.findtext("height"), dot.findtext("top")) == ("6", "6", "10")
-                                    for dot in dots))
-                self.assertEqual([dot.find("texture").get("colordiffuse") for dot in dots],
-                                 ["bald_ink95" if n == index else "bald_ink28" for n in range(count)])
-                self.assertTrue(all(dot.findtext("texture") == "bald/dot.png" for dot in dots))
-
-        # Each row, expanded as Home expands it, draws its dots in a group exactly as wide as they are.
-        definitions = include_definitions()
-        for screen, title, _ in SCREENS:
-            count = len(defaults(screen))
-            for call in definition(root, f"Bald_Generated_{title}Widgets").findall("include"):
-                holder = ET.Element("holder")
-                holder.append(call)
-                _expand_in_place(holder, definitions)
-                groups = [g for g in holder.iter("control") if g.get("type") == "group"
-                          and [c.findtext("texture") for c in g.findall("control")] == ["bald/dot.png"] * count]
-                self.assertEqual([g.findtext("width") for g in groups], [str(12 * count - 6)], param(call, "id"))
+            for index, row in enumerate(rows, start=1):
+                with self.subTest(screen=screen, row=index):
+                    self.assertEqual(param(row, "prev"), f"Bald_RowPrevFrom_{screen}_{index - 1}")
+                    self.assertEqual(param(row, "next"), f"Bald_RowNextFrom_{screen}_{index + 1}")
+                    self.assertEqual(param(row, "has_next"), f"Bald_RowHasNextFrom_{screen}_{index + 1}")
+                    self.assertIsNone(param(row, "dots"))
+            if rows:
+                names = {node.get("name") for node in root.iter("variable")}
+                self.assertIn(f"Bald_RowPrevFrom_{screen}_0", names)
+                self.assertIn(f"Bald_RowNextFrom_{screen}_{len(rows) + 1}", names)
 
     def test_menu_note_lists_the_configured_row_labels(self):
         root = fallback()

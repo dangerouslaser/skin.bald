@@ -1,8 +1,13 @@
-<include name="Bald_RowDots_{row_id}">
-    <definition>
-{dots}
-    </definition>
-</include>
+<variable name="Bald_RowPrevFrom_{screen}_{row_index}">
+    <value condition="Integer.IsGreater(Container({row_id}).NumItems,0)">{item_label_escaped}</value>
+    <value>$VAR[Bald_RowPrevFrom_{screen}_{item_x}]</value>
+</variable>
+<variable name="Bald_RowNextFrom_{screen}_{row_index}">
+    <value condition="Integer.IsGreater(Container({row_id}).NumItems,0)">{item_label_escaped}</value>
+    <value>$VAR[Bald_RowNextFrom_{screen}_{next_index}]</value>
+</variable>
+<expression name="Bald_RowHasNextFrom_{screen}_{row_index}">[Integer.IsGreater(Container({row_id}).NumItems,0) | $EXP[Bald_RowHasNextFrom_{screen}_{next_index}]]</expression>
+{row_ends}
 <variable name="Bald_RowsNote_{screen}_{row_index}">
     <value>{item_label_escaped}{note_rest}</value>
 </variable>

@@ -156,7 +156,7 @@
                         <template>generator/row.xmltemplate</template>
                         <value name="row_id">$MATH[{base} + 1 + {item_x}]</value>
                         <value name="row_index">$MATH[1 + {item_x}]</value>
-                        <value name="dots_width">$MATH[12 * {item_length_x} - 6]</value>
+                        <value name="next_index">$MATH[2 + {item_x}]</value>
                         <!-- The row's style (widget editor, row field "style"); anything else, or none, is fanart. Text is a landscape
                              row whose tiles show the name (Bald_RowTiles_text); the frame treats it as fanart. A weather row
                              (Choose content > Weather: path weather://daily or weather://hourly) is always the weather style,
@@ -328,23 +328,29 @@
                                 <value>3</value>
                             </rule>
                         </rules>
-                        <value name="dots">
-                            <items menu="{menu}" item="{node}" mode="{mode}">
-                                <item>
-                                    <template>generator/row-dot.xmltemplate</template>
-                                    <value name="dot_x">$MATH[12 * {item_x}]</value>
-                                    <rules name="dot_color">
-                                        <rule>
-                                            <condition>{item_x}=={parent_item_x}</condition>
-                                            <value>bald_ink95</value>
-                                        </rule>
-                                        <rule>
-                                            <value>bald_ink28</value>
-                                        </rule>
-                                    </rules>
-                                </item>
-                            </items>
-                        </value>
+                        <value name="next_index">$MATH[2 + {item_x}]</value>
+                        <!-- Home's row hints (Bald_RowHints): the nearest row above and below that has items, as Up and
+                             Down reach it (Kodi's CGUIWindow::OnMove passes over a row it cannot focus, an empty or still
+                             loading list, following that row's own Up or Down; the first row's Up opens the menu). Each
+                             row adds its link to the chains; the ends are "Menu" above the first row and nothing below
+                             the last. -->
+                        <rules name="row_ends">
+                            <rule>
+                                <condition>{item_length_x}==1</condition>
+                                <value>&lt;variable name="Bald_RowPrevFrom_{screen}_0"&gt;&lt;value&gt;$LOCALIZE[31787]&lt;/value&gt;&lt;/variable&gt;&lt;variable name="Bald_RowNextFrom_{screen}_{next_index}"&gt;&lt;value&gt;&lt;/value&gt;&lt;/variable&gt;&lt;expression name="Bald_RowHasNextFrom_{screen}_{next_index}"&gt;[false]&lt;/expression&gt;</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_x}==0</condition>
+                                <value>&lt;variable name="Bald_RowPrevFrom_{screen}_0"&gt;&lt;value&gt;$LOCALIZE[31787]&lt;/value&gt;&lt;/variable&gt;</value>
+                            </rule>
+                            <rule>
+                                <condition>{item_x}==$MATH[{item_length_x} - 1]</condition>
+                                <value>&lt;variable name="Bald_RowNextFrom_{screen}_{next_index}"&gt;&lt;value&gt;&lt;/value&gt;&lt;/variable&gt;&lt;expression name="Bald_RowHasNextFrom_{screen}_{next_index}"&gt;[false]&lt;/expression&gt;</value>
+                            </rule>
+                            <rule>
+                                <value></value>
+                            </rule>
+                        </rules>
                         <rules name="note_rest">
                             <rule>
                                 <condition>{item_x}==$MATH[{item_length_x} - 1]</condition>

@@ -7,8 +7,9 @@
     <param name="enabled">{enabled}</param>
     <param name="up">{row_up}</param>
     <param name="down">{row_down}</param>
-    <param name="dots">Bald_RowDots_{row_id}</param>
-    <param name="dots_width">{dots_width}</param>
+    <param name="prev">Bald_RowPrevFrom_{screen}_{item_x}</param>
+    <param name="next">Bald_RowNextFrom_{screen}_{next_index}</param>
+    <param name="has_next">Bald_RowHasNextFrom_{screen}_{next_index}</param>
     <param name="style">{row_style}</param>
     <param name="slot">{row_slot}</param>
     <param name="start">{row_start}</param>

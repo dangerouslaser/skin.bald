@@ -304,7 +304,7 @@ class IdleLayerAnimationTests(unittest.TestCase):
 
     def test_no_idle_dim_is_left(self):
         # The old dims (rows 100 to 40, the section line to 45) are gone; what fades on plain Bald_Idle fades to 0
-        # (the row dots, count and menu hint, which is all that changes over background video).
+        # (the row hints, count and menu hint, which is all that changes over background video).
         for name in ("Home.xml", "Includes_Bald_Home.xml"):
             for animation in ET.parse(XML / name).getroot().iter("animation"):
                 if "Bald_Idle]" not in (animation.get("condition") or ""):

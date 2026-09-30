@@ -509,6 +509,13 @@ msgctxt "#31744"
 msgid "Clear background image"
 msgstr ""
 
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_HomeDefaults.xml
+#. Home row hints: what Up from a screen's first row reaches (the main menu), after an up chevron
+msgctxt "#31787"
+msgid "Menu"
+msgstr ""
+
 #: /1080i/Includes_Bald_Configure.xml
 #. Home Screens: the Background image row's value once a picture is chosen
 msgctxt "#31786"

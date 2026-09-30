@@ -14,8 +14,9 @@
                 <param name="enabled">!$EXP[Bald_HomeHidden]</param>
                 <param name="up">noop</param>
                 <param name="down">9102</param>
-                <param name="dots">Bald_RowDots_9101</param>
-                <param name="dots_width">30</param>
+                <param name="prev">Bald_RowPrevFrom_home_0</param>
+                <param name="next">Bald_RowNextFrom_home_2</param>
+                <param name="has_next">Bald_RowHasNextFrom_home_2</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -31,8 +32,9 @@
                 <param name="enabled">!$EXP[Bald_HomeHidden]</param>
                 <param name="up">9101</param>
                 <param name="down">9103</param>
-                <param name="dots">Bald_RowDots_9102</param>
-                <param name="dots_width">30</param>
+                <param name="prev">Bald_RowPrevFrom_home_1</param>
+                <param name="next">Bald_RowNextFrom_home_3</param>
+                <param name="has_next">Bald_RowHasNextFrom_home_3</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -49,8 +51,9 @@
                 <param name="enabled">!$EXP[Bald_HomeHidden]</param>
                 <param name="up">9102</param>
                 <param name="down"/>
-                <param name="dots">Bald_RowDots_9103</param>
-                <param name="dots_width">30</param>
+                <param name="prev">Bald_RowPrevFrom_home_2</param>
+                <param name="next">Bald_RowNextFrom_home_4</param>
+                <param name="has_next">Bald_RowHasNextFrom_home_4</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -58,31 +61,18 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9101">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>24</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_home_1">
+        <value condition="Integer.IsGreater(Container(9101).NumItems,0)">Recently added movies</value>
+        <value>$VAR[Bald_RowPrevFrom_home_0]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_home_1">
+        <value condition="Integer.IsGreater(Container(9101).NumItems,0)">Recently added movies</value>
+        <value>$VAR[Bald_RowNextFrom_home_2]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_home_1">[Integer.IsGreater(Container(9101).NumItems,0) | $EXP[Bald_RowHasNextFrom_home_2]]</expression>
+    <variable name="Bald_RowPrevFrom_home_0">
+        <value>$LOCALIZE[31787]</value>
+    </variable>
     <variable name="Bald_RowsNote_home_1">
         <value>Recently added movies, $VAR[Bald_RowsNote_home_2]</value>
     </variable>
@@ -95,31 +85,15 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9102">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>24</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_home_2">
+        <value condition="Integer.IsGreater(Container(9102).NumItems,0)">Continue watching</value>
+        <value>$VAR[Bald_RowPrevFrom_home_1]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_home_2">
+        <value condition="Integer.IsGreater(Container(9102).NumItems,0)">Continue watching</value>
+        <value>$VAR[Bald_RowNextFrom_home_3]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_home_2">[Integer.IsGreater(Container(9102).NumItems,0) | $EXP[Bald_RowHasNextFrom_home_3]]</expression>
     <variable name="Bald_RowsNote_home_2">
         <value>Continue watching, $VAR[Bald_RowsNote_home_3]</value>
     </variable>
@@ -132,31 +106,19 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9103">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>24</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_home_3">
+        <value condition="Integer.IsGreater(Container(9103).NumItems,0)">Next up</value>
+        <value>$VAR[Bald_RowPrevFrom_home_2]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_home_3">
+        <value condition="Integer.IsGreater(Container(9103).NumItems,0)">Next up</value>
+        <value>$VAR[Bald_RowNextFrom_home_4]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_home_3">[Integer.IsGreater(Container(9103).NumItems,0) | $EXP[Bald_RowHasNextFrom_home_4]]</expression>
+    <variable name="Bald_RowNextFrom_home_4">
+        <value/>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_home_4">[false]</expression>
     <variable name="Bald_RowsNote_home_3">
         <value>Next up</value>
     </variable>
@@ -312,8 +274,9 @@
                 <param name="enabled">System.HasPVRAddon</param>
                 <param name="up">noop</param>
                 <param name="down">9052</param>
-                <param name="dots">Bald_RowDots_9051</param>
-                <param name="dots_width">30</param>
+                <param name="prev">Bald_RowPrevFrom_livetv_0</param>
+                <param name="next">Bald_RowNextFrom_livetv_2</param>
+                <param name="has_next">Bald_RowHasNextFrom_livetv_2</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -329,8 +292,9 @@
                 <param name="enabled">System.HasPVRAddon</param>
                 <param name="up">9051</param>
                 <param name="down">9053</param>
-                <param name="dots">Bald_RowDots_9052</param>
-                <param name="dots_width">30</param>
+                <param name="prev">Bald_RowPrevFrom_livetv_1</param>
+                <param name="next">Bald_RowNextFrom_livetv_3</param>
+                <param name="has_next">Bald_RowHasNextFrom_livetv_3</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -346,8 +310,9 @@
                 <param name="enabled">System.HasPVRAddon</param>
                 <param name="up">9052</param>
                 <param name="down"/>
-                <param name="dots">Bald_RowDots_9053</param>
-                <param name="dots_width">30</param>
+                <param name="prev">Bald_RowPrevFrom_livetv_2</param>
+                <param name="next">Bald_RowNextFrom_livetv_4</param>
+                <param name="has_next">Bald_RowHasNextFrom_livetv_4</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -355,31 +320,18 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9051">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>24</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_livetv_1">
+        <value condition="Integer.IsGreater(Container(9051).NumItems,0)">Recently played channels</value>
+        <value>$VAR[Bald_RowPrevFrom_livetv_0]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_livetv_1">
+        <value condition="Integer.IsGreater(Container(9051).NumItems,0)">Recently played channels</value>
+        <value>$VAR[Bald_RowNextFrom_livetv_2]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_livetv_1">[Integer.IsGreater(Container(9051).NumItems,0) | $EXP[Bald_RowHasNextFrom_livetv_2]]</expression>
+    <variable name="Bald_RowPrevFrom_livetv_0">
+        <value>$LOCALIZE[31787]</value>
+    </variable>
     <variable name="Bald_RowsNote_livetv_1">
         <value>Recently played channels, $VAR[Bald_RowsNote_livetv_2]</value>
     </variable>
@@ -392,31 +344,15 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9052">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>24</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_livetv_2">
+        <value condition="Integer.IsGreater(Container(9052).NumItems,0)">Recent recordings</value>
+        <value>$VAR[Bald_RowPrevFrom_livetv_1]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_livetv_2">
+        <value condition="Integer.IsGreater(Container(9052).NumItems,0)">Recent recordings</value>
+        <value>$VAR[Bald_RowNextFrom_livetv_3]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_livetv_2">[Integer.IsGreater(Container(9052).NumItems,0) | $EXP[Bald_RowHasNextFrom_livetv_3]]</expression>
     <variable name="Bald_RowsNote_livetv_2">
         <value>Recent recordings, $VAR[Bald_RowsNote_livetv_3]</value>
     </variable>
@@ -429,31 +365,19 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9053">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>24</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_livetv_3">
+        <value condition="Integer.IsGreater(Container(9053).NumItems,0)">Upcoming recordings</value>
+        <value>$VAR[Bald_RowPrevFrom_livetv_2]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_livetv_3">
+        <value condition="Integer.IsGreater(Container(9053).NumItems,0)">Upcoming recordings</value>
+        <value>$VAR[Bald_RowNextFrom_livetv_4]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_livetv_3">[Integer.IsGreater(Container(9053).NumItems,0) | $EXP[Bald_RowHasNextFrom_livetv_4]]</expression>
+    <variable name="Bald_RowNextFrom_livetv_4">
+        <value/>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_livetv_4">[false]</expression>
     <variable name="Bald_RowsNote_livetv_3">
         <value>Upcoming recordings</value>
     </variable>
@@ -609,8 +533,9 @@
                 <param name="enabled">true</param>
                 <param name="up">noop</param>
                 <param name="down">9202</param>
-                <param name="dots">Bald_RowDots_9201</param>
-                <param name="dots_width">18</param>
+                <param name="prev">Bald_RowPrevFrom_hub1_0</param>
+                <param name="next">Bald_RowNextFrom_hub1_2</param>
+                <param name="has_next">Bald_RowHasNextFrom_hub1_2</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -626,8 +551,9 @@
                 <param name="enabled">true</param>
                 <param name="up">9201</param>
                 <param name="down"/>
-                <param name="dots">Bald_RowDots_9202</param>
-                <param name="dots_width">18</param>
+                <param name="prev">Bald_RowPrevFrom_hub1_1</param>
+                <param name="next">Bald_RowNextFrom_hub1_3</param>
+                <param name="has_next">Bald_RowHasNextFrom_hub1_3</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -635,24 +561,18 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9201">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_hub1_1">
+        <value condition="Integer.IsGreater(Container(9201).NumItems,0)">Recently added movies</value>
+        <value>$VAR[Bald_RowPrevFrom_hub1_0]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_hub1_1">
+        <value condition="Integer.IsGreater(Container(9201).NumItems,0)">Recently added movies</value>
+        <value>$VAR[Bald_RowNextFrom_hub1_2]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_hub1_1">[Integer.IsGreater(Container(9201).NumItems,0) | $EXP[Bald_RowHasNextFrom_hub1_2]]</expression>
+    <variable name="Bald_RowPrevFrom_hub1_0">
+        <value>$LOCALIZE[31787]</value>
+    </variable>
     <variable name="Bald_RowsNote_hub1_1">
         <value>Recently added movies, $VAR[Bald_RowsNote_hub1_2]</value>
     </variable>
@@ -665,24 +585,19 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9202">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_hub1_2">
+        <value condition="Integer.IsGreater(Container(9202).NumItems,0)">Top rated movies</value>
+        <value>$VAR[Bald_RowPrevFrom_hub1_1]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_hub1_2">
+        <value condition="Integer.IsGreater(Container(9202).NumItems,0)">Top rated movies</value>
+        <value>$VAR[Bald_RowNextFrom_hub1_3]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_hub1_2">[Integer.IsGreater(Container(9202).NumItems,0) | $EXP[Bald_RowHasNextFrom_hub1_3]]</expression>
+    <variable name="Bald_RowNextFrom_hub1_3">
+        <value/>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_hub1_3">[false]</expression>
     <variable name="Bald_RowsNote_hub1_2">
         <value>Top rated movies</value>
     </variable>
@@ -809,8 +724,9 @@
                 <param name="enabled">true</param>
                 <param name="up">noop</param>
                 <param name="down">9302</param>
-                <param name="dots">Bald_RowDots_9301</param>
-                <param name="dots_width">18</param>
+                <param name="prev">Bald_RowPrevFrom_hub2_0</param>
+                <param name="next">Bald_RowNextFrom_hub2_2</param>
+                <param name="has_next">Bald_RowHasNextFrom_hub2_2</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -826,8 +742,9 @@
                 <param name="enabled">true</param>
                 <param name="up">9301</param>
                 <param name="down"/>
-                <param name="dots">Bald_RowDots_9302</param>
-                <param name="dots_width">18</param>
+                <param name="prev">Bald_RowPrevFrom_hub2_1</param>
+                <param name="next">Bald_RowNextFrom_hub2_3</param>
+                <param name="has_next">Bald_RowHasNextFrom_hub2_3</param>
                 <param name="style">fanart</param>
                 <param name="slot">2</param>
                 <param name="start">3</param>
@@ -835,24 +752,18 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9301">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_hub2_1">
+        <value condition="Integer.IsGreater(Container(9301).NumItems,0)">Recently added episodes</value>
+        <value>$VAR[Bald_RowPrevFrom_hub2_0]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_hub2_1">
+        <value condition="Integer.IsGreater(Container(9301).NumItems,0)">Recently added episodes</value>
+        <value>$VAR[Bald_RowNextFrom_hub2_2]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_hub2_1">[Integer.IsGreater(Container(9301).NumItems,0) | $EXP[Bald_RowHasNextFrom_hub2_2]]</expression>
+    <variable name="Bald_RowPrevFrom_hub2_0">
+        <value>$LOCALIZE[31787]</value>
+    </variable>
     <variable name="Bald_RowsNote_hub2_1">
         <value>Recently added episodes, $VAR[Bald_RowsNote_hub2_2]</value>
     </variable>
@@ -865,24 +776,19 @@
             </include>
         </definition>
     </include>
-    <include name="Bald_RowDots_9302">
-        <definition>
-            <control type="image">
-                <left>0</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink28">bald/dot.png</texture>
-            </control>
-            <control type="image">
-                <left>12</left>
-                <top>10</top>
-                <width>6</width>
-                <height>6</height>
-                <texture colordiffuse="bald_ink95">bald/dot.png</texture>
-            </control>
-        </definition>
-    </include>
+    <variable name="Bald_RowPrevFrom_hub2_2">
+        <value condition="Integer.IsGreater(Container(9302).NumItems,0)">Top rated TV shows</value>
+        <value>$VAR[Bald_RowPrevFrom_hub2_1]</value>
+    </variable>
+    <variable name="Bald_RowNextFrom_hub2_2">
+        <value condition="Integer.IsGreater(Container(9302).NumItems,0)">Top rated TV shows</value>
+        <value>$VAR[Bald_RowNextFrom_hub2_3]</value>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_hub2_2">[Integer.IsGreater(Container(9302).NumItems,0) | $EXP[Bald_RowHasNextFrom_hub2_3]]</expression>
+    <variable name="Bald_RowNextFrom_hub2_3">
+        <value/>
+    </variable>
+    <expression name="Bald_RowHasNextFrom_hub2_3">[false]</expression>
     <variable name="Bald_RowsNote_hub2_2">
         <value>Top rated TV shows</value>
     </variable>

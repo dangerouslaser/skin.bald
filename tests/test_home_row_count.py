@@ -34,13 +34,12 @@ class RowCountTests(unittest.TestCase):
             self.assertTrue(implies(visible, SETTING), style)
             self.assertFalse(implies(visible, f"!{SETTING}"), style)
 
-    def test_the_dots_follow_the_label_whatever_the_count_does(self):
+    def test_the_count_follows_the_label(self):
         children = label_line("fanart").findall("control")
-        self.assertEqual([node.get("type") for node in children], ["label", "group", "label"])
-        # The label and the dots never hide, so the dots always sit one item gap after the label; only the count
-        # (last) collapses.
+        self.assertEqual([node.get("type") for node in children], ["label", "label"])
+        # The label never hides; only the count (last) collapses. The row hints are a separate, right-aligned line
+        # (tests/test_home_row_hints.py).
         self.assertIsNone(children[0].find("visible"))
-        self.assertIsNone(children[1].find("visible"))
 
     def test_appearance_offers_the_toggle_under_information(self):
         root = ET.parse(XML / "Custom_1118_BaldAppearance.xml").getroot()
