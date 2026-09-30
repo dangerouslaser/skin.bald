@@ -5,6 +5,14 @@
                                                      listed.
     ?info=crew&dbtype=movie|episode&dbid=N          the library's director and writer names as text items (the
                                                      library keeps no crew photos).
+    ?info=livetv_channels&query=Q                   Live TV channels matching Q, for Bald's Search (livetv.py).
+    ?info=livetv_programmes&query=Q                 programmes on now or later matching Q, for Bald's Search.
+    ?action=play_channel&channelid=N                 switches to channel N.
+    ?action=warm_livetv                              refreshes the programme search's cache (Home's Search runs it).
+    ?action=live_search                              from Global Search's "No results found" dialog: closes it
+                                                     (Global Search closes too) and opens Bald's Live TV search.
+    ?action=programme&channelid=N&broadcastid=B&now=1  what Select does on a programme: its channel when it is on
+                                                     now, else a choice of recording it or switching to the channel.
     ?action=test_key                                 checks the MDbList key with GET /user and shows the result.
     ?action=clear_cache                              forgets every cached rating.
 
@@ -15,9 +23,10 @@ Nothing here imports xbmc at module level, so the tests drive it with stand-ins.
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 from urllib.parse import parse_qsl
 
-from . import common, mdblist
+from . import common, livetv, mdblist
 from .common import ADDON_ID, DATA_DIR, DATABASE, KEY_SETTING
 ACTOR_ICON = "DefaultActor.png"
 DIRECTOR, WRITER = 20339, 20417  # Kodi's own "Director" and "Writer"
@@ -111,6 +120,107 @@ def list_people(xbmc, xbmcgui, xbmcplugin, handle: int, base: str, query: dict) 
     return True
 
 
+RECORD, SWITCH = 264, 19000  # Kodi's "Record" and "Switch to channel"
+
+
+def list_livetv(xbmc, xbmcgui, xbmcplugin, xbmcvfs, handle: int, base: str, query: dict, clock=None) -> int:
+    """The Live TV channels or programmes matching query["query"] (livetv.py); returns how many were listed. The
+    query and the count go on Home too (Bald.SearchLive.Query, .Channels, .Programmes)."""
+    text = query.get("query", "")
+    items = []
+    if query.get("info") == "livetv_channels":
+        for channel in livetv.match_channels(livetv.channels(xbmc), text):
+            item = xbmcgui.ListItem(channel["name"], channel["now"], offscreen=True)
+            item.setArt({"thumb": channel["logo"], "icon": channel["logo"] or "DefaultTVShows.png"})
+            for key in ("number", "kind"):
+                item.setProperty(key, channel[key])
+            item.setProperty("channelid", str(channel["id"]))
+            items.append((f"{base}?info=none", item, False))
+    else:
+        cache = xbmcvfs.translatePath(common.DATA_DIR) if xbmcvfs is not None else None
+        found, programmes = livetv.guide(xbmc, cache)
+        by_id = {c["id"]: c for c in found}
+        now = datetime.now(timezone.utc) if clock is None else clock()
+        time_format = xbmc.getRegion("time")
+        now_label = xbmc.getLocalizedString(livetv.NOW_LABEL)
+        day = lambda weekday: xbmc.getLocalizedString(livetv.SHORT_DAYS + weekday)  # noqa: E731
+        for programme in livetv.match_programmes(programmes, text, now):
+            channel = by_id.get(programme["channel"], {})
+            item = xbmcgui.ListItem(programme["title"], channel.get("name", ""), offscreen=True)
+            item.setArt({"thumb": channel.get("logo", ""), "icon": channel.get("logo") or "DefaultTVShows.png"})
+            on_now = programme["start_time"] <= now < programme["end_time"]
+            item.setProperty("when", livetv.when(programme["start_time"], programme["end_time"], now, time_format,
+                                                 now_label, day))
+            item.setProperty("now", "true" if on_now else "")
+            item.setProperty("plot", programme.get("plot", ""))
+            item.setProperty("number", channel.get("number", ""))
+            item.setProperty("channelid", str(programme["channel"]))
+            item.setProperty("broadcastid", str(programme["broadcast"] or ""))
+            items.append((f"{base}?info=none", item, False))
+    # For Global Search's "No results found" dialog, which cannot read Search's lists (DialogConfirm.xml). Not for an
+    # empty query: Search's lists list again with none as Global Search closes, which would blank the last search's.
+    if text.strip():
+        home = xbmcgui.Window(common.HOME_WINDOW)
+        home.setProperty("Bald.SearchLive.Query", text)
+        home.setProperty("Bald.SearchLive.Channels" if query.get("info") == "livetv_channels" else
+                         "Bald.SearchLive.Programmes", str(len(items)))
+    xbmcplugin.addDirectoryItems(handle, items, len(items))
+    xbmcplugin.endOfDirectory(handle, cacheToDisc=False)
+    return len(items)
+
+
+def play_channel(xbmc, channelid: str) -> bool:
+    if not channelid.isdigit():
+        return False
+    common.jsonrpc(xbmc, "Player.Open", {"item": {"channelid": int(channelid)}})
+    return True
+
+
+SEARCH_OPEN = "Window.IsVisible(script-globalsearch.xml)"
+LIVE_SEARCH_WINDOW = 1130  # Custom_1130_BaldLiveSearch.xml
+
+
+def live_search(xbmc, steps: int = 50) -> bool:
+    """Global Search asks "Search again?" when the libraries have nothing, and closes on anything but Yes, so its
+    Live TV matches cannot be shown in its window. Close the question, wait for Global Search to go, and open Bald's
+    Live TV search on the same query (Window(home).Property(Bald.SearchLive.Query))."""
+    # The window's own copy of the query, which later searches' listings leave alone.
+    query = xbmc.getInfoLabel("Window(home).Property(Bald.SearchLive.Query)")
+    xbmc.executebuiltin(f"SetProperty(Bald.LiveSearch.Query,{query},home)")
+    xbmc.executebuiltin("Dialog.Close(yesnodialog)")
+    monitor = xbmc.Monitor()
+    for _ in range(steps):
+        if not xbmc.getCondVisibility(SEARCH_OPEN):
+            break
+        if monitor.waitForAbort(0.1):
+            return False
+    xbmc.executebuiltin(f"ActivateWindow({LIVE_SEARCH_WINDOW})")
+    # With no channel matches, start on the programmes (the window's default is the channels).
+    home = xbmc.getInfoLabel("Window(home).Property(Bald.SearchLive.Channels)")
+    if home in ("", "0"):
+        for _ in range(steps):
+            if xbmc.getCondVisibility(f"Window.IsActive({LIVE_SEARCH_WINDOW}) + Integer.IsGreater(Container(62).NumItems,0)"):
+                xbmc.executebuiltin("SetFocus(62)")
+                break
+            if monitor.waitForAbort(0.1):
+                return False
+    return True
+
+
+def programme(xbmc, xbmcgui, query: dict) -> str:
+    """Select on a programme: on now, its channel; later, record it or switch to its channel. Returns what it did."""
+    channelid, broadcastid = query.get("channelid", ""), query.get("broadcastid", "")
+    if query.get("now") == "true" or not broadcastid.isdigit():
+        return "play" if play_channel(xbmc, channelid) else "none"
+    choice = xbmcgui.Dialog().contextmenu([xbmc.getLocalizedString(RECORD), xbmc.getLocalizedString(SWITCH)])
+    if choice == 0:
+        common.jsonrpc(xbmc, "PVR.AddTimer", {"broadcastid": int(broadcastid)})
+        return "record"
+    if choice == 1:
+        return "play" if play_channel(xbmc, channelid) else "none"
+    return "none"
+
+
 def test_key(xbmcaddon, xbmcgui, fetch=None) -> str:
     """Check the saved key and show a notification; returns the result code (the key is never shown or logged)."""
     addon = xbmcaddon.Addon(ADDON_ID)
@@ -193,6 +303,16 @@ def run(argv, xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs) -> None:
         copy_tmdbhelper_key(xbmcaddon, xbmcgui, xbmcvfs)
     elif action == "clear_cache":
         clear_cache(xbmcaddon, xbmcgui, xbmcvfs)
+    elif action == "warm_livetv":
+        livetv.guide(xbmc, xbmcvfs.translatePath(common.DATA_DIR))
+    elif action == "live_search":
+        live_search(xbmc)
+    elif action == "play_channel":
+        play_channel(xbmc, query.get("channelid", ""))
+    elif action == "programme":
+        programme(xbmc, xbmcgui, query)
+    elif query.get("info") in ("livetv_channels", "livetv_programmes") and handle >= 0:
+        list_livetv(xbmc, xbmcgui, xbmcplugin, xbmcvfs, handle, base, query)
     elif query.get("info") in ("cast", "crew") and handle >= 0:
         list_people(xbmc, xbmcgui, xbmcplugin, handle, base, query)
     elif handle >= 0:
