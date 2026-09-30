@@ -245,7 +245,9 @@
 			<!-- Idle: the expanded frame's full-size art, its masks, clearlogo and small clock (Bald_IdleFrame). -->
 			<include>Bald_IdleFrame</include>
 
-			<!-- Clock and date (Appearance › Date & time: format, the date line, the clock on Home at all) -->
+			<!-- Clock, date and weather (Appearance › Date & time: format, the date line, the clock on Home at all; Appearance ›
+			     weather in headers). Three steps down in size and ink: clock 132 ink, date 22 ink70, weather 17 ink45
+			     (Bald_HomeClock, Includes_Bald_Home.xml, has the positions and the reasoning). -->
 			<control type="group">
 				<include>Bald_AnimInfoChrome</include>
 				<include>Bald_AnimIdleChrome</include>
@@ -253,37 +255,7 @@
 				<left>Bald_RightColumn</left>
 				<top>104</top>
 				<width>384</width>
-				<control type="label">
-					<height>132</height>
-					<font>Bald_Clock</font>
-					<textcolor>bald_ink</textcolor>
-					<label>$VAR[Bald_Clock]</label>
-				</control>
-				<control type="label">
-					<top>144</top>
-					<height>30</height>
-					<font>Bald_Date</font>
-					<textcolor>bald_ink70</textcolor>
-					<label>$INFO[System.Date(DDDD)], $INFO[System.Date(MMMM D)]</label>
-					<visible>$EXP[Bald_ShowClockDate]</visible>
-				</control>
-				<!-- The current weather (Bald_HeaderWeather) under the date, or in the date's place when it is off. -->
-				<control type="label">
-					<top>180</top>
-					<height>30</height>
-					<font>Bald_Date</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$VAR[Bald_HeaderWeather]</label>
-					<visible>$EXP[Bald_HeaderWeatherOn] + $EXP[Bald_ShowClockDate]</visible>
-				</control>
-				<control type="label">
-					<top>144</top>
-					<height>30</height>
-					<font>Bald_Date</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$VAR[Bald_HeaderWeather]</label>
-					<visible>$EXP[Bald_HeaderWeatherOn] + !$EXP[Bald_ShowClockDate]</visible>
-				</control>
+				<include>Bald_HomeClock</include>
 			</control>
 
 			<!-- Caption: out 180 and slide 40 px right as the menu or context menu opens; back 380 / 480 after 140 as it closes. -->

@@ -168,7 +168,7 @@ class AppearanceOptionsTests(unittest.TestCase):
                 if node.tag in ("label", "label2", "value") and id(node) not in clock_values:
                     with self.subTest(file=path.name):
                         self.assertNotIn("System.Time", node.text or "")
-        uses = {"Home.xml": "$VAR[Bald_Clock]", "Includes_Bald_Playback.xml": "$VAR[Bald_Clock]",
+        uses = {"Includes_Bald_Home.xml": "$VAR[Bald_Clock]", "Includes_Bald_Playback.xml": "$VAR[Bald_Clock]",
                 "Includes_Bald_PVR.xml": "$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]",
                 "MyPVRGuide.xml": "$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]",
                 "LoginScreen.xml": "$VAR[Bald_ClockTime]"}
@@ -190,6 +190,13 @@ class AppearanceOptionsTests(unittest.TestCase):
         self.assertTrue(equivalent(group.findtext("visible"), "!Skin.HasSetting(Bald.HideHomeClock)"))
         date = next(node for node in group.findall("control") if node.findtext("font") == "Bald_Date")
         self.assertTrue(equivalent(date.findtext("visible"), "!Skin.HasSetting(Bald.HideClockDate)"))
+        # Three steps down in size and ink (Bald_HomeClock): clock 132 ink, date 22 ink70 at 148. The clock sits 5 px
+        # left so its digits' side bearing lines their ink up with the date's; its right edge stays on the margin.
+        self.assertEqual((clock[0].findtext("font"), clock[0].findtext("textcolor")), ("Bald_Clock", "bald_ink"))
+        self.assertEqual((clock[0].findtext("left"), clock[0].findtext("width")), ("-5", "389"))
+        self.assertEqual((date.findtext("top"), date.findtext("textcolor")), ("148", "bald_ink70"))
+        self.assertEqual((group.findtext("left"), group.findtext("top"), group.findtext("width")),
+                         ("1440", "104", "384"))
         self.assertEqual(self.pick("Bald_ClockDateTime", lambda a: a == "Skin.HasSetting(Bald.HideClockDate)"),
                          "$VAR[Bald_ClockTime]")
         self.assertEqual(self.pick("Bald_ClockDateTime", lambda a: False), "$INFO[System.Date] · $VAR[Bald_ClockTime]")
@@ -205,6 +212,15 @@ class AppearanceOptionsTests(unittest.TestCase):
         self.assertEqual(len(weather), 2, "under the date, or in its place")
         for node in weather:
             self.assertIn("$EXP[Bald_HeaderWeatherOn]", node.findtext("visible"))
+            # Smaller and dimmer than the date line (Bald_Date 22, bald_ink70), so the two never read as one.
+            self.assertEqual((node.findtext("font"), node.findtext("textcolor")), ("Bald_Hint", "bald_ink45"))
+        tops = {("!" in node.findtext("visible").split("+")[-1]): node.findtext("top") for node in weather}
+        self.assertEqual(tops, {False: "181", True: "150"}, "28 px baseline step under the date; else in its place")
+        clock = next(parent for parent in home.iter("control") if weather[0] in list(parent))
+        self.assertTrue(all(node in list(clock) for node in weather), "in the clock group, hidden with Home's clock")
+        # The block ends above the caption title's highest line (332) and so the menu (395).
+        self.assertLessEqual(max(int(clock.findtext("top")) + int(node.findtext("top")) + int(node.findtext("height"))
+                                 for node in weather), 332)
         common = (SKIN / "Includes_Bald_Common.xml").read_text()
         self.assertRegex(common, r'name="Bald_HeaderWeatherOn">\[Skin.HasSetting\(Bald.HeaderWeather\)')
 

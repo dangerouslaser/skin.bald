@@ -482,6 +482,51 @@
 		<value condition="!String.IsEmpty(Window(home).Property(Bald.CurtainBlur))">$INFO[Window(home).Property(Bald.CurtainBlur)]</value>
 		<value>$VAR[Bald_BlurImage]</value>
 	</variable>
+	<!-- Home's clock block, inside the right-column group at 1440,104 (Home.xml): three steps down in size and ink.
+	     - Clock: Bald_Clock 132, bald_ink. 5 px left of the column: the 132 px digits' side bearing (3 to 8 px, 5 on
+	       average) would otherwise set their ink right of the lines below; this lines them up optically.
+	     - Date: Bald_Date 22, bald_ink70, top 148 (baseline about 170, 24 px of clear space under the clock's baseline).
+	     - Weather: Bald_Hint 17, bald_ink45, top 181 (baseline about 198, 28 below the date's): smaller and dimmer than
+	       the date, and closer to it than the date is to the clock, so date and weather read as one pair under the time.
+	       With the date off it takes the date's place at top 150, its capitals where the date's would start.
+	     Everything ends by y 309 on screen, clear of the caption title (332 at the earliest) and the menu (395). No
+	     condition icon: at 17 px Bald's line icons are hairlines, a colour icon pack clashes with the ink steps, and
+	     the icon would break the shared left edge. -->
+	<include name="Bald_HomeClock">
+		<control type="label">
+			<left>-5</left>
+			<width>389</width>
+			<height>132</height>
+			<font>Bald_Clock</font>
+			<textcolor>bald_ink</textcolor>
+			<label>$VAR[Bald_Clock]</label>
+		</control>
+		<control type="label">
+			<top>148</top>
+			<height>30</height>
+			<font>Bald_Date</font>
+			<textcolor>bald_ink70</textcolor>
+			<label>$INFO[System.Date(DDDD)], $INFO[System.Date(MMMM D)]</label>
+			<visible>$EXP[Bald_ShowClockDate]</visible>
+		</control>
+		<include content="Bald_HomeClockWeather"><param name="top">181</param><param name="date">$EXP[Bald_ShowClockDate]</param></include>
+		<include content="Bald_HomeClockWeather"><param name="top">150</param><param name="date">!$EXP[Bald_ShowClockDate]</param></include>
+	</include>
+	<!-- The current weather (Bald_HeaderWeather, "59°F · Cloudy") on Home: under the date, or in its place. -->
+	<include name="Bald_HomeClockWeather">
+		<param name="top" />
+		<param name="date" />
+		<definition>
+			<control type="label">
+				<top>$PARAM[top]</top>
+				<height>24</height>
+				<font>Bald_Hint</font>
+				<textcolor>bald_ink45</textcolor>
+				<label>$VAR[Bald_HeaderWeather]</label>
+				<visible>$EXP[Bald_HeaderWeatherOn] + $PARAM[date]</visible>
+			</control>
+		</definition>
+	</include>
 	<!-- Shared note position and typography for the five-row Home and context menus. -->
 	<include name="Bald_MenuNote">
 		<param name="id">0</param>
