@@ -13,25 +13,24 @@ ROOT = Path(__file__).resolve().parents[1] / '1080i'
 
 
 class SearchUITests(unittest.TestCase):
-    def test_home_search_launches_global_search_directly(self):
+    def test_home_search_opens_bald_search(self):
         item = home_menu.entry(preview='search')
         actions = home_menu.select_actions(item)
-        self.assertEqual(actions[0], (None, 'SetProperty(Bald.SearchOrigin,home,home)'))
-        self.assertTrue(same_actions(actions[1:], [
+        self.assertEqual(actions, [
+            (None, 'SetProperty(Bald.SearchOrigin,home,home)'),
             # Bald Helper reads the Live TV schedules while the query is typed (Search's programme matches).
-            ('System.AddonIsEnabled(script.globalsearch) + $EXP[Bald_SearchCanLive]',
-             'RunPlugin(plugin://script.bald.helper/?action=warm_livetv)'),
-            ('System.AddonIsEnabled(script.globalsearch)', 'RunScript(script.globalsearch)'),
-            ('System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)', 'EnableAddon(script.globalsearch)'),
-            ('!System.HasAddon(script.globalsearch)', 'InstallAddon(script.globalsearch)'),
-        ]), actions)
+            ('$EXP[Bald_SearchCanLive]', 'RunPlugin(plugin://script.bald.helper/?action=warm_livetv)'),
+            # Bald Helper asks for the query, then opens Bald's Search (window 1130).
+            (None, 'RunPlugin(plugin://script.bald.helper/?action=search)'),
+        ])
 
-    def test_library_search_launches_global_search_scoped_to_content(self):
+    def test_library_search_opens_bald_search_on_its_category(self):
         root = ET.Element('holder')
         root.extend(expand_call('Bald_LibraryOptions'))
         menu = root.find(".//control[@id='9150']/content")
         searches = [item for item in menu.findall('item')
-                    if any(node.text.startswith('RunScript(script.globalsearch') for node in item.findall('onclick'))]
+                    if any(node.text.startswith('RunPlugin(plugin://script.bald.helper/?action=search')
+                           for node in item.findall('onclick'))]
         self.assertTrue(all(item.findtext('label') == '$LOCALIZE[137]' for item in searches))  # Kodi's "Search"
         views = [int(v) for v in ET.parse(ROOT / 'MyVideoNav.xml').getroot().findtext('views').split(',')]
 
@@ -45,9 +44,9 @@ class SearchUITests(unittest.TestCase):
             # Each entry shows for exactly its content level's Bald views.
             [(shown_for(item.findtext('visible')), [node.text for node in item.findall('onclick')]) for item in searches],
             [
-                (['510', '511', '512', '513', '514', '515'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,movies=true)']),
-                (['520', '521', '522', '523', '530', '531', '532'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,tvshows=true)']),
-                (['540', '541', '542'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunScript(script.globalsearch,episodes=true)']),
+                (['510', '511', '512', '513', '514', '515'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunPlugin(plugin://script.bald.helper/?action=search&start=movies)']),
+                (['520', '521', '522', '523', '530', '531', '532'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunPlugin(plugin://script.bald.helper/?action=search&start=tvshows)']),
+                (['540', '541', '542'], ['SetProperty(Bald.SearchOrigin,library,home)', 'RunPlugin(plugin://script.bald.helper/?action=search&start=episodes)']),
             ],
         )
 
@@ -63,7 +62,7 @@ class SearchUITests(unittest.TestCase):
         for node, shown in ((channels, 'Bald_SearchLiveChannels'), (programmes, 'Bald_SearchLiveProgrammes')):
             self.assertEqual(node.findtext('visible'), '$EXP[Bald_SearchCanLive]')
             fade = node.find("animation[@type='Conditional']") or node.find('animation')
-            self.assertEqual(fade.get('condition'), f'!$EXP[{shown}]')
+            self.assertEqual(fade.get('condition'), f'![$EXP[{shown}]]')
             self.assertEqual((node.findtext('onup'), node.findtext('ondown'), node.findtext('onleft')),
                              (node.get('id'), node.get('id'), '990'))
         self.assertIn('?action=play_channel&channelid=$INFO[ListItem.Property(channelid)]', channels.findtext('onclick'))
@@ -92,27 +91,6 @@ class SearchUITests(unittest.TestCase):
         self.assertNotIn('$MATH[', (ROOT / 'Includes_Bald_Common.xml').read_text(encoding='utf-8'))
         no_results = root.find(".//control[@id='999']")
         self.assertEqual(no_results.findtext('visible'), '!$EXP[Bald_SearchLiveShown]')
-
-    def test_live_tv_only_results_open_bald_live_search(self):
-        # Global Search asks "Search again?" and closes on anything else when the libraries have nothing; with Live TV
-        # matches (Bald Helper counts them on Home), that question offers Live TV, which opens Bald's own window.
-        dialog = parse(ROOT / 'DialogConfirm.xml')
-        button = next(i for i in dialog.iter('include')
-                      if any(p.get('name') == 'id' and p.get('value') == '14' for p in i.findall('param')))
-        params = {p.get('name'): p.get('value') for p in button.findall('param')}
-        self.assertEqual(params['onclick'], 'RunPlugin(plugin://script.bald.helper/?action=live_search)')
-        for part in ('Window.IsVisible(script-globalsearch.xml)', 'String.IsEqual(Control.GetLabel(1),$LOCALIZE[284])',
-                     'Integer.IsGreater(Window(home).Property(Bald.SearchLive.Channels),0)'):
-            self.assertIn(part, params['visible'])
-        search = parse(ROOT / 'script-globalsearch.xml')
-        onload = [n.text for n in search.findall('onload')]
-        self.assertIn('ClearProperty(Bald.SearchLive.Channels,home)', onload)
-        self.assertIn('ClearProperty(Bald.SearchLive.Programmes,home)', onload)
-        from kodi_includes import Skin
-        window = Skin().window('Custom_1130_BaldLiveSearch.xml')
-        channels, programmes = window.find(".//control[@id='61']"), window.find(".//control[@id='62']")
-        self.assertIn('query=$INFO[Window(home).Property(Bald.LiveSearch.Query)]', channels.findtext('content'))
-        self.assertEqual((channels.findtext('onright'), programmes.findtext('onleft')), ('62', '61'))
 
     def test_global_search_override_preserves_addon_contract(self):
         root = parse(ROOT / 'script-globalsearch.xml')

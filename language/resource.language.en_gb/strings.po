@@ -480,7 +480,6 @@ msgctxt "#31209"
 msgid "Clear target"
 msgstr ""
 
-#: /1080i/Custom_1130_BaldLiveSearch.xml
 #: /1080i/MyWeather.xml
 #. Weather page: hint while the tab row (Now, Daily, Hourly, Maps) has focus
 msgctxt "#31701"
@@ -1136,7 +1135,7 @@ msgctxt "#31618"
 msgid "Seek"
 msgstr ""
 
-#: /1080i/Custom_1130_BaldLiveSearch.xml
+#: /1080i/Custom_1130_BaldSearch.xml
 #: /1080i/DialogPVRInfo.xml
 #: /1080i/DialogPlayerProcessInfo.xml
 #: /1080i/Includes_Bald_OSD.xml
@@ -1349,6 +1348,7 @@ msgctxt "#31660"
 msgid "Live TV options"
 msgstr ""
 
+#: /1080i/Custom_1130_BaldSearch.xml
 #: /1080i/EventLog.xml
 #: /1080i/Includes.xml
 #: /1080i/Includes_Bald_PVR.xml
@@ -1403,6 +1403,7 @@ msgstr ""
 
 #: /1080i/DialogVideoInfo.xml
 #: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Includes_Bald_Search.xml
 #: /1080i/MyPVRProviders.xml
 #: /1080i/MyPVRSearch.xml
 #: /1080i/Settings.xml
@@ -1487,7 +1488,6 @@ msgstr ""
 # Bald strings: 31700-31999 (see docs/LOCALIZATION.md). Estuary keeps 31000-31699.
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
-#: /1080i/DialogConfirm.xml
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Includes_Bald_Home.xml
 #: /1080i/MyPVRGuide.xml
@@ -1525,16 +1525,17 @@ msgctxt "#31708"
 msgid "of"
 msgstr ""
 
+#: /1080i/Includes_Bald_Browse.xml
 #: /1080i/Includes_Bald_Common.xml
 #: /1080i/Includes_Bald_Home.xml
 #: /1080i/Includes_Bald_Info.xml
 #: /1080i/Includes_Bald_InfoTV.xml
 #: /1080i/Includes_Bald_LibraryList.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Search.xml
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
 #: /1080i/script-globalsearch.xml
-#: /1080i/Includes_Bald_Browse.xml
-#: /1080i/Includes_Bald_OSD.xml
 #. Runtime unit after a number of minutes, "52 min"
 msgctxt "#31710"
 msgid "min"
@@ -2307,6 +2308,7 @@ msgid "Next location"
 msgstr ""
 
 #: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Search.xml
 #: /1080i/script-globalsearch.xml
 #. Search: programmes on now or later whose title matches, in the options' Live TV section
 msgctxt "#31793"
@@ -2314,33 +2316,39 @@ msgid "On TV"
 msgstr ""
 
 #: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Search.xml
 #. Search: what Select does on a programme that has not started
 msgctxt "#31794"
 msgid "Record or watch"
 msgstr ""
 
 #: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Search.xml
 #. Search: the channel number column of Live TV channel matches
 msgctxt "#31795"
 msgid "Number"
 msgstr ""
 
+#: /1080i/Includes_Bald_Search.xml
 #: /1080i/script-globalsearch.xml
 msgctxt "#31890"
 msgid "Series / artist"
 msgstr ""
 
+#: /1080i/Custom_1130_BaldSearch.xml
 #: /1080i/script-globalsearch.xml
 msgctxt "#31891"
 msgid "Search options"
 msgstr ""
 
+#: /1080i/Custom_1130_BaldSearch.xml
+#: /1080i/Includes_Bald_Search.xml
 #: /1080i/script-globalsearch.xml
 msgctxt "#31892"
 msgid "New search"
 msgstr ""
 
-#: /1080i/Custom_1130_BaldLiveSearch.xml
+#: /1080i/Custom_1130_BaldSearch.xml
 #: /1080i/script-globalsearch.xml
 #. Precedes the search text in quotes, "Results for “alien”"
 msgctxt "#31894"

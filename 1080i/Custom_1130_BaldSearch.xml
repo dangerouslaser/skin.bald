@@ -1,28 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Bald's Live TV search: a search's channel and programme matches (Bald Helper, resources/lib/livetv.py) when the
-     libraries had none. Global Search then asks "Search again?" and closes on anything but Yes, so its window cannot
-     show them; the Live TV button of that question (DialogConfirm.xml) opens this window instead, on the same query
-     (Window(home).Property(Bald.LiveSearch.Query), which Bald Helper's ?action=live_search copies it to). The lists, headings and
-     preview are Search's own (Bald_LiveSearch, Bald_LiveSearchPreview); Left and Right move between the two. -->
+<!-- Bald's Search: the query against the libraries and Live TV, in one window (Includes_Bald_Search.xml). Bald
+     Helper asks for the query (?action=search, Kodi's keyboard headed "Search"), stores it (Skin.String(Bald.SearchQuery))
+     and opens this window, from Home's menu and the library options (which name a category to start on,
+     Window(home).Property(Bald.SearchStart)); New search asks again here. Focus waits on 9198 until the results come in, then moves to the category that shows (Timers.xml,
+     bald_search_focus). Left opens the options: New search and the categories with results, with their counts. -->
 <window type="window" id="1130">
-	<defaultcontrol always="true">61</defaultcontrol>
+	<defaultcontrol always="true">9198</defaultcontrol>
 	<backgroundcolor>bald_field</backgroundcolor>
+	<onload>ClearProperty(Bald.SearchCat)</onload>
+	<onload condition="!String.IsEmpty(Window(home).Property(Bald.SearchStart))">SetProperty(Bald.SearchCat,$INFO[Window(home).Property(Bald.SearchStart)])</onload>
+	<onload>ClearProperty(Bald.SearchStart,home)</onload>
+	<onunload condition="String.IsEqual(Window(home).Property(Bald.SearchOrigin),home)">SetProperty(Bald.ReturnSearch,true,home)</onunload>
+	<onunload>ClearProperty(Bald.SearchOrigin,home)</onunload>
 	<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
 	<animation type="WindowClose"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
 	<controls>
 		<include>Bald_WindowBase</include>
 		<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[137]</label></control>
-		<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Window(home).Property(Bald.LiveSearch.Query),$LOCALIZE[31894] “,”]</label></control>
-		<include content="Bald_LiveSearch">
-			<param name="query">$INFO[Window(home).Property(Bald.LiveSearch.Query)]</param>
-			<param name="channels_left">61</param>
-			<param name="channels_right">62</param>
-			<param name="programmes_left">61</param>
-			<param name="programmes_right">62</param>
-		</include>
-		<include content="Bald_LiveSearchPreview" />
-		<!-- The two lists as a trail on the hint line, as the info screen's pages. -->
-		<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_LiveSearchTrail]</label></control>
-		<control type="group"><left>1000</left><top>Bald_HintTop</top><include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31701]$VAR[Bald_KeyRight]</param><param name="second">$VAR[Bald_SearchSelectHint]</param><param name="third">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param><param name="third_visible">true</param></include></control>
+		<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Skin.String(Bald.SearchQuery),$LOCALIZE[31894] “,”]</label></control>
+		<!-- Column headings of what shows. -->
+		<control type="group">
+			<left>Bald_SafeLeft</left><top>180</top>
+			<visible>$EXP[Bald_SearchAny]</visible>
+			<control type="label"><left>26</left><width>600</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_SearchHeading]</label></control>
+			<control type="label"><left>652</left><width>180</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_SearchColumn2]</label></control>
+			<control type="label"><left>856</left><width>260</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_SearchColumn3]</label></control>
+		</control>
+		<include>Bald_SearchLists</include>
+		<!-- Where focus waits for the results; with none, Left opens the options and Select searches again. -->
+		<control type="button" id="9198">
+			<left>-100</left><top>-100</top><width>1</width><height>1</height><texturefocus /><texturenofocus />
+			<onleft>9100</onleft><onclick>RunPlugin(plugin://script.bald.helper/?action=search)</onclick>
+		</control>
+		<control type="label"><left>Bald_SafeLeft</left><top>460</top><width>1140</width><height>80</height><align>center</align><aligny>center</aligny><font>Bald_CaptionTitle</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[284]</label><visible>!$EXP[Bald_SearchAny] + !$EXP[Bald_SearchLoading]</visible></control>
+		<!-- The focused result: its art (a channel's logo), title, details and plot. -->
+		<control type="group">
+			<visible>!$EXP[Bald_SearchMenuOpen] + !Control.HasFocus(9198) + !String.IsEmpty(ListItem.Label)</visible>
+			<animation type="Visible"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
+			<control type="image"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
+			<control type="image"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top><width>528</width><height>297</height><texture background="true">$VAR[Bald_SearchPreviewArt]</texture><aspectratio>scale</aspectratio><fadetime>400</fadetime><visible>!$EXP[Bald_SearchShowsLive] + !String.IsEmpty(ListItem.Art(fanart))</visible></control>
+			<control type="image"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top><width>528</width><height>297</height><texture background="true">$VAR[Bald_SearchPreviewArt]</texture><aspectratio align="center" aligny="center">keep</aspectratio><fadetime>400</fadetime><visible>$EXP[Bald_SearchShowsLive] | String.IsEmpty(ListItem.Art(fanart))</visible></control>
+			<control type="label"><left>Bald_PreviewLeft</left><top>548</top><width>528</width><height>88</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><wrapmultiline>true</wrapmultiline><label>$INFO[ListItem.Label]</label></control>
+			<control type="label"><left>Bald_PreviewLeft</left><top>636</top><width>528</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[Bald_SearchPreviewMeta]</label></control>
+			<control type="textbox"><left>Bald_PreviewLeft</left><top>686</top><width>528</width><height>144</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_SearchPreviewPlot]</label></control>
+		</control>
+		<!-- The options, at the right: New search and the categories with results. -->
+		<control type="group"><visible>$EXP[Bald_SearchMenuOpen]</visible><include>Bald_AnimMenuShows</include><control type="label"><left>1466</left><top>292</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31891]</label></control></control>
+		<control type="list" id="9100">
+			<left>Bald_RightColumn</left><top>392</top><width>420</width><height>558</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
+			<visible allowhiddenfocus="true">$EXP[Bald_SearchMenuOpen]</visible>
+			<include>Bald_AnimMenuShows</include>
+			<onfocus>SetProperty(Bald.SearchMenu,true)</onfocus><onup>9100</onup><ondown>9100</ondown>
+			<onleft>ClearProperty(Bald.SearchMenu)</onleft><onleft condition="$EXP[Bald_SearchShows_movies]">71</onleft><onleft condition="$EXP[Bald_SearchShows_tvshows]">72</onleft><onleft condition="$EXP[Bald_SearchShows_episodes]">73</onleft><onleft condition="$EXP[Bald_SearchShows_musicvideos]">74</onleft><onleft condition="$EXP[Bald_SearchShows_artists]">75</onleft><onleft condition="$EXP[Bald_SearchShows_albums]">76</onleft><onleft condition="$EXP[Bald_SearchShows_songs]">77</onleft><onleft condition="$EXP[Bald_SearchShows_channels]">61</onleft><onleft condition="$EXP[Bald_SearchShows_programmes]">62</onleft><onleft condition="!$EXP[Bald_SearchAny]">9198</onleft>
+			<onright>ClearProperty(Bald.SearchMenu)</onright><onright condition="$EXP[Bald_SearchShows_movies]">71</onright><onright condition="$EXP[Bald_SearchShows_tvshows]">72</onright><onright condition="$EXP[Bald_SearchShows_episodes]">73</onright><onright condition="$EXP[Bald_SearchShows_musicvideos]">74</onright><onright condition="$EXP[Bald_SearchShows_artists]">75</onright><onright condition="$EXP[Bald_SearchShows_albums]">76</onright><onright condition="$EXP[Bald_SearchShows_songs]">77</onright><onright condition="$EXP[Bald_SearchShows_channels]">61</onright><onright condition="$EXP[Bald_SearchShows_programmes]">62</onright><onright condition="!$EXP[Bald_SearchAny]">9198</onright>
+			<onback>ClearProperty(Bald.SearchMenu)</onback><onback condition="$EXP[Bald_SearchShows_movies]">71</onback><onback condition="$EXP[Bald_SearchShows_tvshows]">72</onback><onback condition="$EXP[Bald_SearchShows_episodes]">73</onback><onback condition="$EXP[Bald_SearchShows_musicvideos]">74</onback><onback condition="$EXP[Bald_SearchShows_artists]">75</onback><onback condition="$EXP[Bald_SearchShows_albums]">76</onback><onback condition="$EXP[Bald_SearchShows_songs]">77</onback><onback condition="$EXP[Bald_SearchShows_channels]">61</onback><onback condition="$EXP[Bald_SearchShows_programmes]">62</onback><onback condition="!$EXP[Bald_SearchAny]">9198</onback>
+			<itemlayout width="420" height="62">
+				<control type="label"><left>26</left><width>310</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><label>$INFO[ListItem.Label]</label></control>
+				<control type="label"><right>26</right><width>70</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuNote</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.Label2]</label></control>
+			</itemlayout>
+			<focusedlayout width="420" height="62">
+				<control type="image"><left>0</left><top>24</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(9100)</visible></control>
+				<control type="label"><left>26</left><width>310</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label></control>
+				<control type="label"><right>26</right><width>70</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuNote</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.Label2]</label></control>
+			</focusedlayout>
+			<content><include>Bald_SearchOptionItems</include></content>
+		</control>
+		<!-- Footer: the position in what shows, and the keys. -->
+		<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_SearchCountLabel]</label></control>
+		<control type="group"><left>1000</left><top>Bald_HintTop</top><visible>$EXP[Bald_SearchAny] + !$EXP[Bald_SearchMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31661]</param><param name="second">$VAR[Bald_SearchSelect]</param><param name="third">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param><param name="third_visible">true</param></include></control>
+		<control type="group"><left>1000</left><top>Bald_HintTop</top><visible>!$EXP[Bald_SearchAny] + !$EXP[Bald_SearchMenuOpen]</visible><include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">$VAR[Bald_KeySelect]$LOCALIZE[31892]</param><param name="second">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param></include></control>
 	</controls>
 </window>

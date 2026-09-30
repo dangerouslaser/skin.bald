@@ -269,11 +269,28 @@
 					<control type="label"><left>652</left><width>180</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_SearchLiveColumn2]</label></control>
 					<control type="label"><left>856</left><width>260</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_SearchLiveColumn3]</label></control>
 				</control>
+			<include content="Bald_LiveSearchLists">
+				<param name="query">$PARAM[query]</param>
+				<param name="channels_left">$PARAM[channels_left]</param><param name="channels_right">$PARAM[channels_right]</param>
+				<param name="programmes_left">$PARAM[programmes_left]</param><param name="programmes_right">$PARAM[programmes_right]</param>
+			</include>
+		</definition>
+	</include>
+	<!-- The channel (61) and programme (62) lists alone: Global Search's window (above) and Bald's Search
+	     (Custom_1130_BaldSearch.xml), which says when each shows and which property its focus sets. -->
+	<include name="Bald_LiveSearchLists">
+		<param name="query" />
+		<param name="channels_left">990</param><param name="channels_right">61</param>
+		<param name="programmes_left">990</param><param name="programmes_right">62</param>
+		<param name="channels_shown">$EXP[Bald_SearchLiveChannels]</param>
+		<param name="programmes_shown">$EXP[Bald_SearchLiveProgrammes]</param>
+		<param name="focus_property">Bald.SearchLive</param>
+		<definition>
 				<control type="list" id="61">
 					<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height>
 					<visible>$EXP[Bald_SearchCanLive]</visible>
-					<animation effect="fade" start="100" end="0" time="0" condition="!$EXP[Bald_SearchLiveChannels]">Conditional</animation>
-					<onfocus>SetProperty(Bald.SearchLive,channels)</onfocus><onfocus>ClearProperty(Bald.SearchMenu)</onfocus><onup>61</onup><ondown>61</ondown><onleft>$PARAM[channels_left]</onleft><onright>$PARAM[channels_right]</onright>
+					<animation effect="fade" start="100" end="0" time="0" condition="![$PARAM[channels_shown]]">Conditional</animation>
+					<onfocus>SetProperty($PARAM[focus_property],channels)</onfocus><onfocus>ClearProperty(Bald.SearchMenu)</onfocus><onup>61</onup><ondown>61</ondown><onleft>$PARAM[channels_left]</onleft><onright>$PARAM[channels_right]</onright>
 					<onclick>RunPlugin(plugin://script.bald.helper/?action=play_channel&amp;channelid=$INFO[ListItem.Property(channelid)])</onclick>
 					<scrolltime tween="cubic" easing="out">440</scrolltime>
 					<itemlayout width="1140" height="48">
@@ -294,8 +311,8 @@
 				<control type="list" id="62">
 					<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height>
 					<visible>$EXP[Bald_SearchCanLive]</visible>
-					<animation effect="fade" start="100" end="0" time="0" condition="!$EXP[Bald_SearchLiveProgrammes]">Conditional</animation>
-					<onfocus>SetProperty(Bald.SearchLive,programmes)</onfocus><onfocus>ClearProperty(Bald.SearchMenu)</onfocus><onup>62</onup><ondown>62</ondown><onleft>$PARAM[programmes_left]</onleft><onright>$PARAM[programmes_right]</onright>
+					<animation effect="fade" start="100" end="0" time="0" condition="![$PARAM[programmes_shown]]">Conditional</animation>
+					<onfocus>SetProperty($PARAM[focus_property],programmes)</onfocus><onfocus>ClearProperty(Bald.SearchMenu)</onfocus><onup>62</onup><ondown>62</ondown><onleft>$PARAM[programmes_left]</onleft><onright>$PARAM[programmes_right]</onright>
 					<onclick>RunPlugin(plugin://script.bald.helper/?action=programme&amp;channelid=$INFO[ListItem.Property(channelid)]&amp;broadcastid=$INFO[ListItem.Property(broadcastid)]&amp;now=$INFO[ListItem.Property(now)])</onclick>
 					<scrolltime tween="cubic" easing="out">440</scrolltime>
 					<itemlayout width="1140" height="48">

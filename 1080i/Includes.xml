@@ -7,6 +7,7 @@
 	<include file="Includes_Weather.xml" />
 	<include file="Includes_Bald_Constants.xml" />
 	<include file="Includes_Bald_Common.xml" />
+	<include file="Includes_Bald_Search.xml" />
 	<include file="Includes_Bald_Spoilers.xml" />
 	<include file="Includes_Bald_Ratings.xml" />
 	<include file="Includes_Bald_Home.xml" />

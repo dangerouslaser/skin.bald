@@ -324,10 +324,9 @@
 				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="label">$LOCALIZE[137]</param><param name="preview">search</param>
 					<onclick>SetProperty(Bald.SearchOrigin,home,home)</onclick>
 					<!-- Bald Helper reads the Live TV schedules while the query is typed, for Search's programme matches. -->
-					<onclick condition="System.AddonIsEnabled(script.globalsearch) + $EXP[Bald_SearchCanLive]">RunPlugin(plugin://script.bald.helper/?action=warm_livetv)</onclick>
-					<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
-					<onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick>
-					<onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
+					<onclick condition="$EXP[Bald_SearchCanLive]">RunPlugin(plugin://script.bald.helper/?action=warm_livetv)</onclick>
+					<!-- Bald's Search (window 1130): Bald Helper asks for the query, then opens it. -->
+					<onclick>RunPlugin(plugin://script.bald.helper/?action=search)</onclick>
 				</include>
 				<include content="Bald_HomeMenuButton"><param name="id">9006</param><param name="label">$LOCALIZE[5]</param><param name="preview">settings</param>
 					<onclick>SetProperty(Bald.ReturnMenu,9006,home)</onclick>

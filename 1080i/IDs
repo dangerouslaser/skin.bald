@@ -137,6 +137,9 @@ Global Search (script-globalsearch.xml, script.globalsearch 9.x)
 999		Status label
 9000	Category list (right-hand options menu)
 		The add-on requires all five and owns their data and actions.
+61		Live TV channel matches (Bald Helper, Bald_LiveSearchLists)
+62		Live TV programme matches (Bald Helper, Bald_LiveSearchLists)
+9101-9102	Live TV entries of the options (Bald_SearchLiveButton)
 
 Select dialogs (DialogSelect.xml via Includes_DialogSelect.xml and Includes_Bald_Foundations.xml)
 1		Heading label (DialogBackgroundCommons header_id)
@@ -462,7 +465,13 @@ DialogTextViewer.xml (CGUIDialogTextViewer) and Custom_1102_TextViewer.xml (wind
 1000	Hidden button that holds remote focus: Select closes, Up and Down page
 22002	Full-panel button under the controls (DialogBackgroundCommons), so a click inside the panel does not close it
 
-Free custom window numbers start at 1130.
+Custom_1130_BaldSearch.xml (window 1130): Bald's Search (Includes_Bald_Search.xml)
+71-77	Library results: 71 movies, 72 TV shows, 73 episodes, 74 music videos, 75 artists, 76 albums, 77 songs
+61		Live TV channel matches; 62 Live TV programme matches (Bald_LiveSearchLists)
+9100	Options list: New search and the categories with results
+9198	Where focus waits for the results (Timers.xml, bald_search_focus)
+
+Free custom window numbers start at 1131.
 
 
 MEDIA WINDOWS (restyled Estuary copies; Includes_Bald_Media.xml adds no fixed ids)

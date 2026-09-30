@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald's Search (Custom_1130_BaldSearch.xml): the query (Skin.String(Bald.SearchQuery)) against the libraries,
+     through Kodi's own paths with a smart-playlist rule (?xsp=, "title contains the query"), and against Live TV,
+     through Bald Helper (resources/lib/livetv.py). One list per category (71-77 library, 61 and 62 Live TV), all
+     loaded at once (Kodi fills only visible lists, so the hidden ones stay visible and faded out); the one that shows
+     is the category chosen in the options (Window.Property(Bald.SearchCat)), else the first with results, in the
+     order below. Replaces Global Search (script.globalsearch) for Bald's Search entries. -->
+<includes>
+	<!-- ============ Categories ============ -->
+	<expression name="Bald_SearchHas_movies">[Integer.IsGreater(Container(71).NumItems,0)]</expression>
+	<expression name="Bald_SearchHas_tvshows">[Integer.IsGreater(Container(72).NumItems,0)]</expression>
+	<expression name="Bald_SearchHas_episodes">[Integer.IsGreater(Container(73).NumItems,0)]</expression>
+	<expression name="Bald_SearchHas_musicvideos">[Integer.IsGreater(Container(74).NumItems,0)]</expression>
+	<expression name="Bald_SearchHas_artists">[Integer.IsGreater(Container(75).NumItems,0)]</expression>
+	<expression name="Bald_SearchHas_albums">[Integer.IsGreater(Container(76).NumItems,0)]</expression>
+	<expression name="Bald_SearchHas_songs">[Integer.IsGreater(Container(77).NumItems,0)]</expression>
+	<expression name="Bald_SearchHas_channels">[Integer.IsGreater(Container(61).NumItems,0)]</expression>
+	<expression name="Bald_SearchHas_programmes">[Integer.IsGreater(Container(62).NumItems,0)]</expression>
+	<expression name="Bald_SearchFirst_movies">[$EXP[Bald_SearchHas_movies]]</expression>
+	<expression name="Bald_SearchFirst_tvshows">[$EXP[Bald_SearchHas_tvshows] + !$EXP[Bald_SearchHas_movies]]</expression>
+	<expression name="Bald_SearchFirst_episodes">[$EXP[Bald_SearchHas_episodes] + !$EXP[Bald_SearchHas_movies] + !$EXP[Bald_SearchHas_tvshows]]</expression>
+	<expression name="Bald_SearchFirst_musicvideos">[$EXP[Bald_SearchHas_musicvideos] + !$EXP[Bald_SearchHas_movies] + !$EXP[Bald_SearchHas_tvshows] + !$EXP[Bald_SearchHas_episodes]]</expression>
+	<expression name="Bald_SearchFirst_artists">[$EXP[Bald_SearchHas_artists] + !$EXP[Bald_SearchHas_movies] + !$EXP[Bald_SearchHas_tvshows] + !$EXP[Bald_SearchHas_episodes] + !$EXP[Bald_SearchHas_musicvideos]]</expression>
+	<expression name="Bald_SearchFirst_albums">[$EXP[Bald_SearchHas_albums] + !$EXP[Bald_SearchHas_movies] + !$EXP[Bald_SearchHas_tvshows] + !$EXP[Bald_SearchHas_episodes] + !$EXP[Bald_SearchHas_musicvideos] + !$EXP[Bald_SearchHas_artists]]</expression>
+	<expression name="Bald_SearchFirst_songs">[$EXP[Bald_SearchHas_songs] + !$EXP[Bald_SearchHas_movies] + !$EXP[Bald_SearchHas_tvshows] + !$EXP[Bald_SearchHas_episodes] + !$EXP[Bald_SearchHas_musicvideos] + !$EXP[Bald_SearchHas_artists] + !$EXP[Bald_SearchHas_albums]]</expression>
+	<expression name="Bald_SearchFirst_channels">[$EXP[Bald_SearchHas_channels] + !$EXP[Bald_SearchHas_movies] + !$EXP[Bald_SearchHas_tvshows] + !$EXP[Bald_SearchHas_episodes] + !$EXP[Bald_SearchHas_musicvideos] + !$EXP[Bald_SearchHas_artists] + !$EXP[Bald_SearchHas_albums] + !$EXP[Bald_SearchHas_songs]]</expression>
+	<expression name="Bald_SearchFirst_programmes">[$EXP[Bald_SearchHas_programmes] + !$EXP[Bald_SearchHas_movies] + !$EXP[Bald_SearchHas_tvshows] + !$EXP[Bald_SearchHas_episodes] + !$EXP[Bald_SearchHas_musicvideos] + !$EXP[Bald_SearchHas_artists] + !$EXP[Bald_SearchHas_albums] + !$EXP[Bald_SearchHas_songs] + !$EXP[Bald_SearchHas_channels]]</expression>
+	<!-- The chosen category counts only while it has results (a library view may name one with none). -->
+	<expression name="Bald_SearchChosenHas">[[String.IsEqual(Window.Property(Bald.SearchCat),movies) + $EXP[Bald_SearchHas_movies]] | [String.IsEqual(Window.Property(Bald.SearchCat),tvshows) + $EXP[Bald_SearchHas_tvshows]] | [String.IsEqual(Window.Property(Bald.SearchCat),episodes) + $EXP[Bald_SearchHas_episodes]] | [String.IsEqual(Window.Property(Bald.SearchCat),musicvideos) + $EXP[Bald_SearchHas_musicvideos]] | [String.IsEqual(Window.Property(Bald.SearchCat),artists) + $EXP[Bald_SearchHas_artists]] | [String.IsEqual(Window.Property(Bald.SearchCat),albums) + $EXP[Bald_SearchHas_albums]] | [String.IsEqual(Window.Property(Bald.SearchCat),songs) + $EXP[Bald_SearchHas_songs]] | [String.IsEqual(Window.Property(Bald.SearchCat),channels) + $EXP[Bald_SearchHas_channels]] | [String.IsEqual(Window.Property(Bald.SearchCat),programmes) + $EXP[Bald_SearchHas_programmes]]]</expression>
+	<expression name="Bald_SearchShows_movies">[[String.IsEqual(Window.Property(Bald.SearchCat),movies) + $EXP[Bald_SearchHas_movies]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_movies]]]</expression>
+	<expression name="Bald_SearchShows_tvshows">[[String.IsEqual(Window.Property(Bald.SearchCat),tvshows) + $EXP[Bald_SearchHas_tvshows]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_tvshows]]]</expression>
+	<expression name="Bald_SearchShows_episodes">[[String.IsEqual(Window.Property(Bald.SearchCat),episodes) + $EXP[Bald_SearchHas_episodes]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_episodes]]]</expression>
+	<expression name="Bald_SearchShows_musicvideos">[[String.IsEqual(Window.Property(Bald.SearchCat),musicvideos) + $EXP[Bald_SearchHas_musicvideos]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_musicvideos]]]</expression>
+	<expression name="Bald_SearchShows_artists">[[String.IsEqual(Window.Property(Bald.SearchCat),artists) + $EXP[Bald_SearchHas_artists]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_artists]]]</expression>
+	<expression name="Bald_SearchShows_albums">[[String.IsEqual(Window.Property(Bald.SearchCat),albums) + $EXP[Bald_SearchHas_albums]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_albums]]]</expression>
+	<expression name="Bald_SearchShows_songs">[[String.IsEqual(Window.Property(Bald.SearchCat),songs) + $EXP[Bald_SearchHas_songs]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_songs]]]</expression>
+	<expression name="Bald_SearchShows_channels">[[String.IsEqual(Window.Property(Bald.SearchCat),channels) + $EXP[Bald_SearchHas_channels]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_channels]]]</expression>
+	<expression name="Bald_SearchShows_programmes">[[String.IsEqual(Window.Property(Bald.SearchCat),programmes) + $EXP[Bald_SearchHas_programmes]] | [!$EXP[Bald_SearchChosenHas] + $EXP[Bald_SearchFirst_programmes]]]</expression>
+	<expression name="Bald_SearchAny">[$EXP[Bald_SearchHas_movies] | $EXP[Bald_SearchHas_tvshows] | $EXP[Bald_SearchHas_episodes] | $EXP[Bald_SearchHas_musicvideos] | $EXP[Bald_SearchHas_artists] | $EXP[Bald_SearchHas_albums] | $EXP[Bald_SearchHas_songs] | $EXP[Bald_SearchHas_channels] | $EXP[Bald_SearchHas_programmes]]</expression>
+	<expression name="Bald_SearchLoading">[Container(71).IsUpdating | Container(72).IsUpdating | Container(73).IsUpdating | Container(74).IsUpdating | Container(75).IsUpdating | Container(76).IsUpdating | Container(77).IsUpdating | Container(61).IsUpdating | Container(62).IsUpdating]</expression>
+	<expression name="Bald_SearchShowsLive">[$EXP[Bald_SearchShows_channels] | $EXP[Bald_SearchShows_programmes]]</expression>
+	<expression name="Bald_SearchShowsOpen">[$EXP[Bald_SearchShows_tvshows] | $EXP[Bald_SearchShows_artists] | $EXP[Bald_SearchShows_albums]]</expression>
+	<!-- ============ What shows ============ -->
+	<variable name="Bald_SearchHeading">
+		<value condition="$EXP[Bald_SearchShows_channels]">$LOCALIZE[19029]</value>
+		<value>$LOCALIZE[369]</value>
+	</variable>
+	<variable name="Bald_SearchColumn2">
+		<value condition="$EXP[Bald_SearchShows_channels]">$LOCALIZE[31795]</value>
+		<value condition="$EXP[Bald_SearchShows_programmes]">$LOCALIZE[555]</value>
+		<value>$LOCALIZE[345]</value>
+	</variable>
+	<variable name="Bald_SearchColumn3">
+		<value condition="$EXP[Bald_SearchShows_channels]">$LOCALIZE[19030]</value>
+		<value condition="$EXP[Bald_SearchShows_programmes]">$LOCALIZE[19029]</value>
+		<value>$LOCALIZE[31890]</value>
+	</variable>
+	<variable name="Bald_SearchCountLabel">
+		<value condition="$EXP[Bald_SearchShows_movies]">$INFO[Container(71).CurrentItem] / $INFO[Container(71).NumItems]</value>
+		<value condition="$EXP[Bald_SearchShows_tvshows]">$INFO[Container(72).CurrentItem] / $INFO[Container(72).NumItems]</value>
+		<value condition="$EXP[Bald_SearchShows_episodes]">$INFO[Container(73).CurrentItem] / $INFO[Container(73).NumItems]</value>
+		<value condition="$EXP[Bald_SearchShows_musicvideos]">$INFO[Container(74).CurrentItem] / $INFO[Container(74).NumItems]</value>
+		<value condition="$EXP[Bald_SearchShows_artists]">$INFO[Container(75).CurrentItem] / $INFO[Container(75).NumItems]</value>
+		<value condition="$EXP[Bald_SearchShows_albums]">$INFO[Container(76).CurrentItem] / $INFO[Container(76).NumItems]</value>
+		<value condition="$EXP[Bald_SearchShows_songs]">$INFO[Container(77).CurrentItem] / $INFO[Container(77).NumItems]</value>
+		<value condition="$EXP[Bald_SearchShows_channels]">$INFO[Container(61).CurrentItem] / $INFO[Container(61).NumItems]</value>
+		<value condition="$EXP[Bald_SearchShows_programmes]">$INFO[Container(62).CurrentItem] / $INFO[Container(62).NumItems]</value>
+	</variable>
+	<variable name="Bald_SearchSelect">
+		<value condition="$EXP[Bald_SearchShows_programmes] + !String.IsEqual(ListItem.Property(now),true)">$VAR[Bald_KeySelect]$LOCALIZE[31794]</value>
+		<value condition="$EXP[Bald_SearchShowsOpen]">$VAR[Bald_KeySelect]$LOCALIZE[31666]</value>
+		<value>$VAR[Bald_KeySelect]$LOCALIZE[208]</value>
+	</variable>
+	<variable name="Bald_SearchPreviewMeta">
+		<value condition="$EXP[Bald_SearchShows_channels]">$INFO[ListItem.Property(number)]$INFO[ListItem.Label2, · ]</value>
+		<value condition="$EXP[Bald_SearchShows_programmes]">$INFO[ListItem.Property(when)]$INFO[ListItem.Label2, · ]</value>
+		<value condition="$EXP[Bald_SearchShows_tvshows] | $EXP[Bald_SearchShows_artists]">$INFO[ListItem.Year]$INFO[ListItem.Genre, · ]</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Duration(mins), · , $LOCALIZE[31710]]$INFO[ListItem.TVShowTitle, · ]$INFO[ListItem.Artist, · ]</value>
+	</variable>
+	<variable name="Bald_SearchPreviewArt">
+		<value condition="$EXP[Bald_SearchShowsLive]">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
+	</variable>
+	<variable name="Bald_SearchPreviewPlot">
+		<value condition="$EXP[Bald_SearchShows_programmes]">$INFO[ListItem.Property(plot)]</value>
+		<value>$INFO[ListItem.Plot]</value>
+	</variable>
+	<!-- ============ Lists ============ -->
+	<!-- A library category: title, year, and the show or artist, as Global Search's list. Select and Info are Kodi's
+	     own for the item (play, or open a show, artist or album; information). -->
+	<include name="Bald_SearchLibraryList">
+		<param name="id" /><param name="kind" /><param name="path" /><param name="field" />
+		<!-- The show or artist column: not for TV shows and artists, whose show or artist is themselves. -->
+		<param name="series">true</param>
+		<definition>
+			<control type="list" id="$PARAM[id]">
+				<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height>
+				<animation effect="fade" start="100" end="0" time="0" condition="!$EXP[Bald_SearchShows_$PARAM[kind]]">Conditional</animation>
+				<onfocus>SetProperty(Bald.SearchCat,$PARAM[kind])</onfocus><onfocus>ClearProperty(Bald.SearchMenu)</onfocus>
+				<onup>$PARAM[id]</onup><ondown>$PARAM[id]</ondown><onleft>9100</onleft><onright>$PARAM[id]</onright>
+				<scrolltime tween="cubic" easing="out">440</scrolltime>
+				<itemlayout width="1140" height="48">
+					<control type="label"><left>26</left><width>702</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.Label]</label></control>
+					<control type="label"><left>752</left><width>80</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.Year]</label></control>
+					<control type="label"><left>856</left><width>260</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.TVShowTitle]$INFO[ListItem.Artist]</label><visible>$PARAM[series]</visible></control>
+				</itemlayout>
+				<focusedlayout width="1140" height="48">
+					<control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus($PARAM[id])</visible></control>
+					<control type="label"><left>26</left><width>702</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label></control>
+					<control type="label"><left>752</left><width>80</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Year]</label></control>
+					<control type="label"><left>856</left><width>260</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.TVShowTitle]$INFO[ListItem.Artist]</label><visible>$PARAM[series]</visible></control>
+				</focusedlayout>
+				<content limit="100" browse="never">$PARAM[path]?xsp={"rules":{"and":[{"field":"$PARAM[field]","operator":"contains","value":["$INFO[Skin.String(Bald.SearchQuery)]"]}]},"type":"$PARAM[kind]"}</content>
+			</control>
+		</definition>
+	</include>
+	<include name="Bald_SearchLists">
+		<include content="Bald_SearchLibraryList"><param name="id">71</param><param name="kind">movies</param><param name="path">videodb://movies/titles/</param><param name="field">title</param></include>
+		<include content="Bald_SearchLibraryList"><param name="id">72</param><param name="kind">tvshows</param><param name="path">videodb://tvshows/titles/</param><param name="field">title</param><param name="series">false</param></include>
+		<include content="Bald_SearchLibraryList"><param name="id">73</param><param name="kind">episodes</param><param name="path">videodb://tvshows/titles/-1/-1/</param><param name="field">title</param></include>
+		<include content="Bald_SearchLibraryList"><param name="id">74</param><param name="kind">musicvideos</param><param name="path">videodb://musicvideos/titles/</param><param name="field">title</param></include>
+		<include content="Bald_SearchLibraryList"><param name="id">75</param><param name="kind">artists</param><param name="path">musicdb://artists/</param><param name="field">artist</param><param name="series">false</param></include>
+		<include content="Bald_SearchLibraryList"><param name="id">76</param><param name="kind">albums</param><param name="path">musicdb://albums/</param><param name="field">album</param></include>
+		<include content="Bald_SearchLibraryList"><param name="id">77</param><param name="kind">songs</param><param name="path">musicdb://songs/</param><param name="field">title</param></include>
+		<include content="Bald_LiveSearchLists">
+			<param name="query">$INFO[Skin.String(Bald.SearchQuery)]</param>
+			<param name="channels_left">9100</param><param name="programmes_left">9100</param>
+			<param name="channels_shown">$EXP[Bald_SearchShows_channels]</param>
+			<param name="programmes_shown">$EXP[Bald_SearchShows_programmes]</param>
+			<param name="focus_property">Bald.SearchCat</param>
+		</include>
+	</include>
+	<!-- ============ Options ============ -->
+	<!-- New search, then each category with results and its count; Select shows it. -->
+	<include name="Bald_SearchOptionItems">
+		<item><label>$LOCALIZE[31892]</label><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>RunPlugin(plugin://script.bald.helper/?action=search)</onclick></item>
+		<item><label>$LOCALIZE[342]</label><label2>$INFO[Container(71).NumItems]</label2><property name="kind">movies</property><onclick>SetProperty(Bald.SearchCat,movies)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(71)</onclick><visible>$EXP[Bald_SearchHas_movies]</visible></item>
+		<item><label>$LOCALIZE[20343]</label><label2>$INFO[Container(72).NumItems]</label2><property name="kind">tvshows</property><onclick>SetProperty(Bald.SearchCat,tvshows)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(72)</onclick><visible>$EXP[Bald_SearchHas_tvshows]</visible></item>
+		<item><label>$LOCALIZE[20360]</label><label2>$INFO[Container(73).NumItems]</label2><property name="kind">episodes</property><onclick>SetProperty(Bald.SearchCat,episodes)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(73)</onclick><visible>$EXP[Bald_SearchHas_episodes]</visible></item>
+		<item><label>$LOCALIZE[20389]</label><label2>$INFO[Container(74).NumItems]</label2><property name="kind">musicvideos</property><onclick>SetProperty(Bald.SearchCat,musicvideos)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(74)</onclick><visible>$EXP[Bald_SearchHas_musicvideos]</visible></item>
+		<item><label>$LOCALIZE[133]</label><label2>$INFO[Container(75).NumItems]</label2><property name="kind">artists</property><onclick>SetProperty(Bald.SearchCat,artists)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(75)</onclick><visible>$EXP[Bald_SearchHas_artists]</visible></item>
+		<item><label>$LOCALIZE[132]</label><label2>$INFO[Container(76).NumItems]</label2><property name="kind">albums</property><onclick>SetProperty(Bald.SearchCat,albums)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(76)</onclick><visible>$EXP[Bald_SearchHas_albums]</visible></item>
+		<item><label>$LOCALIZE[134]</label><label2>$INFO[Container(77).NumItems]</label2><property name="kind">songs</property><onclick>SetProperty(Bald.SearchCat,songs)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(77)</onclick><visible>$EXP[Bald_SearchHas_songs]</visible></item>
+		<item><label>$LOCALIZE[19019]</label><label2>$INFO[Container(61).NumItems]</label2><property name="kind">channels</property><onclick>SetProperty(Bald.SearchCat,channels)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(61)</onclick><visible>$EXP[Bald_SearchHas_channels]</visible></item>
+		<item><label>$LOCALIZE[31793]</label><label2>$INFO[Container(62).NumItems]</label2><property name="kind">programmes</property><onclick>SetProperty(Bald.SearchCat,programmes)</onclick><onclick>ClearProperty(Bald.SearchMenu)</onclick><onclick>SetFocus(62)</onclick><visible>$EXP[Bald_SearchHas_programmes]</visible></item>
+	</include>
+</includes>
