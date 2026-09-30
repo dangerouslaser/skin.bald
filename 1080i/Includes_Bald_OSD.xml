@@ -1930,6 +1930,30 @@
 		<value condition="!String.IsEmpty(Window.Property(landscape))">$INFO[Window.Property(landscape)]</value>
 		<value>$INFO[Window.Property(fanart)]</value>
 	</variable>
+	<!-- A pill of Jellyfin's skip prompt (script-jellyfin-skip.xml), over the playing video: the dialog pill's shape and
+	     focus (ink, field text), and unfocused a dark translucent fill instead of the outline, so it reads on any picture.
+	     As wide as its text, at least `min`. -->
+	<include name="Bald_SkipPill">
+		<param name="id" />
+		<param name="label" />
+		<param name="min">160</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width min="$PARAM[min]" max="900">auto</width>
+				<height>72</height>
+				<label>$PARAM[label]</label>
+				<font>Bald_Section</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>36</textoffsetx>
+				<textcolor>bald_ink</textcolor>
+				<focusedcolor>bald_field</focusedcolor>
+				<texturefocus border="27" colordiffuse="bald_ink">bald/pill.png</texturefocus>
+				<texturenofocus border="27" colordiffuse="bald_field60">bald/pill.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+			</control>
+		</definition>
+	</include>
 	<include name="Bald_OSDUpNext">
 		<param name="heading" />
 		<param name="play" />

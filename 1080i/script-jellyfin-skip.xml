@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Skip intro / credits for plugin.video.jellyfin (jellyfin_kodi/dialogs/skip.py; the add-on loads this file from the
+     skin when the skin has it). The add-on binds 3012 (Skip) and 3013 (Close) by number and puts the button's text in
+     the skip_label window property ("Skip Intro (1m 40s)"); it closes the dialog itself on Select or Back.
+     Bald's look: two pills bottom-right on the safe margin over the playing video, the skip pill focused (ink with field
+     text), Close a dark pill so it reads over any picture. As Bald's Up Next panel, it closes the info overlay and the
+     OSD as it opens. Motion: the menu's entrance (fade 380, slide 40 px over 480), out with a 160 fade. -->
+<window>
+	<defaultcontrol always="true">3012</defaultcontrol>
+	<zorder>1</zorder>
+	<onload>CancelAlarm(bald_osd_close,true)</onload>
+	<onload>Dialog.Close(fullscreeninfo,true)</onload>
+	<onload>Dialog.Close(videoosd,true)</onload>
+	<controls>
+		<control type="grouplist">
+			<left>524</left>
+			<top>912</top>
+			<width>1300</width>
+			<height>72</height>
+			<orientation>horizontal</orientation>
+			<align>right</align>
+			<itemgap>12</itemgap>
+			<onup>noop</onup>
+			<ondown>noop</ondown>
+			<animation type="WindowOpen" condition="$EXP[Bald_FullMotion]" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+				<effect type="slide" start="40,0" end="0,0" time="480" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowOpen" condition="$EXP[Bald_ReduceMotion]" reversible="false">
+				<effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" />
+			</animation>
+			<include content="Bald_SkipPill">
+				<param name="id">3012</param>
+				<param name="label">$INFO[Window.Property(skip_label)]</param>
+				<param name="min">320</param>
+			</include>
+			<include content="Bald_SkipPill">
+				<param name="id">3013</param>
+				<param name="label">$LOCALIZE[15067]</param>
+				<param name="min">160</param>
+			</include>
+		</control>
+	</controls>
+</window>
