@@ -1,7 +1,7 @@
 Copyright 2021 The Onest Project Authors (https://github.com/googlefonts/onest)
 
-The letters U+02B0-02FF, U+1D00-1DBF and U+2070-209F that Onest lacks were added to these files: superscripts, subscripts and small
-capitals drawn from Onest's own letters (tools/add_superscripts.py), the rest from Noto Sans
+The letters U+02B0-02FF, U+1D00-1DBF and U+2070-209F that Onest lacks were added to these files from Noto Sans, whose superscripts,
+subscripts and small capitals also replace the font's own few, so they all match (tools/add_superscripts.py)
 (Copyright 2015 Google Inc.; Copyright 2022 The Noto Project Authors), also under the SIL Open Font License 1.1:
 see NotoSans-OFL.txt.
 

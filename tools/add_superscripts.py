@@ -1,30 +1,23 @@
 #!/usr/bin/env python3
-"""Add the superscript, subscript and small capital letters Bald's UI fonts lack, drawn from each font's own letters.
+"""Give Bald's UI fonts one set of superscript, subscript and small capital letters: Noto Sans's, in every typeface.
 
 Kodi draws each string with one font file and has no per-glyph fallback (CGUIFontTTF), so characters a font lacks
-show as empty boxes. Live TV providers decorate titles with modifier letters ("ᴸᶦᵛᵉ", "ᴺᵉʷ", "ᴴᴰ"), which DM Sans,
-Instrument Sans and Onest do not have. For each character of these ranges a font does not map:
+show as empty boxes. Live TV providers decorate titles with modifier letters ("ᴸᶦᵛᵉ", "ᴺᵉʷ", "ᴴᴰ"), and none of Bald's
+typefaces has them: DM Sans ships ¹ ² ³ ⁴, Onest ¹ ² ³ and ʷ, Instrument Sans none. Mixing those with letters from
+elsewhere set "ᴺᵉʷ" at two heights, so every character below that is a superscript, subscript or small capital
+(Unicode's <super> or <sub> of a letter, or LATIN LETTER SMALL CAPITAL) is copied from Noto Sans (SIL OFL 1.1,
+fonts/NotoSans-OFL.txt), scaled to the font's units per em, replacing the font's own where it has one. Other
+characters of the ranges (IPA modifiers and tone letters) are copied only where the font lacks them, so its spacing
+accents (ˆ ˇ ˘ ˙ ...) stay its own.
 
     U+00B2, U+00B3, U+00B9  the Latin-1 superscript digits (² ³ ¹)
     U+02B0-02FF  spacing modifier letters (ʰ ʷ ʸ ...)
     U+1D00-1DBF  phonetic extensions and supplement (ᴬ ᴮ ... ᵃ ᵇ ... ᶦ ᶻ, small capitals)
     U+2070-209F  superscripts and subscripts (⁰ ⁴ ... ⁿ ₀ ...)
 
-- a superscript or subscript (Unicode's <super> or <sub> of one letter or digit) is that letter from the same family,
-  scaled and raised to match the superscripts the font already has, so a drawn one sits with the font's own: letters
-  like its modifier letters (Onest's ʷ), digits like its superscript digits (² ³ ¹ in DM Sans and Onest), letters like
-  its digits when it has no modifier letters, and at 62% with the capitals topping out at the capital height when it
-  has neither (Instrument Sans); subscripts at the same size, dropped below the baseline;
-- a small capital (LATIN LETTER SMALL CAPITAL X) is the capital scaled to the x-height;
-- both are taken from the next heavier weight of the family (Regular from Medium, and so on), since scaling a letter
-  down thins its stems;
-- anything else (IPA and tone letters with no base letter in the font) is copied from Noto Sans (SIL OFL 1.1,
-  fonts/NotoSans-OFL.txt), scaled to the font's units per em.
-
 DM Sans, Instrument Sans and Onest are SIL OFL 1.1 without a Reserved Font Name, so the modified fonts keep their names.
 Needs fontTools (pip install fonttools). Run it on the fonts as they shipped (DM Sans and Instrument Sans as of commit
-433c9dd1, Onest as of 6cd9c09b), then tools/hint_keys.py. Running it again changes nothing: characters a font already
-maps are skipped.
+433c9dd1, Onest as of 6cd9c09b), then tools/hint_keys.py. Running it again gives the same fonts.
 
   python3 tools/add_superscripts.py
 """
@@ -43,32 +36,19 @@ FONTS = ROOT / "fonts"
 SOURCE = FONTS / "NotoSans-Regular.ttf"
 TARGETS = sorted(p for p in FONTS.glob("*.ttf") if p.name.startswith(("DMSans-", "InstrumentSans-", "Onest-")))
 RANGES = ((0x00B2, 0x00B3), (0x00B9, 0x00B9), (0x02B0, 0x02FF), (0x1D00, 0x1DBF), (0x2070, 0x209F))
-HEAVIER = {"Regular": "Medium", "Medium": "SemiBold", "SemiBold": "Bold", "Bold": "Bold"}
-SCALE = 0.62  # superscripts and subscripts
-SUB_DROP = 0.14  # em below the baseline a subscript's baseline sits
-SIDE = 0.02  # em added either side of a synthesised letter
 
 
 def wanted(codepoint):
     return any(low <= codepoint <= high for low, high in RANGES)
 
 
-def recipe(codepoint):
-    """(kind, base codepoint) for a character drawn from another letter, else None."""
+def superscript_like(codepoint):
+    """A superscript, subscript or small capital: always Noto's, so they all match."""
     char = chr(codepoint)
     decomposition = unicodedata.decomposition(char).split()
     if len(decomposition) == 2 and decomposition[0] in ("<super>", "<sub>"):
-        return decomposition[0].strip("<>"), int(decomposition[1], 16)
-    match = re.fullmatch(r"LATIN LETTER SMALL CAPITAL ([A-Z])", unicodedata.name(char, ""))
-    if match:
-        return "smallcap", ord(match.group(1))
-    return None
-
-
-def heavier(path):
-    family, weight = path.stem.split("-")
-    candidate = FONTS / f"{family}-{HEAVIER[weight]}.ttf"
-    return candidate if candidate.exists() else path
+        return True
+    return re.fullmatch(r"LATIN LETTER SMALL CAPITAL [A-Z]", unicodedata.name(char, "")) is not None
 
 
 def map_codepoint(font, codepoint, name):
@@ -77,98 +57,47 @@ def map_codepoint(font, codepoint, name):
             table.cmap[codepoint] = name
 
 
-def drawn(glyphset, name, matrix):
-    recording = DecomposingRecordingPen(glyphset)
-    glyphset[name].draw(recording)
-    pen = TTGlyphPen(None)
-    recording.replay(TransformPen(pen, matrix))
-    return pen.glyph()
-
-
-def calibrate(font, kind):
-    """(scale, raise) of the font's own superscripts of one kind ("digit" or "letter"), from the characters it already
-    maps whose <super> base it also has: the native glyph's height and baseline against its base's. None if it has none."""
-    cmap, glyf = font.getBestCmap(), font["glyf"]
-    found = []
-    for codepoint, name in cmap.items():
-        if not wanted(codepoint):
-            continue
-        how = recipe(codepoint)
-        if not how or how[0] != "super" or how[1] not in cmap:
-            continue
-        base = chr(how[1])
-        if (kind == "digit") != base.isdigit() or not (base.isdigit() or base.isalpha()):
-            continue
-        native, plain = glyf[name], glyf[cmap[how[1]]]
-        native.recalcBounds(glyf)
-        plain.recalcBounds(glyf)
-        if not hasattr(native, "yMin") or not hasattr(plain, "yMin") or plain.yMax <= plain.yMin:
-            continue
-        scale = (native.yMax - native.yMin) / (plain.yMax - plain.yMin)
-        found.append((scale, native.yMin - scale * plain.yMin))
-    if not found:
-        return None
-    return sum(s for s, _ in found) / len(found), sum(r for _, r in found) / len(found)
-
-
 def add(target_path, source):
     font = TTFont(target_path)
     cmap = font.getBestCmap()
-    upm = font["head"].unitsPerEm
-    cap, xheight = font["OS/2"].sCapHeight, font["OS/2"].sxHeight
-    default = (SCALE, cap * (1 - SCALE))
-    digits = calibrate(font, "digit")
-    letters = calibrate(font, "letter") or digits
-    base_font = TTFont(heavier(target_path))
-    base_cmap, base_glyphs = base_font.getBestCmap(), base_font.getGlyphSet()
-    base_scale = upm / base_font["head"].unitsPerEm
-    source_cmap, source_glyphs = source.getBestCmap(), source.getGlyphSet()
-    noto_scale = upm / source["head"].unitsPerEm
+    scale = font["head"].unitsPerEm / source["head"].unitsPerEm
+    source_glyphs = source.getGlyphSet()
     glyf, hmtx = font["glyf"], font["hmtx"]
-    counts = {"drawn": 0, "noto": 0}
-    for codepoint in sorted(c for low, high in RANGES for c in range(low, high + 1)):
-        if codepoint in cmap:
+    added = replaced = 0
+    for codepoint, source_name in sorted(source.getBestCmap().items()):
+        if not wanted(codepoint):
             continue
-        name = f"uni{codepoint:04X}"
-        how = recipe(codepoint)
-        # Only from letters outside these ranges, so no weight builds on letters another run has just added.
-        if how and how[1] in base_cmap and not wanted(how[1]):
-            kind, base = how
-            base_name = base_cmap[base]
-            if kind == "smallcap":
-                s, dy = xheight / cap, 0
-            else:
-                s, rise = (digits if chr(base).isdigit() else letters) or default
-                dy = rise if kind == "super" else -SUB_DROP * upm
-            s *= base_scale
-            side = SIDE * upm
-            glyph = drawn(base_glyphs, base_name, (s, 0, 0, s, side, dy))
-            advance = round(base_font["hmtx"][base_name][0] * s + 2 * side)
-            counts["drawn"] += 1
-        elif codepoint in source_cmap:
-            glyph = drawn(source_glyphs, source_cmap[codepoint], (noto_scale, 0, 0, noto_scale, 0, 0))
-            advance = round(source["hmtx"][source_cmap[codepoint]][0] * noto_scale)
-            counts["noto"] += 1
-        else:
+        name = f"bald.noto.{codepoint:04X}"
+        native = codepoint in cmap and cmap[codepoint] != name
+        if native and not superscript_like(codepoint):
             continue
+        recording = DecomposingRecordingPen(source_glyphs)
+        source_glyphs[source_name].draw(recording)
+        pen = TTGlyphPen(None)
+        recording.replay(TransformPen(pen, (scale, 0, 0, scale, 0, 0)))
+        glyph = pen.glyph()
+        # A name of its own, so a glyph the font's other characters share (composites, kerning) is left alone.
         glyf[name] = glyph  # adds it to the glyph order when new
         glyph.recalcBounds(glyf)
-        hmtx[name] = (advance, getattr(glyph, "xMin", 0))
+        hmtx[name] = (round(source["hmtx"][source_name][0] * scale), getattr(glyph, "xMin", 0))
         map_codepoint(font, codepoint, name)
-    if counts["drawn"] or counts["noto"]:
-        font.setGlyphOrder(glyf.glyphOrder)
-        for stale in ("hdmx", "LTSH", "VDMX"):  # per-glyph tables that would no longer match the glyph count
-            if stale in font:
-                del font[stale]
-        font.save(target_path)
-    return counts
+        if native:
+            replaced += 1
+        else:
+            added += 1
+    font.setGlyphOrder(glyf.glyphOrder)
+    for stale in ("hdmx", "LTSH", "VDMX"):  # per-glyph tables that would no longer match the glyph count
+        if stale in font:
+            del font[stale]
+    font.save(target_path)
+    return added, replaced
 
 
 def main():
     source = TTFont(SOURCE)
     for path in TARGETS:
-        counts = add(path, source)
-        print(f"{path.name}: {counts['drawn']} drawn from its own letters, {counts['noto']} from Noto Sans")
+        added, replaced = add(path, source)
+        print(f"{path.name}: {added} added from Noto Sans, {replaced} of its own replaced")
 
 
 if __name__ == "__main__":
