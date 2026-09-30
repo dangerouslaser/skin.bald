@@ -54,6 +54,15 @@
 					<param name="label" value="" />
 					<param name="width" value="280" />
 				</include>
+				<!-- Global Search's "No results found. Search again?" when Live TV has matches (Bald Helper counts them on
+				     Home as it lists them): open them in Bald's Live TV search (Custom_1130_BaldLiveSearch.xml). -->
+				<include content="DefaultDialogButton">
+					<param name="id" value="14" />
+					<param name="label" value="$LOCALIZE[31700]" />
+					<param name="width" value="280" />
+					<param name="onclick" value="RunPlugin(plugin://script.bald.helper/?action=live_search)" />
+					<param name="visible" value="Window.IsVisible(script-globalsearch.xml) + String.IsEqual(Control.GetLabel(1),$LOCALIZE[284]) + [Integer.IsGreater(Window(home).Property(Bald.SearchLive.Channels),0) | Integer.IsGreater(Window(home).Property(Bald.SearchLive.Programmes),0)]" />
+				</include>
 			</control>
 		</control>
 	</controls>

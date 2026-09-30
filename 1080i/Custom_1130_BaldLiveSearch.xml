@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bald's Live TV search: a search's channel and programme matches (Bald Helper, resources/lib/livetv.py) when the
+     libraries had none. Global Search then asks "Search again?" and closes on anything but Yes, so its window cannot
+     show them; the Live TV button of that question (DialogConfirm.xml) opens this window instead, on the same query
+     (Window(home).Property(Bald.LiveSearch.Query), which Bald Helper's ?action=live_search copies it to). The lists, headings and
+     preview are Search's own (Bald_LiveSearch, Bald_LiveSearchPreview); Left and Right move between the two. -->
+<window type="window" id="1130">
+	<defaultcontrol always="true">61</defaultcontrol>
+	<backgroundcolor>bald_field</backgroundcolor>
+	<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="380" tween="sine" easing="inout" /></animation>
+	<animation type="WindowClose"><effect type="fade" start="100" end="0" time="160" tween="sine" easing="inout" /></animation>
+	<controls>
+		<include>Bald_WindowBase</include>
+		<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[137]</label></control>
+		<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Window(home).Property(Bald.LiveSearch.Query),$LOCALIZE[31894] “,”]</label></control>
+		<include content="Bald_LiveSearch">
+			<param name="query">$INFO[Window(home).Property(Bald.LiveSearch.Query)]</param>
+			<param name="channels_left">61</param>
+			<param name="channels_right">62</param>
+			<param name="programmes_left">61</param>
+			<param name="programmes_right">62</param>
+		</include>
+		<include content="Bald_LiveSearchPreview" />
+		<!-- The two lists as a trail on the hint line, as the info screen's pages. -->
+		<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_LiveSearchTrail]</label></control>
+		<control type="group"><left>1000</left><top>Bald_HintTop</top><include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31701]$VAR[Bald_KeyRight]</param><param name="second">$VAR[Bald_SearchSelectHint]</param><param name="third">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param><param name="third_visible">true</param></include></control>
+	</controls>
+</window>

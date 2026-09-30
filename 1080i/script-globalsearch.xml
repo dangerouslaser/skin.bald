@@ -6,6 +6,9 @@
 	     cannot be used: a SetProperty with an empty window names no window). Blur: Bald Helper's, else TMDb Helper's,
 	     never both (Home.xml). -->
 	<onload>SetProperty(Bald.FocusContainer,50)</onload>
+	<!-- A new search's Live TV counts come from Bald Helper as it lists them; clear the last search's. -->
+	<onload>ClearProperty(Bald.SearchLive.Channels,home)</onload>
+	<onload>ClearProperty(Bald.SearchLive.Programmes,home)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper] + !$EXP[Bald_HasHelper] + !Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasHelper] + Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.Reset(TMDbHelper.EnableBlur)</onload>
 	<onload condition="$EXP[Bald_HasTMDbHelper] + !Skin.HasSetting(TMDbHelper.UseLocalWidgetContainer)">Skin.SetBool(TMDbHelper.UseLocalWidgetContainer)</onload>
@@ -32,7 +35,7 @@
 		<control type="label"><left>Bald_SafeLeft</left><top>Bald_PageTitleTop</top><width>1100</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[137]</label></control>
 		<control type="label"><left>Bald_PreviewLeft</left><top>120</top><width>528</width><height>28</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[Window.Property(GlobalSearch.SearchString),$LOCALIZE[31894] “,”]</label></control>
 		<control type="label" id="991"><left>Bald_SafeLeft</left><top>174</top><width>1140</width><height>28</height><font>Bald_Section</font><textcolor>bald_accent</textcolor><label></label></control>
-		<control type="group"><left>Bald_SafeLeft</left><top>180</top><visible>!Control.IsVisible(991)</visible>
+		<control type="group"><left>Bald_SafeLeft</left><top>180</top><visible>!Control.IsVisible(991) + !$EXP[Bald_SearchLiveShown]</visible>
 			<control type="label"><left>26</left><width>702</width><height>28</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[369]</label></control>
 			<control type="label"><left>752</left><width>80</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[345]</label></control>
 			<control type="label"><left>856</left><width>260</width><height>28</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31890]</label></control>
@@ -40,12 +43,18 @@
 		<!-- The results wrap top to bottom (Up and Down point at the list itself); Left opens the options, as the hints say. -->
 		<control type="list" id="50">
 			<left>Bald_SafeLeft</left><top>Bald_ContentTop</top><width>1140</width><height>624</height><viewtype label="31865">list</viewtype>
-			<onfocus>ClearProperty(Bald.SearchMenu)</onfocus><onup>50</onup><ondown>50</ondown><onleft>990</onleft><onright>50</onright><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>2</preloaditems>
+			<!-- Faded out, not hidden, while Live TV matches show: Global Search finds its list among the window's visible
+			     views (getCurrentContainerId), and focuses it when a category is chosen, which brings it back. -->
+			<animation effect="fade" start="100" end="0" time="0" condition="$EXP[Bald_SearchLiveShown]">Conditional</animation>
+			<onfocus>ClearProperty(Bald.SearchLive)</onfocus><onfocus>ClearProperty(Bald.SearchMenu)</onfocus><onup>50</onup><ondown>50</ondown><onleft>990</onleft><onright>50</onright><scrolltime tween="cubic" easing="out">440</scrolltime><preloaditems>2</preloaditems>
 			<itemlayout width="1140" height="48"><control type="label"><left>26</left><width>702</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.Label]</label></control><control type="label"><left>752</left><width>80</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.Year]</label></control><control type="label"><left>856</left><width>260</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.TVShowTitle]$INFO[ListItem.Artist]</label></control></itemlayout>
 			<focusedlayout width="1140" height="48"><control type="image"><left>0</left><top>20</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control><control type="label"><left>26</left><width>702</width><height>48</height><aligny>center</aligny><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label></control><control type="label"><left>752</left><width>80</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Year]</label></control><control type="label"><left>856</left><width>260</width><height>48</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.TVShowTitle]$INFO[ListItem.Artist]</label></control></focusedlayout>
 		</control>
+		<include content="Bald_LiveSearch">
+			<param name="query">$INFO[Window.Property(GlobalSearch.SearchString)]</param>
+		</include>
 		<control type="group">
-			<visible>!$EXP[Bald_SearchMenuOpen] + !String.IsEmpty(Container(50).ListItem.Label)</visible>
+			<visible>!$EXP[Bald_SearchMenuOpen] + !String.IsEmpty(Container(50).ListItem.Label) + !$EXP[Bald_SearchLiveShown]</visible>
 			<animation type="Hidden"><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout" /></animation><animation type="Visible" condition="$EXP[Bald_FullMotion]"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /><effect type="slide" start="40,0" end="0,0" time="480" delay="140" tween="cubic" easing="out" /></animation><animation type="Visible" condition="$EXP[Bald_ReduceMotion]"><effect type="fade" start="0" end="100" time="380" delay="140" tween="sine" easing="inout" /></animation>
 			<control type="image"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top><width>528</width><height>297</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 			<control type="image"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top><width>528</width><height>297</height><texture background="true">$INFO[Container(50).ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio><fadetime>700</fadetime></control>
@@ -55,16 +64,20 @@
 			<control type="textbox"><left>Bald_PreviewLeft</left><top>686</top><width>528</width><height>144</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$INFO[Container(50).ListItem.Plot]</label><include content="Bald_SpoilerPlotShown"><param name="item">Container(50).ListItem.</param></include></control>
 			<include content="Bald_SpoilerNote"><param name="item">Container(50).ListItem.</param><param name="left">Bald_PreviewLeft</param><param name="top">686</param></include>
 		</control>
+		<include content="Bald_LiveSearchPreview" />
 		<control type="group"><visible>$EXP[Bald_SearchMenuOpen]</visible><include>Bald_AnimMenuShows</include><control type="label"><left>1466</left><top>292</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31891]</label></control></control>
 		<control type="button" id="990">
 			<left>Bald_RightColumn</left><top>392</top><width>420</width><height>56</height><label>$LOCALIZE[31892]</label><visible allowhiddenfocus="true">$EXP[Bald_SearchMenuOpen] | Integer.IsEqual(Container(50).NumItems,0)</visible><include>Bald_AnimMenuShows</include>
 			<font>Bald_MenuItem</font><align>left</align><aligny>center</aligny><textoffsetx>26</textoffsetx><textcolor>bald_ink34</textcolor><focusedcolor>bald_ink</focusedcolor><texturefocus /><texturenofocus />
-			<onfocus>SetProperty(Bald.SearchMenu,true)</onfocus><onup>9000</onup><ondown>9000</ondown><onleft>ClearProperty(Bald.SearchMenu)</onleft><onleft>50</onleft><onright>ClearProperty(Bald.SearchMenu)</onright><onright>50</onright><onback>ClearProperty(Bald.SearchMenu)</onback><onback>50</onback>
+			<onfocus>SetProperty(Bald.SearchMenu,true)</onfocus><onup condition="Control.IsVisible(9102)">9102</onup><onup condition="!Control.IsVisible(9102) + Control.IsVisible(9101)">9101</onup><onup condition="!Control.IsVisible(9102) + !Control.IsVisible(9101)">9000</onup><ondown>9000</ondown><onleft>ClearProperty(Bald.SearchMenu)</onleft><onleft condition="$EXP[Bald_SearchLiveChannels]">61</onleft><onleft condition="$EXP[Bald_SearchLiveProgrammes]">62</onleft><onleft condition="!$EXP[Bald_SearchLiveShown]">50</onleft><onright>ClearProperty(Bald.SearchMenu)</onright><onright condition="$EXP[Bald_SearchLiveChannels]">61</onright><onright condition="$EXP[Bald_SearchLiveProgrammes]">62</onright><onright condition="!$EXP[Bald_SearchLiveShown]">50</onright><onback>ClearProperty(Bald.SearchMenu)</onback><onback condition="$EXP[Bald_SearchLiveChannels]">61</onback><onback condition="$EXP[Bald_SearchLiveProgrammes]">62</onback><onback condition="!$EXP[Bald_SearchLiveShown]">50</onback>
 		</control>
 		<control type="image"><left>Bald_RightColumn</left><top>416</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus(990)</visible></control>
 		<control type="list" id="9000">
-			<left>Bald_RightColumn</left><top>454</top><width>420</width><height>248</height><orientation>vertical</orientation><scrolltime>0</scrolltime><visible allowhiddenfocus="true">$EXP[Bald_SearchMenuOpen]</visible><include>Bald_AnimMenuShows</include>
-			<onfocus>SetProperty(Bald.SearchMenu,true)</onfocus><onup>990</onup><ondown>990</ondown><onleft>ClearProperty(Bald.SearchMenu)</onleft><onleft>50</onleft><onright>ClearProperty(Bald.SearchMenu)</onright><onright>50</onright><onback>ClearProperty(Bald.SearchMenu)</onback><onback>50</onback>
+			<left>Bald_RightColumn</left><top>454</top><width>420</width><height>248</height><orientation>vertical</orientation><scrolltime>0</scrolltime>
+			<!-- Moving into the categories shows Global Search's results again, in place of a Live TV list (a click here
+			     reaches only Global Search, so the skin cannot act on the choice itself). -->
+			<onfocus>ClearProperty(Bald.SearchLive)</onfocus><visible allowhiddenfocus="true">$EXP[Bald_SearchMenuOpen]</visible><include>Bald_AnimMenuShows</include>
+			<onfocus>SetProperty(Bald.SearchMenu,true)</onfocus><onup>990</onup><ondown condition="Control.IsVisible(9101)">9101</ondown><ondown condition="!Control.IsVisible(9101) + Control.IsVisible(9102)">9102</ondown><ondown condition="!Control.IsVisible(9101) + !Control.IsVisible(9102)">990</ondown><onleft>ClearProperty(Bald.SearchMenu)</onleft><onleft condition="$EXP[Bald_SearchLiveChannels]">61</onleft><onleft condition="$EXP[Bald_SearchLiveProgrammes]">62</onleft><onleft condition="!$EXP[Bald_SearchLiveShown]">50</onleft><onright>ClearProperty(Bald.SearchMenu)</onright><onright condition="$EXP[Bald_SearchLiveChannels]">61</onright><onright condition="$EXP[Bald_SearchLiveProgrammes]">62</onright><onright condition="!$EXP[Bald_SearchLiveShown]">50</onright><onback>ClearProperty(Bald.SearchMenu)</onback><onback condition="$EXP[Bald_SearchLiveChannels]">61</onback><onback condition="$EXP[Bald_SearchLiveProgrammes]">62</onback><onback condition="!$EXP[Bald_SearchLiveShown]">50</onback>
 			<itemlayout width="420" height="62"><control type="label"><left>26</left><width>310</width><height>56</height><aligny>center</aligny><font>Bald_MenuItem</font><textcolor>bald_ink34</textcolor><label>$INFO[ListItem.Label]</label></control><control type="label"><right>26</right><width>70</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuNote</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.Label2]</label></control></itemlayout>
 			<focusedlayout width="420" height="62">
 				<!-- The selected category looks selected only while the list has focus; with New search focused it is one of
@@ -76,8 +89,16 @@
 				<control type="label"><right>26</right><width>70</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuNote</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.Label2]</label><visible>!Control.HasFocus(9000)</visible></control>
 			</focusedlayout>
 		</control>
-		<control type="label" id="999"><left>Bald_SafeLeft</left><top>460</top><width>1140</width><height>80</height><align>center</align><aligny>center</aligny><font>Bald_CaptionTitle</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[284]</label></control>
-		<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(50).CurrentItem] / $INFO[Container(50).NumItems]</label></control>
-		<control type="group"><left>1000</left><top>Bald_HintTop</top><include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31661]</param><param name="second">$VAR[Bald_KeyInfo]$LOCALIZE[31664]</param><param name="third">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param><param name="third_visible">true</param></include></control>
+		<!-- Live TV in the options: under Global Search's categories, the channel and programme matches with their counts. -->
+		<control type="group">
+			<visible>$EXP[Bald_SearchMenuOpen] + [Integer.IsGreater(Container(61).NumItems,0) | Integer.IsGreater(Container(62).NumItems,0)]</visible>
+			<include>Bald_AnimMenuShows</include>
+			<control type="label"><left>1466</left><top>722</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31700]</label></control>
+		</control>
+		<include content="Bald_SearchLiveButton"><param name="id">9101</param><param name="top">760</param><param name="list">61</param><param name="kind">channels</param><param name="label">$LOCALIZE[19019]</param><param name="up">9000</param><param name="down_if">Control.IsVisible(9102)</param><param name="down">9102</param></include>
+		<include content="Bald_SearchLiveButton"><param name="id">9102</param><param name="top">822</param><param name="list">62</param><param name="kind">programmes</param><param name="label">$LOCALIZE[31793]</param><param name="up">9101</param><param name="down_if">false</param><param name="down">990</param></include>
+		<control type="label" id="999"><left>Bald_SafeLeft</left><top>460</top><width>1140</width><height>80</height><align>center</align><aligny>center</aligny><font>Bald_CaptionTitle</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[284]</label><visible>!$EXP[Bald_SearchLiveShown]</visible></control>
+		<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_SearchCount]</label></control>
+		<control type="group"><left>1000</left><top>Bald_HintTop</top><include content="Bald_InfoHintPair"><param name="width">824</param><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31661]</param><param name="second">$VAR[Bald_SearchSelectHint]</param><param name="third">$VAR[Bald_KeyBack]$LOCALIZE[31619]</param><param name="third_visible">true</param></include></control>
 	</controls>
 </window>

@@ -323,6 +323,8 @@
 				<include condition="String.IsEmpty(Skin.String(Bald.LiveTVAfter))">Bald_HomeMenuLiveTV</include>
 				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="label">$LOCALIZE[137]</param><param name="preview">search</param>
 					<onclick>SetProperty(Bald.SearchOrigin,home,home)</onclick>
+					<!-- Bald Helper reads the Live TV schedules while the query is typed, for Search's programme matches. -->
+					<onclick condition="System.AddonIsEnabled(script.globalsearch) + $EXP[Bald_SearchCanLive]">RunPlugin(plugin://script.bald.helper/?action=warm_livetv)</onclick>
 					<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
 					<onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick>
 					<onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>

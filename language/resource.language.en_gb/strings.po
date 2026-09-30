@@ -480,6 +480,7 @@ msgctxt "#31209"
 msgid "Clear target"
 msgstr ""
 
+#: /1080i/Custom_1130_BaldLiveSearch.xml
 #: /1080i/MyWeather.xml
 #. Weather page: hint while the tab row (Now, Daily, Hourly, Maps) has focus
 msgctxt "#31701"
@@ -1135,6 +1136,7 @@ msgctxt "#31618"
 msgid "Seek"
 msgstr ""
 
+#: /1080i/Custom_1130_BaldLiveSearch.xml
 #: /1080i/DialogPVRInfo.xml
 #: /1080i/DialogPlayerProcessInfo.xml
 #: /1080i/Includes_Bald_OSD.xml
@@ -1383,13 +1385,13 @@ msgstr ""
 #: /1080i/DialogPVRChannelGuide.xml
 #: /1080i/EventLog.xml
 #: /1080i/Includes.xml
+#: /1080i/Includes_Bald_Common.xml
 #: /1080i/Includes_Bald_PVR.xml
 #: /1080i/View_510_Bald_Posters.xml
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
-#: /1080i/script-globalsearch.xml
 msgctxt "#31664"
 msgid "Details"
 msgstr ""
@@ -1415,43 +1417,38 @@ msgctxt "#31667"
 msgid "Channel groups"
 msgstr ""
 
-#. In-player Live TV panel, Guide tab over full-screen Live TV: Right swaps in the channel list
 #: /1080i/Includes_Bald_PVR.xml
+#. In-player Live TV panel, Guide tab over full-screen Live TV: Right swaps in the channel list
 msgctxt "#31687"
 msgid "Channels"
 msgstr ""
 
-#. Appearance, Blur strength: a light blur
-#: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur strength: a light blur
 msgctxt "#31688"
 msgid "Light"
 msgstr ""
 
-#. Appearance, Blur strength: the default blur
-#: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur strength: the default blur
 msgctxt "#31689"
 msgid "Medium"
 msgstr ""
 
-#. Appearance, Blur strength: a strong blur
-#: /1080i/Custom_1118_BaldAppearance.xml
 #: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur strength: a strong blur
 msgctxt "#31690"
 msgid "Strong"
 msgstr ""
 
-#. Appearance, Artwork: how strongly the background is blurred (Bald Helper)
 #: /1080i/Custom_1118_BaldAppearance.xml
-#: /1080i/Includes_Bald_Home.xml
+#. Appearance, Artwork: how strongly the background is blurred (Bald Helper)
 msgctxt "#31691"
 msgid "Blur strength"
 msgstr ""
 
-#. Appearance, Artwork: how bright the blurred background is
 #: /1080i/Custom_1118_BaldAppearance.xml
-#: /1080i/Includes_Bald_Home.xml
+#. Appearance, Artwork: how bright the blurred background is
 msgctxt "#31692"
 msgid "Background brightness"
 msgstr ""
@@ -1490,9 +1487,11 @@ msgstr ""
 # Bald strings: 31700-31999 (see docs/LOCALIZATION.md). Estuary keeps 31000-31699.
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/DialogConfirm.xml
 #: /1080i/Includes_Bald_Configure.xml
 #: /1080i/Includes_Bald_Home.xml
 #: /1080i/MyPVRGuide.xml
+#: /1080i/script-globalsearch.xml
 msgctxt "#31700"
 msgid "Live TV"
 msgstr ""
@@ -2307,6 +2306,25 @@ msgctxt "#31792"
 msgid "Next location"
 msgstr ""
 
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/script-globalsearch.xml
+#. Search: programmes on now or later whose title matches, in the options' Live TV section
+msgctxt "#31793"
+msgid "On TV"
+msgstr ""
+
+#: /1080i/Includes_Bald_Common.xml
+#. Search: what Select does on a programme that has not started
+msgctxt "#31794"
+msgid "Record or watch"
+msgstr ""
+
+#: /1080i/Includes_Bald_Common.xml
+#. Search: the channel number column of Live TV channel matches
+msgctxt "#31795"
+msgid "Number"
+msgstr ""
+
 #: /1080i/script-globalsearch.xml
 msgctxt "#31890"
 msgid "Series / artist"
@@ -2322,6 +2340,7 @@ msgctxt "#31892"
 msgid "New search"
 msgstr ""
 
+#: /1080i/Custom_1130_BaldLiveSearch.xml
 #: /1080i/script-globalsearch.xml
 #. Precedes the search text in quotes, "Results for “alien”"
 msgctxt "#31894"
