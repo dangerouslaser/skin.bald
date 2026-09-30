@@ -13,6 +13,9 @@ import xml.etree.ElementTree as ET
 from kodi_includes import expand_call, include_definitions
 from test_home_hubs import build, row
 
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
 MENU = "$LOCALIZE[31787]"
 
 
@@ -116,6 +119,20 @@ class RowHintTests(unittest.TestCase):
         group = next(node for node in self.row() if node.get("type") == "group")
         text = ET.tostring(group, encoding="unicode")
         self.assertNotIn("Bald_Key", text)
+
+    def test_the_label_line_starts_with_the_screens_name(self):
+        group = next(node for node in self.row() if node.get("type") == "group")
+        line = next(node for node in group.findall("control") if node.get("type") == "grouplist")
+        labels = line.findall("control")
+        # "Movies / In-progress movies": the screen's name and a slash at 60% ink, then the row's label in full ink.
+        self.assertEqual([n.findtext("label") for n in labels[:2]], ["$VAR[Bald_ScreenName_movies]", "/"])
+        self.assertEqual([n.findtext("textcolor") for n in labels[:3]], ["bald_ink60", "bald_ink60", "bald_ink"])
+        self.assertEqual({n.findtext("font") for n in labels[:3]}, {"Bald_RowLabel"})
+        self.assertEqual(labels[0].find("width").get("max"), "240")
+        home = (ROOT / "1080i" / "Includes_Bald_Home.xml").read_text(encoding="utf-8")
+        for screen in ["home", "livetv"] + [f"hub{n}" for n in range(1, 9)]:
+            self.assertIn(f'<variable name="Bald_ScreenName_{screen}">', home)
+        self.assertNotIn("Bald_ScreenLabel", (ROOT / "1080i" / "Home.xml").read_text(encoding="utf-8"))
 
     def test_up_first_then_down_joined_by_the_dot(self):
         labels = self.hint_line().findall("control")

@@ -822,18 +822,17 @@
 		<value condition="$EXP[Bald_MenuPreview_power]">$LOCALIZE[31709]</value>
 	</variable>
 	<expression name="Bald_Idle">[$EXP[Bald_IdleReached] + Window.IsActive(home)]</expression>
-	<variable name="Bald_ScreenLabel">
-		<value condition="$EXP[Bald_Screen_livetv]">$LOCALIZE[31700]</value>
-		<value condition="$EXP[Bald_Screen_hub1]">$VAR[Bald_HubLabel_hub1]</value>
-		<value condition="$EXP[Bald_Screen_hub2]">$VAR[Bald_HubLabel_hub2]</value>
-		<value condition="$EXP[Bald_Screen_hub3]">$VAR[Bald_HubLabel_hub3]</value>
-		<value condition="$EXP[Bald_Screen_hub4]">$VAR[Bald_HubLabel_hub4]</value>
-		<value condition="$EXP[Bald_Screen_hub5]">$VAR[Bald_HubLabel_hub5]</value>
-		<value condition="$EXP[Bald_Screen_hub6]">$VAR[Bald_HubLabel_hub6]</value>
-		<value condition="$EXP[Bald_Screen_hub7]">$VAR[Bald_HubLabel_hub7]</value>
-		<value condition="$EXP[Bald_Screen_hub8]">$VAR[Bald_HubLabel_hub8]</value>
-		<value>$LOCALIZE[10000]</value>
-	</variable>
+	<!-- Each screen's name, for the breadcrumb that starts its rows' label line (Bald_Row): "Movies / In-progress movies". -->
+	<variable name="Bald_ScreenName_home"><value>$LOCALIZE[10000]</value></variable>
+	<variable name="Bald_ScreenName_livetv"><value>$LOCALIZE[31700]</value></variable>
+	<variable name="Bald_ScreenName_hub1"><value>$VAR[Bald_HubLabel_hub1]</value></variable>
+	<variable name="Bald_ScreenName_hub2"><value>$VAR[Bald_HubLabel_hub2]</value></variable>
+	<variable name="Bald_ScreenName_hub3"><value>$VAR[Bald_HubLabel_hub3]</value></variable>
+	<variable name="Bald_ScreenName_hub4"><value>$VAR[Bald_HubLabel_hub4]</value></variable>
+	<variable name="Bald_ScreenName_hub5"><value>$VAR[Bald_HubLabel_hub5]</value></variable>
+	<variable name="Bald_ScreenName_hub6"><value>$VAR[Bald_HubLabel_hub6]</value></variable>
+	<variable name="Bald_ScreenName_hub7"><value>$VAR[Bald_HubLabel_hub7]</value></variable>
+	<variable name="Bald_ScreenName_hub8"><value>$VAR[Bald_HubLabel_hub8]</value></variable>
 
 	<!-- ============ Home hidden (Home Screens > Home > Show in the main menu) ============ -->
 	<!-- Bald.Screen.HideHome takes Home out of the menu, but only while some hub is shown: Home never hides with nothing
@@ -1912,7 +1911,7 @@
 		</definition>
 	</include>
 	<!-- Home's hint line: the y 954 line, right-aligned on the right column's edge (x 1824), where every other Bald
-	     screen keeps its navigation hints; the section line sits above it. A chevron and where that key goes, pairs
+	     screen keeps its navigation hints. A chevron and where that key goes, pairs
 	     joined by the 32 px dot as Bald_InfoHintPair joins them. Each part is at most 176 px (with an ellipsis), so a
 	     pair never runs past the column (176 + 32 + 176 in 384). Shown while "Always show navigation hints" is on, or
 	     until the menu has been opened three times (Bald_HomeHintsShown). -->
@@ -2031,7 +2030,8 @@
 					<effect type="fade" start="100" end="60" time="360" tween="sine" easing="inout" />
 				</animation>
 				<include>Bald_AnimIdleChrome</include>
-				<!-- Row label line: label and count (Bald.ShowRowCount); the row's hints are on Home's hint line (Bald_RowHints). -->
+				<!-- Row label line: the screen's name as a breadcrumb, the label and the count (Bald.ShowRowCount); the row's hints are
+				     on Home's hint line (Bald_RowHints). -->
 				<control type="grouplist">
 					<left>Bald_SafeLeft</left>
 					<include content="Bald_RowLabelTop_$PARAM[style]" />
@@ -2041,6 +2041,23 @@
 					<itemgap>14</itemgap>
 					<!-- Labels are top-aligned and offset so their baselines match (Instrument Sans ascender = font size). -->
 					<usecontrolcoords>true</usecontrolcoords>
+					<!-- The breadcrumb: the screen's name and a slash at 60% ink, then the row's label. -->
+					<control type="label">
+						<width min="1" max="240">auto</width>
+						<height>26</height>
+						<aligny>top</aligny>
+						<font>Bald_RowLabel</font>
+						<textcolor>bald_ink60</textcolor>
+						<label>$VAR[Bald_ScreenName_$PARAM[screen]]</label>
+					</control>
+					<control type="label">
+						<width>auto</width>
+						<height>26</height>
+						<aligny>top</aligny>
+						<font>Bald_RowLabel</font>
+						<textcolor>bald_ink60</textcolor>
+						<label>/</label>
+					</control>
 					<control type="label">
 						<width min="1" max="560">auto</width>
 						<height>26</height>

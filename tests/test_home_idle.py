@@ -284,11 +284,10 @@ class IdleLayerAnimationTests(unittest.TestCase):
         self.assertEqual(len(carrying("Bald_AnimIdleArtOverlay")), 1)
         self.assertIn("Bald_ConfiguredArtLogos", [i.text for i in carrying("Bald_AnimIdleArtOverlay")[0].findall("include")])
         self.assertIn("Bald_HomeFrameMasks", [i.text for i in carrying("Bald_AnimIdleMasks")[0].findall("include")])
-        # Clock and date, caption, section line.
+        # Clock and date, caption. (The section line gave way to the rows' breadcrumb, which fades with the rows.)
         chrome = carrying("Bald_AnimIdleChrome")
         self.assertIn("$EXP[Bald_ShowHomeClock]", [g.findtext("visible") for g in chrome])
         self.assertIn("Bald_ConfiguredCaptions", [i.text for g in chrome for i in g.findall("include")])
-        self.assertTrue(any(g.get("type") == "grouplist" and g.findtext("top") == "912" for g in chrome))
         # The expanded frame sits over the frame masks and under the chrome.
         order = [c for c in raw.iter() if c.tag in ("include", "control")]
         names = [c.text if c.tag == "include" else None for c in order]

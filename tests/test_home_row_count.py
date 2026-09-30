@@ -36,10 +36,10 @@ class RowCountTests(unittest.TestCase):
 
     def test_the_count_follows_the_label(self):
         children = label_line("fanart").findall("control")
-        self.assertEqual([node.get("type") for node in children], ["label", "label"])
-        # The label never hides; only the count (last) collapses. The row hints are a separate, right-aligned line
-        # (tests/test_home_row_hints.py).
-        self.assertIsNone(children[0].find("visible"))
+        # The breadcrumb (screen name, slash), the label, then the count.
+        self.assertEqual([node.get("type") for node in children], ["label"] * 4)
+        # Only the count (last) collapses. The row hints are on Home's hint line (tests/test_home_row_hints.py).
+        self.assertEqual([node.find("visible") is None for node in children], [True, True, True, False])
 
     def test_appearance_offers_the_toggle_under_information(self):
         root = ET.parse(XML / "Custom_1118_BaldAppearance.xml").getroot()

@@ -338,40 +338,9 @@
 				</include>
 			</control>
 
-			<!-- Section line: accent dot and screen name, above Home's hint line (Bald_HomeHintLine, the y 954 line): the
-			     focused row's hints (Bald_RowHints, with each row) or the menu's. -->
+			<!-- Home's hints on the y 954 line (Bald_HomeHintLine): the focused row's (Bald_RowHints, with each row) or the
+			     menu's. The screen's name is the breadcrumb on the row label line (Bald_Row). -->
 			<include>Bald_MenuHints</include>
-			<control type="grouplist">
-				<include>Bald_AnimInfoChrome</include>
-				<left>Bald_RightColumn</left>
-				<!-- Above the hint line (Bald_HomeHintLine, y 954), which stays where every other screen has its hints. -->
-				<top>912</top>
-				<width>480</width>
-				<height>26</height>
-				<orientation>horizontal</orientation>
-				<itemgap>14</itemgap>
-				<!-- Labels are top-aligned and offset so their baselines match (Instrument Sans ascender = font size). -->
-				<usecontrolcoords>true</usecontrolcoords>
-				<include>Bald_AnimMenuHides</include>
-				<include>Bald_AnimIdleChrome</include>
-				<control type="group">
-					<width>8</width>
-					<control type="image">
-						<top>10</top>
-						<width>8</width>
-						<height>8</height>
-						<texture colordiffuse="bald_accent">bald/dot.png</texture>
-					</control>
-				</control>
-				<control type="label">
-					<width>auto</width>
-					<height>26</height>
-					<aligny>top</aligny>
-					<font>Bald_Section</font>
-					<textcolor>bald_ink</textcolor>
-					<label>$VAR[Bald_ScreenLabel]</label>
-				</control>
-			</control>
 
 			<!-- Configured rows of Home, Live TV and every hub (Bald_GeneratedRows). -->
 			<include>Bald_GeneratedRows</include>
