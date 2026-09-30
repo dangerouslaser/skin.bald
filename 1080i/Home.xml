@@ -338,7 +338,9 @@
 				</include>
 			</control>
 
-			<!-- Section line: accent dot, screen name, "Back for menu" hint. -->
+			<!-- Section line: accent dot and screen name. Home's hints sit on the line above it (Bald_HomeHintLine): the focused
+			     row's (Bald_RowHints, with each row) or the menu's. -->
+			<include>Bald_MenuHints</include>
 			<control type="grouplist">
 				<include>Bald_AnimInfoChrome</include>
 				<left>Bald_RightColumn</left>
@@ -367,19 +369,6 @@
 					<font>Bald_Section</font>
 					<textcolor>bald_ink</textcolor>
 					<label>$VAR[Bald_ScreenLabel]</label>
-				</control>
-				<control type="label">
-					<top>5</top>
-					<width>auto</width>
-					<height>26</height>
-					<aligny>top</aligny>
-					<font>Bald_Hint</font>
-					<textcolor>bald_ink60</textcolor>
-					<label>$LOCALIZE[31702]</label>
-					<visible>!Skin.HasSetting(Bald.AutoHideMenuHint) | !String.IsEqual(Skin.String(Bald.MenuOpens),3)</visible>
-					<animation type="Conditional" condition="$EXP[Bald_Idle]">
-						<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
-					</animation>
 				</control>
 			</control>
 

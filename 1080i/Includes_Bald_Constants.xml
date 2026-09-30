@@ -11,6 +11,8 @@
 	<constant name="Bald_HintTop">954</constant>
 	<!-- The player's hints: under the OSD buttons (y 872), which sit 36 px lower than the page layout. -->
 	<constant name="Bald_OSDHintTop">990</constant>
+	<!-- Home's hint line (Bald_HomeHintLine): right-aligned in the right column, just above the section line (y 966). -->
+	<constant name="Bald_HomeHintTop">928</constant>
 	<!-- Right column: the Home menu, the options menus and the right-hand hints. -->
 	<constant name="Bald_RightColumn">1440</constant>
 	<!-- Library and Search preview column (528 wide, ending on the right safe edge) and the header meta above it. -->

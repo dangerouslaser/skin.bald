@@ -1911,6 +1911,40 @@
 			<onfocus condition="String.IsEmpty(Window(home).Property(Bald.Start$PARAM[id])) + Integer.IsEqual(Container($PARAM[id]).NumItems,$PARAM[n]) + Integer.IsEqual(Container($PARAM[id]).CurrentItem,$PARAM[n])">Control.Move($PARAM[id],-$PARAM[move])</onfocus>
 		</definition>
 	</include>
+	<!-- Home's hint line: right-aligned on the right column's edge (x 1824), just above the section line, where the rest
+	     of Bald keeps its navigation hints (the right of the y 954 line). A chevron and where that key goes, pairs
+	     joined by the 20 px dot as Bald_InfoHintPair joins them. Each part is at most 180 px (with an ellipsis), so a
+	     pair never runs past the column (180 + 20 + 180 in 384). Shown while "Always show navigation hints" is on, or
+	     until the menu has been opened three times (Bald_HomeHintsShown). -->
+	<expression name="Bald_HomeHintsShown">[!Skin.HasSetting(Bald.AutoHideMenuHint) | !String.IsEqual(Skin.String(Bald.MenuOpens),3)]</expression>
+	<include name="Bald_HomeHintLine">
+		<param name="visible" />
+		<param name="first" />
+		<param name="second" />
+		<param name="second_visible">true</param>
+		<definition>
+			<control type="grouplist">
+				<left>Bald_RightColumn</left>
+				<top>Bald_HomeHintTop</top>
+				<width>384</width>
+				<height>24</height>
+				<orientation>horizontal</orientation>
+				<align>right</align>
+				<itemgap>0</itemgap>
+				<visible>$PARAM[visible] + !$EXP[Bald_DialogOver] + $EXP[Bald_HomeHintsShown]</visible>
+				<animation effect="fade" time="200" tween="sine" easing="inout">VisibleChange</animation>
+				<include>Bald_AnimInfoChrome</include>
+				<include>Bald_AnimIdleChrome</include>
+				<!-- Over background video the idle frame is not drawn, so the hints fade out on their own. -->
+				<animation type="Conditional" condition="$EXP[Bald_Idle]">
+					<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
+				</animation>
+				<control type="label"><width min="1" max="180">auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[first]</label></control>
+				<control type="label"><width>20</width><height>24</height><align>center</align><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>·</label><visible>$PARAM[second_visible]</visible></control>
+				<control type="label"><width min="1" max="180">auto</width><height>24</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$PARAM[second]</label><visible>$PARAM[second_visible]</visible></control>
+			</control>
+		</definition>
+	</include>
 	<!-- The hints of a row built without the generator's chains: "Menu" above, nothing below. -->
 	<variable name="Bald_RowHintMenu">
 		<value>$LOCALIZE[31787]</value>
@@ -1919,76 +1953,52 @@
 		<value></value>
 	</variable>
 	<expression name="Bald_RowHintNoNext">[false]</expression>
-	<!-- Row hints, right-aligned on the row label line (ending at x 1344, the art frame's right edge): an up chevron and
-	     the row Up reaches (the previous row with items, or "Menu" from the first), then a down chevron and the row Down
-	     reaches (hidden when Down goes nowhere). prev and next name the generated chains Bald_RowPrevFrom_<screen>_<n>
-	     and Bald_RowNextFrom_<screen>_<n>, has_next Bald_RowHasNextFrom_<screen>_<n> (shortcuts/generator/screen.xml): bare names,
-	     which this include reads as a variable and an expression.
-	     Hidden while the menu is open (Up and Down move the menu then) and under a dialog (Container() conditions resolve
-	     in the dialog there, so the chains would read every row as empty). Each name is at most 260 px with an ellipsis,
-	     and the row label at most 560, so the label line never collides with them. -->
+	<!-- A row's hints on Home's hint line while it has focus: ˄ and the row Up reaches (the previous row with items, or
+	     "Menu" from the first), then ˅ and the row Down reaches (hidden when Down goes nowhere). prev and next name the
+	     generated chains Bald_RowPrevFrom_<screen>_<n> and Bald_RowNextFrom_<screen>_<n>, has_next
+	     Bald_RowHasNextFrom_<screen>_<n> (shortcuts/generator/screen.xml): bare names, which this include reads as a
+	     variable and an expression. Beside the row's group rather than in it, so they cross-fade in place as focus moves
+	     between rows instead of sliding with the row swap. Hidden while the menu is open (Up and Down move the menu then;
+	     the menu has its own hints) and under a dialog (Container() conditions resolve in the dialog there, so the chains
+	     would read every row as empty). -->
 	<include name="Bald_RowHints">
-		<param name="prev" />
-		<param name="next" />
+		<param name="id" />
+		<param name="screen">home</param>
+		<param name="enabled">true</param>
+		<param name="prev">Bald_RowHintMenu</param>
+		<param name="next">Bald_RowHintNone</param>
 		<param name="has_next">Bald_RowHintNoNext</param>
-		<param name="style">fanart</param>
 		<definition>
-			<control type="grouplist">
-				<left>Bald_SafeLeft</left>
-				<include content="Bald_RowLabelTop_$PARAM[style]" />
-				<width>1248</width>
-				<height>26</height>
-				<orientation>horizontal</orientation>
-				<align>right</align>
-				<itemgap>0</itemgap>
-				<usecontrolcoords>true</usecontrolcoords>
-				<visible>!$EXP[Bald_MenuOpen] + !$EXP[Bald_DialogOver]</visible>
-				<animation effect="fade" time="200" tween="sine" easing="inout">VisibleChange</animation>
-				<animation type="Conditional" condition="$EXP[Bald_Idle]">
-					<effect type="fade" start="100" end="0" time="600" tween="sine" easing="inout" />
-				</animation>
-				<!-- The chevron boxes keep 3 px clear either side of the ink: 5 and 25 px here are 8 and 28 px on screen. -->
-				<include content="Bald_RowHintChevron"><param name="texture">bald/chevron_up.png</param></include>
-				<control type="group"><width>5</width></control>
-				<include content="Bald_RowHintLabel"><param name="label">$VAR[$PARAM[prev]]</param></include>
-				<control type="group"><width>25</width><visible>$EXP[$PARAM[has_next]]</visible></control>
-				<include content="Bald_RowHintChevron"><param name="texture">bald/chevron_down.png</param><param name="visible">$EXP[$PARAM[has_next]]</param></include>
-				<control type="group"><width>5</width><visible>$EXP[$PARAM[has_next]]</visible></control>
-				<include content="Bald_RowHintLabel"><param name="label">$VAR[$PARAM[next]]</param><param name="visible">$EXP[$PARAM[has_next]]</param></include>
-			</control>
+			<include content="Bald_HomeHintLine">
+				<param name="visible">$PARAM[enabled] + String.IsEqual(Window(home).Property(Bald.Screen),$PARAM[screen]) + String.IsEqual(Window(home).Property(Bald.Row),$PARAM[id]) + !$EXP[Bald_MenuOpen]</param>
+				<param name="first">$VAR[Bald_ChevronUp]$VAR[$PARAM[prev]]</param>
+				<param name="second">$VAR[Bald_ChevronDown]$VAR[$PARAM[next]]</param>
+				<param name="second_visible">$EXP[$PARAM[has_next]]</param>
+			</include>
 		</definition>
 	</include>
-	<include name="Bald_RowHintChevron">
-		<param name="texture" />
-		<param name="visible">true</param>
-		<definition>
-			<!-- A 15 px box centred on the hint text (the middle of its capitals, measured on screen: capitals 10.0 to the
-			     baseline at 21.4 below the line's top, middle 15.7; Instrument Sans about 15). Top 7 lands the chevron's ink on
-			     15.6 on screen (measured). -->
-			<control type="image">
-				<top>7</top>
-				<width>15</width>
-				<height>15</height>
-				<texture colordiffuse="bald_ink60">$PARAM[texture]</texture>
-				<visible>$PARAM[visible]</visible>
-			</control>
-		</definition>
-	</include>
-	<include name="Bald_RowHintLabel">
-		<param name="label" />
-		<param name="visible">true</param>
-		<definition>
-			<control type="label">
-				<top>3</top>
-				<width min="1" max="260">auto</width>
-				<height>26</height>
-				<aligny>top</aligny>
-				<font>Bald_Hint</font>
-				<textcolor>bald_ink60</textcolor>
-				<label>$PARAM[label]</label>
-				<visible>$PARAM[visible]</visible>
-			</control>
-		</definition>
+	<!-- The menu's hints: ‹ Featured while Left enters the focused entry's rows (it has some), › Browse while Right opens
+	     a hub's library or other target, › Guide while Right opens Live TV's guide. With Appearance › Behavior's swap,
+	     Left and Right both enter the rows and Select opens the target, so only ‹ Featured shows. -->
+	<expression name="Bald_MenuHintFeatured">[[Control.HasFocus(9001) + $EXP[Bald_HasRows_home]] | [Control.HasFocus(9004) + $EXP[Bald_LiveTVRows]] | [Control.HasFocus(9011) + $EXP[Bald_HasRows_hub1]] | [Control.HasFocus(9012) + $EXP[Bald_HasRows_hub2]] | [Control.HasFocus(9013) + $EXP[Bald_HasRows_hub3]] | [Control.HasFocus(9014) + $EXP[Bald_HasRows_hub4]] | [Control.HasFocus(9015) + $EXP[Bald_HasRows_hub5]] | [Control.HasFocus(9016) + $EXP[Bald_HasRows_hub6]] | [Control.HasFocus(9017) + $EXP[Bald_HasRows_hub7]] | [Control.HasFocus(9018) + $EXP[Bald_HasRows_hub8]]]</expression>
+	<expression name="Bald_MenuHintBrowse">[[Control.HasFocus(9011) + $EXP[Bald_HubHasOpen_hub1] + !$EXP[Bald_HubSwap_hub1]] | [Control.HasFocus(9012) + $EXP[Bald_HubHasOpen_hub2] + !$EXP[Bald_HubSwap_hub2]] | [Control.HasFocus(9013) + $EXP[Bald_HubHasOpen_hub3] + !$EXP[Bald_HubSwap_hub3]] | [Control.HasFocus(9014) + $EXP[Bald_HubHasOpen_hub4] + !$EXP[Bald_HubSwap_hub4]] | [Control.HasFocus(9015) + $EXP[Bald_HubHasOpen_hub5] + !$EXP[Bald_HubSwap_hub5]] | [Control.HasFocus(9016) + $EXP[Bald_HubHasOpen_hub6] + !$EXP[Bald_HubSwap_hub6]] | [Control.HasFocus(9017) + $EXP[Bald_HubHasOpen_hub7] + !$EXP[Bald_HubSwap_hub7]] | [Control.HasFocus(9018) + $EXP[Bald_HubHasOpen_hub8] + !$EXP[Bald_HubSwap_hub8]]]</expression>
+	<expression name="Bald_MenuHintGuide">[Control.HasFocus(9004) + !$EXP[Bald_LiveTVSwap]]</expression>
+	<variable name="Bald_MenuHintRight">
+		<value condition="$EXP[Bald_MenuHintGuide]">$LOCALIZE[31790]$VAR[Bald_ChevronRight]</value>
+		<value condition="$EXP[Bald_MenuHintBrowse]">$LOCALIZE[31789]$VAR[Bald_ChevronRight]</value>
+	</variable>
+	<!-- The first place holds whichever hint shows, so a lone one still ends on the edge without a dot. -->
+	<variable name="Bald_MenuHintFirst">
+		<value condition="$EXP[Bald_MenuHintFeatured]">$VAR[Bald_ChevronLeft]$LOCALIZE[31788]</value>
+		<value>$VAR[Bald_MenuHintRight]</value>
+	</variable>
+	<include name="Bald_MenuHints">
+		<include content="Bald_HomeHintLine">
+			<param name="visible">$EXP[Bald_MenuOpen] + [$EXP[Bald_MenuHintFeatured] | $EXP[Bald_MenuHintBrowse] | $EXP[Bald_MenuHintGuide]]</param>
+			<param name="first">$VAR[Bald_MenuHintFirst]</param>
+			<param name="second">$VAR[Bald_MenuHintRight]</param>
+			<param name="second_visible">$EXP[Bald_MenuHintFeatured] + [$EXP[Bald_MenuHintBrowse] | $EXP[Bald_MenuHintGuide]]</param>
+		</include>
 	</include>
 	<!-- A home row: label line plus fixedlist. Pass <content> elements as children. style picks the tiles and the
 	     label line's position (Bald_RowTiles_<style>, Bald_RowLabelTop_<style>, see Row styles above). Focus travels
@@ -2021,7 +2031,7 @@
 					<effect type="fade" start="100" end="60" time="360" tween="sine" easing="inout" />
 				</animation>
 				<include>Bald_AnimIdleChrome</include>
-				<!-- Row label line: label and count (Bald.ShowRowCount) at the left, the row hints at the right. -->
+				<!-- Row label line: label and count (Bald.ShowRowCount); the row's hints are on Home's hint line (Bald_RowHints). -->
 				<control type="grouplist">
 					<left>Bald_SafeLeft</left>
 					<include content="Bald_RowLabelTop_$PARAM[style]" />
@@ -2054,13 +2064,15 @@
 						</animation>
 					</control>
 				</control>
-				<include content="Bald_RowHints">
-					<param name="prev">$PARAM[prev]</param>
-					<param name="next">$PARAM[next]</param>
-					<param name="has_next">$PARAM[has_next]</param>
-					<param name="style">$PARAM[style]</param>
-				</include>
 			</control>
+			<include content="Bald_RowHints">
+				<param name="id">$PARAM[id]</param>
+				<param name="screen">$PARAM[screen]</param>
+				<param name="enabled">$PARAM[enabled]</param>
+				<param name="prev">$PARAM[prev]</param>
+				<param name="next">$PARAM[next]</param>
+				<param name="has_next">$PARAM[has_next]</param>
+			</include>
 			<control type="fixedlist" id="$PARAM[id]">
 				<!-- Position, size and item layouts come from the row's style. -->
 				<include content="Bald_RowTiles_$PARAM[style]" />

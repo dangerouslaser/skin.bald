@@ -1,7 +1,7 @@
 """Home's row hints (Bald_RowHints, Includes_Bald_Home.xml; chains from shortcuts/generator/screen.xml).
 
-The label line names, at its right, the row Up reaches (or "Menu" from the first row) and the row Down reaches (none
-from the last). Kodi's CGUIWindow::OnMove passes over a row it cannot focus (an empty or loading list) by following
+Home's hint line, bottom right like every other Bald footer, names the row Up reaches (or "Menu" from the first row)
+and the row Down reaches (none from the last), each after its chevron. Kodi's CGUIWindow::OnMove passes over a row it cannot focus (an empty or loading list) by following
 that row's own Up or Down, so the hints skip empty rows the same way. These tests evaluate the generated chains for
 every combination of empty rows and compare them with that navigation."""
 
@@ -57,15 +57,6 @@ def param(node, name):
 
 
 class RowHintTests(unittest.TestCase):
-    def test_the_generator_passes_names_the_include_wraps(self):
-        # has_next is an expression name: the include must read it as $EXP[...], or Kodi reads it as false.
-        root = generated(["A", "B"])
-        first = root.find("include[@name='Bald_Generated_HomeWidgets']/definition/include")
-        for name in ("prev", "next", "has_next"):
-            self.assertNotIn("$", param(first, name))
-        _, hints = self.label_line()
-        self.assertIn("$EXP[H]", [node.findtext("visible") for node in hints.findall("control")])
-
     def test_the_hints_name_the_row_up_and_down_reach(self):
         labels = ["In progress", "Recently added", "Top rated", "Random"]
         root = generated(labels)
@@ -94,66 +85,64 @@ class RowHintTests(unittest.TestCase):
         self.assertEqual(chains.var(param(only, "prev")), MENU)
         self.assertFalse(chains.exp(param(only, "has_next")))
 
-    def label_line(self, style="fanart"):
+    def row(self, style="fanart"):
         holder = ET.Element("holder")
         # Names, as the generator passes them (shortcuts/generator/row.xmltemplate).
         holder.extend(expand_call("Bald_Row", {"id": "9101", "style": style, "prev": "P", "next": "N",
-                                               "has_next": "H"}, include_definitions()))
-        group = holder.find("control")
-        hints = [node for node in group.findall("control") if node.get("type") == "grouplist"][1]
-        return group, hints
+                                               "has_next": "H", "screen": "movies"}, include_definitions()))
+        return list(holder)
 
-    def test_the_hints_sit_right_aligned_on_the_label_line(self):
+    def hint_line(self, style="fanart"):
+        return next(node for node in self.row(style) if node.get("type") == "grouplist")
+
+    def test_the_generator_passes_names_the_include_wraps(self):
+        # has_next is an expression name: the include must read it as $EXP[...], or Kodi reads it as false.
+        root = generated(["A", "B"])
+        first = root.find("include[@name='Bald_Generated_HomeWidgets']/definition/include")
+        for name in ("prev", "next", "has_next"):
+            self.assertNotIn("$", param(first, name))
+        self.assertIn("$EXP[H]", [node.findtext("visible") for node in self.hint_line().findall("control")])
+
+    def test_the_hints_sit_bottom_right_like_the_rest_of_the_skin(self):
         for style in ("fanart", "poster", "square"):
-            group, hints = self.label_line(style)
-            line = [node for node in group.findall("control") if node.get("type") == "grouplist"][0]
+            hints = self.hint_line(style)
             with self.subTest(style=style):
-                # Same line as the label, whatever the style moves it to; right edge on the art frame's (96 + 1248).
-                self.assertEqual(hints.findtext("top"), line.findtext("top"))
-                self.assertEqual(int(hints.findtext("left").replace("Bald_SafeLeft", "96")) + int(hints.findtext("width")), 1344)
+                # Beside the row's group, not in it: the same place whatever the row style, ending on the safe edge.
+                # The right column (1440), on the line just above the section line (966).
+                self.assertEqual((hints.findtext("left"), hints.findtext("top")), ("1440", "928"))
+                self.assertEqual(hints.findtext("width"), "384")  # 1440 + 384 = 1824
                 self.assertEqual(hints.findtext("align"), "right")
+        # The row label line keeps only the label and the count.
+        group = next(node for node in self.row() if node.get("type") == "group")
+        text = ET.tostring(group, encoding="unicode")
+        self.assertNotIn("Bald_Chevron", text)
 
-    def test_previous_first_then_next_with_the_designed_gaps(self):
-        _, hints = self.label_line()
-        kinds = []
-        for node in hints.findall("control"):
-            if node.get("type") == "image":
-                kinds.append(node.findtext("texture"))
-            elif node.get("type") == "label":
-                kinds.append(node.findtext("label"))
-            else:
-                kinds.append(int(node.findtext("width")))
-        # The chevron textures keep 3 px clear either side of the ink, so 5 and 25 are the design's 8 and 28 px.
-        self.assertEqual(kinds, ["bald/chevron_up.png", 5, "$VAR[P]", 25, "bald/chevron_down.png", 5, "$VAR[N]"])
-        for node in hints.findall("control"):
-            if node.get("type") == "label":
-                self.assertEqual((node.findtext("font"), node.findtext("textcolor")), ("Bald_Hint", "bald_ink60"))
-                self.assertEqual(node.find("width").get("max"), "260")
-            if node.get("type") == "image":
-                self.assertEqual((node.findtext("width"), node.findtext("height")), ("15", "15"))
-                # Centred on the hint text's capitals (about 15.6 below the line's top), not sitting on the baseline.
-                self.assertEqual(node.findtext("top"), "7")
-                self.assertEqual(node.find("texture").get("colordiffuse"), "bald_ink60")
-        # The next pair (gap, chevron, gap, name) hides when Down goes nowhere.
-        self.assertEqual([node.findtext("visible") for node in hints.findall("control")][3:],
-                         ["$EXP[H]"] * 4)
+    def test_up_first_then_down_joined_by_the_dot(self):
+        labels = self.hint_line().findall("control")
+        self.assertEqual([node.findtext("label") for node in labels],
+                         ["$VAR[Bald_ChevronUp]$VAR[P]", "·", "$VAR[Bald_ChevronDown]$VAR[N]"])
+        self.assertEqual(labels[1].findtext("width"), "20")
+        for node in labels:
+            self.assertEqual((node.findtext("font"), node.findtext("textcolor")), ("Bald_Hint", "bald_ink60"))
+        # The next pair (dot and name) hides when Down goes nowhere.
+        self.assertEqual([node.findtext("visible") for node in labels], [None, "$EXP[H]", "$EXP[H]"])
 
-    def test_hidden_under_the_menu_and_dialogs_and_fading_when_idle(self):
-        _, hints = self.label_line()
-        self.assertEqual(hints.findtext("visible"), "!$EXP[Bald_MenuOpen] + !$EXP[Bald_DialogOver]")
+    def test_shown_for_the_focused_row_only_and_not_under_the_menu_or_a_dialog(self):
+        hints = self.hint_line()
+        visible = hints.findtext("visible")
+        for part in ("String.IsEqual(Window(home).Property(Bald.Row),9101)",
+                     "String.IsEqual(Window(home).Property(Bald.Screen),movies)", "!$EXP[Bald_MenuOpen]",
+                     "!$EXP[Bald_DialogOver]", "$EXP[Bald_HomeHintsShown]"):
+            self.assertIn(part, visible)
         idle = [a for a in hints.findall("animation") if a.get("condition") == "$EXP[Bald_Idle]"]
         self.assertEqual(len(idle), 1)
         self.assertEqual(idle[0].find("effect").get("time"), "600")
 
-    def test_nothing_can_collide(self):
-        group, hints = self.label_line()
-        line = [node for node in group.findall("control") if node.get("type") == "grouplist"][0]
-        label = line.find("control")
-        self.assertEqual(label.find("width").get("max"), "560")
-        widest_hints = sum(int(n.findtext("width")) if n.get("type") != "label" else int(n.find("width").get("max"))
-                           for n in hints.findall("control"))
-        # Label, gap and the widest count ("25 of 25") at the left, the hints at the right, in 1248 px.
-        self.assertLessEqual(560 + 14 + 80 + widest_hints, 1248)
+    def test_nothing_can_run_past_the_column(self):
+        labels = self.hint_line().findall("control")
+        widths = [int(n.findtext("width")) if n.find("width").get("max") is None else int(n.find("width").get("max"))
+                  for n in labels]
+        self.assertLessEqual(sum(widths), 384)
 
     def test_no_row_dots_are_left(self):
         root = generated(["A", "B"])

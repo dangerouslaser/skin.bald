@@ -146,28 +146,6 @@ def tv_info_textures():
     settings_textures()
 
 
-def row_hint_chevrons():
-    """Home's row hints (Bald_RowHints): up and down chevrons for a 15 px box, drawn at 4x (60 px) so they stay clean at
-    any GUI scale. Sized from the hint text (Bald_Hint, 17): the ink is 9 x 4.5, about the capital height wide, with a
-    1.5 px round stroke like the text's stems, centred in the box so the box centres on the capitals' middle. The two are
-    exact mirror images. 3 px of box stay clear either side of the ink (the row's spacers allow for it)."""
-    box, scale = 15, 4
-    size, k = box * scale, scale * SS
-    cx, cy, half_w, half_h = 7.5, 7.5, 4.5, 2.25
-    for name, sign in (("chevron_up.png", -1), ("chevron_down.png", 1)):
-        mark = Image.new("L", (size * SS, size * SS), 0)
-        d = ImageDraw.Draw(mark)
-        tip = (cx * k, (cy + sign * half_h) * k)
-        pts = [((cx - half_w) * k, (cy - sign * half_h) * k), tip, ((cx + half_w) * k, (cy - sign * half_h) * k)]
-        width = round(1.5 * k)
-        d.line(pts, fill=255, width=width, joint="curve")
-        for x, y in pts:
-            d.ellipse([x - width / 2, y - width / 2, x + width / 2, y + width / 2], fill=255)
-        im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
-        im.putalpha(mark.resize((size, size), Image.LANCZOS))
-        save(im, name)
-
-
 def settings_textures():
     """Kodi's settings pages (SettingsCategory.xml templates): spinner arrows and the slider."""
     # Spinner arrow: a right-pointing chevron in a 32 px square, drawn for 16 px (2 px stroke, round caps).
@@ -183,7 +161,6 @@ def settings_textures():
     im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
     im.putalpha(mark.resize((size, size), Image.LANCZOS))
     save(im, "chevron.png")
-    row_hint_chevrons()
     # Slider track: a 4 px rounded line centred in a 16 px tall texture, so the 16 px nib keeps its size (Kodi scales
     # the nib by the control height over the track texture's height). 9-slice border 8,0,8,0.
     im = Image.new("RGBA", (16, 16), (255, 255, 255, 0))
