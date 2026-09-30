@@ -323,7 +323,7 @@ class RecordColourTests(unittest.TestCase):
 
     def test_guide_now_line_is_a_token(self):
         progress = ET.parse(XML / "Includes_PVR.xml").getroot().find(".//progresstexture")
-        self.assertEqual(progress.get("colordiffuse"), "bald_accent50")
+        self.assertEqual(progress.get("colordiffuse"), "bald_accent")
 
 
 class StringTests(unittest.TestCase):

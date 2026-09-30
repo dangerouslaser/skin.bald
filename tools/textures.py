@@ -108,15 +108,6 @@ def main():
     # Progress track and bar: 4 px, rounded. 9-slice border 2.
     save(rounded(8, 4, 2), "bar.png")
 
-    # EPG "now" progress: Kodi stretches this texture over all elapsed time.
-    # Keep the stretchable body transparent and preserve only the 1 px right edge
-    # (with border="0,0,1,0"). A wider edge is softened by Kodi's filtering and
-    # reads as a glow rather than a precise point in time.
-    # Zero RGB as well as alpha in the transparent body. Kodi's EPG texture
-    # scaler can otherwise sample the hidden white channels into a soft halo.
-    im = Image.new("RGBA", (4, 4), (0, 0, 0, 0))
-    ImageDraw.Draw(im).line([(3, 0), (3, 3)], fill=(255, 255, 255, 255), width=1)
-    save(im, "epg_now.png")
     tv_info_textures()
 
 
@@ -191,6 +182,19 @@ def osd_textures():
     ImageDraw.Draw(disc).ellipse([0, 0, 72 * SS - 1, 72 * SS - 1], fill=255)
     im.paste((255, 255, 255, 255), (4, 0), disc.resize((72, 72), Image.LANCZOS))
     save(im, "osd_disc.png")
+    guide_textures()
+
+
+def guide_textures():
+    """The TV guide (Bald_EpgGrid, Includes_PVR.xml): a programme cell, 32 px with 6 px corners, stretched with border 8;
+    and the now line, the grid's progress texture, which Kodi stretches over all the elapsed time with border 0,0,2,0
+    so only its 2 px right edge shows. Its clear body is 256 px wide: the old 4 px one was stretched about a hundred
+    times, and the filtering smeared the lit edge into a dark band tens of pixels wide beside the line. Clear pixels
+    are zero in RGB too, or the scaler samples the hidden white into a halo."""
+    save(rounded(32, 32, 6), "epg_cell.png")
+    im = Image.new("RGBA", (258, 4), (0, 0, 0, 0))
+    im.paste((255, 255, 255, 255), (256, 0, 258, 4))
+    save(im, "epg_nowline.png")
 
 
 if __name__ == "__main__":

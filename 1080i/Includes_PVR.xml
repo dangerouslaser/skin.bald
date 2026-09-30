@@ -6,25 +6,77 @@
 	     Bald_PVRChannelNumberInput, and the playback windows draw their own. The other Live TV windows use
 	     Includes_Bald_PVR.xml. -->
 	<expression name="listitem_has_episode_info">!String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName) | !String.IsEmpty(ListItem.Season)</expression>
+	<!-- A programme's look in the guide: what is on now on a 10% ink cell in full ink, what is still to come on a 6% one
+	     at 80%, what has ended with no cell at 45%; title over start time. -->
+	<expression name="Bald_EpgNow">[Integer.IsGreater(ListItem.Progress,0) + Integer.IsLess(ListItem.Progress,100)]</expression>
+	<expression name="Bald_EpgPast">[Integer.IsGreaterOrEqual(ListItem.Progress,100)]</expression>
+	<variable name="Bald_EpgTitle">
+		<value condition="$EXP[Bald_EpgNow]">$INFO[ListItem.Label]</value>
+		<value condition="$EXP[Bald_EpgPast]">[COLOR bald_ink45]$INFO[ListItem.Label][/COLOR]</value>
+		<value>[COLOR bald_ink80]$INFO[ListItem.Label][/COLOR]</value>
+	</variable>
+	<!-- A stretch with no programme (a channel without guide data) shows nothing. -->
+	<variable name="Bald_EpgTime">
+		<value condition="String.IsEmpty(ListItem.Label)"></value>
+		<value condition="$EXP[Bald_EpgPast]">[COLOR bald_ink34]$INFO[ListItem.StartTime][/COLOR]</value>
+		<value>$INFO[ListItem.StartTime]</value>
+	</variable>
 	<include name="Bald_EpgGrid">
 		<definition>
 			<control type="epggrid" id="$PARAM[control_id]">
-				<!-- 40 px ruler + exactly seven 68 px channel rows. Partial rows do not
-				     reliably publish their selected programme to Kodi's ListItem labels. -->
-				<left>96</left><top>420</top><right>96</right><bottom>144</bottom>
+				<!-- 40 px ruler + exactly seven 72 px channel rows (y 380 to 924). Partial rows do not reliably publish
+				     their selected programme to Kodi's ListItem labels. -->
+				<left>96</left><top>380</top><right>96</right><bottom>156</bottom>
 				<orientation>vertical</orientation><pagecontrol>60</pagecontrol>
-				<scrolltime tween="cubic" easing="out">200</scrolltime><timeblocks>180</timeblocks><minspertimeblock>1</minspertimeblock><rulerunit>6</rulerunit>
+				<!-- Three hours in 5 minute blocks (36 a row): Kodi walks every block of every row as the grid moves, and
+				     the old 180 one-minute blocks made it lag on CoreELEC boxes. rulerunit 6 is 30 minutes. -->
+				<scrolltime tween="cubic" easing="out">200</scrolltime><timeblocks>36</timeblocks><minspertimeblock>5</minspertimeblock><rulerunit>6</rulerunit>
 				<onleft>9000</onleft><onright>50</onright><onup>50</onup><ondown>50</ondown><onback>9000</onback><viewtype label="19298">list</viewtype>
-				<progresstexture border="0,0,1,0" colordiffuse="bald_accent50">bald/epg_now.png</progresstexture>
-				<!-- 180 one-minute blocks across a 1428 px timeline; rulerunit 6 is 30 minutes,
-				     therefore each ruler cell is 238 px. -->
-				<rulerlayout height="40" width="1428"><control type="label"><width>238</width><height>40</height><font>Bald_Hint</font><label>$INFO[ListItem.Label]</label><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor></control></rulerlayout>
-				<channellayout height="68" width="300"><control type="label"><width>54</width><height>68</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.ChannelNumberLabel]</label></control><control type="image"><left>72</left><top>10</top><width>72</width><height>48</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.ChannelLogo]</texture></control><control type="label" id="1"><left>158</left><width>134</width><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.ChannelName]</label></control></channellayout>
-				<focusedchannellayout height="68" width="300"><control type="image"><top>30</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control><control type="label"><width>54</width><height>68</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.ChannelNumberLabel]</label></control><control type="image"><left>72</left><top>10</top><width>72</width><height>48</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.ChannelLogo]</texture></control><control type="label" id="1"><left>158</left><width>134</width><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><scroll>true</scroll><label>$INFO[ListItem.ChannelName]</label></control></focusedchannellayout>
-				<itemlayout height="68" width="60"><control type="label" id="1"><left>12</left><right>12</right><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.Label]</label></control><control type="image"><left>10</left><bottom>8</bottom><width>8</width><height>8</height><texture colordiffuse="bald_record">bald/dot.png</texture><visible>ListItem.HasTimer | ListItem.IsRecording</visible></control></itemlayout>
-				<focusedlayout height="68" width="60"><control type="image"><left>2</left><top>2</top><right>2</right><bottom>2</bottom><texture colordiffuse="bald_ink10">bald/white.png</texture><visible>Control.HasFocus($PARAM[control_id])</visible></control><control type="image"><left>2</left><top>8</top><width>4</width><height>52</height><texture colordiffuse="bald_accent">bald/white.png</texture><visible>Control.HasFocus($PARAM[control_id])</visible></control><control type="image" id="2"><left>2</left><top>2</top><right>2</right><bottom>2</bottom><texture colordiffuse="bald_ink28">bald/white.png</texture><visible>!Control.HasFocus($PARAM[control_id])</visible></control><control type="label" id="1"><left>12</left><right>12</right><height>68</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><scroll>true</scroll><label>$INFO[ListItem.Label]</label></control></focusedlayout>
+				<!-- The now line: only the texture's 2 px right edge shows (tools/textures.py, guide_textures). -->
+				<progresstexture border="0,0,2,0" colordiffuse="bald_accent">bald/epg_nowline.png</progresstexture>
+				<!-- The timeline is 1538 px (1728 less the 190 px channel column): 256 px a half hour. The first ruler item
+				     is the day, over the channel column, so the labels stop at 178 px to stay inside it. -->
+				<rulerlayout height="40" width="1538">
+					<control type="image"><left>0</left><top>12</top><width>1</width><height>16</height><texture colordiffuse="bald_ink28">bald/white.png</texture></control>
+					<control type="label"><width>178</width><height>40</height><font>Bald_Hint</font><label>$INFO[ListItem.Label]</label><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor></control>
+				</rulerlayout>
+				<!-- Channel: number and logo; the name only for a channel without a logo (providers' names are long and
+				     alike, "MA | Boston ..."). No scrolling text anywhere in the grid: a scrolling label redraws every frame. -->
+				<channellayout height="72" width="190">
+					<control type="label"><width>56</width><height>72</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink45</textcolor><label>$INFO[ListItem.ChannelNumberLabel]</label></control>
+					<control type="image"><left>72</left><top>12</top><width>104</width><height>48</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.ChannelLogo]</texture></control>
+					<control type="label" id="1"><left>72</left><width>112</width><height>72</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$INFO[ListItem.ChannelName]</label><visible>String.IsEmpty(ListItem.ChannelLogo)</visible></control>
+				</channellayout>
+				<focusedchannellayout height="72" width="190">
+					<control type="image"><top>32</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture></control>
+					<control type="label"><width>56</width><height>72</height><align>right</align><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.ChannelNumberLabel]</label></control>
+					<control type="image"><left>72</left><top>12</top><width>104</width><height>48</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.ChannelLogo]</texture></control>
+					<control type="label" id="1"><left>72</left><width>112</width><height>72</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.ChannelName]</label><visible>String.IsEmpty(ListItem.ChannelLogo)</visible></control>
+				</focusedchannellayout>
+				<!-- Programme: a rounded cell with 3 px either side and 4 px above and below, so neighbours never run
+				     together; the title over the start time; the record dot at the top left for a timer or recording.
+				     Kodi widens only a layout's controls with an id from 1 to 14 to the programme's width (and hides a
+				     label with id 1 once it is under 10 px), so the cells are id 2 and the labels id 1. -->
+				<itemlayout height="72" width="60">
+					<control type="image" id="2"><left>3</left><top>4</top><right>3</right><bottom>4</bottom><texture border="8" colordiffuse="bald_ink10">bald/epg_cell.png</texture><visible>$EXP[Bald_EpgNow] + !String.IsEmpty(ListItem.Label)</visible></control>
+					<control type="image" id="2"><left>3</left><top>4</top><right>3</right><bottom>4</bottom><texture border="8" colordiffuse="bald_ink06">bald/epg_cell.png</texture><visible>!$EXP[Bald_EpgNow] + !$EXP[Bald_EpgPast] + !String.IsEmpty(ListItem.Label)</visible></control>
+					<control type="label" id="1"><left>16</left><right>14</right><top>11</top><height>28</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_EpgTitle]</label></control>
+					<control type="label" id="1"><left>16</left><right>14</right><top>38</top><height>22</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_EpgTime]</label></control>
+					<control type="image"><left>10</left><top>10</top><width>8</width><height>8</height><texture colordiffuse="bald_record">bald/dot.png</texture><visible>ListItem.HasTimer | ListItem.IsRecording</visible></control>
+				</itemlayout>
+				<!-- Focus: the cell filled with ink and its text in field, as a focused pill; 28% ink while the tools
+				     drawer has focus. -->
+				<focusedlayout height="72" width="60">
+					<control type="image" id="2"><left>3</left><top>4</top><right>3</right><bottom>4</bottom><texture border="8" colordiffuse="bald_ink">bald/epg_cell.png</texture><visible>Control.HasFocus($PARAM[control_id])</visible></control>
+					<control type="image" id="2"><left>3</left><top>4</top><right>3</right><bottom>4</bottom><texture border="8" colordiffuse="bald_ink28">bald/epg_cell.png</texture><visible>!Control.HasFocus($PARAM[control_id])</visible></control>
+					<control type="label" id="1"><left>16</left><right>14</right><top>11</top><height>28</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_field</textcolor><label>$INFO[ListItem.Label]</label><visible>Control.HasFocus($PARAM[control_id])</visible></control>
+					<control type="label" id="1"><left>16</left><right>14</right><top>11</top><height>28</height><aligny>center</aligny><font>Bald_CaptionMeta</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label><visible>!Control.HasFocus($PARAM[control_id])</visible></control>
+					<control type="label" id="1"><left>16</left><right>14</right><top>38</top><height>22</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_field85</textcolor><label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, – ]</label><visible>Control.HasFocus($PARAM[control_id])</visible></control>
+					<control type="label" id="1"><left>16</left><right>14</right><top>38</top><height>22</height><aligny>center</aligny><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, – ]</label><visible>!Control.HasFocus($PARAM[control_id])</visible></control>
+					<control type="image"><left>10</left><top>10</top><width>8</width><height>8</height><texture colordiffuse="bald_record">bald/dot.png</texture><visible>ListItem.HasTimer | ListItem.IsRecording</visible></control>
+				</focusedlayout>
 			</control>
-			<control type="scrollbar" id="60"><right>72</right><top>460</top><width>8</width><bottom>144</bottom><orientation>vertical</orientation><onleft>50</onleft><onright>50</onright><ondown>50</ondown><onup>50</onup><texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground><texturesliderbar colordiffuse="bald_ink34">bald/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="bald_ink">bald/white.png</texturesliderbarfocus><textureslidernib colordiffuse="bald_accent">bald/white.png</textureslidernib><textureslidernibfocus colordiffuse="bald_accent">bald/white.png</textureslidernibfocus></control>
+			<control type="scrollbar" id="60"><right>72</right><top>420</top><width>8</width><bottom>156</bottom><orientation>vertical</orientation><onleft>50</onleft><onright>50</onright><ondown>50</ondown><onup>50</onup><texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground><texturesliderbar colordiffuse="bald_ink34">bald/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="bald_ink">bald/white.png</texturesliderbarfocus><textureslidernib colordiffuse="bald_accent">bald/white.png</textureslidernib><textureslidernibfocus colordiffuse="bald_accent">bald/white.png</textureslidernibfocus></control>
 		</definition>
 	</include>
 	<include name="Bald_PVRGuideToolButton">

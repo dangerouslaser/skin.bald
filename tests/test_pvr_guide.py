@@ -45,24 +45,35 @@ class PVRGuideTests(unittest.TestCase):
         self.assertEqual(grid.findtext('onup'), '50')
         self.assertEqual(grid.findtext('onback'), '9000')
         self.assertEqual(grid.findtext('scrolltime'), '200')
+        # The now line: a wide clear body and a 2 px lit edge (tools/textures.py, guide_textures), in the accent.
         progress = grid.find('progresstexture')
-        self.assertEqual(progress.text, 'bald/epg_now.png')
-        self.assertEqual(progress.get('border'), '0,0,1,0')
-        self.assertEqual(progress.get('colordiffuse'), 'bald_accent50')
-        self.assertIsNotNone(grid.find('rulerlayout'))
-        self.assertIsNotNone(grid.find('channellayout'))
-        self.assertIsNotNone(grid.find('focusedchannellayout'))
-        self.assertIsNotNone(grid.find('itemlayout'))
-        self.assertIsNotNone(grid.find('focusedlayout'))
-        self.assertEqual(grid.findtext('top'), '420')
-        self.assertEqual(grid.findtext('bottom'), '144')
+        self.assertEqual(progress.text, 'bald/epg_nowline.png')
+        self.assertEqual(progress.get('border'), '0,0,2,0')
+        self.assertEqual(progress.get('colordiffuse'), 'bald_accent')
+        self.assertTrue((REPO / 'media' / 'bald' / 'epg_nowline.png').exists())
+        for name in ('rulerlayout', 'channellayout', 'focusedchannellayout', 'itemlayout', 'focusedlayout'):
+            self.assertIsNotNone(grid.find(name), name)
+        # A separate date row would push the seventh channel off the grid.
+        self.assertIsNone(grid.find('rulerdatelayout'))
+        self.assertEqual((grid.findtext('top'), grid.findtext('bottom')), ('380', '156'))
         ruler_height = int(grid.find('rulerlayout').get('height'))
         row_height = int(grid.find('channellayout').get('height'))
-        self.assertEqual(1080 - 420 - 144 - ruler_height, 7 * row_height)
-
-        item = grid.find('itemlayout')
-        self.assertFalse(any(node.findtext('texture') == 'bald/white.png'
-                             for node in item.findall("control[@type='image']")))
+        self.assertEqual(1080 - 380 - 156 - ruler_height, 7 * row_height)
+        # 5 minute blocks, three hours: the old 180 one-minute blocks lagged on CoreELEC.
+        self.assertEqual((grid.findtext('timeblocks'), grid.findtext('minspertimeblock'), grid.findtext('rulerunit')),
+                         ('36', '5', '6'))
+        # Nothing in the grid scrolls (a scrolling label redraws every frame).
+        self.assertFalse([n for n in grid.iter('scroll') if n.text == 'true'])
+        # Kodi widens only controls with an id from 1 to 14 to a programme's width: every cell and label has one.
+        for name in ('itemlayout', 'focusedlayout'):
+            layout = grid.find(name)
+            for node in layout.findall('control'):
+                stretched = node.findtext('left') is not None and node.findtext('right') is not None
+                if stretched:
+                    self.assertIn(node.get('id'), ('1', '2'), (name, ET.tostring(node, encoding='unicode')[:80]))
+        # The ruler's first item is the day over the 190 px channel column: its label must fit there.
+        self.assertLessEqual(int(grid.find("rulerlayout/control[@type='label']").findtext('width')),
+                             int(grid.find('channellayout').get('width')))
 
         tools = includes.find("include[@name='Bald_PVRGuideTools']")
         self.assertIsNotNone(tools)
