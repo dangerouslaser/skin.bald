@@ -64,8 +64,11 @@
 	     episode is in its last ten minutes: forward plays it. -->
 	<expression name="Bald_OSDNextEpisodeReady">[VideoPlayer.Content(episodes) + !Container(8140).IsUpdating + Integer.IsGreater(Container(8140).NumItems,0) + Integer.IsLess(Player.TimeRemaining(mins),10)]</expression>
 	<!-- The cast panel needs TMDb Helper, or Bald Helper for a library item (its plugin lists the library's cast). -->
-	<!-- TinyPPI (script.tinyppi, CoreELEC): its OSD button shows only when the add-on is there and enabled. -->
+	<!-- The process info button: Bald Process Info (script.bald.processinfo, LibreELEC) or TinyPPI (script.tinyppi,
+	     CoreELEC). It shows only when one of them is there and enabled, and prefers Bald Process Info. -->
+	<expression name="Bald_OSDHasProcessInfo">[System.HasAddon(script.bald.processinfo) + System.AddonIsEnabled(script.bald.processinfo)]</expression>
 	<expression name="Bald_OSDHasTinyPPI">[System.HasAddon(script.tinyppi) + System.AddonIsEnabled(script.tinyppi)]</expression>
+	<expression name="Bald_OSDHasPPI">[$EXP[Bald_OSDHasProcessInfo] | $EXP[Bald_OSDHasTinyPPI]]</expression>
 	<expression name="Bald_OSDHasTMDbHelper">[System.HasAddon(plugin.video.themoviedb.helper) + System.AddonIsEnabled(plugin.video.themoviedb.helper)]</expression>
 	<!-- Bald Helper lists the playing library item's cast (plugin://script.bald.helper/?info=cast); VideoPlayer.DBID is
 	     empty for anything not in the library. -->
@@ -219,6 +222,7 @@
 		<value condition="Control.HasFocus(70043)">$LOCALIZE[19033]</value>
 		<value condition="Control.HasFocus(70060)">$LOCALIZE[292]</value>
 		<value condition="Control.HasFocus(70061)">$LOCALIZE[287]</value>
+		<value condition="Control.HasFocus(70063) + $EXP[Bald_OSDHasProcessInfo]">$INFO[System.AddonTitle(script.bald.processinfo)]</value>
 		<value condition="Control.HasFocus(70063)">$INFO[System.AddonTitle(script.tinyppi)]</value>
 		<value condition="Control.HasFocus(70062)">$LOCALIZE[157]</value>
 		<value condition="Control.HasFocus(8110)">$LOCALIZE[292]</value>
@@ -809,15 +813,17 @@
 			<include content="Bald_OSDFakeButton"><param name="id">70061</param><param name="owner">$PARAM[owner]</param></include>
 		</definition>
 	</include>
-	<!-- TinyPPI: opens the add-on's dialog (which closes the OSD itself); hidden unless script.tinyppi is enabled. -->
+	<!-- Process info: opens Bald Process Info's or TinyPPI's dialog (which closes the OSD itself; on LibreELEC Bald
+	     Process Info opens its overlay); hidden unless one of them is enabled. -->
 	<include name="Bald_OSDSlot_Real_PPI">
 		<include content="Bald_OSDButton">
 			<param name="id">70063</param>
 			<param name="icon">bald/osd_ppi.png</param>
 			<param name="on">bald/osd_ppi.png</param>
-			<param name="visible">$EXP[Bald_OSDHasTinyPPI]</param>
+			<param name="visible">$EXP[Bald_OSDHasPPI]</param>
 			<onclick>CancelAlarm(bald_osd_close,true)</onclick>
-			<onclick>RunScript(script.tinyppi,dialog)</onclick>
+			<onclick condition="$EXP[Bald_OSDHasProcessInfo]">RunScript(script.bald.processinfo,dialog)</onclick>
+			<onclick condition="!$EXP[Bald_OSDHasProcessInfo]">RunScript(script.tinyppi,dialog)</onclick>
 			<include>Bald_OSDUpToSeek</include>
 			<include>Bald_OSDChainFrom_0</include>
 		</include>
@@ -825,7 +831,7 @@
 	<include name="Bald_OSDSlot_Fake_PPI">
 		<param name="owner" />
 		<definition>
-			<include content="Bald_OSDFakeButton"><param name="id">70063</param><param name="owner">$PARAM[owner]</param><param name="visible">$EXP[Bald_OSDHasTinyPPI]</param></include>
+			<include content="Bald_OSDFakeButton"><param name="id">70063</param><param name="owner">$PARAM[owner]</param><param name="visible">$EXP[Bald_OSDHasPPI]</param></include>
 		</definition>
 	</include>
 	<!-- Video: focusing opens the video panel (1123); Select opens Kodi's video settings. -->

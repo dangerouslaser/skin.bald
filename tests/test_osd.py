@@ -565,15 +565,24 @@ if __name__ == "__main__":
     unittest.main()
 
 
-class TinyPPITests(unittest.TestCase):
-    """The TinyPPI button (script.tinyppi, CoreELEC) shows only with the add-on installed and enabled, opens its
-    dialog, and names itself with the add-on's own title."""
+class ProcessInfoTests(unittest.TestCase):
+    """The process info button shows only with Bald Process Info (script.bald.processinfo) or TinyPPI
+    (script.tinyppi) installed and enabled, opens the dialog of the one present (Bald Process Info first), and
+    names itself with that add-on's own title."""
 
-    def test_tinyppi_button_is_guarded_and_opens_its_dialog(self):
+    def test_button_is_guarded_and_opens_the_installed_addon(self):
         root = ET.parse(SKIN / "Includes_Bald_OSD.xml").getroot()
+        self.assertEqual(root.findtext("expression[@name='Bald_OSDHasProcessInfo']"),
+                         "[System.HasAddon(script.bald.processinfo) + System.AddonIsEnabled(script.bald.processinfo)]")
         self.assertEqual(root.findtext("expression[@name='Bald_OSDHasTinyPPI']"),
                          "[System.HasAddon(script.tinyppi) + System.AddonIsEnabled(script.tinyppi)]")
+        self.assertEqual(root.findtext("expression[@name='Bald_OSDHasPPI']"),
+                         "[$EXP[Bald_OSDHasProcessInfo] | $EXP[Bald_OSDHasTinyPPI]]")
         text = (SKIN / "Includes_Bald_OSD.xml").read_text(encoding="utf-8")
-        self.assertEqual(text.count("<param name=\"visible\">$EXP[Bald_OSDHasTinyPPI]</param>"), 2)
-        self.assertIn("<onclick>RunScript(script.tinyppi,dialog)</onclick>", text)
+        self.assertEqual(text.count("<param name=\"visible\">$EXP[Bald_OSDHasPPI]</param>"), 2)
+        self.assertIn('<onclick condition="$EXP[Bald_OSDHasProcessInfo]">RunScript(script.bald.processinfo,dialog)'
+                      "</onclick>", text)
+        self.assertIn('<onclick condition="!$EXP[Bald_OSDHasProcessInfo]">RunScript(script.tinyppi,dialog)</onclick>',
+                      text)
+        self.assertIn("$INFO[System.AddonTitle(script.bald.processinfo)]", text)
         self.assertIn("$INFO[System.AddonTitle(script.tinyppi)]", text)
