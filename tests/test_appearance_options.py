@@ -170,7 +170,7 @@ class AppearanceOptionsTests(unittest.TestCase):
                         self.assertNotIn("System.Time", node.text or "")
         uses = {"Includes_Bald_Home.xml": "$VAR[Bald_Clock]", "Includes_Bald_Playback.xml": "$VAR[Bald_Clock]",
                 "Includes_Bald_PVR.xml": "$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]",
-                "MyPVRGuide.xml": "$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]",
+                "MyPVRGuide.xml": "$VAR[Bald_ClockDateTime]",
                 "LoginScreen.xml": "$VAR[Bald_ClockTime]"}
         for name, label in uses.items():
             self.assertIn(f"<label>{label}</label>", (SKIN / name).read_text(), name)
@@ -205,8 +205,13 @@ class AppearanceOptionsTests(unittest.TestCase):
 
     def test_header_weather_reaches_the_bald_headers_and_home(self):
         # Bald's library views hide Estuary's TopBar, so the setting must reach Bald's own header meta lines.
-        for name in ("View_510_Bald_Posters.xml", "View_520_Bald_TV.xml", "Includes_Bald_PVR.xml", "MyPVRGuide.xml"):
+        for name in ("View_510_Bald_Posters.xml", "View_520_Bald_TV.xml", "Includes_Bald_PVR.xml"):
             self.assertIn("$VAR[Bald_HeaderWeatherSuffix]</label>", (SKIN / name).read_text(), name)
+        # The guide's date and time fill its header line, so the weather has a line of its own under them, as on Home.
+        guide = ET.parse(SKIN / "MyPVRGuide.xml").getroot()
+        line = next(n for n in guide.iter("control") if n.findtext("label") == "$VAR[Bald_HeaderWeather]")
+        self.assertEqual((line.findtext("font"), line.findtext("textcolor"), line.findtext("align")),
+                         ("Bald_Hint", "bald_ink45", "right"))
         home = resolve_window("Home.xml")
         weather = [node for node in home.iter("control") if node.findtext("label") == "$VAR[Bald_HeaderWeather]"]
         self.assertEqual(len(weather), 2, "under the date, or in its place")

@@ -9,7 +9,9 @@
 	<controls>
 		<include>Bald_WindowBase</include>
 		<control type="label"><left>Bald_SafeLeft</left><top>82</top><width>900</width><height>52</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[31700]</label></control>
-		<control type="label"><left>Bald_PreviewLeft</left><top>92</top><width>528</width><height>30</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_ClockDateTime]$VAR[Bald_HeaderWeatherSuffix]</label></control>
+		<control type="label"><left>Bald_PreviewLeft</left><top>92</top><width>528</width><height>30</height><align>right</align><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$VAR[Bald_ClockDateTime]</label></control>
+		<!-- The weather under the date and time, smaller and quieter, as under Home's clock (it no longer fits on one line). -->
+		<control type="label"><left>Bald_PreviewLeft</left><top>124</top><width>528</width><height>24</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink45</textcolor><label>$VAR[Bald_HeaderWeather]</label></control>
 		<control type="group"><left>Bald_SafeLeft</left><top>154</top><width>1728</width><height>190</height>
 			<animation effect="fade" start="0" end="100" time="380" tween="sine" easing="inout" condition="String.IsEmpty(Window(home).Property(Bald.Curtain))">WindowOpen</animation>
 			<control type="image"><left>0</left><top>8</top><width>150</width><height>112</height><aspectratio align="center" aligny="center">keep</aspectratio><fadetime>380</fadetime><texture>$INFO[ListItem.ChannelLogo]</texture></control>
