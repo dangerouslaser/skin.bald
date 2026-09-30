@@ -8,6 +8,7 @@ Left's hint first, then Up's, the other keys', Down's, and Right's last.
 
 import re
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from skin_strings import strings
@@ -82,6 +83,14 @@ class HintKeyTests(unittest.TestCase):
                     self.assertEqual(ranks, sorted(ranks))
                 checked += 1
         self.assertGreater(checked, 30)
+
+    def test_search_results_wrap_and_left_opens_the_options(self):
+        search = ET.parse(SKIN / "script-globalsearch.xml").getroot()
+        results = search.find(".//control[@id='50']")
+        self.assertEqual((results.findtext("onup"), results.findtext("ondown"), results.findtext("onleft")),
+                         ("50", "50", "990"))
+        hints = search.find(".//include[@content='Bald_InfoHintPair']")
+        self.assertEqual(hints.findtext("param[@name='first']"), "$VAR[Bald_KeyLeft]$LOCALIZE[31661]")
 
     def test_the_menu_names_what_left_and_right_do(self):
         home = (SKIN / "Includes_Bald_Home.xml").read_text(encoding="utf-8")
