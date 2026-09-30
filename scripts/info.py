@@ -446,6 +446,11 @@ def run(action="", media_type="", dbid=""):
         # RunScript(skin.bald,textsize,<zoom>): 0, 4 or 8.
         set_text_size(xbmc, media_type)
         return
+    if action == "guidedate":
+        # RunScript(skin.bald,guidedate): the TV guide's corner date, see guidedate.py.
+        from guidedate import follow
+        follow(xbmc, xbmcgui)
+        return
     if action == "keepfocus":
         # RunScript(skin.bald,keepfocus,<list>|<button>|<other>|<property>|<value>|<old>): see focus.py.
         from focus import keep

@@ -76,8 +76,12 @@ class PVRGuideTests(unittest.TestCase):
         values = [(v.get('condition'), v.text) for v in
                   ET.parse(ROOT / 'Includes_PVR.xml').getroot().findall("variable[@name='Bald_EpgRulerLabel']/value")]
         self.assertEqual(values, [('!ListItem.Property(DateLabel)', '$INFO[ListItem.Label]')])
-        day = [n for n in Skin().window('MyPVRGuide.xml').iter('control') if n.findtext('label') == '$INFO[ListItem.StartDate]']
+        day = [n for n in Skin().window('MyPVRGuide.xml').iter('control')
+               if n.findtext('label') == '$INFO[Window(home).Property(Bald.GuideDate)]']
         self.assertEqual([(n.findtext('left'), n.findtext('top')) for n in day], [('96', '380')])
+        guide = ET.parse(ROOT / 'MyPVRGuide.xml').getroot()
+        self.assertIn('RunScript(skin.bald,guidedate)', [n.text for n in guide.findall('onload')])
+
         self.assertEqual(grid.find("rulerlayout/control[@type='label']").findtext('label'), '$VAR[Bald_EpgRulerLabel]')
         # The ruler's first item is the day over the 190 px channel column: its label must fit there.
         self.assertLessEqual(int(grid.find("rulerlayout/control[@type='label']").findtext('width')),
@@ -100,6 +104,16 @@ class PVRGuideTests(unittest.TestCase):
         self.assertEqual(clicks, ['ActivateWindow(TV$PARAM[area])', 'ActivateWindow(Radio$PARAM[area])'])
         self.assertNotIn('PVR.EpgGridControl(PreviousGroup)', actions)
         self.assertNotIn('PVR.EpgGridControl(NextGroup)', actions)
+
+    def test_the_corner_date_is_short(self):
+        import sys
+        sys.path.insert(0, str(REPO / 'scripts'))
+        from guidedate import short_date
+        self.assertEqual(short_date('09/30/2026 2:00 PM'), '9/30/2026')
+        self.assertEqual(short_date('01/01/1111 12:00 AM'), '1/1/1111')
+        self.assertEqual(short_date('30.09.2026 14:00'), '30.9.2026')
+        self.assertEqual(short_date('2026-09-30 14:00'), '2026-9-30')
+        self.assertEqual(short_date(''), '')
 
     def test_retired_script_is_gone(self):
         self.assertFalse((REPO / 'scripts' / 'pvr_keymap.py').exists())

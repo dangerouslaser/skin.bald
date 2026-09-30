@@ -23,7 +23,7 @@
 	</variable>
 	<!-- The ruler: times, and first the day, which Kodi writes as the long regional date ("Wednesday, September 30, 2026")
 	     and the 178 px corner cut off. That item stays blank; the corner shows the focused programme's short date instead
-	     (Bald_EpgGrid), read outside the grid where ListItem is the focused programme. -->
+	     (Bald_EpgGrid). -->
 	<variable name="Bald_EpgRulerLabel">
 		<value condition="!ListItem.Property(DateLabel)">$INFO[ListItem.Label]</value>
 	</variable>
@@ -82,8 +82,9 @@
 					<control type="image"><left>10</left><top>10</top><width>8</width><height>8</height><texture colordiffuse="bald_record">bald/dot.png</texture><visible>ListItem.HasTimer | ListItem.IsRecording</visible></control>
 				</focusedlayout>
 			</control>
-			<!-- The day, over the channel column in the ruler's corner: the focused programme's short date ("9/30/2026"). -->
-			<control type="label"><left>96</left><top>380</top><width>178</width><height>40</height><font>Bald_Hint</font><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor><label>$INFO[ListItem.StartDate]</label></control>
+			<!-- The day, over the channel column in the ruler's corner: the focused programme's short date ("9/30/2026"),
+			     from scripts/guidedate.py (Kodi's date labels are the long form, or the short one with the time). -->
+			<control type="label"><left>96</left><top>380</top><width>178</width><height>40</height><font>Bald_Hint</font><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor><label>$INFO[Window(home).Property(Bald.GuideDate)]</label></control>
 			<control type="scrollbar" id="60"><right>72</right><top>420</top><width>8</width><bottom>156</bottom><orientation>vertical</orientation><onleft>50</onleft><onright>50</onright><ondown>50</ondown><onup>50</onup><texturesliderbackground colordiffuse="bald_ink10">bald/white.png</texturesliderbackground><texturesliderbar colordiffuse="bald_ink34">bald/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="bald_ink">bald/white.png</texturesliderbarfocus><textureslidernib colordiffuse="bald_accent">bald/white.png</textureslidernib><textureslidernibfocus colordiffuse="bald_accent">bald/white.png</textureslidernibfocus></control>
 		</definition>
 	</include>
