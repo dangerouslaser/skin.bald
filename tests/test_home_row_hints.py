@@ -57,6 +57,15 @@ def param(node, name):
 
 
 class RowHintTests(unittest.TestCase):
+    def test_the_generator_passes_names_the_include_wraps(self):
+        # has_next is an expression name: the include must read it as $EXP[...], or Kodi reads it as false.
+        root = generated(["A", "B"])
+        first = root.find("include[@name='Bald_Generated_HomeWidgets']/definition/include")
+        for name in ("prev", "next", "has_next"):
+            self.assertNotIn("$", param(first, name))
+        _, hints = self.label_line()
+        self.assertIn("$EXP[H]", [node.findtext("visible") for node in hints.findall("control")])
+
     def test_the_hints_name_the_row_up_and_down_reach(self):
         labels = ["In progress", "Recently added", "Top rated", "Random"]
         root = generated(labels)
@@ -87,8 +96,9 @@ class RowHintTests(unittest.TestCase):
 
     def label_line(self, style="fanart"):
         holder = ET.Element("holder")
+        # Names, as the generator passes them (shortcuts/generator/row.xmltemplate).
         holder.extend(expand_call("Bald_Row", {"id": "9101", "style": style, "prev": "P", "next": "N",
-                                               "has_next": "$EXP[H]"}, include_definitions()))
+                                               "has_next": "H"}, include_definitions()))
         group = holder.find("control")
         hints = [node for node in group.findall("control") if node.get("type") == "grouplist"][1]
         return group, hints

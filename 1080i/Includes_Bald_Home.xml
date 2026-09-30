@@ -1873,17 +1873,19 @@
 	<variable name="Bald_RowHintNone">
 		<value></value>
 	</variable>
+	<expression name="Bald_RowHintNoNext">[false]</expression>
 	<!-- Row hints, right-aligned on the row label line (ending at x 1344, the art frame's right edge): an up chevron and
 	     the row Up reaches (the previous row with items, or "Menu" from the first), then a down chevron and the row Down
 	     reaches (hidden when Down goes nowhere). prev and next name the generated chains Bald_RowPrevFrom_<screen>_<n>
-	     and Bald_RowNextFrom_<screen>_<n>, has_next Bald_RowHasNextFrom_<screen>_<n> (shortcuts/generator/screen.xml).
+	     and Bald_RowNextFrom_<screen>_<n>, has_next Bald_RowHasNextFrom_<screen>_<n> (shortcuts/generator/screen.xml): bare names,
+	     which this include reads as a variable and an expression.
 	     Hidden while the menu is open (Up and Down move the menu then) and under a dialog (Container() conditions resolve
 	     in the dialog there, so the chains would read every row as empty). Each name is at most 260 px with an ellipsis,
 	     and the row label at most 560, so the label line never collides with them. -->
 	<include name="Bald_RowHints">
 		<param name="prev" />
 		<param name="next" />
-		<param name="has_next">false</param>
+		<param name="has_next">Bald_RowHintNoNext</param>
 		<param name="style">fanart</param>
 		<definition>
 			<control type="grouplist">
@@ -1903,10 +1905,10 @@
 				<include content="Bald_RowHintChevron"><param name="texture">bald/chevron_up.png</param></include>
 				<control type="group"><width>8</width></control>
 				<include content="Bald_RowHintLabel"><param name="label">$VAR[$PARAM[prev]]</param></include>
-				<control type="group"><width>28</width><visible>$PARAM[has_next]</visible></control>
-				<include content="Bald_RowHintChevron"><param name="texture">bald/chevron_down.png</param><param name="visible">$PARAM[has_next]</param></include>
-				<control type="group"><width>8</width><visible>$PARAM[has_next]</visible></control>
-				<include content="Bald_RowHintLabel"><param name="label">$VAR[$PARAM[next]]</param><param name="visible">$PARAM[has_next]</param></include>
+				<control type="group"><width>28</width><visible>$EXP[$PARAM[has_next]]</visible></control>
+				<include content="Bald_RowHintChevron"><param name="texture">bald/chevron_down.png</param><param name="visible">$EXP[$PARAM[has_next]]</param></include>
+				<control type="group"><width>8</width><visible>$EXP[$PARAM[has_next]]</visible></control>
+				<include content="Bald_RowHintLabel"><param name="label">$VAR[$PARAM[next]]</param><param name="visible">$EXP[$PARAM[has_next]]</param></include>
 			</control>
 		</definition>
 	</include>
@@ -1952,7 +1954,7 @@
 		<param name="index" />
 		<param name="prev">Bald_RowHintMenu</param>
 		<param name="next">Bald_RowHintNone</param>
-		<param name="has_next">false</param>
+		<param name="has_next">Bald_RowHintNoNext</param>
 		<param name="screen">home</param>
 		<param name="menu">9001</param>
 		<param name="enabled">true</param>
