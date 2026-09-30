@@ -100,8 +100,8 @@
 			<include>Bald_BrowseFade</include>
 			<include content="Bald_InfoHintPair">
 				<param name="width">1024</param>
-				<param name="first">$LOCALIZE[31686]</param>
-				<param name="second">$LOCALIZE[31827]</param>
+				<param name="first">$LOCALIZE[31827]</param>
+				<param name="second">$LOCALIZE[31661]$VAR[Bald_ChevronRight]</param>
 			</include>
 		</control>
 	</controls>

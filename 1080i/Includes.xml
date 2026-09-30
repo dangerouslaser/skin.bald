@@ -920,7 +920,7 @@
 						<visible>$PARAM[info_visible] + !$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
 						<include content="Bald_InfoHintPair">
 							<param name="width">1024</param>
-							<param name="first">$LOCALIZE[31685]</param>
+							<param name="first">$VAR[Bald_ChevronLeft]$LOCALIZE[31661]</param>
 							<param name="second">$LOCALIZE[31827]</param>
 						</include>
 					</control>
@@ -930,7 +930,7 @@
 						<visible>$PARAM[info_visible] + $EXP[sidebar_visible]</visible>
 						<include content="Bald_InfoHintPair">
 							<param name="width">420</param>
-							<param name="first">$LOCALIZE[31832]</param>
+							<param name="first">$VAR[Bald_ChevronLeft]$LOCALIZE[31789]</param>
 							<param name="second">$LOCALIZE[31747]</param>
 						</include>
 					</control>

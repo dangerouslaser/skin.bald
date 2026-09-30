@@ -45,7 +45,7 @@
 			</control>
 			<include content="Bald_MusicEmptyNote"><param name="c">551</param></include>
 			<include content="Bald_MusicPreview"><param name="c">551</param></include>
-			<include content="Bald_WallFooter"><param name="c">551</param><param name="letters_hint">$LOCALIZE[31834]</param><param name="options_hint">$LOCALIZE[31685]</param></include>
+			<include content="Bald_WallFooter"><param name="c">551</param><param name="letters_hint">$LOCALIZE[31826]$VAR[Bald_ChevronRight]</param><param name="options_hint">$VAR[Bald_ChevronLeft]$LOCALIZE[31661]</param></include>
 		</control>
 	</include>
 	<!-- 552 Bald artwork list: seven 88 px rows with square thumbnails at (96,222), 624 wide, beside a 1008 x 567
@@ -97,7 +97,7 @@
 				<include content="Bald_MusicArtworkCaption"><param name="p">Odd</param></include>
 				<include content="Bald_MusicArtworkCaption"><param name="p">Even</param></include>
 			</control>
-			<include content="Bald_WallFooter"><param name="c">552</param><param name="letters_hint">$LOCALIZE[31834]</param><param name="options_hint">$LOCALIZE[31685]</param></include>
+			<include content="Bald_WallFooter"><param name="c">552</param><param name="letters_hint">$LOCALIZE[31826]$VAR[Bald_ChevronRight]</param><param name="options_hint">$VAR[Bald_ChevronLeft]$LOCALIZE[31661]</param></include>
 		</control>
 	</include>
 </includes>

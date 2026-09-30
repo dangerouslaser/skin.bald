@@ -90,8 +90,8 @@
 			<left>Bald_RightColumn</left>
 			<top>Bald_HintTop</top>
 			<include content="Bald_InfoHintPair">
-				<param name="first">$LOCALIZE[31966]</param>
-				<param name="second">$LOCALIZE[31982]</param>
+				<param name="first">$VAR[Bald_ChevronUpDown]$LOCALIZE[31789]</param>
+				<param name="second">$VAR[Bald_ChevronLeft]$LOCALIZE[31982]$VAR[Bald_ChevronRight]</param>
 			</include>
 		</control>
 	</controls>

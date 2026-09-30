@@ -5,6 +5,18 @@
      window's or layout's own item (ListItem.*), or "Container(511)." for a list's focused item
      (Container(511).ListItem.*). -->
 <includes>
+	<!-- ============ Navigation hints ============ -->
+	<!-- A hint names its key with a chevron and says where it goes: $VAR[Bald_ChevronDown]$LOCALIZE[31771] reads
+	     "˅ Cast & details". A right chevron follows its name ("Scroll by letters ›") and a hint for both Left and Right
+	     has one either side ("‹ Jump letters ›"), so a footer reads left to right: Left's hint first, Right's last,
+	     the others between. The chevrons are glyphs Bald's fonts carry in the Private Use Area (tools/hint_chevrons.py),
+	     centred on the capitals, with the space to the name built in; Select, Back and the other keys keep words. -->
+	<variable name="Bald_ChevronUp"><value>&#xE100;</value></variable>
+	<variable name="Bald_ChevronDown"><value>&#xE101;</value></variable>
+	<variable name="Bald_ChevronLeft"><value>&#xE102;</value></variable>
+	<variable name="Bald_ChevronRight"><value>&#xE103;</value></variable>
+	<variable name="Bald_ChevronUpDown"><value>&#xE105;</value></variable>
+
 	<!-- ============ Shared conditions ============ -->
 	<!-- Expression bodies are wrapped in [...] so a name negates and combines safely wherever it is used. -->
 	<expression name="Bald_HasTMDbHelper">[System.HasAddon(plugin.video.themoviedb.helper)]</expression>

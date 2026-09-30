@@ -49,8 +49,8 @@
 	     20 px dot separator when Bald_PlaybackHelpHasDetail holds, so the line never mixes two kinds of separator. -->
 	<variable name="Bald_PlaybackHelp">
 		<value condition="Control.HasFocus(87) + Window.IsActive(playercontrols)">$LOCALIZE[31038]</value>
-		<value condition="Control.HasFocus(87) + !Player.Paused">$LOCALIZE[31616]</value>
-		<value condition="Control.HasFocus(87)">$LOCALIZE[31617]</value>
+		<value condition="Control.HasFocus(87) + !Player.Paused">$VAR[Bald_ChevronLeft]$LOCALIZE[31616]$VAR[Bald_ChevronRight]</value>
+		<value condition="Control.HasFocus(87)">$LOCALIZE[31617]$VAR[Bald_ChevronRight]</value>
 		<value condition="Control.HasFocus(600)">$LOCALIZE[210]</value>
 		<value condition="Control.HasFocus(601)">$LOCALIZE[31038]</value>
 		<value condition="Control.HasFocus(602) + Player.Playing">$LOCALIZE[31621]</value>
@@ -94,8 +94,8 @@
 	</variable>
 	<!-- Second hint: where the other row is. -->
 	<variable name="Bald_PlaybackHint">
-		<value condition="Control.HasFocus(87)">$LOCALIZE[31623]</value>
-		<value condition="Player.SeekEnabled">$LOCALIZE[31618]</value>
+		<value condition="Control.HasFocus(87)">$VAR[Bald_ChevronDown]$LOCALIZE[31623]</value>
+		<value condition="Player.SeekEnabled">$VAR[Bald_ChevronUp]$LOCALIZE[31618]</value>
 		<value>$LOCALIZE[31619]</value>
 	</variable>
 	<!-- PlayerControls' second and third lines: Estuary's PlayerLabel2 and PlayerLabel3 without their colours. -->

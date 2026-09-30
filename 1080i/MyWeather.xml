@@ -86,7 +86,7 @@
 			<visible>Control.HasFocus(9100)</visible>
 			<include content="Bald_InfoHintPair">
 				<param name="width">600</param>
-				<param name="first">$LOCALIZE[31701]</param>
+				<param name="first">$VAR[Bald_ChevronLeft]$LOCALIZE[31701]$VAR[Bald_ChevronRight]</param>
 				<param name="second">$LOCALIZE[31984]</param>
 			</include>
 		</control>
@@ -96,7 +96,7 @@
 			<visible>!Control.HasFocus(9100)</visible>
 			<include content="Bald_InfoHintPair">
 				<param name="width">600</param>
-				<param name="first">$LOCALIZE[31704]</param>
+				<param name="first">$VAR[Bald_ChevronUp]$LOCALIZE[31701]</param>
 				<param name="second">$LOCALIZE[31984]</param>
 			</include>
 		</control>

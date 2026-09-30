@@ -467,14 +467,8 @@ msgstr "Ziel entfernen"
 #: /1080i/MyWeather.xml
 #. Weather page: hint while the tab row (Now, Daily, Hourly, Maps) has focus
 msgctxt "#31701"
-msgid "Left / Right for views"
-msgstr "Links / Rechts für Ansichten"
-
-#: /1080i/MyWeather.xml
-#. Weather page: hint while a view has focus
-msgctxt "#31704"
-msgid "Up for views"
-msgstr "Hoch für Ansichten"
+msgid "Views"
+msgstr "Ansichten"
 
 #: /1080i/Includes_Weather.xml
 #. Weather page: the tab of the day-by-day forecast
@@ -499,6 +493,32 @@ msgstr "Hintergrundbild entfernen"
 msgctxt "#31787"
 msgid "Menu"
 msgstr "Menü"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Home menu hints: Left enters the previewed screen's rows, after a left chevron
+msgctxt "#31788"
+msgid "Featured"
+msgstr "Highlights"
+
+#: /1080i/DialogPictureInfo.xml
+#: /1080i/Includes.xml
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/SettingsSystemInfo.xml
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Home menu hints: Right opens the hub's library or other target, after a right chevron
+msgctxt "#31789"
+msgid "Browse"
+msgstr "Durchstöbern"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Home menu hints: Right on Live TV opens the guide, after a right chevron
+msgctxt "#31790"
+msgid "Guide"
+msgstr "TV-Programm"
 
 #: /1080i/Includes_Bald_Configure.xml
 #. Home Screens: the Background image row's value once a picture is chosen
@@ -1076,21 +1096,21 @@ msgstr "Untertitelsprache"
 #: /1080i/Includes_Bald_Playback.xml
 #. Seek row hint while playing
 msgctxt "#31616"
-msgid "Left and right to skip"
-msgstr "Links und Rechts zum Springen"
+msgid "Skip"
+msgstr "Springen"
 
 #: /1080i/Includes_Bald_Playback.xml
 #. Seek row hint while paused
 msgctxt "#31617"
-msgid "Right for the next frame"
-msgstr "Rechts für das nächste Bild"
+msgid "Next frame"
+msgstr "Nächstes Bild"
 
-#: /1080i/Includes_Bald_Playback.xml
 #: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Playback.xml
 #. OSD hint: the seek row is above the buttons
 msgctxt "#31618"
-msgid "Up to seek"
-msgstr "Hoch zum Spulen"
+msgid "Seek"
+msgstr "Spulen"
 
 #: /1080i/Includes_Bald_Playback.xml
 #: /1080i/Includes_Bald_OSD.xml
@@ -1125,12 +1145,13 @@ msgctxt "#31622"
 msgid "Up next"
 msgstr "Als Nächstes"
 
-#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
 #: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Playback.xml
 #. Seek row hint: the buttons are below
 msgctxt "#31623"
-msgid "Down for controls"
-msgstr "Runter für Steuerung"
+msgid "Controls"
+msgstr "Steuerung"
 
 #: /1080i/Includes_Bald_OSD.xml
 #. Video OSD status line: playing normally
@@ -1153,14 +1174,8 @@ msgstr "Nächstes Kapitel"
 #: /1080i/Includes_Bald_OSD.xml
 #. Video OSD hint: Down opens the panels under the controls
 msgctxt "#31627"
-msgid "Down for more"
-msgstr "Runter für mehr"
-
-#: /1080i/Includes_Bald_OSD.xml
-#. Video OSD: the seek slider over the bar
-msgctxt "#31628"
-msgid "Seek"
-msgstr "Spulen"
+msgid "More"
+msgstr "Mehr"
 
 #: /1080i/Includes_Bald_OSD.xml
 #. Video OSD cast panel heading while it lists the crew
@@ -1169,16 +1184,10 @@ msgid "Crew"
 msgstr "Crew"
 
 #: /1080i/Includes_Bald_OSD.xml
-#. Video OSD cast panel hint
-msgctxt "#31630"
-msgid "Down for crew"
-msgstr "Runter für Crew"
-
-#: /1080i/Includes_Bald_OSD.xml
 #. Video OSD cast panel hint while it lists the crew
 msgctxt "#31631"
-msgid "Up for cast"
-msgstr "Hoch für Besetzung"
+msgid "Cast"
+msgstr "Besetzung"
 
 #: /1080i/Custom_1126_OSDCast.xml
 #. Video OSD cast panel hint
@@ -1186,11 +1195,12 @@ msgctxt "#31632"
 msgid "Select for the biography"
 msgstr "OK für die Biografie"
 
+#: /1080i/DialogPVRInfo.xml
 #: /1080i/Includes_Bald_OSD.xml
 #. Video OSD hint on the audio and subtitle buttons: Up focuses the stream list
 msgctxt "#31633"
-msgid "Up to choose"
-msgstr "Hoch zum Auswählen"
+msgid "Choose"
+msgstr "Auswählen"
 
 #: /1080i/Includes_Bald_OSD.xml
 #: /1080i/Includes_Bald_Music.xml
@@ -1268,8 +1278,8 @@ msgstr "Vergangen und verbleibend"
 #: /1080i/Includes_Bald_OSD.xml
 #. Video OSD video panel: the play speed row
 msgctxt "#31645"
-msgid "Left and right to change speed"
-msgstr "Links und Rechts ändern die Geschwindigkeit"
+msgid "Speed"
+msgstr "Geschwindigkeit"
 
 #: /1080i/Custom_1119_BaldPlayback.xml
 #. Playback settings: what the times either side of the bar show
@@ -1317,8 +1327,8 @@ msgstr "Bald Serienseite"
 #: /1080i/View_521_Bald_TV_Alternates.xml
 #. Library Series page hint, while a season tab has focus
 msgctxt "#31847"
-msgid "Down for episodes"
-msgstr "Runter für Folgen"
+msgid "Episodes"
+msgstr "Folgen"
 
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Bald Settings, Appearance, Behavior: Select on a TV show in the video library opens its information page (Bald Helper)
@@ -1376,10 +1386,20 @@ msgctxt "#31660"
 msgid "Live TV options"
 msgstr "Live-TV-Optionen"
 
+#: /1080i/EventLog.xml
+#: /1080i/Includes.xml
 #: /1080i/Includes_Bald_PVR.xml
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /1080i/View_550_Bald_Music.xml
 msgctxt "#31661"
-msgid "Left for options"
-msgstr "Links für Optionen"
+msgid "Options"
+msgstr "Optionen"
 
 #: /1080i/DialogPVRChannelsOSD.xml
 #: /1080i/MyPVRChannels.xml
@@ -1412,8 +1432,8 @@ msgstr "OK zum Öffnen"
 
 #: /1080i/DialogPVRChannelsOSD.xml
 msgctxt "#31667"
-msgid "Left or right for channel groups"
-msgstr "Links oder Rechts für Sendergruppen"
+msgid "Channel groups"
+msgstr "Sendergruppen"
 
 #: /1080i/DialogPVRChannelGuide.xml
 msgctxt "#31668"
@@ -1428,8 +1448,8 @@ msgstr "Zurück zum Schließen"
 #. In-player Live TV panel, Guide tab: Right swaps in the channel list
 #: /1080i/DialogPVRChannelGuide.xml
 msgctxt "#31687"
-msgid "Right for channels"
-msgstr "Rechts für Sender"
+msgid "Channels"
+msgstr "Sender"
 
 #. Appearance, Blur strength: a light blur
 #: /1080i/Custom_1118_BaldAppearance.xml
@@ -1492,28 +1512,8 @@ msgstr "Nächste"
 
 #: /1080i/DialogPVRInfo.xml
 msgctxt "#31678"
-msgid "Up for the full plot"
-msgstr "Hoch für die ganze Handlung"
-
-#: /1080i/DialogPVRInfo.xml
-msgctxt "#31679"
-msgid "Left or right to choose"
-msgstr "Links oder Rechts zum Auswählen"
-
-#: /1080i/Includes.xml
-#: /1080i/View_513_Bald_CompactList.xml
-#: /1080i/View_514_Bald_ArtworkList.xml
-#: /1080i/View_520_Bald_TV.xml
-#: /1080i/View_521_Bald_TV_Alternates.xml
-#: /1080i/View_550_Bald_Music.xml
-msgctxt "#31685"
-msgid "Left for options"
-msgstr "Links für Optionen"
-
-#: /1080i/EventLog.xml
-msgctxt "#31686"
-msgid "Right for options"
-msgstr "Rechts für Optionen"
+msgid "Full plot"
+msgstr "Ganze Handlung"
 
 #: /1080i/Custom_1117_BaldHomeScreens.xml
 #: /1080i/Includes_Bald_Configure.xml
@@ -1523,10 +1523,6 @@ msgctxt "#31700"
 msgid "Live TV"
 msgstr "Live-TV"
 
-#: /1080i/Home.xml
-msgctxt "#31702"
-msgid "Back for menu"
-msgstr "Zurück für Menü"
 
 #: /1080i/Includes_Bald_Home.xml
 msgctxt "#31705"
@@ -1827,11 +1823,6 @@ msgctxt "#31753"
 msgid "Back to save and apply"
 msgstr "Zurück zum Speichern und Übernehmen"
 
-#: /1080i/Custom_1116_BaldHomeWidgets.xml
-msgctxt "#31754"
-msgid "Left for widgets"
-msgstr "Links für Widgets"
-
 #: /1080i/Custom_1118_BaldAppearance.xml
 msgctxt "#31755"
 msgid "Choose how artwork and its background treatment appear throughout Bald."
@@ -1898,17 +1889,22 @@ msgctxt "#31769"
 msgid "Show item count in rows"
 msgstr "Anzahl der Einträge in Zeilen anzeigen"
 
+#: /1080i/DialogVideoInfo.xml
 #: /1080i/Includes_Bald_Info.xml
 msgctxt "#31770"
 msgid "Overview"
 msgstr "Übersicht"
 
+#: /1080i/DialogVideoInfo.xml
+#: /1080i/Includes_Bald_Common.xml
 #: /1080i/Includes_Bald_Info.xml
 #: /1080i/Includes_Bald_InfoPages.xml
+#: /1080i/Includes_Bald_InfoTV.xml
 msgctxt "#31771"
 msgid "Cast & details"
 msgstr "Besetzung & Details"
 
+#: /1080i/DialogVideoInfo.xml
 #: /1080i/Includes_Bald_Info.xml
 #: /1080i/Includes_Bald_InfoPages.xml
 msgctxt "#31772"
@@ -1944,27 +1940,6 @@ msgstr "Empfehlungen werden geladen …"
 msgctxt "#31778"
 msgid "No related titles in your library."
 msgstr "Keine ähnlichen Titel in der Bibliothek."
-
-#: /1080i/DialogVideoInfo.xml
-#: /1080i/Includes_Bald_InfoTV.xml
-msgctxt "#31779"
-msgid "Down for cast & details"
-msgstr "Runter für Besetzung & Details"
-
-#: /1080i/DialogVideoInfo.xml
-msgctxt "#31780"
-msgid "Up for overview"
-msgstr "Hoch für Übersicht"
-
-#: /1080i/DialogVideoInfo.xml
-msgctxt "#31781"
-msgid "Down for more like this"
-msgstr "Runter für ähnliche Titel"
-
-#: /1080i/DialogVideoInfo.xml
-msgctxt "#31782"
-msgid "Up for cast & details"
-msgstr "Hoch für Besetzung & Details"
 
 #: /1080i/Includes_Bald_InfoTV.xml
 msgctxt "#31783"
@@ -2128,10 +2103,14 @@ msgid "No movies to display. Open options to adjust your filters."
 msgstr "Keine Filme vorhanden. In den Optionen die Filter anpassen."
 
 #: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_514_Bald_ArtworkList.xml
 #: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_550_Bald_Music.xml
 msgctxt "#31826"
-msgid "Down for letters"
-msgstr "Runter für Buchstaben"
+msgid "Scroll by letters"
+msgstr "Nach Buchstaben blättern"
 
 #: /1080i/View_510_Bald_Posters.xml
 #: /1080i/View_511_Bald_Wall.xml
@@ -2145,57 +2124,12 @@ msgid "Info for details"
 msgstr "Info für Details"
 
 #: /1080i/View_510_Bald_Posters.xml
-#: /1080i/View_515_Bald_PosterLow.xml
-#: /1080i/View_520_Bald_TV.xml
-#: /1080i/View_521_Bald_TV_Alternates.xml
-msgctxt "#31828"
-msgid "Up for options"
-msgstr "Hoch für Optionen"
-
-#: /1080i/View_510_Bald_Posters.xml
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
 #: /1080i/View_520_Bald_TV.xml
 msgctxt "#31830"
-msgid "Left / Right to jump letters"
-msgstr "Links / Rechts springt zwischen Buchstaben"
-
-#: /1080i/View_510_Bald_Posters.xml
-#: /1080i/View_511_Bald_Wall.xml
-#: /1080i/View_515_Bald_PosterLow.xml
-#: /1080i/View_520_Bald_TV.xml
-msgctxt "#31831"
-msgid "Up / Select / Back to browse"
-msgstr "Hoch / OK / Zurück zum Durchstöbern"
-
-#: /1080i/View_510_Bald_Posters.xml
-#: /1080i/View_511_Bald_Wall.xml
-#: /1080i/View_515_Bald_PosterLow.xml
-#: /1080i/View_520_Bald_TV.xml
-#: /1080i/Includes.xml
-#: /1080i/View_521_Bald_TV_Alternates.xml
-msgctxt "#31832"
-msgid "Left / Back to browse"
-msgstr "Links / Zurück zum Durchstöbern"
-
-#: /1080i/View_511_Bald_Wall.xml
-#: /1080i/View_521_Bald_TV_Alternates.xml
-#. Library grids: the hint that Left from the left column opens the options (Up wraps to the bottom)
-msgctxt "#31703"
-msgid "Left edge for options"
-msgstr "Linker Rand für Optionen"
-
-#: /1080i/View_511_Bald_Wall.xml
-msgctxt "#31833"
-msgid "Right edge for letters"
-msgstr "Rechter Rand für Buchstaben"
-
-#: /1080i/View_513_Bald_CompactList.xml
-#: /1080i/View_514_Bald_ArtworkList.xml
-#: /1080i/View_550_Bald_Music.xml
-msgctxt "#31834"
-msgid "Right for letters"
-msgstr "Rechts für Buchstaben"
+msgid "Jump letters"
+msgstr "Buchstaben springen"
 
 #: /1080i/View_520_Bald_TV.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
@@ -2375,8 +2309,8 @@ msgstr "Neue Suche"
 
 #: /1080i/script-globalsearch.xml
 msgctxt "#31893"
-msgid "Up / Left for options · Info for details · Back to close"
-msgstr "Hoch / Links für Optionen · Info für Details · Zurück zum Schließen"
+msgid "Options · Info for details · Back to close"
+msgstr "Optionen · Info für Details · Zurück zum Schließen"
 
 #: /1080i/script-globalsearch.xml
 #. Precedes the search text in quotes, "Results for “alien”"
@@ -2649,18 +2583,6 @@ msgctxt "#31965"
 msgid "Select a profile to edit it, or add a new one."
 msgstr "Ein Profil zum Bearbeiten auswählen oder ein neues hinzufügen."
 
-#: /1080i/DialogPictureInfo.xml
-#: /1080i/SettingsSystemInfo.xml
-msgctxt "#31966"
-msgid "Up and down to browse"
-msgstr "Hoch und Runter zum Durchstöbern"
-
-#: /1080i/Custom_1119_BaldPlayback.xml
-#. Playback settings category
-msgctxt "#31970"
-msgid "Controls"
-msgstr "Steuerung"
-
 #: /1080i/Custom_1119_BaldPlayback.xml
 #. Playback settings: note for Controls
 msgctxt "#31971"
@@ -2722,13 +2644,13 @@ msgstr "OK zum Anmelden"
 
 #: /1080i/LoginScreen.xml
 msgctxt "#31981"
-msgid "Down for power options"
-msgstr "Runter für Energieoptionen"
+msgid "Power options"
+msgstr "Energieoptionen"
 
 #: /1080i/DialogPictureInfo.xml
 msgctxt "#31982"
-msgid "Left and right to change picture"
-msgstr "Links und Rechts wechseln das Bild"
+msgid "Change picture"
+msgstr "Bild wechseln"
 
 #: /1080i/DialogMusicInfo.xml
 msgctxt "#31983"

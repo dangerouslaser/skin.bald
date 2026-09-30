@@ -91,7 +91,7 @@
 			<top>Bald_HintTop</top>
 			<include content="Bald_InfoHintPair">
 				<param name="first">$LOCALIZE[31980]</param>
-				<param name="second">$LOCALIZE[31981]</param>
+				<param name="second">$VAR[Bald_ChevronDown]$LOCALIZE[31981]</param>
 			</include>
 		</control>
 	</controls>

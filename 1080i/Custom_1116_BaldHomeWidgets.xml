@@ -50,6 +50,6 @@
 				<control type="button" id="9207"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31752]</label><visible>[Integer.IsGreater(Container(9100).NumItems,1) | !String.IsEqual(Window(home).Property(Bald.ConfigureNode),homewidgets)] + String.IsEmpty(Container(9100).ListItem.Property(blank))</visible><onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($VAR[Bald_WidgetItemUrl]&amp;func=do_delete)</onclick></control>
 			</control>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">$LOCALIZE[31753]</param><param name="second">$LOCALIZE[31754]</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$VAR[Bald_ChevronLeft]$LOCALIZE[31748]</param><param name="second">$LOCALIZE[31753]</param></include>
 	</controls>
 </window>

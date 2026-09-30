@@ -1,15 +1,16 @@
 """Library views open their options with the key their footer names (the views wrap at every other edge).
 
-Horizontal rows: Up opens the options (Left and Right wrap along the row), "Up for options". Vertical lists: Left, and
-Up / Down wrap, "Left for options". Grids: Left from the left column, and Up / Down wrap top to bottom, "Left edge for
-options"."""
+Horizontal rows: Up opens the options (Left and Right wrap along the row), "˄ Options". Vertical lists: Left, and
+Up / Down wrap, "‹ Options". Grids: Left from the left column, and Up / Down wrap top to bottom, "‹ Options". The
+chevron names the key (Bald_Chevron*, Includes_Bald_Common.xml); the text is the same "Options" string."""
 
 import re
 import unittest
 from pathlib import Path
 
 XML = Path(__file__).resolve().parents[1] / "1080i"
-UP, LEFT, LEFT_EDGE = "31828", "31685", "31703"
+OPTIONS = "31661"
+UP, LEFT, LEFT_EDGE = "Up", "Left", "Left"
 VIEWS = {  # container: (file, kind, the footer's options hint)
     "510": ("View_510_Bald_Posters.xml", "row", UP), "515": ("View_515_Bald_PosterLow.xml", "row", UP),
     "520": ("View_520_Bald_TV.xml", "row", UP), "530": ("View_520_Bald_TV.xml", "row", UP),
@@ -31,19 +32,25 @@ def control_text(text, cid):
     return text[start:end if end > 0 else len(text)]
 
 
+HINT = r'<param name="%s">\$VAR\[Bald_Chevron(\w+)\]\$LOCALIZE\[(\d+)\]</param>'
+
+
 def footer_hint(text, cid, kind):
-    """The options hint the view's footer shows."""
+    """The key the view's footer names for its options: the chevron before "Options"."""
     call = re.search(r'<include content="Bald_(?:WallFooter|TVFooter)"><param name="c">%s</param>(.*?)</include>' % cid, text)
     if call:
-        given = re.search(r'<param name="options_hint">\$LOCALIZE\[(\d+)\]</param>', call.group(1))
-        if given:
-            return given.group(1)
-        wall = (XML / "View_511_Bald_Wall.xml").read_text()
-        tv = (XML / "View_520_Bald_TV.xml").read_text()
-        source = wall if "WallFooter" in call.group(0) else tv
-        return re.search(r'<param name="options_hint">\$LOCALIZE\[(\d+)\]</param>', source).group(1)
-    # Views with their own hint line (510, 515): the third hint.
-    return re.search(r'<param name="third">\$LOCALIZE\[(\d+)\]</param>', text).group(1)
+        given = re.search(HINT % "options_hint", call.group(1))
+        if not given:
+            wall = (XML / "View_511_Bald_Wall.xml").read_text()
+            tv = (XML / "View_520_Bald_TV.xml").read_text()
+            source = wall if "WallFooter" in call.group(0) else tv
+            given = re.search(HINT % "options_hint", source)
+    else:
+        # Views with their own hint line (510, 515): the first hint, as the options open Up (read left to right).
+        given = re.search(HINT % "first", text)
+    chevron, hint = given.groups()
+    assert hint == OPTIONS, (cid, hint)
+    return chevron
 
 
 class OptionsKeyTests(unittest.TestCase):
