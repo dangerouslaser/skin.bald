@@ -198,6 +198,37 @@ class PluginTests(unittest.TestCase):
         self.assertEqual(xbmc.calls.count("PVR.AddTimer"), 1)
 
 
+class SearchActionTests(unittest.TestCase):
+    def gui(self, typed):
+        class Dialog:
+            def input(self, heading):
+                Dialog.heading = heading
+                return typed
+
+        class Gui:
+            pass
+        Gui.Dialog = Dialog
+        return Gui
+
+    def test_asks_then_opens_bald_search_on_the_category(self):
+        xbmc = FakeXbmc()
+        gui = self.gui('nbc "news"')
+        self.assertTrue(plugin.search(xbmc, gui, {"start": "movies"}))
+        self.assertEqual(gui.Dialog.heading, "137")
+        self.assertEqual(xbmc.builtins, ['Skin.SetString(Bald.SearchQuery,"nbc news")',
+                                         "SetProperty(Bald.SearchStart,movies,home)", "ActivateWindow(1130)"])
+
+    def test_a_new_search_refreshes_the_open_window(self):
+        xbmc = FakeXbmc(visible={"62"})  # any other condition, including Window.IsActive(1130), holds
+        self.assertTrue(plugin.search(xbmc, self.gui("cnn"), {}))
+        self.assertEqual(xbmc.builtins[1:], ["ClearProperty(Bald.SearchCat,1130)", "SetFocus(9198)"])
+
+    def test_cancelled_does_nothing(self):
+        xbmc = FakeXbmc()
+        self.assertFalse(plugin.search(xbmc, self.gui(""), {}))
+        self.assertEqual(xbmc.builtins, [])
+
+
 class LiveSearchTests(unittest.TestCase):
     def test_closes_the_question_then_opens_bald_live_search(self):
         xbmc = FakeXbmc(visible={"search"})

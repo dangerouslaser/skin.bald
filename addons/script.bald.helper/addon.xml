@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="script.bald.helper" name="Bald Helper" version="1.4.8" provider-name="dangerouslaser">
+<addon id="script.bald.helper" name="Bald Helper" version="1.4.9" provider-name="dangerouslaser">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 		<!-- Pillow, for the blurred backgrounds: the version Kodi 22 bundles (Kodi.app's addons/script.module.pil). -->

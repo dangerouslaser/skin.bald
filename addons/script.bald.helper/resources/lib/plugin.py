@@ -9,6 +9,9 @@
     ?info=livetv_programmes&query=Q                 programmes on now or later matching Q, for Bald's Search.
     ?action=play_channel&channelid=N                 switches to channel N.
     ?action=warm_livetv                              refreshes the programme search's cache (Home's Search runs it).
+    ?action=search[&start=movies|tvshows|episodes]   asks for a query (Kodi's keyboard, headed "Search") and shows
+                                                     it in Bald's Search (window 1130), opening it, or refreshing it
+                                                     for a new search; start names the category to begin on.
     ?action=live_search                              from Global Search's "No results found" dialog: closes it
                                                      (Global Search closes too) and opens Bald's Live TV search.
     ?action=programme&channelid=N&broadcastid=B&now=1  what Select does on a programme: its channel when it is on
@@ -207,6 +210,31 @@ def live_search(xbmc, steps: int = 50) -> bool:
     return True
 
 
+SEARCH_WINDOW = 1130  # Custom_1130_BaldSearch.xml
+SEARCH_QUERY = "Bald.SearchQuery"
+SEARCH_HEADING = 137  # Kodi's "Search"
+
+
+def search(xbmc, xbmcgui, query: dict) -> bool:
+    """Ask for a query and show it in Bald's Search. The keyboard opens from here rather than from the window's onload:
+    a keyboard opened while a window is still opening never finishes closing in Kodi 22. Double quotes are dropped:
+    the query sits inside the smart-playlist rule of each library list (Includes_Bald_Search.xml)."""
+    text = xbmcgui.Dialog().input(xbmc.getLocalizedString(SEARCH_HEADING)).replace('"', "").strip()
+    if not text:
+        return False
+    xbmc.executebuiltin(f'Skin.SetString({SEARCH_QUERY},"{text}")')
+    start = query.get("start", "")
+    if xbmc.getCondVisibility(f"Window.IsActive({SEARCH_WINDOW})"):
+        # A new search: start over on the first category with results.
+        xbmc.executebuiltin(f"ClearProperty(Bald.SearchCat,{SEARCH_WINDOW})")
+        xbmc.executebuiltin("SetFocus(9198)")
+    else:
+        if start in ("movies", "tvshows", "episodes"):
+            xbmc.executebuiltin(f"SetProperty(Bald.SearchStart,{start},home)")
+        xbmc.executebuiltin(f"ActivateWindow({SEARCH_WINDOW})")
+    return True
+
+
 def programme(xbmc, xbmcgui, query: dict) -> str:
     """Select on a programme: on now, its channel; later, record it or switch to its channel. Returns what it did."""
     channelid, broadcastid = query.get("channelid", ""), query.get("broadcastid", "")
@@ -307,6 +335,8 @@ def run(argv, xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs) -> None:
         livetv.guide(xbmc, xbmcvfs.translatePath(common.DATA_DIR))
     elif action == "live_search":
         live_search(xbmc)
+    elif action == "search":
+        search(xbmc, xbmcgui, query)
     elif action == "play_channel":
         play_channel(xbmc, query.get("channelid", ""))
     elif action == "programme":
