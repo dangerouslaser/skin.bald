@@ -1,0 +1,151 @@
+name: Follow upstream
+
+# Keeps the libreelec branch on top of CE-Repo/script.tinyppi main: the fork's
+# commits are replayed onto upstream, tested, and topped with a regenerated
+# "Fork branding (generated)" commit (tools/fork_branding.py: the rename to
+# Bald Process Info and the fork's own artwork). Anything that
+# goes wrong -- a conflict, a failing test, a new Amlogic-only read upstream --
+# opens (or updates) an issue labelled upstream-sync, assigned to the owner.
+# A later clean run closes it.
+
+on:
+  schedule:
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: Fail on purpose, to check that an issue is opened
+        type: boolean
+        default: false
+  push:
+    branches: [libreelec]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: follow-upstream
+  cancel-in-progress: false
+
+env:
+  UPSTREAM: https://github.com/CE-Repo/script.tinyppi.git
+  METADATA_SUBJECT: Fork branding (generated)
+  OLD_SUBJECT: Fork metadata (generated)
+
+jobs:
+  follow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: libreelec
+          fetch-depth: 0
+
+      - name: Fetch upstream
+        run: |
+          git remote add upstream "$UPSTREAM"
+          git fetch --no-tags upstream main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "BEFORE=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Replay fork commits onto upstream
+        id: replay
+        run: |
+          set -euo pipefail
+          upstream=$(git rev-parse upstream/main)
+          base=$(git merge-base HEAD upstream/main)
+          # The fork's own commits, oldest first, minus the generated metadata commit(s).
+          mapfile -t commits < <(git log --reverse --format='%H %s' "$base..HEAD" \
+            | awk -v s="$METADATA_SUBJECT" -v o="$OLD_SUBJECT" '{h=$1; $1=""; sub(/^ /,""); if ($0 != s && $0 != o) print h}')
+          tip_subject=$(git log -1 --format=%s)
+          if [ "$base" = "$upstream" ] && [ "$tip_subject" = "$METADATA_SUBJECT" ]; then
+            python3 tools/fork_branding.py
+            if [ -z "$(git status --porcelain)" ]; then
+              echo "Up to date with upstream $upstream; nothing to replay."
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git reset --hard -q HEAD && git clean -fdq
+          fi
+          echo "Replaying ${#commits[@]} fork commit(s) onto upstream $upstream"
+          git reset --hard "$upstream"
+          for commit in "${commits[@]}"; do
+            if ! git cherry-pick --allow-empty "$commit"; then
+              {
+                echo "### Conflict replaying $(git log -1 --format='%h %s' "$commit")"
+                echo
+                echo "onto upstream \`$(git log -1 --format='%h %s' "$upstream")\`"
+                echo
+                echo "Conflicted files:"
+                echo '```'
+                git diff --name-only --diff-filter=U
+                echo '```'
+              } > /tmp/problem.md
+              git cherry-pick --abort
+              exit 1
+            fi
+          done
+          python3 tools/fork_branding.py
+          git add -A
+          git commit -m "$METADATA_SUBJECT" -m "Upstream $(git log -1 --format='%h %s' "$upstream")"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Test
+        run: |
+          set -o pipefail
+          python3 -m compileall -q main.py resources tools tests 2>&1 | tee /tmp/test.log
+          python3 -m unittest discover -s tests -v 2>&1 | tee -a /tmp/test.log
+
+      - name: Simulated failure
+        if: inputs.simulate_failure
+        run: |
+          echo "Simulated failure requested by workflow_dispatch; nothing is wrong." > /tmp/problem.md
+          exit 1
+
+      - name: Push
+        if: steps.replay.outputs.changed == 'true'
+        run: |
+          git push --force-with-lease="libreelec:$BEFORE" origin HEAD:libreelec
+          echo "Pushed $(git log -1 --format=%b)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Close resolved sync issues
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          api="repos/$GITHUB_REPOSITORY/issues"
+          for n in $(gh api "$api?labels=upstream-sync&state=open" --jq '.[].number'); do
+            gh api "$api/$n/comments" -f body="Resolved: run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID is green." >/dev/null
+            gh api -X PATCH "$api/$n" -f state=closed >/dev/null
+          done
+
+      - name: Flag the problem
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          {
+            echo "The libreelec branch could not follow upstream (CE-Repo/script.tinyppi main)."
+            echo
+            echo "Run: $run"
+            echo
+            if [ -f /tmp/problem.md ]; then cat /tmp/problem.md; fi
+            if [ -f /tmp/test.log ]; then
+              echo "### Test output (tail)"; echo '```'; tail -n 60 /tmp/test.log; echo '```'
+            fi
+            echo
+            echo "The branch was not pushed. Fix locally: replay the fork commits onto upstream/main"
+            echo "(skip the \"$METADATA_SUBJECT\" commit), run \`python3 tools/fork_branding.py\`,"
+            echo "commit it as \"$METADATA_SUBJECT\", test, and force-push libreelec."
+          } > /tmp/issue.md
+          api="repos/$GITHUB_REPOSITORY/issues"
+          existing=$(gh api "$api?labels=upstream-sync&state=open" --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh api "$api/$existing/comments" -F body=@/tmp/issue.md --jq .html_url
+          else
+            gh api "$api" -f title="Upstream sync failed" -F body=@/tmp/issue.md \
+              -f "labels[]=upstream-sync" -f "assignees[]=$GITHUB_REPOSITORY_OWNER" --jq .html_url
+          fi

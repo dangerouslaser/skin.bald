@@ -1,0 +1,12 @@
+CRTC info
+---------
+[CRTC:171:pipe A]:
+	uapi: enable=yes, active=yes, mode="3840x2160": 60 594000 3840 4016 4104 4400 2160 2168 2178 2250 0x48 0x5
+	hw: enable=yes, active=yes
+	adjusted_mode="3840x2160": 60 594000 3840 4016 4104 4400 2160 2168 2178 2250 0x48 0x5
+	pipe__mode="3840x2160": 60 594000 3840 4016 4104 4400 2160 2168 2178 2250 0x40 0x5
+	pipe src=3840x2160+0+0, dither=no, bpp=24
+	port_clock=594000, lane_count=4
+	num_scalers=2, scaler_users=0 scaler_id=-1 scaling_filter=0 sharpness_strength=0, scalers[0]: use=no, mode=0, scalers[1]: use=no, mode=0
+	background color (10bpc XRGB2101010): 00000000
+	[ENCODER:608:DDI TC3/PHY TC3]: connectors:

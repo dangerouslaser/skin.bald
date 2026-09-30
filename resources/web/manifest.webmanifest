@@ -1,0 +1,14 @@
+{
+  "name": "Bald Process Info",
+  "short_name": "Bald Process Info",
+  "description": "Live playback metadata from CoreELEC.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090b0f",
+  "theme_color": "#090b0f",
+  "icons": [
+    { "src": "/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
