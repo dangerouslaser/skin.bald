@@ -17,7 +17,12 @@ def main() -> None:
     payload = index.read_bytes()
     assert hashlib.md5(payload).hexdigest() == (root / "addons.xml.md5").read_text().strip()
     addons = {node.attrib["id"]: node for node in ET.parse(index).getroot()}
-    assert {"skin.bald", "script.bald.xcsetup", "script.bald.helper", "repository.bald"} <= addons.keys()
+    assert {"skin.bald", "script.bald.xcsetup", "script.bald.helper", "script.bald.processinfo", "repository.bald"} <= addons.keys()
+    # Bald Process Info's side-data module lives in another repository, so this feed must not require it.
+    sidedata = addons["script.bald.processinfo"].find("./requires/import[@addon='script.module.sidedata']")
+    assert sidedata is None or sidedata.get("optional") == "true"
+    # TinyPPI's author does not license its name for forks: nothing here may carry it.
+    assert "script.tinyppi" not in addons and all("TinyPPI" not in n.get("name", "") for n in addons.values())
     assert addons["skin.bald"].find("./requires/import[@addon='xbmc.gui']").attrib["version"] == "5.18.0"
     assert addons["script.bald.xcsetup"].find(
         "./requires/import[@addon='pvr.iptvsimple']"
