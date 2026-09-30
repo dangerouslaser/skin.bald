@@ -21,6 +21,13 @@
 		<value condition="$EXP[Bald_EpgPast]">[COLOR bald_ink34]$INFO[ListItem.StartTime][/COLOR]</value>
 		<value>$INFO[ListItem.StartTime]</value>
 	</variable>
+	<!-- The ruler: times, and first the day, which Kodi writes as the long regional date ("Wednesday, September 30, 2026")
+	     and the 178 px corner cut off. Today reads "Wednesday 9/30"; another day, the focused programme's short date. -->
+	<variable name="Bald_EpgRulerLabel">
+		<value condition="!ListItem.Property(DateLabel)">$INFO[ListItem.Label]</value>
+		<value condition="String.IsEqual(ListItem.Label,$INFO[System.Date])">$INFO[System.Date(DDDD M/D)]</value>
+		<value>$INFO[Container(50).ListItem.StartDate]</value>
+	</variable>
 	<include name="Bald_EpgGrid">
 		<definition>
 			<control type="epggrid" id="$PARAM[control_id]">
@@ -38,7 +45,7 @@
 				     is the day, over the channel column, so the labels stop at 178 px to stay inside it. -->
 				<rulerlayout height="40" width="1538">
 					<control type="image"><left>0</left><top>12</top><width>1</width><height>16</height><texture colordiffuse="bald_ink28">bald/white.png</texture></control>
-					<control type="label"><width>178</width><height>40</height><font>Bald_Hint</font><label>$INFO[ListItem.Label]</label><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor></control>
+					<control type="label"><width>178</width><height>40</height><font>Bald_Hint</font><label>$VAR[Bald_EpgRulerLabel]</label><textoffsetx>12</textoffsetx><textcolor>bald_ink60</textcolor></control>
 				</rulerlayout>
 				<!-- Channel: number and logo; the name only for a channel without a logo (providers' names are long and
 				     alike, "MA | Boston ..."). No scrolling text anywhere in the grid: a scrolling label redraws every frame. -->
