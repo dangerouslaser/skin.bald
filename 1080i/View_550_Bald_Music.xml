@@ -13,7 +13,7 @@
 			<control type="panel" id="550">
 				<left>84</left><top>210</top><width>1080</width><height>600</height><orientation>vertical</orientation>
 				<viewtype label="31400">list</viewtype><visible>$EXP[Bald_MusicCoverContent]</visible><preloaditems>2</preloaditems><scrolltime tween="cubic" easing="out">440</scrolltime>
-				<include content="Bald_MusicViewNav"><param name="id">550</param></include>
+				<include content="Bald_MusicViewNav"><param name="id">550</param><param name="up">550</param></include>
 				<onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|550)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,550)</onright>
 				
 				<itemlayout width="216" height="300"><include>Bald_MusicTile</include></itemlayout>
@@ -45,7 +45,7 @@
 			</control>
 			<include content="Bald_MusicEmptyNote"><param name="c">551</param></include>
 			<include content="Bald_MusicPreview"><param name="c">551</param></include>
-			<include content="Bald_WallFooter"><param name="c">551</param><param name="letters_hint">$LOCALIZE[31834]</param></include>
+			<include content="Bald_WallFooter"><param name="c">551</param><param name="letters_hint">$LOCALIZE[31834]</param><param name="options_hint">$LOCALIZE[31685]</param></include>
 		</control>
 	</include>
 	<!-- 552 Bald artwork list: seven 88 px rows with square thumbnails at (96,222), 624 wide, beside a 1008 x 567
@@ -97,7 +97,7 @@
 				<include content="Bald_MusicArtworkCaption"><param name="p">Odd</param></include>
 				<include content="Bald_MusicArtworkCaption"><param name="p">Even</param></include>
 			</control>
-			<include content="Bald_WallFooter"><param name="c">552</param><param name="letters_hint">$LOCALIZE[31834]</param></include>
+			<include content="Bald_WallFooter"><param name="c">552</param><param name="letters_hint">$LOCALIZE[31834]</param><param name="options_hint">$LOCALIZE[31685]</param></include>
 		</control>
 	</include>
 </includes>

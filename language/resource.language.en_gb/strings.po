@@ -1460,6 +1460,11 @@ msgstr ""
 # Browse restyle strings: 31685-31699 (docs/NOTES.md, "Browse restyle").
 
 #: /1080i/Includes.xml
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /1080i/View_550_Bald_Music.xml
 msgctxt "#31685"
 msgid "Left for options"
 msgstr ""
@@ -2108,11 +2113,6 @@ msgctxt "#31828"
 msgid "Up for options"
 msgstr ""
 
-#: /1080i/View_511_Bald_Wall.xml
-msgctxt "#31829"
-msgid "Menu for options"
-msgstr ""
-
 #: /1080i/View_510_Bald_Posters.xml
 #: /1080i/View_511_Bald_Wall.xml
 #: /1080i/View_515_Bald_PosterLow.xml
@@ -2137,6 +2137,13 @@ msgstr ""
 #: /1080i/View_521_Bald_TV_Alternates.xml
 msgctxt "#31832"
 msgid "Left / Back to browse"
+msgstr ""
+
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Library grids: the hint that Left from the left column opens the options (Up wraps to the bottom)
+msgctxt "#31703"
+msgid "Left edge for options"
 msgstr ""
 
 #: /1080i/View_511_Bald_Wall.xml

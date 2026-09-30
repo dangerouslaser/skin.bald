@@ -26,7 +26,7 @@
 			</control>
 			<control type="label"><left>122</left><top>240</top><width>1050</width><height>48</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$LOCALIZE[31825]</label><visible>Integer.IsEqual(Container(513).NumItems,0)</visible></control>
 			<include content="Bald_LibraryPreview"><param name="c">513</param></include>
-			<include content="Bald_WallFooter"><param name="c">513</param><param name="letters_hint">$LOCALIZE[31834]</param></include>
+			<include content="Bald_WallFooter"><param name="c">513</param><param name="letters_hint">$LOCALIZE[31834]</param><param name="options_hint">$LOCALIZE[31685]</param></include>
 		</control>
 	</include>
 </includes>
