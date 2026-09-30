@@ -184,6 +184,16 @@ class FontsetTests(unittest.TestCase):
                 self.assertEqual([hex(c) for c in CYRILLIC if c not in found], [])
                 self.assertTrue(set(range(0x20, 0x7F)) <= found)  # and all of printable ASCII
 
+    def test_every_ui_font_draws_the_modifier_letters_providers_use(self):
+        # Live TV providers decorate titles with superscript and small capital letters ("ᴺᵉʷ", "ᴸᶦᵛᵉ", "ᴴᴰ"); Kodi has no
+        # per-glyph fallback, so a font without them shows boxes (tools/add_superscripts.py adds them).
+        letters = {ord(c) for c in "ᴺᵉʷᴸᶦᵛᴴᴰᴿᴱᴾᵀ¹²³⁴⁵⁶⁷⁸⁹⁰"}
+        for path in sorted((ROOT / "fonts").glob("*.ttf")):
+            if path.name.startswith("NotoSans"):
+                continue
+            with self.subTest(font=path.name):
+                self.assertEqual(sorted(hex(c) for c in letters - characters(path)), [])
+
     def test_only_kodis_bundled_arial_remains_and_only_for_text_from_outside_the_skin(self):
         # Estuary's old Arial fontset named a skin-local arial.ttf that Bald never shipped.
         for fontset_id, fontset in fontsets().items():

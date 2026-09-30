@@ -2,15 +2,16 @@
 """Add the superscript and small-capital letters Bald's UI fonts lack, from Noto Sans (fonts/NotoSans-Regular.ttf).
 
 Kodi draws each string with one font file and has no per-glyph fallback (CGUIFontTTF), so characters a font lacks
-show as empty boxes. Live TV providers decorate titles with modifier letters ("ᴸᶦᵛᵉ", "ᴺᵉʷ", "ᴴᴰ"), which DM Sans
-and Instrument Sans do not have. This copies the glyphs of these ranges that a font lacks from Noto Sans (SIL OFL
+show as empty boxes. Live TV providers decorate titles with modifier letters ("ᴸᶦᵛᵉ", "ᴺᵉʷ", "ᴴᴰ"), which DM Sans,
+Instrument Sans and Onest do not have. This copies the glyphs of these ranges that a font lacks from Noto Sans (SIL OFL
 1.1, fonts/NotoSans-OFL.txt), scaled to the font's units per em, into each of Bald's fonts in place:
 
     U+02B0-02FF  spacing modifier letters (ʰ ʷ ʸ ...)
     U+1D00-1DBF  phonetic extensions and supplement (ᴬ ᴮ ... ᵃ ᵇ ... ᶦ ᶻ, small capitals)
-    U+2070-209F  superscripts and subscripts (⁰ ¹ ... ⁿ ₀ ...)
+    U+2070-209F  superscripts and subscripts (⁰ ⁴ ... ⁿ ₀ ...)
+    U+00B2, U+00B3, U+00B9  the Latin-1 superscript digits (² ³ ¹), which Instrument Sans lacks
 
-DM Sans and Instrument Sans are SIL OFL 1.1 without a Reserved Font Name, so the modified fonts keep their names.
+DM Sans, Instrument Sans and Onest are SIL OFL 1.1 without a Reserved Font Name, so the modified fonts keep their names.
 Needs fontTools (pip install fonttools). Running it again changes nothing: characters a font already maps are skipped, and a glyph it has
 under the uniXXXX name but maps no character to is mapped rather than copied.
 
@@ -26,8 +27,8 @@ from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "fonts" / "NotoSans-Regular.ttf"
-TARGETS = sorted(p for p in (ROOT / "fonts").glob("*.ttf") if p.name.startswith(("DMSans-", "InstrumentSans-")))
-RANGES = ((0x02B0, 0x02FF), (0x1D00, 0x1DBF), (0x2070, 0x209F))
+TARGETS = sorted(p for p in (ROOT / "fonts").glob("*.ttf") if p.name.startswith(("DMSans-", "InstrumentSans-", "Onest-")))
+RANGES = ((0x00B2, 0x00B3), (0x00B9, 0x00B9), (0x02B0, 0x02FF), (0x1D00, 0x1DBF), (0x2070, 0x209F))
 
 
 def wanted(codepoint):
