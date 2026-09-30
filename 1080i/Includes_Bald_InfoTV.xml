@@ -580,7 +580,9 @@
 				<include>Bald_InfoTVOnOverview</include>
 				<onup>SetFocus(5000)</onup>
 				<include>Bald_InfoTVSeasonsDown</include>
-				<content target="videos" browse="never">$VAR[Bald_InfoTVSeasonsPath]</content>
+				<!-- Sorted: the library returns seasons and episodes in the order they were added, so a show scanned out of
+				     order read "Season 2, Season 3, Season 1, Season 4". -->
+				<content target="videos" sortby="season" sortorder="ascending" browse="never">$VAR[Bald_InfoTVSeasonsPath]</content>
 			</control>
 			<!-- Episodes (i7) and the focused episode's detail. -->
 			<control type="group">
@@ -594,7 +596,7 @@
 					<onup condition="$EXP[Bald_InfoTVHasSeasons]">SetFocus(5301)</onup>
 					<onup condition="!$EXP[Bald_InfoTVHasSeasons]">SetFocus(5000)</onup>
 					<include>Bald_InfoActionToCast</include>
-					<content target="videos" browse="never">$INFO[Container(5301).ListItem.FolderPath]</content>
+					<content target="videos" sortby="episode" sortorder="ascending" browse="never">$INFO[Container(5301).ListItem.FolderPath]</content>
 				</control>
 				<include>Bald_InfoTVEpisodeDetail</include>
 			</control>

@@ -106,6 +106,9 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(seasons.get("type"), "list")
         self.assertEqual(seasons.findtext("orientation"), "horizontal")
         self.assertEqual(seasons.findtext("content"), "$VAR[Bald_InfoTVSeasonsPath]")
+        # In season order: the library lists them in the order they were added (a show scanned out of order read
+        # "Season 2, Season 3, Season 1, Season 4").
+        self.assertEqual((seasons.find("content").get("sortby"), seasons.find("content").get("sortorder")), ("season", "ascending"))
         path = self.tv.find("variable[@name='Bald_InfoTVSeasonsPath']").findall("value")
         for value in path:
             # Never an unconditional value: an empty id would list every show, so each value needs its own id.
@@ -138,6 +141,7 @@ class InfoTvTests(unittest.TestCase):
         self.assertEqual(row.get("type"), "fixedlist")
         self.assertEqual((row.findtext("focusposition"), row.findtext("movement")), ("0", "2"))  # every season starts at the left edge
         self.assertEqual(row.findtext("content"), "$INFO[Container(5301).ListItem.FolderPath]")
+        self.assertEqual((row.find("content").get("sortby"), row.find("content").get("sortorder")), ("episode", "ascending"))
         scroll = row.find("scrolltime")
         self.assertEqual((scroll.text, scroll.get("tween"), scroll.get("easing")), ("440", "cubic", "out"))
         self.assertEqual([(n.get("condition"), n.text) for n in row.findall("onclick")], [
