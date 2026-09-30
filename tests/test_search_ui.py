@@ -82,6 +82,14 @@ class SearchUITests(unittest.TestCase):
         buttons = raw.findall(".//include[@content='Bald_SearchLiveButton']")
         self.assertEqual([(b.findtext("param[@name='id']"), b.findtext("param[@name='list']"), b.findtext("param[@name='kind']"))
                           for b in buttons], [('9101', '61', 'channels'), ('9102', '62', 'programmes')])
+        # One selection at a time: the results' dot shows only while they have focus; a Live TV entry's dot sits
+        # beside it (Kodi does not evaluate $MATH, so its position is passed in).
+        dot = results.find("focusedlayout/control[@type='image']")
+        self.assertEqual(dot.findtext('visible'), 'Control.HasFocus(50)')
+        for button in raw.findall(".//include[@content='Bald_SearchLiveButton']"):
+            top, dot_top = int(button.findtext("param[@name='top']")), int(button.findtext("param[@name='dot_top']"))
+            self.assertEqual(dot_top, top + 24)
+        self.assertNotIn('$MATH[', (ROOT / 'Includes_Bald_Common.xml').read_text(encoding='utf-8'))
         no_results = root.find(".//control[@id='999']")
         self.assertEqual(no_results.findtext('visible'), '!$EXP[Bald_SearchLiveShown]')
 

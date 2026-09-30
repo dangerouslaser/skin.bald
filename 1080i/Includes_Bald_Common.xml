@@ -328,7 +328,7 @@
 	<!-- A Live TV entry of Search's options (script-globalsearch.xml): Select shows its list (Bald.SearchLive) and
 	     focuses it. Left, Right and Back return to what shows, a Live TV list or the results. -->
 	<include name="Bald_SearchLiveButton">
-		<param name="id" /><param name="top" /><param name="list" /><param name="kind" /><param name="label" />
+		<param name="id" /><param name="top" /><param name="dot_top" /><param name="list" /><param name="kind" /><param name="label" />
 		<param name="up" /><param name="down_if" /><param name="down" />
 		<definition>
 			<control type="button" id="$PARAM[id]">
@@ -350,7 +350,7 @@
 				<onright>ClearProperty(Bald.SearchMenu)</onright><onright condition="$EXP[Bald_SearchLiveChannels]">61</onright><onright condition="$EXP[Bald_SearchLiveProgrammes]">62</onright><onright condition="!$EXP[Bald_SearchLiveShown]">50</onright>
 				<onback>ClearProperty(Bald.SearchMenu)</onback><onback condition="$EXP[Bald_SearchLiveChannels]">61</onback><onback condition="$EXP[Bald_SearchLiveProgrammes]">62</onback><onback condition="!$EXP[Bald_SearchLiveShown]">50</onback>
 			</control>
-			<control type="image"><left>Bald_RightColumn</left><top>$MATH[$PARAM[top] + 24]</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus($PARAM[id])</visible></control>
+			<control type="image"><left>Bald_RightColumn</left><top>$PARAM[dot_top]</top><width>8</width><height>8</height><texture colordiffuse="bald_accent">bald/dot.png</texture><visible>Control.HasFocus($PARAM[id])</visible></control>
 			<!-- The count, in the categories' note type (a button's second label takes the menu type). -->
 			<control type="label"><left>1764</left><top>$PARAM[top]</top><width>70</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuNote</font><textcolor>bald_ink45</textcolor><label>$INFO[Container($PARAM[list]).NumItems]</label><visible>Control.IsVisible($PARAM[id]) + !Control.HasFocus($PARAM[id])</visible><include>Bald_AnimMenuShows</include></control>
 			<control type="label"><left>1764</left><top>$PARAM[top]</top><width>70</width><height>56</height><align>right</align><aligny>center</aligny><font>Bald_MenuNote</font><textcolor>bald_ink70</textcolor><label>$INFO[Container($PARAM[list]).NumItems]</label><visible>Control.HasFocus($PARAM[id])</visible></control>
