@@ -146,6 +146,23 @@ def tv_info_textures():
     settings_textures()
 
 
+def row_hint_chevrons():
+    """Home's row hints (Bald_RowHints): up and down chevrons in a 24 px square, drawn for 12 px (1.5 px stroke, round
+    caps), the weight of the menu's disclosure chevron at the hint's size."""
+    size, k = 24, SS
+    for name, (y0, y1) in (("chevron_up.png", (15, 9)), ("chevron_down.png", (9, 15))):
+        mark = Image.new("L", (size * SS, size * SS), 0)
+        d = ImageDraw.Draw(mark)
+        pts = [(6 * k, y0 * k), (12 * k, y1 * k), (18 * k, y0 * k)]
+        width = round(3 * k)
+        d.line(pts, fill=255, width=width, joint="curve")
+        for x, y in (pts[0], pts[-1]):
+            d.ellipse([x - width / 2, y - width / 2, x + width / 2, y + width / 2], fill=255)
+        im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
+        im.putalpha(mark.resize((size, size), Image.LANCZOS))
+        save(im, name)
+
+
 def settings_textures():
     """Kodi's settings pages (SettingsCategory.xml templates): spinner arrows and the slider."""
     # Spinner arrow: a right-pointing chevron in a 32 px square, drawn for 16 px (2 px stroke, round caps).
@@ -161,6 +178,7 @@ def settings_textures():
     im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
     im.putalpha(mark.resize((size, size), Image.LANCZOS))
     save(im, "chevron.png")
+    row_hint_chevrons()
     # Slider track: a 4 px rounded line centred in a 16 px tall texture, so the 16 px nib keeps its size (Kodi scales
     # the nib by the control height over the track texture's height). 9-slice border 8,0,8,0.
     im = Image.new("RGBA", (16, 16), (255, 255, 255, 0))
