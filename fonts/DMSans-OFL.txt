@@ -1,6 +1,7 @@
 Copyright 2014 The DM Sans Project Authors (https://github.com/googlefonts/dm-fonts)
 
-The letters U+02B0-02FF, U+1D00-1DBF and U+2070-209F that DM Sans lacks were added to these files from Noto Sans
+The letters U+02B0-02FF, U+1D00-1DBF and U+2070-209F that DM Sans lacks were added to these files: superscripts, subscripts and small
+capitals drawn from DM Sans's own letters (tools/add_superscripts.py), the rest from Noto Sans
 (Copyright 2015 Google Inc.; Copyright 2022 The Noto Project Authors), also under the SIL Open Font License 1.1:
 see NotoSans-OFL.txt.
 
