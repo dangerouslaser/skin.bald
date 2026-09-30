@@ -338,13 +338,14 @@
 				</include>
 			</control>
 
-			<!-- Section line: accent dot and screen name. Home's hints sit on the line above it (Bald_HomeHintLine): the focused
-			     row's (Bald_RowHints, with each row) or the menu's. -->
+			<!-- Section line: accent dot and screen name, above Home's hint line (Bald_HomeHintLine, the y 954 line): the
+			     focused row's hints (Bald_RowHints, with each row) or the menu's. -->
 			<include>Bald_MenuHints</include>
 			<control type="grouplist">
 				<include>Bald_AnimInfoChrome</include>
 				<left>Bald_RightColumn</left>
-				<top>966</top>
+				<!-- Above the hint line (Bald_HomeHintLine, y 954), which stays where every other screen has its hints. -->
+				<top>912</top>
 				<width>480</width>
 				<height>26</height>
 				<orientation>horizontal</orientation>

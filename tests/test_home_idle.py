@@ -288,7 +288,7 @@ class IdleLayerAnimationTests(unittest.TestCase):
         chrome = carrying("Bald_AnimIdleChrome")
         self.assertIn("$EXP[Bald_ShowHomeClock]", [g.findtext("visible") for g in chrome])
         self.assertIn("Bald_ConfiguredCaptions", [i.text for g in chrome for i in g.findall("include")])
-        self.assertTrue(any(g.get("type") == "grouplist" and g.findtext("top") == "966" for g in chrome))
+        self.assertTrue(any(g.get("type") == "grouplist" and g.findtext("top") == "912" for g in chrome))
         # The expanded frame sits over the frame masks and under the chrome.
         order = [c for c in raw.iter() if c.tag in ("include", "control")]
         names = [c.text if c.tag == "include" else None for c in order]

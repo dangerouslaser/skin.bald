@@ -108,8 +108,8 @@ class RowHintTests(unittest.TestCase):
             hints = self.hint_line(style)
             with self.subTest(style=style):
                 # Beside the row's group, not in it: the same place whatever the row style, ending on the safe edge.
-                # The right column (1440), on the line just above the section line (966).
-                self.assertEqual((hints.findtext("left"), hints.findtext("top")), ("1440", "928"))
+                # The right column (1440), on the hint line every other screen uses (y 954).
+                self.assertEqual((hints.findtext("left"), hints.findtext("top")), ("1440", "954"))
                 self.assertEqual(hints.findtext("width"), "384")  # 1440 + 384 = 1824
                 self.assertEqual(hints.findtext("align"), "right")
         # The row label line keeps only the label and the count.
