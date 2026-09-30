@@ -1,0 +1,27 @@
+Bald Process Info (script.bald.processinfo)
+
+Based on TinyPPI (https://github.com/CE-Repo/script.tinyppi)
+Copyright (c) 2026 U3knOwn
+Licensed under the GNU Affero General Public Licence v3.0 or later.
+
+Modifications for LibreELEC and the fork's own artwork
+Copyright (c) 2026 dangerouslaser
+Source: https://github.com/dangerouslaser/script.bald.processinfo
+
+Bald Process Info is not TinyPPI. It does not use TinyPPI's name, logo or
+original artwork, and TinyPPI's author does not support it. Source files keep
+their original copyright and SPDX-License-Identifier headers.
+
+Licensing at a glance
+---------------------
+
+  Source code   GNU Affero General Public Licence v3.0 or later -> LICENSE
+  Artwork       see LICENSE-ASSETS
+
+Why the AGPL (from upstream)
+----------------------------
+
+The add-on serves a web dashboard over the network (resources/lib/web/).
+Section 13 of the AGPL means that if you modify it and let anyone interact
+with it over a network, you must offer those users the source of your
+modified version.

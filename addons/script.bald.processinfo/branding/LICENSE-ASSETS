@@ -1,0 +1,37 @@
+Bald Process Info: Artwork
+==========================
+
+The code of Bald Process Info is licensed under the GNU Affero General Public
+Licence, version 3 or later (see LICENSE). This file covers the images.
+
+1. The fork's own artwork
+
+icon.png, fanart.png and the images under resources/skins/Default/media/
+(background/, channels/, common/, dialog/, progress/, splash/ and icons/,
+except the Dolby Vision marks listed in section 3) were made for this fork by
+tools/make_branding.py. They are licensed under the same terms as the code
+(AGPL-3.0-or-later).
+
+2. Lucide icons
+
+The overlay icons in resources/skins/Default/media/icons/ (except vs10.png and
+the marks in section 3), the arrows in resources/skins/Default/media/dialog/
+and the icons in resources/web/icons/ are rendered from Lucide
+(https://lucide.dev), ISC License, Copyright (c) 2026 Lucide Icons and
+Contributors. The full licence text is in branding/_src/lucide/LICENSE in the
+source repository.
+
+3. Third-party marks
+
+The format and brand logos under resources/skins/Default/media/codecs/ and the
+Dolby Vision marks in resources/skins/Default/media/icons/ (dv-logo.png,
+dv-name.png) belong to their owners. "Dolby", "Dolby Vision", "Dolby Digital",
+"Dolby Atmos" and "TrueHD" are trademarks of Dolby Laboratories, Inc.; "DTS",
+"DTS-HD" and "DTS:X" are trademarks of DTS, Inc. / Xperi; "IMAX" and "IMAX
+Enhanced" are trademarks of IMAX Corporation. They are used only to identify
+the format a stream carries; no affiliation or endorsement is claimed.
+
+4. Fonts
+
+The artwork is set in DM Sans (SIL Open Font License 1.1,
+branding/_src/fonts/DMSans-OFL.txt in the source repository).
