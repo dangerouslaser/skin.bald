@@ -71,12 +71,13 @@ class PVRGuideTests(unittest.TestCase):
                 stretched = node.findtext('left') is not None and node.findtext('right') is not None
                 if stretched:
                     self.assertIn(node.get('id'), ('1', '2'), (name, ET.tostring(node, encoding='unicode')[:80]))
-        # The day in the corner: short ("Wednesday 9/30") rather than Kodi's long regional date, which was cut off.
+        # The day in the corner: the focused programme's short date, drawn outside the grid; Kodi's own long date item
+        # (which was cut off) is left blank.
         values = [(v.get('condition'), v.text) for v in
                   ET.parse(ROOT / 'Includes_PVR.xml').getroot().findall("variable[@name='Bald_EpgRulerLabel']/value")]
-        self.assertEqual(values, [('!ListItem.Property(DateLabel)', '$INFO[ListItem.Label]'),
-                                  ('String.IsEqual(ListItem.Label,$INFO[System.Date])', '$INFO[System.Date(DDDD M/D)]'),
-                                  (None, '$INFO[Container(50).ListItem.StartDate]')])
+        self.assertEqual(values, [('!ListItem.Property(DateLabel)', '$INFO[ListItem.Label]')])
+        day = [n for n in Skin().window('MyPVRGuide.xml').iter('control') if n.findtext('label') == '$INFO[ListItem.StartDate]']
+        self.assertEqual([(n.findtext('left'), n.findtext('top')) for n in day], [('96', '380')])
         self.assertEqual(grid.find("rulerlayout/control[@type='label']").findtext('label'), '$VAR[Bald_EpgRulerLabel]')
         # The ruler's first item is the day over the 190 px channel column: its label must fit there.
         self.assertLessEqual(int(grid.find("rulerlayout/control[@type='label']").findtext('width')),
