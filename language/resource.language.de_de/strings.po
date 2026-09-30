@@ -2273,6 +2273,12 @@ msgctxt "#31791"
 msgid "Programme actions"
 msgstr "Sendungsaktionen"
 
+#: /1080i/MyWeather.xml
+#. The weather page's hint line on the current conditions: Select shows the next location
+msgctxt "#31792"
+msgid "Next location"
+msgstr "Nächster Ort"
+
 #: /1080i/script-globalsearch.xml
 msgctxt "#31890"
 msgid "Series / artist"

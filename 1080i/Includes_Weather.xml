@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<!-- The weather page (MyWeather.xml). It started as Kodi 22 Estuary's weather page (GPL-2.0-or-later, see
-	     LICENSE-Estuary.txt); the layout is now Bald's (docs/NOTES.md, "Weather page"): a tab row picks one of four
-	     views, Now, Daily, Hourly and Maps, over a blurred backdrop of the followed tile's weather picture. The forecast
+	     LICENSE-Estuary.txt); the layout is now Bald's (docs/NOTES.md, "Weather page"): a trail on the hint line, as on the
+	     info screen, names the four views, Now, Daily, Hourly and Maps, over a blurred backdrop of the followed tile's weather picture. The forecast
 	     rows list the same items as Home's weather rows (Includes_Bald_Weather.xml), with Bald Helper's tidied values. -->
 
 	<!-- ============ Views ============ -->
-	<!-- The view the tab row (9100) has selected. Its selected item is the state, focused or not. -->
+	<!-- The view the trail's list (9100) has selected. Its selected item is the state, focused or not. -->
 	<expression name="Bald_WeatherView_now">[String.IsEqual(Container(9100).ListItem.Property(view),now)]</expression>
 	<expression name="Bald_WeatherView_daily">[String.IsEqual(Container(9100).ListItem.Property(view),daily)]</expression>
 	<expression name="Bald_WeatherView_hourly">[String.IsEqual(Container(9100).ListItem.Property(view),hourly)]</expression>
@@ -15,13 +15,16 @@
 	<expression name="Bald_WeatherHasMaps">[Weather.IsFetched + !String.IsEmpty(Weather.Data(Map.IsFetched))]</expression>
 	<expression name="Bald_WeatherLocations">[Integer.IsGreater(Weather.Data(Locations),1)]</expression>
 
-	<!-- Tab row: Left and Right change the view at once (the list wraps), Down enters it. -->
+	<!-- The views, as the info screen's pages: a trail on the hint line at the left ("Now · Daily · Hourly · Maps", the
+	     view shown in full ink, as Bald_InfoPageTrail). The list behind it (9100) holds the focus between the views
+	     and draws nothing: Left and Right change the view at once (it wraps), Down enters it, and a view's Up comes
+	     back. Hourly and Maps are in the trail, and the list, only while the provider has them. -->
 	<include name="Bald_WeatherTabs">
 		<control type="list" id="9100">
 			<left>Bald_SafeLeft</left>
-			<top>192</top>
-			<width>1728</width>
-			<height>48</height>
+			<top>Bald_HintTop</top>
+			<width>1</width>
+			<height>1</height>
 			<orientation>horizontal</orientation>
 			<scrolltime>0</scrolltime>
 			<include content="Bald_FollowContainer"><param name="id">9170</param><param name="window">weather</param></include>
@@ -29,8 +32,8 @@
 			<ondown condition="$EXP[Bald_WeatherView_daily]">SetFocus(15100)</ondown>
 			<ondown condition="$EXP[Bald_WeatherView_hourly]">SetFocus(15200)</ondown>
 			<ondown condition="$EXP[Bald_WeatherView_maps]">SetFocus(70010)</ondown>
-			<itemlayout width="176" height="48"><include content="Bald_WeatherTab" /></itemlayout>
-			<focusedlayout width="176" height="48"><include content="Bald_WeatherTab"><param name="selected">true</param></include></focusedlayout>
+			<itemlayout width="1" height="1" />
+			<focusedlayout width="1" height="1" />
 			<content>
 				<item><label>$LOCALIZE[19030]</label><property name="view">now</property><onclick>SetFocus(20)</onclick></item>
 				<item><label>$LOCALIZE[31759]</label><property name="view">daily</property><onclick>SetFocus(15100)</onclick></item>
@@ -38,41 +41,31 @@
 				<item><label>$LOCALIZE[33035]</label><property name="view">maps</property><onclick>SetFocus(70010)</onclick><visible>$EXP[Bald_WeatherHasMaps]</visible></item>
 			</content>
 		</control>
+		<control type="label">
+			<left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>1100</width><height>28</height>
+			<font>Bald_Hint</font><textcolor>bald_ink60</textcolor>
+			<label>$VAR[Bald_WeatherTrailNow]     ·     $VAR[Bald_WeatherTrailDaily]$VAR[Bald_WeatherTrailHourly]$VAR[Bald_WeatherTrailMaps]</label>
+		</control>
 	</include>
-	<!-- One tab: 45% ink, the selected one full ink, with the accent dot just right of its name while the row has focus.
-	     The dot is a bullet in the label: an auto-width label inside a list layout's grouplist is not drawn. -->
-	<include name="Bald_WeatherTab">
-		<param name="selected">false</param>
-		<definition>
-			<control type="label">
-				<width>172</width>
-				<height>36</height>
-				<aligny>center</aligny>
-				<font>Bald_Section</font>
-				<textcolor>bald_ink45</textcolor>
-				<label>$INFO[ListItem.Label]</label>
-				<visible>!$PARAM[selected]</visible>
-			</control>
-			<control type="label">
-				<width>172</width>
-				<height>36</height>
-				<aligny>center</aligny>
-				<font>Bald_Section</font>
-				<textcolor>bald_ink</textcolor>
-				<label>$INFO[ListItem.Label]</label>
-				<visible>$PARAM[selected] + !Control.HasFocus(9100)</visible>
-			</control>
-			<control type="label">
-				<width>172</width>
-				<height>36</height>
-				<aligny>center</aligny>
-				<font>Bald_Section</font>
-				<textcolor>bald_ink</textcolor>
-				<label>$INFO[ListItem.Label]  [COLOR bald_accent]•[/COLOR]</label>
-				<visible>$PARAM[selected] + Control.HasFocus(9100)</visible>
-			</control>
-		</definition>
-	</include>
+	<variable name="Bald_WeatherTrailNow">
+		<value condition="$EXP[Bald_WeatherView_now]">[COLOR bald_ink]$LOCALIZE[19030][/COLOR]</value>
+		<value>$LOCALIZE[19030]</value>
+	</variable>
+	<variable name="Bald_WeatherTrailDaily">
+		<value condition="$EXP[Bald_WeatherView_daily]">[COLOR bald_ink]$LOCALIZE[31759][/COLOR]</value>
+		<value>$LOCALIZE[31759]</value>
+	</variable>
+	<!-- The optional views bring their own separator, so a missing one leaves no stray dot. -->
+	<variable name="Bald_WeatherTrailHourly">
+		<value condition="!$EXP[Bald_WeatherHasHourly]"></value>
+		<value condition="$EXP[Bald_WeatherView_hourly]">[COLOR bald_ink60]     ·     [/COLOR][COLOR bald_ink]$LOCALIZE[33036][/COLOR]</value>
+		<value>[COLOR bald_ink60]     ·     [/COLOR]$LOCALIZE[33036]</value>
+	</variable>
+	<variable name="Bald_WeatherTrailMaps">
+		<value condition="!$EXP[Bald_WeatherHasMaps]"></value>
+		<value condition="$EXP[Bald_WeatherView_maps]">[COLOR bald_ink60]     ·     [/COLOR][COLOR bald_ink]$LOCALIZE[33035][/COLOR]</value>
+		<value>[COLOR bald_ink60]     ·     [/COLOR]$LOCALIZE[33035]</value>
+	</variable>
 	<!-- ============ Backdrop ============ -->
 	<!-- The followed tile's weather picture, blurred like Home's backdrop (Bald Helper's Bald.Blur, else TMDb Helper's),
 	     at Appearance's background brightness. Not the last blur of another window: a tile without a picture (no
@@ -209,9 +202,9 @@
 				<height>24</height>
 				<aligny>center</aligny>
 				<font>Bald_Hint</font>
-				<textcolor>bald_ink60</textcolor>
-				<label>$LOCALIZE[31154]</label>
-				<visible>Control.HasFocus(20) + $EXP[Bald_WeatherLocations]</visible>
+				<textcolor>bald_ink45</textcolor>
+				<!-- Whose forecast it is (the provider's attribution), as a footnote under the conditions. -->
+				<label>$INFO[Weather.Data(WeatherProvider)]</label>
 			</control>
 			<!-- The figures, in two columns on the right half: wind to clouds, then dew point to sunset. -->
 			<control type="grouplist">

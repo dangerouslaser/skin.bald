@@ -3,7 +3,7 @@
 	<!-- The weather page. Started from Kodi 22 Estuary's MyWeather.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt); the
 	     layout is Bald's (Includes_Weather.xml, docs/NOTES.md "Weather page"). CGUIWindowWeather's ids (2, 3, 11,
 	     223-228, 31-35) were never in Estuary: the page reads Weather.* infolabels and switches location with
-	     Weather.LocationNext. 9100 is the tab row (Now, Daily, Hourly, Maps), 20 the current conditions (Select: next
+	     Weather.LocationNext. 9100 holds the focus for the views' trail (Now, Daily, Hourly, Maps), 20 the current conditions (Select: next
 	     location), 15100 / 15200 the daily and hourly forecasts, 2000 the maps (70010-70050 their focus buttons), 9170
 	     the hidden list the backdrop follows on Now, and 10000 (Menu) opens the weather settings. -->
 	<defaultcontrol always="true">9100</defaultcontrol>
@@ -75,11 +75,7 @@
 			</include>
 			<include>Bald_WeatherMapsView</include>
 		</control>
-		<!-- Footer: the provider, and the page's hints (the tab row's, else a view's). -->
-		<include content="Bald_MediaFooter">
-			<param name="label">$INFO[Weather.Data(WeatherProvider)]</param>
-			<param name="width">1080</param>
-		</include>
+		<!-- Footer: the views' trail at the left (Bald_WeatherTabs), the hints at the right (the trail's, else a view's). -->
 		<control type="group">
 			<left>1224</left>
 			<top>Bald_HintTop</top>
@@ -90,10 +86,23 @@
 				<param name="second">$VAR[Bald_KeyMenu]$LOCALIZE[31984]</param>
 			</include>
 		</control>
+		<!-- On the current conditions with several locations, Select moves to the next one. -->
 		<control type="group">
 			<left>1224</left>
 			<top>Bald_HintTop</top>
-			<visible>!Control.HasFocus(9100)</visible>
+			<visible>Control.HasFocus(20) + $EXP[Bald_WeatherLocations]</visible>
+			<include content="Bald_InfoHintPair">
+				<param name="width">600</param>
+				<param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31701]</param>
+				<param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31792]</param>
+				<param name="third">$VAR[Bald_KeyMenu]$LOCALIZE[31984]</param>
+				<param name="third_visible">true</param>
+			</include>
+		</control>
+		<control type="group">
+			<left>1224</left>
+			<top>Bald_HintTop</top>
+			<visible>!Control.HasFocus(9100) + ![Control.HasFocus(20) + $EXP[Bald_WeatherLocations]]</visible>
 			<include content="Bald_InfoHintPair">
 				<param name="width">600</param>
 				<param name="first">$VAR[Bald_KeyUp]$LOCALIZE[31701]</param>
