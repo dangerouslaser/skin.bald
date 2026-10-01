@@ -147,6 +147,7 @@ SCREENSHOT_CAPTIONS = (
     "Library views",
     "TV guide",
     "Series page: seasons as tabs, episodes in a row",
+    "Settings",
 )
 # The movie library's views (the screenshots after SCREENSHOT_CAPTIONS's), a section of their own.
 LIBRARY_CAPTIONS = (
