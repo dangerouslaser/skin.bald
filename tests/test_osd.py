@@ -534,7 +534,9 @@ class OSDStyleTests(unittest.TestCase):
         # No second dim: the OSD's tall scrim steps aside under the Live TV panel.
         seek = self.roots["DialogSeekBar.xml"]
         tall = [n.findtext("visible") for n in seek.iter("control") if "Bald_OSDTallScrim" in (n.findtext("visible") or "")]
-        self.assertEqual(tall, ["$EXP[Bald_OSDTallScrim] + !$EXP[Bald_OSDPVRPanelUp]"])
+        # The short and the tall gradients take turns (the tall one has the short one blended in).
+        self.assertEqual(tall, ["!$EXP[Bald_OSDTallScrim] + !$EXP[Bald_OSDPVRPanelUp]",
+                                "$EXP[Bald_OSDTallScrim] + !$EXP[Bald_OSDPVRPanelUp]"])
 
     def test_popup_animation_uses_the_bald_curves(self):
         # Shared by DialogSlider, 1110, DialogSubtitles, PlayerControls and the Live TV managers: open pops and fades,

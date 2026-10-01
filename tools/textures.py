@@ -107,6 +107,9 @@ def main():
     save(im, "menu_dot.png")
     # Progress track and bar: 4 px, rounded. 9-slice border 2.
     save(rounded(8, 4, 2), "bar.png")
+    # A chapter or scene break on the seek track (Bald_PlaybackTrackMarks): a 2 px square-ended separator, tinted
+    # bald_field so the line reads as segments. bar.png's 8 px rounded ends drew 8 px black blocks across the line.
+    save(Image.new("RGBA", (2, 4), (255, 255, 255, 255)), "bar_gap.png")
 
     tv_info_textures()
 
@@ -183,6 +186,36 @@ def osd_textures():
     im.paste((255, 255, 255, 255), (4, 0), disc.resize((72, 72), Image.LANCZOS))
     save(im, "osd_disc.png")
     guide_textures()
+    osd_scrims()
+
+
+def osd_scrims():
+    """The player's gradients (Includes_Bald_OSD.xml, Includes_Bald_Playback.xml), cut to the rows they darken.
+    They were scrim_info_b stretched: 85% black at the edge to 0 at 42% of the image's height, so most of each image
+    was clear and still blended on every frame the OSD drew, which slow GPUs feel during playback. Each is now drawn
+    1:1 at its own height:
+      scrim_osd_short  the bar alone: 660 px stretched, clear above 277 px.
+      scrim_osd_tall   the controls, a panel or the info overlay: the 1280 px stretch (clear above 538 px) with the short
+                       one over it, blended into one image so the two are never drawn together.
+      scrim_osd_top    the top edge behind the clock and view-mode lines: 640 px stretched and flipped, clear below 269.
+    White, tinted by the skin (bald_scrim)."""
+    def ramp(d, reach):
+        return max(0.0, 0.85 * (1 - d / reach))
+
+    def strip(alphas, name, from_bottom=True):
+        im = Image.new("RGBA", (4, len(alphas)), (255, 255, 255, 0))
+        for d, a in enumerate(alphas):
+            y = len(alphas) - 1 - d if from_bottom else d
+            for x in range(4):
+                im.putpixel((x, y), (255, 255, 255, round(a * 255)))
+        save(im, name)
+
+    short, tall = 0.42 * 660, 0.42 * 1280
+    strip([ramp(d + 0.5, short) for d in range(math.ceil(short))], "scrim_osd_short.png")
+    strip([1 - (1 - ramp(d + 0.5, tall)) * (1 - ramp(d + 0.5, short)) for d in range(math.ceil(tall))],
+          "scrim_osd_tall.png")
+    top = 0.42 * 640
+    strip([ramp(d + 0.5, top) for d in range(math.ceil(top))], "scrim_osd_top.png", from_bottom=False)
 
 
 def guide_textures():

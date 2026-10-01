@@ -278,12 +278,28 @@ class PlaybackStyleTests(unittest.TestCase):
                   if node.get("type") == "progress" and node.findtext("info") == "Player.Progress"]
         self.assertEqual([node.find("midtexture").get("colordiffuse") for node in played], ["bald_accent"])
 
+    def test_the_player_gradients_cover_only_the_rows_they_darken(self):
+        # Each is drawn 1:1 at its height, its first (or, for the top one, last) row clear and the next not.
+        from PIL import Image
+        for name, top, height, clear_end in (("short", 802, 278, "top"), ("tall", 542, 538, "top"),
+                                             ("top", 0, 269, "bottom")):
+            image = Image.open(ROOT / "media" / "bald" / f"scrim_osd_{name}.png")
+            self.assertEqual(image.size, (4, height), name)
+            alphas = [image.getpixel((0, y))[3] for y in range(height)]
+            edge = alphas if clear_end == "top" else alphas[::-1]
+            self.assertLessEqual(edge[0], 1, name)
+            self.assertGreater(edge[-1], 200, name)
+            if name != "top":
+                self.assertEqual(top + height, 1080, name)
+
     def test_osd_sits_on_the_bottom_scrim_with_hints_on_the_hint_line(self):
         scrim, = expand_call("Bald_PlaybackScrim")
-        self.assertEqual(scrim.findtext("texture"), "bald/scrim_info_b.png")
+        self.assertEqual(scrim.findtext("texture"), "bald/scrim_osd_tall.png")
         self.assertEqual(scrim.find("texture").get("colordiffuse"), "bald_scrim")
         seekbar = ET.tostring(resolve_window("DialogSeekBar.xml"), encoding="unicode")
-        self.assertIn("bald/scrim_info_b.png", seekbar)
+        for texture in ("scrim_osd_tall", "scrim_osd_short", "scrim_osd_top"):
+            self.assertIn(f"bald/{texture}.png", seekbar)
+        self.assertNotIn("scrim_info_b", seekbar)
         for name in ("VideoOSD.xml", "MusicOSD.xml"):
             groups = [node for node in resolve_window(name).iter("control")
                       if node.get("type") == "group" and node.findtext("top") == "990"]  # the OSD hint line

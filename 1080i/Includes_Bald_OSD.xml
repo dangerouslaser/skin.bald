@@ -308,17 +308,19 @@
 		<value>100%</value>
 	</variable>
 	<!-- ============ Seek layer (DialogSeekBar) ============ -->
-	<!-- Bottom gradients: short with the bar alone, tall with the buttons, a panel or the info overlay, and a field dim
-	     under a bottom panel. The scrim is the info dialog's scrim_info_b in field, stretched. -->
+	<!-- Bottom gradients: short with the bar alone, tall with the buttons, a panel or the info overlay, and a dim under
+	     a bottom panel. One of the two gradients at a time: the tall one already holds the short one blended in
+	     (scrim_osd_tall), so slow GPUs blend one layer, not two, while the OSD redraws over the video. -->
 	<include name="Bald_OSDScrims">
 		<control type="group">
 		<include>Bald_OSDShade</include>
 		<control type="group">
-			<visible>!$EXP[Bald_OSDPVRPanelUp]</visible>
+			<visible>!$EXP[Bald_OSDTallScrim] + !$EXP[Bald_OSDPVRPanelUp]</visible>
 			<include>Bald_OSDAnimFade</include>
 			<include content="Bald_PlaybackScrim">
-				<param name="top">420</param>
-				<param name="height">660</param>
+				<param name="top">802</param>
+				<param name="height">278</param>
+				<param name="texture">bald/scrim_osd_short.png</param>
 			</include>
 		</control>
 		<!-- Not under the Live TV panel, which brings its own black (Bald_PVRPanelBase). -->

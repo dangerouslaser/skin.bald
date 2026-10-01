@@ -162,29 +162,31 @@
 	</include>
 
 	<!-- ============ Surfaces ============ -->
-	<!-- Bottom scrim: the info dialog's scrim_info_b (field 85% at the bottom edge to 0), stretched so it reaches up to
-	     y 542 at the default size. -->
+	<!-- Bottom scrim: black 85% at the bottom edge to 0 at y 542, drawn only over the rows it darkens
+	     (scrim_osd_*, tools/textures.py osd_scrims: a clear stretch of the gradient is still blended every frame).
+	     The default is the tall one; the seek layer also uses the short one (Bald_OSDScrims). -->
 	<include name="Bald_PlaybackScrim">
-		<param name="top">-200</param>
-		<param name="height">1280</param>
+		<param name="top">542</param>
+		<param name="height">538</param>
+		<param name="texture">bald/scrim_osd_tall.png</param>
 		<definition>
 			<control type="image">
 				<left>0</left>
 				<top>$PARAM[top]</top>
 				<width>1920</width>
 				<height>$PARAM[height]</height>
-				<texture colordiffuse="bald_scrim">bald/scrim_info_b.png</texture>
+				<texture colordiffuse="bald_scrim">$PARAM[texture]</texture>
 			</control>
 		</definition>
 	</include>
-	<!-- Top scrim: the same texture flipped, 85% at the top edge to 0 at y 269. -->
+	<!-- Top scrim: 85% at the top edge to 0 at y 269, only those rows (scrim_osd_top). -->
 	<include name="Bald_PlaybackScrimTop">
 		<control type="image">
 			<left>0</left>
 			<top>0</top>
 			<width>1920</width>
-			<height>640</height>
-			<texture flipy="true" colordiffuse="bald_scrim">bald/scrim_info_b.png</texture>
+			<height>269</height>
+			<texture colordiffuse="bald_scrim">bald/scrim_osd_top.png</texture>
 		</control>
 	</include>
 	<!-- Opaque popup panel for the one-row player dialogs (DialogSlider, Custom_1110), centred at the top. -->
@@ -241,7 +243,8 @@
 		</definition>
 	</include>
 	<!-- Markers on the track: edit-list ranges as a 60% band, cut points and bookmarks as 8 px dashes (60% ink and the
-	     accent), chapters and scene markers as field-coloured gaps in the line. -->
+	     accent), chapters and scene markers as 2 px field-coloured separators (bar_gap.png), so the line reads as
+	     segments rather than broken by black blocks. -->
 	<include name="Bald_PlaybackTrackMarks">
 		<param name="left">96</param>
 		<param name="width">1728</param>
@@ -271,7 +274,7 @@
 				<width>$PARAM[width]</width>
 				<height>4</height>
 				<texturebg />
-				<righttexture colordiffuse="bald_field">bald/bar.png</righttexture>
+				<righttexture colordiffuse="bald_field">bald/bar_gap.png</righttexture>
 				<info>Player.SceneMarkers</info>
 			</control>
 			<control type="ranges">
@@ -280,7 +283,7 @@
 				<width>$PARAM[width]</width>
 				<height>4</height>
 				<texturebg />
-				<righttexture colordiffuse="bald_field">bald/bar.png</righttexture>
+				<righttexture colordiffuse="bald_field">bald/bar_gap.png</righttexture>
 				<info>Player.Chapters</info>
 			</control>
 			<control type="ranges">
