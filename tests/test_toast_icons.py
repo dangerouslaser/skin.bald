@@ -22,7 +22,7 @@ class ToastIconTests(unittest.TestCase):
                 self.assertEqual((image.size, image.mode), ((128, 128), "RGBA"))
                 # bald_ink on transparent: Kodi does not tint a toast's icon.
                 colours = {pixel[:3] for pixel in image.getdata() if pixel[3] == 255}
-                self.assertEqual(colours, {(0xEC, 0xEE, 0xF2)})
+                self.assertEqual(colours, {(0xEF, 0xEF, 0xEF)})
 
     def test_the_pack_no_longer_has_estuarys(self):
         version, files = xbt.read()

@@ -15,7 +15,7 @@
 	<!-- Bald tokens (docs/SPEC.md section 3). Ink opacity uses one fixed scale:
 	     100 / 95 / 80 / 70 / 60 / 45 / 34 / 28 / 10. Pick the nearest step; do not add in-between values.
 	     Image treatments (dimming, placeholders, backdrop brightness, scrims) have role names instead. -->
-	<color name="bald_field">FF0B0C10</color>
+	<color name="bald_field">FF0D0D0D</color>
 	<!-- Accent: white (it was a light blue): focus discs and dots, progress, the genre line, ratings glyphs. -->
 	<color name="bald_accent">FFFFFFFF</color>
 	<!-- Recording and timer marks (the channel status icon, the guide's timer dots, timer rows): a clear red, the one
@@ -23,19 +23,19 @@
 	<color name="bald_record">FFE5484D</color>
 	<!-- The TV guide's "now" line: the accent at half strength. -->
 	<color name="bald_accent50">80FFFFFF</color>
-	<color name="bald_ink">FFECEEF2</color>
-	<color name="bald_ink95">F2ECEEF2</color>
-	<color name="bald_ink80">CCECEEF2</color>
-	<color name="bald_ink70">B3ECEEF2</color>
-	<color name="bald_ink60">99ECEEF2</color>
-	<color name="bald_ink45">73ECEEF2</color>
-	<color name="bald_ink34">57ECEEF2</color>
-	<color name="bald_ink28">47ECEEF2</color>
+	<color name="bald_ink">FFEFEFEF</color>
+	<color name="bald_ink95">F2EFEFEF</color>
+	<color name="bald_ink80">CCEFEFEF</color>
+	<color name="bald_ink70">B3EFEFEF</color>
+	<color name="bald_ink60">99EFEFEF</color>
+	<color name="bald_ink45">73EFEFEF</color>
+	<color name="bald_ink34">57EFEFEF</color>
+	<color name="bald_ink28">47EFEFEF</color>
 	<!-- The TV guide ruler's half-hour ticks (2 px, so they never round away when the GUI is scaled). -->
-	<color name="bald_ink20">33ECEEF2</color>
-	<color name="bald_ink10">1AECEEF2</color>
+	<color name="bald_ink20">33EFEFEF</color>
+	<color name="bald_ink10">1AEFEFEF</color>
 	<!-- The TV guide's quiet cells (programmes still to come). -->
-	<color name="bald_ink06">0FECEEF2</color>
+	<color name="bald_ink06">0FEFEFEF</color>
 	<!-- Blurred fanart background brightness (multiplies the image): 30%. -->
 	<color name="bald_backdrop">FF4D4D4D</color>
 	<!-- The weather page's unblurred photo, without a blur helper (Bald_WeatherBackdrop): 12%. -->
@@ -45,9 +45,9 @@
 	<color name="bald_backdrop40">FF666666</color>
 	<color name="bald_backdrop50">FF808080</color>
 	<!-- Info dialog scrim layer. -->
-	<color name="bald_field60">990B0C10</color>
+	<color name="bald_field60">990D0D0D</color>
 	<!-- The context menu's scrim when it opens away from Home. -->
-	<color name="bald_field85">D90B0C10</color>
+	<color name="bald_field85">D90D0D0D</color>
 	<!-- Playback scrims (the OSD, seek layer and info overlay over video): pure black, so they never tint the picture;
 	     Playback › Background shading scales them (Bald_OSDShade). -->
 	<color name="bald_scrim">FF000000</color>
@@ -65,17 +65,17 @@
 	<!-- Unfocused tiles and posters: 55% (SPEC 5.1 row behavior), as brightness at full opacity, so a tile stays solid
 	     over background video (a 55% alpha tile let the video through). -->
 	<color name="bald_tile_dim">FF8C8C8C</color>
-	<color name="bald_poster_dim">FF818285</color>
+	<color name="bald_poster_dim">FF838383</color>
 	<!-- Artwork at an ink step's brightness, at full opacity (ink60/70/45 are translucent; over video they showed it
 	     through): unfocused wall posters, music covers and icons. -->
-	<color name="bald_art70">FFA5A7A9</color>
-	<color name="bald_art45">FF6A6B6D</color>
+	<color name="bald_art70">FFA7A7A7</color>
+	<color name="bald_art45">FF6B6B6B</color>
 	<!-- Placeholder boxes under artwork (and behind channel logos): the tint they had over the field, at full opacity,
 	     so a tile stays solid over background video. -->
-	<color name="bald_placeholder">FF141519</color>
-	<color name="bald_tile_placeholder">FF1D1E22</color>
+	<color name="bald_placeholder">FF161616</color>
+	<color name="bald_tile_placeholder">FF1F1F1F</color>
 	<!-- The track under a progress mark on Home tiles (Bald_TileMarks): bald_ink28 over the field, at full opacity, so
 	     the bar stays solid over background video; _dim is it at the unfocused tile's 55% brightness (bald_tile_dim). -->
-	<color name="bald_mark_track">FF4A4B4F</color>
-	<color name="bald_mark_track_dim">FF29292B</color>
+	<color name="bald_mark_track">FF4C4C4C</color>
+	<color name="bald_mark_track_dim">FF2A2A2A</color>
 </colors>

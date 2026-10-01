@@ -95,7 +95,7 @@ class TileMarksTests(unittest.TestCase):
         self.assertTrue(implies("$EXP[Bald_TileWatched]", "!$EXP[Bald_TileShowInProgress]", bodies))
 
     def test_colours_are_opaque_and_follow_focus(self):
-        self.assertEqual(COLORS["bald_mark_track"], "FF4A4B4F")
+        self.assertEqual(COLORS["bald_mark_track"], "FF4C4C4C")  # bald_ink28 over bald_field
         for style, (_, dim, _, _) in TILES.items():
             for layout, fill in zip(layouts(style), (dim, "bald_ink")):
                 group = marks(layout)[0]

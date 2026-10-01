@@ -20,7 +20,7 @@ import xbt  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "media"
 SIZE = 128
-INK = "#ECEEF2"  # bald_ink (colors/defaults.xml)
+INK = "#EFEFEF"  # bald_ink (colors/defaults.xml)
 ICONS = {
     "DefaultIconInfo.png": '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
     "DefaultIconWarning.png": '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/>'
