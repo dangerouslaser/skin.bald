@@ -145,7 +145,6 @@ SCREENSHOT_CAPTIONS = (
     "Cast and details",
     "More like this",
     "Library views",
-    "Live TV rows and channel groups",
     "TV guide",
     "Series page: seasons as tabs, episodes in a row",
 )
