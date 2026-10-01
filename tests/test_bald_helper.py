@@ -228,7 +228,7 @@ class AddonTests(unittest.TestCase):
     def test_addon_xml(self):
         root = ET.parse(ADDON / "addon.xml").getroot()
         self.assertEqual((root.get("id"), root.get("name"), root.get("version")),
-                         ("script.bald.helper", "Bald Helper", "1.4.9"))
+                         ("script.bald.helper", "Bald Helper", "1.5.0"))
         self.assertEqual(root.find("extension[@point='xbmc.service']").get("library"), "service.py")
         self.assertTrue((ADDON / "service.py").is_file())
         metadata = root.find("extension[@point='xbmc.addon.metadata']")
