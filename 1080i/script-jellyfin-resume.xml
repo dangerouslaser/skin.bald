@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Resume prompt for plugin.video.jellyfin (jellyfin_kodi/dialogs/resume.py; the add-on loads this file from the
+     skin when the skin has it). The add-on labels button 3010 ("Resume from 1:02:13") and 3011 (Kodi's "Play from
+     beginning") by number, closes on either click or Back, and focuses grouplist 100.
+     Bald's look: drawn as Bald's context menu, where Kodi's own resume prompt appears (DialogContextMenu.xml): the menu
+     column at 1430, 392 over the dark scrim, 56 px items with the accent dot. -->
+<window>
+	<defaultcontrol always="true">100</defaultcontrol>
+	<controls>
+		<include>Bald_MenuScrim</include>
+		<control type="group">
+			<include>Bald_MenuMotion</include>
+			<control type="grouplist" id="100">
+				<left>1430</left>
+				<top>392</top>
+				<width>450</width>
+				<height>118</height>
+				<orientation>vertical</orientation>
+				<itemgap>6</itemgap>
+				<usecontrolcoords>true</usecontrolcoords>
+				<onleft>Action(close)</onleft>
+				<onright>Action(close)</onright>
+				<control type="button" id="3010">
+					<left>4</left>
+					<width>446</width>
+					<height>56</height>
+					<include>Bald_MenuButtonLook</include>
+				</control>
+				<control type="button" id="3011">
+					<left>4</left>
+					<width>446</width>
+					<height>56</height>
+					<include>Bald_MenuButtonLook</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

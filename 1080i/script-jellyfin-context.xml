@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Context menu for plugin.video.jellyfin (jellyfin_kodi/dialogs/context.py; the add-on loads this file from the
+     skin when the skin has it): Jellyfin's own options for an item (Refresh, Add to favourites, Delete, ...). The add-on
+     fills list 155 with plain items, focuses it, reads the selected label on Select and closes on Back; it sets image
+     150 to the signed-in user's picture, which Bald leaves out (the image is kept, hidden, for the add-on).
+     Bald's look: drawn as Bald's context menu (DialogContextMenu.xml): the menu column at 1430, 392 over the dark
+     scrim, five 56 px items with 6 px gaps in view, unfocused at 34%, the focused one at full ink 6 px right with the
+     accent dot. A list draws its items in fixed layouts, so the focused item's slide is a place, not a motion. -->
+<window>
+	<defaultcontrol always="true">155</defaultcontrol>
+	<controls>
+		<include>Bald_MenuScrim</include>
+		<control type="image" id="150">
+			<visible>false</visible>
+		</control>
+		<control type="group">
+			<include>Bald_MenuMotion</include>
+			<control type="list" id="155">
+				<left>1434</left>
+				<top>392</top>
+				<width>446</width>
+				<!-- Five 56 px items plus four 6 px gaps (each item 62 px, the last one's gap below the view). -->
+				<height>304</height>
+				<orientation>vertical</orientation>
+				<scrolltime tween="cubic" easing="out">240</scrolltime>
+				<onleft>Action(close)</onleft>
+				<onright>Action(close)</onright>
+				<itemlayout width="446" height="62">
+					<control type="label">
+						<left>26</left>
+						<width>420</width>
+						<height>56</height>
+						<font>Bald_MenuItem</font>
+						<aligny>center</aligny>
+						<textcolor>bald_ink34</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout width="446" height="62">
+					<control type="group">
+						<left>6</left>
+						<control type="image">
+							<width>440</width>
+							<height>56</height>
+							<texture border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texture>
+						</control>
+						<control type="label">
+							<left>26</left>
+							<width>414</width>
+							<height>56</height>
+							<font>Bald_MenuItem</font>
+							<aligny>center</aligny>
+							<textcolor>bald_ink</textcolor>
+							<scroll>true</scroll>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+	</controls>
+</window>
