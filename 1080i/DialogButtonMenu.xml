@@ -1,82 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Kodi's power menu (shutdownmenu), opened from Home's Power entry. Its entries are the Skin Variables menu "power",
+     edited in Customization > Power > Power menu (shown, order, names, the user's own commands) and generated into
+     Bald_PowerMenuItems (shortcuts/generator/power.xml; Includes_Bald_HomeDefaults.xml holds the shipped list until
+     the first build). An entry Kodi cannot do on this device (Suspend, Hibernate, ...) does not show.
+     Bald's look: drawn as Bald's context menu in the Home menu's column (1430, 392), five 56 px items in view. Over
+     Home it stands in for the menu, which fades out while it is open (Bald_PowerMenuOpen), as a submenu would; Back
+     returns to the menu on Power. Elsewhere a dark scrim sits behind it. -->
 <window>
-	<defaultcontrol>9000</defaultcontrol>
-	<include>Animation_DialogPopupOpenClose</include>
+	<defaultcontrol always="true">9000</defaultcontrol>
 	<controls>
 		<control type="group">
-			<centerleft>50%</centerleft>
-			<width>600</width>
-			<centertop>50%</centertop>
-			<height>700</height>
-			<include content="DialogBackgroundCommons">
-				<param name="width" value="600" />
-				<param name="height" value="80" />
-				<param name="header_label" value="$LOCALIZE[31072]" />
-				<param name="header_id" value="2" />
-			</include>
-			<control type="panel" id="9000">
-				<include>ButtonMenuList</include>
+			<visible>!Window.IsVisible(home)</visible>
+			<include>Bald_MenuScrim</include>
+		</control>
+		<!-- Clicking outside the menu closes it (mouse). -->
+		<control type="button">
+			<width>1920</width>
+			<height>1080</height>
+			<texturefocus />
+			<texturenofocus />
+			<onclick>Action(close)</onclick>
+		</control>
+		<control type="group">
+			<include>Bald_MenuMotion</include>
+			<control type="list" id="9000">
+				<left>1434</left>
+				<top>392</top>
+				<width>446</width>
+				<!-- Five 56 px items plus four 6 px gaps. -->
+				<height>304</height>
+				<orientation>vertical</orientation>
+				<scrolltime tween="cubic" easing="out">240</scrolltime>
+				<onleft>Action(close)</onleft>
+				<onright>noop</onright>
+				<include>Bald_MenuListLayouts</include>
 				<content>
-					<item>
-						<label>$LOCALIZE[13012]</label>
-						<onclick>Quit()</onclick>
-						<visible>System.ShowExitButton</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[13016]</label>
-						<onclick>Powerdown()</onclick>
-						<visible>System.CanPowerDown</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[20150]</label>
-						<onclick>AlarmClock(shutdowntimer,Shutdown())</onclick>
-						<visible>!System.HasAlarm(shutdowntimer)</visible>
-						<visible>System.CanPowerDown | System.CanSuspend | System.CanHibernate</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[20151] $INFO[System.AlarmPos,(,)]</label>
-						<onclick>CancelAlarm(shutdowntimer)</onclick>
-						<visible>System.HasAlarm(shutdowntimer)</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[13011]</label>
-						<onclick>Dialog.Close(shutdownmenu)</onclick>
-						<onclick>Suspend()</onclick>
-						<visible>System.CanSuspend</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[13010]</label>
-						<onclick>Dialog.Close(shutdownmenu)</onclick>
-						<onclick>Hibernate()</onclick>
-						<visible>System.CanHibernate</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[13013]</label>
-						<onclick>Reset()</onclick>
-						<visible>System.CanReboot</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[20126] $INFO[system.profilename]</label>
-						<onclick>dialog.close(all,true)</onclick>
-						<onclick>System.LogOff</onclick>
-						<visible>System.HasLoginScreen | Integer.IsGreater(System.ProfileCount,1)</visible>
-						<visible>System.Loggedon</visible>
-					</item>
-					<item>
-						<label>$VAR[MasterModeLabel]</label>
-						<onclick>mastermode</onclick>
-						<visible>System.HasLocks</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[13017]</label>
-						<onclick>InhibitIdleShutdown(true)</onclick>
-						<visible>System.HasShutdown +!System.IdleShutdownInhibited</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[13018]</label>
-						<onclick>InhibitIdleShutdown(false)</onclick>
-						<visible>System.HasShutdown + System.IdleShutdownInhibited</visible>
-					</item>
+					<include>Bald_PowerMenuItems</include>
 				</content>
 			</control>
 		</control>

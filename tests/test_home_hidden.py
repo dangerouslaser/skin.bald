@@ -153,7 +153,8 @@ class HiddenHomeTests(unittest.TestCase):
         self.assertIn((home, "Skin.ToggleSetting(Bald.Screen.HideHome)"), [(n.get("condition"), n.text) for n in switch.findall("onclick")])
         self.assertTrue(implies(f"{home} + !{HIDE}", switch.findtext("selected")))
         only_home = {"String.IsEqual(Container(9300).ListItem.Property(kind),livetv)": False,
-                     "String.IsEqual(Container(9300).ListItem.Property(kind),hub)": False}
+                     "String.IsEqual(Container(9300).ListItem.Property(kind),hub)": False,
+                     "String.IsEqual(Container(9300).ListItem.Property(kind),power)": False}
         self.assertTrue(implies(f"{home} + {HIDE}", f"![{switch.findtext('selected')}]", assume=only_home))
         note = next(i for i in editor.iter("item") if i.findtext("property[@name='kind']") == "home")
         self.assertEqual(note.findtext("property[@name='note']"), "$LOCALIZE[31741]")

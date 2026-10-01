@@ -1,0 +1,53 @@
+[
+    {
+        "label": "$LOCALIZE[13012]",
+        "path": "Quit()",
+        "kind": "quit"
+    },
+    {
+        "label": "$LOCALIZE[13016]",
+        "path": "Powerdown()",
+        "kind": "powerdown"
+    },
+    {
+        "label": "$LOCALIZE[20150]",
+        "path": "AlarmClock(shutdowntimer,Shutdown())",
+        "kind": "timer"
+    },
+    {
+        "label": "$LOCALIZE[13011]",
+        "path": "Suspend()",
+        "kind": "suspend"
+    },
+    {
+        "label": "$LOCALIZE[13010]",
+        "path": "Hibernate()",
+        "kind": "hibernate"
+    },
+    {
+        "label": "$LOCALIZE[13013]",
+        "path": "Reset()",
+        "kind": "reboot"
+    },
+    {
+        "label": "$LOCALIZE[13313]",
+        "path": "RestartApp()",
+        "kind": "restart",
+        "disabled": "True"
+    },
+    {
+        "label": "$LOCALIZE[20126]",
+        "path": "System.LogOff",
+        "kind": "logoff"
+    },
+    {
+        "label": "$LOCALIZE[12360]",
+        "path": "mastermode",
+        "kind": "mastermode"
+    },
+    {
+        "label": "$LOCALIZE[13017]",
+        "path": "InhibitIdleShutdown(true)",
+        "kind": "idle"
+    }
+]

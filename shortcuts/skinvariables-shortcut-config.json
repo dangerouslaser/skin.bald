@@ -605,5 +605,84 @@
             "link": "true",
             "node": "radiotimers"
         }
+    ],
+    "grouping://bald/power/": [
+        {
+            "name": "Restart Kodi",
+            "path": "RestartApp()",
+            "icon": "DefaultAddonService.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "Reload the skin",
+            "path": "ReloadSkin()",
+            "icon": "DefaultAddonSkin.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "Start the screensaver",
+            "path": "ActivateScreensaver",
+            "icon": "DefaultAddonScreensaver.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "Update the video library",
+            "path": "UpdateLibrary(video)",
+            "icon": "DefaultVideo.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "Clean the video library",
+            "path": "CleanLibrary(video)",
+            "icon": "DefaultVideo.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "Update the music library",
+            "path": "UpdateLibrary(music)",
+            "icon": "DefaultMusicAlbums.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "File manager",
+            "path": "ActivateWindow(filemanager)",
+            "icon": "DefaultFolder.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "System information",
+            "path": "ActivateWindow(systeminfo)",
+            "icon": "DefaultAddonService.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "Event log",
+            "path": "ActivateWindow(eventlog)",
+            "icon": "DefaultAddonService.png",
+            "link": "true",
+            "node": ""
+        },
+        {
+            "name": "Program add-ons",
+            "path": "addons://sources/executable/",
+            "icon": "DefaultAddonProgram.png",
+            "link": "false",
+            "node": ""
+        },
+        {
+            "name": "Your own command",
+            "path": "noop",
+            "icon": "DefaultScript.png",
+            "link": "true",
+            "node": ""
+        }
     ]
 }

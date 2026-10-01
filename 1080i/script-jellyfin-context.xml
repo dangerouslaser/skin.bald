@@ -4,8 +4,7 @@
      fills list 155 with plain items, focuses it, reads the selected label on Select and closes on Back; it sets image
      150 to the signed-in user's picture, which Bald leaves out (the image is kept, hidden, for the add-on).
      Bald's look: drawn as Bald's context menu (DialogContextMenu.xml): the menu column at 1430, 392 over the dark
-     scrim, five 56 px items with 6 px gaps in view, unfocused at 34%, the focused one at full ink 6 px right with the
-     accent dot. A list draws its items in fixed layouts, so the focused item's slide is a place, not a motion. -->
+     scrim, five 56 px items with 6 px gaps in view (Bald_MenuListLayouts). -->
 <window>
 	<defaultcontrol always="true">155</defaultcontrol>
 	<controls>
@@ -25,37 +24,7 @@
 				<scrolltime tween="cubic" easing="out">240</scrolltime>
 				<onleft>Action(close)</onleft>
 				<onright>Action(close)</onright>
-				<itemlayout width="446" height="62">
-					<control type="label">
-						<left>26</left>
-						<width>420</width>
-						<height>56</height>
-						<font>Bald_MenuItem</font>
-						<aligny>center</aligny>
-						<textcolor>bald_ink34</textcolor>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
-				</itemlayout>
-				<focusedlayout width="446" height="62">
-					<control type="group">
-						<left>6</left>
-						<control type="image">
-							<width>440</width>
-							<height>56</height>
-							<texture border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texture>
-						</control>
-						<control type="label">
-							<left>26</left>
-							<width>414</width>
-							<height>56</height>
-							<font>Bald_MenuItem</font>
-							<aligny>center</aligny>
-							<textcolor>bald_ink</textcolor>
-							<scroll>true</scroll>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</control>
-				</focusedlayout>
+				<include>Bald_MenuListLayouts</include>
 			</control>
 		</control>
 	</controls>

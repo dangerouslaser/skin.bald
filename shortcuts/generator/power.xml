@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The power menu's entries (DialogButtonMenu.xml, Bald_PowerMenuItems), from the Skin Variables menu "power"
+     (skinvariables-shortcut-power.json; edited in Customization > Power > Power menu), in its order, leaving out turned-off
+     entries. An entry's "kind" names one of Kodi's own actions, which shows only where the device can do it (Estuary's
+     conditions); the shutdown timer and idle shutdown are each two items (set and cancel, inhibit and allow), and
+     log off and master lock keep Kodi's own labels. An entry without a kind is the user's own: its label and command,
+     always shown. Every entry closes the menu first. -->
+<contents>
+    <items menu="power" mode="submenu">
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==</condition>
+            <template>generator/power-item.xmltemplate</template>
+            <value name="visible">true</value>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==quit</condition>
+            <template>generator/power-item.xmltemplate</template>
+            <value name="visible">System.ShowExitButton</value>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==powerdown</condition>
+            <template>generator/power-item.xmltemplate</template>
+            <value name="visible">System.CanPowerDown</value>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==suspend</condition>
+            <template>generator/power-item.xmltemplate</template>
+            <value name="visible">System.CanSuspend</value>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==hibernate</condition>
+            <template>generator/power-item.xmltemplate</template>
+            <value name="visible">System.CanHibernate</value>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==reboot</condition>
+            <template>generator/power-item.xmltemplate</template>
+            <value name="visible">System.CanReboot</value>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==restart</condition>
+            <template>generator/power-item.xmltemplate</template>
+            <value name="visible">true</value>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==timer</condition>
+            <template>generator/power-timer.xmltemplate</template>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==idle</condition>
+            <template>generator/power-idle.xmltemplate</template>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==logoff</condition>
+            <template>generator/power-logoff.xmltemplate</template>
+        </item>
+        <item>
+            <condition>{item_disabled}!=True</condition>
+            <condition>{item_kind}==mastermode</condition>
+            <template>generator/power-mastermode.xmltemplate</template>
+        </item>
+    </items>
+</contents>

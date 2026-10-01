@@ -29,7 +29,8 @@ CONTRACTS = {
     # Hidden Player.Volume progress whose label is the percentage; 11 is 1103's default control.
     "DialogVolumeBar.xml": {"29999": "progress"},
     "Custom_1103_VolumeSlider.xml": {"29999": "progress", "11": "slider"},
-    "DialogButtonMenu.xml": {"9000": "panel", "2": "label"},
+    # The power menu's list (its default control; Kodi binds nothing else here but an optional 3100 label).
+    "DialogButtonMenu.xml": {"9000": "list"},
 }
 
 COLOR_ATTRS = ("colordiffuse",)
@@ -173,11 +174,18 @@ class OverlayTests(unittest.TestCase):
                 self.assertIn("Estuary", head)
                 self.assertIn("LICENSE-Estuary.txt", head)
 
-    def test_power_menu_uses_the_shared_popup_theme(self):
+    def test_power_menu_is_drawn_as_the_context_menu_from_the_generated_entries(self):
         raw = ET.parse(SKIN / "DialogButtonMenu.xml").getroot()
-        self.assertIsNotNone(raw.find(".//include[@content='DialogBackgroundCommons']"))
-        panel = raw.find(".//control[@id='9000']")
-        self.assertEqual((panel.findtext("include") or "").strip(), "ButtonMenuList")
+        listing = raw.find(".//control[@id='9000']")
+        self.assertEqual((listing.findtext("left"), listing.findtext("top")), ("1434", "392"))
+        self.assertEqual([n.text for n in listing.findall("include")], ["Bald_MenuListLayouts"])
+        self.assertEqual(listing.findtext("content/include"), "Bald_PowerMenuItems")
+        text = (SKIN / "DialogButtonMenu.xml").read_text(encoding="utf-8")
+        for include in ("Bald_MenuScrim", "Bald_MenuMotion"):
+            self.assertIn(f"<include>{include}</include>", text)
+        # Home's menu column gives way to it.
+        home = (SKIN / "Home.xml").read_text(encoding="utf-8")
+        self.assertEqual(home.count('condition="Window.IsVisible(shutdownmenu)">Conditional</animation>'), 2)
 
     def test_muted_label_is_a_skin_string(self):
         variable = self.skin.variables["Bald_VolumeLabel"]

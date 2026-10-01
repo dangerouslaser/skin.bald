@@ -53,6 +53,43 @@
 	<!-- Native context buttons expose labels, not action IDs or descriptions. Match localized labels, never
 	     dynamic button positions. Unknown/add-on actions retain an honest generic hint. Notes are skin strings
 	     (31900-31930); the labels used to select them follow Kodi's/add-ons' current language. -->
+	<!-- The same items in a list (a dialog whose entries are list items, not Kodi's copies of a button): placed at x
+	     1434 with width 446, each item 62 px (56 and the 6 px gap). A list draws its items in fixed layouts, so the
+	     focused item's slide is a place, not a motion. -->
+	<include name="Bald_MenuListLayouts">
+		<itemlayout width="446" height="62">
+			<control type="label">
+				<left>26</left>
+				<width>420</width>
+				<height>56</height>
+				<font>Bald_MenuItem</font>
+				<aligny>center</aligny>
+				<textcolor>bald_ink34</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+		</itemlayout>
+		<focusedlayout width="446" height="62">
+			<control type="group">
+				<left>6</left>
+				<control type="image">
+					<width>440</width>
+					<height>56</height>
+					<texture border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texture>
+				</control>
+				<control type="label">
+					<left>26</left>
+					<width>414</width>
+					<height>56</height>
+					<font>Bald_MenuItem</font>
+					<aligny>center</aligny>
+					<textcolor>bald_ink</textcolor>
+					<scroll>true</scroll>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</control>
+		</focusedlayout>
+	</include>
+
 	<variable name="Bald_ContextNote">
 		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[208])">$LOCALIZE[31900]</value>
 		<value condition="String.IsEqual(System.CurrentControl,$LOCALIZE[12021])">$LOCALIZE[31901]</value>

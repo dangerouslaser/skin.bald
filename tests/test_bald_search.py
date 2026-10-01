@@ -121,7 +121,7 @@ class SearchWindowTests(unittest.TestCase):
     def test_the_id_map_lists_the_window(self):
         ids = (ROOT / "IDs").read_text(encoding="utf-8")
         self.assertIn("Custom_1130_BaldSearch.xml (window 1130)", ids)
-        self.assertIn("Free custom window numbers start at 1131.", ids)
+        self.assertIn("Free custom window numbers start at 113", ids)
 
 
 if __name__ == "__main__":

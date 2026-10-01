@@ -84,8 +84,10 @@ class WidgetGeneratorTests(unittest.TestCase):
         self.assertEqual(config["output"], "script-skinvariables-generator-includes{skinuser}.xml")
         datafiles = [part["datafile"] for part in config["genxml"] if "datafile" in part]
         self.assertTrue(datafiles)
+        # Every Home datafile loops over the screens first; the power menu's loops over its own menu.
+        self.assertIn(["generator/power.xml"], datafiles)
         for names in datafiles:
-            self.assertEqual(names[0], "generator/screens.xml")
+            self.assertEqual(names[0], "generator/power.xml" if names == ["generator/power.xml"] else "generator/screens.xml")
             for name in names:
                 self.assertTrue((SHORTCUTS / name).is_file(), name)
 
@@ -106,8 +108,8 @@ class WidgetGeneratorTests(unittest.TestCase):
         self.assertFalse([node for node in lists for node in node.findall("value") if not (node.text or "").strip()])
         for path in (SHORTCUTS / "generator").glob("*.xml"):
             for items in ET.parse(path).getroot().iter("items"):
-                if items.get("menu") == "hubs":
-                    # The hub lookups: the hubs menu itself, matched to the slot by position.
+                if items.get("menu") in ("hubs", "power"):
+                    # The hub lookups (the hubs menu itself, matched to the slot by position) and the power menu.
                     self.assertEqual((items.get("item"), items.get("mode")), (None, "submenu"), path.name)
                 elif items.get("menu"):
                     self.assertEqual((items.get("menu"), items.get("item"), items.get("mode")),

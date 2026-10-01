@@ -405,7 +405,7 @@ Custom_1117_BaldHomeScreens.xml (window 1117)
 9390	Hidden 1 x 1 list of the hubs menu (Skin Variables); the sidebar reads its items
 9400	Action grouplist: 9401 show in the main menu, 9402 configure widgets, 9403 rename, 9404 open
 		target, 9405 clear target, 9406 move up, 9407 move down, 9408 remove hub, 9409 add hub, 9410 / 9411 move Live TV
-		up / down, 9412 background image, 9413 clear background image
+		up / down, 9412 background image, 9413 clear background image, 9414 Power's menu entries (opens 1131)
 
 Custom_1118_BaldAppearance.xml (window 1118)
 9500	Category list; static items 1, 2, 6, 3, 7 and 5 (Artwork, Information, Ratings, Behavior, Date & time,
@@ -471,7 +471,12 @@ Custom_1130_BaldSearch.xml (window 1130): Bald's Search (Includes_Bald_Search.xm
 9100	Options list: New search and the categories with results
 9198	Where focus waits for the results (Timers.xml, bald_search_focus)
 
-Free custom window numbers start at 1131.
+Custom_1131_BaldPowerMenu.xml (window 1131): Customization > Power > Power menu, the power menu's entries
+9100	The entries (Skin Variables menu "power")
+9200	The focused entry's options (9201 shown, 9202 rename, 9203 command, 9204/9205 move, 9206 add, 9207 remove,
+	9208 restore the default menu)
+
+Free custom window numbers start at 1132.
 
 
 MEDIA WINDOWS (restyled Estuary copies; Includes_Bald_Media.xml adds no fixed ids)

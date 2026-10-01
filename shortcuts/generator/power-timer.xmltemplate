@@ -1,0 +1,12 @@
+<item>
+    <label>{item_label}</label>
+    <onclick>Dialog.Close(shutdownmenu)</onclick>
+    <onclick>{item_path}</onclick>
+    <visible>!System.HasAlarm(shutdowntimer) + [System.CanPowerDown | System.CanSuspend | System.CanHibernate]</visible>
+</item>
+<item>
+    <label>$LOCALIZE[20151] $INFO[System.AlarmPos,(,)]</label>
+    <onclick>Dialog.Close(shutdownmenu)</onclick>
+    <onclick>CancelAlarm(shutdowntimer)</onclick>
+    <visible>System.HasAlarm(shutdowntimer)</visible>
+</item>

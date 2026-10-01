@@ -284,6 +284,8 @@
 			<control type="group">
 				<visible>$EXP[Bald_MenuOpen]</visible>
 				<include>Bald_AnimMenuShows</include>
+				<!-- The power menu stands in for the menu in its column while it is open (DialogButtonMenu.xml). -->
+				<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout" condition="Window.IsVisible(shutdownmenu)">Conditional</animation>
 				<include content="Bald_MenuNote"><param name="text">$VAR[Bald_MenuPreviewNote]</param></include>
 			</control>
 			<control type="grouplist" id="9000">
@@ -298,6 +300,8 @@
 				<!-- The ends wrap: with no onup/ondown of its own, the grouplist joins the last entry to the first. -->
 				<visible allowhiddenfocus="true">$EXP[Bald_MenuOpen]</visible>
 				<include>Bald_AnimMenuShows</include>
+				<!-- The power menu stands in for the menu in its column while it is open (DialogButtonMenu.xml). -->
+				<animation effect="fade" start="100" end="0" time="160" tween="sine" easing="inout" condition="Window.IsVisible(shutdownmenu)">Conditional</animation>
 				<!-- Hidden while Home is hidden in Home Screens (never with no hub shown, Bald_HomeHidden). -->
 				<include content="Bald_HomeMenuButton"><param name="id">9001</param><param name="label">$LOCALIZE[10000]</param><param name="preview">home</param><param name="visible">!$EXP[Bald_HomeHidden]</param>
 					<include content="Bald_HomeMenuScreen"><param name="screen">home</param></include>
@@ -333,8 +337,8 @@
 					<onclick>ActivateWindow(settings)</onclick>
 				</include>
 				<!-- Kodi's power menu (DialogButtonMenu.xml): restart, shut down, exit and the rest. A dialog over Home, so
-				     closing it leaves focus here. -->
-				<include content="Bald_HomeMenuButton"><param name="id">9007</param><param name="label">$LOCALIZE[33060]</param><param name="preview">power</param>
+				     closing it leaves focus here. Customization > Power can take it out of the menu (Bald.Screen.HidePower). -->
+				<include content="Bald_HomeMenuButton"><param name="id">9007</param><param name="label">$LOCALIZE[33060]</param><param name="preview">power</param><param name="visible">!Skin.HasSetting(Bald.Screen.HidePower)</param>
 					<onclick>ActivateWindow(shutdownmenu)</onclick>
 				</include>
 			</control>

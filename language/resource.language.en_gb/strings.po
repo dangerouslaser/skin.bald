@@ -430,6 +430,53 @@ msgctxt "#31167"
 msgid "Animate background"
 msgstr ""
 
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31170"
+msgid "Power menu"
+msgstr ""
+
+
+#. Power menu editor: an entry's switch
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31172"
+msgid "Show in the power menu"
+msgstr ""
+
+#. Power menu editor: a command of the user's own, as typed (a Kodi built-in)
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31173"
+msgid "Command"
+msgstr ""
+
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31174"
+msgid "Add a command"
+msgstr ""
+
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31175"
+msgid "Restore the default menu"
+msgstr ""
+
+#. Power menu editor, the note under one of Kodi's own entries
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31176"
+msgid "One of Kodi's own. It shows only on devices that can do it."
+msgstr ""
+
+#. Power menu editor, the note under a command of the user's own
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31177"
+msgid "Your own command: any Kodi built-in, such as RunScript(...) or ActivateWindow(...)."
+msgstr ""
+
+#. Customization, the Power entry's note
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31171"
+msgid "The power menu's entry in the main menu. Choose whether it shows, its picture, and what its menu offers."
+msgstr ""
+
 
 
 #. Bald: Home hubs (docs/NOTES.md, Home hubs)
@@ -542,8 +589,8 @@ msgctxt "#31786"
 msgid "Chosen"
 msgstr ""
 
-#: /1080i/Custom_1117_BaldHomeScreens.xml
 #. Home Screens: note for Search, Settings and Power, whose only option is their background image
+#: /1080i/Custom_1117_BaldHomeScreens.xml
 msgctxt "#31760"
 msgid "A fixed entry of the main menu. Choose the picture it shows while it is selected."
 msgstr ""
@@ -1784,6 +1831,7 @@ msgid "Remove widget"
 msgstr ""
 
 #: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Custom_1131_BaldPowerMenu.xml
 msgctxt "#31753"
 msgid "Save and apply"
 msgstr ""

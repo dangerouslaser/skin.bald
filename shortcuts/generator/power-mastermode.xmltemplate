@@ -1,0 +1,6 @@
+<item>
+    <label>$VAR[MasterModeLabel]</label>
+    <onclick>Dialog.Close(shutdownmenu)</onclick>
+    <onclick>{item_path}</onclick>
+    <visible>System.HasLocks</visible>
+</item>

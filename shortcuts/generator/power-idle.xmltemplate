@@ -1,0 +1,12 @@
+<item>
+    <label>{item_label}</label>
+    <onclick>Dialog.Close(shutdownmenu)</onclick>
+    <onclick>{item_path}</onclick>
+    <visible>System.HasShutdown + !System.IdleShutdownInhibited</visible>
+</item>
+<item>
+    <label>$LOCALIZE[13018]</label>
+    <onclick>Dialog.Close(shutdownmenu)</onclick>
+    <onclick>InhibitIdleShutdown(false)</onclick>
+    <visible>System.HasShutdown + System.IdleShutdownInhibited</visible>
+</item>

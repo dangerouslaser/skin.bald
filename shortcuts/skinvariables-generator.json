@@ -3,7 +3,7 @@
     "output": "script-skinvariables-generator-includes{skinuser}.xml",
     "header": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<includes>",
     "footer": "</includes>",
-    "buildv": "a075002f8ab1",
+    "buildv": "4c62f54faf3e",
     "skinid": "skin.bald",
     "getnfo": {},
     "genxml": [
@@ -25,6 +25,9 @@
         {"template": "<value condition=\"$EXP[Bald_MenuOpen] + $EXP[Bald_MenuPreview_power] + !String.IsEmpty(Skin.String(Bald.Art.power))\"></value>"},
         {"template": "<value condition=\"$EXP[Bald_WidgetPreview]\"></value>"},
         {"datafile": ["generator/screens.xml", "generator/logo-row.xml"]},
-        {"template": "<value></value>\n</variable>"}
+        {"template": "<value></value>\n</variable>"},
+        {"template": "<include name=\"Bald_PowerMenuItems\">\n<definition>"},
+        {"datafile": ["generator/power.xml"]},
+        {"template": "</definition>\n</include>"}
     ]
 }

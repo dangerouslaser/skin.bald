@@ -256,7 +256,7 @@ def generator_digest():
     digest = hashlib.sha1()
     inputs = sorted((SHORTCUTS / "generator").iterdir()) + sorted(
         path for path in SHORTCUTS.glob("skinvariables-shortcut-*.json")
-        if path.name.endswith("widgets.json") or path.name == "skinvariables-shortcut-hubs.json")
+        if path.name.endswith("widgets.json") or path.name in ("skinvariables-shortcut-hubs.json", "skinvariables-shortcut-power.json"))
     for path in inputs:
         digest.update(path.relative_to(SHORTCUTS).as_posix().encode())
         digest.update(b"\0")

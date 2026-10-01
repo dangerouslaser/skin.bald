@@ -11,11 +11,11 @@
 	     going back (to the parent window, or Home) moves left to right. Kodi finishes a window's close animation before
 	     the next window opens, and the field, backdrop and sidebar panel never animate, so nothing flashes between them.
 	     Hierarchy: Home > Settings hub > Bald Settings (1115 / skinsettings), Kodi's settings pages, Profiles,
-	     System info > Home Screens (1117), Appearance (1118), Playback (1119), Add-ons > Widgets (1116). -->
+	     System info > Home Screens (1117) > Power menu (1131), Appearance (1118), Playback (1119), Add-ons > Widgets (1116). -->
 	<!-- The opening window is receiving a Back from one of its children. -->
-	<expression name="Bald_SettingsBackIn">[[Window.IsActive(settings) + [Window.Previous(1115) | Window.Previous(skinsettings) | Window.Previous(profiles) | Window.Previous(systeminfo) | Window.Previous(systemsettings) | Window.Previous(servicesettings) | Window.Previous(pvrsettings) | Window.Previous(playersettings) | Window.Previous(mediasettings) | Window.Previous(interfacesettings) | Window.Previous(gamesettings) | Window.Previous(appearancesettings)]] | [[Window.IsActive(1115) | Window.IsActive(skinsettings)] + [Window.Previous(1117) | Window.Previous(1118) | Window.Previous(1119) | Window.Previous(addonbrowser)]] | [Window.IsActive(1117) + Window.Previous(1116)]]</expression>
+	<expression name="Bald_SettingsBackIn">[[Window.IsActive(settings) + [Window.Previous(1115) | Window.Previous(skinsettings) | Window.Previous(profiles) | Window.Previous(systeminfo) | Window.Previous(systemsettings) | Window.Previous(servicesettings) | Window.Previous(pvrsettings) | Window.Previous(playersettings) | Window.Previous(mediasettings) | Window.Previous(interfacesettings) | Window.Previous(gamesettings) | Window.Previous(appearancesettings)]] | [[Window.IsActive(1115) | Window.IsActive(skinsettings)] + [Window.Previous(1117) | Window.Previous(1118) | Window.Previous(1119) | Window.Previous(addonbrowser)]] | [Window.IsActive(1117) + [Window.Previous(1116) | Window.Previous(1131)]]]</expression>
 	<!-- The closing window is going back to its parent (or Home). -->
-	<expression name="Bald_SettingsBackOut">[Window.Next(home) | Window.Next(settings) | [[Window.Next(1115) | Window.Next(skinsettings)] + [Window.IsVisible(1117) | Window.IsVisible(1118) | Window.IsVisible(1119)]] | [Window.Next(1117) + Window.IsVisible(1116)]]</expression>
+	<expression name="Bald_SettingsBackOut">[Window.Next(home) | Window.Next(settings) | [[Window.Next(1115) | Window.Next(skinsettings)] + [Window.IsVisible(1117) | Window.IsVisible(1118) | Window.IsVisible(1119)]] | [Window.Next(1117) + [Window.IsVisible(1116) | Window.IsVisible(1131)]]]</expression>
 	<include name="Bald_AnimSettingsWindow">
 		<include content="Bald_AnimWindowDepth">
 			<param name="back_in">$EXP[Bald_SettingsBackIn]</param>
@@ -266,6 +266,11 @@
 	<variable name="Bald_WidgetItemUrl">
 		<value condition="!String.IsEmpty(Window(home).Property(Bald.ConfigureItem))">plugin://script.skinvariables/?info=get_shortcuts_node&amp;menu=$INFO[Window(home).Property(Bald.ConfigureNode)]&amp;skin=skin.bald&amp;mode=$INFO[Window(home).Property(Bald.ConfigureMode)]&amp;item=$INFO[Container(9100).ListItem.Property(item)]&amp;node=$INFO[Window(home).Property(Bald.ConfigureItem)]</value>
 		<value>$INFO[Container(9100).ListItem.Property(url)]</value>
+	</variable>
+	<!-- Power menu (1131): the focused entry's note, Kodi's own (a "kind") or the user's command. -->
+	<variable name="Bald_PowerEntryNote">
+		<value condition="!String.IsEmpty(Container(9100).ListItem.Property(kind))">$LOCALIZE[31176]</value>
+		<value>$LOCALIZE[31177]</value>
 	</variable>
 	<expression name="Bald_HubCategorySelected">[String.IsEqual(Container(9300).ListItem.Property(kind),hub)]</expression>
 	<!-- Eight hubs fill the eight Home slots (shortcuts/generator/screens.xml). -->
