@@ -113,3 +113,42 @@ msgstr ""
 msgctxt "#32118"
 msgid "TMDb Helper has no MDbList key to copy"
 msgstr ""
+
+#. Content picker, Libraries and tags: one list of a library ({list}) named with the library's tag ({tag})
+msgctxt "#32130"
+msgid "{tag} · {list}"
+msgstr ""
+
+#. Libraries and tags: TV shows with unwatched episodes, the latest added first
+msgctxt "#32131"
+msgid "Shows with new episodes"
+msgstr ""
+
+msgctxt "#32132"
+msgid "Recently added unwatched TV shows"
+msgstr ""
+
+msgctxt "#32133"
+msgid "All TV shows"
+msgstr ""
+
+msgctxt "#32134"
+msgid "Recently added unwatched movies"
+msgstr ""
+
+msgctxt "#32135"
+msgid "In-progress movies"
+msgstr ""
+
+msgctxt "#32136"
+msgid "Random movies"
+msgstr ""
+
+msgctxt "#32137"
+msgid "All movies"
+msgstr ""
+
+#. Libraries and tags: the folder of every tag, after the libraries
+msgctxt "#32138"
+msgid "All tags"
+msgstr ""

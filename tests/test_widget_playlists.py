@@ -18,6 +18,7 @@ CATALOG = {
         "unwatched_movies.xsp",
     },
     "tvshows": {
+        "new_episodes_tvshows.xsp",
         "random_tvshows.xsp",
         "recent_unwatched_tvshows.xsp",
         "recently_played_tvshows.xsp",
@@ -39,7 +40,7 @@ CATALOG = {
 FIELDS = {
     "movies": {"dateadded", "inprogress", "lastplayed", "playcount", "top250",
                "videoresolution"},
-    "tvshows": {"dateadded", "lastplayed", "numepisodes", "numwatched"},
+    "tvshows": {"dateadded", "lastplayed", "numepisodes", "numwatched", "playcount"},
     "episodes": {"dateadded", "inprogress", "lastplayed", "playcount"},
 }
 ORDERS = {
@@ -110,6 +111,13 @@ class WidgetPlaylistTests(unittest.TestCase):
                 self.assertNotIn("dateadded", {rule.get("field") for rule in root.findall("rule")})
                 self.assertEqual(root.findtext("order"), "dateadded")
                 self.assertEqual(root.find("order").get("direction"), "descending")
+
+    def test_shows_with_new_episodes_one_tile_per_show(self):
+        # A show, not its episodes: one with any unwatched episode (a show's playcount is 0 until every episode is
+        # watched), the newest first (a show's dateadded is its latest episode's, Kodi's tvshow_view).
+        root = playlist("new_episodes_tvshows.xsp")
+        self.assertEqual(rules(root), [("playcount", "is", ["0"])])
+        self.assertEqual((root.findtext("order"), root.find("order").get("direction")), ("dateadded", "descending"))
 
     def test_recently_played_is_bounded_to_four_weeks(self):
         for media_type in CATALOG:

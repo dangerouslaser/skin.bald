@@ -23,6 +23,7 @@ ADDON = ROOT / "addons" / "script.bald.helper"
 ratings = helper("ratings", "ratings")
 mdblist = ratings.mdblist  # the same module object ratings.py uses
 plugin = helper("plugin", "ratings")
+libraries = helper("libraries", "ratings")
 
 KEY = "k3y-SECRET-0123456789"
 DAY = 24 * 60 * 60
@@ -885,6 +886,7 @@ class PackagingTests(unittest.TestCase):
         used = {int(settings_id) for node in settings.iter() for attr in ("label", "help")
                 if (settings_id := node.get(attr))} | {int(h) for h in (n.text for n in settings.iter("heading"))}
         used |= {getattr(plugin, name) for name in dir(plugin) if name.startswith("S_")}
+        used |= {libraries.S_IN_TAG, libraries.S_ALL_TAGS} | {entry[1] for lists in libraries.LISTS.values() for entry in lists}
         self.assertEqual(used - defined, set())
         self.assertEqual(defined - used, set())
 

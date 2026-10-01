@@ -7,6 +7,10 @@
                                                      library keeps no crew photos).
     ?info=livetv_channels&query=Q                   Live TV channels matching Q, for Bald's Search (livetv.py).
     ?info=livetv_programmes&query=Q                 programmes on now or later matching Q, for Bald's Search.
+    ?info=library_tags[&all=1]                      the libraries (Plex and Jellyfin libraries are tags), then
+                                                     every tag, as folders, for the content picker's "Libraries
+                                                     and tags" (libraries.py).
+    ?info=library_tag&tag=T                         rows for one tag (Plex and Jellyfin libraries are tags).
     ?action=play_channel&channelid=N                 switches to channel N.
     ?action=warm_livetv                              refreshes the programme search's cache (Home's Search runs it).
     ?action=search[&start=movies|tvshows|episodes]   asks for a query (Kodi's keyboard, headed "Search") and shows
@@ -29,7 +33,7 @@ import os
 from datetime import datetime, timezone
 from urllib.parse import parse_qsl
 
-from . import common, livetv, mdblist
+from . import common, libraries, livetv, mdblist
 from .common import ADDON_ID, DATA_DIR, DATABASE, KEY_SETTING
 ACTOR_ICON = "DefaultActor.png"
 DIRECTOR, WRITER = 20339, 20417  # Kodi's own "Director" and "Writer"
@@ -343,6 +347,12 @@ def run(argv, xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs) -> None:
         programme(xbmc, xbmcgui, query)
     elif query.get("info") in ("livetv_channels", "livetv_programmes") and handle >= 0:
         list_livetv(xbmc, xbmcgui, xbmcplugin, xbmcvfs, handle, base, query)
+    elif query.get("info") == "library_tags" and handle >= 0:
+        libraries.list_tags(xbmc, xbmcgui, xbmcplugin, xbmcvfs, handle, base, query.get("all") == "1",
+                            xbmcaddon.Addon(ADDON_ID).getLocalizedString)
+    elif query.get("info") == "library_tag" and handle >= 0:
+        libraries.list_tag(xbmc, xbmcgui, xbmcplugin, xbmcvfs, handle, query.get("tag", ""),
+                           xbmcaddon.Addon(ADDON_ID).getLocalizedString)
     elif query.get("info") in ("cast", "crew") and handle >= 0:
         list_people(xbmc, xbmcgui, xbmcplugin, handle, base, query)
     elif handle >= 0:

@@ -94,6 +94,13 @@
             "node": "videos"
         },
         {
+            "name": "Libraries and tags",
+            "path": "plugin://script.bald.helper/?info=library_tags",
+            "icon": "DefaultTags.png",
+            "link": "false",
+            "node": "videos"
+        },
+        {
             "name": "Bald playlists",
             "path": "grouping://bald/videoplaylists/",
             "icon": "DefaultVideoPlaylists.png",
@@ -306,6 +313,13 @@
         }
     ],
     "grouping://bald/playlists/tvshows/": [
+        {
+            "name": "Shows with new episodes",
+            "path": "special://skin/playlists/new_episodes_tvshows.xsp",
+            "icon": "DefaultTVShows.png",
+            "link": "false",
+            "node": "videos"
+        },
         {
             "name": "Random TV shows",
             "path": "special://skin/playlists/random_tvshows.xsp",

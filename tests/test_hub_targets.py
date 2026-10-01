@@ -60,6 +60,7 @@ class PickerTests(unittest.TestCase):
         entries = {e["name"]: e for e in grouping_entries("grouping://shortcuts/")}
         expected = {
             "Video library": ("library://video/", "videos"),
+            "Libraries and tags": ("plugin://script.bald.helper/?info=library_tags", "videos"),
             "Bald playlists": ("grouping://bald/videoplaylists/", "videos"),
             "Video add-ons": ("addons://sources/video/", "videos"),
             "Music library": ("library://music/", "music"),
