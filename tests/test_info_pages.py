@@ -18,6 +18,17 @@ class InfoPagesTests(unittest.TestCase):
         self.pages = parse(ROOT / "Includes_Bald_InfoPages.xml")
         self.shared = ET.parse(ROOT / "Includes_Bald_Info.xml").getroot()
 
+    def test_detail_values_keep_to_two_lines(self):
+        # A label does not stop at its height (seven writers ran into the row below): a text box shows the value and
+        # keeps to the two lines that fit; the label, drawn clear, is what the "Not available" fallback reads.
+        from kodi_includes import include_definitions
+        detail = include_definitions()["Bald_Detail"].find("definition")
+        value = detail.find("control[@id='$PARAM[id]']")
+        self.assertEqual(value.findtext("textcolor"), "00FFFFFF")
+        box = detail.find("control[@type='textbox']")
+        self.assertEqual((box.findtext("height"), box.findtext("label"), box.findtext("font")),
+                         ("56", "$PARAM[value]", "Bald_DetailValue"))
+
     def test_hint_pair_right_aligns_as_a_unit_with_32px_separator(self):
         # As the dialog calls it (two hints, default width): 384 wide, right-aligned, third hint hidden.
         pair, = expand_call("Bald_InfoHintPair", {"first": "a", "second": "b"})

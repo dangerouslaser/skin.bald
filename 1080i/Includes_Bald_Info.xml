@@ -415,7 +415,7 @@
 			</control>
 		</definition>
 	</include>
-	<!-- Detail cell: 380 px wide; label 17 px at 58%, two-line value 21 px medium, or Kodi's "Not available" in the
+	<!-- Detail cell: 380 px wide; label 17 px at 58%, value 21 px medium on at most two lines, or Kodi's "Not available" in the
 	     same style while the value is empty (<id> names the value label so the fallback can read it; ids in 1080i/IDs). -->
 	<include name="Bald_Detail">
 		<param name="id" />
@@ -434,12 +434,24 @@
 				<textcolor>bald_ink60</textcolor>
 				<label>$PARAM[label]</label>
 			</control>
+			<!-- The value, for the fallback below to read (Control.GetLabel); drawn clear: a label does not stop at its
+			     height, so a long value (seven writers) ran into the row below. -->
 			<control type="label" id="$PARAM[id]">
 				<left>$PARAM[x]</left>
 				<top>$PARAM[vy]</top>
 				<width>380</width>
 				<height>56</height>
 				<wrapmultiline>true</wrapmultiline><aligny>top</aligny>
+				<font>Bald_DetailValue</font>
+				<textcolor>00FFFFFF</textcolor>
+				<label>$PARAM[value]</label>
+			</control>
+			<!-- What shows: a text box keeps to the lines that fit its height, two. -->
+			<control type="textbox">
+				<left>$PARAM[x]</left>
+				<top>$PARAM[vy]</top>
+				<width>380</width>
+				<height>56</height>
 				<font>Bald_DetailValue</font>
 				<textcolor>bald_ink</textcolor>
 				<label>$PARAM[value]</label>
