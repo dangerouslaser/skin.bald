@@ -57,10 +57,10 @@ class Readings(unittest.TestCase):
             patch.start()
             self.addCleanup(patch.stop)
         platform._cache = None
-        xbmc.LABELS.clear()
+        xbmc.INFO.clear()
 
     def read(self, facts, detail=""):
-        xbmc.LABELS["VideoPlayer.HdrDetail"] = detail
+        xbmc.INFO["VideoPlayer.HdrDetail"] = detail
         with mock.patch.object(platform, "_facts", return_value=facts):
             return platform.eoft_gamut(), platform.pixformat(), platform.displaymode()
 
@@ -83,7 +83,7 @@ class Readings(unittest.TestCase):
         self.assertEqual(self.read(_facts()), ("SDR BT.709", "8-bit, RGB", "2160p60.000hz"))
 
     def test_no_debugfs_falls_back_to_kodi(self):
-        xbmc.LABELS["System.ScreenResolution"] = "1920x1080 @ 23.98 Hz - Full screen"
+        xbmc.INFO["System.ScreenResolution"] = "1920x1080 @ 23.98 Hz - Full screen"
         self.assertEqual(self.read({}), ("", "", "1080p23.98hz"))
 
 

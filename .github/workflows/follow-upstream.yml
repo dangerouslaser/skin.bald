@@ -96,7 +96,9 @@ jobs:
         run: |
           set -o pipefail
           python3 -m compileall -q main.py resources tools tests 2>&1 | tee /tmp/test.log
-          python3 -m unittest discover -s tests -v 2>&1 | tee -a /tmp/test.log
+          # Upstream's suite is pytest (tests/conftest.py); the fork's tests run in it too.
+          python3 -m pip install --quiet pytest
+          python3 -m pytest tests -v 2>&1 | tee -a /tmp/test.log
 
       - name: Simulated failure
         if: inputs.simulate_failure
