@@ -340,10 +340,17 @@
 			<control type="grouplist">
 				<left>Bald_BrowseCaptionLeft</left><top>548</top><width>568</width><height>88</height>
 				<orientation>vertical</orientation><align>right</align><usecontrolcoords>true</usecontrolcoords>
+				<!-- The clearlogo in place of the title (Appearance > Artwork, Bald_LogoTitleBrowse), else the title. -->
+				<control type="image">
+					<left>20</left><width>528</width><height>88</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio><texture background="true">$VAR[Bald_ItemLogo]</texture>
+					<visible>Integer.Is$PARAM[p](Container.CurrentItem) + $EXP[Bald_LogoTitleBrowse] + $EXP[Bald_ItemHasLogo]</visible>
+					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="ignore_home_row">true</param><param name="delay">180</param></include>
+				</control>
 				<control type="textbox">
 					<left>20</left><width>528</width><height max="88">auto</height>
 					<font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$INFO[ListItem.Label]</label>
-					<visible>Integer.Is$PARAM[p](Container.CurrentItem)</visible>
+					<visible>Integer.Is$PARAM[p](Container.CurrentItem) + ![$EXP[Bald_LogoTitleBrowse] + $EXP[Bald_ItemHasLogo]]</visible>
 					<include content="Bald_AnimCaptionIn"><param name="c">browse</param><param name="ignore_home_row">true</param><param name="delay">180</param></include>
 				</control>
 			</control>

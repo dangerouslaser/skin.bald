@@ -304,6 +304,7 @@
 		<param name="logo" />
 		<param name="title" />
 		<param name="title_visible" />
+		<param name="logo_visible">$EXP[Bald_ShowClearlogo]</param>
 		<param name="meta" />
 		<param name="genre" />
 		<param name="plot" />
@@ -325,7 +326,7 @@
 					<height>170</height>
 					<aspectratio align="left" aligny="bottom">keep</aspectratio>
 					<texture background="true">$PARAM[logo]</texture>
-					<visible>$EXP[Bald_ShowClearlogo]</visible>
+					<visible>$PARAM[logo_visible]</visible>
 				</control>
 				<control type="label">
 					<top>80</top>

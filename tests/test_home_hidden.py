@@ -154,7 +154,9 @@ class HiddenHomeTests(unittest.TestCase):
         self.assertTrue(implies(f"{home} + !{HIDE}", switch.findtext("selected")))
         only_home = {"String.IsEqual(Container(9300).ListItem.Property(kind),livetv)": False,
                      "String.IsEqual(Container(9300).ListItem.Property(kind),hub)": False,
-                     "String.IsEqual(Container(9300).ListItem.Property(kind),power)": False}
+                     "String.IsEqual(Container(9300).ListItem.Property(kind),power)": False,
+                     "String.IsEqual(Container(9300).ListItem.Property(kind),search)": False,
+                     "String.IsEqual(Container(9300).ListItem.Property(kind),settings)": False}
         self.assertTrue(implies(f"{home} + {HIDE}", f"![{switch.findtext('selected')}]", assume=only_home))
         note = next(i for i in editor.iter("item") if i.findtext("property[@name='kind']") == "home")
         self.assertEqual(note.findtext("property[@name='note']"), "$LOCALIZE[31741]")

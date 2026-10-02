@@ -45,9 +45,9 @@
 				<include content="Bald_HubCategory"><param name="n">7</param></include>
 				<item id="2"><label>$LOCALIZE[31700]</label><property name="kind">livetv</property><property name="note">$LOCALIZE[31205]</property><visible>$EXP[Bald_LiveTVAtEnd]</visible></item>
 				<!-- The fixed entries at the end of the main menu: only their background image is set here. -->
-				<item id="4"><label>$LOCALIZE[137]</label><property name="kind">search</property><property name="note">$LOCALIZE[31760]</property></item>
-				<item id="5"><label>$LOCALIZE[5]</label><property name="kind">settings</property><property name="note">$LOCALIZE[31760]</property></item>
-				<item id="6"><label>$LOCALIZE[33060]</label><property name="kind">power</property><property name="note">$LOCALIZE[31171]</property></item>
+				<item id="4"><label>$LOCALIZE[137]</label><property name="kind">search</property><property name="note">$LOCALIZE[31223]</property></item>
+				<item id="5"><label>$LOCALIZE[5]</label><property name="kind">settings</property><property name="note">$LOCALIZE[31224]</property></item>
+				<item id="6"><label>$LOCALIZE[33060]</label><property name="kind">power</property><property name="note">$LOCALIZE[31212]</property></item>
 				<item id="3">
 					<label>$LOCALIZE[31207]</label>
 					<property name="kind">add</property>
@@ -63,19 +63,23 @@
 			<param name="heading">$INFO[Container(9300).ListItem.Label]</param>
 			<param name="note">$INFO[Container(9300).ListItem.Property(note)]</param>
 			<control type="grouplist" id="9400"><include content="Bald_SettingsRows"><param name="left">9300</param></include>
-				<!-- Show in the main menu: a hub's "disabled" field (Skin Variables do_toggle), Live TV's, Home's and Power's skin bools.
+				<!-- Show in the main menu: a hub's "disabled" field (Skin Variables do_toggle), Live TV's, Home's, Search's, Settings' and Power's skin bools.
 				     Home hidden starts Home on the first shown hub's rows; with no hub shown, Home shows anyway
 				     (Includes_Bald_Home.xml, Bald_HomeHidden). -->
 				<control type="radiobutton" id="9401"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[305]</label>
-					<selected>[$EXP[Bald_HubCategorySelected] + String.IsEmpty(Container(9300).ListItem.Property(disabled))] | [String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)] | [String.IsEqual(Container(9300).ListItem.Property(kind),home) + !Skin.HasSetting(Bald.Screen.HideHome)] | [String.IsEqual(Container(9300).ListItem.Property(kind),power) + !Skin.HasSetting(Bald.Screen.HidePower)]</selected>
-					<visible>$EXP[Bald_HubCategorySelected] | String.IsEqual(Container(9300).ListItem.Property(kind),livetv) | String.IsEqual(Container(9300).ListItem.Property(kind),home) | String.IsEqual(Container(9300).ListItem.Property(kind),power)</visible>
+					<selected>[$EXP[Bald_HubCategorySelected] + String.IsEmpty(Container(9300).ListItem.Property(disabled))] | [String.IsEqual(Container(9300).ListItem.Property(kind),livetv) + !Skin.HasSetting(Bald.Screen.HideLiveTV)] | [String.IsEqual(Container(9300).ListItem.Property(kind),home) + !Skin.HasSetting(Bald.Screen.HideHome)] | [String.IsEqual(Container(9300).ListItem.Property(kind),power) + !Skin.HasSetting(Bald.Screen.HidePower)] | [String.IsEqual(Container(9300).ListItem.Property(kind),search) + !Skin.HasSetting(Bald.Screen.HideSearch)] | [String.IsEqual(Container(9300).ListItem.Property(kind),settings) + !Skin.HasSetting(Bald.Screen.HideSettings)]</selected>
+					<!-- Settings and Power are never both hidden: the one still shown cannot be switched off. -->
+					<enable>![[String.IsEqual(Container(9300).ListItem.Property(kind),settings) + !Skin.HasSetting(Bald.Screen.HideSettings) + Skin.HasSetting(Bald.Screen.HidePower)] | [String.IsEqual(Container(9300).ListItem.Property(kind),power) + !Skin.HasSetting(Bald.Screen.HidePower) + Skin.HasSetting(Bald.Screen.HideSettings)]]</enable>
+					<visible>$EXP[Bald_HubCategorySelected] | String.IsEqual(Container(9300).ListItem.Property(kind),livetv) | String.IsEqual(Container(9300).ListItem.Property(kind),home) | String.IsEqual(Container(9300).ListItem.Property(kind),power) | String.IsEqual(Container(9300).ListItem.Property(kind),search) | String.IsEqual(Container(9300).ListItem.Property(kind),settings)</visible>
 					<onclick condition="$EXP[Bald_HubCategorySelected]">SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick condition="$EXP[Bald_HubCategorySelected]">RunPlugin($INFO[Container(9300).ListItem.Property(url)]&amp;func=do_toggle&amp;&amp;disabled)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),livetv)">Skin.ToggleSetting(Bald.Screen.HideLiveTV)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),home)">Skin.ToggleSetting(Bald.Screen.HideHome)</onclick>
 					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),power)">Skin.ToggleSetting(Bald.Screen.HidePower)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),search)">Skin.ToggleSetting(Bald.Screen.HideSearch)</onclick>
+					<onclick condition="String.IsEqual(Container(9300).ListItem.Property(kind),settings)">Skin.ToggleSetting(Bald.Screen.HideSettings)</onclick>
 				</control>
 				<!-- Power: its menu's entries (Custom_1131_BaldPowerMenu.xml, the Skin Variables menu "power"). -->
-				<control type="button" id="9414"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31170]</label>
+				<control type="button" id="9414"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31211]</label>
 					<visible>String.IsEqual(Container(9300).ListItem.Property(kind),power)</visible>
 					<onclick>ActivateWindow(1131)</onclick>
 				</control>

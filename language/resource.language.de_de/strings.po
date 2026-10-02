@@ -526,12 +526,6 @@ msgctxt "#31786"
 msgid "Chosen"
 msgstr "Gewählt"
 
-#: /1080i/Custom_1117_BaldHomeScreens.xml
-#. Home Screens: note for Search, Settings and Power, whose only option is their background image
-msgctxt "#31760"
-msgid "A fixed entry of the main menu. Choose the picture it shows while it is selected."
-msgstr "Ein fester Eintrag im Hauptmenü. Hier lässt sich das Bild wählen, das es zeigt, solange er ausgewählt ist."
-
 #: /1080i/Custom_1118_BaldAppearance.xml
 #. Appearance > Behavior: Home starts on its rows instead of the main menu (a fresh start only)
 msgctxt "#31742"

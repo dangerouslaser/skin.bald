@@ -428,6 +428,8 @@ Custom_1118_BaldAppearance.xml (window 1118)
 		with the clock, 9634 clock on Home
 9635-9637	Information (listed after 9612): 9635 titles on Home tiles (none, on focus, always), 9636 watched marks,
 		9637 progress marks (both: TV episode cards, Home row tiles, list rows)
+9664-9667	Artwork, the clearlogo in place of the title (listed after 9601): 9664 library previews, 9665 Cast &
+		details, 9666 series page, 9667 player
 9641-9663	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; 9657 online ratings from TMDb Helper,
 		9658 TMDb Helper settings (both listed after 9641); sources 9642 IMDb, 9643 TMDb,
 		9644 Rotten Tomatoes critics, 9645 Rotten Tomatoes audience, 9646 Metacritic, 9647 Trakt,

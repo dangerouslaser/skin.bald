@@ -13,7 +13,7 @@
 	<backgroundcolor>bald_field</backgroundcolor>
 	<include>Bald_StampWidgetsOnUnload</include>
 	<controls>
-		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[31170]</param></include>
+		<include content="Bald_SettingsFrame"><param name="title">$LOCALIZE[31211]</param></include>
 		<control type="list" id="9100">
 			<include content="Bald_SettingsCategories"><param name="id">9100</param><param name="right">9200</param></include>
 			<ondown>9090</ondown>
@@ -25,7 +25,7 @@
 			<param name="note">$VAR[Bald_PowerEntryNote]</param>
 			<control type="grouplist" id="9200">
 				<include content="Bald_SettingsRows"><param name="left">9100</param></include>
-				<control type="radiobutton" id="9201"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31172]</label>
+				<control type="radiobutton" id="9201"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31213]</label>
 					<selected>String.IsEmpty(Container(9100).ListItem.Property(disabled))</selected>
 					<visible>String.IsEmpty(Container(9100).ListItem.Property(blank))</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_toggle&amp;&amp;disabled)</onclick>
@@ -35,7 +35,7 @@
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;label)</onclick>
 				</control>
 				<!-- The command, for the user's own entries only (Kodi's own keep theirs). -->
-				<control type="button" id="9203"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31173]</label><label2>$INFO[Container(9100).ListItem.Property(path)]</label2>
+				<control type="button" id="9203"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31214]</label><label2>$INFO[Container(9100).ListItem.Property(path)]</label2>
 					<visible>String.IsEmpty(Container(9100).ListItem.Property(blank)) + String.IsEmpty(Container(9100).ListItem.Property(kind))</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;path)</onclick>
 				</control>
@@ -51,7 +51,7 @@
 				</control>
 				<!-- Add a command after the focused entry: a Kodi command, a program add-on (RunScript) or the user's own
 				     (grouping://bald/power/ in skinvariables-shortcut-config.json). -->
-				<control type="button" id="9206"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31174]</label>
+				<control type="button" id="9206"><include content="Bald_ConfigureRow"><param name="level">basic</param></include><label>$LOCALIZE[31215]</label>
 					<visible>Integer.IsLess(Container(9100).NumItems,20)</visible>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_new&amp;&amp;grouping::grouping://bald/power/&amp;&amp;refocus::9100)</onclick>
 				</control>
@@ -60,11 +60,11 @@
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_delete)</onclick>
 				</control>
 				<!-- Back to the shipped list (Skin Variables asks first and rebuilds). -->
-				<control type="button" id="9208"><include content="Bald_ConfigureRow"><param name="level">standard</param></include><label>$LOCALIZE[31175]</label>
+				<control type="button" id="9208"><include content="Bald_ConfigureRow"><param name="level">standard</param></include><label>$LOCALIZE[31216]</label>
 					<onclick>SetProperty(Bald.WidgetsDirty,1,home)</onclick><onclick>RunPlugin($INFO[Container(9100).ListItem.Property(url)]&amp;func=do_refresh&amp;&amp;True)</onclick>
 				</control>
 			</control>
 		</include>
-		<include content="Bald_SettingsHints"><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31170]</param><param name="second">$VAR[Bald_KeyBack]$LOCALIZE[31753]</param></include>
+		<include content="Bald_SettingsHints"><param name="first">$VAR[Bald_KeyLeft]$LOCALIZE[31211]</param><param name="second">$VAR[Bald_KeyBack]$LOCALIZE[31753]</param></include>
 	</controls>
 </window>

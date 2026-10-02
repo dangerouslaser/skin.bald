@@ -16,7 +16,8 @@
 	<!-- ============ Conditions ============ -->
 	<!-- The focused OSD control has a state after its name (Bald_PlaybackHelpDetail). -->
 	<expression name="Bald_PlaybackHelpHasDetail">[[Control.HasFocus(87) + Window.IsActive(playercontrols)] | [Control.HasFocus(70052) + !String.IsEmpty(MusicPlayer.UserRating)] | [Control.HasFocus(70053) + !String.IsEmpty(Playlist.Repeat)] | Control.HasFocus(70054)]</expression>
-	<expression name="Bald_PlaybackHasLogo">[$EXP[Bald_ShowClearlogo] + [!String.IsEmpty(Player.Art(clearlogo)) | !String.IsEmpty(Player.Art(tvshow.clearlogo))]]</expression>
+	<!-- The player shows the clearlogo in place of the title (Appearance > Artwork, Bald_LogoTitlePlayer) when it has one. -->
+	<expression name="Bald_PlaybackHasLogo">[$EXP[Bald_LogoTitlePlayer] + [!String.IsEmpty(Player.Art(clearlogo)) | !String.IsEmpty(Player.Art(tvshow.clearlogo))]]</expression>
 
 	<!-- ============ Labels ============ -->
 	<!-- Title: the show for episodes, the programme for live TV, the song for music, else the video title. -->

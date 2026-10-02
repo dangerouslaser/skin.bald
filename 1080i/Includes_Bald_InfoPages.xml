@@ -195,7 +195,9 @@
 				<left>624</left><top>156</top><width>1200</width><height>174</height>
 				<orientation>vertical</orientation><itemgap>10</itemgap>
 				<control type="label"><height>26</height><font>Bald_InfoGenre</font><textcolor>bald_accent</textcolor><label>$LOCALIZE[31771]</label></control>
-				<control type="textbox"><height max="88">auto</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_InfoTitle]</label></control>
+				<!-- The clearlogo in place of the title (Appearance > Artwork, Bald_LogoTitleDetails), else the title. -->
+				<control type="image"><width>700</width><height>88</height><aspectratio align="left" aligny="bottom">keep</aspectratio><texture background="true">$VAR[Bald_ItemLogo]</texture><visible>$EXP[Bald_LogoTitleDetails] + $EXP[Bald_ItemHasLogo]</visible></control>
+				<control type="textbox"><height max="88">auto</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><label>$VAR[Bald_InfoTitle]</label><visible>![$EXP[Bald_LogoTitleDetails] + $EXP[Bald_ItemHasLogo]]</visible></control>
 				<control type="label"><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[Bald_InfoMeta]$INFO[ListItem.Genre, · ,]</label></control>
 			</control>
 			<control type="label"><left>624</left><top>340</top><width>1000</width><height>28</height><font>Bald_Section</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[206]</label></control>

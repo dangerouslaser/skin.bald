@@ -122,7 +122,9 @@
 			<include content="Bald_InfoTVHeader">
 				<param name="logo">$VAR[Bald_SeriesPageLogo]</param>
 				<param name="title">$INFO[Container.ShowTitle]</param>
-				<param name="title_visible">!$EXP[Bald_ShowClearlogo] | [String.IsEmpty(Container.Art(tvshow.clearlogo)) + String.IsEmpty(Container(532).ListItem.Art(tvshow.clearlogo))]</param>
+				<!-- The clearlogo in place of the show's name (Appearance > Artwork, Bald_LogoTitleSeries). -->
+				<param name="logo_visible">$EXP[Bald_LogoTitleSeries]</param>
+				<param name="title_visible">!$EXP[Bald_LogoTitleSeries] | [String.IsEmpty(Container.Art(tvshow.clearlogo)) + String.IsEmpty(Container(532).ListItem.Art(tvshow.clearlogo))]</param>
 				<param name="meta">$VAR[Bald_SeriesPageMeta]</param>
 				<param name="genre">$VAR[Bald_SeriesPageGenre]</param>
 				<param name="plot">$INFO[Container.ShowPlot]</param>

@@ -36,6 +36,13 @@
 				<include>Bald_MenuListLayouts</include>
 				<content>
 					<include>Bald_PowerMenuItems</include>
+					<!-- Settings, while Customization keeps it out of the main menu (Bald.Screen.HideSettings). -->
+					<item>
+						<label>$LOCALIZE[5]</label>
+						<onclick>Dialog.Close(shutdownmenu)</onclick>
+						<onclick>ActivateWindow(settings)</onclick>
+						<visible>Skin.HasSetting(Bald.Screen.HideSettings)</visible>
+					</item>
 				</content>
 			</control>
 		</control>

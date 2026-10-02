@@ -194,6 +194,15 @@
 		</definition>
 	</include>
 	<expression name="Bald_ShowClearlogo">[!Skin.HasSetting(Bald.HideClearlogo)]</expression>
+	<!-- The clearlogo in place of the title (Appearance > Artwork), each place on its own; without a clearlogo the title
+	     shows as text. The library preview and Cast & details start as text (Bald.LogoTitle.*), the series page and the
+	     player's info as the logo (Bald.TitleText.* turns them back to text; Startup.xml carries over a "Clearlogos on
+	     artwork" switched off, which used to decide these two). -->
+	<expression name="Bald_LogoTitleBrowse">[Skin.HasSetting(Bald.LogoTitle.Browse)]</expression>
+	<expression name="Bald_LogoTitleDetails">[Skin.HasSetting(Bald.LogoTitle.Details)]</expression>
+	<expression name="Bald_LogoTitlePlayer">[!Skin.HasSetting(Bald.TitleText.Player)]</expression>
+	<expression name="Bald_LogoTitleSeries">[!Skin.HasSetting(Bald.TitleText.Series)]</expression>
+	<expression name="Bald_ItemHasLogo">[!String.IsEmpty(ListItem.Art(clearlogo)) | !String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</expression>
 	<expression name="Bald_ShowMediaFlags">[!Skin.HasSetting(Bald.HideMediaFlags)]</expression>
 	<!-- Watch-state marks (Appearance › Information): the watched check and the progress bar on TV episode cards and the
 	     Resume / Watched note in list rows. Negative names, so unset shows them. -->

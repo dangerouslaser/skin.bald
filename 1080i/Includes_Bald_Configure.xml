@@ -269,8 +269,8 @@
 	</variable>
 	<!-- Power menu (1131): the focused entry's note, Kodi's own (a "kind") or the user's command. -->
 	<variable name="Bald_PowerEntryNote">
-		<value condition="!String.IsEmpty(Container(9100).ListItem.Property(kind))">$LOCALIZE[31176]</value>
-		<value>$LOCALIZE[31177]</value>
+		<value condition="!String.IsEmpty(Container(9100).ListItem.Property(kind))">$LOCALIZE[31217]</value>
+		<value>$LOCALIZE[31218]</value>
 	</variable>
 	<expression name="Bald_HubCategorySelected">[String.IsEqual(Container(9300).ListItem.Property(kind),hub)]</expression>
 	<!-- Eight hubs fill the eight Home slots (shortcuts/generator/screens.xml). -->

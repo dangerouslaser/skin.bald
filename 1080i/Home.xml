@@ -325,19 +325,21 @@
 				<include content="Bald_HomeMenuLiveTVAt"><param name="after">7</param></include>
 				<include content="Bald_HomeMenuHub"><param name="n">8</param></include>
 				<include condition="String.IsEmpty(Skin.String(Bald.LiveTVAfter))">Bald_HomeMenuLiveTV</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="label">$LOCALIZE[137]</param><param name="preview">search</param>
+				<include content="Bald_HomeMenuButton"><param name="id">9005</param><param name="label">$LOCALIZE[137]</param><param name="preview">search</param><param name="visible">!Skin.HasSetting(Bald.Screen.HideSearch)</param>
 					<onclick>SetProperty(Bald.SearchOrigin,home,home)</onclick>
 					<!-- Bald Helper reads the Live TV schedules while the query is typed, for Search's programme matches. -->
 					<onclick condition="$EXP[Bald_SearchCanLive]">RunPlugin(plugin://script.bald.helper/?action=warm_livetv)</onclick>
 					<!-- Bald's Search (window 1130): Bald Helper asks for the query, then opens it. -->
 					<onclick>RunPlugin(plugin://script.bald.helper/?action=search)</onclick>
 				</include>
-				<include content="Bald_HomeMenuButton"><param name="id">9006</param><param name="label">$LOCALIZE[5]</param><param name="preview">settings</param>
+				<include content="Bald_HomeMenuButton"><param name="id">9006</param><param name="label">$LOCALIZE[5]</param><param name="preview">settings</param><param name="visible">!Skin.HasSetting(Bald.Screen.HideSettings)</param>
 					<onclick>SetProperty(Bald.ReturnMenu,9006,home)</onclick>
 					<onclick>ActivateWindow(settings)</onclick>
 				</include>
 				<!-- Kodi's power menu (DialogButtonMenu.xml): restart, shut down, exit and the rest. A dialog over Home, so
-				     closing it leaves focus here. Customization > Power can take it out of the menu (Bald.Screen.HidePower). -->
+				     closing it leaves focus here. Customization can take Search, Settings and Power out of the menu
+				     (Bald.Screen.HideSearch, HideSettings, HidePower); Settings then moves into the power menu, and Settings and
+				     Power are never both hidden, so Kodi's settings stay in reach. -->
 				<include content="Bald_HomeMenuButton"><param name="id">9007</param><param name="label">$LOCALIZE[33060]</param><param name="preview">power</param><param name="visible">!Skin.HasSetting(Bald.Screen.HidePower)</param>
 					<onclick>ActivateWindow(shutdownmenu)</onclick>
 				</include>
