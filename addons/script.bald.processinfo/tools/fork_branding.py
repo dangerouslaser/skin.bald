@@ -41,8 +41,10 @@ DESCRIPTION = (
     "not affiliated with or supported by TinyPPI's author. Report problems at " + SOURCE + "/issues."
 )
 
-# Never rewritten: our own tooling, and anything that names the upstream project.
-SKIP_DIRS = {".git", ".github", "branding", "tools", "tests"}
+# Never rewritten: our own tooling and tests, and anything that names the upstream project.
+# Upstream's own tests (tests/unit, tests/kodi, the stubs) are renamed with the code they test.
+SKIP_DIRS = {".git", ".github", "branding", "tools"}
+SKIP_PATHS = (Path("tests/test_libreelec.py"), Path("tests/fixtures"))
 KEEP = ("CE-Repo/script.tinyppi", "ce-repo.github.io", "repository.jamal2362")
 TEXT_SUFFIXES = {".py", ".xml", ".po", ".md", ".txt", ".html", ".js", ".css", ".json",
                  ".webmanifest", ".svg", ""}
@@ -65,6 +67,7 @@ def _restore(text):
 def rename_text(text, display=False):
     text = _protect(text)
     text = text.replace("script.tinyppi", ADDON_ID)
+    text = text.replace(r"script\.tinyppi", ADDON_ID.replace(".", r"\."))  # the id in a regular expression
     text = text.replace("script-tinyppi-", "script-baldpi-")
     if display:
         text = text.replace("TinyPPI", NAME)
@@ -77,6 +80,8 @@ def _files(root):
     for path in sorted(root.rglob("*")):
         rel = path.relative_to(root)
         if rel.parts and rel.parts[0] in SKIP_DIRS:
+            continue
+        if any(rel == skip or skip in rel.parents for skip in SKIP_PATHS):
             continue
         if path.is_file():
             yield path
