@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.bald.processinfo" name="Bald Process Info" version="2.13.0.3" provider-name="dangerouslaser">
+<addon id="script.bald.processinfo" name="Bald Process Info" version="2.14.0.3" provider-name="dangerouslaser">
     <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="xbmc.python" version="3.1.0"/>
         <import addon="script.module.sidedata" version="1.6.0" optional="true"/>
     </requires>
     <extension point="xbmc.service" library="resources/lib/service/monitor.py" />
@@ -9,11 +9,16 @@
         <provides>executable</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
+        <platform>linux</platform>
         <license>AGPL-3.0-or-later</license>
         <source>https://github.com/dangerouslaser/script.bald.processinfo</source>
         <summary lang="en">Shows what the player is doing: video, audio, HDR and Dolby Vision output</summary>
         <description lang="en">An overlay with the codec, video, audio, HDR and Dolby Vision details of what is playing, and what the box is sending to the display. Runs on LibreELEC, including the Intel Dolby Vision build, and on CoreELEC. Based on the TinyPPI code by U3knOwn (AGPL-3.0-or-later); not affiliated with or supported by TinyPPI's author. Report problems at https://github.com/dangerouslaser/script.bald.processinfo/issues.</description>
+        <!-- The latest version only: replace this entry on every version bump. -->
+        <news>v2.14.0
+- Every colour is chosen in Kodi's colour picker: a palette of named tiles, and the setting row shows the colour in force.
+- The last tile, HEX colour, takes any colour as a 6-digit HEX code; the opacity stays a slider of its own.
+- Colours set in earlier versions are carried over automatically.</news>
         <assets>
             <icon>icon.png</icon>
             <fanart>fanart.png</fanart>

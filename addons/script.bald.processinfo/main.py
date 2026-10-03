@@ -1,53 +1,38 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 U3knOwn
 
-"""Addon entry point: bootstrap the lib path and dispatch the command."""
+"""Add-on entry point: set up the import path and dispatch the command."""
 
 import os
 import sys
 import time
 
 import xbmc
-import xbmcaddon
 import xbmcgui
 
-_ADDON_ID = "script.bald.processinfo"
+# Put resources/lib on the import path (derived from this file, without
+# asking Kodi).
+_LIB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         "resources", "lib")
+if _LIB_PATH not in sys.path:
+    sys.path.insert(0, _LIB_PATH)
 
-_HOME_WINDOW_ID = 10000
+from core.constants import (  # noqa: E402  needs the path above
+    ADDON_ID,
+    HOME_WINDOW_ID,
+    OPEN_MESSAGES,
+    OPEN_WITHDRAWN,
+    PROP_OPEN_ACK,
+    PROP_OPEN_REQUEST,
+    PROP_SERVICE,
+)
+from core.log import log  # noqa: E402
 
-# Home-window property the service publishes while it is running, and the
-# request / acknowledgement pair a launch hands a view over with.  See
-# _hand_to_service.
-_PROP_SERVICE      = "BaldPI.Service"
-_PROP_OPEN_REQUEST = "BaldPI.OpenRequest"
-_PROP_OPEN_ACK     = "BaldPI.OpenAck"
-
-# Written into the request when a launch gives up waiting and opens the view
-# itself, so a service that answers very late leaves it alone rather than
-# opening a second one on top of it.
-_WITHDRAWN = "-"
-
-# The notification messages the service opens a view on, keyed by view.  A
-# keymap can send one of these itself -- NotifyAll(script.bald.processinfo,open_overlay)
-# -- which opens the overlay without starting a script at all.
-_OPEN_MESSAGES = {
-    "overlay": "open_overlay",
-    "dialog":  "open_dialog",
-}
-
-# How long a launch waits for the service to take the view off its hands before
-# opening it here instead, and how often it looks.  The service acknowledges as
-# the first thing it does, so the wait is a couple of milliseconds in practice;
-# the timeout only covers a service that is marked as running but is not.
+# How long (and how often) a launch waits for the service to acknowledge a
+# handover.  Normally a few milliseconds; the timeout covers a service that
+# is marked as running but does not answer.
 _ACK_TIMEOUT_MS = 750
 _ACK_STEP_MS    = 10
-
-
-def _bootstrap_lib_path(addon: xbmcaddon.Addon) -> None:
-    """Add resources/lib to the import path once."""
-    lib_path = os.path.join(addon.getAddonInfo("path"), "resources", "lib")
-    if lib_path not in sys.path:
-        sys.path.insert(0, lib_path)
 
 
 def _split_args(raw_args: list[str]) -> list[str]:
@@ -59,58 +44,46 @@ def _split_args(raw_args: list[str]) -> list[str]:
 
 
 def _hand_to_service(view: str) -> bool:
-    """Ask the running service to open *view*, returning whether it took it.
+    """Ask the running service to open *view*; return whether it accepted.
 
-    Kodi starts a fresh interpreter for every launch, and the overlay's own
-    modules -- the property getters, the side-data reader, the theme, the
-    title list -- have to be imported into it before anything can be drawn.
-    The service has had all of them loaded since Kodi started, so handing the
-    view over there opens it without that import pass, which is most of the
-    wait between the button and the first frame.
-
-    Nothing is assumed about the service being alive: it publishes
-    ``_PROP_SERVICE`` while it runs and acknowledges this request before it
-    does anything else, so a launch that gets no answer simply opens the view
-    itself (below) rather than doing nothing at all.
+    Each launch runs in a fresh interpreter that would have to import the
+    overlay modules first; the service has them loaded already, which saves
+    most of the delay.  Without an acknowledgement the caller opens the
+    view itself.
     """
-    message = _OPEN_MESSAGES.get(view)
+    message = OPEN_MESSAGES.get(view)
     if not message:
         return False
 
-    home = xbmcgui.Window(_HOME_WINDOW_ID)
-    if home.getProperty(_PROP_SERVICE) != "1":
+    home = xbmcgui.Window(HOME_WINDOW_ID)
+    if home.getProperty(PROP_SERVICE) != "1":
         return False
 
     token = f"{view}:{os.getpid()}:{time.time():.3f}"
-    home.setProperty(_PROP_OPEN_ACK, "")
-    home.setProperty(_PROP_OPEN_REQUEST, token)
-    xbmc.executebuiltin(f"NotifyAll({_ADDON_ID},{message})")
+    home.setProperty(PROP_OPEN_ACK, "")
+    home.setProperty(PROP_OPEN_REQUEST, token)
+    xbmc.executebuiltin(f"NotifyAll({ADDON_ID},{message})")
 
     waited = 0
     while waited < _ACK_TIMEOUT_MS:
-        if home.getProperty(_PROP_OPEN_ACK) == token:
+        if home.getProperty(PROP_OPEN_ACK) == token:
             return True
         xbmc.sleep(_ACK_STEP_MS)
         waited += _ACK_STEP_MS
 
-    # Withdraw the request before opening the view here, so a service that is
-    # only very late does not open a second one on top of it.
-    home.setProperty(_PROP_OPEN_REQUEST, _WITHDRAWN)
-    xbmc.log(
-        "BaldPI: the service did not answer – opening in this script instead",
-        xbmc.LOGWARNING,
-    )
+    # Withdraw the request, so a late service does not open a second view.
+    home.setProperty(PROP_OPEN_REQUEST, OPEN_WITHDRAWN)
+    log("the service did not answer – opening in this script instead",
+        xbmc.LOGWARNING)
     return False
 
 
 def _open_view(view: str) -> None:
-    """Open the overlay or the VS10 dialog, in the service where possible."""
+    """Open the overlay or the VS10 dialog, preferably in the service."""
     if _hand_to_service(view):
         return
 
-    # Imported here rather than at the top of the module: on the fast path
-    # above nothing of this is needed, and every other command has its own
-    # imports to do.
+    # Imported lazily: the fast path above needs none of this.
     if view == "dialog":
         from ui.overlay import open_dialog_mode
         open_dialog_mode()
@@ -120,15 +93,16 @@ def _open_view(view: str) -> None:
 
 
 def main() -> None:
-    """Dispatch BaldPI's script entry point."""
-    addon = xbmcaddon.Addon()
-    _bootstrap_lib_path(addon)
-
+    """Run the command given in the script arguments."""
     args = _split_args(sys.argv[1:])
     command = args[0] if args else ""
 
+    # Read settings only without an explicit view: creating the handle parses
+    # the whole settings definition.
     if not command:
-        command = "dialog" if addon.getSetting("launch_mode") == "1" else "overlay"
+        from core import settings
+        launch_mode = settings.addon().getSetting("launch_mode")
+        command = "dialog" if launch_mode == "1" else "overlay"
 
     if command in ("overlay", "dialog"):
         _open_view(command)
@@ -140,9 +114,9 @@ def main() -> None:
         if platform.is_amlogic():
             from ui.mode_select import set_mode
             set_mode(args[1])
-    elif command == "custom_color" and len(args) > 1:
-        from ui.theme import custom_color
-        custom_color(args[1])
+    elif command == "pick_color" and len(args) > 1:
+        from ui.theme import pick_color
+        pick_color(args[1], args[2] if len(args) > 2 else "")
     elif command == "web_info":
         from ui.webinfo import show_web_info
         show_web_info()

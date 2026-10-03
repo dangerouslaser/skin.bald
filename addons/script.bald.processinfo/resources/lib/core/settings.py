@@ -1,24 +1,19 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 U3knOwn
 
-"""One settings handle per interpreter, renewed only when the settings change.
+"""One cached settings handle per interpreter.
 
-Kodi gives every ``xbmcaddon.Addon()`` a copy of the settings of its own, and
-loads it on the first read: the whole ``resources/settings.xml`` definition --
-some 360 KB of XML, every setting with its control, constraints and
-dependencies -- is parsed and built up, and the stored values are read over
-it.  Code that had to see a change made in the settings dialog mid-session
-used to build a fresh ``Addon()`` for every read to get it, and so paid that
-load every time: five times a second in the dashboard's producer, four times a
-second in the codec-logo splash, twice a second in the overlay's static pass.
+Each ``xbmcaddon.Addon()`` loads its own copy of the settings on first read,
+which parses the whole ~100 KB ``resources/settings.xml``.  Creating a fresh
+handle for every read (to see changes made mid-session) cost that load
+several times a second in the dashboard, the splash and the overlay.
 
-The stored values live in one file, which Kodi rewrites whenever a setting
-changes -- on leaving the settings dialog and on every ``setSetting()``.  So
-the handle is kept, and replaced only when that file's stamp moves: one stat
-per call instead of one load, and a change is still seen on the very next call.
+Kodi rewrites the stored values file whenever a setting changes, so the
+handle is kept and only replaced when that file's stamp changes: one stat per
+call instead of one load, and changes are still seen on the next call.
 
-A caller that derives something from the settings can compare the handle it
-got last time against this one (``is not``) to learn whether they changed.
+Callers can compare the returned handle with the previous one (``is not``) to
+detect a settings change.
 """
 
 import os
@@ -27,38 +22,47 @@ import threading
 import xbmcaddon
 import xbmcvfs
 
-# Where Kodi keeps the values this add-on's settings are set to.
-_VALUES_FILE = "special://profile/addon_data/script.bald.processinfo/settings.xml"
+from core.constants import PROFILE_DIR
 
-_lock   = threading.Lock()
-_path   = ""
-_handle = None
-_stamp  = None
+# The file holding this add-on's stored setting values.
+_VALUES_FILE = f"{PROFILE_DIR}/settings.xml"
 
 
-def _values_stamp() -> tuple | None:
-    """The values file as it is on disk right now, or None while it does not
-    exist (a profile that has never saved a setting)."""
-    try:
-        stat = os.stat(_path)
-    except OSError:
-        return None
-    return (stat.st_mtime_ns, stat.st_size, stat.st_ino)
+class _Handle:
+    """The settings handle and the stamp of the values file it was read at."""
+
+    def __init__(self) -> None:
+        self._lock   = threading.Lock()
+        self._path   = ""
+        self._handle = None
+        self._stamp  = None
+
+    def _values_stamp(self) -> tuple | None:
+        """Return the values file's stamp, or None while it does not exist."""
+        try:
+            stat = os.stat(self._path)
+        except OSError:
+            return None
+        return (stat.st_mtime_ns, stat.st_size, stat.st_ino)
+
+    def get(self) -> xbmcaddon.Addon:
+        if not self._path:
+            self._path = xbmcvfs.translatePath(_VALUES_FILE)
+        stamp = self._values_stamp()
+        with self._lock:
+            if self._handle is None or stamp != self._stamp:
+                self._handle = xbmcaddon.Addon()
+                self._stamp  = stamp
+            return self._handle
+
+
+_current = _Handle()
 
 
 def addon() -> xbmcaddon.Addon:
-    """Return a handle whose settings are the ones in force right now.
+    """Return a handle with the settings currently in force.
 
-    Raises what ``xbmcaddon.Addon()`` raises when a new handle has to be made;
-    an update that briefly unregisters the add-on is the one time it does.
+    Raises what ``xbmcaddon.Addon()`` raises when a new handle is needed,
+    e.g. while an update briefly unregisters the add-on.
     """
-    global _path, _handle, _stamp
-
-    if not _path:
-        _path = xbmcvfs.translatePath(_VALUES_FILE)
-    stamp = _values_stamp()
-    with _lock:
-        if _handle is None or stamp != _stamp:
-            _handle = xbmcaddon.Addon()
-            _stamp  = stamp
-        return _handle
+    return _current.get()
