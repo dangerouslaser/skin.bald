@@ -59,6 +59,22 @@ class RevisionTests(unittest.TestCase):
             self.assertEqual(shots, tracked)
 
 
+class BundledTests(unittest.TestCase):
+    def test_skin_variables_is_published_at_the_version_the_skin_requires(self):
+        """Kodi's repository only has Skin Variables 2.1.x, so the feed carries the version the skin imports."""
+        import xml.etree.ElementTree as ET
+
+        self.assertIn("addons/script.skinvariables", build.BUNDLED_ADDONS)
+        skin = ET.parse(ROOT / "addon.xml").getroot()
+        required = skin.find("./requires/import[@addon='script.skinvariables']").attrib["version"]
+        bundled = ET.parse(ROOT / "addons" / "script.skinvariables" / "addon.xml").getroot()
+        self.assertEqual(bundled.attrib["id"], "script.skinvariables")
+        key = lambda version: tuple(int(part) for part in version.split("."))
+        self.assertGreaterEqual(key(bundled.attrib["version"]), key(required))
+        # Bundled add-ons never go into the skin's own zip.
+        self.assertFalse(any(path.startswith("addons/") for path in build.tracked_files("HEAD")))
+
+
 if __name__ == "__main__":
     unittest.main()
 

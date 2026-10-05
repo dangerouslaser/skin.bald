@@ -21,7 +21,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 REPOSITORY_SOURCE = "packaging/repository.bald"  # the repository add-on, in the checkout
 # addons/script.bald.processinfo is a git subtree of dangerouslaser/script.bald.processinfo (branch libreelec).
-BUNDLED_ADDONS = ("addons/script.bald.xcsetup", "addons/script.bald.helper", "addons/script.bald.processinfo")
+# addons/script.skinvariables is a git subtree of jurialmunkey/script.skinvariables, unchanged, at the version the
+# skin requires: Kodi's own repository only carries 2.1.x, and newer releases are otherwise only in jurialmunkey's
+# repository. Its modules (script.module.jurialmunkey, script.module.infotagger) come from Kodi's repository.
+BUNDLED_ADDONS = (
+    "addons/script.bald.xcsetup",
+    "addons/script.bald.helper",
+    "addons/script.bald.processinfo",
+    "addons/script.skinvariables",
+)
 # The published site (GitHub Pages). Kodi can add it as a file source: its HTTP directory listing keeps the links whose
 # text is their target, which on the landing page is only the repository zip.
 SITE_URL = "https://dangerouslaser.github.io/skin.bald/"
