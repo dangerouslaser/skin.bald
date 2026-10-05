@@ -42,11 +42,11 @@ def expression_rows(root, name):
 
 
 class WidgetGeneratorTests(unittest.TestCase):
-    def test_skinvariables_224_is_a_required_dependency(self):
+    def test_skinvariables_228_is_a_required_dependency(self):
         root = ET.parse(ROOT / "addon.xml").getroot()
         imports = {node.get("addon"): node for node in root.findall("./requires/import")}
         dependency = imports["script.skinvariables"]
-        self.assertEqual(dependency.get("version"), "2.2.4")
+        self.assertEqual(dependency.get("version"), "2.2.8")
         self.assertIsNone(dependency.get("optional"))
 
     def test_default_widget_schema_preserves_current_home(self):
