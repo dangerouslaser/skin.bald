@@ -14,7 +14,7 @@
 				<onup>512</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|512)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,512)</onright>
 				<include>Bald_LibraryDim</include>
 				<itemlayout width="216" height="312"><include>Bald_WallPoster</include></itemlayout>
-				<focusedlayout width="216" height="312"><include content="Bald_WallPoster"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(512) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
+				<focusedlayout width="216" height="312"><include content="Bald_WallPoster"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param><param name="focused">Control.HasFocus(512) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
 			<include content="Bald_LibraryPreview"><param name="c">512</param></include>
 			<include content="Bald_WallFooter"><param name="c">512</param></include>

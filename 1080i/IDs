@@ -427,7 +427,7 @@ Custom_1118_BaldAppearance.xml (window 1118)
 9632-9634	Date & time (Includes_Bald_Common.xml, Clock): 9632 time format (region, 12 hours, 24 hours), 9633 date
 		with the clock, 9634 clock on Home
 9635-9637	Information (listed after 9612): 9635 titles on Home tiles (none, on focus, always), 9636 watched marks,
-		9637 progress marks (both: TV episode cards, Home row tiles, list rows)
+		9637 progress marks (both: TV episode cards, Home row tiles, library posters, list rows)
 9664-9667	Artwork, the clearlogo in place of the title (listed after 9601): 9664 library previews, 9665 Cast &
 		details, 9666 series page, 9667 player
 9641-9663	Ratings (Includes_Bald_Ratings.xml): 9641 show ratings; 9657 online ratings from TMDb Helper,

@@ -204,8 +204,9 @@
 	<expression name="Bald_LogoTitleSeries">[!Skin.HasSetting(Bald.TitleText.Series)]</expression>
 	<expression name="Bald_ItemHasLogo">[!String.IsEmpty(ListItem.Art(clearlogo)) | !String.IsEmpty(ListItem.Art(tvshow.clearlogo))]</expression>
 	<expression name="Bald_ShowMediaFlags">[!Skin.HasSetting(Bald.HideMediaFlags)]</expression>
-	<!-- Watch-state marks (Appearance › Information): the watched check and the progress bar on TV episode cards and the
-	     Resume / Watched note in list rows. Negative names, so unset shows them. -->
+	<!-- Watch-state marks (Appearance › Information): the watched check and the progress bar on TV episode cards and
+	     library posters, the check on Home's tiles, the progress line in Home's caption and the Resume / Watched note in
+	     list rows. Negative names, so unset shows them. -->
 	<expression name="Bald_ShowWatchedMarks">[!Skin.HasSetting(Bald.HideWatchedMarks)]</expression>
 	<expression name="Bald_ShowProgressMarks">[!Skin.HasSetting(Bald.HideProgressMarks)]</expression>
 	<!-- Global Search's right-hand options menu has focus (script-globalsearch.xml sets it on its own window). -->
