@@ -32,7 +32,7 @@
 				<viewtype label="20021">icon</viewtype>
 				<include>Bald_BrowseDim</include>
 				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
-				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(51)</param></include></focusedlayout>
+				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param><param name="focused">Control.HasFocus(51)</param></include></focusedlayout>
 			</control>
 			<include>Bald_BrowsePreview</include>
 		</control>
