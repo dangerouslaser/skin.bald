@@ -1174,6 +1174,8 @@
 		<!-- The surface setting that shows the rating row (Includes_Bald_Ratings.xml): Home by default; the library
 		     views pass $EXP[Bald_RatingsLibrary] and More like this $EXP[Bald_RatingsInfo]. -->
 		<param name="ratings">$EXP[Bald_RatingsHome]</param>
+		<!-- When a long plot may scroll (Bald_PlotAutoScroll): More like this, inside the info dialog, passes true. -->
+		<param name="scroll_when">!System.HasActiveModalDialog</param>
 		<definition>
 			<control type="group">
 				<visible>$PARAM[ignore_home_row] | $PARAM[preview] | String.IsEqual(Window(home).Property(Bald.Row),$PARAM[c])</visible>
@@ -1346,33 +1348,31 @@
 						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">$PARAM[ignore_home_row]</param><param name="delay">300</param></include>
 					</control>
-					<!-- Plot: Kodi draws ceil(height / line height) lines, so 116 / 30 gives 4. No ellipsis is possible, see docs/NOTES.md. -->
-					<control type="label">
+					<!-- Plot: a textbox shows floor(height / line height) lines, so 121 / 30 gives 4 (Bald_PlotAutoScroll). No ellipsis is possible, see docs/NOTES.md. -->
+					<control type="textbox">
 						<top>18</top>
 						<left>20</left>
 						<width>$PARAM[width]</width>
-						<height>116</height>
-						<wrapmultiline>true</wrapmultiline>
-						<aligny>top</aligny>
+						<height>121</height>
 						<font>Bald_CaptionPlot</font>
 						<textcolor>bald_ink80</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Plot]</label>
+						<include content="Bald_PlotAutoScroll"><param name="when">$PARAM[scroll_when]</param></include>
 						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [!String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | !String.IsEmpty(Container($PARAM[c]).ListItem.Plot)] + ![$EXP[Bald_ShowProgressMarks] + Container($PARAM[c]).ListItem.IsResumable]</visible>
 						<include content="Bald_SpoilerPlotShown"><param name="item">Container($PARAM[c]).ListItem.</param></include>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">$PARAM[ignore_home_row]</param><param name="delay">350</param></include>
 					</control>
 					<!-- With the progress line showing (a part-watched movie or episode) the plot keeps to three lines, so the
 					     caption ends where it does for any other item and never reaches the hints below. -->
-					<control type="label">
+					<control type="textbox">
 						<top>18</top>
 						<left>20</left>
 						<width>$PARAM[width]</width>
-						<height>87</height>
-						<wrapmultiline>true</wrapmultiline>
-						<aligny>top</aligny>
+						<height>91</height>
 						<font>Bald_CaptionPlot</font>
 						<textcolor>bald_ink80</textcolor>
 						<label>$INFO[Container($PARAM[c]).ListItem.Plot]</label>
+						<include content="Bald_PlotAutoScroll"><param name="when">$PARAM[scroll_when]</param></include>
 						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + [!String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) | !String.IsEmpty(Container($PARAM[c]).ListItem.Plot)] + [$EXP[Bald_ShowProgressMarks] + Container($PARAM[c]).ListItem.IsResumable]</visible>
 						<include content="Bald_SpoilerPlotShown"><param name="item">Container($PARAM[c]).ListItem.</param></include>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">$PARAM[ignore_home_row]</param><param name="delay">350</param></include>
@@ -1387,9 +1387,10 @@
 						<param name="height">30</param>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">$PARAM[ignore_home_row]</param><param name="delay">350</param></include>
 					</include>
-					<control type="label">
-						<top>18</top><left>20</left><width>$PARAM[width]</width><height>116</height><wrapmultiline>true</wrapmultiline><aligny>top</aligny><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor>
+					<control type="textbox">
+						<top>18</top><left>20</left><width>$PARAM[width]</width><height>121</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor>
 						<label>$INFO[Container.ShowPlot]</label>
+						<include content="Bald_PlotAutoScroll"><param name="when">$PARAM[scroll_when]</param></include>
 						<visible>Integer.Is$PARAM[p](Container($PARAM[c]).CurrentItem) + String.IsEqual(Container($PARAM[c]).ListItem.DBType,season) + String.IsEmpty(Container($PARAM[c]).ListItem.Plot)</visible>
 						<include content="Bald_AnimCaptionIn"><param name="c">$PARAM[c]</param><param name="ignore_home_row">$PARAM[ignore_home_row]</param><param name="delay">350</param></include>
 					</control>

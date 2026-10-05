@@ -5,6 +5,20 @@
      window's or layout's own item (ListItem.*), or "Container(511)." for a list's focused item
      (Container(511).ListItem.*). -->
 <includes>
+	<!-- ============ Scroll long plots ============ -->
+	<!-- Appearance > Behavior, "Scroll long plots" (Bald.ScrollPlots): placed inside a plot or summary textbox, it
+	     scrolls a plot longer than the box after 10 s, one line per 3 s, and starts again from the top 10 s after the
+	     end. Kodi only autoscrolls a textbox (a wrapmultiline label cannot scroll) and only when it has more lines than
+	     floor(height / line height), so a box meant to show n lines is n line heights tall plus a pixel (Bald_CaptionPlot
+	     30.004 px, Bald_InfoPlot 34.83 px: 4 lines 121, 3 lines 91, 2 lines 61 or 71). `when` keeps a window's plot
+	     still under a dialog (System.HasActiveModalDialog resets it to the top); a plot inside a modal dialog itself
+	     (the info dialog, the player's panels) passes true. docs/NOTES.md, "Scroll long plots". -->
+	<include name="Bald_PlotAutoScroll">
+		<param name="when">!System.HasActiveModalDialog</param>
+		<definition>
+			<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(Bald.ScrollPlots) + [$PARAM[when]]</autoscroll>
+		</definition>
+	</include>
 	<!-- ============ Navigation hints ============ -->
 	<!-- A hint shows the key it names and says what it does: $VAR[Bald_KeyDown]$LOCALIZE[31771] reads "▼ Cast & details",
 	     $VAR[Bald_KeySelect]$LOCALIZE[31663] "○ Play". A Right key follows its name ("Scroll by letters ▶") and a hint
