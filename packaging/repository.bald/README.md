@@ -1,7 +1,7 @@
 # Bald Add-on Repository
 
 This Kodi repository add-on points Kodi 22 at the Bald release feed hosted by
-GitHub Pages. Install `repository.bald-1.0.0.zip`, then install **Bald** from
+GitHub Pages. Install the `repository.bald-<version>.zip` from the site, then install **Bald** from
 **Add-ons → Install from repository → Bald Add-on Repository → Look and feel →
 Skin**.
 
@@ -17,20 +17,13 @@ has followed its upstream. When the fork has moved, it opens a
 linking the branch if Actions may not open pull requests. If anything fails, it
 opens a `processinfo-sync` issue instead.
 
-The skin requires **Skin Variables** (`script.skinvariables`) 2.2.4 or later.
-Kodi's own repository only has 2.1.x, so the feed publishes it too, and nobody
-needs jurialmunkey's repository for Bald. It lives in
-`addons/script.skinvariables` as an unchanged git subtree of
-jurialmunkey/script.skinvariables (GPL-3.0-or-later, its licence and authorship
-kept). Upstream does not tag every release, so it is pinned to the commit that
-set the version: 2.2.4 is `70ff5c126d34256759ff3520be1d94d93c9b0a7a` on the
-`nexus` branch. Its modules (`script.module.jurialmunkey`,
-`script.module.infotagger`) come from Kodi's repository. Nothing pulls it
-automatically. When the skin needs a newer one, pull the commit that bumps
-`addon.xml` to it and raise the skin's import:
-
-    git subtree pull --prefix=addons/script.skinvariables --squash \
-        https://github.com/jurialmunkey/script.skinvariables.git <commit>
+The skin requires **Skin Variables** (`script.skinvariables`), which Kodi's own
+repository only carries at 2.1.x. Rather than copying it, the repository add-on
+lists jurialmunkey's Kodi 21+ feed as a second `<dir>` (the `omega` feed of his
+repository.jurialmunkey), so Kodi installs and updates Skin Variables, its
+modules and TMDb Helper from him at his latest release, without his repository
+installed. When his repository moves that feed, update the URLs here and bump
+the repository add-on's version.
 
 Only tagged, committed revisions are published. The release workflow rejects a
 tag whose version does not match `skin.bald/addon.xml`.

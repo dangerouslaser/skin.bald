@@ -10,10 +10,6 @@ import zipfile
 from pathlib import Path
 
 
-def version_key(version: str) -> tuple[int, ...]:
-    return tuple(int(part) for part in version.split("."))
-
-
 def main() -> None:
     root = Path(sys.argv[1])
     assert (root.parent / "index.html").is_file()
@@ -21,8 +17,7 @@ def main() -> None:
     payload = index.read_bytes()
     assert hashlib.md5(payload).hexdigest() == (root / "addons.xml.md5").read_text().strip()
     addons = {node.attrib["id"]: node for node in ET.parse(index).getroot()}
-    assert {"skin.bald", "script.bald.xcsetup", "script.bald.helper", "script.bald.processinfo", "script.skinvariables",
-            "repository.bald"} <= addons.keys()
+    assert {"skin.bald", "script.bald.xcsetup", "script.bald.helper", "script.bald.processinfo", "repository.bald"} <= addons.keys()
     # Bald Process Info's side-data module lives in another repository, so this feed must not require it.
     sidedata = addons["script.bald.processinfo"].find("./requires/import[@addon='script.module.sidedata']")
     assert sidedata is None or sidedata.get("optional") == "true"
@@ -81,22 +76,6 @@ def main() -> None:
     required = addons["skin.bald"].find("./requires/import[@addon='script.bald.helper']")
     assert required is not None and required.get("optional") is None
     assert required.attrib["version"] == helper.attrib["version"]
-
-    # Skin Variables, at least at the version the skin requires, is published here (Kodi's repository has only 2.1.x);
-    # its modules come from Kodi's repository, so the feed does not carry them.
-    variables = addons["script.skinvariables"]
-    required = addons["skin.bald"].find("./requires/import[@addon='script.skinvariables']")
-    assert required is not None and required.get("optional") is None
-    assert version_key(variables.attrib["version"]) >= version_key(required.attrib["version"])
-    assert variables.find("./requires/import[@addon='script.module.jurialmunkey']") is not None
-    assert {"script.module.jurialmunkey", "script.module.infotagger"}.isdisjoint(addons)
-    variables_zip = root / "script.skinvariables" / f"script.skinvariables-{variables.attrib['version']}.zip"
-    with zipfile.ZipFile(variables_zip) as zipped:
-        names = set(zipped.namelist())
-        for name in ("script.py", "plugin.py", "LICENSE.txt", "icon.png", "resources/lib/script.py"):
-            assert f"script.skinvariables/{name}" in names, name
-        assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
-    assert (root / "script.skinvariables" / "icon.png").is_file()
 
     skin_version = addons["skin.bald"].attrib["version"]
     skin_zip = root / "skin.bald" / f"skin.bald-{skin_version}.zip"

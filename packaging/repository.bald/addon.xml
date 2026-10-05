@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="repository.bald" version="1.0.3" name="Bald Add-on Repository" provider-name="dangerouslaser">
+<addon id="repository.bald" version="1.1.0" name="Bald Add-on Repository" provider-name="dangerouslaser">
   <extension point="xbmc.addon.repository" name="Bald Add-on Repository">
     <dir>
       <info compressed="false">https://dangerouslaser.github.io/skin.bald/kodi/addons.xml</info>
       <checksum>https://dangerouslaser.github.io/skin.bald/kodi/addons.xml.md5</checksum>
       <datadir zip="true">https://dangerouslaser.github.io/skin.bald/kodi/</datadir>
     </dir>
+    <!-- jurialmunkey's Kodi 21+ feed (his repository.jurialmunkey's "omega" dir), so Skin Variables (which the skin
+         requires; Kodi's repository stops at 2.1.x) and TMDb Helper install and update at his latest release. -->
+    <dir>
+      <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/addons.xml</info>
+      <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/</datadir>
+    </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">Updates for the Bald Kodi 22 skin.</summary>
-    <description lang="en_GB">Install Bald and receive tagged skin updates through Kodi.</description>
+    <description lang="en_GB">Install Bald and receive tagged skin updates through Kodi. Also lists jurialmunkey's add-ons (Skin Variables, TMDb Helper), which Bald uses, from his own feed.</description>
     <platform>all</platform>
     <license>GPL-2.0-or-later</license>
     <assets>
