@@ -209,7 +209,7 @@
 				</control>
 				<!-- On by default: Startup.xml sets Bald.Preload and Home holds a splash until every row has loaded (docs/NOTES.md, Startup splash). -->
 				<control type="radiobutton" id="9624"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">expert</param></include><label>$LOCALIZE[31726]</label><selected>!Skin.HasSetting(Bald.DisablePreload)</selected><onclick>Skin.ToggleSetting(Bald.DisablePreload)</onclick></control>
-				<!-- Long plots in the library previews and Estuary's list views scroll on their own after 10 s. -->
+				<!-- Long plots and summaries scroll on their own after 10 s wherever Bald shows one: Home, the library views and previews, the info dialog, the series page, Search and the player panels (Bald_PlotAutoScroll). -->
 				<control type="radiobutton" id="9625"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31993]</label><selected>Skin.HasSetting(Bald.ScrollPlots)</selected><onclick>Skin.ToggleSetting(Bald.ScrollPlots)</onclick></control>
 				<!-- Kodi settings Bald recommends (scripts/recommended.py): hide parent folder items, Select shows information. -->
 				<control type="button" id="9626"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">3</param><param name="level">standard</param></include><label>$LOCALIZE[31839]</label><onclick>RunScript(skin.bald,recommended)</onclick></control>

@@ -81,16 +81,17 @@
 					<visible>!String.IsEmpty(ListItem.Tagline)</visible>
 					<include content="Bald_AnimInfoIn"><param name="delay">560</param></include>
 				</control>
-				<!-- Plot: 4 lines of 34 px (Kodi draws ceil(height / line height) lines). -->
-				<control type="label">
+				<!-- Plot: 4 lines of 34.83 px, in a textbox 4 lines plus a pixel tall, so Kodi counts 4 lines a page
+				     (floor(height / line height)) and a longer plot can scroll (Bald_PlotAutoScroll). The actions' top
+				     is 7 px less than before the plot was a textbox (a 134 px label), so they keep their place. -->
+				<control type="textbox">
 					<top>14</top>
 					<width>780</width>
-					<height>134</height>
-					<wrapmultiline>true</wrapmultiline>
-					<aligny>top</aligny>
+					<height>141</height>
 					<font>Bald_InfoPlot</font>
 					<textcolor>bald_ink80</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
+					<include content="Bald_PlotAutoScroll"><param name="when">true</param></include>
 					<include content="Bald_SpoilerPlotShown" />
 					<include content="Bald_AnimInfoIn"><param name="delay">600</param></include>
 				</control>
@@ -98,13 +99,13 @@
 				<include content="Bald_SpoilerNote">
 					<param name="top">14</param>
 					<param name="width">780</param>
-					<param name="height">134</param>
+					<param name="height">141</param>
 					<param name="font">Bald_InfoPlot</param>
 					<include content="Bald_AnimInfoIn"><param name="delay">600</param></include>
 				</include>
 				<!-- Actions -->
 				<control type="grouplist" id="5000">
-					<top>34</top>
+					<top>27</top>
 					<width>1400</width>
 					<height>70</height>
 					<orientation>horizontal</orientation>
@@ -268,8 +269,8 @@
 			<!-- Home's exact caption layout, flags and staggered transitions, scoped to recommendations. -->
 			<control type="group">
 				<visible>$EXP[Bald_HasRecommendations]</visible>
-				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param><param name="ratings">$EXP[Bald_RatingsInfo]</param></include>
-				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param><param name="ratings">$EXP[Bald_RatingsInfo]</param></include>
+				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Odd</param><param name="ignore_home_row">true</param><param name="scroll_when">true</param><param name="ratings">$EXP[Bald_RatingsInfo]</param></include>
+				<include content="Bald_Caption"><param name="c">5100</param><param name="p">Even</param><param name="ignore_home_row">true</param><param name="scroll_when">true</param><param name="ratings">$EXP[Bald_RatingsInfo]</param></include>
 			</control>
 			<control type="label"><left>Bald_SafeLeft</left><top>856</top><width>850</width><height>26</height><font>Bald_RowLabel</font><textcolor>bald_ink</textcolor><label>$LOCALIZE[31772]</label></control>
 			<control type="label"><left>1144</left><top>856</top><width>200</width><height>26</height><align>right</align><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(5100).CurrentItem] / $INFO[Container(5100).NumItems]</label><visible>$EXP[Bald_HasRecommendations]</visible></control>

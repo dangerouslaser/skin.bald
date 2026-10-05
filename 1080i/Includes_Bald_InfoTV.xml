@@ -314,6 +314,8 @@
 		<param name="meta_y">346</param>
 		<param name="genre_y">384</param>
 		<param name="plot_y">424</param>
+		<!-- When a long plot may scroll: the library's series page keeps the default, the info dialog passes true. -->
+		<param name="scroll_when">!System.HasActiveModalDialog</param>
 		<definition>
 			<!-- Stagger 0, 60, 100, 180 after the 380 base (the prototype's i0, i1, i2, i4). -->
 			<control type="group">
@@ -369,17 +371,17 @@
 				<label>$PARAM[genre]</label>
 				<include content="$PARAM[anim]"><param name="delay">480</param></include>
 			</control>
-			<!-- Plot: 2 lines of 34 px (Kodi draws ceil(height / line height) lines). -->
-			<control type="label">
+			<!-- Plot: 2 lines of 34.83 px; a textbox 2 lines plus a pixel tall, so a longer plot can scroll
+			     (Bald_PlotAutoScroll; Kodi counts floor(height / line height) lines a page). -->
+			<control type="textbox">
 				<left>Bald_SafeLeft</left>
 				<top>$PARAM[plot_y]</top>
 				<width>780</width>
-				<height>68</height>
-				<wrapmultiline>true</wrapmultiline>
-				<aligny>top</aligny>
+				<height>71</height>
 				<font>Bald_InfoPlot</font>
 				<textcolor>bald_ink80</textcolor>
 				<label>$PARAM[plot]</label>
+				<include content="Bald_PlotAutoScroll"><param name="when">$PARAM[scroll_when]</param></include>
 				<include content="$PARAM[anim]"><param name="delay">560</param></include>
 			</control>
 		</definition>
@@ -447,6 +449,7 @@
 		<param name="ratings">$EXP[Bald_RatingsInfo]</param>
 		<param name="detail_y">894</param>
 		<param name="synopsis_y">934</param>
+		<param name="scroll_when">!System.HasActiveModalDialog</param>
 		<definition>
 			<control type="grouplist">
 				<left>Bald_SafeLeft</left>
@@ -498,7 +501,21 @@
 				<font>Bald_CaptionPlot</font>
 				<textcolor>bald_ink80</textcolor>
 				<label>$INFO[Container(5302).ListItem.Plot]</label>
-				<visible>$EXP[Bald_InfoTVHasEpisodes]</visible>
+				<visible>$EXP[Bald_InfoTVHasEpisodes] + !Skin.HasSetting(Bald.ScrollPlots)</visible>
+				<include content="Bald_SpoilerPlotShown"><param name="item">Container(5302).ListItem.</param></include>
+			</control>
+			<!-- With "Scroll long plots" the synopsis is a one-line textbox instead, which steps through the whole plot a
+			     line at a time (no ellipsis; a textbox ends a line at a word). -->
+			<control type="textbox">
+				<left>Bald_SafeLeft</left>
+				<top>$PARAM[synopsis_y]</top>
+				<width>1100</width>
+				<height>31</height>
+				<font>Bald_CaptionPlot</font>
+				<textcolor>bald_ink80</textcolor>
+				<label>$INFO[Container(5302).ListItem.Plot]</label>
+				<include content="Bald_PlotAutoScroll"><param name="when">$PARAM[scroll_when]</param></include>
+				<visible>$EXP[Bald_InfoTVHasEpisodes] + Skin.HasSetting(Bald.ScrollPlots)</visible>
 				<include content="Bald_SpoilerPlotShown"><param name="item">Container(5302).ListItem.</param></include>
 			</control>
 			<include content="Bald_SpoilerNote">
@@ -529,6 +546,7 @@
 				<param name="meta">$VAR[Bald_InfoTVMeta]</param>
 				<param name="genre">$VAR[Bald_InfoTVGenre]</param>
 				<param name="plot">$VAR[Bald_InfoTVPlot]</param>
+				<param name="scroll_when">true</param>
 				<!-- Only for the show itself: a season or episode keeps the show's line, and its own ratings are the episode's. -->
 				<param name="ratings">$EXP[Bald_RatingsInfo] + $EXP[Bald_InfoTVIsShow]</param>
 			</include>
@@ -599,7 +617,7 @@
 					<include>Bald_InfoActionToCast</include>
 					<content target="videos" sortby="episode" sortorder="ascending" browse="never">$INFO[Container(5301).ListItem.FolderPath]</content>
 				</control>
-				<include>Bald_InfoTVEpisodeDetail</include>
+				<include content="Bald_InfoTVEpisodeDetail"><param name="scroll_when">true</param></include>
 			</control>
 		</control>
 	</include>

@@ -42,7 +42,7 @@
 			<control type="image"><left>Bald_PreviewLeft</left><top>Bald_ContentTop</top><width>528</width><height>297</height><texture background="true">$VAR[Bald_SearchPreviewArt]</texture><aspectratio align="center" aligny="center">keep</aspectratio><fadetime>400</fadetime><visible>$EXP[Bald_SearchShowsLive] | String.IsEmpty(ListItem.Art(fanart))</visible></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>548</top><width>528</width><height>88</height><font>Bald_CaptionTitle</font><textcolor>bald_ink</textcolor><wrapmultiline>true</wrapmultiline><label>$INFO[ListItem.Label]</label></control>
 			<control type="label"><left>Bald_PreviewLeft</left><top>636</top><width>528</width><height>28</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><label>$VAR[Bald_SearchPreviewMeta]</label></control>
-			<control type="textbox"><left>Bald_PreviewLeft</left><top>686</top><width>528</width><height>144</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_SearchPreviewPlot]</label></control>
+			<control type="textbox"><left>Bald_PreviewLeft</left><top>686</top><width>528</width><height>144</height><font>Bald_CaptionPlot</font><textcolor>bald_ink80</textcolor><label>$VAR[Bald_SearchPreviewPlot]</label><include content="Bald_PlotAutoScroll" /></control>
 		</control>
 		<!-- The options, at the right: New search and the categories with results. -->
 		<control type="group"><visible>$EXP[Bald_SearchMenuOpen]</visible><include>Bald_AnimMenuShows</include><control type="label"><left>1466</left><top>292</top><width>394</width><height>30</height><font>Bald_CaptionMeta</font><textcolor>bald_ink60</textcolor><label>$LOCALIZE[31891]</label></control></control>

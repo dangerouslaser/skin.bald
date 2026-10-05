@@ -1297,10 +1297,11 @@
 				<left>Bald_SafeLeft</left>
 				<top>866</top>
 				<width>1200</width>
-				<height>60</height>
+				<height>61</height>
 				<font>Bald_CaptionPlot</font>
 				<textcolor>bald_ink60</textcolor>
 				<label>$PARAM[text]</label>
+				<include content="Bald_PlotAutoScroll"><param name="when">true</param></include>
 			</control>
 		</definition>
 	</include>
@@ -2012,10 +2013,11 @@
 					<left>512</left>
 					<top>606</top>
 					<width>1000</width>
-					<height>90</height>
+					<height>91</height>
 					<font>Bald_CaptionPlot</font>
 					<textcolor>bald_ink60</textcolor>
 					<label>$INFO[Window.Property(plot)]</label>
+					<include content="Bald_PlotAutoScroll"><param name="when">true</param></include>
 					<visible>!$EXP[Bald_OSDUpNextPlotHidden]</visible>
 				</control>
 				<control type="label">
