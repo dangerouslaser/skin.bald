@@ -137,6 +137,19 @@ def tv_info_textures():
     im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
     im.putalpha(mark.resize((size, size), Image.LANCZOS))
     save(im, "check.png")
+    # In-progress clock, the check's companion on tiles: Lucide's clock (circle r 10 at 12,12; hands 12,6 / 12,12 /
+    # 16,14) drawn smaller (r 8.5, hands 12,7.5 / 12,12 / 15.5,14) so the check's 2.6 stroke fits the same 24 units.
+    mark = Image.new("L", (size * SS, size * SS), 0)
+    d = ImageDraw.Draw(mark)
+    r = 8.5 * k
+    d.ellipse([12 * k - r, 12 * k - r, 12 * k + r, 12 * k + r], outline=255, width=width)
+    pts = [(12 * k, 7.5 * k), (12 * k, 12 * k), (15.5 * k, 14 * k)]
+    d.line(pts, fill=255, width=width, joint="curve")
+    for x, y in (pts[0], pts[-1]):
+        d.ellipse([x - width / 2, y - width / 2, x + width / 2, y + width / 2], fill=255)
+    im = Image.new("RGBA", (size, size), (255, 255, 255, 0))
+    im.putalpha(mark.resize((size, size), Image.LANCZOS))
+    save(im, "clock.png")
     settings_textures()
 
 

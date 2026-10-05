@@ -61,12 +61,14 @@ class TileMarksTests(unittest.TestCase):
         for style, ((x, y, w, h), _, _, _) in TILES.items():
             for layout in layouts(style):
                 group = marks(layout)[0]
-                (check,) = [node for node in group if node.tag == "control" and node.get("type") == "group"]
+                check, clock = [node for node in group if node.tag == "control" and node.get("type") == "group"]
                 with self.subTest(style=style, layout=layout.tag):
-                    # Check: a 24 px dot 8 px in from the top right corner.
-                    self.assertEqual((int(check.findtext("left")), int(check.findtext("top"))), (x + w - 32, y + 8))
-                    dot = check.find("control")
-                    self.assertEqual((dot.findtext("width"), dot.findtext("height")), ("24", "24"))
+                    # Check and clock: a 24 px dot 8 px in from the top right corner.
+                    for mark in (check, clock):
+                        self.assertEqual((int(mark.findtext("left")), int(mark.findtext("top"))), (x + w - 32, y + 8))
+                        dot = mark.find("control")
+                        self.assertEqual((dot.findtext("width"), dot.findtext("height")), ("24", "24"))
+                    self.assertEqual(clock.findall("control")[1].findtext("texture"), "bald/clock.png")
                     # No progress bar on the tile: progress lives in the caption (Bald_Caption).
                     self.assertFalse([node for node in group.iter("control") if node.get("type") == "progress"])
 
@@ -76,9 +78,10 @@ class TileMarksTests(unittest.TestCase):
         self.assertEqual(common.findtext("expression[@name='Bald_ShowProgressMarks']"), "[!Skin.HasSetting(Bald.HideProgressMarks)]")
         for style in TILES:
             group = marks(layouts(style)[0])[0]
-            (check,) = [node for node in group if node.tag == "control" and node.get("type") == "group"]
+            check, clock = [node for node in group if node.tag == "control" and node.get("type") == "group"]
             with self.subTest(style=style):
                 self.assertTrue(equivalent(check.findtext("visible"), "$EXP[Bald_TileWatched] + $EXP[Bald_ShowWatchedMarks]"))
+                self.assertTrue(equivalent(clock.findtext("visible"), "$EXP[Bald_TileInProgress] + $EXP[Bald_ShowProgressMarks]"))
                 self.assertTrue(implies(check.findtext("visible"), "!Skin.HasSetting(Bald.HideWatchedMarks)"))
 
     def test_which_items_get_which_mark(self):

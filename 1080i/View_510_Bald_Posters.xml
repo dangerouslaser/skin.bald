@@ -201,29 +201,27 @@
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<!-- A library poster: the item's poster at (12, 12) in its slot, width x height, popping 102.5 about center, with the
-	     tile marks of Home's tiles (Bald_TileMarks, Bald_TileBar: watched check, and a progress bar while a movie is part
-	     way through or a show or season part watched). The marks sit inside the popping group, so they pop with the
-	     poster (pop 100 of their own). Their places from the poster's rectangle (x = y = 12): check_x = width - 20,
-	     bar_y = height + 4, bar_w = width - 16 (check_y 20 and bar_x 20 for every size). track is the bar's track:
-	     bald_mark_track_dim unfocused, bald_mark_track focused. marks names the marks' include: Home's poster row,
-	     which draws Bald_TileMarks itself over the tile title and has no bar, passes Bald_TileOverlayNone. -->
+	     tile marks of Home's tiles (Bald_TileMarks: a check when watched, a clock while a movie is part way through or a
+	     show or season part watched). The marks sit inside the popping group, so they pop with the poster (pop 100 of
+	     their own). Their place from the poster's rectangle (x = y = 12): check_x = width - 20, check_y 20 for every
+	     size. marks names the marks' include: Home's poster row, which draws Bald_TileMarks itself over the tile title,
+	     passes Bald_TileOverlayNone. -->
 	<include name="Bald_LibraryPosterMarks">
-		<param name="diffuse" /><param name="track" /><param name="check_x" /><param name="bar_y" /><param name="bar_w" />
+		<param name="diffuse" /><param name="check_x" />
 		<definition>
 			<include content="Bald_TileMarks"><param name="diffuse">$PARAM[diffuse]</param><param name="check_x">$PARAM[check_x]</param><param name="check_y">20</param></include>
-			<include content="Bald_TileBar"><param name="diffuse">$PARAM[diffuse]</param><param name="track">$PARAM[track]</param><param name="bar_x">20</param><param name="bar_y">$PARAM[bar_y]</param><param name="bar_w">$PARAM[bar_w]</param></include>
 		</definition>
 	</include>
 	<include name="Bald_LibraryPosterItem">
-		<param name="diffuse">bald_poster_dim</param><param name="focused">false</param><param name="track">bald_mark_track_dim</param>
+		<param name="diffuse">bald_poster_dim</param><param name="focused">false</param>
 		<param name="width">360</param><param name="height">540</param><param name="ring_width">366</param><param name="ring_height">546</param><param name="center">192,282</param><param name="show_label">true</param>
-		<param name="check_x">340</param><param name="bar_y">544</param><param name="bar_w">344</param><param name="marks">Bald_LibraryPosterMarks</param>
+		<param name="check_x">340</param><param name="marks">Bald_LibraryPosterMarks</param>
 		<definition>
 			<control type="group">
 				<animation type="Focus" condition="$EXP[Bald_FullMotion]"><effect type="zoom" start="100" end="102.5" center="$PARAM[center]" time="280" tween="back" easing="out" /></animation>
 				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><texture colordiffuse="bald_placeholder">bald/white.png</texture></control>
 				<control type="image"><left>12</left><top>12</top><width>$PARAM[width]</width><height>$PARAM[height]</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="$PARAM[diffuse]">$VAR[Bald_LibraryPoster]</texture></control>
-				<include content="$PARAM[marks]"><param name="diffuse">$PARAM[diffuse]</param><param name="track">$PARAM[track]</param><param name="check_x">$PARAM[check_x]</param><param name="bar_y">$PARAM[bar_y]</param><param name="bar_w">$PARAM[bar_w]</param></include>
+				<include content="$PARAM[marks]"><param name="diffuse">$PARAM[diffuse]</param><param name="check_x">$PARAM[check_x]</param></include>
 				<control type="image"><left>9</left><top>9</top><width>$PARAM[ring_width]</width><height>$PARAM[ring_height]</height><texture border="8" colordiffuse="bald_ink">bald/focus_ring.png</texture><visible>$PARAM[focused]</visible></control>
 			</control>
 			<control type="label"><left>12</left><top>574</top><width>360</width><height>60</height><font>Bald_CaptionMeta</font><textcolor>bald_ink70</textcolor><wrapmultiline>true</wrapmultiline><aligny>top</aligny><label>$INFO[ListItem.Label]</label><visible>$PARAM[show_label]</visible></control>
@@ -293,7 +291,7 @@
 				<onup>9150</onup><ondown>SetFocus(9160)</ondown><ondown condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|510)</ondown><ondown condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,510)</ondown>
 				<include>Bald_LibraryDim</include>
 				<itemlayout width="384" height="648"><include>Bald_LibraryPosterItem</include></itemlayout>
-				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param><param name="focused">Control.HasFocus(510) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
+				<focusedlayout width="384" height="648"><include content="Bald_LibraryPosterItem"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(510) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
 			<include>Bald_LibraryPreview</include>
 			<control type="label"><left>Bald_SafeLeft</left><top>Bald_HintTop</top><width>900</width><height>24</height><font>Bald_Hint</font><textcolor>bald_ink60</textcolor><label>$INFO[Container(510).CurrentItem] / $INFO[Container(510).NumItems]</label></control>

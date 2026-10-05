@@ -1750,28 +1750,24 @@
 	</include>
 	<!-- Watch-state marks on a tile: Home's rows (fanart, thumbnail, poster and square rows; not logo, text or weather
 	     rows, which pass Bald_TileOverlayNone instead) and the library's poster views (Bald_LibraryPosterItem,
-	     View_510_Bald_Posters.xml). The TV episode cards' language (Bald_InfoTVEpisodeCard) at tile size: the check
-	     (bald/check.png, 14 px) on a dot (bald/dot.png, 24 px) 8 px in from the top right corner (Bald_TileMarks), and
-	     on library posters a 4 px bar (bald/bar.png) 8 px in from the sides and the bottom edge (Bald_TileBar). Home's
-	     tiles have no bar: there progress is the caption's line for the focused item (Bald_Caption); a library grid
-	     shows many posters at once, so each poster carries its own. Every colour is opaque, as the tile's own dim is
-	     (bald_tile_dim), so nothing shows background video through: the dot is bald_field, the bar's track
-	     bald_mark_track (bald_ink28 over the field) and the check and fill take diffuse, the tile's dim unfocused and
-	     full ink focused (track follows: bald_mark_track_dim unfocused).
+	     View_510_Bald_Posters.xml). The TV episode cards' language (Bald_InfoTVEpisodeCard) at tile size: a 14 px glyph
+	     on a dot (bald/dot.png, 24 px) 8 px in from the top right corner, the check (bald/check.png) when watched and
+	     a clock (bald/clock.png, the check's stroke) while in progress. How far along is the info panel's and the info
+	     page's to show, so tiles carry no bar. Every colour is opaque, as the tile's own dim is (bald_tile_dim), so
+	     nothing shows background video through: the dot is bald_field and the glyph takes diffuse, the tile's dim
+	     unfocused and full ink focused.
 	     Drawn after Bald_TileTitle so the title's scrim never darkens them.
-	     The tile's rectangle in its slot is x, y, w, h (as Bald_TileTitle's); the includes take the marks' places from
-	     it (skin XML has no arithmetic): check_x = x + w - 32, check_y = y + 8, bar_x = x + 8, bar_y = y + h - 8,
-	     bar_w = w - 16. The defaults are the landscape tile's (10, 10, 176, 99). pop and center are Bald_TileTitle's: posters and squares pop
-	     inside their own include (102.5 about the tile's centre) and the marks pop with them; a landscape tile's whole
-	     focused layout pops, so its marks keep pop 100. The pop is a pure zoom, so Reduce motion simply drops it.
+	     The tile's rectangle in its slot is x, y, w, h (as Bald_TileTitle's); the include takes the marks' place from
+	     it (skin XML has no arithmetic): check_x = x + w - 32, check_y = y + 8. The defaults are the landscape tile's
+	     (10, 10, 176, 99). pop and center are Bald_TileTitle's: posters and squares pop inside their own include
+	     (102.5 about the tile's centre) and the marks pop with them; a landscape tile's whole focused layout pops, so
+	     its marks keep pop 100. The pop is a pure zoom, so Reduce motion simply drops it.
 	     Which items: video items only (Bald_TileMarkItem; music has play counts too). Resume wins, as in list rows:
-	     an item part way through (ListItem.IsResumable) is in progress and gets no check; the bar shows
-	     ListItem.PercentPlayed. A TV show or season with some but not all episodes watched (WatchedEpisodes and
-	     UnWatchedEpisodes both above 0) is in progress too; its bar shows ListItem.Property(WatchedEpisodePercent)
-	     (Kodi sets it with the two counts; a progress control reads a numeric property). The check needs
-	     ListItem.PlayCount above 0, which Kodi sets on a show or season only when every episode is watched and on a
-	     movie set (ListItem.IsCollection) only when every movie is (GroupUtils); a set has no percentage, so it gets
-	     the check but no bar. Each mark follows its Appearance switch (Bald_ShowWatchedMarks, Bald_ShowProgressMarks). -->
+	     an item part way through (ListItem.IsResumable) is in progress and gets the clock, not the check. A TV show
+	     or season with some but not all episodes watched (WatchedEpisodes and UnWatchedEpisodes both above 0) is in
+	     progress too. The check needs ListItem.PlayCount above 0, which Kodi sets on a show or season only when every
+	     episode is watched and on a movie set (ListItem.IsCollection) only when every movie is (GroupUtils). Each
+	     mark follows its Appearance switch (Bald_ShowWatchedMarks, Bald_ShowProgressMarks). -->
 	<expression name="Bald_TileMarkItem">[!String.IsEqual(ListItem.DBType,album) + !String.IsEqual(ListItem.DBType,song) + !String.IsEqual(ListItem.DBType,artist) + !$EXP[Bald_FavouriteItem]]</expression>
 	<expression name="Bald_TileShowInProgress">[[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + Integer.IsGreater(ListItem.Property(WatchedEpisodes),0) + Integer.IsGreater(ListItem.Property(UnWatchedEpisodes),0)]</expression>
 	<expression name="Bald_TileInProgress">[ListItem.IsResumable | $EXP[Bald_TileShowInProgress]]</expression>
@@ -1803,42 +1799,22 @@
 						<texture colordiffuse="$PARAM[diffuse]">bald/check.png</texture>
 					</control>
 				</control>
-			</control>
-		</definition>
-	</include>
-	<!-- The progress bar of the tile marks above (library posters only). Each bar is one progress control whose own
-	     background is the track, so the fill always lies exactly on it (a separate track image left Kodi's fill 2 px
-	     low, as the caption's line found). It draws no pop of its own: the poster's group pops it. -->
-	<include name="Bald_TileBar">
-		<param name="diffuse">bald_tile_dim</param>
-		<param name="track">bald_mark_track_dim</param>
-		<param name="bar_x">18</param>
-		<param name="bar_y">101</param>
-		<param name="bar_w">160</param>
-		<definition>
-			<control type="group">
-				<left>$PARAM[bar_x]</left>
-				<top>$PARAM[bar_y]</top>
-				<visible>$EXP[Bald_TileMarkItem] + $EXP[Bald_TileInProgress] + $EXP[Bald_ShowProgressMarks]</visible>
-				<control type="progress">
-					<width>$PARAM[bar_w]</width>
-					<height>4</height>
-					<texturebg border="2" colordiffuse="$PARAM[track]">bald/bar.png</texturebg>
-					<lefttexture />
-					<midtexture border="2" colordiffuse="$PARAM[diffuse]">bald/bar.png</midtexture>
-					<righttexture />
-					<info>ListItem.PercentPlayed</info>
-					<visible>ListItem.IsResumable</visible>
-				</control>
-				<control type="progress">
-					<width>$PARAM[bar_w]</width>
-					<height>4</height>
-					<texturebg border="2" colordiffuse="$PARAM[track]">bald/bar.png</texturebg>
-					<lefttexture />
-					<midtexture border="2" colordiffuse="$PARAM[diffuse]">bald/bar.png</midtexture>
-					<righttexture />
-					<info>ListItem.Property(WatchedEpisodePercent)</info>
-					<visible>!ListItem.IsResumable</visible>
+				<control type="group">
+					<left>$PARAM[check_x]</left>
+					<top>$PARAM[check_y]</top>
+					<visible>$EXP[Bald_TileInProgress] + $EXP[Bald_ShowProgressMarks]</visible>
+					<control type="image">
+						<width>24</width>
+						<height>24</height>
+						<texture colordiffuse="bald_field">bald/dot.png</texture>
+					</control>
+					<control type="image">
+						<left>5</left>
+						<top>5</top>
+						<width>14</width>
+						<height>14</height>
+						<texture colordiffuse="$PARAM[diffuse]">bald/clock.png</texture>
+					</control>
 				</control>
 			</control>
 		</definition>

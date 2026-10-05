@@ -74,8 +74,7 @@
 	     so a tile stays solid over background video. -->
 	<color name="bald_placeholder">FF161616</color>
 	<color name="bald_tile_placeholder">FF1F1F1F</color>
-	<!-- The track under a progress mark on Home tiles (Bald_TileMarks): bald_ink28 over the field, at full opacity, so
-	     the bar stays solid over background video; _dim is it at the unfocused tile's 55% brightness (bald_tile_dim). -->
+	<!-- The track under a progress bar (Home's caption, the info pages, episode cards): bald_ink28 over the field, at
+	     full opacity, so the bar stays solid over background video. -->
 	<color name="bald_mark_track">FF4C4C4C</color>
-	<color name="bald_mark_track_dim">FF2A2A2A</color>
 </colors>

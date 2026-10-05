@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="Bald_WallPoster">
-		<param name="diffuse">bald_art70</param><param name="focused">false</param><param name="track">bald_mark_track_dim</param>
+		<param name="diffuse">bald_art70</param><param name="focused">false</param>
 		<definition>
 			<include content="Bald_LibraryPosterItem">
 				<param name="width">192</param><param name="height">288</param><param name="ring_width">198</param><param name="ring_height">294</param><param name="center">108,156</param><param name="show_label">false</param><param name="diffuse">$PARAM[diffuse]</param><param name="focused">$PARAM[focused]</param>
-				<param name="check_x">172</param><param name="bar_y">292</param><param name="bar_w">176</param><param name="track">$PARAM[track]</param>
+				<param name="check_x">172</param>
 			</include>
 		</definition>
 	</include>
@@ -45,7 +45,7 @@
 				<onup>511</onup><onleft>9150</onleft><onright>SetFocus(9160)</onright><onright condition="$EXP[Bald_HelperActions]">NotifyAll(skin.bald,bald.letters|511)</onright><onright condition="!$EXP[Bald_HelperActions]">RunScript(skin.bald,letters,511)</onright>
 				<include content="Bald_LibraryDim"><param name="end">35</param></include>
 				<itemlayout width="216" height="312"><include>Bald_WallPoster</include></itemlayout>
-				<focusedlayout width="216" height="312"><include content="Bald_WallPoster"><param name="diffuse">bald_ink</param><param name="track">bald_mark_track</param><param name="focused">Control.HasFocus(511) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
+				<focusedlayout width="216" height="312"><include content="Bald_WallPoster"><param name="diffuse">bald_ink</param><param name="focused">Control.HasFocus(511) | $EXP[Bald_LibraryLettersOpen]</param></include></focusedlayout>
 			</control>
 			<!-- Opaque screen-space backdrop keeps the right-side menu legible without fading compound masks. -->
 			<control type="group"><visible>$EXP[Bald_LibraryMenuOpen]</visible><include content="Bald_BackdropWindow"><param name="panel">true</param><param name="x">1380</param><param name="y">210</param><param name="w">480</param><param name="h">640</param></include></control>
