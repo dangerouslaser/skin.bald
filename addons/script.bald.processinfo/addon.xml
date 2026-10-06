@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.bald.processinfo" name="Bald Process Info" version="2.14.0.3" provider-name="dangerouslaser">
+<addon id="script.bald.processinfo" name="Bald Process Info" version="2.15.0.3" provider-name="dangerouslaser">
     <requires>
         <import addon="xbmc.python" version="3.1.0"/>
         <import addon="script.module.sidedata" version="1.6.0" optional="true"/>
@@ -15,10 +15,11 @@
         <summary lang="en">Shows what the player is doing: video, audio, HDR and Dolby Vision output</summary>
         <description lang="en">An overlay with the codec, video, audio, HDR and Dolby Vision details of what is playing, and what the box is sending to the display. Runs on LibreELEC, including the Intel Dolby Vision build, and on CoreELEC. Based on the TinyPPI code by U3knOwn (AGPL-3.0-or-later); not affiliated with or supported by TinyPPI's author. Report problems at https://github.com/dangerouslaser/script.bald.processinfo/issues.</description>
         <!-- The latest version only: replace this entry on every version bump. -->
-        <news>v2.14.0
-- Every colour is chosen in Kodi's colour picker: a palette of named tiles, and the setting row shows the colour in force.
-- The last tile, HEX colour, takes any colour as a 6-digit HEX code; the opacity stays a slider of its own.
-- Colours set in earlier versions are carried over automatically.</news>
+        <news>v2.15.0
+- The colour palettes grow from 50 to 250 colours: grays and every hue from red to rose, each in a vivid and a soft family, light to dark.
+- The colour picker opens with the HEX tile, then the setting's default colour (marked "(Default)"), then the palette sorted by colour.
+- Stored colours keep their colour; older stored forms are rewritten on start-up.
+- The language strings are sorted by area and numbered without gaps; all translations are kept.</news>
         <assets>
             <icon>icon.png</icon>
             <fanart>fanart.png</fanart>
