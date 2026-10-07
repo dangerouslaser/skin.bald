@@ -7,460 +7,2833 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-01-29 21:15+0000\n"
-"Last-Translator: psp2111-ADSLGATE <psp100000@hotmail.com>\n"
-"Language-Team: Arabic (Saudi Arabia) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ar_sa/>\n"
-"Language: ar_sa\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Taiseer\n"
+"Language-Team: Arabic (Saudi Arabia)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.15.2\n"
+"Language: ar_SA\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
 
 msgctxt "Addon Summary"
 msgid "Minimal, artwork-first skin for Kodi 22."
-msgstr ""
+msgstr "سمة بسيطة تُبرز الصور الفنية لـ Kodi 22."
 
 msgctxt "Addon Description"
 msgid "Bald is a minimal, artwork-first Kodi 22 skin with fluid motion. Utility windows are based on Kodi's Estuary by phil65 and Team Kodi."
-msgstr ""
+msgstr "Bald سمة بسيطة لـ Kodi 22 تُبرز الصور الفنية مع حركة سلسة. النوافذ المساعدة مبنية على سمة Estuary من phil65 وفريق Kodi."
 
+#: /xml/Home.xml /xml/MusicVisualisation.xml /xml/View_503_NowPlaying.xml /xml/View_50_List.xml
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "قيد التشغيل الآن"
+msgstr "يُعرض الآن"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "تغيير الوضع"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "مشاهدة كثنائي الأبعاد"
+msgstr "المشاهدة بثنائي الأبعاد"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "تنزيل الأيقونات"
 
+#: /xml/MyWeather.xml
 msgctxt "#31019"
 msgid "Forecast"
-msgstr "توقعات الطقس"
+msgstr "التوقعات"
 
+#: /xml/MyGames.xml /xml/MyMusicNav.xml /xml/MyPics.xml /xml/MyPlaylist.xml /xml/MyPrograms.xml /xml/MyVideoNav.xml
 msgctxt "#31020"
 msgid "Actions"
 msgstr "الإجراءات"
 
+#: /xml/AddonBrowser.xml /xml/DialogPVRChannelManager.xml
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "خيارات متنوعة"
 
+#: /xml/Includes_Bald_PVR.xml /xml/Includes_MediaMenu.xml
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "رتب حسب"
+msgstr "ترتيب حسب"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "طريقة العرض"
+msgstr "نوع العرض"
 
+#: /xml/MyFavourites.xml
 msgctxt "#31025"
 msgid "No favourites found. You can add items from media and other views by using the context menu."
-msgstr ""
+msgstr "لا توجد مفضلات. يمكنك إضافة عناصر من الوسائط والعروض الأخرى باستخدام قائمة السياق."
 
+#: /xml/Includes_Bald_Playback.xml
 msgctxt "#31026"
 msgid "Timeshift"
-msgstr "الانتقال الزمني"
+msgstr "الإزاحة الزمنية"
 
+#: /xml/DialogMusicInfo.xml /xml/DialogPVRInfo.xml
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "إظهار fanart"
+msgstr "عرض الخلفية الفنية"
 
+#: /xml/Includes_Bald_Configure.xml
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "آخر تسجيل دخول"
 
+#: /xml/DialogPlayerProcessInfo.xml /xml/SettingsSystemInfo.xml
 #. Label to show the system memory usage
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "استخدام الذاكرة العشوائية للنظام"
+msgstr "استخدام ذاكرة النظام"
 
+#: /xml/EventLog.xml /xml/Includes_Bald_PVR.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"
 msgid "Order"
 msgstr "الترتيب"
 
+#: /xml/Includes_Bald_Playback.xml
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "تقييمك"
 
+#: /xml/Includes_Bald_Media.xml /xml/Variables.xml
 msgctxt "#31036"
 msgid "items"
-msgstr "العناصر"
+msgstr "عناصر"
 
+#: /xml/Includes_Bald_OSD.xml /xml/Includes_Bald_Playback.xml
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "التراجع"
+msgstr "ترجيع"
 
+#: /xml/Includes_Bald_OSD.xml /xml/Includes_Bald_Playback.xml
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "التقدم السريع"
+msgstr "تقديم سريع"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "خيارات قائمة التشغيل"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "عيّن النوع وأضف الأوامر لإنشاء قائمة تشغيل ذكية. قوائم التشغيل هذه ديناميكية وتتضمن جميع عناصر الوسائط من قاعدة البيانات الخاصة بك والتي تنطبق على الأوامر التي اخترتها."
+msgstr "حدّد النوع وأضف قواعد لإنشاء قائمة تشغيل ذكية. هذه القوائم ديناميكية وتضم كل عناصر الوسائط في قاعدة بياناتك التي تنطبق عليها القواعد التي اخترتها."
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31044"
 msgid "Add group"
-msgstr "أضف مجموعة"
+msgstr "إضافة مجموعة"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31045"
 msgid "Rename group"
 msgstr "إعادة تسمية المجموعة"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31046"
 msgid "Delete group"
 msgstr "حذف المجموعة"
 
+#: /xml/Includes_Bald_Configure.xml
 msgctxt "#31049"
 msgid "Original title"
-msgstr ""
+msgstr "العنوان الأصلي"
 
+#: /xml/Includes_Bald_Configure.xml
 msgctxt "#31050"
 msgid "Original title (Localised title)"
-msgstr ""
+msgstr "العنوان الأصلي (العنوان المحلي)"
 
+#: /xml/Includes_Bald_Configure.xml
 msgctxt "#31051"
 msgid "Localised title (Original title)"
-msgstr ""
+msgstr "العنوان المحلي (العنوان الأصلي)"
 
-# empty strings from id 31049 to 31051
+#: /xml/Includes.xml
 msgctxt "#31052"
 msgid "filtered"
-msgstr "مفلتر"
+msgstr "مُصفّاة"
 
+#: /xml/Font.xml /xml/Includes_Bald_Configure.xml
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "Arial based"
+msgstr "مبني على Arial"
 
+#: /xml/Includes_Bald_Music.xml /xml/MyMusicNav.xml /xml/MyPVRRecordings.xml /xml/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "انتقل إلى قائمة التشغيل"
+msgstr "الانتقال إلى قائمة التشغيل"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "إظهار شاشة تسجيل الدخول عند بدء التشغيل"
+msgstr "إظهار شاشة الدخول عند البدء"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "تسجيل الدخول التلقائي عند بدء التشغيل"
+msgstr "تسجيل الدخول تلقائيًا عند البدء"
 
-# empty string with id 31064
+#: /xml/Includes_Bald_Playback.xml /xml/MyPlaylist.xml
 msgctxt "#31065"
 msgid "Video playlist"
 msgstr "قائمة تشغيل الفيديو"
 
+#: /xml/Includes_Bald_Playback.xml /xml/MyPlaylist.xml
 msgctxt "#31066"
 msgid "Music playlist"
 msgstr "قائمة تشغيل الموسيقى"
 
+#: /xml/EventLog.xml /xml/Settings.xml
 msgctxt "#31067"
 msgid "Event log"
 msgstr "سجل الأحداث"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr "اختر الإعدادات المسبقة"
+msgstr "اختيار الإعدادات المسبقة"
 
+#: /xml/AddonBrowser.xml
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "محدثة مؤخراً"
+msgstr "آخر تحديث"
 
+#: /xml/DialogButtonMenu.xml /xml/LoginScreen.xml
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "خيارات الطاقة"
 
+#: /xml/MyPlaylist.xml
 msgctxt "#31073"
 msgid "Total length"
-msgstr "الطول الإجمالي"
+msgstr "الطول الكلي"
 
+#: /xml/MyPlaylist.xml
 msgctxt "#31074"
 msgid "Total duration"
-msgstr "إجمالي المدة"
+msgstr "المدة الكلية"
 
+#: /xml/Includes_Bald_OSD.xml /xml/Includes_Bald_Playback.xml
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "ينتهي عند"
+msgstr "ينتهي في"
 
+#: /xml/Includes_Bald_Playback.xml
 #. Label to highlight that live stream is being played
 msgctxt "#31081"
 msgid "Live"
-msgstr ""
+msgstr "مباشر"
 
-# empty string with id 31081
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "إضافة \"كلمات الأغاني\""
+msgstr "إضافة كلمات الأغاني"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "إعدادات إضافة \"كلمات الأغاني\""
+msgstr "إعدادات إضافة كلمات الأغاني"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr "إعدادات المؤثرات البصرية"
+msgstr "إعدادات التأثيرات المرئية"
 
-# empty strings from id 31085 to 31088
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "المجموعات المتاحة"
 
+#: /xml/DialogSubtitles.xml
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "الترجمة المحلية متاحة"
+msgstr "ترجمة محلية متاحة"
 
+#: /xml/DialogPVRChannelManager.xml
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "خيارات القناة"
 
+#: /xml/LoginScreen.xml
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "حدد ملف تعريف مستخدم ل Kodi الخاص بك [CR] لتسجيل الدخول والمتابعة"
+msgstr "اختر ملف مستخدم Kodi[CR]لتسجيل الدخول والمتابعة"
 
 #. viewtype name
+#: /xml/View_52_IconWall.xml
 msgctxt "#31099"
 msgid "IconWall"
-msgstr "جدار و أيقونة"
+msgstr "جدار الأيقونات"
 
 #. viewtype name
+#: /xml/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
-msgstr "مناوبة"
+msgstr "إزاحة"
 
 #. viewtype name
+#: /xml/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "جدار ومعلومة"
+msgstr "جدار المعلومات"
 
 #. viewtype name
+#: /xml/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr "جدار"
 
+#: /xml/SmartPlaylistRule.xml
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "أدخل النص هنا..."
 
+#: /xml/Includes_Bald_OSD.xml /xml/Includes_Bald_Playback.xml
 msgctxt "#31106"
 msgid "Teletext"
-msgstr "نصوص التلفاز"
+msgstr "تيليتكست"
 
 #. viewtype name
+#: /xml/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
-msgstr "قائمة واسعة"
+msgstr "قائمة عريضة"
 
 #. viewtype name
+#: /xml/View_504_MediaList.xml
 msgctxt "#31108"
 msgid "MediaList"
-msgstr ""
+msgstr "قائمة الوسائط"
 
-# empty strings from id 31108 to 31108
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31109"
 msgid "Video streams"
-msgstr ""
+msgstr "مسارات الفيديو"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31112"
 msgid "Audio streams"
-msgstr ""
+msgstr "مسارات الصوت"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31115"
 msgid "Subtitles streams"
-msgstr ""
+msgstr "مسارات الترجمة"
 
+#: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31117"
 msgid "Edit nodes"
-msgstr "تحرير العقد"
+msgstr "تعديل العُقد"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31132"
 msgid "Select Program"
-msgstr "حدد البرنامج"
+msgstr "اختيار البرنامج"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr "حدد دقة الوضوح"
+msgstr "اختيار الدقة"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31135"
 msgid "Binary"
 msgstr "ثنائي"
 
+#: /xml/Variables.xml
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "انقر هنا لمشاهدة أحدث التغييرات..."
+msgstr "انقر هنا لعرض آخر التغييرات..."
 
+#: /xml/DialogPlayerProcessInfo.xml /xml/Includes_Bald_PVR.xml
 #. Label to show PVR info page
 msgctxt "#31137"
 msgid "PVR"
 msgstr "PVR"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr "وحدة فك ترميز الفيديو"
+msgstr "مفكك ترميز الفيديو"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "تنسيق البكسل"
+msgstr "صيغة البكسل"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr "التغييرات لهذا الإصدار"
+msgstr "تغييرات الإصدار"
 
+#: /xml/Custom_1110_TempoControl.xml /xml/Includes_Bald_OSD.xml /xml/Includes_SettingsDialog.xml
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "سرعة التشغيل"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31150"
 msgid "Origin"
-msgstr "المستودع"
+msgstr "المصدر"
 
+#: /xml/MyWeather.xml
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "اضغط على \"OK\" للتبديل بين المواقع"
+msgstr "اضغط موافق للتبديل بين المواقع"
 
+#: /xml/VideoOSDBookmarks.xml
 msgctxt "#31155"
 msgid "No bookmarks created yet."
-msgstr "لم يتم إنشاء إشارات مرجعية حتى الآن."
+msgstr "لم تُنشأ أي إشارات مرجعية بعد."
 
+#: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr "لوحة أرقام"
+msgstr "لوحة الأرقام"
 
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "إظهار خلفية Fanart"
+msgstr "إظهار الخلفية الفنية"
 
 #. Label of a setting
+#: /xml/Includes_SettingsDialog.xml
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "تحريك الخلفية"
 
-# empty strings from id 31177 to 31596
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31211"
+msgid "Power menu"
+msgstr "قائمة الطاقة"
+
+#. Power menu editor: an entry's switch
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31213"
+msgid "Show in the power menu"
+msgstr "الإظهار في قائمة الطاقة"
+
+#. Power menu editor: a command of the user's own, as typed (a Kodi built-in)
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31214"
+msgid "Command"
+msgstr "الأمر"
+
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31215"
+msgid "Add a command"
+msgstr "إضافة أمر"
+
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31216"
+msgid "Restore the default menu"
+msgstr "استعادة القائمة الافتراضية"
+
+#. Power menu editor, the note under one of Kodi's own entries
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31217"
+msgid "One of Kodi's own. It shows only on devices that can do it."
+msgstr "من أوامر Kodi الأصلية. لا يظهر إلا على الأجهزة التي تدعمه."
+
+#. Power menu editor, the note under a command of the user's own
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31218"
+msgid "Your own command: any Kodi built-in, such as RunScript(...) or ActivateWindow(...)."
+msgstr "أمر خاص بك: أي أمر مدمج في Kodi، مثل RunScript(...) أو ActivateWindow(...)."
+
+#. Appearance > Artwork: the clearlogo in place of the title (the title shows without one)
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31219"
+msgid "Clearlogo as the title in library previews"
+msgstr "الشعار بدل العنوان في معاينات المكتبة"
+
+#. Appearance > Artwork: the clearlogo in place of the title (the title shows without one)
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31220"
+msgid "Clearlogo as the title in Cast & details"
+msgstr "الشعار بدل العنوان في الطاقم والتفاصيل"
+
+#. Appearance > Artwork: the clearlogo in place of the title (the title shows without one)
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31221"
+msgid "Clearlogo as the title on the series page"
+msgstr "الشعار بدل العنوان في صفحة المسلسل"
+
+#. Appearance > Artwork: the clearlogo in place of the title (the title shows without one)
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31222"
+msgid "Clearlogo as the title in the player"
+msgstr "الشعار بدل العنوان في المشغّل"
+
+#. Customization, the Search entry's note
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31223"
+msgid "Search's entry in the main menu. Choose whether it shows and the picture it shows while it is selected."
+msgstr "عنصر البحث في القائمة الرئيسية. اختر ما إذا كان يظهر والصورة التي يعرضها عند تحديده."
+
+#. Customization, the Settings entry's note
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31224"
+msgid "Settings' entry in the main menu. Hidden, it moves into the power menu; Settings and Power cannot both be hidden."
+msgstr "عنصر الإعدادات في القائمة الرئيسية. عند إخفائه ينتقل إلى قائمة الطاقة؛ ولا يمكن إخفاء الإعدادات والطاقة معًا."
+
+#. Customization, the Power entry's note
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31212"
+msgid "The power menu's entry in the main menu. Choose whether it shows, its picture, and what its menu offers."
+msgstr "عنصر قائمة الطاقة في القائمة الرئيسية. اختر ما إذا كان يظهر، وصورته، وما تعرضه قائمته."
+
+#. Bald: Home hubs (docs/NOTES.md, Home hubs)
+
+#: /1080i/Includes_Bald_HomeDefaults.xml
+msgctxt "#31201"
+msgid "No rows yet. Select or Right opens it."
+msgstr "لا توجد صفوف بعد. اضغط تحديد أو يمين لفتحه."
+
+#: /1080i/Includes_Bald_HomeDefaults.xml
+msgctxt "#31202"
+msgid "No rows yet. Add them in Home Screens."
+msgstr "لا توجد صفوف بعد. أضفها من الشاشات الرئيسية."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31203"
+msgid "Opens"
+msgstr "يفتح"
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31204"
+msgid "One of your hubs. Select in the main menu enters its rows and Right opens its target (Appearance > Behavior can swap the two); without rows, Select opens the target."
+msgstr "أحد أقسامك. التحديد في القائمة الرئيسية يدخل صفوفه، واليمين يفتح وجهته (يمكن تبديلهما من المظهر > السلوك)؛ وبدون صفوف، يفتح التحديد الوجهة."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31205"
+msgid "Show Live TV in the main menu. Select enters its rows and Right opens the guide (Appearance > Behavior can swap the two); without rows, Select opens the guide."
+msgstr "إظهار التلفاز المباشر في القائمة الرئيسية. التحديد يدخل صفوفه واليمين يفتح الدليل (يمكن تبديلهما من المظهر > السلوك)؛ وبدون صفوف، يفتح التحديد الدليل."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31206"
+msgid "Add a hub of your own: choose the library node, playlist or add-on it opens, then rename it and add rows."
+msgstr "أضف قسمًا خاصًا بك: اختر عقدة المكتبة أو قائمة التشغيل أو الإضافة التي يفتحها، ثم أعد تسميته وأضف إليه صفوفًا."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31207"
+msgid "Add hub"
+msgstr "إضافة قسم"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31208"
+msgid "Remove hub"
+msgstr "إزالة القسم"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31209"
+msgid "Clear target"
+msgstr "مسح الوجهة"
+
+#: /1080i/MyWeather.xml
+#. Weather page: hint while the tab row (Now, Daily, Hourly, Maps) has focus
+msgctxt "#31701"
+msgid "Views"
+msgstr "طرق العرض"
+
+#: /1080i/Includes_Weather.xml
+#. Weather page: the tab of the day-by-day forecast
+msgctxt "#31759"
+msgid "Daily"
+msgstr "يومي"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#. Home Screens: the row that picks an entry's background image (menu preview, and rows without fanart)
+msgctxt "#31743"
+msgid "Background image"
+msgstr "صورة الخلفية"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31744"
+msgid "Clear background image"
+msgstr "مسح صورة الخلفية"
+
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_HomeDefaults.xml
+#. Home row hints: what Up from a screen's first row reaches (the main menu), after an up chevron
+msgctxt "#31787"
+msgid "Menu"
+msgstr "القائمة"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Home menu hints: Left enters the previewed screen's rows, after a left chevron
+msgctxt "#31788"
+msgid "Featured"
+msgstr "المميز"
+
+#: /1080i/DialogPictureInfo.xml
+#: /1080i/Includes.xml
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/SettingsSystemInfo.xml
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Home menu hints: Right opens the hub's library or other target, after a right chevron
+msgctxt "#31789"
+msgid "Browse"
+msgstr "تصفّح"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Home menu hints: Right on Live TV opens the guide, after a right chevron
+msgctxt "#31790"
+msgid "Guide"
+msgstr "الدليل"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Home Screens: the Background image row's value once a picture is chosen
+msgctxt "#31786"
+msgid "Chosen"
+msgstr "مُختارة"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Behavior: Home starts on its rows instead of the main menu (a fresh start only)
+msgctxt "#31742"
+msgid "Home opens on its rows"
+msgstr "الرئيسية تفتح على صفوفها"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31210"
+msgid "Select on a hub opens its library"
+msgstr "التحديد على قسم يفتح مكتبته"
+
+# Bald spoiler protection strings: 31260-31279 (Includes_Bald_Spoilers.xml, Appearance > Information).
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: the spoiler protection switch
+msgctxt "#31260"
+msgid "Hide spoilers for unwatched items"
+msgstr "إخفاء حرق الأحداث للعناصر غير المُشاهَدة"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: blur unwatched episodes' stills
+msgctxt "#31261"
+msgid "Blur episode thumbnails"
+msgstr "تمويه صور الحلقات"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide unwatched episodes' plots
+msgctxt "#31262"
+msgid "Hide episode plots"
+msgstr "إخفاء ملخصات الحلقات"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide unwatched movies' plots
+msgctxt "#31263"
+msgid "Hide movie plots"
+msgstr "إخفاء ملخصات الأفلام"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Spoiler protection: hide programme descriptions and images, and unwatched recordings
+msgctxt "#31264"
+msgid "Hide Live TV descriptions and recordings"
+msgstr "إخفاء أوصاف وتسجيلات التلفاز المباشر"
+
+#: /1080i/Includes_Bald_Spoilers.xml
+#. In place of the plot of an unwatched episode, movie or recording
+msgctxt "#31265"
+msgid "Plot hidden, not watched yet"
+msgstr "الملخص مخفي، لم تُشاهَد بعد"
+
+#: /1080i/Includes_Bald_Spoilers.xml
+#. In place of a Live TV programme's description
+msgctxt "#31266"
+msgid "Description hidden to avoid spoilers"
+msgstr "الوصف مخفي تجنبًا لحرق الأحداث"
+
+# Bald ratings strings: 31300-31399 (Includes_Bald_Ratings.xml, Appearance > Ratings).
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance category: ratings in media views
+msgctxt "#31300"
+msgid "Ratings"
+msgstr "التقييمات"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: category description
+msgctxt "#31301"
+msgid "Choose which ratings Bald shows and where. Your library's come from NFO files or scrapers; online ratings fill the gaps. With Bald Helper, enter an MDbList API key in its settings (the row below). Otherwise TMDb Helper supplies them with an MDbList or OMDb key and its \"Use online ratings in details monitor\" on."
+msgstr "اختر التقييمات التي يعرضها Bald وأماكن ظهورها. تقييمات مكتبتك مصدرها ملفات NFO أو أدوات جلب البيانات، والتقييمات الإلكترونية تسد النقص. مع Bald Helper، أدخل مفتاح MDbList API في إعداداته (الصف أدناه). وإلا فإن TMDb Helper يوفّرها بمفتاح MDbList أو OMDb مع تفعيل خيار \"Use online ratings in details monitor\" فيه."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: master switch
+msgctxt "#31302"
+msgid "Show ratings"
+msgstr "إظهار التقييمات"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source: setting row and Default rating source value (proper name)
+msgctxt "#31303"
+msgid "IMDb"
+msgstr "IMDb"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source: setting row and Default rating source value (proper name)
+msgctxt "#31304"
+msgid "TMDb"
+msgstr "TMDb"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source: setting row and Default rating source value (proper name)
+msgctxt "#31307"
+msgid "Metacritic"
+msgstr "Metacritic"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Rating source: setting row and Default rating source value (proper name)
+msgctxt "#31308"
+msgid "Trakt"
+msgstr "Trakt"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Rating source: setting row (proper name)
+msgctxt "#31309"
+msgid "TVDb"
+msgstr "TVDb"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: source setting, and a Default rating source value
+msgctxt "#31311"
+msgid "Rotten Tomatoes critics"
+msgstr "Rotten Tomatoes (النقاد)"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: source setting, and a Default rating source value
+msgctxt "#31312"
+msgid "Rotten Tomatoes audience"
+msgstr "Rotten Tomatoes (الجمهور)"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: Kodi's default rating, shown only when no named source has one
+msgctxt "#31313"
+msgid "Default rating when no source is named"
+msgstr "التقييم الافتراضي عند عدم تحديد مصدر"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31314"
+msgid "On information screens"
+msgstr "في شاشات المعلومات"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31315"
+msgid "On Home"
+msgstr "في الرئيسية"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31316"
+msgid "In library views"
+msgstr "في عروض المكتبة"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: where ratings show
+msgctxt "#31317"
+msgid "On the player's info overlay"
+msgstr "في شاشة معلومات المشغّل"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: show the number of votes after each rating
+msgctxt "#31318"
+msgid "Vote counts"
+msgstr "عدد الأصوات"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: which service the library's unnamed default rating came from (sets its icon and format)
+msgctxt "#31319"
+msgid "Default rating source"
+msgstr "مصدر التقييم الافتراضي"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: no particular service (a star icon)
+msgctxt "#31320"
+msgid "Generic"
+msgstr "عام"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: the Jellyfin media server (brand name)
+msgctxt "#31321"
+msgid "Jellyfin"
+msgstr "Jellyfin"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Default rating source: Kodi itself (brand name)
+msgctxt "#31322"
+msgid "Kodi"
+msgstr "Kodi"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: TMDb Helper's online ratings switch
+msgctxt "#31323"
+msgid "Online ratings from TMDb Helper"
+msgstr "تقييمات إلكترونية من TMDb Helper"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: opens TMDb Helper's add-on settings
+msgctxt "#31324"
+msgid "TMDb Helper settings"
+msgstr "إعدادات TMDb Helper"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > TMDb Helper settings: what is entered there
+msgctxt "#31325"
+msgid "MDbList or OMDb API key"
+msgstr "مفتاح API لـ MDbList أو OMDb"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source (brand name)
+msgctxt "#31326"
+msgid "Letterboxd"
+msgstr "Letterboxd"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, Metacritic's user score
+msgctxt "#31327"
+msgid "Metacritic users"
+msgstr "Metacritic (المستخدمون)"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source (brand name)
+msgctxt "#31328"
+msgid "MyAnimeList"
+msgstr "MyAnimeList"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, Roger Ebert's star rating
+msgctxt "#31329"
+msgid "Roger Ebert"
+msgstr "روجر إيبرت"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Ratings: rating source, MDbList's own combined score
+msgctxt "#31330"
+msgid "MDbList score"
+msgstr "نتيجة MDbList"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: the online ratings switch, with Bald Helper installed
+msgctxt "#31331"
+msgid "Online ratings"
+msgstr "التقييمات الإلكترونية"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings: opens Bald Helper's add-on settings
+msgctxt "#31332"
+msgid "Bald Helper settings"
+msgstr "إعدادات Bald Helper"
+
+#: /1080i/Includes_Bald_Ratings.xml
+#. Appearance > Ratings > Bald Helper settings: what is entered there
+msgctxt "#31333"
+msgid "MDbList API key"
+msgstr "مفتاح MDbList API"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Date & time: the category's note
+msgctxt "#31334"
+msgid "How the time reads on Home, in the player and in Live TV."
+msgstr "طريقة عرض الوقت في الرئيسية والمشغّل والتلفاز المباشر."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Date & time: show the date beside the clock (Home, Live TV headers)
+msgctxt "#31335"
+msgid "Date with the clock"
+msgstr "التاريخ مع الساعة"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Date & time: show the big clock on Home
+msgctxt "#31336"
+msgid "Clock on Home"
+msgstr "الساعة في الرئيسية"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: item names on Home's row tiles
+msgctxt "#31337"
+msgid "Titles on Home tiles"
+msgstr "العناوين على بطاقات الرئيسية"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Appearance > Information > Titles on Home tiles: only on the focused tile
+msgctxt "#31338"
+msgid "On focus"
+msgstr "عند التحديد"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: the watched check on episode cards, Home tiles and library posters, and the Watched note in lists
+msgctxt "#31339"
+msgid "Watched marks"
+msgstr "علامات المشاهدة"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: the progress bar on episode cards, the in-progress clock on Home tiles and library posters, the progress line under Home tiles, and the Resume note in lists
+msgctxt "#31340"
+msgid "Progress marks"
+msgstr "علامات التقدّم"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Behavior: how long Home and Now Playing wait untouched before they go idle (dim, drift, ambient movement)
+msgctxt "#31370"
+msgid "Idle after"
+msgstr "الخمول بعد"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Behavior: zooms and slides become plain fades
+msgctxt "#31371"
+msgid "Reduce motion"
+msgstr "تقليل الحركة"
+
+#: /1080i/View_550_Bald_Music.xml
+#. Music library view: square covers beside the preview
+msgctxt "#31400"
+msgid "Bald covers"
+msgstr "أغلفة Bald"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Search note
+msgctxt "#31401"
+msgid "Search your music library."
+msgstr "ابحث في مكتبة الموسيقى."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Party mode note
+msgctxt "#31402"
+msgid "Play random songs from your library, one after another."
+msgstr "شغّل أغاني عشوائية من مكتبتك، الواحدة تلو الأخرى."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Update library note
+msgctxt "#31403"
+msgid "Scan your music sources for new or changed items."
+msgstr "افحص مصادر الموسيقى بحثًا عن عناصر جديدة أو معدّلة."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Stop update note
+msgctxt "#31404"
+msgid "Stop the current music-library scan."
+msgstr "أوقف فحص مكتبة الموسيقى الحالي."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Now playing note
+msgctxt "#31405"
+msgid "Show what is playing."
+msgstr "اعرض ما يُشغَّل الآن."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library options: Go to playlist note
+msgctxt "#31406"
+msgid "Open the music playlist."
+msgstr "افتح قائمة تشغيل الموسيقى."
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library letter bar: the list is not sorted by name
+msgctxt "#31407"
+msgid "Choose a name sort in options"
+msgstr "اختر الترتيب بالاسم من الخيارات"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library letter bar: nothing to browse
+msgctxt "#31408"
+msgid "Nothing to browse"
+msgstr "لا شيء للتصفح"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Music library: empty view
+msgctxt "#31409"
+msgid "Nothing to show. Open options to adjust your filters."
+msgstr "لا شيء للعرض. افتح الخيارات لضبط عوامل التصفية."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#: /1080i/Includes_Bald_Music.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Playback.xml
+#. Now playing: hint for the music controls
+msgctxt "#31410"
+msgid "Controls"
+msgstr "أدوات التحكم"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: hint for the visualisation
+msgctxt "#31411"
+msgid "Visualisation"
+msgstr "التأثيرات المرئية"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: bitrate unit
+msgctxt "#31412"
+msgid "kbps"
+msgstr "كيلوبت/ث"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: sample rate unit
+msgctxt "#31413"
+msgid "kHz"
+msgstr "كيلوهرتز"
+
+#: /1080i/Includes_Bald_Music.xml
+#. Now playing: bit depth unit, as in 24-bit
+msgctxt "#31414"
+msgid "bit"
+msgstr "بت"
+
+#: /1080i/Font.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Font set name (the typeface with Cyrillic): Kodi's Interface > Skin > Fonts list and Bald Settings > Appearance > Typography
+msgctxt "#31415"
+msgid "Onest"
+msgstr "Onest"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Bald Settings > Playback > Controls: show the big clock and the finish time at the top right of the player controls
+msgctxt "#31416"
+msgid "Clock on the controls"
+msgstr "الساعة على أدوات التحكم"
+
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_InfoPages.xml
+#. After the time left on a part-watched item in the Home caption and the info page, e.g. "36m left"
+msgctxt "#31417"
+msgid "left"
+msgstr "متبقية"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Bald Settings > Appearance > Typography: how large the whole interface is drawn (Kodi's skin zoom)
+msgctxt "#31430"
+msgid "Text size"
+msgstr "حجم النص"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Bald Settings > Appearance > Typography > Text size: the interface drawn 4 per cent larger
+msgctxt "#31431"
+msgid "Large"
+msgstr "كبير"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Bald Settings > Appearance > Typography > Text size: the interface drawn 8 per cent larger
+msgctxt "#31432"
+msgid "Larger"
+msgstr "أكبر"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Bald Settings > Appearance > Weather icons: Bald's built-in icon set (Meteocons), shown when no icon pack is chosen
+msgctxt "#31433"
+msgid "Meteocons"
+msgstr "Meteocons"
+
+#: /1080i/Includes_Bald_Weather.xml
+#. Home weather row: the tile shown without a weather service
+msgctxt "#31450"
+msgid "Choose a weather service in Settings to see the forecast here."
+msgstr "اختر خدمة طقس من الإعدادات لعرض التوقعات هنا."
+
+#: /1080i/Includes_Bald_Weather.xml
+#. Home weather row: under the tile shown without a weather service
+msgctxt "#31451"
+msgid "Set up"
+msgstr "إعداد"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Widget editor: note for a Weather forecast row
+msgctxt "#31452"
+msgid "Current weather and the forecast for the coming days, from Kodi's weather service."
+msgstr "الطقس الحالي والتوقعات للأيام القادمة، من خدمة الطقس في Kodi."
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Widget editor: note for an Hourly weather row
+msgctxt "#31453"
+msgid "Current weather and the forecast hour by hour, from Kodi's weather service."
+msgstr "الطقس الحالي والتوقعات ساعة بساعة، من خدمة الطقس في Kodi."
+
+#: /xml/Includes_SettingsDialog.xml
 #. Button to select Player Process Info window
 msgctxt "#31597"
 msgid "Player info"
-msgstr ""
+msgstr "معلومات المشغّل"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show player cache
 msgctxt "#31598"
 msgid "Player cache"
-msgstr ""
+msgstr "ذاكرة المشغّل المؤقتة"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video codec name
 msgctxt "#31599"
 msgid "Audio decoder"
-msgstr ""
+msgstr "مفكك ترميز الصوت"
 
-# empty strings from id 31170 to 31599
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
 msgstr "ترميز الفيديو"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
 msgstr "دقة الفيديو"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr "أبعاد الفيديو"
+msgstr "نسبة أبعاد الفيديو"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr "معدل البت للفيديو"
+msgstr "معدل بت الفيديو"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
 msgstr "ترميز الصوت"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
 msgstr "قنوات الصوت"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr "معدل البت للصوت"
+msgstr "معدل بت الصوت"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
 msgstr "دقة الشاشة"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
 msgstr "سرعة عرض النظام"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr "استخدام النظام للمعالج المركزي"
+msgstr "استخدام المعالج"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
 msgstr "النظام"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the subtitle decoder name
 msgctxt "#31613"
 msgid "Subtitle decoder"
-msgstr ""
+msgstr "مفكك ترميز الترجمة"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the subtitle codec name
 msgctxt "#31614"
 msgid "Subtitle codec"
-msgstr ""
+msgstr "ترميز الترجمة"
 
+#: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the subtitle language
 msgctxt "#31615"
 msgid "Subtitle language"
-msgstr ""
+msgstr "لغة الترجمة"
 
-#~ msgctxt "#31025"
-#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-#~ msgstr "لم يتم العثور على مفضلات. يمكنك إضافة أي عنصر من عروض الوسائط إلى هذه القائمة باستخدام قائمة السياق."
+# Bald playback strings: 31616-31649 (Includes_Bald_Playback.xml).
 
-#~ msgctxt "#31149"
-#~ msgid "Select genre fanart pack"
-#~ msgstr "حدد حزمة fanart للنوع \"Genre\""
+#: /1080i/Includes_Bald_Playback.xml
+#. Seek row hint while playing
+msgctxt "#31616"
+msgid "Skip"
+msgstr "تخطّي"
 
-#~ msgctxt "#31112"
-#~ msgid "Toggle audio stream"
-#~ msgstr "تبديل تدفق الصوت"
+#: /1080i/Includes_Bald_Playback.xml
+#. Seek row hint while paused
+msgctxt "#31617"
+msgid "Next frame"
+msgstr "الإطار التالي"
 
-#~ msgctxt "#31115"
-#~ msgid "Toggle subtitle"
-#~ msgstr "تبديل الترجمة"
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Playback.xml
+#. OSD hint: the seek row is above the buttons
+msgctxt "#31618"
+msgid "Seek"
+msgstr "تنقّل"
 
-#~ msgctxt "#31059"
-#~ msgid "Select + X"
-#~ msgstr "Select + X"
+#: /1080i/Custom_1130_BaldSearch.xml
+#: /1080i/DialogPVRInfo.xml
+#: /1080i/DialogPlayerProcessInfo.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_PVR.xml
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/VideoOSDBookmarks.xml
+#: /1080i/script-globalsearch.xml
+#. OSD hint when there is no seek row
+msgctxt "#31619"
+msgid "Close"
+msgstr "إغلاق"
 
-#~ msgctxt "#31060"
-#~ msgid "Select + Start"
-#~ msgstr "Select + Start"
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
+#. OSD stop button
+msgctxt "#31620"
+msgid "Stop"
+msgstr "إيقاف"
 
-#~ msgctxt "#31137"
-#~ msgid "PVR info"
-#~ msgstr "معلومات PVR"
+#: /1080i/Includes_Bald_Playback.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. OSD play/pause button while playing
+msgctxt "#31621"
+msgid "Pause"
+msgstr "إيقاف مؤقت"
 
-#~ msgctxt "#31138"
-#~ msgid "Player process info"
-#~ msgstr "معلومات المعالجة لمشغل الوسائط"
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
+#: /1080i/Includes_Bald_Music.xml
+#. Prefix of the next item on the info overlay
+msgctxt "#31622"
+msgid "Up next"
+msgstr "التالي"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD status line: playing normally
+msgctxt "#31624"
+msgid "Playing"
+msgstr "قيد التشغيل"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD back button with an earlier chapter
+msgctxt "#31625"
+msgid "Previous chapter"
+msgstr "الفصل السابق"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD forward button with a later chapter
+msgctxt "#31626"
+msgid "Next chapter"
+msgstr "الفصل التالي"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD hint: Down opens the panels under the controls
+msgctxt "#31627"
+msgid "More"
+msgstr "المزيد"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD cast panel heading while it lists the crew
+msgctxt "#31629"
+msgid "Crew"
+msgstr "فريق العمل"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD cast panel hint while it lists the crew
+msgctxt "#31631"
+msgid "Cast"
+msgstr "طاقم التمثيل"
+
+#: /1080i/Custom_1126_OSDCast.xml
+#. Video OSD cast panel hint
+msgctxt "#31632"
+msgid "Biography"
+msgstr "السيرة الذاتية"
+
+#: /1080i/DialogPVRInfo.xml
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD hint on the audio and subtitle buttons: Up focuses the stream list
+msgctxt "#31633"
+msgid "Choose"
+msgstr "اختيار"
+
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Music.xml
+#. Video OSD playlist panel: marks the item that is playing
+msgctxt "#31634"
+msgid "Now playing"
+msgstr "يُعرض الآن"
+
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
+#. Up Next add-on window: play the next episode now
+msgctxt "#31635"
+msgid "Watch now"
+msgstr "شاهد الآن"
+
+#: /1080i/script-upnext-stillwatching-simple.xml
+#: /1080i/script-upnext-stillwatching.xml
+#. Up Next add-on window heading
+msgctxt "#31636"
+msgid "Still watching?"
+msgstr "هل ما زلت تشاهد؟"
+
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/script-upnext-stillwatching-simple.xml
+#: /1080i/script-upnext-stillwatching.xml
+#: /1080i/script-upnext-upnext-simple.xml
+#: /1080i/script-upnext-upnext.xml
+#. Unit after a number of seconds, for example '5 seconds'. Shown inside $INFO, so no comma
+msgctxt "#31637"
+msgid "seconds"
+msgstr "ثوانٍ"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: the cast panel under the controls
+msgctxt "#31638"
+msgid "Cast and crew"
+msgstr "الطاقم وفريق العمل"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: the playlist or season panel under the controls
+msgctxt "#31639"
+msgid "Playlist and episodes"
+msgstr "قائمة التشغيل والحلقات"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, When paused: the seek bar leaves after the delay
+msgctxt "#31640"
+msgid "Hide the bar"
+msgstr "إخفاء الشريط"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, When paused: the info overlay appears after the delay
+msgctxt "#31641"
+msgid "Show info"
+msgstr "إظهار المعلومات"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31642"
+msgid "Elapsed and total"
+msgstr "المنقضي والإجمالي"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31643"
+msgid "Remaining and total"
+msgstr "المتبقي والإجمالي"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Playback settings, Time display
+msgctxt "#31644"
+msgid "Elapsed and remaining"
+msgstr "المنقضي والمتبقي"
+
+#: /1080i/Includes_Bald_OSD.xml
+#. Video OSD video panel: the play speed row
+msgctxt "#31645"
+msgid "Speed"
+msgstr "السرعة"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: what the times either side of the bar show
+msgctxt "#31646"
+msgid "Time display"
+msgstr "عرض الوقت"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31880"
+msgid "Clearlogo on the controls"
+msgstr "الشعار على أدوات التحكم"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31881"
+msgid "Media flags on the controls"
+msgstr "شارات الوسائط على أدوات التحكم"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31882"
+msgid "Plot on the controls"
+msgstr "الملخص على أدوات التحكم"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings, Info overlay: the landscape art with its progress line
+msgctxt "#31648"
+msgid "Artwork"
+msgstr "الصور الفنية"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Bald Settings: note under Playback
+msgctxt "#31649"
+msgid "Controls, seek bar and pause"
+msgstr "أدوات التحكم وشريط التنقل والإيقاف المؤقت"
+
+# Bald global overlays: 31650-31659.
+
+#: /1080i/Includes_Bald_Overlays.xml
+#. Volume bar label while the sound is muted
+msgctxt "#31650"
+msgid "Muted"
+msgstr "مكتوم"
+
+# Live TV windows: 31660-31679 (see docs/LOCALIZATION.md).
+
+#: /1080i/Includes_Bald_PVR.xml
+msgctxt "#31660"
+msgid "Live TV options"
+msgstr "خيارات التلفاز المباشر"
+
+#: /1080i/Custom_1130_BaldSearch.xml
+#: /1080i/EventLog.xml
+#: /1080i/Includes.xml
+#: /1080i/Includes_Bald_PVR.xml
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /1080i/View_550_Bald_Music.xml
+#: /1080i/script-globalsearch.xml
+msgctxt "#31661"
+msgid "Options"
+msgstr "الخيارات"
+
+#: /1080i/DialogPVRChannelsOSD.xml
+#: /1080i/MyPVRChannels.xml
+#: /1080i/Custom_1125_OSDPlaylist.xml
+msgctxt "#31662"
+msgid "Watch"
+msgstr "مشاهدة"
+
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_InfoTV.xml
+#: /1080i/Includes_Bald_PVR.xml
+#: /1080i/MyPVRRecordings.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31663"
+msgid "Play"
+msgstr "تشغيل"
+
+#: /1080i/DialogMusicInfo.xml
+#: /1080i/DialogPVRChannelGuide.xml
+#: /1080i/EventLog.xml
+#: /1080i/Includes.xml
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_PVR.xml
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31664"
+msgid "Details"
+msgstr "التفاصيل"
+
+#: /1080i/MyPVRTimers.xml
+msgctxt "#31665"
+msgid "Edit"
+msgstr "تعديل"
+
+#: /1080i/DialogVideoInfo.xml
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Includes_Bald_Search.xml
+#: /1080i/MyPVRProviders.xml
+#: /1080i/MyPVRSearch.xml
+#: /1080i/Settings.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31666"
+msgid "Open"
+msgstr "فتح"
+
+#: /1080i/DialogPVRChannelsOSD.xml
+msgctxt "#31667"
+msgid "Channel groups"
+msgstr "مجموعات القنوات"
+
+#: /1080i/Includes_Bald_PVR.xml
+#. In-player Live TV panel, Guide tab over full-screen Live TV: Right swaps in the channel list
+msgctxt "#31687"
+msgid "Channels"
+msgstr "القنوات"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur strength: a light blur
+msgctxt "#31688"
+msgid "Light"
+msgstr "خفيف"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur strength: the default blur
+msgctxt "#31689"
+msgid "Medium"
+msgstr "متوسط"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur strength: a strong blur
+msgctxt "#31690"
+msgid "Strong"
+msgstr "قوي"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance, Artwork: how strongly the background is blurred (Bald Helper)
+msgctxt "#31691"
+msgid "Blur strength"
+msgstr "شدة التمويه"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance, Artwork: how bright the blurred background is
+msgctxt "#31692"
+msgid "Background brightness"
+msgstr "سطوع الخلفية"
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the first programme or channel
+msgctxt "#31670"
+msgid "First"
+msgstr "الأول"
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the last programme or channel
+msgctxt "#31671"
+msgid "Last"
+msgstr "الأخير"
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: jump to the channel that is playing
+msgctxt "#31672"
+msgid "Playing"
+msgstr "قيد التشغيل"
+
+#: /1080i/DialogPVRGuideControls.xml
+#. Guide controls: the next channel group
+msgctxt "#31673"
+msgid "Next"
+msgstr "التالي"
+
+#: /1080i/DialogPVRInfo.xml
+msgctxt "#31678"
+msgid "Full plot"
+msgstr "الملخص الكامل"
+
+# Browse restyle strings: 31685-31699 (docs/NOTES.md, "Browse restyle").
+
+# Bald strings: 31700-31999 (see docs/LOCALIZATION.md). Estuary keeps 31000-31699.
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/MyPVRGuide.xml
+#: /1080i/script-globalsearch.xml
+msgctxt "#31700"
+msgid "Live TV"
+msgstr "التلفاز المباشر"
+
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31705"
+msgid "Select to open the guide."
+msgstr "اضغط تحديد لفتح الدليل."
+
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31706"
+msgid "Select to search your library."
+msgstr "اضغط تحديد للبحث في مكتبتك."
+
+#: /1080i/Includes_Bald_Home.xml
+msgctxt "#31707"
+msgid "Configure Kodi, manage media sources, or change the skin."
+msgstr "اضبط Kodi، أو أدِر مصادر الوسائط، أو غيّر السمة."
+
+#: /1080i/Includes_Bald_Home.xml
+#. Home menu: the note under the Power entry
+msgctxt "#31709"
+msgid "Restart, shut down, or exit Kodi."
+msgstr "إعادة التشغيل، أو إيقاف التشغيل، أو الخروج من Kodi."
+
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_Music.xml
+#. Row position counter, "3 of 12"
+msgctxt "#31708"
+msgid "of"
+msgstr "من"
+
+#: /1080i/Includes_Bald_Browse.xml
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/Includes_Bald_InfoTV.xml
+#: /1080i/Includes_Bald_LibraryList.xml
+#: /1080i/Includes_Bald_OSD.xml
+#: /1080i/Includes_Bald_Search.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /1080i/script-globalsearch.xml
+#. Runtime unit after a number of minutes, "52 min"
+msgctxt "#31710"
+msgid "min"
+msgstr "دقيقة"
+
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /scripts/info.py
+#. Season count of a show with one season
+msgctxt "#31711"
+msgid "1 season"
+msgstr "موسم واحد"
+
+#: /1080i/Includes_Bald_Home.xml
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#: /scripts/info.py
+#. Follows a season count, "4 seasons"
+msgctxt "#31712"
+msgid "seasons"
+msgstr "مواسم"
+
+#: /1080i/Includes_Bald_Home.xml
+#. Follows "watched / total", "10 / 24 episodes watched"
+msgctxt "#31713"
+msgid "episodes watched"
+msgstr "حلقة مُشاهَدة"
+
+#: /1080i/Includes_Bald_Info.xml
+#. Follows an audio channel count, "6 channels"
+msgctxt "#31714"
+msgid "channels"
+msgstr "قنوات"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+#: /1080i/Includes_Bald_InfoTV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Lowercase watched state inside a metadata line, "52 min, watched" or "70% watched"
+msgctxt "#31715"
+msgid "watched"
+msgstr "مُشاهَد"
+
+#: /1080i/Includes_Bald_InfoTV.xml
+#. Lowercase resume state inside a metadata line, "52 min, in progress"
+msgctxt "#31716"
+msgid "in progress"
+msgstr "قيد المشاهدة"
+
+#: /1080i/Includes_Bald_InfoTV.xml
+#. Precedes an air date, "aired 3 March 2024"
+msgctxt "#31717"
+msgid "aired"
+msgstr "عُرض في"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Follows an episode count, "24 episodes"
+msgctxt "#31718"
+msgid "episodes"
+msgstr "حلقة"
+
+#: /scripts/info.py
+#. Joins the first and last year a show aired, "2019 to 2024"
+msgctxt "#31719"
+msgid "to"
+msgstr "إلى"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Home row style names (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
+msgctxt "#31720"
+msgid "Fanart"
+msgstr "خلفية فنية"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31721"
+msgid "Thumbnail"
+msgstr "صورة مصغّرة"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31722"
+msgid "Fanart with logo"
+msgstr "خلفية فنية مع شعار"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31723"
+msgid "Poster"
+msgstr "ملصق"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Row clearlogo on the art frame (widget editor). No & = , or + : Skin Variables splits and unquotes the choice list.
+msgctxt "#31724"
+msgid "On"
+msgstr "تشغيل"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Includes_Bald_OSD.xml
+msgctxt "#31725"
+msgid "Off"
+msgstr "إيقاف"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Bald Appearance, Behavior: hold a splash at startup until every Home row has loaded.
+msgctxt "#31726"
+msgid "Preload Home at startup"
+msgstr "تحميل الرئيسية مسبقًا عند البدء"
+
+#: /1080i/Includes_Bald_Home.xml
+#. The skin's name as the startup splash wordmark, with its full stop; keep as is.
+msgctxt "#31727"
+msgid "Bald."
+msgstr "Bald."
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Widget editor: row style whose tiles show the item's name (channel groups, genres, folders)
+msgctxt "#31728"
+msgid "Text"
+msgstr "نص"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Widget editor: row style with square tiles (album covers, artists) on the poster rail
+msgctxt "#31729"
+msgid "Square"
+msgstr "مربع"
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+msgctxt "#31730"
+msgid "Bald Settings"
+msgstr "إعدادات Bald"
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31731"
+msgid "Customization"
+msgstr "التخصيص"
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31732"
+msgid "Configure Home, Movies, and TV Shows screens and their widgets."
+msgstr "اضبط شاشات الرئيسية والأفلام والمسلسلات وأدواتها."
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31733"
+msgid "Artwork, media information, motion, navigation hints, and the settings of windows that still use Estuary's design."
+msgstr "الصور الفنية، ومعلومات الوسائط، والحركة، وتلميحات التنقل، وإعدادات النوافذ التي لا تزال تستخدم تصميم Estuary."
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+msgctxt "#31734"
+msgid "Open CoreELEC service and hardware settings."
+msgstr "فتح إعدادات خدمات وعتاد CoreELEC."
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+msgctxt "#31735"
+msgid "Open LibreELEC service and hardware settings."
+msgstr "فتح إعدادات خدمات وعتاد LibreELEC."
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31736"
+msgid "Services & Helpers"
+msgstr "الخدمات والمساعدات"
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/Settings.xml
+msgctxt "#31737"
+msgid "Manage installed add-ons and their settings."
+msgstr "إدارة الإضافات المثبّتة وإعداداتها."
+
+#: /1080i/Includes_Bald_Configure.xml
+#: /1080i/SettingsCategory.xml
+#: /1080i/SettingsProfile.xml
+#: /1080i/SettingsSystemInfo.xml
+msgctxt "#31738"
+msgid "Settings"
+msgstr "الإعدادات"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31740"
+msgid "Home Screens"
+msgstr "الشاشات الرئيسية"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31741"
+msgid "Your everyday rows, mixed from all your libraries, and the screen Bald starts on. Turn it off to start on your first hub instead; Home comes back whenever no hub is shown."
+msgstr "صفوفك اليومية المجمّعة من كل مكتباتك، والشاشة التي يبدأ عليها Bald. أطفئها لتبدأ على أول قسم لديك بدلًا منها؛ وتعود الرئيسية متى لم يظهر أي قسم."
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+msgctxt "#31745"
+msgid "Configure widgets"
+msgstr "ضبط الأدوات"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31746"
+msgid "Bald settings"
+msgstr "إعدادات Bald"
+
+#: /1080i/Custom_1117_BaldHomeScreens.xml
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /1080i/SettingsCategory.xml
+#: /1080i/SettingsProfile.xml
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/Includes.xml
+#: /1080i/Custom_1119_BaldPlayback.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31747"
+msgid "Change"
+msgstr "تغيير"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#. Follows a screen name as a window title, "Movies Widgets"
+msgctxt "#31748"
+msgid "Widgets"
+msgstr "الأدوات"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31749"
+msgid "Choose content"
+msgstr "اختيار المحتوى"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31750"
+msgid "Items per row"
+msgstr "العناصر في كل صف"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31751"
+msgid "Add widget"
+msgstr "إضافة أداة"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31752"
+msgid "Remove widget"
+msgstr "إزالة الأداة"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#: /1080i/Custom_1131_BaldPowerMenu.xml
+msgctxt "#31753"
+msgid "Save and apply"
+msgstr "حفظ وتطبيق"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31755"
+msgid "Choose how artwork and its background treatment appear throughout Bald."
+msgstr "اختر طريقة ظهور الصور الفنية ومعالجة خلفياتها في كل أنحاء Bald."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31756"
+msgid "Choose which details Bald shows with titles, in list views and in page headers."
+msgstr "اختر التفاصيل التي يعرضها Bald مع العناوين، في عروض القوائم وفي ترويسات الصفحات."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31757"
+msgid "Behavior"
+msgstr "السلوك"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31758"
+msgid "Configure idle motion, navigation help, plot scrolling and startup."
+msgstr "اضبط حركة الخمول، ومساعدة التنقل، وتمرير الملخص، والبدء."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31761"
+msgid "Clearlogos on artwork"
+msgstr "الشعارات على الصور الفنية"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31762"
+msgid "Blurred fanart backgrounds"
+msgstr "خلفيات فنية مموّهة"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31763"
+msgid "Media flags"
+msgstr "شارات الوسائط"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31764"
+msgid "Ambient movement when idle"
+msgstr "حركة محيطة عند الخمول"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31765"
+msgid "Always show navigation hints"
+msgstr "إظهار تلميحات التنقل دائمًا"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31766"
+msgid "Reset navigation hint"
+msgstr "إعادة ضبط تلميح التنقل"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+msgctxt "#31767"
+msgid "Style"
+msgstr "النمط"
+
+#: /1080i/Custom_1116_BaldHomeWidgets.xml
+#. The row's own clearlogo on the Home art frame, not the tile logo of the Fanart with logo style.
+msgctxt "#31768"
+msgid "Clearlogo on artwork"
+msgstr "الشعار على الصورة الفنية"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31769"
+msgid "Show item count in rows"
+msgstr "إظهار عدد العناصر في الصفوف"
+
+#: /1080i/DialogVideoInfo.xml
+#: /1080i/Includes_Bald_Info.xml
+msgctxt "#31770"
+msgid "Overview"
+msgstr "نظرة عامة"
+
+#: /1080i/DialogVideoInfo.xml
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/Includes_Bald_InfoPages.xml
+#: /1080i/Includes_Bald_InfoTV.xml
+msgctxt "#31771"
+msgid "Cast & details"
+msgstr "الطاقم والتفاصيل"
+
+#: /1080i/DialogVideoInfo.xml
+#: /1080i/Includes_Bald_Info.xml
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31772"
+msgid "More like this"
+msgstr "عناوين مشابهة"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31773"
+msgid "Start over"
+msgstr "من البداية"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31774"
+msgid "No cast information available."
+msgstr "لا تتوفر معلومات عن الطاقم."
+
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31775"
+msgid "Directed by"
+msgstr "إخراج"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+msgctxt "#31776"
+msgid "Written by"
+msgstr "تأليف"
+
+#: /1080i/Includes_Bald_Info.xml
+msgctxt "#31777"
+msgid "Loading recommendations…"
+msgstr "جارٍ تحميل الاقتراحات…"
+
+#: /1080i/Includes_Bald_Info.xml
+msgctxt "#31778"
+msgid "No related titles in your library."
+msgstr "لا توجد عناوين مشابهة في مكتبتك."
+
+#: /1080i/Includes_Bald_InfoTV.xml
+msgctxt "#31783"
+msgid "All seasons"
+msgstr "كل المواسم"
+
+#: /1080i/Includes_Bald_InfoPages.xml
+#. Precedes the title that "More like this" recommendations are based on, "For Alien"
+msgctxt "#31785"
+msgid "For"
+msgstr "بناءً على"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31800"
+msgid "Library options"
+msgstr "خيارات المكتبة"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
+msgctxt "#31801"
+msgid "View"
+msgstr "العرض"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
+msgctxt "#31802"
+msgid "Sort by"
+msgstr "ترتيب حسب"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
+msgctxt "#31803"
+msgid "Order"
+msgstr "الترتيب"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31804"
+msgid "Watched status"
+msgstr "حالة المشاهدة"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31805"
+msgid "Search your movie library."
+msgstr "ابحث في مكتبة الأفلام."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31806"
+msgid "Search your TV-show library."
+msgstr "ابحث في مكتبة المسلسلات."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31807"
+msgid "Search your episode library."
+msgstr "ابحث في مكتبة الحلقات."
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
+msgctxt "#31808"
+msgid "Narrow the items shown by genre, year, rating and other library details."
+msgstr "صفِّ العناصر المعروضة حسب النوع والسنة والتقييم وتفاصيل المكتبة الأخرى."
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
+msgctxt "#31809"
+msgid "Narrow the items shown by matching their titles."
+msgstr "صفِّ العناصر المعروضة بمطابقة عناوينها."
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
+msgctxt "#31810"
+msgid "Update library"
+msgstr "تحديث المكتبة"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31811"
+msgid "Scan your configured video sources for new or changed items."
+msgstr "افحص مصادر الفيديو المُعدّة بحثًا عن عناصر جديدة أو معدّلة."
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
+msgctxt "#31812"
+msgid "Stop update"
+msgstr "إيقاف التحديث"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31813"
+msgid "Stop the current video-library scan."
+msgstr "أوقف فحص مكتبة الفيديو الحالي."
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Followed by the current layout name and a full stop
+msgctxt "#31814"
+msgid "Current view:"
+msgstr "العرض الحالي:"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31815"
+msgid "Select to switch to the next library layout."
+msgstr "اضغط تحديد للانتقال إلى تخطيط المكتبة التالي."
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Followed by the current sort method and a full stop
+msgctxt "#31816"
+msgid "Currently sorted by"
+msgstr "مرتّبة حاليًا حسب"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31817"
+msgid "Choose how items are arranged."
+msgstr "اختر طريقة ترتيب العناصر."
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Followed by the current sort order and a full stop
+msgctxt "#31818"
+msgid "Current order:"
+msgstr "الترتيب الحالي:"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31819"
+msgid "Select to reverse it."
+msgstr "اضغط تحديد لعكسه."
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Followed by the current watched filter and a full stop
+msgctxt "#31820"
+msgid "Showing:"
+msgstr "المعروض:"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31821"
+msgid "Cycle all movies, unwatched and watched."
+msgstr "التبديل بين كل الأفلام وغير المُشاهَدة والمُشاهَدة."
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31822"
+msgid "Choose Title sort in options"
+msgstr "اختر الترتيب حسب العنوان من الخيارات"
+
+#: /1080i/View_510_Bald_Posters.xml
+msgctxt "#31823"
+msgid "No movies to browse"
+msgstr "لا توجد أفلام للتصفح"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/Includes_Bald_Music.xml
+msgctxt "#31824"
+msgid "Browse by letter"
+msgstr "التصفح حسب الحرف"
+
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+msgctxt "#31825"
+msgid "No movies to display. Open options to adjust your filters."
+msgstr "لا توجد أفلام للعرض. افتح الخيارات لضبط عوامل التصفية."
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_550_Bald_Music.xml
+msgctxt "#31826"
+msgid "Scroll by letters"
+msgstr "التمرير بالأحرف"
+
+#: /1080i/View_510_Bald_Posters.xml
+#: /1080i/View_511_Bald_Wall.xml
+#: /1080i/View_515_Bald_PosterLow.xml
+#: /1080i/View_520_Bald_TV.xml
+msgctxt "#31830"
+msgid "Jump letters"
+msgstr "القفز بالأحرف"
+
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31835"
+msgid "Seasons"
+msgstr "المواسم"
+
+#: /1080i/View_520_Bald_TV.xml
+#: /1080i/View_521_Bald_TV_Alternates.xml
+msgctxt "#31836"
+msgid "Episodes"
+msgstr "الحلقات"
+
+#: /scripts/recommended.py
+#. Recommended Kodi settings dialog: heading and notification title
+msgctxt "#31837"
+msgid "Recommended Kodi settings"
+msgstr "إعدادات Kodi المقترحة"
+
+#: /scripts/recommended.py
+#. Recommended Kodi settings dialog: what changes; [CR] is a line break
+msgctxt "#31838"
+msgid "Bald works best with three of Kodi's own settings:[CR]- no parent folder item (\"..\") at the top of lists[CR]- selecting a movie or episode shows its information first[CR]- shows always open on their seasons, even with only one, so the series page is available[CR][CR]Apply them now? You can change them back in Kodi's settings."
+msgstr "يعمل Bald بأفضل شكل مع ثلاثة من إعدادات Kodi:[CR]- بدون عنصر المجلد الأصل (\"..\") أعلى القوائم[CR]- تحديد فيلم أو حلقة يعرض معلوماته أولًا[CR]- المسلسلات تُفتح دائمًا على مواسمها، حتى لو كان موسمًا واحدًا، لتكون صفحة المسلسل متاحة[CR][CR]هل تريد تطبيقها الآن؟ يمكنك إرجاعها من إعدادات Kodi."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#: /scripts/recommended.py
+#. Bald Settings > Appearance > Behavior row, and the dialog's yes button
+msgctxt "#31839"
+msgid "Apply recommended Kodi settings"
+msgstr "تطبيق إعدادات Kodi المقترحة"
+
+#: /scripts/recommended.py
+#. Notification when nothing needs changing
+msgctxt "#31840"
+msgid "Kodi's settings already match Bald's recommendations."
+msgstr "إعدادات Kodi تطابق توصيات Bald بالفعل."
+
+#: /scripts/recommended.py
+#. Notification after applying
+msgctxt "#31841"
+msgid "Recommended settings applied."
+msgstr "تم تطبيق الإعدادات المقترحة."
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode: the Seasons level drawn as the TV information page
+msgctxt "#31846"
+msgid "Bald series page"
+msgstr "صفحة مسلسل Bald"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Bald Settings, Appearance, Behavior: Select on a TV show in the video library opens its information page (Bald Helper)
+msgctxt "#31848"
+msgid "Open TV shows on their info page"
+msgstr "فتح المسلسلات على صفحة معلوماتها"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Right-hand note on the Behavior row above while the Bald Helper add-on is not installed; Select installs it
+msgctxt "#31849"
+msgid "Needs the Bald Helper add-on"
+msgstr "يتطلب إضافة Bald Helper"
+
+#: /1080i/View_510_Bald_Posters.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31850"
+msgid "Bald posters"
+msgstr "ملصقات Bald"
+
+#: /1080i/View_511_Bald_Wall.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31851"
+msgid "Bald poster wall"
+msgstr "جدار ملصقات Bald"
+
+#: /1080i/View_512_Bald_WallPreview.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31852"
+msgid "Bald wall with preview"
+msgstr "جدار Bald مع معاينة"
+
+#: /1080i/View_513_Bald_CompactList.xml
+#: /1080i/View_550_Bald_Music.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31853"
+msgid "Bald compact list"
+msgstr "قائمة Bald المختصرة"
+
+#: /1080i/View_514_Bald_ArtworkList.xml
+#: /1080i/View_550_Bald_Music.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31854"
+msgid "Bald artwork list"
+msgstr "قائمة Bald بالصور"
+
+#: /1080i/View_515_Bald_PosterLow.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31855"
+msgid "Bald poster low"
+msgstr "ملصقات Bald السفلية"
+
+#: /1080i/View_520_Bald_TV.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31856"
+msgid "Bald series posters"
+msgstr "ملصقات مسلسلات Bald"
+
+#: /1080i/View_520_Bald_TV.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31857"
+msgid "Bald seasons"
+msgstr "مواسم Bald"
+
+#: /1080i/View_520_Bald_TV.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31858"
+msgid "Bald episodes"
+msgstr "حلقات Bald"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31859"
+msgid "Bald series wall"
+msgstr "جدار مسلسلات Bald"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31860"
+msgid "Bald series compact"
+msgstr "مسلسلات Bald المختصرة"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31861"
+msgid "Bald series poster low"
+msgstr "ملصقات مسلسلات Bald السفلية"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31862"
+msgid "Bald seasons compact"
+msgstr "مواسم Bald المختصرة"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31863"
+msgid "Bald episodes compact"
+msgstr "حلقات Bald المختصرة"
+
+#: /1080i/View_521_Bald_TV_Alternates.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31864"
+msgid "Bald episode wall"
+msgstr "جدار حلقات Bald"
+
+#: /1080i/script-globalsearch.xml
+#. Name of a library layout, shown by Container.Viewmode
+msgctxt "#31865"
+msgid "Bald search list"
+msgstr "قائمة بحث Bald"
+
+#: /1080i/Includes_Bald_Configure.xml
+#. Right-hand note on the Behavior row "Open TV shows on their info page" while Bald Helper is installed but disabled; Select enables it
+msgctxt "#31866"
+msgid "Bald Helper is disabled"
+msgstr "إضافة Bald Helper معطّلة"
+
+#: /1080i/Includes_PVR.xml
+#. Heading of the Live TV guide tools panel, shown in capitals
+msgctxt "#31870"
+msgid "GUIDE TOOLS"
+msgstr "أدوات الدليل"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31871"
+msgid "Jump to live programming, change group or date, search the guide, or return to Home."
+msgstr "انتقل إلى البث الحالي، أو غيّر المجموعة أو التاريخ، أو ابحث في الدليل، أو عُد إلى الرئيسية."
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31872"
+msgid "Return to guide"
+msgstr "العودة إلى الدليل"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31873"
+msgid "Jump to now"
+msgstr "الانتقال إلى الآن"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31874"
+msgid "Choose channel group"
+msgstr "اختيار مجموعة القنوات"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31875"
+msgid "Choose date"
+msgstr "اختيار التاريخ"
+
+#: /1080i/Includes_PVR.xml
+msgctxt "#31876"
+msgid "Exit guide"
+msgstr "الخروج من الدليل"
+
+#: /1080i/MyPVRGuide.xml
+msgctxt "#31877"
+msgid "No programme information"
+msgstr "لا توجد معلومات عن البرامج"
+
+#: /1080i/MyPVRGuide.xml
+msgctxt "#31878"
+msgid "The selected channel has no matching guide data."
+msgstr "القناة المحددة ليس لها بيانات دليل مطابقة."
+
+#: /1080i/MyPVRGuide.xml
+msgctxt "#31879"
+msgid "Guide tools"
+msgstr "أدوات الدليل"
+
+#: /1080i/MyPVRGuide.xml
+#. The guide's hint line: Select on a programme, after the Select key
+msgctxt "#31791"
+msgid "Programme actions"
+msgstr "إجراءات البرنامج"
+
+#: /1080i/MyWeather.xml
+#. The weather page's hint line on the current conditions: Select shows the next location
+msgctxt "#31792"
+msgid "Next location"
+msgstr "الموقع التالي"
+
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Search.xml
+#: /1080i/script-globalsearch.xml
+#. Search: programmes on now or later whose title matches, in the options' Live TV section
+msgctxt "#31793"
+msgid "On TV"
+msgstr "على التلفاز"
+
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Search.xml
+#. Search: what Select does on a programme that has not started
+msgctxt "#31794"
+msgid "Record or watch"
+msgstr "تسجيل أو مشاهدة"
+
+#: /1080i/Includes_Bald_Common.xml
+#: /1080i/Includes_Bald_Search.xml
+#. Search: the channel number column of Live TV channel matches
+msgctxt "#31795"
+msgid "Number"
+msgstr "الرقم"
+
+#: /1080i/Includes_Bald_Search.xml
+#: /1080i/script-globalsearch.xml
+msgctxt "#31890"
+msgid "Series / artist"
+msgstr "المسلسل / الفنان"
+
+#: /1080i/Custom_1130_BaldSearch.xml
+#: /1080i/script-globalsearch.xml
+msgctxt "#31891"
+msgid "Search options"
+msgstr "خيارات البحث"
+
+#: /1080i/Custom_1130_BaldSearch.xml
+#: /1080i/Includes_Bald_Search.xml
+#: /1080i/script-globalsearch.xml
+msgctxt "#31892"
+msgid "New search"
+msgstr "بحث جديد"
+
+#: /1080i/Custom_1130_BaldSearch.xml
+#: /1080i/script-globalsearch.xml
+#. Precedes the search text in quotes, "Results for “alien”"
+msgctxt "#31894"
+msgid "Results for"
+msgstr "نتائج البحث عن"
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31900"
+msgid "Play the selected item."
+msgstr "تشغيل العنصر المحدد."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31901"
+msgid "Start playback from the beginning."
+msgstr "بدء التشغيل من البداية."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31902"
+msgid "Continue watching this series from your current progress."
+msgstr "متابعة مشاهدة هذا المسلسل من حيث وصلت."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31903"
+msgid "Play from this item onward in the current list."
+msgstr "التشغيل من هذا العنصر فصاعدًا في القائمة الحالية."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31904"
+msgid "Play this item without continuing through the list."
+msgstr "تشغيل هذا العنصر دون متابعة القائمة."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31905"
+msgid "Continue from where you stopped watching."
+msgstr "المتابعة من حيث توقفت عن المشاهدة."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31906"
+msgid "Play this next, after the current item."
+msgstr "تشغيل هذا تاليًا، بعد العنصر الحالي."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31907"
+msgid "Add this item to the end of the playback queue."
+msgstr "إضافة هذا العنصر إلى نهاية قائمة الانتظار."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31908"
+msgid "Choose which player to use for this item."
+msgstr "اختيار المشغّل لهذا العنصر."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31909"
+msgid "View the synopsis, cast and media details."
+msgstr "عرض الملخص والطاقم وتفاصيل الوسائط."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31910"
+msgid "Mark this item as watched in your library."
+msgstr "تعليم هذا العنصر كمُشاهَد في مكتبتك."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31911"
+msgid "Mark this item as unwatched in your library."
+msgstr "تعليم هذا العنصر كغير مُشاهَد في مكتبتك."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31912"
+msgid "Save a shortcut to this item in Favourites."
+msgstr "حفظ اختصار لهذا العنصر في المفضلة."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31913"
+msgid "Remove this item's shortcut from Favourites."
+msgstr "إزالة اختصار هذا العنصر من المفضلة."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31914"
+msgid "Open the available library management actions."
+msgstr "فتح إجراءات إدارة المكتبة المتاحة."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31915"
+msgid "Choose artwork for this item."
+msgstr "اختيار الصور الفنية لهذا العنصر."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31916"
+msgid "Change this item's title in the library."
+msgstr "تغيير عنوان هذا العنصر في المكتبة."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31917"
+msgid "Change the title used to sort this item."
+msgstr "تغيير العنوان المستخدم لترتيب هذا العنصر."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31918"
+msgid "Associate this movie with a TV show."
+msgstr "ربط هذا الفيلم بمسلسل."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31919"
+msgid "Choose the movie set this title belongs to."
+msgstr "اختيار سلسلة الأفلام التي ينتمي إليها هذا العنوان."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31920"
+msgid "Manage the available versions of this movie."
+msgstr "إدارة الإصدارات المتاحة لهذا الفيلم."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31921"
+msgid "Remove this item from Kodi's library."
+msgstr "إزالة هذا العنصر من مكتبة Kodi."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31922"
+msgid "Refresh this item's information."
+msgstr "تحديث معلومات هذا العنصر."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31923"
+msgid "Look for new media in this source."
+msgstr "البحث عن وسائط جديدة في هذا المصدر."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31924"
+msgid "Add this item's information to the library."
+msgstr "إضافة معلومات هذا العنصر إلى المكتبة."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31925"
+msgid "Open this item to browse its contents."
+msgstr "فتح هذا العنصر لتصفح محتوياته."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31926"
+msgid "Open Jellyfin's actions for this item."
+msgstr "فتح إجراءات Jellyfin لهذا العنصر."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31927"
+msgid "Play this item with server-side transcoding."
+msgstr "تشغيل هذا العنصر مع تحويل الترميز على الخادم."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+#. Context menu note: Select to use “<button label>” for this item.
+msgctxt "#31928"
+msgid "Select to use"
+msgstr "اضغط تحديد لاستخدام"
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+#. Context menu note: Select to use “<button label>” for this item.
+msgctxt "#31929"
+msgid "for this item."
+msgstr "لهذا العنصر."
+
+#: /1080i/Includes_Bald_ContextMenu.xml
+msgctxt "#31930"
+msgid "Select an action for this item."
+msgstr "اختر إجراءً لهذا العنصر."
+
+#: /1080i/Font.xml
+#: /1080i/Includes_Bald_Configure.xml
+#. Font set names: Kodi's Interface > Skin > Fonts list and Bald Settings > Appearance > Typography
+msgctxt "#31940"
+msgid "Instrument Sans"
+msgstr "Instrument Sans"
+
+#: /1080i/Font.xml
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31941"
+msgid "DM Sans"
+msgstr "DM Sans"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31942"
+msgid "Typography"
+msgstr "الخطوط"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31943"
+msgid "Choose the typeface Bald uses on every screen. Changing it reloads the skin."
+msgstr "اختر الخط الذي يستخدمه Bald في كل الشاشات. تغييره يعيد تحميل السمة."
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+msgctxt "#31944"
+msgid "Font"
+msgstr "الخط"
+
+#: /1080i/Includes_Bald_Configure.xml
+msgctxt "#31950"
+msgid "Settings level"
+msgstr "مستوى الإعدادات"
+
+#: /1080i/Settings.xml
+msgctxt "#31951"
+msgid "Home screens, widgets, and Bald's appearance."
+msgstr "الشاشات الرئيسية، والأدوات، ومظهر Bald."
+
+#: /1080i/Settings.xml
+msgctxt "#31952"
+msgid "Playback of videos, music, discs, and pictures, with language and subtitle choices."
+msgstr "تشغيل الفيديو والموسيقى والأقراص والصور، مع خيارات اللغة والترجمة."
+
+#: /1080i/Settings.xml
+msgctxt "#31953"
+msgid "Library, media sources, and how media is shown and browsed."
+msgstr "المكتبة، ومصادر الوسائط، وطريقة عرضها وتصفحها."
+
+#: /1080i/Settings.xml
+msgctxt "#31954"
+msgid "Live TV clients, the guide, channels, and recordings."
+msgstr "عملاء التلفاز المباشر، والدليل، والقنوات، والتسجيلات."
+
+#: /1080i/Settings.xml
+msgctxt "#31955"
+msgid "Remote control, UPnP, AirPlay, file sharing, and weather."
+msgstr "التحكم عن بُعد، وUPnP، وAirPlay، ومشاركة الملفات، والطقس."
+
+#: /1080i/Settings.xml
+msgctxt "#31956"
+msgid "Game add-ons, controllers, and emulation."
+msgstr "إضافات الألعاب، ووحدات التحكم، والمحاكاة."
+
+#: /1080i/Settings.xml
+msgctxt "#31957"
+msgid "Skin, language and region, screensaver, and master lock."
+msgstr "السمة، واللغة والمنطقة، وشاشة التوقف، والقفل الرئيسي."
+
+#: /1080i/Settings.xml
+msgctxt "#31958"
+msgid "User profiles and the login screen."
+msgstr "ملفات المستخدمين وشاشة الدخول."
+
+#: /1080i/Settings.xml
+msgctxt "#31959"
+msgid "Display, audio, input, internet access, power saving, and add-on updates."
+msgstr "الشاشة، والصوت، والإدخال، والوصول إلى الإنترنت، وتوفير الطاقة، وتحديثات الإضافات."
+
+#: /1080i/Settings.xml
+msgctxt "#31960"
+msgid "Browse, copy, and delete files on your sources."
+msgstr "تصفح الملفات ونسخها وحذفها في مصادرك."
+
+#: /1080i/Settings.xml
+msgctxt "#31961"
+msgid "Hardware, storage, network, and version details."
+msgstr "تفاصيل العتاد والتخزين والشبكة والإصدار."
+
+#: /1080i/Settings.xml
+msgctxt "#31962"
+msgid "Recent notifications and events from Kodi and its add-ons."
+msgstr "أحدث الإشعارات والأحداث من Kodi وإضافاته."
+
+#: /1080i/Settings.xml
+msgctxt "#31963"
+msgid "Return"
+msgstr "رجوع"
+
+#: /1080i/SettingsProfile.xml
+msgctxt "#31964"
+msgid "Choose whether Kodi starts at the login screen, and which profile loads automatically."
+msgstr "اختر ما إذا كان Kodi يبدأ بشاشة الدخول، وأي ملف مستخدم يُحمَّل تلقائيًا."
+
+#: /1080i/SettingsProfile.xml
+msgctxt "#31965"
+msgid "Select a profile to edit it, or add a new one."
+msgstr "اختر ملف مستخدم لتعديله، أو أضف ملفًا جديدًا."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Controls
+msgctxt "#31971"
+msgid "How long the controls stay up and what they show."
+msgstr "مدة بقاء أدوات التحكم ظاهرة وما تعرضه."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Pause
+msgctxt "#31972"
+msgid "What the seek bar does when you pause."
+msgstr "ما يفعله شريط التنقل عند الإيقاف المؤقت."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings category
+msgctxt "#31973"
+msgid "Info overlay"
+msgstr "شاشة المعلومات"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Info overlay
+msgctxt "#31974"
+msgid "What the Info key and pausing in Show info mode show."
+msgstr "ما يعرضه زر المعلومات والإيقاف المؤقت في وضع إظهار المعلومات."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings category
+msgctxt "#31975"
+msgid "Panels"
+msgstr "اللوحات"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: note for Down from the controls
+msgctxt "#31976"
+msgid "The panels Down opens from the controls, in this order. Each one opens only when it applies."
+msgstr "اللوحات التي يفتحها زر الأسفل من أدوات التحكم، بهذا الترتيب. كل لوحة تُفتح فقط عند الحاجة إليها."
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: OSD auto-close time
+msgctxt "#31977"
+msgid "Close the controls after"
+msgstr "إغلاق أدوات التحكم بعد"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: pause behaviour
+msgctxt "#31978"
+msgid "When paused"
+msgstr "عند الإيقاف المؤقت"
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Playback settings: seconds before the pause behaviour starts
+msgctxt "#31979"
+msgid "Pause delay"
+msgstr "مهلة الإيقاف المؤقت"
+
+#: /1080i/LoginScreen.xml
+msgctxt "#31980"
+msgid "Log in"
+msgstr "تسجيل الدخول"
+
+#: /1080i/LoginScreen.xml
+msgctxt "#31981"
+msgid "Power options"
+msgstr "خيارات الطاقة"
+
+#: /1080i/DialogPictureInfo.xml
+msgctxt "#31982"
+msgid "Change picture"
+msgstr "تغيير الصورة"
+
+#: /1080i/MyWeather.xml
+msgctxt "#31984"
+msgid "Weather settings"
+msgstr "إعدادات الطقس"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: fanart behind library pages outside the Bald views
+msgctxt "#31985"
+msgid "Fanart behind other library pages"
+msgstr "الخلفية الفنية خلف صفحات المكتبة الأخرى"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: music videos as posters in the wall views
+msgctxt "#31986"
+msgid "Posters for music videos"
+msgstr "ملصقات لمقاطع الفيديو الموسيقية"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: image pack for genre backgrounds
+msgctxt "#31987"
+msgid "Genre background pack"
+msgstr "حزمة خلفيات التصنيفات"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: image pack for the weather page's background
+msgctxt "#31988"
+msgid "Weather background pack"
+msgstr "حزمة خلفيات الطقس"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Artwork: image pack for weather icons
+msgctxt "#31989"
+msgid "Weather icon pack"
+msgstr "حزمة أيقونات الطقس"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: how list views show a title's original title
+msgctxt "#31990"
+msgid "Titles in list views"
+msgstr "العناوين في عروض القوائم"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: profile name on the library page header
+msgctxt "#31991"
+msgid "Profile name in page headers"
+msgstr "اسم ملف المستخدم في ترويسات الصفحات"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Information: current temperature and conditions at the right of page headers and under Home's date
+msgctxt "#31992"
+msgid "Weather in page headers and on Home"
+msgstr "الطقس في ترويسات الصفحات وفي الرئيسية"
+
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance > Behavior: long plots scroll on their own
+msgctxt "#31993"
+msgid "Scroll long plots"
+msgstr "تمرير الملخصات الطويلة"
+
+#. Player process info, System tab: the CPU temperature (Kodi's own #22011 ends in a colon)
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31994"
+msgid "CPU temperature"
+msgstr "حرارة المعالج"
+
+#. Player process info, Audio column: the decoder's speaker list (FL, FR, FC, LFE...), under the channel count
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31995"
+msgid "Speaker layout"
+msgstr "توزيع السماعات"
+
+#. Bald Settings, Playback, Controls: how dark the player's background gradients are (100 %, 75 %, 50 %, 25 %, off)
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31996"
+msgid "Background shading"
+msgstr "تظليل الخلفية"
+
+#. Bald Settings, Playback, Controls: playing video shows, dimmed, behind Bald's windows
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31997"
+msgid "Background video"
+msgstr "الفيديو في الخلفية"
+
+#. Bald Settings, Playback, Controls: how much the background video is darkened (60, 70, 80, 90 per cent)
+#: /1080i/Custom_1119_BaldPlayback.xml
+msgctxt "#31998"
+msgid "Background video dim"
+msgstr "تعتيم الفيديو في الخلفية"
