@@ -1531,6 +1531,30 @@ msgctxt "#31692"
 msgid "Background brightness"
 msgstr ""
 
+#: /1080i/Custom_1118_BaldAppearance.xml
+#. Appearance, Artwork: how finely the background is blurred (Bald Helper)
+msgctxt "#31693"
+msgid "Blur quality"
+msgstr ""
+
+#: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur quality: a 960 px blur
+msgctxt "#31694"
+msgid "High"
+msgstr ""
+
+#: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur quality: a 960 px blur with a faint dither against banding
+msgctxt "#31695"
+msgid "Smooth"
+msgstr ""
+
+#: /1080i/Includes_Bald_Home.xml
+#. Appearance, Blur quality: the default 480 px blur
+msgctxt "#31696"
+msgid "Standard"
+msgstr ""
+
 #: /1080i/DialogPVRGuideControls.xml
 #. Guide controls: jump to the first programme or channel
 msgctxt "#31670"

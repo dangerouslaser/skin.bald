@@ -40,12 +40,19 @@
 				<control type="radiobutton" id="9666"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">standard</param></include><label>$LOCALIZE[31221]</label><selected>!Skin.HasSetting(Bald.TitleText.Series)</selected><onclick>Skin.ToggleSetting(Bald.TitleText.Series)</onclick></control>
 				<control type="radiobutton" id="9667"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">standard</param></include><label>$LOCALIZE[31222]</label><selected>!Skin.HasSetting(Bald.TitleText.Player)</selected><onclick>Skin.ToggleSetting(Bald.TitleText.Player)</onclick></control>
 				<control type="radiobutton" id="9602"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">basic</param></include><label>$LOCALIZE[31762]</label><selected>!Skin.HasSetting(Bald.DisableBlur)</selected><onclick>Skin.ToggleSetting(Bald.DisableBlur)</onclick></control>
-				<!-- Blur strength (Bald Helper reads Skin.String(Bald.BlurStrength): light 20, medium 40, strong 70 px radius) and
-				     the blurred background's brightness (Bald_BlurDiffuse). Both need the blurred background on. -->
+				<!-- Blur strength (Bald Helper reads Skin.String(Bald.BlurStrength): light 20, medium 40, strong 70 px radius), quality
+				     and the blurred background's brightness (Bald_BlurDiffuse). All need the blurred background on. -->
 				<control type="button" id="9608"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">advanced</param></include><label>$LOCALIZE[31691]</label><label2>$VAR[Bald_BlurStrengthLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.BlurStrength))">Skin.SetString(Bald.BlurStrength,strong)</onclick>
 					<onclick condition="Skin.String(Bald.BlurStrength,strong)">Skin.SetString(Bald.BlurStrength,light)</onclick>
 					<onclick condition="Skin.String(Bald.BlurStrength,light)">Skin.Reset(Bald.BlurStrength)</onclick>
+				</control>
+				<!-- Blur quality (Skin.String(Bald.BlurQuality)): standard blurs a 480 px copy, high a 960 px one, smooth a 960 px
+				     one with a faint dither against banding in dark gradients. -->
+				<control type="button" id="9610"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">advanced</param></include><label>$LOCALIZE[31693]</label><label2>$VAR[Bald_BlurQualityLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
+					<onclick condition="String.IsEmpty(Skin.String(Bald.BlurQuality))">Skin.SetString(Bald.BlurQuality,high)</onclick>
+					<onclick condition="Skin.String(Bald.BlurQuality,high)">Skin.SetString(Bald.BlurQuality,smooth)</onclick>
+					<onclick condition="Skin.String(Bald.BlurQuality,smooth)">Skin.Reset(Bald.BlurQuality)</onclick>
 				</control>
 				<control type="button" id="9609"><include content="Bald_SettingRow"><param name="list">9500</param><param name="item">1</param><param name="level">advanced</param></include><label>$LOCALIZE[31692]</label><label2>$VAR[Bald_BlurBrightnessLabel]</label2><enable>!Skin.HasSetting(Bald.DisableBlur)</enable>
 					<onclick condition="String.IsEmpty(Skin.String(Bald.BlurBrightness))">Skin.SetString(Bald.BlurBrightness,40)</onclick>

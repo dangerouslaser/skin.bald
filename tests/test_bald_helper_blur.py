@@ -132,6 +132,8 @@ class NamingTests(unittest.TestCase):
         name = blur.cache_name("/movies/Heat (1995)/fanart.jpg")
         self.assertRegex(name, r"^[0-9a-f]{32}-r40\.jpg$")
         self.assertNotEqual(name, blur.cache_name("/movies/Heat (1995)/fanart.jpg", radius=20))
+        self.assertNotEqual(name, blur.cache_name("/movies/Heat (1995)/fanart.jpg", quality="high"))
+        self.assertRegex(blur.cache_name("/x.jpg", quality="smooth"), r"-r40-smooth\.jpg$")
         self.assertEqual(blur.RADIUS, 40)
         self.assertEqual(blur.SIZE, (480, 270))
         self.assertEqual(blur.CACHE_DIR, "special://profile/addon_data/script.bald.helper/blur")
@@ -167,6 +169,24 @@ class PipelineTests(Case):
         data = self.blurrer.render(jpeg())
         with Image.open(io.BytesIO(data)) as image:
             self.assertEqual((image.format, image.size, image.mode), ("JPEG", (480, 270), "RGB"))
+
+    def test_high_quality_is_a_960_by_540_jpeg_at_twice_the_radius(self):
+        self.blurrer.quality = "high"
+        data = self.blurrer.render(jpeg())
+        with Image.open(io.BytesIO(data)) as image:
+            self.assertEqual((image.format, image.size, image.mode), ("JPEG", (960, 540), "RGB"))
+        self.assertTrue(self.blurrer.path_for("/a.jpg").endswith("-r40-high.jpg"))
+
+    def test_smooth_quality_is_a_dithered_960_by_540_jpeg(self):
+        self.blurrer.quality = "smooth"
+        flat = io.BytesIO()
+        Image.new("RGB", (1920, 1080), (20, 22, 24)).save(flat, "JPEG", quality=95)
+        with Image.open(io.BytesIO(self.blurrer.render(flat.getvalue()))) as image:
+            self.assertEqual((image.format, image.size, image.mode), ("JPEG", (960, 540), "RGB"))
+            low, high = image.convert("L").getextrema()
+        self.assertGreater(high - low, 0)  # the dither breaks up a flat field
+        self.assertLess(high - low, 20)  # but stays faint
+        self.assertTrue(self.blurrer.path_for("/a.jpg").endswith("-r40-smooth.jpg"))
 
     def test_cover_crop_keeps_the_centre_of_a_poster(self):
         data = self.blurrer.render(jpeg((1000, 1500), noise=False))
@@ -360,6 +380,24 @@ class FollowerTests(Case):
         self.clock.advance(blur.STRENGTH_SECONDS)
         self.settle()
         self.assertEqual(self.blurrer.radius, blur.RADIUS)
+        self.assertTrue(self.window.get("Bald.Blur").endswith("-r40.jpg"))
+
+    def test_blur_quality_follows_the_skin_setting_and_republishes(self):
+        FakeFile.files["/a.jpg"] = jpeg()
+        self.focus("9101", "/a.jpg")
+        self.settle()
+        self.assertTrue(self.window.get("Bald.Blur").endswith("-r40.jpg"))
+        labels = dict(self.xbmc.labels)
+        labels[blur.QUALITY_SETTING] = "smooth"
+        self.xbmc.labels = labels
+        self.clock.advance(blur.STRENGTH_SECONDS)
+        self.settle()
+        self.assertEqual(self.blurrer.quality, "smooth")
+        self.assertTrue(self.window.get("Bald.Blur").endswith("-r40-smooth.jpg"))
+        labels[blur.QUALITY_SETTING] = "bogus"  # an unknown value is standard
+        self.clock.advance(blur.STRENGTH_SECONDS)
+        self.settle()
+        self.assertEqual(self.blurrer.quality, "")
         self.assertTrue(self.window.get("Bald.Blur").endswith("-r40.jpg"))
 
     def test_a_cache_hit_is_published_after_100_ms_even_while_scrolling(self):

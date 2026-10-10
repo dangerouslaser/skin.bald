@@ -455,6 +455,11 @@
 		<value condition="Skin.String(Bald.BlurStrength,strong)">$LOCALIZE[31690]</value>
 		<value>$LOCALIZE[31689]</value>
 	</variable>
+	<variable name="Bald_BlurQualityLabel">
+		<value condition="Skin.String(Bald.BlurQuality,high)">$LOCALIZE[31694]</value>
+		<value condition="Skin.String(Bald.BlurQuality,smooth)">$LOCALIZE[31695]</value>
+		<value>$LOCALIZE[31696]</value>
+	</variable>
 	<variable name="Bald_BlurBrightnessLabel">
 		<value condition="Skin.String(Bald.BlurBrightness,20)">20%</value>
 		<value condition="Skin.String(Bald.BlurBrightness,40)">40%</value>

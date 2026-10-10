@@ -3,8 +3,8 @@
 Which item that is comes from follow.py, shared with the ratings follower: the container the skin names in the
 Bald.FocusContainer property of the active window (or of the information dialog while it is open), else the focused
 item of a media window (Container.ListItem) or the information dialog's own item (ListItem). Its fanart, else
-the show's fanart, else its thumb, is cut to 480 x 270, blurred and written once to this add-on's cache; the path goes
-to Home's window properties:
+the show's fanart, else its thumb, is cut to 480 x 270 (960 x 540 at the high and smooth qualities), blurred and
+written once to this add-on's cache; the path goes to Home's window properties:
 
     Bald.Blur       the current blurred file; empty for an item without art or where there is nothing to follow
     Bald.Blur.Last  the last non-empty Bald.Blur (for windows without an item of their own)
@@ -40,7 +40,15 @@ RADIUS = 40
 # radius is part of each cached file's name, so a change blurs afresh and never reuses another strength's files.
 STRENGTH_SETTING = "Skin.String(Bald.BlurStrength)"
 STRENGTHS = {"light": 20, "strong": 70}
-STRENGTH_SECONDS = 2.0  # how often the follower reads the setting again
+STRENGTH_SECONDS = 2.0  # how often the follower reads the settings again
+# Appearance › Blur quality (Skin.String(Bald.BlurQuality)): unset is standard (SIZE, the radius as above, JPEG).
+# high and smooth blur a 960 x 540 copy with the radius scaled to match, so strength looks the same at every quality;
+# smooth also adds a faint luma dither against banding in dark gradients, saved at DITHER_QUALITY so the JPEG keeps
+# it. The quality is part of each cached file's name, as the radius is.
+QUALITY_SETTING = "Skin.String(Bald.BlurQuality)"
+QUALITIES = {"high": ((960, 540), False), "smooth": ((960, 540), True)}
+DITHER_SIGMA = 1.5  # the dither's spread, in 8-bit levels
+DITHER_QUALITY = 95  # at QUALITY the JPEG smooths away about a quarter of it
 QUALITY = 90
 CACHE_DIR = "special://profile/addon_data/script.bald.helper/blur"
 CACHE_MAX_BYTES = 60 * 1024 * 1024
@@ -79,9 +87,11 @@ THUMB_EXTENSIONS = (".jpg", ".png")
 LOCAL_SCHEMES = ("resource://",)  # installed add-on files Kodi reads through xbmcvfs
 
 
-def cache_name(source: str, radius: int = RADIUS) -> str:
-    """The blur's file name: the source's md5 and the radius, so a new radius never reuses an old file."""
-    return f"{hashlib.md5(source.encode('utf-8')).hexdigest()}-r{radius}.jpg"
+def cache_name(source: str, radius: int = RADIUS, quality: str = "") -> str:
+    """The blur's file name: the source's md5, the radius and the quality (none for standard), so a change of either
+    never reuses an old file."""
+    suffix = f"-{quality}" if quality else ""
+    return f"{hashlib.md5(source.encode('utf-8')).hexdigest()}-r{radius}{suffix}.jpg"
 
 
 def unwrap(source: str) -> tuple[str, bool]:
@@ -110,6 +120,7 @@ class Blurrer:
         self.log = log or (lambda text, level=None: None)
         self.writes = 0
         self.radius = RADIUS
+        self.quality = ""  # standard; else a key of QUALITIES
         self._pil = None
         self._pil_failed = False
 
@@ -130,7 +141,7 @@ class Blurrer:
 
     # --- the cache ---
     def path_for(self, source: str) -> str:
-        return os.path.join(self.cache_dir, cache_name(source, self.radius))
+        return os.path.join(self.cache_dir, cache_name(source, self.radius, self.quality))
 
     def has(self, source: str) -> bool:
         """Whether the source's blur is in the cache (one stat; does not count as use)."""
@@ -236,15 +247,21 @@ class Blurrer:
     def render(self, data: bytes) -> bytes:
         """The blurred JPEG for one source image (pure, apart from Pillow)."""
         Image, ImageFilter, ImageOps = self.pil()
+        size, dither = QUALITIES.get(self.quality, (SIZE, False))
         with Image.open(io.BytesIO(data)) as image:
-            # JPEG: decode at the smallest DCT scale that still covers SIZE (a 1920 x 1080 source decodes at 480 x 270).
-            image.draft("RGB", SIZE)
+            # JPEG: decode at the smallest DCT scale that still covers size (a 1920 x 1080 source decodes at 480 x 270).
+            image.draft("RGB", size)
             image = image.convert("RGB")
-        resample = getattr(getattr(Image, "Resampling", Image), "BILINEAR")
-        image = ImageOps.fit(image, SIZE, method=resample, centering=(0.5, 0.5))
-        image = image.filter(ImageFilter.GaussianBlur(self.radius))
+        resample = getattr(getattr(Image, "Resampling", Image), "BILINEAR" if size == SIZE else "LANCZOS")
+        image = ImageOps.fit(image, size, method=resample, centering=(0.5, 0.5))
+        image = image.filter(ImageFilter.GaussianBlur(self.radius * size[0] / SIZE[0]))
+        if dither:
+            from PIL import ImageChops  # noqa: PLC0415 - Pillow is optional until first used
+
+            noise = Image.effect_noise(size, DITHER_SIGMA).convert("RGB")  # centred on 128
+            image = ImageChops.add(image, noise, offset=-128)
         out = io.BytesIO()
-        image.save(out, "JPEG", quality=QUALITY, subsampling=0)
+        image.save(out, "JPEG", quality=DITHER_QUALITY if dither else QUALITY, subsampling=0)
         return out.getvalue()
 
     def make(self, source: str) -> str | None:
@@ -324,15 +341,18 @@ class Follower(common.Threads):
         self.published = source
 
     def update_strength(self) -> None:
-        """Follow Appearance › Blur strength; on a change, blur the shown item again at the new radius."""
+        """Follow Appearance › Blur strength and Blur quality; on a change, blur the shown item again."""
         now = self.clock()
         if now < self._strength_checked + STRENGTH_SECONDS:
             return
         self._strength_checked = now
         radius = STRENGTHS.get(self.xbmc.getInfoLabel(STRENGTH_SETTING).strip().lower(), RADIUS)
-        if radius != self.blurrer.radius:
+        quality = self.xbmc.getInfoLabel(QUALITY_SETTING).strip().lower()
+        quality = quality if quality in QUALITIES else ""
+        if (radius, quality) != (self.blurrer.radius, self.blurrer.quality):
             with self.lock:
                 self.blurrer.radius = radius
+                self.blurrer.quality = quality
                 self.published = None  # republish the current item at the new strength
                 self.candidate = None
                 self.wanted = None
