@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.bald" version="0.12.0" name="Bald" provider-name="dangerouslaser">
+<addon id="skin.bald" version="0.13.0" name="Bald" provider-name="dangerouslaser">
 	<requires>
 		<import addon="xbmc.gui" version="5.18.0"/>
 		<import addon="xbmc.python" version="3.0.1"/>
 		<import addon="script.skinvariables" version="2.2.8"/>
-		<import addon="script.bald.helper" version="1.5.0"/>
+		<import addon="script.bald.helper" version="1.6.0"/>
 		<import addon="script.globalsearch" version="9.2.1" optional="true"/>
 		<import addon="plugin.video.themoviedb.helper" version="6.17.4" optional="true"/>
 	</requires>

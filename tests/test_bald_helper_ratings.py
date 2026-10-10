@@ -863,7 +863,7 @@ class CastPluginTests(unittest.TestCase):
 class PackagingTests(unittest.TestCase):
     def test_addon_declares_service_and_plugin(self):
         root = ET.parse(ADDON / "addon.xml").getroot()
-        self.assertEqual(root.get("version"), "1.5.0")
+        self.assertEqual(root.get("version"), "1.6.0")
         points = {e.get("point"): e.get("library") for e in root.findall("extension")}
         self.assertEqual(points["xbmc.service"], "service.py")
         self.assertEqual(points["xbmc.python.pluginsource"], "plugin.py")
