@@ -146,7 +146,9 @@ class _Server(ThreadingHTTPServer):
         # Open connections and their addresses, so stop() can hang up on
         # idle keep-alives and verify_request() can cap them.
         self._connections: dict = {}
-        self._refusal_logged = 0.0
+        # None until the first refusal: monotonic() counts from boot, so a
+        # 0.0 start would silence refusals in the first minute after boot.
+        self._refusal_logged = None
         # Cached poster and fanart of the playing title.
         self._art = artwork.PlayingArtwork()
 
@@ -167,7 +169,8 @@ class _Server(ThreadingHTTPServer):
             if total < _MAX_CONNECTIONS and mine < _MAX_PER_ADDRESS:
                 return True
             now = time.monotonic()
-            quiet = now - self._refusal_logged >= _REFUSAL_LOG_INTERVAL
+            quiet = (self._refusal_logged is None
+                     or now - self._refusal_logged >= _REFUSAL_LOG_INTERVAL)
             if quiet:
                 self._refusal_logged = now
         if quiet:
