@@ -172,7 +172,9 @@ async def _launch_points(tv: TvController, _kw: dict[str, Any]) -> dict[str, Any
 
 
 async def _picture_modes(tv: TvController, _kw: dict[str, Any]) -> dict[str, Any]:
-    return {"modes": await tv.picture_modes(), "current": tv.state.picture_preset}
+    modes = await tv.picture_modes()
+    return {"modes": modes, "current": tv.state.picture_preset,
+            "readable": tv.picture_readable is not False}
 
 
 ACTIONS: dict[str, Action] = {

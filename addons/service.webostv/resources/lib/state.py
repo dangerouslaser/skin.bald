@@ -44,7 +44,7 @@ class TvState:
     input_label: str = ""
     sound_output: str = ""
     picture_preset: str = ""
-    picture_supported: bool | None = None
+    picture_readable: bool | None = None
     model: str = ""
     # Not published as properties; used by the UI and action resolution.
     apps: tuple[tuple[str, str], ...] = field(default=(), compare=False)
@@ -59,7 +59,7 @@ class TvState:
         paired: bool,
         host: str,
         picture_preset: str = "",
-        picture_supported: bool | None = None,
+        picture_readable: bool | None = None,
         model: str = "",
     ) -> TvState:
         """Build a snapshot from aiowebostv's WebOsTvState."""
@@ -94,7 +94,7 @@ class TvState:
             input_label=current_input[1] if current_input else "",
             sound_output=tv_state.sound_output or "",
             picture_preset=picture_preset,
-            picture_supported=picture_supported,
+            picture_readable=picture_readable,
             model=model,
             apps=apps,
             inputs=inputs,
@@ -126,7 +126,10 @@ class TvState:
             "PicturePreset": self.picture_preset,
             "PicturePresetLabel": preset_label(self.picture_preset) if self.picture_preset else "",
             "Model": self.model,
-            "PictureSupported": flag(self.picture_supported),
+            # Presets can be set on every webOS this add-on supports; whether the
+            # TV reports them (and so confirms changes) varies.
+            "PictureSupported": "true" if self.connected else "",
+            "PictureReadable": flag(self.picture_readable),
         }
 
 

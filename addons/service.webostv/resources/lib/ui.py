@@ -144,7 +144,17 @@ def choose_picture_preset() -> None:
     if not reply:
         return
     current = reply["result"].get("current") or ""
-    values = [m["value"] for m in reply["result"].get("modes", []) if m.get("visible")]
+    modes = reply["result"].get("modes", [])
+    if reply["result"].get("readable", True):
+        values = [m["value"] for m in modes if m.get("visible")]
+    else:
+        # The TV can't say which presets fit the current signal; use Kodi's.
+        from .automations import normalize_hdr_type  # noqa: PLC0415
+
+        kind = "sdr"
+        if xbmc.getCondVisibility("Player.HasVideo"):
+            kind = normalize_hdr_type(xbmc.getInfoLabel("VideoPlayer.HdrType")) or "sdr"
+        values = presets.for_kind(kind, [m["value"] for m in modes])
     if not values:
         return
     labels = [_mark(presets.label(v), v == current) for v in values]

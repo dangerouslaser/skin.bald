@@ -116,10 +116,12 @@ the same `id`: `{"id": "abc123", "ok": true, "result": ...}` or
 
 ## Picture presets and HDR rules
 
-Needs a TV whose webOS lets apps read the picture mode (confirmed on webOS 10; webOS 5.5 on a 2020 CX
-refuses with "Some keys are not allowed for the request (pictureMode)" and has no preset list). On such
-TVs the add-on turns presets off cleanly: `WebOS.PictureSupported` is `false`, preset actions say they
-aren't available, and the playback rules skip.
+Older webOS (confirmed on webOS 5.5, a 2020 CX) won't let apps read the picture mode or list presets
+("Some keys are not allowed for the request (pictureMode)"), but setting one works. There the add-on
+sends presets without confirmation, offers a built-in list of the 2020 OLED presets (filtered by what
+Kodi is playing), and shows the last preset set from Kodi as current (`WebOS.PictureReadable` is
+`false`). Playback rules wait a fixed 4 s for the signal to switch instead of watching for it, and only
+restore a preset Kodi set itself.
 
 `picture_preset` uses the alert-to-luna workaround (see `resources/lib/luna.py`). The TV never
 reports the result of that call, so the service reads the mode back and fails the action if the
@@ -192,7 +194,7 @@ Published on `Window(Home)`; only changed values are written.
 | `WebOS.SoundOutput` / `WebOS.SoundOutputLabel` | `external_arc` / `HDMI ARC` |
 | `WebOS.PicturePreset` / `WebOS.PicturePresetLabel` | `filmMaker` / `Filmmaker Mode` (live, includes changes from the LG remote) |
 | `WebOS.Model` | `OLED77G5WUA.DUSQLJR` |
-| `WebOS.PictureSupported` | `true`, or `false` on older webOS that won't report picture settings |
+| `WebOS.PictureReadable` | `true`, or `false` on older webOS that won't report picture settings (presets still set, unconfirmed) |
 | `WebOS.TransparentControl` | `true` while transparent control is catching keys |
 | `WebOS.KodiInput` | `Streaming Box (HDMI_1)` (Kodi's TV input setting, with the TV's name) |
 | `WebOS.ConfiguredHost` | `192.168.1.224` (host setting) |

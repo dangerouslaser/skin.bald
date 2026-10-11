@@ -121,7 +121,7 @@
 						<aligny>center</aligny>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
-						<visible>String.IsEqual(Window(Home).Property(WebOS.PictureSupported),false)</visible>
+						<visible>String.IsEqual(Window(Home).Property(WebOS.PictureReadable),false)</visible>
 					</control>
 					<control type="button" id="200">
 						<width>1390</width>

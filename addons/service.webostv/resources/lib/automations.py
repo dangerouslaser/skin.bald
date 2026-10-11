@@ -47,6 +47,9 @@ SIGNAL_POLL = 0.25
 # Attempts to set a preset, and the pause between them.
 SET_ATTEMPTS = 3
 RETRY_DELAY = 1.0
+# TVs that won't report their picture mode can't tell when the signal has
+# switched either: wait this long instead, then send the preset once.
+BLIND_SIGNAL_DELAY = 4.0
 
 
 def normalize_hdr_type(label: str) -> str | None:
@@ -194,6 +197,17 @@ class PlaybackRules:
     async def _set_when_ready(self, target: str, *, abort=lambda: False) -> str | None:
         """Set a preset once the TV is on its signal; return an error or None."""
         loop = asyncio.get_running_loop()
+        if self.controller.picture_readable is False:
+            deadline = loop.time() + BLIND_SIGNAL_DELAY
+            while loop.time() < deadline and not abort():
+                await asyncio.sleep(SIGNAL_POLL)
+            if abort():
+                return "playback stopped"
+            try:
+                await self.controller.set_picture_mode(target)
+            except ActionError as err:
+                return err.message
+            return None
         wanted = presets.family(target)
         deadline = loop.time() + SIGNAL_SETTLE
         while (
@@ -221,10 +235,6 @@ class PlaybackRules:
 
     async def _apply(self, kind: str | None) -> None:
         if not self.controller.connected:
-            return
-        if self.controller.picture_supported is False:
-            # Older webOS: presets can't be read or verified, so rules are off.
-            await self._apply_screen()
             return
         target = await self._target(kind)
         if target and self.controller.picture_preset != target:

@@ -1128,5 +1128,5 @@ msgid "Inputs"
 msgstr ""
 
 msgctxt "#31935"
-msgid "This TV's webOS version doesn't let apps read or list picture presets, so these options aren't available."
+msgid "This TV's webOS doesn't report its picture preset, so presets come from a built-in list and the current one shown is the last one set from Kodi."
 msgstr ""

@@ -9,6 +9,14 @@ from __future__ import annotations
 
 import re
 
+# Presets for TVs whose webOS won't list them (webOS 5.x, 2020 OLEDs such as
+# the CX): the set those models offer. Setting works there; reading doesn't.
+FALLBACK_MODES = (
+    "vivid", "normal", "eco", "cinema", "sports", "game", "filmMaker", "expert1", "expert2",
+    "hdrVivid", "hdrStandard", "hdrCinemaBright", "hdrCinema", "hdrGame", "hdrFilmMaker",
+    "dolbyHdrVivid", "dolbyHdrStandard", "dolbyHdrCinemaBright", "dolbyHdrCinema", "dolbyHdrGame",
+)
+
 # Rule kind -> settings id
 SETTING_IDS = {
     "sdr": "preset_sdr",

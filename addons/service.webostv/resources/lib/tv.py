@@ -18,7 +18,7 @@ from aiowebostv import WebOsClient, WebOsTvCommandError, WebOsTvPairError
 from aiowebostv.buttons import BUTTONS
 
 from . import kodilog as log
-from . import discovery, luna, storage, wol
+from . import discovery, luna, presets, storage, wol
 from .errors import BadRequest, CommandFailed, Disconnected
 from .net import Backoff, discover_lan_ip
 from .pairing import KeyStore
@@ -93,8 +93,9 @@ class TvController:
         self._firmware: tuple[WebOsClient, str] | None = None
         self.picture_preset = ""
         # None until known; False when the TV's webOS won't report picture
-        # settings (presets then can't be read, listed or verified).
-        self.picture_supported: bool | None = None
+        # settings (webOS 5.x): presets are then set "blind" from a built-in
+        # list, and picture_preset is the last one set from Kodi.
+        self.picture_readable: bool | None = None
         # Callbacks run with the new preset name (automations track it).
         self.picture_listeners: list[Callable[[str], None]] = []
         # Callbacks run with every new TvState (the TV watcher uses them).
@@ -431,7 +432,7 @@ class TvController:
                 paired=self.keystore.get(self.settings.host) is not None,
                 host=self.active_host,
                 picture_preset=self.picture_preset if connected else "",
-                picture_supported=self.picture_supported if connected else None,
+                picture_readable=self.picture_readable if connected else None,
                 model=str((client.tv_info.system or {}).get("modelName") or ""),
             )
         else:
@@ -573,36 +574,38 @@ class TvController:
     async def _subscribe_picture(self, client: WebOsClient) -> None:
         async def on_picture(payload: dict[str, Any]) -> None:
             mode = str(((payload or {}).get("settings") or {}).get("pictureMode") or "")
-            if mode and mode != self.picture_preset:
-                self.picture_preset = mode
-                log.debug(f"picture mode is {mode}")
-                self._publish()
-                for listener in list(self.picture_listeners):
-                    try:
-                        listener(mode)
-                    except Exception as err:  # noqa: BLE001
-                        log.warning(f"picture listener failed: {err!r}")
+            if mode:
+                self._picture_changed(mode)
 
         try:
             await client.subscribe(on_picture, PICTURE_SETTINGS, dict(PICTURE_QUERY))
         except Exception as err:  # noqa: BLE001
             if _picture_unsupported(err):
-                self._mark_picture_unsupported()
+                self._mark_picture_unreadable()
             else:
                 log.warning(f"cannot follow picture mode: {err!r}")
         else:
-            self.picture_supported = True
+            self.picture_readable = True
             self._publish()
 
-    def _mark_picture_unsupported(self) -> None:
-        if self.picture_supported is not False:
-            log.info("this TV's webOS doesn't allow reading picture settings; picture presets are off")
-        self.picture_supported = False
+    def _picture_changed(self, mode: str) -> None:
+        if mode == self.picture_preset:
+            return
+        self.picture_preset = mode
+        log.debug(f"picture mode is {mode}")
         self._publish()
+        for listener in list(self.picture_listeners):
+            try:
+                listener(mode)
+            except Exception as err:  # noqa: BLE001
+                log.warning(f"picture listener failed: {err!r}")
 
-    def _require_picture(self) -> None:
-        if self.picture_supported is False:
-            raise BadRequest("picture presets aren't available on this TV's webOS version")
+    def _mark_picture_unreadable(self) -> None:
+        if self.picture_readable is not False:
+            log.info("this TV's webOS won't report picture settings; presets are set from a "
+                     "built-in list without confirmation")
+        self.picture_readable = False
+        self._publish()
 
     async def picture_modes(self) -> list[dict[str, Any]]:
         """Picture modes the TV knows, from getSystemSettingDesc.
@@ -610,7 +613,9 @@ class TvController:
         Each item: {"value", "visible"}; "visible" means selectable for the
         current signal (SDR names while showing SDR, and so on).
         """
-        self._require_picture()
+        self._require()
+        if self.picture_readable is False:
+            return [{"value": v, "visible": False} for v in presets.FALLBACK_MODES]
         try:
             res = await self._call(
                 "request", "settings/getSystemSettingDesc",
@@ -618,13 +623,15 @@ class TvController:
             )
         except CommandFailed as err:
             if _picture_unsupported(err):
-                self._mark_picture_unsupported()
-                self._require_picture()
+                self._mark_picture_unreadable()
+                return [{"value": v, "visible": False} for v in presets.FALLBACK_MODES]
             raise
         return _modes_from_desc(res)
 
     async def get_picture_mode(self) -> str:
-        self._require_picture()
+        if self.picture_readable is False:
+            self._require()
+            return self.picture_preset  # the last one set from Kodi
         res = await self._call("request", PICTURE_SETTINGS, dict(PICTURE_QUERY))
         mode = str((res.get("settings") or {}).get("pictureMode") or "")
         if mode:
@@ -632,9 +639,12 @@ class TvController:
         return mode
 
     async def set_picture_mode(self, mode: str) -> str:
-        """Set the picture mode and confirm the TV applied it."""
+        """Set the picture mode and confirm the TV applied it.
+
+        On TVs that won't report picture settings it can't be confirmed: the
+        mode is sent and taken as applied.
+        """
         client = self._require()
-        self._require_picture()
         mode = mode.strip()
         if not mode:
             raise BadRequest("missing picture preset")
@@ -655,6 +665,11 @@ class TvController:
             raise CommandFailed(str(err)) from err
         except (OSError, aiohttp.ClientError) as err:
             raise Disconnected(str(err)) from err
+
+        if self.picture_readable is False:
+            log.info(f"picture mode sent: {mode} (this TV can't confirm it)")
+            self._picture_changed(mode)
+            return mode
 
         # The luna call reports nothing; read back until it sticks.
         loop = asyncio.get_running_loop()
