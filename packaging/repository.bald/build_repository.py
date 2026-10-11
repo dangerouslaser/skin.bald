@@ -21,15 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 REPOSITORY_SOURCE = "packaging/repository.bald"  # the repository add-on, in the checkout
 # addons/script.bald.processinfo is a git subtree of dangerouslaser/script.bald.processinfo (branch libreelec).
-# addons/service.webostv and addons/skin.estuary.lg are release builds of dangerouslaser/kodi-webos-control and
-# dangerouslaser/skin.estuary.lg, copied in with tools/sync_bundled_addons.py.
-BUNDLED_ADDONS = (
-    "addons/script.bald.xcsetup",
-    "addons/script.bald.helper",
-    "addons/script.bald.processinfo",
-    "addons/service.webostv",
-    "addons/skin.estuary.lg",
-)
+BUNDLED_ADDONS = ("addons/script.bald.xcsetup", "addons/script.bald.helper", "addons/script.bald.processinfo")
 # The published site (GitHub Pages). Kodi can add it as a file source: its HTTP directory listing keeps the links whose
 # text is their target, which on the landing page is only the repository zip.
 SITE_URL = "https://dangerouslaser.github.io/skin.bald/"

@@ -17,10 +17,10 @@ has followed its upstream. When the fork has moved, it opens a
 linking the branch if Actions may not open pull requests. If anything fails, it
 opens a `processinfo-sync` issue instead.
 
-It also publishes **LG webOS TV Control** (`service.webostv`, controls an LG webOS TV from Kodi) and the
-**Estuary LG** skin (`skin.estuary.lg`, Estuary with LG TV integration). Those are developed in
-dangerouslaser/kodi-webos-control and dangerouslaser/skin.estuary.lg; their release zips are copied into
-`addons/` with `tools/sync_bundled_addons.py` (only runtime files, no git subtree), then released with the skin.
+The repository add-on also lists dangerouslaser's add-on feed (repository.dangerouslaser at
+https://dangerouslaser.github.io/) as a second `<dir>`, for **LG webOS TV Control** (`service.webostv`) and the
+**Estuary LG** skin (`skin.estuary.lg`), plus Verse, PicCap and SkinSync. Those update when their own repositories
+tag a release (each one's release workflow rebuilds that feed), with no Bald release.
 
 The skin requires **Skin Variables** (`script.skinvariables`), which Kodi's own
 repository only carries at 2.1.x. Rather than copying it, the repository add-on

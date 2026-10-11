@@ -17,16 +17,11 @@ def main() -> None:
     payload = index.read_bytes()
     assert hashlib.md5(payload).hexdigest() == (root / "addons.xml.md5").read_text().strip()
     addons = {node.attrib["id"]: node for node in ET.parse(index).getroot()}
-    assert {
-        "skin.bald", "script.bald.xcsetup", "script.bald.helper", "script.bald.processinfo", "repository.bald",
-        "service.webostv", "skin.estuary.lg",
-    } <= addons.keys()
-    # The LG webOS TV add-on: a service, the RunScript entry and the apps/inputs plugin.
-    webostv = addons["service.webostv"]
-    for point, library in (("xbmc.service", "service.py"), ("xbmc.python.script", "default.py"),
-                           ("xbmc.python.pluginsource", "plugin.py")):
-        assert webostv.find(f"./extension[@point='{point}']").attrib["library"] == library
-    assert addons["skin.estuary.lg"].find("./requires/import[@addon='xbmc.gui']").attrib["version"] == "5.18.0"
+    assert {"skin.bald", "script.bald.xcsetup", "script.bald.helper", "script.bald.processinfo", "repository.bald"} <= addons.keys()
+    # LG webOS TV Control and Estuary LG come from dangerouslaser's own feed, a second <dir>, not this one.
+    assert not {"service.webostv", "skin.estuary.lg"} & addons.keys()
+    dirs = addons["repository.bald"].findall("./extension[@point='xbmc.addon.repository']/dir/info")
+    assert "https://dangerouslaser.github.io/addons.xml" in [d.text for d in dirs]
     # Bald Process Info's side-data module lives in another repository, so this feed must not require it.
     sidedata = addons["script.bald.processinfo"].find("./requires/import[@addon='script.module.sidedata']")
     assert sidedata is None or sidedata.get("optional") == "true"

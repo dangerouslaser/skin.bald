@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="repository.bald" version="1.1.0" name="Bald Add-on Repository" provider-name="dangerouslaser">
+<addon id="repository.bald" version="1.2.0" name="Bald Add-on Repository" provider-name="dangerouslaser">
   <extension point="xbmc.addon.repository" name="Bald Add-on Repository">
     <dir>
       <info compressed="false">https://dangerouslaser.github.io/skin.bald/kodi/addons.xml</info>
       <checksum>https://dangerouslaser.github.io/skin.bald/kodi/addons.xml.md5</checksum>
       <datadir zip="true">https://dangerouslaser.github.io/skin.bald/kodi/</datadir>
+    </dir>
+    <!-- dangerouslaser's add-on feed (repository.dangerouslaser, built from each add-on's GitHub releases): LG webOS TV
+         Control and the Estuary LG skin, which update there on their own release schedule, plus Verse, PicCap and
+         SkinSync. -->
+    <dir>
+      <info compressed="false">https://dangerouslaser.github.io/addons.xml</info>
+      <checksum>https://dangerouslaser.github.io/addons.xml.md5</checksum>
+      <datadir zip="true">https://dangerouslaser.github.io/</datadir>
     </dir>
     <!-- jurialmunkey's Kodi 21+ feed (his repository.jurialmunkey's "omega" dir), so Skin Variables (which the skin
          requires; Kodi's repository stops at 2.1.x) and TMDb Helper install and update at his latest release. -->
