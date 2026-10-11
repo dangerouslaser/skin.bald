@@ -32,6 +32,9 @@ DISCOVERY_INTERVAL = 120.0
 PICTURE_SETTINGS = "settings/getSystemSettings"
 PICTURE_QUERY = {"category": "picture", "keys": ["pictureMode"]}
 PRESET_VERIFY_TIMEOUT = 3.0
+# Older webOS (e.g. 5.x on 2020 models) refuses to read picture settings
+# over SSAP; these phrases in its error mean "not on this TV".
+PICTURE_UNSUPPORTED_ERRORS = ("not allowed", "doesn't support", "does not support")
 CONNECTION_ERRORS = (OSError, TimeoutError, aiohttp.ClientError, WebOsTvCommandError)
 MEDIA_COMMANDS = {
     "play": "play",
@@ -89,6 +92,9 @@ class TvController:
         self._expected_uuid: str | None = None
         self._firmware: tuple[WebOsClient, str] | None = None
         self.picture_preset = ""
+        # None until known; False when the TV's webOS won't report picture
+        # settings (presets then can't be read, listed or verified).
+        self.picture_supported: bool | None = None
         # Callbacks run with the new preset name (automations track it).
         self.picture_listeners: list[Callable[[str], None]] = []
         # Callbacks run with every new TvState (the TV watcher uses them).
@@ -425,6 +431,7 @@ class TvController:
                 paired=self.keystore.get(self.settings.host) is not None,
                 host=self.active_host,
                 picture_preset=self.picture_preset if connected else "",
+                picture_supported=self.picture_supported if connected else None,
                 model=str((client.tv_info.system or {}).get("modelName") or ""),
             )
         else:
@@ -579,7 +586,23 @@ class TvController:
         try:
             await client.subscribe(on_picture, PICTURE_SETTINGS, dict(PICTURE_QUERY))
         except Exception as err:  # noqa: BLE001
-            log.warning(f"cannot follow picture mode: {err!r}")
+            if _picture_unsupported(err):
+                self._mark_picture_unsupported()
+            else:
+                log.warning(f"cannot follow picture mode: {err!r}")
+        else:
+            self.picture_supported = True
+            self._publish()
+
+    def _mark_picture_unsupported(self) -> None:
+        if self.picture_supported is not False:
+            log.info("this TV's webOS doesn't allow reading picture settings; picture presets are off")
+        self.picture_supported = False
+        self._publish()
+
+    def _require_picture(self) -> None:
+        if self.picture_supported is False:
+            raise BadRequest("picture presets aren't available on this TV's webOS version")
 
     async def picture_modes(self) -> list[dict[str, Any]]:
         """Picture modes the TV knows, from getSystemSettingDesc.
@@ -587,21 +610,21 @@ class TvController:
         Each item: {"value", "visible"}; "visible" means selectable for the
         current signal (SDR names while showing SDR, and so on).
         """
-        res = await self._call(
-            "request", "settings/getSystemSettingDesc",
-            {"category": "picture", "keys": ["pictureMode"]},
-        )
-        modes = []
-        for result in res.get("results") or []:
-            if result.get("key") != "pictureMode":
-                continue
-            values = (result.get("values") or {}).get("arrayExt") or []
-            for item in values:
-                if isinstance(item, dict) and item.get("value") and item.get("active", True):
-                    modes.append({"value": str(item["value"]), "visible": bool(item.get("visible"))})
-        return modes
+        self._require_picture()
+        try:
+            res = await self._call(
+                "request", "settings/getSystemSettingDesc",
+                {"category": "picture", "keys": ["pictureMode"]},
+            )
+        except CommandFailed as err:
+            if _picture_unsupported(err):
+                self._mark_picture_unsupported()
+                self._require_picture()
+            raise
+        return _modes_from_desc(res)
 
     async def get_picture_mode(self) -> str:
+        self._require_picture()
         res = await self._call("request", PICTURE_SETTINGS, dict(PICTURE_QUERY))
         mode = str((res.get("settings") or {}).get("pictureMode") or "")
         if mode:
@@ -611,6 +634,7 @@ class TvController:
     async def set_picture_mode(self, mode: str) -> str:
         """Set the picture mode and confirm the TV applied it."""
         client = self._require()
+        self._require_picture()
         mode = mode.strip()
         if not mode:
             raise BadRequest("missing picture preset")
@@ -731,6 +755,23 @@ class TvController:
             "current_app": self.state.app_id,
             "sound_output": self.state.sound_output,
         }
+
+
+def _picture_unsupported(err: BaseException) -> bool:
+    text = str(err).casefold()
+    return any(phrase in text for phrase in PICTURE_UNSUPPORTED_ERRORS)
+
+
+def _modes_from_desc(res: dict[str, Any]) -> list[dict[str, Any]]:
+    modes = []
+    for result in res.get("results") or []:
+        if result.get("key") != "pictureMode":
+            continue
+        values = (result.get("values") or {}).get("arrayExt") or []
+        for item in values:
+            if isinstance(item, dict) and item.get("value") and item.get("active", True):
+                modes.append({"value": str(item["value"]), "visible": bool(item.get("visible"))})
+    return modes
 
 
 def _icon(item: dict[str, Any]) -> str:

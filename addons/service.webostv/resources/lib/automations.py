@@ -222,6 +222,10 @@ class PlaybackRules:
     async def _apply(self, kind: str | None) -> None:
         if not self.controller.connected:
             return
+        if self.controller.picture_supported is False:
+            # Older webOS: presets can't be read or verified, so rules are off.
+            await self._apply_screen()
+            return
         target = await self._target(kind)
         if target and self.controller.picture_preset != target:
             error = await self._set_when_ready(target, abort=lambda: self._stop_requested)
@@ -230,6 +234,9 @@ class PlaybackRules:
             else:
                 self.applied = True
                 log.info(f"{kind} playback: picture preset {target}")
+        await self._apply_screen()
+
+    async def _apply_screen(self) -> None:
         if (self._override or {}).get("screen_off") and not self._screen_off:
             try:
                 await self.controller.screen(False)

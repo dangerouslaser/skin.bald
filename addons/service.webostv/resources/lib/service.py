@@ -7,6 +7,7 @@ the loop with run_coroutine_threadsafe; the loop thread owns TvController.
 from __future__ import annotations
 
 import asyncio
+import os
 import sys
 import threading
 from concurrent.futures import Future
@@ -24,6 +25,7 @@ from .settings import Settings
 ADDON_ID = "service.webostv"
 ADDON_NAME = "LG webOS TV"
 SHUTDOWN_TIMEOUT = 2.0
+LOCK_FILE = "service.lock"
 
 
 class _Monitor(xbmc.Monitor):
@@ -121,6 +123,7 @@ class WebOsService:
         self.watcher: Any = None
         self._inputs: tuple = ()
         self._launcher_key: tuple = ()
+        self._lock_fd: int | None = None
         self.overlay: Any = None
 
     # entry ---------------------------------------------------------------
@@ -143,6 +146,11 @@ class WebOsService:
         bootstrap.install()
         log.set_debug(self.settings.debug)
         log.install_handler()
+        if not self._acquire_instance_lock():
+            # Kodi can start a service twice when it's installed while Kodi
+            # runs; two copies would fight over the TV and run every action twice.
+            log.warning("another copy of the service is already running; this one exits")
+            return False
 
         # Lazy imports: only pay for aiowebostv/websockets once we know we run.
         from .automations import PlaybackRules  # noqa: PLC0415
@@ -182,6 +190,29 @@ class WebOsService:
         )
         return True
 
+    def _acquire_instance_lock(self) -> bool:
+        try:
+            import fcntl  # noqa: PLC0415
+        except ImportError:  # Windows: no flock; rely on Kodi
+            return True
+        from . import storage  # noqa: PLC0415
+
+        path = storage.data_path(LOCK_FILE)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        fd = os.open(path, os.O_RDWR | os.O_CREAT, 0o600)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            os.close(fd)
+            return False
+        self._lock_fd = fd
+        return True
+
+    def _release_instance_lock(self) -> None:
+        if self._lock_fd is not None:
+            os.close(self._lock_fd)  # closing releases the flock
+            self._lock_fd = None
+
     def _loop_main(self) -> None:
         assert self.loop is not None
         asyncio.set_event_loop(self.loop)
@@ -210,6 +241,7 @@ class WebOsService:
             self.thread.join(SHUTDOWN_TIMEOUT)
         if self.publisher is not None:
             self.publisher.clear()
+        self._release_instance_lock()
         self.monitor = None
         self.player = None
         self.loop = None

@@ -353,7 +353,7 @@
 					<control type="grouplist" id="18001">
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>18010</pagecontrol>
-						<include content="WidgetListSquare">
+						<include content="WidgetListSquare" condition="System.HasAddon(service.webostv)">
 							<param name="content_path" value="plugin://service.webostv/?view=apps"/>
 							<param name="widget_header" value="$LOCALIZE[31933]"/>
 							<param name="widget_target" value="programs"/>
@@ -361,7 +361,7 @@
 							<param name="list_id" value="18100"/>
 							<param name="fallback_icon" value="DefaultAddon.png"/>
 						</include>
-						<include content="WidgetListSquare">
+						<include content="WidgetListSquare" condition="System.HasAddon(service.webostv)">
 							<param name="content_path" value="plugin://service.webostv/?view=inputs"/>
 							<param name="widget_header" value="$LOCALIZE[31934]"/>
 							<param name="widget_target" value="programs"/>

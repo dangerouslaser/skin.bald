@@ -40,7 +40,9 @@ The addon id is `skin.estuary.lg`, so it installs alongside the stock Estuary.
 `python3 tools/gen_lgtv.py`. Option labels and help text come from the addon's own strings
 (`$ADDON[service.webostv …]`), so they stay in sync with its settings.
 
-TV controls are disabled while the TV isn't connected. Needs service.webostv 0.4.5 or newer.
+TV controls are disabled while the TV isn't connected. On TVs whose webOS won't report the picture mode
+(`WebOS.PictureSupported` is `false`, e.g. webOS 5.5), the Picture page explains that and greys its
+options out, and the OSD picture button is hidden. Needs service.webostv 0.4.5 or newer.
 
 ## Dev deploy
 

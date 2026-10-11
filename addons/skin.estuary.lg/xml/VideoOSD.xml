@@ -217,7 +217,7 @@
 						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/lg-picture-mode.png"/>
 						</include>
-						<visible>String.IsEqual(Window(Home).Property(WebOS.Connected),true)</visible>
+						<visible>String.IsEqual(Window(Home).Property(WebOS.Connected),true) + !String.IsEqual(Window(Home).Property(WebOS.PictureSupported),false)</visible>
 						<onclick>RunScript(service.webostv,ui,picture_preset)</onclick>
 					</control>
 					<!-- skin.estuary.lg: Bald Process Info (opens in the addon's chosen launch mode) -->

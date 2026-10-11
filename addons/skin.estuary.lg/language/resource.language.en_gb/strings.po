@@ -1126,3 +1126,7 @@ msgstr ""
 msgctxt "#31934"
 msgid "Inputs"
 msgstr ""
+
+msgctxt "#31935"
+msgid "This TV's webOS version doesn't let apps read or list picture presets, so these options aren't available."
+msgstr ""
