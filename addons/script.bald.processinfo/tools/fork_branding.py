@@ -38,16 +38,20 @@ DESCRIPTION = (
     "An overlay with the codec, video, audio, HDR and Dolby Vision details of what is playing, "
     "and what the box is sending to the display. Runs on LibreELEC, including the Intel Dolby "
     "Vision build, and on CoreELEC. Based on the TinyPPI code by U3knOwn (AGPL-3.0-or-later); "
-    "not affiliated with or supported by TinyPPI's author. Report problems at " + SOURCE + "/issues."
+    "not affiliated with or supported by TinyPPI's author. Report problems at "
+    + SOURCE + "/issues."
 )
 
 # Never rewritten: our own tooling and tests, and anything that names the upstream project.
 # Upstream's own tests (tests/unit, tests/kodi, the stubs) are renamed with the code they test.
-SKIP_DIRS = {".git", ".github", "branding", "tools"}
-SKIP_PATHS = (Path("tests/test_libreelec.py"), Path("tests/fixtures"))
+# Upstream's CI (.github/workflows/ci.yml) is renamed too, so that it checks the
+# add-on as the fork ships it.
+SKIP_DIRS = {".git", "branding", "tools"}
+SKIP_PATHS = (Path("tests/test_libreelec.py"), Path("tests/fixtures"),
+              Path(".github/workflows/follow-upstream.yml"))
 KEEP = ("CE-Repo/script.tinyppi", "ce-repo.github.io", "repository.jamal2362")
-TEXT_SUFFIXES = {".py", ".xml", ".po", ".md", ".txt", ".html", ".js", ".css", ".json",
-                 ".webmanifest", ".svg", ""}
+TEXT_SUFFIXES = {".py", ".xml", ".po", ".md", ".txt", ".html", ".js", ".mjs", ".css", ".json",
+                 ".webmanifest", ".svg", ".sh", ".yml", ""}
 # Files whose "TinyPPI" is read by people rather than code.
 DISPLAY_FILES = re.compile(r"(\.po|index\.html|manifest\.webmanifest)$")
 
@@ -67,13 +71,29 @@ def _restore(text):
 def rename_text(text, display=False):
     text = _protect(text)
     text = text.replace("script.tinyppi", ADDON_ID)
-    text = text.replace(r"script\.tinyppi", ADDON_ID.replace(".", r"\."))  # the id in a regular expression
+    # The id in a regular expression.
+    text = text.replace(r"script\.tinyppi", ADDON_ID.replace(".", r"\."))
     text = text.replace("script-tinyppi-", "script-baldpi-")
     if display:
         text = text.replace("TinyPPI", NAME)
     text = text.replace("TinyPPI", SHORT).replace("TINYPPI", SHORT.upper())
     text = re.sub("tinyppi", "baldpi", text, flags=re.IGNORECASE)
     return _restore(text)
+
+
+# A one-line ``from x import a, b`` naming a renamed function, e.g. open_tinyppi.
+_RENAMED_IMPORT = re.compile(
+    r"^([ \t]*from [\w.]+ import )([a-z_][\w, ]*baldpi\w*[\w, ]*)$", re.M
+)
+
+
+def sort_renamed_imports(text):
+    """Re-sort the names of import lines the rename touched, as ruff orders them:
+    open_tinyppi sorted after open_dialog_mode, open_baldpi sorts before it."""
+    def resort(match):
+        names = [name.strip() for name in match.group(2).split(",")]
+        return match.group(1) + ", ".join(sorted(names, key=str.lower))
+    return _RENAMED_IMPORT.sub(resort, text)
 
 
 def _files(root):
@@ -120,6 +140,8 @@ def rewrite_files(root, ours=frozenset()):
         except UnicodeDecodeError:
             continue
         new = rename_text(text, display=bool(DISPLAY_FILES.search(path.name)))
+        if path.suffix == ".py":
+            new = sort_renamed_imports(new)
         if new != text:
             path.write_text(new, encoding="utf-8")
 
@@ -140,7 +162,8 @@ def addon_xml(text):
     text = _sub(r'(<addon\b[^>]*?\bversion=")([^"]+)"', version, text, "version")
     text = _sub(r'(<addon\b[^>]*?\bid=")[^"]+"', rf'\g<1>{ADDON_ID}"', text, "id")
     text = _sub(r'(<addon\b[^>]*?\bname=")[^"]*"', rf'\g<1>{NAME}"', text, "name")
-    text = _sub(r'(<addon\b[^>]*?\bprovider-name=")[^"]*"', rf'\g<1>{PROVIDER}"', text, "provider-name")
+    text = _sub(r'(<addon\b[^>]*?\bprovider-name=")[^"]*"', rf'\g<1>{PROVIDER}"', text,
+                "provider-name")
     text = _sub(
         r'(<import addon="script\.module\.sidedata"[^/]*?)(\s*optional="true")?\s*/>',
         lambda m: f'{m.group(1)} optional="true"/>', text, "script.module.sidedata import",
@@ -152,7 +175,8 @@ def addon_xml(text):
     text = _sub(r'<summary lang="en">.*?</summary>', f'<summary lang="en">{SUMMARY}</summary>',
                 text, "English summary", re.S)
     text = _sub(r'<description lang="en">.*?</description>',
-                f'<description lang="en">{DESCRIPTION}</description>', text, "English description", re.S)
+                f'<description lang="en">{DESCRIPTION}</description>', text,
+                "English description", re.S)
     return text
 
 

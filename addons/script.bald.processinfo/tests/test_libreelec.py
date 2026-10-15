@@ -12,10 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 sys.path[:0] = [str(Path(__file__).resolve().parent / "stubs"), str(ROOT / "resources" / "lib"), str(ROOT / "tools")]
 
+import fork_branding  # noqa: E402
+
 import xbmc  # noqa: E402  (the stub)
 from core import platform  # noqa: E402
-from info import dvinfo  # noqa: E402
-import fork_branding  # noqa: E402
+from info import dvfields  # noqa: E402
 
 
 def _facts(**overrides):
@@ -96,10 +97,10 @@ class HdrDetail(unittest.TestCase):
             "": ("", "", ""),
         }
         for detail, expected in cases.items():
-            self.assertEqual(dvinfo._detail_parts(detail), expected, detail)
+            self.assertEqual(dvfields._detail_parts(detail), expected, detail)
 
     def test_build_info_without_side_data(self):
-        info = dvinfo._build_info({}, "dolbyvision", "7.6 FEL · CM4 · HDMI DV")
+        info = dvfields.build_info({}, "dolbyvision", "7.6 FEL · CM4 · HDMI DV")
         self.assertEqual(info["output_mode"], "Dolby Vision Profile 7.6 FEL")
         self.assertEqual(info["cm_version"], "CMv4.0")
         self.assertEqual(info["bit_depth"], "12")
@@ -122,7 +123,7 @@ class UpstreamDrift(unittest.TestCase):
                                            "/sys/class/amhdmitx"},
         "resources/lib/info/dvinfo.py": {"video.sidedata"},                # empty: HdrDetail fallback
         "resources/lib/info/properties.py": {"/sys/module/aml_media"},     # DV tunnel, Amlogic-gated
-        "resources/lib/ui/mode_select.py": {"/sys/module/aml_media", "/sys/class/amdolby"},  # VS10, gated
+        "resources/lib/core/vs10.py": {"/sys/module/aml_media", "/sys/class/amdolby"},  # VS10, gated
     }
 
     def test_amlogic_sources_are_reviewed(self):

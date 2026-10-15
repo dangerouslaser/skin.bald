@@ -134,7 +134,8 @@ def make_icons():
     save(im, MEDIA / "icons" / "vs10.png", (64, 64))
 
     for side, icon in (("left", "chevron-left"), ("right", "chevron-right")):
-        save(render_svg(lucide_svg(icon, stroke_width=3), 32), MEDIA / "dialog" / f"arrow-{side}.png")
+        save(render_svg(lucide_svg(icon, stroke_width=3), 32),
+             MEDIA / "dialog" / f"arrow-{side}.png")
 
 
 # --- Shapes ----------------------------------------------------------------
@@ -229,7 +230,8 @@ def make_layer(w, h, folder):
     # The seat.
     cx, cy = _at(room, 0.5, 0.62)
     sw, sh = w * 0.09 * SS, h * 0.07 * SS
-    d.rounded_rectangle((cx - sw, cy - sh / 2, cx + sw, cy + sh / 2), radius=6 * SS, outline=WHITE, width=line)
+    d.rounded_rectangle((cx - sw, cy - sh / 2, cx + sw, cy + sh / 2), radius=6 * SS,
+                        outline=WHITE, width=line)
     save(im, MEDIA / "channels" / folder / "layer.png", (w, h))
 
 
@@ -271,7 +273,8 @@ def mark(d, x, y, unit):
     """Bald Process Info's mark: three readout rows and a status dot."""
     for i, length in enumerate((1.0, 0.72, 0.86)):
         top = y + i * 1.9 * unit
-        d.rounded_rectangle((x, top, x + 9 * unit * length, top + unit), radius=unit / 2, fill=WHITE)
+        d.rounded_rectangle((x, top, x + 9 * unit * length, top + unit), radius=unit / 2,
+                            fill=WHITE)
     d.ellipse((x + 9.8 * unit, y + 3.8 * unit, x + 10.8 * unit, y + 4.8 * unit), fill=WHITE)
 
 
@@ -279,7 +282,8 @@ def make_icon():
     im = Image.new("RGBA", (512 * SS, 512 * SS), FIELD)
     d = ImageDraw.Draw(im)
     mark(d, 118 * SS, 150 * SS, 26 * SS)
-    d.text((256 * SS, 400 * SS), "process info", font=font(46 * SS), fill=(236, 238, 242, 255), anchor="mm")
+    d.text((256 * SS, 400 * SS), "process info", font=font(46 * SS),
+           fill=(236, 238, 242, 255), anchor="mm")
     save(im.convert("RGB"), OUT / "icon.png", (512, 512))
 
 
@@ -287,7 +291,8 @@ def make_fanart():
     im = Image.new("RGBA", (1920 * 2, 1080 * 2), FIELD)
     d = ImageDraw.Draw(im)
     mark(d, 180 * 2, 330 * 2, 34 * 2)
-    d.text((180 * 2, 650 * 2), "Bald Process Info", font=font(96 * 2), fill=(236, 238, 242, 255), anchor="ls")
+    d.text((180 * 2, 650 * 2), "Bald Process Info", font=font(96 * 2),
+           fill=(236, 238, 242, 255), anchor="ls")
     d.text((180 * 2, 730 * 2), "What your player is doing, while it does it.", font=font(40 * 2),
            fill=(236, 238, 242, 150), anchor="ls")
     save(im.convert("RGB"), OUT / "fanart.png", (1920, 1080))

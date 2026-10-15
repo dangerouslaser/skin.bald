@@ -6,12 +6,14 @@
 import re
 import threading
 import time
+from collections.abc import Collection, Hashable, Iterable
 
 import xbmc
 import xbmcgui
 from core import settings
 from core.constants import HOME_WINDOW_ID
 from core.log import log
+from core.protocols import PropertyTarget
 
 _DECIMAL_RE = re.compile(r"-?\d+(?:[.,]\d+)?")
 
@@ -27,7 +29,7 @@ PROP_ACTIVE      = "BaldPI.Active"
 PROP_DIALOG_MODE = "BaldPI.DialogMode"
 
 # The output type the overlay layout follows (see
-# info.properties.publish_hdr_type).
+# info.publish.publish_hdr_type).
 PROP_EFFECTIVE_HDR_TYPE = "BaldPI.EffectiveHdrType"
 
 # Whether the stream carries HDR10+ metadata.  A Dolby Vision title with an
@@ -57,7 +59,7 @@ class read_pass:
 
     __slots__ = ("_outer",)
 
-    def __enter__(self):
+    def __enter__(self) -> read_pass:
         self._outer = getattr(_reads, "info", None)
         if self._outer is None:
             _reads.info = {}
@@ -65,12 +67,11 @@ class read_pass:
             _reads.home = None
         return self
 
-    def __exit__(self, *_exc) -> bool:
+    def __exit__(self, *_exc: object) -> None:
         if self._outer is None:
             _reads.info = None
             _reads.cond = None
             _reads.home = None
-        return False
 
 
 def home_window() -> xbmcgui.Window:
@@ -182,7 +183,7 @@ def localized(string_id: int) -> str:
     return _strings.get(string_id)
 
 
-def clean(val) -> str:
+def clean(val: object) -> str:
     """Strip the commas Kodi inserts as thousands separators."""
     if val is None:
         return ""
@@ -203,7 +204,13 @@ def _colored(text: str, color: str) -> str:
     return f"[COLOR={color}]{text}[/COLOR]" if text else text
 
 
-def _changed_parts(previous, current) -> list:
+def _changed_cells(before: list[str], current: list[str]) -> list[int]:
+    """Return the indices of the cells of *current* that are new or differ."""
+    return [index for index, cell in enumerate(current)
+            if index >= len(before) or before[index] != cell]
+
+
+def _changed_parts(previous: object, current: str | list[str]) -> list[int]:
     """Return the indices of the parts of *current* that differ from *previous*.
 
     Strings are split on the reading separators, so one moving number does
@@ -212,9 +219,7 @@ def _changed_parts(previous, current) -> list:
     lined up (different number of readings, or a change of shape).
     """
     if isinstance(current, list):
-        before = previous if isinstance(previous, list) else []
-        return [index for index, cell in enumerate(current)
-                if index >= len(before) or before[index] != cell]
+        return _changed_cells(previous if isinstance(previous, list) else [], current)
     if not isinstance(previous, str):
         return [_WHOLE]
     parts  = _READING_GAP_RE.split(current)
@@ -226,7 +231,9 @@ def _changed_parts(previous, current) -> list:
             if not index % 2 and part != before[index]]
 
 
-def _colored_parts(value, parts, color: str):
+# ``Reading`` below: one string, or a list of cells (the metadata view's rows).
+def _colored_parts[Reading: (str, list[str])](value: Reading, parts: Collection[int],
+                                              color: str) -> Reading:
     """Return *value* with the parts listed in *parts* colored.
 
     Stale indices from a value of another shape are harmless: whatever set
@@ -261,10 +268,11 @@ class ChangeHighlighter:
         self._hold = max(0.0, hold)
         # Per key: the last plain value, and the highlight deadline per part.
         # Separate dicts, so a key with nothing lit costs a single entry.
-        self._values: dict = {}
-        self._until: dict  = {}
+        self._values: dict[Hashable, str | list[str]] = {}
+        self._until: dict[Hashable, dict[int, float]] = {}
 
-    def mark(self, key, value, color: str, now: float = None):
+    def mark[Reading: (str, list[str])](self, key: Hashable, value: Reading, color: str,
+                                        now: float | None = None) -> Reading:
         """Record *value* under *key* and return it with its changes colored.
 
         A value without history is returned plain, so a freshly opened view
@@ -295,7 +303,7 @@ class ChangeHighlighter:
             self._until.pop(key, None)
         return _colored_parts(value, deadlines, color)
 
-    def retain(self, keys) -> None:
+    def retain(self, keys: Iterable[Hashable]) -> None:
         """Forget every key not in *keys*.
 
         For views whose rows come and go (the metadata view), so the history
@@ -316,7 +324,7 @@ def highlight_hold(setting_id: str) -> float:
     """
     try:
         milliseconds = settings.addon().getSettingInt(setting_id)
-    except Exception:
+    except (TypeError, ValueError, RuntimeError):  # missing or not an integer
         milliseconds = 0
     return milliseconds / 1000.0 if milliseconds > 0 else DEFAULT_HIGHLIGHT_HOLD
 
@@ -331,9 +339,10 @@ def parse_offsets(value: str) -> tuple[int, int, int, int] | None:
     if len(parts) != 4:
         return None
     try:
-        return tuple(int(part.strip()) for part in parts)
+        left, right, top, bottom = (int(part.strip()) for part in parts)
     except ValueError:
         return None
+    return left, right, top, bottom
 
 
 def coded_frame() -> tuple[int, int] | None:
@@ -383,13 +392,14 @@ def picture_aspect_ratio(offsets: str) -> float | None:
     return coded_dar * (picture_w / coded_w) * (coded_h / picture_h)
 
 
-def set_window_properties(window, values: tuple[tuple[str, str], ...]) -> None:
+def set_window_properties(window: PropertyTarget, values: tuple[tuple[str, str], ...]) -> None:
     """Publish a batch of window properties."""
     for name, value in values:
         window.setProperty(name, value)
 
 
-def set_changed_properties(window, published: dict, values: tuple[tuple[str, str], ...]) -> None:
+def set_changed_properties(window: PropertyTarget, published: dict[str, str],
+                           values: tuple[tuple[str, str], ...]) -> None:
     """Publish only the values that differ from *published*.
 
     *published* is the caller's record of what the window holds; only the
@@ -409,7 +419,7 @@ def set_changed_properties(window, published: dict, values: tuple[tuple[str, str
 _JOIN_TIMEOUT = 1.0
 
 
-def join_refresh_thread(thread) -> None:
+def join_refresh_thread(thread: threading.Thread | None) -> None:
     """Wait for a view's refresh thread to stop.
 
     The loop checks the view's running flag only between ticks, so it can
@@ -443,7 +453,7 @@ def log_refresh_failure(view: str, exc: Exception) -> None:
     )
 
 
-def clear_overlay_state(home) -> None:
+def clear_overlay_state(home: PropertyTarget) -> None:
     """Clear the Home-window properties that mark BaldPI as open."""
     for prop in (PROP_RUNNING, PROP_ACTIVE, PROP_DIALOG_MODE):
         home.clearProperty(prop)

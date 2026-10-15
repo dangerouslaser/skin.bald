@@ -31,9 +31,9 @@ import ctypes
 import os
 import re
 import time
+from typing import Any
 
 import xbmc
-
 from core import display
 
 # --- Platform --------------------------------------------------------------
@@ -62,16 +62,16 @@ def is_amlogic() -> bool:
     CoreELEC is the only Kodi that exposes them, and only on Amlogic hardware,
     so either sign is enough.  Answered once: neither changes while Kodi runs.
     """
-    global _amlogic
+    global _amlogic  # noqa: PLW0603  answered once per process
     if _amlogic is None:
         _amlogic = os.path.isdir("/sys/class/amhdmitx") or is_coreelec()
     return _amlogic
 
 
-def is_supported() -> bool:
-    """Return whether the overlay has a source for its output readings here:
-    an Amlogic box, or any Linux with DRM (LibreELEC and its Intel DV build)."""
-    return is_amlogic() or os.path.isdir("/sys/class/drm")
+def has_drm() -> bool:
+    """Return whether DRM can stand in for the Amlogic output readings: any
+    Linux with DRM (LibreELEC and its Intel DV build)."""
+    return os.path.isdir("/sys/class/drm")
 
 
 # --- Kodi's own labels -----------------------------------------------------
@@ -110,7 +110,10 @@ _DEBUGFS_DRI = "/sys/kernel/debug/dri"
 # The readings below change with a mode switch at most, so they are held
 # briefly: every row of one polling pass shares a single set of file reads.
 _CACHE_TTL = 1.0
-_cache: dict | None = None
+# What debugfs and the connector say: strings, and "mode" as _crtc_mode returns it.
+_Facts = dict[str, Any]
+
+_cache: _Facts | None = None
 _cache_until = 0.0
 
 
@@ -140,7 +143,8 @@ _CONNECTOR_RE = re.compile(r"^connector\[(\d+)\]: (\S+)\n((?:\t.*\n?)*)", re.M)
 _CRTC_RE      = re.compile(r"^crtc\[(\d+)\]: (.+)\n((?:\t.*\n?)*)", re.M)
 _FIELD_RE     = re.compile(r"^\t(\w+)=(.*)$", re.M)
 _MODE_RE      = re.compile(
-    r'mode[:=] ?"[^"]*": (\d+) (\d+) \d+ \d+ \d+ (\d+) (\d+) \d+ \d+ (\d+) 0x[0-9a-f]+ (0x[0-9a-f]+)'
+    r'mode[:=] ?"[^"]*": (\d+) (\d+) \d+ \d+ \d+ (\d+) (\d+) \d+ \d+ (\d+)'
+    r' 0x[0-9a-f]+ (0x[0-9a-f]+)'
 )
 _PIPE_RE      = re.compile(r"^\[CRTC:\d+:([^\]]+)\]:\n((?:\t.*\n?)*)", re.M)
 _BPP_RE       = re.compile(r"\bbpp=(\d+)")
@@ -149,7 +153,7 @@ _BPP_RE       = re.compile(r"\bbpp=(\d+)")
 _FLAG_INTERLACE = 0x10
 
 
-def _active_output(state: str) -> dict | None:
+def _active_output(state: str) -> dict[str, str] | None:
     """Return the connector the picture leaves through, from the atomic state.
 
     The one bound to a CRTC; a connector with ``crtc=(null)`` is idle.
@@ -197,7 +201,7 @@ def _pipe_bpp(display_info: str, crtc: str) -> int:
     return 0
 
 
-def _read_debugfs() -> dict:
+def _read_debugfs() -> _Facts:
     """Collect the output facts debugfs offers, keyed as the Amlogic node is."""
     for base in _debugfs_dirs():
         state = _read_text(os.path.join(base, "state"))
@@ -207,7 +211,7 @@ def _read_debugfs() -> dict:
         if not output:
             continue
         crtc = output.get("crtc", "")
-        facts = {
+        facts: _Facts = {
             "connector_id": output.get("id", ""),
             "colorspace":   output.get("colorspace", ""),
             "format":       output.get("output_format", ""),
@@ -292,9 +296,9 @@ def _hdr_eotf(connector_id: int) -> str | None:
 
 # --- The readings ----------------------------------------------------------
 
-def _facts() -> dict:
+def _facts() -> _Facts:
     """Return the cached debugfs facts plus the connector's EOTF."""
-    global _cache, _cache_until
+    global _cache, _cache_until  # noqa: PLW0603  a module-wide TTL cache
     now = time.monotonic()
     if _cache is not None and now < _cache_until:
         return _cache

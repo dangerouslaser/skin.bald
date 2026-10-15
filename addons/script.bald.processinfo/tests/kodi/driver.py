@@ -9,6 +9,8 @@ git ref.
 """
 
 import base64
+import contextlib
+import io
 import json
 import os
 import shutil
@@ -16,7 +18,6 @@ import signal
 import sqlite3
 import subprocess
 import tarfile
-import io
 import time
 import urllib.error
 import urllib.request
@@ -68,10 +69,8 @@ def http(path, method="GET", body=None, headers=None, port=config.DASHBOARD_PORT
 
 def helper(*args, wait=8.0):
     """Run the helper add-on inside Kodi and return its JSON answer."""
-    try:
+    with contextlib.suppress(FileNotFoundError):
         os.remove(config.HELPER_OUT)
-    except FileNotFoundError:
-        pass
     rpc("Addons.ExecuteAddon", {"addonid": "script.bald.processinfo.testhelper", "params": list(args), "wait": False})
     deadline = time.time() + wait
     while time.time() < deadline:
@@ -282,10 +281,8 @@ class Kodi:
         if self.proc is None or self.proc.poll() is not None:
             return 0.0
         started = time.time()
-        try:
+        with contextlib.suppress(Exception):
             rpc("Application.Quit", timeout=5)
-        except Exception:
-            pass
         try:
             self.proc.wait(timeout)
         except subprocess.TimeoutExpired:

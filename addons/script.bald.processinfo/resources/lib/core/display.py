@@ -25,13 +25,12 @@ import ctypes
 import os
 
 import xbmc
-
 from core.log import log
 
 try:
     import fcntl
 except ImportError:  # not Linux (a dev box): every call below is a no-op
-    fcntl = None
+    fcntl = None  # type: ignore[assignment]
 
 # --- DRM ioctl plumbing ----------------------------------------------------
 #
@@ -149,7 +148,7 @@ class _Target:
 _target = _Target()
 
 
-def _ioctl(fd: int, request: int, payload) -> bool:
+def _ioctl(fd: int, request: int, payload: ctypes.Structure) -> bool:
     """Run one DRM ioctl on *fd* and return whether it succeeded."""
     if fcntl is None:
         return False
@@ -169,7 +168,7 @@ def _drm_fds() -> list[int]:
     descriptor is visible in ``/proc/self/fd``.  Read fresh each time: a
     cached number could refer to another file by then.
     """
-    found = []
+    found: list[int] = []
     try:
         entries = os.listdir("/proc/self/fd")
     except OSError:

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 U3knOwn
 
-"""The dashboard's library cache (web/library.py)."""
+"""The dashboard's library cache (web/library/)."""
 
 import threading
 import time
@@ -49,8 +49,8 @@ class FakeLibrary:
 @pytest.fixture
 def kodi(monkeypatch):
     fake = FakeLibrary()
-    monkeypatch.setattr(library, "rpc", fake)
-    monkeypatch.setattr(library, "_cache", library._Cache())
+    monkeypatch.setattr(library.common, "rpc", fake)
+    monkeypatch.setattr(library.cache, "lists", library.new_cache())
     return fake
 
 
@@ -94,8 +94,8 @@ def test_lists_are_cached_until_dropped(kodi):
 
 
 def test_a_burst_of_item_notifications_is_one_drop(kodi, monkeypatch):
-    monkeypatch.setattr(library, "_QUIET", 0.3)
-    monkeypatch.setattr(library, "_BURST_LIMIT", 1.0)
+    monkeypatch.setattr(library.cache, "_QUIET", 0.3)
+    monkeypatch.setattr(library.cache, "_BURST_LIMIT", 1.0)
     start = library.revision()
     for _ in range(5):
         library.changed()
@@ -107,8 +107,8 @@ def test_a_burst_of_item_notifications_is_one_drop(kodi, monkeypatch):
 
 
 def test_a_long_burst_still_drops_every_burst_limit(kodi, monkeypatch):
-    monkeypatch.setattr(library, "_QUIET", 0.3)
-    monkeypatch.setattr(library, "_BURST_LIMIT", 1.0)
+    monkeypatch.setattr(library.cache, "_QUIET", 0.3)
+    monkeypatch.setattr(library.cache, "_BURST_LIMIT", 1.0)
     start = library.revision()
     began = time.monotonic()
     bumped = None
@@ -121,7 +121,7 @@ def test_a_long_burst_still_drops_every_burst_limit(kodi, monkeypatch):
 
 
 def test_settle_drops_twice_and_a_drop_covers_a_pending_burst(kodi, monkeypatch):
-    monkeypatch.setattr(library, "_SETTLE", (0.1, 0.2))
+    monkeypatch.setattr(library.cache, "_SETTLE", (0.1, 0.2))
     start = library.revision()
     library.settle()
     time.sleep(0.15)
@@ -159,7 +159,7 @@ def test_continue_row_and_art_after_a_drop(kodi):
     library.invalidate()
     # The row is read again to find the picture of an unopened show.
     assert library.episode_art_path(99, "thumb") == "/tv/started.jpg"
-    assert library._episode_resume_point(99) == 100
+    assert library.series._episode_resume_point(99) == 100
 
 
 def test_marking_drops_the_lists(kodi):
@@ -168,3 +168,20 @@ def test_marking_drops_the_lists(kodi):
     assert library.revision() == revision + 1
     assert not library.set_watched("movie", "x", True)
     assert not library.set_watched("album", 1, True)
+
+
+@pytest.mark.parametrize(("value", "wanted"), [
+    (5, 5), ("5", 5), (" 7 ", 7), (3.0, 3),
+    (True, 0), (False, 0), (2.5, 0), (float("nan"), 0), (float("inf"), 0),
+    (0, 0), (-4, 0), ("5.0", 0), ("x", 0), (None, 0), ([], 0), ({}, 0),
+])
+def test_ids_from_requests(value, wanted):
+    from web.values import library_id
+    assert library_id(value) == wanted
+
+
+def test_a_boolean_id_starts_nothing(kodi):
+    assert library.play(True) is False
+    assert library.play_episode(1.5) is False
+    assert library.set_watched("movie", True, True) is False
+    assert library.clear_resume("episode", False) is False
