@@ -3,6 +3,7 @@
 
 """FPS sampling and formatting helpers for info.properties."""
 
+import math
 import re
 
 _FPS_STANDARDS = (
@@ -17,7 +18,7 @@ _FORMAT_FPS_TARGETS = (
 )
 
 
-def normalize_fps(fps_value) -> str:
+def normalize_fps(fps_value: str | float) -> str:
     """Snap a raw FPS to the nearest broadcast standard within 0.5 Hz.
 
     Rates further from any standard are returned as a trimmed decimal.
@@ -25,6 +26,8 @@ def normalize_fps(fps_value) -> str:
     try:
         fps = float(fps_value)
     except (TypeError, ValueError):
+        return str(fps_value)
+    if not math.isfinite(fps):  # no standard is nearest to NaN
         return str(fps_value)
 
     closest = min(_FPS_STANDARDS, key=lambda x: abs(x - fps))
@@ -38,7 +41,7 @@ def normalize_fps(fps_value) -> str:
     return str(int(closest)) if closest.is_integer() else str(closest)
 
 
-def format_fps(fps_value) -> str:
+def format_fps(fps_value: str | float) -> str:
     """Format a raw FPS for the video resolution string.
 
     Known rates (23.976, 29.97, 59.94, 60) are snapped to their canonical
@@ -47,6 +50,8 @@ def format_fps(fps_value) -> str:
     try:
         fps = float(fps_value)
     except (TypeError, ValueError):
+        return ""
+    if not math.isfinite(fps):  # "inf" / "nan" parse but are no rate
         return ""
 
     for target, tol in _FORMAT_FPS_TARGETS:
@@ -85,7 +90,7 @@ def get_fps_drop() -> int:
     return max(0, in_fps - out_fps)
 
 
-def fps_display_texts(video_fps) -> tuple[str, str]:
+def fps_display_texts(video_fps: str | float) -> tuple[str, str]:
     """Return (info_text, output_fps_text) for the FPS row.
 
     *info_text* reads ``NNN - DDD`` (input - drop).  The input rate is the
@@ -94,7 +99,7 @@ def fps_display_texts(video_fps) -> tuple[str, str]:
     """
     try:
         in_fps = round(float(video_fps))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):  # OverflowError: "inf"
         in_fps = 0
 
     drop = get_fps_drop() if in_fps else 0

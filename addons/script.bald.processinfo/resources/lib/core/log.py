@@ -9,8 +9,12 @@ brackets, so the add-on's output is easy to filter:
     BaldPI: mode 'dv' set via VS10 Actions -> Action(vs10.dv)
     BaldPI [web]: dashboard listening on http://192.168.1.20:8099/
 
-``log`` writes lines without an area; ``channel`` builds a module's ``_log``.
+``log`` writes lines without an area; ``channel`` builds a module's ``_log``;
+``redacted`` takes the credentials out of a path before it is logged.
 """
+
+import re
+from collections.abc import Callable
 
 import xbmc
 
@@ -18,6 +22,10 @@ _TAG = "BaldPI"
 
 # Set True locally to log debug messages at INFO in a non-debug Kodi log.
 FORCE_DEBUG = False
+
+# Credentials in a source URL (smb://user:secret@nas/), removed from logs:
+# debug logs are what users post on forums.
+_USERINFO_IN_URL = re.compile(r"(://)[^/@\s]*@")
 
 
 def _write(line: str, level: int) -> None:
@@ -31,7 +39,7 @@ def log(message: str, level: int = xbmc.LOGDEBUG) -> None:
     _write(f"{_TAG}: {message}", level)
 
 
-def channel(area: str, default: int = xbmc.LOGDEBUG):
+def channel(area: str, default: int = xbmc.LOGDEBUG) -> Callable[..., None]:
     """Return a log function that tags its lines with *area*.
 
     *default* is the level used when a call passes none.
@@ -42,3 +50,8 @@ def channel(area: str, default: int = xbmc.LOGDEBUG):
         _write(prefix + message, level)
 
     return write
+
+
+def redacted(path: str) -> str:
+    """Return *path* with credentials removed, for logging."""
+    return _USERINFO_IN_URL.sub(r"\1***@", path)

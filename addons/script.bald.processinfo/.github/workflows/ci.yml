@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# actions/checkout runs `git init`, which otherwise prints a hint about the
+# default branch name in every job.
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+
+# Every job names its Ubuntu release rather than ubuntu-latest, which moves
+# to a new release on GitHub's schedule; a move is then a change of its own.
+jobs:
+  python:
+    name: Python (ruff, mypy, complexity, pytest, coverage)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          # Kodi 22 (August builds on), the only Kodi the add-on is for.
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: ruff
+        run: ruff check --output-format=github .
+      - name: mypy
+        run: mypy
+      # Average rank A, every module and every function B or better.
+      - name: complexity
+        run: xenon --max-average A --max-modules B --max-absolute B resources/lib main.py
+      - name: Unit tests
+        run: python -m pytest tests/unit --cov --cov-report=term-missing:skip-covered
+
+  web:
+    name: Dashboard scripts (ESLint, tests, coverage)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1  # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      # The jsdom tests, failing below the floor in package.json (config.coverage).
+      - run: npm run coverage
+
+  browser:
+    name: Dashboard in Chromium
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "3.14"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1  # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+
+  addon:
+    name: Kodi add-on checker
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "3.14"
+      - run: python -m pip install kodi-addon-checker==0.0.36
+      # .gitattributes marks the development files export-ignore, so the
+      # archive is the add-on as Kodi installs it.
+      - name: Export the add-on without development files
+        run: |
+          mkdir -p "$RUNNER_TEMP/addons"
+          git archive HEAD --prefix=script.bald.processinfo/ | tar -x -C "$RUNNER_TEMP/addons"
+      # The add-on ships through its own repository, not Kodi's: no check of
+      # the dependencies against Kodi's repository (script.module.sidedata
+      # is in ours), and the dashboard's file types allowed (see the script).
+      - name: Check
+        working-directory: ${{ runner.temp }}/addons
+        run: python "$GITHUB_WORKSPACE/tools/check_addon.py" --branch piers --skip-dependency-checks script.bald.processinfo

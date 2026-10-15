@@ -157,9 +157,10 @@ The settings tab switches the page between three themes, and every one of
 them is dark — this is watched in the room the projector is in, so there is
 nothing here for a lit one:
 
-- **Dark** — the plain one, and what a first visit gets.
-- **Dark (adaptive)** — the same page, with the **now-playing card** taking
-  its colour from the poster of whatever is on screen. The artwork is read
+- **Dark** — the plain one.
+- **Dark (adaptive)** — what a first visit gets: the same page, with the
+  **now-playing card** taking its colour from the poster of whatever is on
+  screen. The artwork is read
   region by region and the one colour that stands for it best is drawn across
   the card as a broad glow — strongest beside the poster, spent well before the
   foot, so the bottom of the card is the same plain panel every other one is
@@ -425,10 +426,23 @@ The dashboard is reachable by anything on the same network while it is on, so:
   then asks for the token before it shows anything at all.
 - **Generate a new token** replaces it and logs out every browser still holding
   the old one.
-- A device that presents **ten different wrong tokens** within ten minutes is
-  turned away for ten minutes, the right token included. A page still holding
+- The token never appears in an address, where it would end up in browser
+  histories and logs. The page sends it in a request header; for the live
+  stream and the pictures, which a browser cannot send a header with, it
+  trades the token for a session cookie that only reads (HttpOnly, so no
+  script can see it, and SameSite=Strict, so no other site's page can use it).
+  The session ends with the browser, and whenever the dashboard's server
+  restarts — a new token included.
+- An address that presents **ten different wrong tokens** within ten minutes is
+  turned away for ten minutes, the right token included. At home every address
+  counts on its own; beyond the home network an IPv6 client counts per /64,
+  the block one device can draw new addresses from. A page still holding
   a token that has since been replaced does not count against it: that is the
   same wrong token again, and the page simply asks for the new one.
+- Readings without the token are for the home network only: loopback, private
+  and link-local addresses, and IPv6 addresses in one of the box's own
+  networks. Any other client — over a global IPv6 address the router lets
+  through, say, or a forwarded port — is asked for the token first.
 - Opened under the box's address or a name of the home network (`coreelec`,
   `coreelec.local`, `coreelec.fritz.box`, `….lan`, `….home` and the like), the
   readings need no token unless the setting above asks for one. Opened under
@@ -441,7 +455,7 @@ The dashboard is reachable by anything on the same network while it is on, so:
   the path is not sent to the browser either.
 - Only a fixed set of routes is served — no path is ever resolved against the
   filesystem.
-- One device can hold at most sixteen connections to the dashboard, and all
+- One address can hold at most sixteen connections to the dashboard, and all
   of them together forty-eight; a browser opens six at most, so this only ever
   turns away something that is not one.
 

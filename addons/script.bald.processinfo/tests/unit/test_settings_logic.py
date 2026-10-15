@@ -8,15 +8,16 @@ apply them are checked directly.
 """
 
 import math
+from itertools import pairwise
 
 import pytest
 
 import xbmcaddon
 import xbmcgui
 from core.utils import highlight_hold
-from info import properties
+from info import publish
 from ui import dvmetadata as metadata_view
-from ui import overlay, palette, splash, theme
+from ui import overlay, palette, splash_panel, splash_settings, theme
 from web.snapshot import SnapshotBuilder
 
 
@@ -33,9 +34,9 @@ def use(**values):
     ("", "keep_dv_area_on_hdr10", False, "dolbyvision", "dolbyvision"),
 ])
 def test_layout_follows_the_output(monkeypatch, mode, setting, value, source, expected):
-    monkeypatch.setattr(properties, "get_ModeVar", lambda: mode)
+    monkeypatch.setattr(publish, "get_ModeVar", lambda: mode)
     use(**{setting: value})
-    assert properties._effective_hdr_type(source) == expected
+    assert publish._effective_hdr_type(source) == expected
 
 
 @pytest.mark.parametrize("setting, output", [
@@ -46,7 +47,7 @@ def test_channel_graphic_per_output(setting, output, on):
     use(**{setting: on})
     home = xbmcgui.Window(10000)
     home.setProperty("BaldPI.EffectiveHdrType", output)
-    properties.publish_channel_visibility(home)
+    publish.publish_channel_visibility(home)
     assert home.getProperty("BaldPI.ShowChannelIcon") == ("1" if on else "0")
 
 
@@ -86,21 +87,21 @@ def test_dv_channel_panel_slides_with_offset_x_dv():
 
 def test_pill_position(monkeypatch):
     made = []
-    monkeypatch.setattr(splash, "_make_image", lambda tex, x, y, w, h, c: made.append((tex, y)) or tex)
-    monkeypatch.setattr(splash, "_make_dot", lambda x, y, d, c: "dot")
+    monkeypatch.setattr(splash_panel, "_make_image", lambda tex, x, y, w, h, c: made.append((tex, y)) or tex)
+    monkeypatch.setattr(splash_panel, "_make_dot", lambda x, y, d, c: "dot")
     colours = dict.fromkeys(("bg", "video", "audio", "divider", "convert_dot", "fel", "mel", "other"), "FFFFFFFF")
 
     def pill_y(top):
         made.clear()
-        splash._build_controls([("a.png", "video"), ("b.png", "audio")], colours, 0, 0, 1920, 1080,
+        splash_panel.build_controls([("a.png", "video"), ("b.png", "audio")], colours, 0, 0, 1920, 1080,
                                layer_token="fel", pill_at_top=top)
-        return [y for tex, y in made if tex == splash._PILL_TEXTURE][0]
+        return [y for tex, y in made if tex == splash_panel._PILL_TEXTURE][0]
 
     assert pill_y(True) < pill_y(False)
     for mode in ("start", "osd", "baldpi"):
         for value, top in ((0, False), (1, True)):
             use(**{f"splash_{mode}_pill_position": value})
-            assert splash._read_settings(xbmcaddon.Addon()).modes[mode].pill_at_top is top
+            assert splash_settings.read_settings(xbmcaddon.Addon()).modes[mode].pill_at_top is top
 
 
 def test_web_metadata_off_sends_no_rows():
@@ -140,12 +141,12 @@ def test_picker_shows_the_hex_tile_then_the_default_then_the_palette(monkeypatch
     assert shown["tiles"][0] == (f"#{theme._HEX_TILE_LABEL}", theme._HEX_TILE_EMPTY)
     tiles = {swatch: ((f"#{name}" if isinstance(name, int) else name)
                       + (f" #{theme._DEFAULT_LABEL}" if index == spec.default else ""), swatch)
-             for index, (name, swatch) in enumerate(zip(spec.names, spec.swatches))}
+             for index, (name, swatch) in enumerate(zip(spec.names, spec.swatches, strict=True))}
     default = spec.swatches[spec.default]
     assert shown["tiles"][1] == tiles[default]
     assert shown["tiles"][2:] == [tile for swatch, tile in tiles.items() if swatch != default]
     # Only the colours settings start out on keep a translated name.
-    translated = {swatch for name, swatch in zip(spec.names, spec.swatches) if isinstance(name, int)}
+    translated = {swatch for name, swatch in zip(spec.names, spec.swatches, strict=True) if isinstance(name, int)}
     assert spec.swatches[spec.default] in translated <= set(theme._DEFAULT_NAMES)
     assert shown["selected"] == spec.swatches[spec.default]
 
@@ -225,7 +226,7 @@ def test_every_family_runs_light_to_dark():
         assert shades == sorted(shades), family
         # The swatches follow their shades, but for rounding.
         swatches = [_depth(swatch) for _shade, swatch in pairs]
-        assert all(after >= before - 0.005 for before, after in zip(swatches, swatches[1:])), family
+        assert all(after >= before - 0.005 for before, after in pairwise(swatches)), family
 
 
 def _saturation(argb):
@@ -270,7 +271,7 @@ def test_neighbours_in_a_family_share_their_saturation():
         if family in GRAYS:
             continue
         shares = [_saturation(colour) for colour in colours]
-        assert all(abs(after - before) < 0.26 for before, after in zip(shares, shares[1:])), family
+        assert all(abs(after - before) < 0.26 for before, after in pairwise(shares)), family
 
 
 def test_former_background_swatches_still_read_as_their_shade():
