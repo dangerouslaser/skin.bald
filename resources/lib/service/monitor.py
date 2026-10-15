@@ -1,22 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 U3knOwn
 
-"""Background service (xbmc.service).
+"""Background service (xbmc.service, started through service/start.py).
 
 Keeps a Kodi monitor alive for the session to react to notifications, opens
 views handed over by main.py, runs the splash and owns the web dashboard.
 """
 
 import os
-import sys
 import threading
 
 import xbmc
-
-_LIB_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if _LIB_PATH not in sys.path:
-    sys.path.insert(0, _LIB_PATH)
-
 from core import images, settings
 from core.constants import (
     ADDON_ID,
@@ -52,7 +46,7 @@ _SKIN_SETTLE = 1.0
 _WARMUP_DELAY = 5.0
 
 # Notifications that make the dashboard's cached lists stale.  The lists are
-# dropped and re-read on the next request (see web/library.py).  Item
+# dropped and re-read on the next request (see web/library/cache.py).  Item
 # notifications come in bursts (a scan sends one per item) and are coalesced
 # into one drop; the end of a scan or a clean drops the lists at once.
 _LIBRARY_ITEM_NOTIFICATIONS = (
@@ -177,7 +171,7 @@ class KodiMonitor(xbmc.Monitor):
         as with main.py.  Failures are logged, not raised.
         """
         try:
-            from ui.overlay import open_dialog_mode, open_baldpi
+            from ui.overlay import open_baldpi, open_dialog_mode
             if view == "dialog":
                 open_dialog_mode()
             else:
@@ -243,7 +237,7 @@ def _warm_up(monitor: xbmc.Monitor) -> None:
     # largest and only reached from the overlay, so it loads on first use.
     try:
         import ui.mode_select  # noqa: F401  imported to have it loaded, not used
-        import ui.overlay      # noqa: F401
+        import ui.overlay  # noqa: F401
     except Exception as exc:  # pragma: no cover - never block the service
         _log(f"pre-loading the views failed: {exc}", xbmc.LOGWARNING)
 
@@ -258,7 +252,8 @@ def _warm_up(monitor: xbmc.Monitor) -> None:
         _log(f"tidying the texture cache failed: {exc}", xbmc.LOGWARNING)
 
 
-if __name__ == "__main__":
+def run() -> None:
+    """Run the service until Kodi shuts down."""
     addon     = settings.addon()
     win       = home_window()
     dashboard = WebDashboard()

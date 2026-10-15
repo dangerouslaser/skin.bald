@@ -8,11 +8,12 @@
 
    What is playing -- with its poster and its format badges -- the four figures
    worth a glance, the luminance chart, what the whole title has done so far,
-   and the transport row.  The dashboard hands them out to its tabs: the
-   now-playing card stays on the live tab, the luminance chart goes to the
-   metadata tab and the events to the history tab (see js/dashboard.js).
+   and the transport row (built by js/live-remote.js).  The dashboard hands
+   them out to its tabs: the now-playing card stays on the live tab, the
+   luminance chart goes to the metadata tab and the events to the history tab
+   (see js/dashboard.js).
 
-   Loaded after core.js.
+   Loaded after core.js, readings.js and live-remote.js.
 
    A page opts in by putting <div id="live"></div> where the panels belong;
    the markup and the drawing are here, the styling is in live-panels.css.  It
@@ -118,23 +119,11 @@
 
   const $ = (id) => document.getElementById(id);
 
-  const controlToggle = document.createElement("button");
-  controlToggle.type = "button";
-  controlToggle.id = "controlToggle";
-  controlToggle.className = "iconbtn control-toggle hidden";
-  controlToggle.setAttribute("aria-expanded", "false");
-  controlToggle.setAttribute("aria-controls", "controlDrawer");
-  /* A span, where every other icon on the page is an <img>: this one takes the
-     accent, and an <img> cannot be given a colour -- the file is a white
-     stroke.  It is painted instead, the same drawing masking the colour in
-     rather than being shown as it stands (see .control-chevron in
-     live-panels.css).  The colour has to be worked out at runtime under the
-     adaptive theme, so a second file in the accent is no use here. */
-  const controlChevron = document.createElement("span");
-  controlChevron.className = "ui-icon control-chevron";
-  controlChevron.setAttribute("aria-hidden", "true");
-  controlToggle.append(controlChevron);
-  $("nowCard").append(controlToggle);
+  const remote = BaldPIRemote.create({
+    nowCard: $("nowCard"), drawer: $("controlDrawer"), transport: $("transport"),
+    tracks: $("tracks"), track: $("track"), bar: $("bar")
+  }, pageState);
+  const uiIcon = BaldPIRemote.icon;
 
   const el = {
     nowCard: $("nowCard"), badges: $("badges"), title: $("title"),
@@ -144,8 +133,6 @@
     track: $("track"), bar: $("bar"), tElapsed: $("tElapsed"),
     tFinish: $("tFinish"), tFinishLabel: $("tFinishLabel"),
     tFinishTime: $("tFinishTime"), tTotal: $("tTotal"),
-    controlDrawer: $("controlDrawer"), controlToggle,
-    transport: $("transport"), tracks: $("tracks"),
     tiles: $("tiles"), vSwitches: $("vSwitches"), vWarnings: $("vWarnings"),
     vPlayerCache: $("vPlayerCache"), vFps: $("vFps"), tFps: $("tFps"),
     chartCard: $("chartCard"), chart: $("chart"), ranges: $("ranges"),
@@ -160,25 +147,12 @@
   let fetching = false;
   let lastTry = 0;      /* when one was last attempted, failures included   */
   let range = HISTORY_SECONDS;
-  let control = false;
   let posterTag = "";
-  let trackKey = "";
   let finishLabel = "";  /* "Ends at", once Kodi's table has been asked      */
   let lastFinish = "";   /* the clock that label belongs in front of         */
   let idleFetched = false;  /* the ended title's events, asked for once      */
   let idleReset = false;    /* the panels have been put away once already    */
-  const controlStateKey = pageState + ".controls";
 
-  function setControlsOpen(open, remember) {
-    el.controlDrawer.classList.toggle("open", open);
-    el.controlToggle.setAttribute("aria-expanded", String(open));
-    if (remember !== false) BaldPI.setDisclosureState(controlStateKey, open);
-  }
-
-  el.controlToggle.addEventListener("click", () => {
-    setControlsOpen(el.controlToggle.getAttribute("aria-expanded") !== "true");
-  });
-  setControlsOpen(BaldPI.disclosureState(controlStateKey, false), false);
   BaldPI.bindDisclosure(el.tiles, pageState + ".metrics", false);
   /* The chart and the events arrive open: each is what a tab of its own is
      for now (the metadata tab and the history tab), and a tab that opens on a
@@ -262,7 +236,7 @@
       tint("");
       return;
     }
-    const url = BaldPI.withToken("/api/art?kind=poster&v=" + tag);
+    const url = "/api/art?kind=poster&v=" + tag;
     el.poster.src = url;
     el.artBox.classList.remove("hidden");
     tint(url);
@@ -294,151 +268,9 @@
     el.badges.appendChild(node);
   }
 
-  /* --- Format badges ----------------------------------------------------
-     The same badges, read the same way, as the mobile app's now-playing card
-     (util/SourceLabel.kt there): the picture -- how big the coded frame is,
-     how it is graded and what it is converted to, and IMAX -- and the sound --
-     the codec, what rides on it and how wide it is.
-
-     Read out of the printed rows rather than off fields of their own, since
-     the snapshot has none: the audio codec arrives as the row the overlay
-     prints, and a Dolby Vision profile as a reading among the others.  Rows
-     are found by id, not by label, because the labels are translated. */
-
-  const AUDIO_GROUP = "audio";
-  const AUDIO_CODEC_ROW = "audio.32238";
-  const CHANNEL_LAYOUT = /^\d+\.\d+$/;
-
-  /* Longest first, so "IMAX Enhanced" is found whole rather than as an IMAX
-     with a spare word after it.  Brand names, which are not translated. */
-  const MARKS = ["IMAX Enhanced", "IMAX", "Dolby Atmos", "Atmos",
-                 "DTS:X", "DTS-X", "DTSX"];
-  const SPELLINGS = { "DTSX": "DTS:X", "DTS-X": "DTS:X", "DOLBY ATMOS": "Atmos" };
-
-  /* The standard widths themselves, widest first: a release is authored at
-     one of these, and a coded width names the format where a height, which
-     changes with the aspect ratio, would not. */
-  const RESOLUTIONS = [[7680, "8K"], [4096, "DCI 4K"], [3840, "UHD"],
-                       [2560, "QHD"], [1920, "FHD"], [1280, "HD"]];
-
-  function grade(token) {
-    const key = String(token || "").trim().toLowerCase();
-    if (!key || key === "sdr") return "SDR";
-    if (key.includes("dolby") || key.includes("dv")) return "Dolby Vision";
-    if (key.includes("hdr10plus") || key.includes("hdr10+")) return "HDR10+";
-    if (key.includes("hlg")) return "HLG";
-    if (key.includes("hdr")) return "HDR10";
-    return "SDR";
-  }
-
-  function marksIn(group) {
-    let rest = (group.rows || [])
-      .map((row) => (row.value || "") + " " + (row.detail || "")).join(" ");
-    const found = [];
-    for (const mark of MARKS) {
-      const pattern = new RegExp(mark.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
-      if (!rest.match(pattern)) continue;
-      found.push(SPELLINGS[mark.toUpperCase()] || mark);
-      /* Taken out of the running text, so a longer name already found does
-         not hand its own words to a shorter one after it. */
-      rest = rest.replace(pattern, " ");
-    }
-    return found;
-  }
-
-  function resolutionBadge(frame) {
-    const width = frame && frame.w > 0 && frame.h > 0 ? frame.w : 0;
-    if (!width) return null;
-    const hit = RESOLUTIONS.find(([from]) => width >= from);
-    return hit ? hit[1] : "SD";
-  }
-
-  /* "P7.6 FEL", "P8.1" -- or null where nothing says. */
-  function dolbyVisionSuffix(snapshot) {
-    const readings = [];
-    for (const group of snapshot.groups || []) {
-      for (const row of group.rows || []) readings.push([row.label || "", row.value || ""]);
-    }
-    for (const row of snapshot.metadata || []) readings.push([row.name || "", row.value || ""]);
-
-    let profile = null;
-    for (const [name, value] of readings) {
-      if (!/profile/i.test(name)) continue;
-      const number = /\d+(\.\d+)?/.exec(value);
-      if (number) { profile = number[0]; break; }
-    }
-
-    let layer = null;
-    for (const [name, value] of readings) {
-      const hit = /\b[FM]EL\b/i.exec(name + " " + value);
-      if (hit) { layer = hit[0].toUpperCase(); break; }
-    }
-    if (!layer) {
-      const affirmative = ["yes", "true", "1", "present", "ja", "on"];
-      const enhanced = readings.some(([name, value]) => {
-        if (value.replace(/ /g, "").toUpperCase().includes("+EL")) return true;
-        const asks = /enhancement/i.test(name)
-          || name.split(/[ .()]/).some((word) => word.toLowerCase() === "el");
-        return asks && affirmative.includes(value.trim().toLowerCase());
-      }) || (profile !== null && "47".includes(profile.charAt(0)));
-      if (enhanced) layer = "EL";
-    }
-
-    if (profile && layer) return "P" + profile + " " + layer;
-    if (profile) return "P" + profile;
-    return layer;
-  }
-
-  function sourceBadge(snapshot) {
-    const label = grade(snapshot.hdr_type);
-    if (label !== "Dolby Vision") return label;
-    const detail = dolbyVisionSuffix(snapshot);
-    return detail ? "DV " + detail : "DV";
-  }
-
-  /* What the picture leaves as, where that is not what it came in as.  The
-     VS10 output is read as well, for a backend whose output_type lags. */
-  function conversionTarget(snapshot) {
-    const source = String(snapshot.hdr_type || "sdr").toLowerCase();
-    const output = String(snapshot.output_type || "");
-    if (output && output.toLowerCase() !== source) return grade(output);
-    const vs10 = String((snapshot.vs10 || {}).output || "").trim().toLowerCase();
-    let target = null;
-    if (vs10.includes("sdr")) target = "SDR";
-    else if (vs10.includes("hdr10+") || vs10.includes("hdr10plus")) target = "HDR10+";
-    else if (vs10.includes("hdr10")) target = "HDR10";
-    else if (vs10.includes("hlg")) target = "HLG";
-    return target && target !== grade(source) ? target : null;
-  }
-
-  function pictureBadges(snapshot) {
-    const badges = [];
-    const resolution = resolutionBadge((snapshot.metrics || {}).frame);
-    if (resolution) badges.push(resolution);
-    const target = conversionTarget(snapshot);
-    badges.push(target ? sourceBadge(snapshot) + " → " + target : sourceBadge(snapshot));
-    for (const group of snapshot.groups || []) {
-      if (group.id !== AUDIO_GROUP) badges.push(...marksIn(group));
-    }
-    return [...new Set(badges)];
-  }
-
-  function soundBadges(snapshot) {
-    const audio = (snapshot.groups || []).find((group) => group.id === AUDIO_GROUP);
-    if (!audio || !(audio.rows || []).length) return [];
-    const row = audio.rows.find((entry) => entry.id === AUDIO_CODEC_ROW) || audio.rows[0];
-    /* A codec Kodi could not name is no badge. */
-    const value = (row.value || "").trim();
-    const words = value && value !== BaldPI.T.na ? value.split(/\s+/) : [];
-    const last = words[words.length - 1];
-    const layout = last && CHANNEL_LAYOUT.test(last) ? last : null;
-    const codec = (layout ? words.slice(0, -1) : words).join(" ");
-    const badges = [];
-    if (codec) badges.push(codec);
-    badges.push(...marksIn(audio));
-    if (layout) badges.push(layout);
-    return [...new Set(badges)];
-  }
+  /* What the badges and the events say is worked out in js/readings.js. */
+  const { pictureBadges, soundBadges, historySwitches, eventLabel, isTransition,
+          eventText, eventTrend } = BaldPIReadings;
 
   /* Rebuilt only when they say something else: they hold still for a whole
      film, and tearing a row down five times a second to put the same words
@@ -459,247 +291,6 @@
   function renderFormats(snapshot) {
     fillRow(el.pictureBadges, pictureBadges(snapshot));
     fillRow(el.soundBadges, soundBadges(snapshot));
-  }
-
-  function uiIcon(name) {
-    const image = document.createElement("img");
-    image.className = "ui-icon";
-    image.src = "/icons/" + name + ".svg";
-    image.alt = "";
-    image.setAttribute("aria-hidden", "true");
-    return image;
-  }
-
-  /* The icon only, and not whatever else the key holds: the mute key carries
-     the volume reading beside its icon, and replacing the key's contents
-     outright would take the reading with it. */
-  function setButtonIcon(node, name) {
-    if (node.dataset.icon === name) return;
-    node.dataset.icon = name;
-    const drawn = node.querySelector(".ui-icon");
-    if (drawn) drawn.replaceWith(uiIcon(name));
-    else node.prepend(uiIcon(name));
-  }
-
-  /* --- the remote ------------------------------------------------------- */
-
-  /* Built once, the first time a snapshot says the add-on will take orders.
-     Everything goes through BaldPI.command, which carries the token and says
-     whether the player did it. */
-  function buildTransport() {
-    if (el.transport.dataset.built) return;
-    el.transport.dataset.built = "1";
-
-    const button = (label, handler, className) => {
-      const node = document.createElement("button");
-      node.type = "button";
-      node.className = "tbtn" + (className ? " " + className : "");
-      node.textContent = label;
-      node.title = label;
-      node.addEventListener("click", handler);
-      return node;
-    };
-
-    /* Named by the key rather than by the string behind it, because the row is
-       built the first time a snapshot says the add-on takes orders -- which
-       can be before /api/hello has answered.  The name is put on from the key
-       here and again whenever the strings change (see labelControls). */
-    const imageButton = (name, key, handler, className) => {
-      const node = button("", handler, className);
-      node.dataset.label = key;
-      setButtonIcon(node, name);
-      return node;
-    };
-
-    /* CSS keeps these as two full-width rows: the jumps on their own first,
-       then everything that is not a jump.  Six of one kind and nothing else,
-       three back and three forward, so the row reads as one scale rather than
-       as two halves either side of something bigger. */
-    const keys = document.createElement("div");
-    keys.className = "tkeys";
-    keys.append(
-      button("−10m", () => BaldPI.command("seek", -600)),
-      button("−1m", () => BaldPI.command("seek", -60)),
-      button("−10s", () => BaldPI.command("seek", -10)),
-      button("+10s", () => BaldPI.command("seek", 10)),
-      button("+1m", () => BaldPI.command("seek", 60)),
-      button("+10m", () => BaldPI.command("seek", 600))
-    );
-
-    /* Everything that is not a jump, in the order it is used: a chapter back,
-       play, the three volume keys, stop, a chapter on.
-
-       The volume steps rather than slides, and there is a reason it has to.  A
-       slider could only ever have set Kodi's own mixer: a box that passes
-       volume on over CEC leaves that number where it is and sends the
-       amplifier a command instead, and it does that from the input path,
-       which an absolute level never reaches and a step always does.  So these
-       three work a soundbar where a slider could not -- at the cost of the
-       level itself, which CEC has no command for and which is therefore not
-       shown at all.
-
-       Each step carries a speaker beside its sign.  A bare + in a row whose
-       other keys are marked "+10s" is a key that has to be worked out; the
-       speaker says which kind of louder it means before it is read. */
-    const stepButton = (sign, key) => {
-      const node = button("", () => BaldPI.command(key), "vol");
-      node.dataset.label = key;
-      node.append(uiIcon("volume"));
-      const mark = document.createElement("span");
-      mark.className = "sign";
-      mark.textContent = sign;
-      node.append(mark);
-      return node;
-    };
-
-    const rest = document.createElement("div");
-    rest.className = "tvol";
-    rest.append(
-      imageButton("chapter-previous", "chapter_previous",
-                  () => BaldPI.command("chapter_previous"), "chapter"),
-      /* The icon says what pressing it does, so it follows the player: pause
-         while it plays, play while it is paused.
-
-         Drawn like every other key in the row and not in the accent.  Picked
-         out, it was the one lit thing on a row of outlines -- which reads as
-         the key that is currently doing something rather than as the key worth
-         reaching for, and what it is doing is already written on it. */
-      imageButton("pause", "playpause",
-                  () => BaldPI.command("playpause"), "play"),
-      stepButton("−", "volume_down"),
-      imageButton("volume", "mute", () => BaldPI.command("mute"), "mute"),
-      stepButton("+", "volume_up"),
-      imageButton("stop", "stop", () => BaldPI.command("stop")),
-      imageButton("chapter-next", "chapter_next",
-                  () => BaldPI.command("chapter_next"), "chapter")
-    );
-    el.transport.append(keys, rest);
-    labelControls();
-
-    /* A tap anywhere on the bar seeks there, and the arrow keys do the same,
-       so the bar is not a control only a finger can reach. */
-    el.track.addEventListener("click", (event) => {
-      if (!control) return;
-      const box = el.track.getBoundingClientRect();
-      if (!box.width) return;
-      const where = Math.min(100, Math.max(0,
-        (event.clientX - box.left) / box.width * 100));
-      el.bar.style.width = where + "%";
-      BaldPI.command("seek_percent", where);
-    });
-    el.track.addEventListener("keydown", (event) => {
-      if (!control) return;
-      if (event.key === "ArrowLeft") BaldPI.command("seek", -10);
-      else if (event.key === "ArrowRight") BaldPI.command("seek", 10);
-      else return;
-      event.preventDefault();
-    });
-  }
-
-  /* Names the controls that have no writing on them, and the two that carry
-     nothing but a sign.  Called when the row is built and again when the strings
-     arrive, because the two can happen in either order -- the stream opens
-     before /api/hello is asked (see boot in js/core.js), so on a fresh page
-     the first snapshot usually builds this row while the English fallbacks
-     are still all there is. */
-  function labelControls() {
-    for (const node of el.transport.querySelectorAll("[data-label]")) {
-      const name = BaldPI.T[node.dataset.label];
-      if (!name) continue;
-      node.setAttribute("aria-label", name);
-      if (node.tagName === "BUTTON") node.title = name;
-    }
-  }
-
-  function renderTransport(snapshot) {
-    const hadControl = control;
-    control = !!snapshot.control;
-    const controls = snapshot.controls || {};
-    if (!control) {
-      setControlsOpen(false, false);
-      el.controlToggle.classList.add("hidden");
-      el.transport.classList.add("hidden");
-      el.tracks.classList.add("hidden");
-      el.track.classList.remove("seekable");
-      return;
-    }
-    buildTransport();
-    if (!hadControl) {
-      setControlsOpen(BaldPI.disclosureState(controlStateKey, false), false);
-    }
-    el.controlToggle.classList.remove("hidden");
-    el.transport.classList.remove("hidden");
-    el.track.classList.add("seekable");
-
-    const play = el.transport.querySelector(".tbtn.play");
-    if (play) setButtonIcon(play, snapshot.paused ? "play" : "pause");
-
-    /* A file with no chapters has nowhere for these to go, and the add-on
-       refuses them rather than seeking instead -- so they are turned off here
-       rather than left to fail.  Dimmed and kept in place: a row that loses
-       two keys when the film changes is a row whose buttons move out from
-       under the thumb that was aiming at one. */
-    const chapters = Number(controls.chapters) || 0;
-    for (const key of el.transport.querySelectorAll(".tbtn.chapter")) {
-      key.disabled = chapters < 2;
-    }
-
-    const mute = el.transport.querySelector(".mute");
-    if (mute) {
-      mute.classList.toggle("on", !!controls.muted);
-      setButtonIcon(mute, controls.muted ? "volume-muted" : "volume");
-    }
-    renderTracks(controls);
-  }
-
-  /* One picker per kind, rebuilt only when the tracks themselves change --
-     a select rebuilt five times a second could never be opened. */
-  function renderTracks(controls) {
-    const audio = controls.audio || [];
-    const subs = controls.subtitle || [];
-    if (audio.length < 2 && !subs.length) {
-      el.tracks.classList.add("hidden");
-      return;
-    }
-    el.tracks.classList.remove("hidden");
-
-    const key = JSON.stringify([audio, subs]);
-    if (trackKey !== key) {
-      trackKey = key;
-      el.tracks.innerHTML = "";
-      if (audio.length > 1) {
-        el.tracks.append(picker("audio", BaldPI.T.audio_track, audio, false));
-      }
-      if (subs.length) {
-        el.tracks.append(picker("subtitle", BaldPI.T.subtitles, subs, true));
-      }
-    }
-
-    const audioPick = $("pick-audio");
-    if (audioPick) audioPick.value = String(controls.audio_current);
-    const subPick = $("pick-subtitle");
-    if (subPick) {
-      subPick.value = controls.subtitle_on
-        ? String(controls.subtitle_current) : "-1";
-    }
-  }
-
-  function picker(kind, label, options, withOff) {
-    const wrap = document.createElement("label");
-    wrap.className = "pick";
-    const caption = document.createElement("span");
-    caption.textContent = label;
-    const select = document.createElement("select");
-    select.id = "pick-" + kind;
-    if (withOff) select.append(new Option(BaldPI.T.off, "-1"));
-    for (const option of options) {
-      select.append(new Option(option.label, String(option.index)));
-    }
-    select.addEventListener("change", () => {
-      BaldPI.command(kind, Number(select.value));
-    });
-    wrap.append(caption, select);
-    return wrap;
   }
 
   /* --- the four figures ------------------------------------------------- */
@@ -758,88 +349,6 @@
       }
       fpsShown = fps;
     }
-  }
-
-  /* A fallback is kept beside every localized key.  The stream deliberately
-     opens before /api/hello has returned, so the first history can be drawn
-     while some translations are not here yet.  An event must still have a
-     name during that short window instead of leaving a mysterious blank
-     column behind. */
-  const EVENT_LABEL = {
-    vs10: ["vs10", "VS10 output"],
-    mode: ["ev_mode", "Display mode"],
-    audio: ["audio_track", "Audio track"],
-    subtitle: ["subtitles", "Subtitles"],
-    temperature: ["temperature", "Temperature"],
-    cpu: ["processor", "Processor"],
-    fps: ["fps", "FPS"]
-  };
-  const SWITCH_EVENT_KINDS = new Set(["vs10", "mode", "audio", "subtitle"]);
-
-  function historySwitches(history) {
-    if (!history) return null;
-    const total = Number(history.switches);
-    if (Number.isFinite(total)) return total;
-    /* Compatibility with a backend that was already running during the
-       update: older history responses have no total, but their event rows
-       still let the visible list and its figure agree. */
-    return (history.events || []).filter((entry) =>
-      SWITCH_EVENT_KINDS.has(entry.kind)).length;
-  }
-
-  function eventLabel(kind) {
-    const label = EVENT_LABEL[kind];
-    if (!label) return kind || "Event";
-    return BaldPI.T[label[0]] || label[1];
-  }
-
-  /* A transition names two whole VS10 output states -- "SDR BT.709" to
-     "DV-LL BT.2020nc" is a realistic width.  The mobile layout gives every
-     event a separate value line so transitions and short values align. */
-  function isTransition(entry) {
-    return entry.from !== undefined && entry.to !== undefined;
-  }
-
-  function eventText(entry) {
-    const stateText = (value) => {
-      if (value === "__off__") return BaldPI.T.off;
-      if (value === null || value === undefined) return BaldPI.T.na;
-      let text = String(value);
-      if (entry.kind === "audio" || entry.kind === "subtitle") {
-        /* Index and ISO language are useful for identifying a track inside
-           the backend, but the event already says Audio track/Subtitles and
-           the track name itself is the useful part for the reader. */
-        text = text
-          .replace(/^#\d+\s*(?:·\s*)?/, "")
-          .replace(/^[A-Z]{2,3}\s*·\s*/i, "");
-      }
-      return text || BaldPI.T.na;
-    };
-    if (isTransition(entry)) return stateText(entry.to);
-    if (entry.kind === "temperature") return Math.round(entry.value) + " °C";
-    if (entry.kind === "cpu" || String(entry.kind).startsWith("cache_")) {
-      return Math.round(entry.value) + "%";
-    }
-    return entry.value === null || entry.value === undefined
-      ? BaldPI.T.na : String(entry.value);
-  }
-
-  /* Which way a transition went, for the arrow beside its value: 1 up, -1
-     down, 0 for one that has no direction to show.  A frame rate is the event
-     this is for -- 24 to 60 and back is a direction, where "SDR BT.709" to
-     "DV-LL BT.2020nc" is not one at all.
-
-     The kinds whose states really are numbers are named rather than left to
-     Number(): a track named "5.1" giving way to one named "2.0" reads as a
-     number to Number() and as a fall to nobody. */
-  const TREND_KINDS = new Set(["fps"]);
-
-  function eventTrend(entry) {
-    if (!TREND_KINDS.has(entry.kind) || !isTransition(entry)) return 0;
-    const from = Number(entry.from);
-    const to   = Number(entry.to);
-    if (!Number.isFinite(from) || !Number.isFinite(to) || from === to) return 0;
-    return to > from ? 1 : -1;
   }
 
   /* Whether anything is under the last row on screen.  The list is the only
@@ -1182,8 +691,6 @@
        reading is there either way, and this puts the label in front of it. */
     renderFinish(lastFinish);
     $("tilesTitle").textContent = T.metrics;
-    el.controlToggle.setAttribute("aria-label", T.controls);
-    el.controlToggle.title = T.controls;
     $("kSwitches").textContent = T.switches;
     $("kWarnings").textContent = T.warnings;
     $("kPlayerCache").textContent = T.player_cache;
@@ -1209,9 +716,9 @@
     /* And so can the first snapshot, which is what builds the transport row
        and the track pickers.  The buttons are renamed in place; the pickers
        carry their strings inside options and are simply marked stale, so the
-       next snapshot builds them again (see renderTracks). */
-    labelControls();
-    trackKey = "";
+       next snapshot builds them again (see renderTracks in
+       js/live-remote.js). */
+    remote.strings(T);
   }
 
   /* Everything the panels show comes out of one snapshot, and a snapshot that
@@ -1229,14 +736,13 @@
         for (const node of cards) node.classList.add("hidden");
         live = [];
         posterTag = "";
-        trackKey = "";
         renderFinish("");
         fpsShown = null;
         setFpsTrend(0);
-        setControlsOpen(false, false);
+        remote.reset();
       }
       /* The title that has just ended keeps its samples and its events for a
-         while (see SessionLog.end in web/snapshot.py).  While it does, the
+         while (see SessionLog.end in web/session.py).  While it does, the
          list stays where it was rather than emptying the moment the credits
          stop -- which is the minute the figures are worth most. */
       const last = snapshot && snapshot.last;
@@ -1257,7 +763,7 @@
     idleReset = false;
     el.nowCard.classList.remove("hidden");
     renderNow(snapshot);
-    renderTransport(snapshot);
+    remote.render(snapshot);
     renderTiles(snapshot.metrics || {}, snapshot.session);
     renderCharts(snapshot.metrics || {});
 

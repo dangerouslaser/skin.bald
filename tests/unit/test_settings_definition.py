@@ -86,7 +86,10 @@ def test_dependencies_name_existing_settings():
 
 
 def test_action_buttons_run_known_commands():
-    commands = set(re.findall(r'command == "(\w+)"', read("main.py"))) | {"overlay", "dialog"}
+    # The keys of launcher._COMMANDS.
+    commands = set(re.findall(r'^ {4}"(\w+)": +\(\d', read("resources", "lib", "launcher.py"),
+                              re.MULTILINE))
+    assert {"overlay", "dialog", "pick_color"} <= commands
     wrong = []
     for setting_id, data in ACTIONS:
         match = re.match(r"RunScript\(script\.bald\.processinfo,(\w+)(?:,([^,)]*))?", data)
@@ -152,6 +155,7 @@ def test_the_code_reads_only_existing_settings():
 def test_every_setting_is_read_somewhere():
     derived = {theme._opacity_setting(c) for c in theme._COLOR_SETTINGS}
     action_only = {sid for sid, _data in ACTIONS if not sid.endswith("_color")}
-    unread = [i for i in IDS if not re.search(r"['\"]" + re.escape(i) + r"['\"]", CODE)
-              and i not in derived and i not in action_only]
+    # Every quoted string in the code, read in one pass (a search per id is slow).
+    quoted = set(re.findall(r"(?=['\"]([^'\"\n]*)['\"])", CODE))
+    unread = [i for i in IDS if i not in quoted and i not in derived and i not in action_only]
     assert not unread

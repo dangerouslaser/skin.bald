@@ -21,7 +21,6 @@ import threading
 
 import xbmcaddon
 import xbmcvfs
-
 from core.constants import PROFILE_DIR
 
 # The file holding this add-on's stored setting values.
@@ -34,10 +33,10 @@ class _Handle:
     def __init__(self) -> None:
         self._lock   = threading.Lock()
         self._path   = ""
-        self._handle = None
-        self._stamp  = None
+        self._handle: xbmcaddon.Addon | None = None
+        self._stamp: tuple[int, int, int] | None = None
 
-    def _values_stamp(self) -> tuple | None:
+    def _values_stamp(self) -> tuple[int, int, int] | None:
         """Return the values file's stamp, or None while it does not exist."""
         try:
             stat = os.stat(self._path)

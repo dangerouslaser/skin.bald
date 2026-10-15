@@ -22,6 +22,13 @@ sys.path.insert(0, os.path.join(ROOT, "resources", "lib"))
 from core.constants import HOME_WINDOW_ID  # noqa: E402
 from ui import dialog_layout as layout  # noqa: E402
 
+# The files carry the default panel position.  With Kodistubs installed
+# (requirements-dev.txt) the Kodi imports succeed outside Kodi and every
+# setting would read 0, moving the panel to the top-left corner.
+layout.xbmc = None
+layout.settings = None
+
+
 SKIN = os.path.join(ROOT, "resources", "skins", "Default", "1080i")
 
 _WINDOW = f"Window({HOME_WINDOW_ID})"
@@ -278,8 +285,8 @@ def single(title):
     width, height = layout.PANEL_SIZE[mode]
     margin = 30
     inner = width - 2 * margin
-    nav = {key: layout.SINGLE_BUTTON
-           for key in ("onup", "ondown", "onleft", "onright")}
+    nav = dict.fromkeys(("onup", "ondown", "onleft", "onright"),
+                        layout.SINGLE_BUTTON)
     # Left/right indicators (images, not buttons), tinted like the focused
     # button so the three read as one control.
     arrows = [image(left, 122, 32, 32, "dialog/" + name,

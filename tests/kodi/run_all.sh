@@ -10,7 +10,7 @@ PYTHON=${PYTHON:-python3}
 
 if [ ! -d /etc/coreelec ]; then
   echo "/etc/coreelec is missing: create it on the (throwaway) test machine," >&2
-  echo "e.g. 'sudo mkdir /etc/coreelec', so TinyPPI treats Kodi as CoreELEC." >&2
+  echo "e.g. 'sudo mkdir /etc/coreelec', so BaldPI treats Kodi as CoreELEC." >&2
   exit 2
 fi
 "$PYTHON" setup_media.py || exit 2

@@ -1,0 +1,73 @@
+# Tooling only: the add-on itself is installed by Kodi from addon.xml, not
+# from this file.  CI (.github/workflows/ci.yml) runs the same checks.
+
+[tool.ruff]
+# The add-on is for Kodi 22 (August builds on) only, which ships Python 3.14.
+target-version = "py314"
+line-length = 100
+extend-exclude = ["tests/kodi/helper"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F",   # pycodestyle, pyflakes
+    "B",             # bugbear
+    "SIM",           # simplifications
+    "C4",            # comprehensions
+    "PIE",
+    "UP",            # pyupgrade
+    "PLE", "PLW",    # pylint errors and warnings
+    "I",             # import order
+]
+ignore = [
+    "UP031",   # %-formatting is kept where it reads better (skin labels)
+    "SIM905",  # word lists written as one split string on purpose
+]
+
+[tool.ruff.lint.isort]
+# Kodi's modules sit with the add-on's own packages, after the standard
+# library and anything installed.
+known-first-party = ["core", "info", "ui", "web", "xbmc", "xbmcaddon", "xbmcgui", "xbmcvfs",
+                     "dashboard_server"]
+
+[tool.ruff.lint.per-file-ignores]
+# Long data rows and assertions in tests are easier to read on one line.
+"tests/**" = ["E501"]
+# The end-to-end scripts drive a real Kodi process and keep a module global.
+"tests/kodi/**" = ["PLW0603", "PLW1510"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+# main.py is the script entry point; resources/lib holds everything else.
+source = ["resources/lib", "main"]
+branch = true
+
+[tool.coverage.report]
+# Every line and branch is covered: new code comes with its tests.
+fail_under = 100
+skip_empty = true
+
+[tool.mypy]
+python_version = "3.14"
+# Kodi's modules are typed by Kodistubs (pip install Kodistubs).
+mypy_path = ["resources/lib"]
+explicit_package_bases = true
+files = ["resources/lib", "main.py"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+# Every function is annotated and its body checked.  Values of no fixed type
+# say so: ``object`` when only inspected, ``web.values.Unchecked`` for raw
+# request input, ``web.values.Json`` for Kodi's JSON-RPC answers and
+# ``info.dvformat.Block`` for parsed side data.  Kodi windows and their
+# stand-ins share ``core.protocols.PropertyTarget``.  Containers name what
+# they hold; the dashboard's payloads are TypedDicts (web/payloads.py,
+# web/library/entries.py).
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_any_generics = true
+strict_equality = true
+warn_redundant_casts = true
+extra_checks = true
