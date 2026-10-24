@@ -769,7 +769,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>30</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(AudioCodecVar)] $INFO[Window().Property(AudioChannelsVar)] [COLOR $INFO[Window(10000).Property(BaldPI.AccentColor)]]$INFO[Window().Property(AudioCodecSpatialVar)][/COLOR]</label>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
                         <font>font23_narrow</font>
@@ -787,7 +787,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>60</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(AudioBitDepthVar),, / ]$INFO[Window().Property(AudioSampleRateVar)]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -798,7 +798,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>60</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$ADDON[script.bald.processinfo 32230]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -817,7 +817,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>90</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(AudioChannelsInputVar)]</label>
                         <font>font23_narrow</font>
                         <scroll>true</scroll>
@@ -836,7 +836,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>120</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$ADDON[script.bald.processinfo 32242]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -846,7 +846,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>120</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Player.Process(audiochannelssink)]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -856,7 +856,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>120</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$ADDON[script.bald.processinfo 32243]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -867,7 +867,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>120</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$ADDON[script.bald.processinfo 32230]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -886,7 +886,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>150</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(AudioLiveBitrateVar)] - [COLOR $INFO[Window(10000).Property(BaldPI.AccentColor)]]$INFO[Window().Property(AudioBitrateKBVar),(Ø ,)][/COLOR]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -896,7 +896,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>150</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(AudioBitrateKBVar)]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -906,7 +906,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>150</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(AudioLiveBitrateVar)]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -917,7 +917,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>150</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$ADDON[script.bald.processinfo 32230]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -936,7 +936,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>180</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(AudioNameShortVar)]$INFO[Window().Property(AudioNameVar), | ]</label>
                         <font>font23_narrow</font>
                         <scroll>true</scroll>
@@ -948,7 +948,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>180</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$ADDON[script.bald.processinfo 32230]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -967,7 +967,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>210</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(SubtitleNameShortVar)]$INFO[Window().Property(SubtitleNameVar), | ] [COLOR $INFO[Window(10000).Property(BaldPI.AccentColor)]]$INFO[Window().Property(SubtitleCodecVar),(,)][/COLOR]</label>
                         <font>font23_narrow</font>
                         <scroll>true</scroll>
@@ -980,7 +980,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>210</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$ADDON[script.bald.processinfo 32246]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -991,7 +991,7 @@
                     <control type="label">
                         <left>240</left>
                         <top>210</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$ADDON[script.bald.processinfo 32230]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
@@ -1035,14 +1035,14 @@
                     <control type="label">
                         <left>240</left>
                         <top>30</top>
-                        <width>400</width>
+                        <width>350</width>
                         <label>$INFO[Window().Property(FpsInfoVar)] = [COLOR $INFO[Window(10000).Property(BaldPI.FpsColor)]]$INFO[Window().Property(FpsDropVar),, FPS][/COLOR]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
                         <aligny>top</aligny>
                     </control>
 
-                    <!-- Processor -->
+                    <!-- CPU cores -->
                     <control type="label">
                         <top>60</top>
                         <label>$ADDON[script.bald.processinfo 32249]:</label>
@@ -1053,8 +1053,8 @@
                     <control type="label">
                         <left>240</left>
                         <top>60</top>
-                        <width>400</width>
-                        <label>$INFO[Window().Property(CpuTopUsageVar),, |] $INFO[Window().Property(CpuUsageVar)]</label>
+                        <width>350</width>
+                        <label>$INFO[Window().Property(CpuUsageVar)]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
                         <aligny>top</aligny>
@@ -1094,10 +1094,10 @@
                         </control>
                     </control>
 
-                    <!-- Memory usage -->
+                    <!-- Player cache -->
                     <control type="label">
                         <top>120</top>
-                        <label>$ADDON[script.bald.processinfo 32251]:</label>
+                        <label>$ADDON[script.bald.processinfo 32252]:</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.DescriptionColor)]</textcolor>
                         <aligny>top</aligny>
@@ -1106,7 +1106,7 @@
                         <left>240</left>
                         <top>120</top>
                         <width>65</width>
-                        <label>$INFO[system.memory(used.percent)]</label>
+                        <label>$INFO[Player.CacheLevel,,%]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
                         <aligny>top</aligny>
@@ -1121,7 +1121,7 @@
                             <height>8</height>
                             <description>BAR</description>
                             <centertop>50%</centertop>
-                            <info>system.memory(used)</info>
+                            <info>Player.CacheLevel</info>
                             <texturebg colordiffuse="1fededed" border="6">progress/bar.png</texturebg>
                             <lefttexture colordiffuse="00ffffff">common/dot-1x1.png</lefttexture>
                             <midtexture colordiffuse="$INFO[Window(10000).Property(BaldPI.ProgressColor)]" border="6">progress/bar.png</midtexture>
@@ -1129,10 +1129,10 @@
                         </control>
                     </control>
 
-                    <!-- Player cache -->
+                    <!-- CPU / RAM -->
                     <control type="label">
                         <top>150</top>
-                        <label>$ADDON[script.bald.processinfo 32252]:</label>
+                        <label>$ADDON[script.bald.processinfo 32251]:</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.DescriptionColor)]</textcolor>
                         <aligny>top</aligny>
@@ -1141,7 +1141,7 @@
                         <left>240</left>
                         <top>150</top>
                         <width>65</width>
-                        <label>$INFO[Player.CacheLevel,,%]</label>
+                        <label>$INFO[Window().Property(CpuTopUsageVar)]</label>
                         <font>font23_narrow</font>
                         <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
                         <aligny>top</aligny>
@@ -1149,14 +1149,40 @@
                     <control type="group">
                         <top>160</top>
                         <left>310</left>
-                        <control type="progress">
+                        <control type="progress" id="9101">
                             <top>0</top>
                             <left>0</left>
-                            <width>250</width>
+                            <width>87</width>
                             <height>8</height>
                             <description>BAR</description>
                             <centertop>50%</centertop>
-                            <info>Player.CacheLevel</info>
+                            <texturebg colordiffuse="1fededed" border="6">progress/bar.png</texturebg>
+                            <lefttexture colordiffuse="00ffffff">common/dot-1x1.png</lefttexture>
+                            <midtexture colordiffuse="$INFO[Window(10000).Property(BaldPI.ProgressColor)]" border="6">progress/bar.png</midtexture>
+                            <righttexture colordiffuse="00ffffff">common/dot-1x1.png</righttexture>
+                        </control>
+                    </control>
+                    <control type="label">
+                        <left>404</left>
+                        <top>150</top>
+                        <width>62</width>
+                        <label>$INFO[system.memory(used.percent)]</label>
+                        <font>font23_narrow</font>
+                        <textcolor>$INFO[Window(10000).Property(BaldPI.OutputColor)]</textcolor>
+                        <aligny>top</aligny>
+                        <align>center</align>
+                    </control>
+                    <control type="group">
+                        <top>160</top>
+                        <left>318</left>
+                        <control type="progress">
+                            <top>0</top>
+                            <left>156</left>
+                            <width>86</width>
+                            <height>8</height>
+                            <description>BAR</description>
+                            <centertop>50%</centertop>
+                            <info>system.memory(used)</info>
                             <texturebg colordiffuse="1fededed" border="6">progress/bar.png</texturebg>
                             <lefttexture colordiffuse="00ffffff">common/dot-1x1.png</lefttexture>
                             <midtexture colordiffuse="$INFO[Window(10000).Property(BaldPI.ProgressColor)]" border="6">progress/bar.png</midtexture>
@@ -1614,8 +1640,8 @@
                     </control>
                     <control type="label">
                         <width>270</width>
-                        <align>right</align>
-                        <left>177</left>
+                        <align>center</align>
+                        <right>40</right>
                         <top>120</top>
                         <label>$INFO[Window().Property(DoviProfileNumberVar)]</label>
                         <font>font23_narrow</font>
