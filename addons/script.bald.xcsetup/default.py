@@ -1,34 +1,35 @@
 from __future__ import annotations
 
-import glob
-import http.client
-import json
 import os
 import shutil
 import sys
-import tempfile
 import xml.etree.ElementTree as ET
-import urllib.request
 
 import xbmc
 import xbmcaddon
 import xbmcgui
-import xbmcvfs
 
-from resources.lib.config import ConfigError, build_api_url, build_m3u, build_urls, redact_url
+from resources.lib.config import ConfigError, build_urls, redact_url
+from resources.lib.refresh import (
+    REFRESH_ONCE_PER_DAY,
+    build_playlist,
+    ensure_daily_refresh,
+    instance_files as _instance_files,
+    managed_instances,
+    playlist_path,
+    rebuild,
+    restart_iptv_simple as _restart_iptv_simple,
+    set_setting as _set,
+    write_instance,
+    write_playlist,
+)
 
 
 ADDON = xbmcaddon.Addon()
-IPTV_ID = "pvr.iptvsimple"
 
 
 def _log(message: str) -> None:
     xbmc.log(f"{ADDON.getAddonInfo('id')}: {message}", xbmc.LOGINFO)
-
-
-def _instance_files() -> list[str]:
-    data_dir = xbmcvfs.translatePath(f"special://profile/addon_data/{IPTV_ID}")
-    return sorted(glob.glob(os.path.join(data_dir, "instance-settings-*.xml")))
 
 
 def _choose_instance(paths: list[str]) -> str:
@@ -53,15 +54,7 @@ def _choose_instance(paths: list[str]) -> str:
     return paths[selected]
 
 
-def _set(root: ET.Element, setting_id: str, value: str) -> None:
-    node = root.find(f"setting[@id='{setting_id}']")
-    if node is None:
-        node = ET.SubElement(root, "setting", {"id": setting_id})
-    node.attrib.pop("default", None)
-    node.text = value
-
-
-def _apply(path: str, playlist_path: str, epg_url: str) -> str:
+def _apply(path: str, m3u_path: str, epg_url: str) -> str:
     tree = ET.parse(path)
     root = tree.getroot()
     if root.tag != "settings":
@@ -76,66 +69,17 @@ def _apply(path: str, playlist_path: str, epg_url: str) -> str:
     # instance, so enable it along with its playlist and EPG settings.
     _set(root, "kodi_addon_instance_enabled", "true")
     _set(root, "m3uPathType", "0")
-    _set(root, "m3uPath", playlist_path)
+    _set(root, "m3uPath", m3u_path)
     _set(root, "m3uUrl", "")
     _set(root, "m3uCache", "false")
     _set(root, "epgPathType", "1")
     _set(root, "epgUrl", epg_url)
     _set(root, "epgCache", "true")
-    directory = os.path.dirname(path)
-    descriptor, temporary = tempfile.mkstemp(prefix=".bald-xc-", suffix=".xml", dir=directory)
-    os.close(descriptor)
-    try:
-        tree.write(temporary, encoding="UTF-8", xml_declaration=True)
-        os.replace(temporary, path)
-    finally:
-        if os.path.exists(temporary):
-            os.unlink(temporary)
+    # The playlist is a local file this add-on's service rebuilds from the XC API every day.
+    # IPTV Simple's once-a-day refresh rereads it and the XMLTV, so channels and guide stay current.
+    _set(root, "m3uRefreshMode", REFRESH_ONCE_PER_DAY)
+    write_instance(tree, path)
     return backup
-
-
-def _xc_data(server: str, username: str, password: str, action: str) -> list[dict]:
-    request = urllib.request.Request(
-        build_api_url(server, username, password, action),
-        headers={"User-Agent": "Kodi/22 Bald XC Setup"},
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            payload = json.load(response)
-    except (OSError, ValueError, http.client.HTTPException) as exc:  # HTTPException: a cut-off answer
-        raise ConfigError(f"Could not read XC {action.replace('_', ' ')}: {exc}") from exc
-    if not isinstance(payload, list):
-        raise ConfigError(f"The XC {action.replace('_', ' ')} response was not a list.")
-    return payload
-
-
-def _write_playlist(content: str) -> str:
-    data_dir = xbmcvfs.translatePath(f"special://profile/addon_data/{ADDON.getAddonInfo('id')}")
-    os.makedirs(data_dir, exist_ok=True)
-    target = os.path.join(data_dir, "live.m3u")
-    descriptor, temporary = tempfile.mkstemp(prefix=".bald-xc-", suffix=".m3u", dir=data_dir)
-    try:
-        with os.fdopen(descriptor, "w", encoding="UTF-8", newline="\n") as handle:
-            handle.write(content)
-        os.replace(temporary, target)
-    finally:
-        if os.path.exists(temporary):
-            os.unlink(temporary)
-    return target
-
-
-def _restart_iptv_simple() -> None:
-    for enabled in (False, True):
-        request = json.dumps({
-            "jsonrpc": "2.0",
-            "method": "Addons.SetAddonEnabled",
-            "params": {"addonid": IPTV_ID, "enabled": enabled},
-            "id": 1,
-        })
-        response = json.loads(xbmc.executeJSONRPC(request))
-        if "error" in response:
-            raise ConfigError(f"Kodi could not {'enable' if enabled else 'disable'} IPTV Simple.")
-        xbmc.sleep(1000)
 
 
 def _prompt(label: str, current: str = "", hidden: bool = False) -> str | None:
@@ -180,33 +124,41 @@ def _credentials() -> tuple[str, str, str, str] | None:
     return server, username, password, output
 
 
+def _refresh_now() -> None:
+    """Rebuild the playlist from the stored XC account and reload IPTV Simple, without the guided flow."""
+    instances = managed_instances()
+    if not instances:
+        raise ConfigError("No IPTV Simple instance uses the Bald XC playlist yet. Run the guided setup first.")
+    changed, count = rebuild(ADDON)
+    for path in instances:
+        if ensure_daily_refresh(path):
+            _log(f"Turned on daily refresh for {os.path.basename(path)}")
+    _log(f"Refreshed {count} XC live streams (playlist {'changed' if changed else 'unchanged'})")
+    _restart_iptv_simple()
+    xbmcgui.Dialog().notification("Bald XC Setup", f"Reloaded {count} channels and the guide", ADDON.getAddonInfo("icon"))
+
+
 def main() -> None:
     try:
         if "refresh" in sys.argv[1:]:
-            server = ADDON.getSettingString("server")
-            username = ADDON.getSettingString("username")
-            password = ADDON.getSettingString("password")
-            output = ADDON.getSettingString("output") or "ts"
-            build_urls(server, username, password, output)
-        else:
-            entered = _credentials()
-            if entered is None:
-                return
-            server, username, password, output = entered
+            _refresh_now()
+            return
+        entered = _credentials()
+        if entered is None:
+            return
+        server, username, password, output = entered
         _unused_playlist_url, epg_url = build_urls(server, username, password, output)
-        categories = _xc_data(server, username, password, "get_live_categories")
-        streams = _xc_data(server, username, password, "get_live_streams")
-        playlist = build_m3u(server, username, password, output, categories, streams)
+        playlist, count = build_playlist(server, username, password, output)
         target = _choose_instance(_instance_files())
         if not xbmcgui.Dialog().yesno(
             "Bald XC Setup",
-            f"Apply {len(streams)} XC live streams to IPTV Simple?\n\n"
+            f"Apply {count} XC live streams to IPTV Simple?\n\n"
             "The current instance settings will be backed up first.",
         ):
             return
-        playlist_path = _write_playlist(playlist)
-        backup = _apply(target, playlist_path, epg_url)
-        _log(f"Configured {os.path.basename(target)} with {len(streams)} XC live streams; epg={redact_url(epg_url)}")
+        write_playlist(playlist)
+        backup = _apply(target, playlist_path(), epg_url)
+        _log(f"Configured {os.path.basename(target)} with {count} XC live streams; epg={redact_url(epg_url)}")
         _restart_iptv_simple()
         xbmcgui.Dialog().ok(
             "Bald XC Setup",

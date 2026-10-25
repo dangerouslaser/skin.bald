@@ -40,3 +40,7 @@ msgstr ""
 msgctxt "#32007"
 msgid "HLS (M3U8)"
 msgstr ""
+
+msgctxt "#32008"
+msgid "Refresh channels and guide now"
+msgstr ""

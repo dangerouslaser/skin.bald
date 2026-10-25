@@ -4,6 +4,7 @@
 		<category id="setup" label="32000">
 			<group id="wizard">
 				<setting id="launch" type="action" label="32001"><level>0</level><data>RunScript(script.bald.xcsetup,wizard)</data><control type="button" format="action"><close>true</close></control></setting>
+				<setting id="refresh" type="action" label="32008"><level>0</level><data>RunScript(script.bald.xcsetup,refresh)</data><control type="button" format="action"><close>true</close></control></setting>
 			</group>
 			<!-- Level 4 values are internal storage. The guided flow owns validation and editing. -->
 			<group id="stored">
