@@ -564,6 +564,8 @@ msgid "Clear target"
 msgstr ""
 
 #: /1080i/Custom_1132_LGTV.xml
+#: /1080i/Custom_1135_OSDLGTV.xml
+#: /1080i/Includes_Bald_OSD.xml
 #: /1080i/Settings.xml
 #. Settings hub, Playback and the OSD: the LG webOS TV (service.webostv)
 msgctxt "#31500"
@@ -572,6 +574,7 @@ msgstr ""
 
 #: /1080i/Custom_1133_Denon.xml
 #: /1080i/Includes_Bald_HomeTheater.xml
+#: /1080i/Includes_Bald_OSD.xml
 #: /1080i/Settings.xml
 #. Settings hub, Playback and the OSD: the Denon receiver (service.denonavr)
 msgctxt "#31501"
@@ -580,6 +583,7 @@ msgstr ""
 
 #: /1080i/Custom_1134_Sonos.xml
 #: /1080i/Includes_Bald_HomeTheater.xml
+#: /1080i/Includes_Bald_OSD.xml
 #: /1080i/Settings.xml
 #. Settings hub, Playback and the OSD: the Sonos player (service.sonos)
 msgctxt "#31502"
@@ -604,6 +608,7 @@ msgstr ""
 #: /1080i/Custom_1132_LGTV.xml
 #: /1080i/Custom_1133_Denon.xml
 #: /1080i/Custom_1134_Sonos.xml
+#: /1080i/Custom_1136_OSDAudioSystem.xml
 #: /1080i/Includes_Bald_HomeTheater.xml
 msgctxt "#31506"
 msgid "Mute"
@@ -689,11 +694,13 @@ msgstr ""
 
 #: /1080i/Custom_1133_Denon.xml
 #: /1080i/Custom_1134_Sonos.xml
+#: /1080i/Custom_1136_OSDAudioSystem.xml
 msgctxt "#31522"
 msgid "Incoming audio"
 msgstr ""
 
 #: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1136_OSDAudioSystem.xml
 msgctxt "#31523"
 msgid "Playing as"
 msgstr ""
@@ -773,11 +780,13 @@ msgid "Player address"
 msgstr ""
 
 #: /1080i/Custom_1134_Sonos.xml
+#: /1080i/Custom_1136_OSDAudioSystem.xml
 msgctxt "#31538"
 msgid "Night mode"
 msgstr ""
 
 #: /1080i/Custom_1134_Sonos.xml
+#: /1080i/Custom_1136_OSDAudioSystem.xml
 msgctxt "#31539"
 msgid "Speech enhancement"
 msgstr ""
@@ -830,6 +839,12 @@ msgstr ""
 #: /1080i/Custom_1134_Sonos.xml
 msgctxt "#31549"
 msgid "Player"
+msgstr ""
+
+#: /1080i/Custom_1135_OSDLGTV.xml
+#: /1080i/Custom_1136_OSDAudioSystem.xml
+msgctxt "#31552"
+msgid "More settings"
 msgstr ""
 
 #: /1080i/Custom_1119_BaldPlayback.xml
@@ -1729,6 +1744,7 @@ msgstr ""
 # Bald global overlays: 31650-31659.
 
 #: /1080i/Includes_Bald_Overlays.xml
+#: /1080i/Includes_Bald_HomeTheater.xml
 #. Volume bar label while the sound is muted
 msgctxt "#31650"
 msgid "Muted"

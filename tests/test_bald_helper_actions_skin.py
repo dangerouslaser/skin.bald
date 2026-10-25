@@ -95,6 +95,8 @@ class CallSiteTests(unittest.TestCase):
             text = (element.text or "").strip()
             if not text.startswith("NotifyAll(") or element.tag == "param":
                 continue  # the pill's helper param: test_the_next_episode_action_uses_the_pills_helper_params
+            if text.startswith(("NotifyAll(service.denonavr,", "NotifyAll(service.sonos,")):
+                continue  # the home theater add-ons' commands (tools/home_theater.py), not Bald Helper's
             with self.subTest(file=name, text=text):
                 self.assertTrue(implies(element.get("condition") or "true", SERVES))
                 parsed = request(text)

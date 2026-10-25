@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Bald video OSD (docs/SPEC.md 5.16, "Video OSD"): one row of round icon buttons under the seek layer's lifted bar,
      transport on the left and tools on the right, and an invisible seek slider over the bar (Up from the buttons).
-     Focusing a tool opens its companion panel above the row (1120-1123), focusing forward the next item card (1124);
-     Down opens the first panel of the down chain. The row fades while a chain panel is up. The bar, times and clock
+     Focusing a tool opens its companion panel above the row (1120-1123, the home theater's 1135 and 1136), focusing
+     forward the next item card (1124); Down opens the first panel of the down chain. The row fades while a chain panel is up. The bar, times and clock
      are the seek layer's (DialogSeekBar.xml), which shows with the OSD. Everything is in Includes_Bald_OSD.xml.
      Started from Kodi 22 Estuary's VideoOSD.xml (GPL-2.0-or-later, see LICENSE-Estuary.txt). CGUIDialogVideoOSD binds
      no control ids; the buttons keep Estuary's ids where the function is the same (602 play, 600 back, 607 forward,
@@ -19,6 +19,8 @@
 	<onunload>Dialog.Close(1122,true)</onunload>
 	<onunload>Dialog.Close(1123,true)</onunload>
 	<onunload>Dialog.Close(1124,true)</onunload>
+	<onunload>Dialog.Close(1135,true)</onunload>
+	<onunload>Dialog.Close(1136,true)</onunload>
 	<depth>DepthOSD</depth>
 	<zorder>1</zorder>
 	<include>Bald_PlaybackAnimWindow</include>
@@ -31,7 +33,7 @@
 			</animation>
 			<include>Bald_OSDRow</include>
 			<include>Bald_OSDSeekSliders</include>
-			<include content="Bald_OSDHints"><param name="hidden">Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124)</param></include>
+			<include content="Bald_OSDHints"><param name="hidden">Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124) | Window.IsVisible(1135) | Window.IsVisible(1136)</param></include>
 		</control>
 	</controls>
 </window>

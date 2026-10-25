@@ -81,6 +81,89 @@
 			</control>
 		</definition>
 	</include>
+
+	<!-- ============ OSD panels (1135 LG TV, 1136 the audio system) ============ -->
+	<!-- The panel: a companion panel's field surface and heading (Bald_OSDPanelSurface) over the row, ending at the
+	     right safe edge with its bottom at y 712, and the rows' grouplist <list> (7 rows on show; more
+	     scroll). Down from the last row returns to the OSD button <owner>. -->
+	<include name="Bald_OSDHomeTheaterPanel">
+		<param name="heading" />
+		<param name="list" />
+		<param name="owner" />
+		<definition>
+			<control type="group">
+				<left>1104</left>
+				<top>168</top>
+				<width>720</width>
+				<height>544</height>
+				<include>Bald_OSDAnimCompanion</include>
+				<include>Bald_OSDCompanionHide</include>
+				<include content="Bald_OSDPanelSurface"><param name="height">544</param><param name="heading">$PARAM[heading]</param></include>
+			</control>
+			<!-- Its own top-level control: Kodi fills <nested /> only in an include's top-level controls and their
+			     direct children (CGUIIncludes::InsertNested). -->
+			<control type="grouplist" id="$PARAM[list]">
+				<left>1120</left>
+				<top>256</top>
+				<width>688</width>
+				<height>440</height>
+				<orientation>vertical</orientation>
+				<itemgap>8</itemgap>
+				<scrolltime tween="cubic" easing="out">320</scrolltime>
+				<usecontrolcoords>true</usecontrolcoords>
+				<onup>noop</onup>
+				<ondown>$PARAM[owner]</ondown>
+				<include>Bald_OSDAnimCompanion</include>
+				<include>Bald_OSDCompanionHide</include>
+				<nested />
+			</control>
+		</definition>
+	</include>
+	<!-- A panel row: the video panel's row (8131) with the settings rows' radio dot at its end. -->
+	<include name="Bald_OSDHomeTheaterRow">
+		<width>688</width>
+		<height>56</height>
+		<font>Bald_Section</font>
+		<textoffsetx>32</textoffsetx>
+		<aligny>center</aligny>
+		<textcolor>bald_ink70</textcolor>
+		<focusedcolor>bald_ink</focusedcolor>
+		<disabledcolor>bald_ink28</disabledcolor>
+		<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
+		<texturenofocus />
+		<radioposx>644</radioposx>
+		<radiowidth>12</radiowidth>
+		<radioheight>12</radioheight>
+		<textureradioonfocus colordiffuse="bald_accent">bald/dot.png</textureradioonfocus>
+		<textureradioonnofocus colordiffuse="bald_accent">bald/dot.png</textureradioonnofocus>
+		<textureradioofffocus colordiffuse="bald_ink34">bald/dot.png</textureradioofffocus>
+		<textureradiooffnofocus colordiffuse="bald_ink28">bald/dot.png</textureradiooffnofocus>
+		<textureradioondisabled colordiffuse="bald_ink28">bald/dot.png</textureradioondisabled>
+		<textureradiooffdisabled colordiffuse="bald_ink10">bald/dot.png</textureradiooffdisabled>
+	</include>
+	<variable name="Bald_OSDAudioHeading">
+		<value condition="$EXP[Bald_SetupSonos]">$LOCALIZE[31502]$INFO[Window(Home).Property(Sonos.Room), · ,]</value>
+		<value>$LOCALIZE[31501]$INFO[Window(Home).Property(Denon.Model), · ,]</value>
+	</variable>
+
+	<!-- ============ Volume capsule (1137) ============ -->
+	<!-- Sonos while it is the one that changed volume, else Denon. -->
+	<expression name="Bald_ReceiverVolumeSonos">[$EXP[Bald_SetupSonos] + String.IsEqual(Window(Home).Property(Sonos.VolumeShow),true)]</expression>
+	<expression name="Bald_ReceiverVolumeShow">[[$EXP[Bald_SetupSonos] + String.IsEqual(Window(Home).Property(Sonos.VolumeShow),true)] | [$EXP[Bald_SetupDenon] + String.IsEqual(Window(Home).Property(Denon.VolumeShow),true)]]</expression>
+	<variable name="Bald_ReceiverVolumeIcon">
+		<value condition="$EXP[Bald_ReceiverVolumeSonos]">bald/osd_sonos.png</value>
+		<value>bald/osd_receiver.png</value>
+	</variable>
+	<variable name="Bald_ReceiverVolumeName">
+		<value condition="$EXP[Bald_ReceiverVolumeSonos]">$LOCALIZE[31502]</value>
+		<value>$LOCALIZE[31501]</value>
+	</variable>
+	<variable name="Bald_ReceiverVolumeValue">
+		<value condition="$EXP[Bald_ReceiverVolumeSonos] + String.IsEqual(Window(Home).Property(Sonos.Mute),true)">$LOCALIZE[31650]</value>
+		<value condition="$EXP[Bald_ReceiverVolumeSonos]">$INFO[Window(Home).Property(Sonos.Volume)]</value>
+		<value condition="String.IsEqual(Window(Home).Property(Denon.Mute),true)">$LOCALIZE[31650]</value>
+		<value>$INFO[Window(Home).Property(Denon.VolumeDisplay)]</value>
+	</variable>
 	<variable name="Bald_LGTVHelp">
 		<value condition="Control.HasFocus(105)">$LOCALIZE[31515]</value>
 		<value condition="Control.HasFocus(200)">$LOCALIZE[31516]</value>

@@ -14,6 +14,12 @@ RunScript(<addon>,...) or the NotifyAll builtin. The pages, rows and help texts 
 pages have the settings level button. Option labels and help texts are the add-ons' own strings ($ADDON[...]), so they
 stay in step with the add-ons' settings.
 
+In the video OSD (Includes_Bald_OSD.xml) each device in use has a button after process info: LG TV (70064) and the
+audio system (70065). Focusing one opens its companion panel (1135, 1136) with the live values; the rows send commands
+to the running add-on with the NotifyAll builtin (Denon, Sonos), or open one of the add-on's lists (LG TV), so the panel
+stays open while they act. A short capsule (1137) shows the receiver's or player's volume whenever it changes, in
+the place and look of Kodi's volume bar (DialogVolumeBar.xml).
+
 Which devices are in use is the user's choice (Bald Settings, Playback, Home theater; Custom_1119_BaldPlayback.xml),
 kept in the skin settings Estuary YBLOD used, setup_tv_lg, setup_receiver_denon and setup_receiver_sonos, because
 service.webostv reads setup_receiver_sonos to pick where the TV remote's volume buttons go.
@@ -452,6 +458,291 @@ def page(window_id: int, name: str, title: str, categories: list, help_var: str,
 """
 
 
+# ============ OSD panels (1135 LG TV, 1136 the audio system) ============
+# Panel rows: ("button", id, label, label2, onclick or [actions], visible[, (onleft, onright)])
+#             ("radio", id, label, selected, onclick, visible)
+
+
+def notify(addon: str, command: str) -> str:
+    return f"NotifyAll({addon},{command})"
+
+
+def more_settings(window_id: int) -> list[str]:
+    """The device's settings page. The panel and the OSD under it close first, or the page would open beneath them."""
+    return ["Dialog.Close(all,true)", f"ActivateWindow({window_id})"]
+
+
+ADJUSTMENTS = (("backlight", 32500), ("hdrDynamicToneMapping", 32501), ("noiseReduction", 32502),
+               ("mpegNoiseReduction", 32503), ("smoothGradation", 32504), ("superResolution", 32505),
+               ("eyeComfortMode", 32506))  # OSD_ADJUSTMENTS in service.webostv's ui.py, each shown once reported
+
+
+def lgtv_panel_rows() -> list[tuple]:
+    def osd(key: str) -> str:
+        return f"$INFO[{P}(WebOS.OSD.{key})]"
+
+    return [
+        ("button", 8201, w(32117), f"$INFO[{P}(WebOS.PicturePresetLabel)]", wrun("ui", "picture_preset"), ""),
+        ("button", 8202, w(32430), osd("Motion"), wrun("ui", "motion"), ""),
+        *(("button", 8203 + i, w(label), osd(key), wrun("ui", "adjust", key), f"!String.IsEmpty({P}(WebOS.OSD.{key}))")
+          for i, (key, label) in enumerate(ADJUSTMENTS)),
+        ("button", 8210, w(32102), f"$INFO[{P}(WebOS.SoundOutputLabel)]", wrun("ui", "sound_output"), ""),
+        ("button", 8211, w(32432), "", ["Dialog.Close(all,true)", wrun("screen", "off")], ""),
+        ("button", 8212, s(31552), "", more_settings(1132), ""),
+    ]
+
+
+def audio_panel_rows() -> list[tuple]:
+    denon, sonos = "$EXP[Bald_SetupDenon]", "$EXP[Bald_SetupSonos]"
+    on = f"{denon} + String.IsEqual({P}(Denon.Power),true)"
+    return [
+        ("button", 8221, s(31522), "$VAR[Bald_DenonSignalText]", "", on),
+        ("button", 8222, s(31523), f"$INFO[{P}(Denon.SoundMode)]", "", on),
+        ("button", 8223, s(14125), f"$INFO[{P}(Denon.InputName)]", "", on),
+        ("button", 8225, s(13376), "$VAR[Bald_DenonVolumeText]", "", on,
+         (notify(DENON, "volume_down"), notify(DENON, "volume_up"))),
+        ("radio", 8226, s(31506), f"String.IsEqual({P}(Denon.Mute),true)", notify(DENON, "mute"), on),
+        ("radio", 8227, s(33060), f"String.IsEqual({P}(Denon.Power),true)", notify(DENON, "power"), denon),
+        ("button", 8228, s(31552), "", more_settings(1133), denon),
+        ("button", 8229, s(31522), "$VAR[Bald_SonosFormatText]", "", sonos),
+        ("button", 8230, s(13376), "$VAR[Bald_SonosVolumeText]", "", sonos,
+         (notify(SONOS, "volume_down"), notify(SONOS, "volume_up"))),
+        ("radio", 8231, s(31506), f"String.IsEqual({P}(Sonos.Mute),true)", notify(SONOS, "mute"), sonos),
+        ("radio", 8232, s(31538), f"String.IsEqual({P}(Sonos.Night),true)", notify(SONOS, "night"),
+         f"{sonos} + {shas('Night')}"),
+        ("radio", 8233, s(31539), f"String.IsEqual({P}(Sonos.Speech),true)", notify(SONOS, "speech"),
+         f"{sonos} + {shas('Speech')}"),
+        ("button", 8234, s(31552), "", more_settings(1134), sonos),
+    ]
+
+
+# Window id, file, the panel's grouplist, its OSD button, the OSD row's slot, heading, rows, onload, comment.
+OSD_PANELS = (
+    (1135, "Custom_1135_OSDLGTV.xml", 8200, 70064, "lgtv", "$LOCALIZE[31500]$INFO[" + P + "(WebOS.Model), · ,]",
+     lgtv_panel_rows, wrun("ui", "osd_values"),
+     "LG TV (service.webostv): picture preset, motion and the picture settings the TV reports\n"
+     "     for the preset in use, sound output, screen off. Each row opens the add-on's list for it; the add-on updates\n"
+     "     the values when the pick is made, and when the panel opens for those the TV doesn't push."),
+    (1136, "Custom_1136_OSDAudioSystem.xml", 8220, 70065, "receiver", "$VAR[Bald_OSDAudioHeading]",
+     audio_panel_rows, "",
+     "the audio system: Denon (service.denonavr: incoming audio, how it plays,\n"
+     "     input, volume, mute, power) or Sonos (service.sonos: incoming audio, volume, mute, night mode, speech\n"
+     "     enhancement). Left and Right on Volume turn it down and up; every row acts through NotifyAll, so the panel\n"
+     "     stays open."),
+)
+OSD_PANEL_ROWS = 7  # rows on show; more scroll
+
+
+def panel_row(r: tuple, owner: int, t: str) -> str:
+    kind, cid, label = r[0], r[1], r[2]
+    if kind == "button":
+        _, _, _, label2, onclick, visible, *sides = r
+        lines = [f'<control type="button" id="{cid}">', "\t<include>Bald_OSDHomeTheaterRow</include>",
+                 f"\t<label>{esc(label)}</label>"]
+        if label2:
+            lines.append(f"\t<label2>{esc(label2)}</label2>")
+        for action in ([onclick] if isinstance(onclick, str) else onclick):
+            if action:
+                lines.append(f"\t<onclick>{esc(action)}</onclick>")
+        left, right = sides[0] if sides else (str(owner), str(owner))
+    else:
+        _, _, _, selected, onclick, visible = r
+        lines = [f'<control type="radiobutton" id="{cid}">', "\t<include>Bald_OSDHomeTheaterRow</include>",
+                 f"\t<label>{esc(label)}</label>", f"\t<selected>{esc(selected)}</selected>",
+                 f"\t<onclick>{esc(onclick)}</onclick>"]
+        left = right = str(owner)
+    lines += [f"\t<onleft>{esc(left)}</onleft>", f"\t<onright>{esc(right)}</onright>"]
+    if visible:
+        lines.append(f"\t<visible>{esc(visible)}</visible>")
+    lines.append("</control>")
+    return "\n".join(t + line for line in lines)
+
+
+def osd_panel(window_id: int, name: str, list_id: int, owner: int, slot: str, heading: str, rows, onload: str,
+              comment: str) -> str:
+    body = "\n".join(panel_row(r, owner, "\t\t\t\t\t") for r in rows())
+    load = f"\n\t<onload>{onload}</onload>" if onload else ""
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED by tools/home_theater.py; edit that and re-run.
+     Bald video OSD, {comment}
+     A companion panel of the video OSD (docs/SPEC.md 5.16, "Video OSD"; Includes_Bald_OSD.xml): VideoOSD opens it when
+     its button ({owner}) takes focus, and Up from the button enters it. The row is repeated with that button real and the
+     others as stand-ins that close this panel and focus the OSD's own button. -->
+<window type="dialog" id="{window_id}">
+	<defaultcontrol always="true">{owner}</defaultcontrol>{load}
+	<zorder>1</zorder>
+	<depth>DepthOSD</depth>
+	<controls>
+		<control type="group">
+			<include>Bald_OSDCompanionHide</include>
+			<include content="Bald_OSDHomeTheaterPanel">
+				<param name="heading">{esc(heading)}</param>
+				<param name="list">{list_id}</param>
+				<param name="owner">{owner}</param>
+{body}
+			</include>
+			<include content="Bald_OSDCompanionRow">
+				<param name="owner">{window_id}</param>
+				<param name="{slot}">Panel</param>
+			</include>
+			<include>Bald_OSDHints</include>
+		</control>
+	</controls>
+</window>
+"""
+
+
+# ============ Volume capsule (1137) ============
+
+def volume_capsule() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED by tools/home_theater.py; edit that and re-run. The audio system's volume, shown for a moment whenever
+     it changes (service.denonavr and service.sonos set Denon.VolumeShow / Sonos.VolumeShow for a few seconds): the TV
+     remote's volume buttons through the Remote Bridge, the receiver's or player's own remote, its app. Kodi's volume
+     bar's capsule and place (DialogVolumeBar.xml) with the device's icon and name and the volume at the right; muted,
+     the volume reads "Muted". Kodi opens and closes it by its <visible>. -->
+<window type="dialog" id="1137">
+	<visible>$EXP[Bald_ReceiverVolumeShow] + !Window.IsActive(startup)</visible>
+	<zorder>4</zorder>
+	<controls>
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<width>420</width>
+			<top>Bald_OverlayBandTop</top>
+			<height>54</height>
+			<include content="Bald_OverlayOpenClose">
+				<param name="offset" value="0,-14" />
+			</include>
+			<include content="Bald_OverlaySurface">
+				<param name="width" value="420" />
+				<param name="height" value="54" />
+				<param name="texture" value="bald/pill.png" />
+				<param name="border" value="27" />
+			</include>
+			<control type="image">
+				<left>22</left>
+				<top>13</top>
+				<width>28</width>
+				<height>28</height>
+				<aspectratio>keep</aspectratio>
+				<texture colordiffuse="bald_ink">$VAR[Bald_ReceiverVolumeIcon]</texture>
+			</control>
+			<control type="label">
+				<left>66</left>
+				<top>0</top>
+				<width>240</width>
+				<height>54</height>
+				<font>Bald_Progress</font>
+				<textcolor>bald_ink</textcolor>
+				<aligny>center</aligny>
+				<label>$VAR[Bald_ReceiverVolumeName]</label>
+			</control>
+			<control type="label">
+				<left>238</left>
+				<top>0</top>
+				<width>160</width>
+				<height>54</height>
+				<font>Bald_Progress</font>
+				<textcolor>bald_ink60</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$VAR[Bald_ReceiverVolumeValue]</label>
+			</control>
+		</control>
+	</controls>
+</window>
+"""
+
+
+def osd_includes() -> str:
+    sonos_shows = f"$EXP[Bald_SetupSonos] + String.IsEqual({P}(Sonos.VolumeShow),true)"
+    denon_shows = f"$EXP[Bald_SetupDenon] + String.IsEqual({P}(Denon.VolumeShow),true)"
+    height = OSD_PANEL_ROWS * 64 - 8
+    return f"""
+	<!-- ============ OSD panels (1135 LG TV, 1136 the audio system) ============ -->
+	<!-- The panel: a companion panel's field surface and heading (Bald_OSDPanelSurface) over the row, ending at the
+	     right safe edge with its bottom at y 712, and the rows' grouplist <list> ({OSD_PANEL_ROWS} rows on show; more
+	     scroll). Down from the last row returns to the OSD button <owner>. -->
+	<include name="Bald_OSDHomeTheaterPanel">
+		<param name="heading" />
+		<param name="list" />
+		<param name="owner" />
+		<definition>
+			<control type="group">
+				<left>1104</left>
+				<top>{712 - height - 104}</top>
+				<width>720</width>
+				<height>{height + 104}</height>
+				<include>Bald_OSDAnimCompanion</include>
+				<include>Bald_OSDCompanionHide</include>
+				<include content="Bald_OSDPanelSurface"><param name="height">{height + 104}</param><param name="heading">$PARAM[heading]</param></include>
+			</control>
+			<!-- Its own top-level control: Kodi fills <nested /> only in an include's top-level controls and their
+			     direct children (CGUIIncludes::InsertNested). -->
+			<control type="grouplist" id="$PARAM[list]">
+				<left>1120</left>
+				<top>{712 - height - 16}</top>
+				<width>688</width>
+				<height>{height}</height>
+				<orientation>vertical</orientation>
+				<itemgap>8</itemgap>
+				<scrolltime tween="cubic" easing="out">320</scrolltime>
+				<usecontrolcoords>true</usecontrolcoords>
+				<onup>noop</onup>
+				<ondown>$PARAM[owner]</ondown>
+				<include>Bald_OSDAnimCompanion</include>
+				<include>Bald_OSDCompanionHide</include>
+				<nested />
+			</control>
+		</definition>
+	</include>
+	<!-- A panel row: the video panel's row (8131) with the settings rows' radio dot at its end. -->
+	<include name="Bald_OSDHomeTheaterRow">
+		<width>688</width>
+		<height>56</height>
+		<font>Bald_Section</font>
+		<textoffsetx>32</textoffsetx>
+		<aligny>center</aligny>
+		<textcolor>bald_ink70</textcolor>
+		<focusedcolor>bald_ink</focusedcolor>
+		<disabledcolor>bald_ink28</disabledcolor>
+		<texturefocus border="12,0,0,0" colordiffuse="bald_accent">bald/menu_dot.png</texturefocus>
+		<texturenofocus />
+		<radioposx>644</radioposx>
+		<radiowidth>12</radiowidth>
+		<radioheight>12</radioheight>
+		<textureradioonfocus colordiffuse="bald_accent">bald/dot.png</textureradioonfocus>
+		<textureradioonnofocus colordiffuse="bald_accent">bald/dot.png</textureradioonnofocus>
+		<textureradioofffocus colordiffuse="bald_ink34">bald/dot.png</textureradioofffocus>
+		<textureradiooffnofocus colordiffuse="bald_ink28">bald/dot.png</textureradiooffnofocus>
+		<textureradioondisabled colordiffuse="bald_ink28">bald/dot.png</textureradioondisabled>
+		<textureradiooffdisabled colordiffuse="bald_ink10">bald/dot.png</textureradiooffdisabled>
+	</include>
+	<variable name="Bald_OSDAudioHeading">
+		<value condition="$EXP[Bald_SetupSonos]">{s(31502)}$INFO[{P}(Sonos.Room), · ,]</value>
+		<value>{s(31501)}$INFO[{P}(Denon.Model), · ,]</value>
+	</variable>
+
+	<!-- ============ Volume capsule (1137) ============ -->
+	<!-- Sonos while it is the one that changed volume, else Denon. -->
+	<expression name="Bald_ReceiverVolumeSonos">[{sonos_shows}]</expression>
+	<expression name="Bald_ReceiverVolumeShow">[[{sonos_shows}] | [{denon_shows}]]</expression>
+	<variable name="Bald_ReceiverVolumeIcon">
+		<value condition="$EXP[Bald_ReceiverVolumeSonos]">bald/osd_sonos.png</value>
+		<value>bald/osd_receiver.png</value>
+	</variable>
+	<variable name="Bald_ReceiverVolumeName">
+		<value condition="$EXP[Bald_ReceiverVolumeSonos]">{s(31502)}</value>
+		<value>{s(31501)}</value>
+	</variable>
+	<variable name="Bald_ReceiverVolumeValue">
+		<value condition="$EXP[Bald_ReceiverVolumeSonos] + String.IsEqual({P}(Sonos.Mute),true)">{s(31650)}</value>
+		<value condition="$EXP[Bald_ReceiverVolumeSonos]">$INFO[{P}(Sonos.Volume)]</value>
+		<value condition="String.IsEqual({P}(Denon.Mute),true)">{s(31650)}</value>
+		<value>$INFO[{P}(Denon.VolumeDisplay)]</value>
+	</variable>"""
+
+
 # ============ Includes ============
 
 def help_variable(name: str, categories: list) -> str:
@@ -648,6 +939,7 @@ def includes() -> str:
 			</control>
 		</definition>
 	</include>
+{osd_includes()}
 {helps}
 {lgtv_variables()}
 {denon_variables()}
@@ -709,6 +1001,9 @@ def updated_po(text: str, block: str, generated: dict[int, set[str]]) -> str:
 def outputs() -> dict[Path, str]:
     files = {XML / name: page(window_id, name, title, categories, help_var, status, model, addon)
              for window_id, name, title, categories, help_var, status, model, addon in PAGES}
+    for window_id, name, *rest in OSD_PANELS:
+        files[XML / name] = osd_panel(window_id, name, *rest)
+    files[XML / "Custom_1137_ReceiverVolume.xml"] = volume_capsule()
     files[XML / "Includes_Bald_HomeTheater.xml"] = includes()
     generated: dict[int, set[str]] = {}
     for path, text in files.items():

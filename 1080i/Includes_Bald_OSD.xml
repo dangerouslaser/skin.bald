@@ -8,8 +8,10 @@
          at y 930) and lifts 100 px (to y 830) while the OSD or a companion panel is up, and 496 px (to y 434) while a
          down-chain panel is up.
        VideoOSD (zorder 1): transport buttons on the left (play/pause, back, forward, stop), tools on the right (info,
-         audio, subtitles, video), an invisible seek slider over the lifted bar. 80 x 96 buttons at y 872.
-       companion panels (1120-1124, zorder 1): opened by focusing a tool (or the forward button). Each repeats the
+         audio, subtitles, process info, LG TV and the audio system when set up, video), an invisible seek slider over
+         the lifted bar. 80 x 96 buttons at y 872.
+       companion panels (1120-1124, and 1135 LG TV and 1136 the audio system from Includes_Bald_HomeTheater.xml,
+         zorder 1): opened by focusing a tool (or the forward button). Each repeats the
          button row: the focused button for real, the others as invisible buttons with the same ids that close the
          panel and hand focus back to the OSD (the "fake button" pattern).
        down-chain panels (PVR channels, 1125 playlist or episodes, videobookmarks, 1126 cast): Down from the buttons
@@ -32,7 +34,9 @@
 	<!-- At least one of the clearlogo, media flags or plot is set to show on the controls. -->
 	<expression name="Bald_OSDDetailsOnControls">[Skin.HasSetting(Bald.OSD.DetailsLogo) | Skin.HasSetting(Bald.OSD.DetailsFlags) | Skin.HasSetting(Bald.OSD.DetailsPlot)]</expression>
 	<!-- The OSD's button row is up: the OSD itself or one of its companion panels. -->
-	<expression name="Bald_OSDControlsUp">[Window.IsVisible(videoosd) | Window.IsVisible(musicosd) | Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124)]</expression>
+	<expression name="Bald_OSDControlsUp">[Window.IsVisible(videoosd) | Window.IsVisible(musicosd) | $EXP[Bald_OSDCompanionUp]]</expression>
+	<!-- A companion panel is up (1120-1124, and the home theater's 1135 and 1136). -->
+	<expression name="Bald_OSDCompanionUp">[Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124) | Window.IsVisible(1135) | Window.IsVisible(1136)]</expression>
 	<!-- A bottom panel that sits under the lifted bar: a down-chain row or Up Next. -->
 	<expression name="Bald_OSDPanelUp">[Window.IsVisible(1125) | Window.IsVisible(1126) | Window.IsVisible(videobookmarks) | Window.IsVisible(script-upnext-upnext.xml) | Window.IsVisible(script-upnext-stillwatching.xml) | Window.IsVisible(script-upnext-upnext-simple.xml) | Window.IsVisible(script-upnext-stillwatching-simple.xml)]</expression>
 	<!-- A panel of the down chain (channels, playlist, bookmarks, cast) or the one-channel guide is up: the seek layer's
@@ -225,6 +229,9 @@
 		<value condition="Control.HasFocus(70063) + $EXP[Bald_OSDHasProcessInfo]">$INFO[System.AddonTitle(script.bald.processinfo)]</value>
 		<value condition="Control.HasFocus(70063)">$INFO[System.AddonTitle(script.tinyppi)]</value>
 		<value condition="Control.HasFocus(70062)">$LOCALIZE[157]</value>
+		<value condition="Control.HasFocus(70064) | ControlGroup(8200).HasFocus">$LOCALIZE[31500]</value>
+		<value condition="[Control.HasFocus(70065) | ControlGroup(8220).HasFocus] + $EXP[Bald_SetupSonos]">$LOCALIZE[31502]</value>
+		<value condition="Control.HasFocus(70065) | ControlGroup(8220).HasFocus">$LOCALIZE[31501]</value>
 		<value condition="Control.HasFocus(8110)">$LOCALIZE[292]</value>
 		<value condition="Control.HasFocus(8120)">$LOCALIZE[287]</value>
 		<value condition="Control.HasFocus(8131)">$LOCALIZE[10116]</value>
@@ -234,7 +241,9 @@
 	<variable name="Bald_OSDHint">
 		<value condition="Control.HasFocus(87) | Control.HasFocus(88) | Control.HasFocus(8110) | Control.HasFocus(8120) | Control.HasFocus(8131)">$VAR[Bald_KeyDown]$LOCALIZE[31410]</value>
 		<value condition="Control.HasFocus(8132)">$VAR[Bald_KeyLeft]$LOCALIZE[31645]$VAR[Bald_KeyRight]</value>
-		<value condition="[Control.HasFocus(70060) + Integer.IsGreater(Container(8110).NumItems,0)] | [Control.HasFocus(70061) + Integer.IsGreater(Container(8120).NumItems,0)] | Control.HasFocus(70062)">$VAR[Bald_KeyUp]$LOCALIZE[31633]</value>
+		<value condition="Control.HasFocus(8225) | Control.HasFocus(8230)">$VAR[Bald_KeyLeft]$LOCALIZE[13376]$VAR[Bald_KeyRight]</value>
+		<value condition="ControlGroup(8200).HasFocus | ControlGroup(8220).HasFocus">$VAR[Bald_KeyDown]$LOCALIZE[31410]</value>
+		<value condition="[Control.HasFocus(70060) + Integer.IsGreater(Container(8110).NumItems,0)] | [Control.HasFocus(70061) + Integer.IsGreater(Container(8120).NumItems,0)] | Control.HasFocus(70062) | Control.HasFocus(70064) | Control.HasFocus(70065)">$VAR[Bald_KeyUp]$LOCALIZE[31633]</value>
 		<value condition="$EXP[Bald_OSDHasChain]">$VAR[Bald_KeyDown]$LOCALIZE[31627]</value>
 		<value condition="Player.SeekEnabled">$VAR[Bald_KeyUp]$LOCALIZE[31618]</value>
 		<value>$VAR[Bald_KeyBack]$LOCALIZE[31619]</value>
@@ -448,7 +457,8 @@
 	<!-- ============ Buttons ============
 	     The row: transport grouplist 201 from x 96 (play/pause 602, back 600, forward 607, stop 603) and tools grouplist
 	     202 ending at x 1824 (disc menu 804, teletext 70045 and 3D 70047 when they apply, then info 70043, audio 70060,
-	     subtitles 70061, TinyPPI 70063 when installed, video 70062). 80 x 96 buttons, 8 px apart, at y 872. Left from the first transport button
+	     subtitles 70061, TinyPPI 70063 when installed, LG TV 70064 and the audio system 70065 when
+     set up, video 70062). 80 x 96 buttons, 8 px apart, at y 872. Left from the first transport button
 	     wraps to the last tool, Right from the last tool to the first transport button. -->
 	<!-- Kodi's radio textures take no $VAR, so back and forward carry both icons and pick one with <selected>: the
 	     guide and record icons on Live TV. A recording shows as an accent-free dot under the record icon (the status
@@ -465,7 +475,7 @@
 	<!-- The OSD keeps its focused button while a companion panel (1120-1124) is over it, and the panel draws its
 	     own copy of that button on top: the OSD's copy fades out then, so the two do not show through each other.
 	     Window.Property(xmlfile) is the window the button belongs to (the OSD or a panel). -->
-	<expression name="Bald_OSDCompanionOpen">[String.IsEqual(Window.Property(xmlfile),VideoOSD.xml) + [Window.IsVisible(1120) | Window.IsVisible(1121) | Window.IsVisible(1122) | Window.IsVisible(1123) | Window.IsVisible(1124)]]</expression>
+	<expression name="Bald_OSDCompanionOpen">[String.IsEqual(Window.Property(xmlfile),VideoOSD.xml) + $EXP[Bald_OSDCompanionUp]]</expression>
 	<include name="Bald_OSDButton">
 		<param name="id" />
 		<param name="icon" />
@@ -836,6 +846,73 @@
 			<include content="Bald_OSDFakeButton"><param name="id">70063</param><param name="owner">$PARAM[owner]</param><param name="visible">$EXP[Bald_OSDHasPPI]</param></include>
 		</definition>
 	</include>
+	<!-- Home theater (Includes_Bald_HomeTheater.xml): LG TV (70064) and the audio system (70065, Denon's receiver or
+	     Sonos's logo) while set up. Focusing opens their panel (1135, 1136); Up enters it; Select opens the device's
+	     settings page, closing the OSD. -->
+	<include name="Bald_OSDLGTVBody">
+		<definition>
+			<include content="Bald_OSDButton">
+				<param name="id">70064</param>
+				<param name="icon">bald/osd_lgtv.png</param>
+				<param name="on">bald/osd_lgtv.png</param>
+				<param name="visible">$EXP[Bald_SetupLG]</param>
+				<onclick>Dialog.Close(all,true)</onclick>
+				<onclick>ActivateWindow(1132)</onclick>
+				<nested />
+				<include>Bald_OSDChainFrom_0</include>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_OSDSlot_Real_LGTV">
+		<include content="Bald_OSDLGTVBody">
+			<onfocus>ActivateWindow(1135)</onfocus>
+			<onup>ActivateWindow(1135)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Panel_LGTV">
+		<include content="Bald_OSDLGTVBody">
+			<onup>SetFocus(8200)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_LGTV">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70064</param><param name="owner">$PARAM[owner]</param><param name="visible">$EXP[Bald_SetupLG]</param></include>
+		</definition>
+	</include>
+	<include name="Bald_OSDReceiverBody">
+		<definition>
+			<include content="Bald_OSDButton">
+				<param name="id">70065</param>
+				<param name="icon">bald/osd_receiver.png</param>
+				<param name="on">bald/osd_sonos.png</param>
+				<param name="selected">$EXP[Bald_SetupSonos]</param>
+				<param name="visible">$EXP[Bald_SetupReceiver]</param>
+				<onclick>Dialog.Close(all,true)</onclick>
+				<onclick condition="$EXP[Bald_SetupSonos]">ActivateWindow(1134)</onclick>
+				<onclick condition="!$EXP[Bald_SetupSonos]">ActivateWindow(1133)</onclick>
+				<nested />
+				<include>Bald_OSDChainFrom_0</include>
+			</include>
+		</definition>
+	</include>
+	<include name="Bald_OSDSlot_Real_Receiver">
+		<include content="Bald_OSDReceiverBody">
+			<onfocus>ActivateWindow(1136)</onfocus>
+			<onup>ActivateWindow(1136)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Panel_Receiver">
+		<include content="Bald_OSDReceiverBody">
+			<onup>SetFocus(8220)</onup>
+		</include>
+	</include>
+	<include name="Bald_OSDSlot_Fake_Receiver">
+		<param name="owner" />
+		<definition>
+			<include content="Bald_OSDFakeButton"><param name="id">70065</param><param name="owner">$PARAM[owner]</param><param name="visible">$EXP[Bald_SetupReceiver]</param></include>
+		</definition>
+	</include>
 	<!-- Video: focusing opens the video panel (1123); Select opens Kodi's video settings. -->
 	<include name="Bald_OSDVideoBody">
 		<definition>
@@ -881,6 +958,8 @@
 		<param name="audio">Real</param>
 		<param name="subtitles">Real</param>
 		<param name="ppi">Real</param>
+		<param name="lgtv">Real</param>
+		<param name="receiver">Real</param>
 		<param name="video">Real</param>
 		<definition>
 			<control type="grouplist" id="201">
@@ -921,6 +1000,8 @@
 				<include content="Bald_OSDSlot_$PARAM[audio]_Audio"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[subtitles]_Subtitles"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[ppi]_PPI"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[lgtv]_LGTV"><param name="owner">$PARAM[owner]</param></include>
+				<include content="Bald_OSDSlot_$PARAM[receiver]_Receiver"><param name="owner">$PARAM[owner]</param></include>
 				<include content="Bald_OSDSlot_$PARAM[video]_Video"><param name="owner">$PARAM[owner]</param></include>
 			</control>
 		</definition>
@@ -939,6 +1020,8 @@
 		<param name="audio">Fake</param>
 		<param name="subtitles">Fake</param>
 		<param name="ppi">Fake</param>
+		<param name="lgtv">Fake</param>
+		<param name="receiver">Fake</param>
 		<param name="video">Fake</param>
 		<definition>
 			<include content="Bald_OSDRow">
@@ -954,6 +1037,8 @@
 				<param name="audio">$PARAM[audio]</param>
 				<param name="subtitles">$PARAM[subtitles]</param>
 				<param name="ppi">$PARAM[ppi]</param>
+				<param name="lgtv">$PARAM[lgtv]</param>
+				<param name="receiver">$PARAM[receiver]</param>
 				<param name="video">$PARAM[video]</param>
 			</include>
 		</definition>
@@ -1417,7 +1502,7 @@
 		<value condition="$EXP[Bald_OSDChainCast]">$VAR[Bald_KeyDown]$LOCALIZE[31627]</value>
 		<value>$VAR[Bald_KeyBack]$LOCALIZE[31619]</value>
 	</variable>
-	<!-- ============ Companion panels (1120-1124) ============
+	<!-- ============ Companion panels (1120-1124; 1135 and 1136 in Includes_Bald_HomeTheater.xml) ============
 	     A panel window opened by focusing a tool: its content sits above the row, and the row is repeated with the
 	     owning button real and the rest as stand-ins (Bald_OSDRow). The panel surface is a field panel ending at the
 	     right safe edge, bottom at y 712 (over the lifted status line), with ink rows and the accent-dot focus of the

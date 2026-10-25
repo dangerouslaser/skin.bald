@@ -15,14 +15,16 @@ ROOT = SKIN.parent
 OSD_INCLUDES = "Includes_Bald_OSD.xml"
 COMPANIONS = {"Custom_1120_OSDInfoPanel.xml": ("1120", "70043"), "Custom_1121_OSDAudioStreams.xml": ("1121", "70060"),
               "Custom_1122_OSDSubtitleStreams.xml": ("1122", "70061"), "Custom_1123_OSDVideoPanel.xml": ("1123", "70062"),
-              "Custom_1124_OSDNextItem.xml": ("1124", "607")}
+              "Custom_1124_OSDNextItem.xml": ("1124", "607"),
+              # The home theater's (tools/home_theater.py): LG TV and the audio system, while set up.
+              "Custom_1135_OSDLGTV.xml": ("1135", "70064"), "Custom_1136_OSDAudioSystem.xml": ("1136", "70065")}
 UPNEXT = ["script-upnext-upnext.xml", "script-upnext-stillwatching.xml", "script-upnext-upnext-simple.xml",
           "script-upnext-stillwatching-simple.xml"]
 WINDOWS = (["VideoOSD.xml", "DialogSeekBar.xml", "VideoOSDBookmarks.xml", "Custom_1119_BaldPlayback.xml",
             "Custom_1125_OSDPlaylist.xml", "Custom_1126_OSDCast.xml", "Custom_1127_OSDInfoOverlay.xml",
             "Custom_1128_OSDDetails.xml"] + list(COMPANIONS) + UPNEXT)
 # The row's buttons in order: transport, then tools.
-ROW = ["602", "600", "607", "603", "804", "70045", "70047", "70043", "70060", "70061", "70063", "70062"]
+ROW = ["602", "600", "607", "603", "804", "70045", "70047", "70043", "70060", "70061", "70063", "70064", "70065", "70062"]
 # The down chain in order; the one-channel guide left it (the channel list shows each channel's now and next).
 CHAIN = ["pvrosdchannels", "1125", "videobookmarks", "1126"]
 FOCUSABLE = {"button", "radiobutton", "togglebutton", "slider", "sliderex", "spincontrol", "spincontrolex", "edit",

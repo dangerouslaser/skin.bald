@@ -36,6 +36,8 @@
         <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1122,true)</onstart>
         <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1123,true)</onstart>
         <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1124,true)</onstart>
+        <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1135,true)</onstart>
+        <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(1136,true)</onstart>
         <onstart condition="Window.IsVisible(videoosd)">Dialog.Close(videoosd)</onstart>
         <onstart condition="Window.IsVisible(musicosd)">Dialog.Close(musicosd)</onstart>
         <stop>String.IsEmpty(Window(home).Property(Bald.OSD.Close))</stop>

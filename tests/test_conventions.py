@@ -101,6 +101,28 @@ class IdMapTests(unittest.TestCase):
                 with self.subTest(file=name, id=value):
                     self.assertTrue(covered(int(value)))
 
+class NestedTests(unittest.TestCase):
+    """Kodi fills an include's <nested /> only where it is one of the include's top-level elements or a direct child of
+    one (CGUIIncludes::InsertNested); deeper, the caller's content is dropped without a log line (the home theater's
+    OSD panels lost every row that way). tests/kodi_includes.py resolves deeper ones too, so check the depth here."""
+
+    # Known and not fixed yet: the music artwork view's clearlogo and logo scrim (View_550_Bald_Music.xml) go into
+    # Bald_MusicArtFrame's inner group, two levels down, so Kodi drops them.
+    KNOWN = {"Bald_MusicArtFrame"}
+
+    def test_nested_is_top_level_or_a_direct_child(self):
+        for path in sorted(SKIN.glob("*.xml")):
+            for include in ET.parse(path).getroot().iter("include"):
+                if not include.get("name") or include.get("name") in self.KNOWN:
+                    continue
+                body = include.find("definition")
+                body = include if body is None else body
+                allowed = {id(child) for child in body} | {id(grand) for child in body for grand in child}
+                for nested in body.iter("nested"):
+                    with self.subTest(file=path.name, include=include.get("name")):
+                        self.assertIn(id(nested), allowed)
+
+
 if __name__ == "__main__":
     unittest.main()
 
