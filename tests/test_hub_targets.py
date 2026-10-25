@@ -70,6 +70,8 @@ class PickerTests(unittest.TestCase):
             "Weather": ("grouping://bald/weather/", "weather"),
             "Live TV": ("grouping://bald/pvr/", "tvchannels"),
             "Radio": ("grouping://bald/radio/", "radiochannels"),
+            # The LG TV's apps and inputs (service.webostv), while it is the TV set up (Includes_Bald_HomeTheater.xml).
+            "LG TV": ("grouping://bald/lgtv/", "programs"),
         }
         self.assertEqual({name: (e["path"], e["node"]) for name, e in entries.items()}, expected)
         # Rows need folders (a row is a list's content): no builtins here. The recently played channels are picked

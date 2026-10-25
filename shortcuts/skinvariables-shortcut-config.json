@@ -29,6 +29,14 @@
             "icon": "DefaultMusicAlbums.png",
             "link": "false",
             "node": "radiochannels"
+        },
+        {
+            "name": "LG TV",
+            "path": "grouping://bald/lgtv/",
+            "icon": "special://skin/media/bald/osd_lgtv.png",
+            "link": "false",
+            "node": "programs",
+            "rule": "Skin.HasSetting(setup_tv_lg) + System.AddonIsEnabled(service.webostv)"
         }
     ],
     "grouping://hubs/": [
@@ -83,6 +91,14 @@
             "icon": "DefaultMusicAlbums.png",
             "link": "false",
             "node": "radiochannels"
+        },
+        {
+            "name": "LG TV",
+            "path": "plugin://service.webostv/?view=apps",
+            "icon": "special://skin/media/bald/osd_lgtv.png",
+            "link": "false",
+            "node": "programs",
+            "rule": "Skin.HasSetting(setup_tv_lg) + System.AddonIsEnabled(service.webostv)"
         }
     ],
     "grouping://bald/video/": [
@@ -604,6 +620,22 @@
             "icon": "DefaultMusicAlbums.png",
             "link": "true",
             "node": "radiotimers"
+        }
+    ],
+    "grouping://bald/lgtv/": [
+        {
+            "name": "LG TV apps",
+            "path": "plugin://service.webostv/?view=apps",
+            "icon": "special://skin/media/bald/osd_lgtv.png",
+            "link": "true",
+            "node": "programs"
+        },
+        {
+            "name": "LG TV inputs",
+            "path": "plugin://service.webostv/?view=inputs",
+            "icon": "special://skin/media/bald/osd_lgtv.png",
+            "link": "true",
+            "node": "programs"
         }
     ],
     "grouping://bald/power/": [
