@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<!-- Bald is remote-only; see RunScript(skin.bald,mouse) in scripts/info.py. -->
-	<onload condition="System.GetBool(input.enablemouse)">RunScript(skin.bald,mouse)</onload>
+	<!-- Bald is remote-only, but for the LG TV's Magic Remote pointer (Bald_WebOSPointer); see RunScript(skin.bald,mouse)
+	     in scripts/info.py. -->
+	<onload condition="System.GetBool(input.enablemouse) + !$EXP[Bald_WebOSPointer]">RunScript(skin.bald,mouse)</onload>
+	<onload condition="!System.GetBool(input.enablemouse) + $EXP[Bald_WebOSPointer]">RunScript(skin.bald,mouse,on)</onload>
 	<!-- Startup splash, only when Kodi starts on Home (window 10000) and Appearance's "Preload Home at startup" is on:
 	     Home shows it while Bald.Preload is set and every row loads behind it (Includes_Bald_Home.xml, Bald_Preloading).
 	     Startup.xml does not run on ReloadSkin or a skin switch, so neither shows it. The alarm is the hard timeout

@@ -105,7 +105,7 @@ class SplashTests(unittest.TestCase):
         startup = ET.parse(XML / "Startup.xml").getroot()
         onload = [(node.get("condition"), node.text) for node in startup.findall("onload")]
         # The remote-only mouse fix and the hand-off to the startup window stay.
-        self.assertIn(("System.GetBool(input.enablemouse)", "RunScript(skin.bald,mouse)"), onload)
+        self.assertIn(("System.GetBool(input.enablemouse) + !$EXP[Bald_WebOSPointer]", "RunScript(skin.bald,mouse)"), onload)
         self.assertEqual(onload[-1], (None, "ReplaceWindow($INFO[System.StartupWindow])"))
         wanted = "!Skin.HasSetting(Bald.DisablePreload) + String.IsEqual(System.StartupWindow,10000)"
         for action in ("SetProperty(Bald.Preload,1,home)", "AlarmClock(bald_preload,noop,00:10,silent)"):

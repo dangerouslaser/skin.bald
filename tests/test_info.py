@@ -634,7 +634,20 @@ class MouseInputTests(unittest.TestCase):
                 loads = ET.parse(root / name).getroot().findall('onload')
                 mouse = [n for n in loads if n.text == 'RunScript(skin.bald,mouse)']
                 self.assertEqual(len(mouse), 1)
-                self.assertEqual(mouse[0].get('condition'), 'System.GetBool(input.enablemouse)')
+                self.assertEqual(mouse[0].get('condition'),
+                                 'System.GetBool(input.enablemouse) + !$EXP[Bald_WebOSPointer]')
+                # The LG TV's Magic Remote pointer is the one mouse Bald takes (Includes_Bald_HomeTheater.xml).
+                on = [n for n in loads if n.text == 'RunScript(skin.bald,mouse,on)']
+                self.assertEqual([n.get('condition') for n in on],
+                                 ['!System.GetBool(input.enablemouse) + $EXP[Bald_WebOSPointer]'])
+
+    def test_mouse_on_turns_kodis_mouse_setting_back_on(self):
+        xbmc = Mock()
+        xbmc.executeJSONRPC.return_value = json.dumps({'jsonrpc': '2.0', 'id': 1, 'result': True})
+        with patch.dict('sys.modules', {'xbmc': xbmc, 'xbmcgui': Mock()}):
+            info.run('mouse', 'on')
+        request = json.loads(xbmc.executeJSONRPC.call_args.args[0])
+        self.assertEqual(request['params'], {'setting': 'input.enablemouse', 'value': True})
 
 
 class MakeItemTests(unittest.TestCase):

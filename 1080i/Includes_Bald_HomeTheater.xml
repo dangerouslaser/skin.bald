@@ -9,6 +9,9 @@
 	<expression name="Bald_SetupDenon">[Skin.HasSetting(setup_receiver_denon) + System.AddonIsEnabled(service.denonavr)]</expression>
 	<expression name="Bald_SetupSonos">[Skin.HasSetting(setup_receiver_sonos) + System.AddonIsEnabled(service.sonos)]</expression>
 	<expression name="Bald_SetupReceiver">[$EXP[Bald_SetupDenon] | $EXP[Bald_SetupSonos]]</expression>
+	<!-- The LG TV's Magic Remote pointer is in use (Settings > LG TV > TV integration: Remote Bridge and its pointer on):
+	     Kodi's mouse input stays on and Pointer.xml draws the TV's pointer. -->
+	<expression name="Bald_WebOSPointer">[$EXP[Bald_SetupLG] + Addon.SettingBool(service.webostv,remote_bridge) + Addon.SettingBool(service.webostv,bridge_pointer)]</expression>
 	<!-- The choices' values (Custom_1119_BaldPlayback.xml), noting an add-on that is not installed. -->
 	<variable name="Bald_SetupTVLabel">
 		<value condition="Skin.HasSetting(setup_tv_lg) + !System.HasAddon(service.webostv)">$LOCALIZE[31556] · $LOCALIZE[31557]</value>
@@ -22,6 +25,167 @@
 		<value condition="Skin.HasSetting(setup_receiver_sonos)">$LOCALIZE[31502]</value>
 		<value>$LOCALIZE[16018]</value>
 	</variable>
+
+	<!-- ============ Pointer (Pointer.xml) ============ -->
+	<include name="Bald_WebOSPointer_point">
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture fallback="bald/pointer_arrow.png">special://profile/addon_data/service.webostv/pointer/point.png</texture>
+			<visible>String.IsEmpty(Window(Home).Property(WebOS.PointerLook))</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_down.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),down)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_up.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),up)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_downx.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),downx)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_upx.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),upx)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_end.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),end)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_enter.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),enter)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_exit.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),exit)</visible>
+		</control>
+	</include>
+	<include name="Bald_WebOSPointer_hover">
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture fallback="bald/pointer_focus.png">special://profile/addon_data/service.webostv/pointer/hover.png</texture>
+			<visible>String.IsEmpty(Window(Home).Property(WebOS.PointerLook))</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_down.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),down)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_up.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),up)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_downx.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),downx)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_upx.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),upx)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_end.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),end)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_enter.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),enter)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_exit.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerLook),exit)</visible>
+		</control>
+	</include>
+	<include name="Bald_WebOSPointer_drag">
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture fallback="bald/pointer_arrow.png">special://profile/addon_data/service.webostv/pointer/drag.png</texture>
+		</control>
+	</include>
+	<include name="Bald_WebOSPointer_hold">
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture fallback="bald/pointer_click.png">special://profile/addon_data/service.webostv/pointer/hold.png</texture>
+			<visible>!String.IsEqual(Window(Home).Property(WebOS.PointerAnimated),true)</visible>
+		</control>
+		<control type="image">
+			<left>-128</left>
+			<top>-128</top>
+			<width>256</width>
+			<height>256</height>
+			<texture>special://profile/addon_data/service.webostv/pointer/anim_press.apng</texture>
+			<visible>String.IsEqual(Window(Home).Property(WebOS.PointerAnimated),true)</visible>
+		</control>
+	</include>
 
 	<!-- ============ Settings pages (1132 LG TV, 1133 Denon, 1134 Sonos) ============ -->
 	<!-- The rows: Kodi's settings pages' grouplist (SettingsCategory.xml 5), Left back to the categories. -->

@@ -11,8 +11,15 @@
 	     Not before the hubs migration has run (docs/NOTES.md, Home hubs): until Bald.HubsMigrated is set, Home starts
 	     it instead (unless Startup.xml already has, Bald.HubsMigrating), and the script builds when it has written the
 	     hubs list. Startup does not run on a live skin update or ReloadSkin, so Home must be able to start it too. -->
-	<!-- Startup does not run on a skin switch or ReloadSkin, so Home also turns mouse input off. -->
-	<onload condition="System.GetBool(input.enablemouse)">RunScript(skin.bald,mouse)</onload>
+	<!-- Startup does not run on a skin switch or ReloadSkin, so Home also turns mouse input off (or on, for the LG TV's
+	     pointer once it is turned on in Settings > LG TV). -->
+	<onload condition="System.GetBool(input.enablemouse) + !$EXP[Bald_WebOSPointer]">RunScript(skin.bald,mouse)</onload>
+	<onload condition="!System.GetBool(input.enablemouse) + $EXP[Bald_WebOSPointer]">RunScript(skin.bald,mouse,on)</onload>
+	<!-- For service.webostv's Remote Bridge: where the remote's scroll wheel moves by button instead of Kodi's analog
+	     scroll. Sideways: horizontal rows (Home's rows, the Posters, Poster low and TV views). Buttons: grid panels (the
+	     Wall, Wall preview, TV alternates and music views), whose analog scroll needs several notches per row. -->
+	<onload condition="$EXP[Bald_SetupLG]">SetProperty(WebOS.WheelSideways,"[Window.IsActive(home) + !ControlGroup(9000).HasFocus] | Control.HasFocus(510) | Control.HasFocus(515) | Control.HasFocus(520) | Control.HasFocus(530) | Control.HasFocus(540)",home)</onload>
+	<onload condition="$EXP[Bald_SetupLG]">SetProperty(WebOS.WheelButtons,"Control.HasFocus(511) | Control.HasFocus(512) | Control.HasFocus(521) | Control.HasFocus(550)",home)</onload>
 	<!-- Home theater (Bald Settings, Playback): the TV and audio system start out as the add-ons installed, once each.
 	     Sonos wins over Denon when both are there, as in Estuary YBLOD. -->
 	<onload condition="!Skin.HasSetting(setup_chosen) + System.HasAddon(service.webostv)">Skin.SetBool(setup_tv_lg)</onload>

@@ -376,9 +376,11 @@ def make_item(xbmc, xbmcgui, media_type, dbid, details):
     return item
 
 
-def disable_mouse(xbmc):
-    """Bald is remote-only: hover focus and clicks break its focus model, so turn Kodi's mouse input off."""
-    rpc(xbmc, "Settings.SetSettingValue", {"setting": "input.enablemouse", "value": False})
+def set_mouse(xbmc, enabled=False):
+    """Bald is remote-only: hover focus and clicks break its focus model, so turn Kodi's mouse input off. The one
+    exception is the LG TV's Magic Remote pointer through service.webostv's Remote Bridge, a mouse to Kodi, which turns
+    it back on while it is in use (Bald_WebOSPointer, Includes_Bald_HomeTheater.xml)."""
+    rpc(xbmc, "Settings.SetSettingValue", {"setting": "input.enablemouse", "value": bool(enabled)})
 
 
 # Font.xml fontset ids Bald Settings > Appearance offers, in file order: DM Sans (Default, lookandfeel.font's
@@ -426,7 +428,8 @@ def run(action="", media_type="", dbid=""):
         publish(xbmc, xbmcgui, media_type)
         return
     if action == "mouse":
-        disable_mouse(xbmc)
+        # RunScript(skin.bald,mouse[,on])
+        set_mouse(xbmc, media_type == "on")
         return
     if action == "hubs":
         import xbmcvfs
