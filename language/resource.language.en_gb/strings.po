@@ -563,6 +563,322 @@ msgctxt "#31209"
 msgid "Clear target"
 msgstr ""
 
+#: /1080i/Custom_1132_LGTV.xml
+#: /1080i/Settings.xml
+#. Settings hub, Playback and the OSD: the LG webOS TV (service.webostv)
+msgctxt "#31500"
+msgid "LG TV"
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Includes_Bald_HomeTheater.xml
+#: /1080i/Settings.xml
+#. Settings hub, Playback and the OSD: the Denon receiver (service.denonavr)
+msgctxt "#31501"
+msgid "Denon"
+msgstr ""
+
+#: /1080i/Custom_1134_Sonos.xml
+#: /1080i/Includes_Bald_HomeTheater.xml
+#: /1080i/Settings.xml
+#. Settings hub, Playback and the OSD: the Sonos player (service.sonos)
+msgctxt "#31502"
+msgid "Sonos"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31503"
+msgid "Picture preset"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31504"
+msgid "Apps"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31505"
+msgid "Sound output"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1134_Sonos.xml
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31506"
+msgid "Mute"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31507"
+msgid "Screen"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31508"
+msgid "Turn TV off"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31509"
+msgid "Remote buttons"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31510"
+msgid "Connection"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31511"
+msgid "Find TV on the network"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31512"
+msgid "Re-pair"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31513"
+msgid "Picture"
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31514"
+msgid "Send a message to the TV"
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31515"
+msgid "Turning the screen off keeps the sound playing. Press any button on the TV remote to turn it back on."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31516"
+msgid "Picture preset for what's on screen now. The list shows the presets the TV offers for the current signal."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31517"
+msgid "Preset to switch to when a video of this type starts. Pick from the presets the TV offers."
+msgstr ""
+
+#: /1080i/Custom_1132_LGTV.xml
+msgctxt "#31518"
+msgid "This TV's webOS doesn't report its picture preset, so presets come from a built-in list and the current one shown is the last one set from Kodi."
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+msgctxt "#31519"
+msgid "Receiver"
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31520"
+msgid "Find receiver on the network"
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+msgctxt "#31521"
+msgid "Receiver address"
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31522"
+msgid "Incoming audio"
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+msgctxt "#31523"
+msgid "Playing as"
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31524"
+msgid "Volume step"
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31525"
+msgid "Maximum volume"
+msgstr ""
+
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31526"
+msgid "TV remote"
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31527"
+msgid "Looks for Denon receivers on your network and uses the one you pick. Denon receivers need no pairing."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31528"
+msgid "Type the receiver's IP address if it isn't found on the network."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31529"
+msgid "How much one volume up or down press changes the receiver's volume."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31530"
+msgid "Nothing in Kodi turns the receiver up past this, a safety cap. 0 dB is reference level (80 on the receiver's display)."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31531"
+msgid "Turns the receiver on, or puts it in standby."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31532"
+msgid "Standby"
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31533"
+msgid "Select to open the receiver menu: incoming audio, how it plays, volume and mute."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31534"
+msgid "The audio format coming in from Kodi, and how the receiver decodes it, as the receiver reports them. Its calibrated sound modes are never changed."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31535"
+msgid "No signal"
+msgstr ""
+
+#: /1080i/Custom_1134_Sonos.xml
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31536"
+msgid "Find player on the network"
+msgstr ""
+
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31537"
+msgid "Player address"
+msgstr ""
+
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31538"
+msgid "Night mode"
+msgstr ""
+
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31539"
+msgid "Speech enhancement"
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31540"
+msgid "Not the TV"
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31541"
+msgid "Looks for Sonos players on your network and uses the one you pick. Home-theater players (Arc, Beam, Ray, Amp) come first. Sonos needs no pairing."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31542"
+msgid "Type the player's IP address if it isn't found on the network."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31543"
+msgid "Select to open the Sonos menu: incoming audio, volume, mute, night mode and speech enhancement."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31544"
+msgid "The audio format coming in from the TV, as the player reports it."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31545"
+msgid "Night mode: softer loud sounds and clearer dialogue at low volume."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31546"
+msgid "Speech enhancement: clearer dialogue."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31547"
+msgid "How much one volume up or down press changes the player's volume (0 to 100)."
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31548"
+msgid "Nothing in Kodi turns the player up past this, a safety cap (0 to 100)."
+msgstr ""
+
+#: /1080i/Custom_1134_Sonos.xml
+msgctxt "#31549"
+msgid "Player"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Bald Settings, Playback: the category for the TV and audio system
+msgctxt "#31553"
+msgid "Home theater"
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Bald Settings, Playback: note for Home theater
+msgctxt "#31554"
+msgid "The TV and audio system Kodi controls through their add-ons. Each adds its page to Settings and its button to the video controls."
+msgstr ""
+
+#: /1080i/Custom_1119_BaldPlayback.xml
+#. Bald Settings, Playback: the receiver or soundbar in use
+msgctxt "#31555"
+msgid "Audio system"
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+msgctxt "#31556"
+msgid "LG (webOS)"
+msgstr ""
+
+#: /1080i/Includes_Bald_HomeTheater.xml
+#. After a home theater choice whose add-on is missing
+msgctxt "#31557"
+msgid "add-on not installed"
+msgstr ""
+
+#: /1080i/Settings.xml
+#. Settings hub: note for LG TV
+msgctxt "#31558"
+msgid "Your LG TV: inputs and apps, picture presets for each kind of video, motion and sound rules, and the Remote Bridge."
+msgstr ""
+
+#: /1080i/Settings.xml
+#. Settings hub: note for Denon
+msgctxt "#31559"
+msgid "Your Denon receiver: power, input, incoming audio and volume."
+msgstr ""
+
+#: /1080i/Settings.xml
+#. Settings hub: note for Sonos
+msgctxt "#31560"
+msgid "Your Sonos player: incoming audio, night mode, speech enhancement and volume."
+msgstr ""
+
 #: /1080i/MyWeather.xml
 #. Weather page: hint while the tab row (Now, Daily, Hourly, Maps) has focus
 msgctxt "#31701"
@@ -1817,6 +2133,9 @@ msgstr ""
 #: /1080i/SettingsCategory.xml
 #: /1080i/SettingsProfile.xml
 #: /1080i/SettingsSystemInfo.xml
+#: /1080i/Custom_1132_LGTV.xml
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1134_Sonos.xml
 msgctxt "#31738"
 msgid "Settings"
 msgstr ""
@@ -1854,6 +2173,9 @@ msgstr ""
 #: /1080i/Includes.xml
 #: /1080i/Custom_1119_BaldPlayback.xml
 #: /1080i/View_521_Bald_TV_Alternates.xml
+#: /1080i/Custom_1132_LGTV.xml
+#: /1080i/Custom_1133_Denon.xml
+#: /1080i/Custom_1134_Sonos.xml
 msgctxt "#31747"
 msgid "Change"
 msgstr ""

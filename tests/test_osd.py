@@ -424,7 +424,8 @@ class SettingsTests(unittest.TestCase):
                     self.assertRegex(selected, r"^!Skin\.HasSetting\(Bald\.OSD\.(Hide|No)\w+\)")
 
     def test_value_labels_end_with_the_default(self):
-        definitions = {node.get("name"): node for node in ET.parse(SKIN / OSD_INCLUDES).getroot().iter("variable")}
+        definitions = {node.get("name"): node for name in (OSD_INCLUDES, "Includes_Bald_HomeTheater.xml")
+                       for node in ET.parse(SKIN / name).getroot().iter("variable")}
         for row in self.page.iter("control"):
             label2 = row.findtext("label2")
             if not label2:

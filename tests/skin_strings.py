@@ -10,7 +10,9 @@ BALD_RANGE = range(31700, 32000)
 RATINGS_RANGE = range(31300, 31400)
 # Music (Includes_Bald_Music.xml and the music windows).
 MUSIC_RANGE = range(31400, 31500)
-BALD_EXTRA_RANGES = (range(31200, 31300), RATINGS_RANGE, MUSIC_RANGE)
+# Home theater: the LG TV, Denon and Sonos windows (tools/home_theater.py writes these entries).
+HOME_THEATER_RANGE = range(31500, 31597)
+BALD_EXTRA_RANGES = (range(31200, 31300), RATINGS_RANGE, MUSIC_RANGE, HOME_THEATER_RANGE)
 
 
 def is_bald(num):

@@ -23,7 +23,7 @@ BALD_FILES = sorted(
     )
 )
 # Names that are the same in every language.
-PROPER_NOUNS = ("CoreELEC", "LibreELEC", "Dolby Vision", "HDR10+", "HDR10", "HLG", "SDR", "Jellyfin")
+PROPER_NOUNS = ("CoreELEC", "LibreELEC", "Dolby Vision", "HDR10+", "HDR10", "HLG", "SDR", "Jellyfin", "dB")
 # Variables whose values are state for SetProperty (window property values), never shown.
 STATE_VARIABLES = {"Bald_StartScreen", "Bald_BlurDiffuse"}
 TEXT_PARAMS = re.compile(r"^(label|label2|title|first|second|third|note|hint|[a-z_]+_hint)$")

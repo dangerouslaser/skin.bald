@@ -59,6 +59,24 @@
 					<onclick>ActivateWindow(SystemSettings)</onclick>
 				</item>
 				<item>
+					<label>$LOCALIZE[31500]</label>
+					<label2>$LOCALIZE[31558]</label2>
+					<onclick>ActivateWindow(1132)</onclick>
+					<visible>$EXP[Bald_SetupLG]</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[31501]</label>
+					<label2>$LOCALIZE[31559]</label2>
+					<onclick>ActivateWindow(1133)</onclick>
+					<visible>$EXP[Bald_SetupDenon]</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[31502]</label>
+					<label2>$LOCALIZE[31560]</label2>
+					<onclick>ActivateWindow(1134)</onclick>
+					<visible>$EXP[Bald_SetupSonos]</visible>
+				</item>
+				<item>
 					<label>CoreELEC</label>
 					<label2>$LOCALIZE[31734]</label2>
 					<onclick>RunAddon(service.coreelec.settings)</onclick>

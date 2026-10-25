@@ -4,7 +4,7 @@
      means the default; buttons cycle their values and show the current one through a label variable whose last value
      is the default (Bald_OSD*Label). Settings levels (Includes_Bald_Configure.xml): background video is Basic;
      background shading, the background video dim and the pause delay are Advanced; the rest is Standard, so Pause,
-     Info overlay and Panels hide at Basic. -->
+     Info overlay and Panels hide at Basic. Home theater (Basic) chooses the TV and audio system Bald controls. -->
 <window type="window" id="1119">
 	<include>Bald_CurtainHandoff</include>
 	<defaultcontrol always="true">9700</defaultcontrol>
@@ -19,6 +19,7 @@
 				<item id="2"><label>$LOCALIZE[31621]</label><property name="note">$LOCALIZE[31972]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
 				<item id="3"><label>$LOCALIZE[31973]</label><property name="note">$LOCALIZE[31974]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
 				<item id="4"><label>$LOCALIZE[31975]</label><property name="note">$LOCALIZE[31976]</property><visible>$EXP[Bald_SettingsLevel_standard]</visible></item>
+				<item id="5"><label>$LOCALIZE[31553]</label><property name="note">$LOCALIZE[31554]</property></item>
 			</content>
 		</control>
 		<include content="Bald_SettingsLevelButton"><param name="list">9700</param><param name="right">9800</param></include>
@@ -85,6 +86,24 @@
 				<control type="radiobutton" id="9834"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param><param name="level">standard</param></include><label>$LOCALIZE[298]</label><selected>!Skin.HasSetting(Bald.OSD.NoBookmarksPanel)</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoBookmarksPanel)</onclick></control>
 				<!-- Needs TMDb Helper or Bald Helper (optional dependencies); dimmed without both. -->
 				<control type="radiobutton" id="9835"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">4</param><param name="level">standard</param></include><label>$LOCALIZE[31638]</label><selected>!Skin.HasSetting(Bald.OSD.NoCastPanel) + $EXP[Bald_OSDCastProvider]</selected><onclick>Skin.ToggleSetting(Bald.OSD.NoCastPanel)</onclick><enable>$EXP[Bald_OSDCastProvider]</enable></control>
+				<!-- Home theater (Includes_Bald_HomeTheater.xml): the TV cycles none and LG; the audio system none, Denon
+				     and Sonos. Picking a device whose add-on is missing offers to install it. setup_*_chosen stop Home
+				     choosing for the user again. -->
+				<control type="button" id="9841"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">5</param><param name="level">basic</param></include><label>$LOCALIZE[19020]</label><label2>$VAR[Bald_SetupTVLabel]</label2>
+					<onclick condition="!Skin.HasSetting(setup_tv_lg) + !System.HasAddon(service.webostv)">InstallAddon(service.webostv)</onclick>
+					<onclick condition="!Skin.HasSetting(setup_tv_lg)">Skin.SetBool(setup_tv_lg)</onclick>
+					<onclick condition="Skin.HasSetting(setup_tv_lg)">Skin.Reset(setup_tv_lg)</onclick>
+					<onclick>Skin.SetBool(setup_chosen)</onclick>
+				</control>
+				<control type="button" id="9842"><include content="Bald_SettingRow"><param name="list">9700</param><param name="item">5</param><param name="level">basic</param></include><label>$LOCALIZE[31555]</label><label2>$VAR[Bald_SetupReceiverLabel]</label2>
+					<onclick condition="!Skin.HasSetting(setup_receiver_denon) + !Skin.HasSetting(setup_receiver_sonos) + !System.HasAddon(service.denonavr)">InstallAddon(service.denonavr)</onclick>
+					<onclick condition="!Skin.HasSetting(setup_receiver_denon) + !Skin.HasSetting(setup_receiver_sonos)">Skin.SetBool(setup_receiver_denon)</onclick>
+					<onclick condition="Skin.HasSetting(setup_receiver_denon) + !System.HasAddon(service.sonos)">InstallAddon(service.sonos)</onclick>
+					<onclick condition="Skin.HasSetting(setup_receiver_denon)">Skin.SetBool(setup_receiver_sonos)</onclick>
+					<onclick condition="Skin.HasSetting(setup_receiver_denon)">Skin.Reset(setup_receiver_denon)</onclick>
+					<onclick condition="Skin.HasSetting(setup_receiver_sonos) + !Skin.HasSetting(setup_receiver_denon)">Skin.Reset(setup_receiver_sonos)</onclick>
+					<onclick>Skin.SetBool(setup_receiver_chosen)</onclick>
+				</control>
 			</control>
 		</include>
 		<include content="Bald_SettingsHints"><param name="first">$VAR[Bald_KeyBack]$LOCALIZE[31746]</param><param name="second">$VAR[Bald_KeySelect]$LOCALIZE[31747]</param></include>
