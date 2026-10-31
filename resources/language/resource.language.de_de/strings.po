@@ -1004,16 +1004,16 @@ msgid "In / drop / out"
 msgstr "In / Drop / Out"
 
 msgctxt "#32249"
-msgid "Processor"
-msgstr "Prozessor"
+msgid "CPU cores"
+msgstr "CPU Kerne"
 
 msgctxt "#32250"
 msgid "Temperature"
 msgstr "Temperatur"
 
 msgctxt "#32251"
-msgid "Memory usage"
-msgstr "Speichernutzung"
+msgid "CPU / RAM"
+msgstr "CPU / RAM"
 
 msgctxt "#32252"
 msgid "Player cache"
@@ -1470,3 +1470,19 @@ msgstr "%s h"
 msgctxt "#32365"
 msgid "Dolby Vision"
 msgstr "Dolby Vision"
+
+msgctxt "#32366"
+msgid "Chapter %s"
+msgstr "Kapitel %s"
+
+msgctxt "#32367"
+msgid "Chapter %s of %s"
+msgstr "Kapitel %s von %s"
+
+msgctxt "#32368"
+msgid "Progress bar"
+msgstr "Fortschrittsbalken"
+
+msgctxt "#32369"
+msgid "Show chapter markers"
+msgstr "Kapitelmarken anzeigen"
