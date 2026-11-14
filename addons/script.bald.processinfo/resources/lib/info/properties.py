@@ -7,6 +7,7 @@ subtitles and system.
 ``info.publish`` writes them into the window properties the skin shows.
 """
 
+import math
 import re
 
 from core import platform
@@ -564,31 +565,63 @@ def get_SubtitleCodecVar() -> str:
 
 # --- System properties -----------------------------------------------------
 
-_CPU_CORE_RE = re.compile(r"#\d+:\s*([\d.]+)%")
+_CPU_CORE_RE = re.compile(r"#(\d+):\s*([^%\s]+)%")
+
+# The last finite load of each core, by core number.  Kodi reports a core as
+# ``nan%`` when its /proc/stat counters did not move between two samples (a
+# read within the same tick, or a core the SoC parked), so such a core keeps
+# its previous reading instead of breaking the row.
+_last_core_loads: dict[int, float] = {}
 
 
 def _cpu_core_loads(raw: str) -> list[float]:
-    """Return the per-core percentages from ``System.CpuUsage``."""
+    """Return the per-core percentages from ``System.CpuUsage``.
+
+    A core reading ``nan`` / ``inf`` takes its last finite load; one never
+    read before, or unreadable text, is skipped.
+    """
     loads = []
-    for val in _CPU_CORE_RE.findall(raw):
+    for core, val in _CPU_CORE_RE.findall(raw):
         try:
-            loads.append(float(val))
+            load = float(val)
         except ValueError:
             continue
+        index = int(core)
+        if math.isfinite(load):
+            load = max(0.0, min(load, 100.0))
+            _last_core_loads[index] = load
+        elif index in _last_core_loads:
+            load = _last_core_loads[index]
+        else:
+            continue
+        loads.append(load)
     return loads
 
 
+# The more cores, the tighter the row, so it still ends within the bars
+# beneath it: up to this many each load keeps its percent sign...
+_CPU_PERCENT_CORES = 5
+# ...and up to this many they are parted by " | " rather than ", ".
+_CPU_PIPED_CORES = 7
+
+
 def get_CpuUsageVar() -> str:
-    """Return the per-core CPU load, e.g. ``12 | 08 | 15 | 10``."""
-    raw = info("System.CpuUsage")
-    if not raw:
-        return ""
+    """Return the per-core CPU load, or ''.
 
-    loads = _cpu_core_loads(raw)
-    if not loads:
-        return raw
+    Up to ``_CPU_PERCENT_CORES`` cores ``12% | 08% | 15% | 10% | 11%``, up to
+    ``_CPU_PIPED_CORES`` ``12 | 08 | 15 | 10 | 11 | 09``, beyond that
+    ``12, 08, 15, 10, 11, 09, 14, 13``.
+    """
+    loads = _cpu_core_loads(info("System.CpuUsage"))
+    unit = "%" if len(loads) <= _CPU_PERCENT_CORES else ""
+    separator = " | " if len(loads) <= _CPU_PIPED_CORES else ", "
+    return separator.join(f"{int(v):02d}{unit}" for v in loads)
 
-    return " | ".join(f"{int(v):02d}" for v in loads)
+
+def get_CpuTotalProgressVar() -> float:
+    """Return the average CPU load over all cores as 0-100 for the bar."""
+    loads = _cpu_core_loads(info("System.CpuUsage"))
+    return sum(loads) / len(loads) if loads else 0.0
 
 
 def get_CpuTopUsageVar() -> str:
