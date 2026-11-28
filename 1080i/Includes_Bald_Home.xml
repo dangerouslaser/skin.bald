@@ -786,9 +786,10 @@
 	     it): the current row's clearlogo and its scrim stay off, since they belong to the art the image replaced. -->
 	<expression name="Bald_PreviewFixedArt">[$EXP[Bald_MenuOpen] + [[$EXP[Bald_MenuPreview_search] + !String.IsEmpty(Skin.String(Bald.Art.search))] | [$EXP[Bald_MenuPreview_settings] + !String.IsEmpty(Skin.String(Bald.Art.settings))] | [$EXP[Bald_MenuPreview_power] + !String.IsEmpty(Skin.String(Bald.Art.power))]]]</expression>
 	<expression name="Bald_EffectiveHasLogo">[[[$EXP[Bald_WidgetPreview] + $EXP[Bald_PreviewHasLogo]] | [!$EXP[Bald_WidgetPreview] + $EXP[Bald_HasLogo]]] + !$EXP[Bald_PreviewFixedArt]]</expression>
-	<!-- The main menu or the context menu (restyled as the same menu over Home) is open: the caption slides out,
-	     the section line hides, the rows dim. -->
-	<expression name="Bald_OverlayOpen">[$EXP[Bald_MenuOpen] | Window.IsVisible(contextmenu)]</expression>
+	<!-- The main menu, the context menu or the power menu (both restyled as the same menu over Home) is open: the
+	     caption slides out, the section line hides, the rows dim. The power menu counts because a remote's power key
+	     opens it over a focused row, where it would otherwise draw on top of the caption in the same column. -->
+	<expression name="Bald_OverlayOpen">[$EXP[Bald_MenuOpen] | Window.IsVisible(contextmenu) | Window.IsVisible(shutdownmenu)]</expression>
 	<!-- Menu open on an entry that previews no rows (Search, Settings, Live TV without rows or PVR, a hub without rows):
 	     its label and note show in the row area instead. Bald_PreviewRows_<screen> is generated: previewed, enabled
 	     (Live TV needs a PVR add-on) and with rows. -->

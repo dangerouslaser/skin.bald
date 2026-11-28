@@ -4,8 +4,10 @@
      Bald_PowerMenuItems (shortcuts/generator/power.xml; Includes_Bald_HomeDefaults.xml holds the shipped list until
      the first build). An entry Kodi cannot do on this device (Suspend, Hibernate, ...) does not show.
      Bald's look: drawn as Bald's context menu in the Home menu's column (1430, 392), five 56 px items in view. Over
-     Home it stands in for the menu, which fades out while it is open (Bald_PowerMenuOpen), as a submenu would; Back
-     returns to the menu on Power. Elsewhere a dark scrim sits behind it. -->
+     Home it stands in for the menu, which fades out while it is open (the Conditional fades on Home's menu), as a
+     submenu would; Back returns to the menu on Power. Opened over a focused row (a remote's power key, with the menu
+     closed) it takes the caption's place instead, as the context menu does (Bald_OverlayOpen). Elsewhere a dark scrim
+     sits behind it. -->
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<controls>

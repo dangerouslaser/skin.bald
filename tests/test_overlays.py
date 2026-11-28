@@ -187,6 +187,17 @@ class OverlayTests(unittest.TestCase):
         home = (SKIN / "Home.xml").read_text(encoding="utf-8")
         self.assertEqual(home.count('condition="Window.IsVisible(shutdownmenu)">Conditional</animation>'), 2)
 
+    def test_power_menu_over_a_focused_row_takes_the_captions_place(self):
+        """A remote's power key opens the power menu with Home's menu closed and a row focused. The menu sits in the
+        caption's column, so it has to count as an open overlay (as the context menu does) or the two overlap."""
+        source = (SKIN / "Includes_Bald_Home.xml").read_text(encoding="utf-8")
+        expression = re.search(r'<expression name="Bald_OverlayOpen">(.*?)</expression>', source).group(1)
+        for window in ("contextmenu", "shutdownmenu"):
+            self.assertIn(f"Window.IsVisible({window})", expression)
+        # The caption group is what hides on it.
+        home = (SKIN / "Home.xml").read_text(encoding="utf-8")
+        self.assertIn("<visible>!$EXP[Bald_OverlayOpen]</visible>", home)
+
     def test_muted_label_is_a_skin_string(self):
         variable = self.skin.variables["Bald_VolumeLabel"]
         ids = [int(n) for value in variable.iter("value") for n in re.findall(r"\$LOCALIZE\[(\d+)\]", value.text or "")]
